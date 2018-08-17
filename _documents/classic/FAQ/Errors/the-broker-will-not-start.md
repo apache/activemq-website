@@ -1,0 +1,11 @@
+Apache ActiveMQ ™ -- The Broker will not start 
+
+ [FAQ](/FAQ/index.md) > [Errors](../../FAQ/errors.md) > [The Broker will not start](../../FAQ/Errors/the-broker-will-not-start.md)
+
+
+It's been reported that during broker start some users get a message similar to:
+
+15:26:29 INFO  Opening journal. Caught: javax.jms.JMSException: Failed to open transaction journal: java.io.IOException: Invalid argument
+
+It could be [this problem](../../FAQ/Errors/Exceptions/journal-is-already-opened-by-this-application.md) or the problem could be due to a bad os/jvm combination. See [Known Bad OS and JVM Combinations](../../Using ActiveMQ/known-bad-os-and-jvm-combinations.md)
+

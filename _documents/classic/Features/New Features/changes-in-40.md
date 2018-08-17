@@ -1,0 +1,60 @@
+Apache ActiveMQ ™ -- Changes in 4.0 
+
+[Features](../../features.md) > [New Features](../../Features/new-features.md) > [Changes in 4.0](../../Features/New Features/changes-in-40.md)
+
+
+### New Features in 4.0
+
+*   [MasterSlave](../../Features/Clustering/masterslave.md) provides support for continuous availability and fault tolerance of brokers to be able to handle catastrophic hardware failure and not loose a message (or get duplicates).
+*   A new [Exclusive Consumer](../../Features/Consumer Features/exclusive-consumer.md) feature allows you to pin message processing to a single consumer in a cluser of consumers.
+*   A new [Message Groups](../../Features/Consumer Features/message-groups.md) feaure allows you load balance messages accross a set of consumers but also garantee the message order for messages within a message group.
+*   A new [Total Ordering](../../Features/Message Dispatching Features/total-ordering.md) feature to allow all consumers on a topic to see messages in the same order.
+*   New [JMX Management](../../FAQ/Using Apache ActiveMQ/how-can-i-monitor-activemq.md) and monitoring capabilities. You can now see statistics for each broker, destination, connector and connection!
+*   Improved [Security](../../Features/security.md) plugin which provides JAAS support for authentication along with a pluggable strategy for authorization together with a default XML based implementation.
+*   A new [OpenWire C Client](../../Connectivity/Cross Language Clients/C Integration/openwire-c-client.md) is now available. This client talks the same wire protocol that the standard java client uses so every messaging broker feature available to the java client is available to the c client.
+*   An experimental [OpenWire dotNet](https://cwiki.apache.org/confluence/display/NMS) is available, written in pure C# along with a JMS-like API for working on the .Net platform with ActiveMQ
+*   Queues can now be loaded up with persistent messages without locking up the broker. Persistent messages are now swapped out of memory when no consumer needs it soon.
+*   A new [Consumer Priority](../../Features/Consumer Features/consumer-priority.md) feature allows you to build location affinity by assignin a priority to consumers. The broker can then dispatch messages to higher priority consumers before dispatching to lower priority consumers.
+*   A configurable per [Consumer Dispatch Async](../../Features/Consumer Features/consumer-dispatch-async.md) flag which allows you to configure how messages are sent by the broker to a consumer. This controls if the broker uses [SEDA](../../FAQ/Terminology/seda.md) or [STP](#) style dispaching.
+*   A new plug-able topic [Subscription Recovery Policy](../../Features/Consumer Features/subscription-recovery-policy.md) which allows you to configure how many transient messages are replayed when a [Retroactive Consumer](../../Features/Consumer Features/retroactive-consumer.md) is created.
+*   A new [Retroactive Consumer](../../Features/Consumer Features/retroactive-consumer.md) feature allows topic consumers to "go back in time" so that it receives old messages when the subscription is activated. If the consumer is a durable consumer, he recover all the messages that are still in the persistent store.
+*   [Per Destination Policies](../../Features/Destination Features/per-destination-policies.md) allow you configure the behavior of destinations.
+*   The broker now supports per destination plugable [Dispatch Policies](../../Features/Message Dispatching Features/dispatch-policies.md) so that you can choose the distribution algorithm used to send messages to a consumer.
+*   The broker now supports two new types of connectors:
+    *   [The JMS Connector](../../the-jms-connector.md) is used to establish connection to external JMS providers so that messages can be bridged between the system.
+    *   [The Proxy Connector](../../Features/the-proxy-connector.md). Is used to proxy connections to another broker.
+*   [Slow Consumer Handling](../../Features/Consumer Features/slow-consumer-handling.md) allows you to discard old messages for slow consumers on non-durable topics to avoid slowing down fast consumers
+*   You can now specify [Destination Options](../../Features/Destination Features/destination-options.md) that allow you to do extend configuration of consumers.
+*   Conumsers now use [Optimized Acknowledgement](../../Features/Message Dispatching Features/optimized-acknowledgement.md) by default to which results in increased performance.
+
+### API/Configuration chanages
+
+*   as part of the move to Apache, the package name is now **org.apache.activemq** and not **org.activemq**.
+*   the [Xml Configuration](xml-Community/FAQ/configuration.md) has changed a little; mostly its now in the ActiveMQ namespace and has a generated XSD and documentation.
+*   the _reliable_ transport has been renamed to _failover_ to make it more clear what it does; we're working on a separate DR mechanism to provide data centre resilliance. So if you wish to connect to one of a number of URIs try
+    
+    failover:tcp://host1:port1,tcp://host2:port2
+    
+*   The configuration options of transports have changed. See [ActiveMQ Connection URIs](../../Using ActiveMQ/Configuring Transports/activemq-connection-uris.md) for a detailed guide of of all the options.
+*   The spring package has gone; we now use [XBean](http://xbean.org) to configure ActiveMQ. See the org.activemq.xbean.BrokerFactoryBean if you want a factory bean to use in regular spring instead of the org.activemq.spring.BrokerFactoryBean. See [Configuring Brokers](../../Using ActiveMQ/configuring-brokers.md) for more information on the new XML syntax.
+*   ActiveMQTopic and ActiveMQQueue are now in the org.activemq.command package.
+*   If you were creating a broker in Java code, the BrokerContainer has been replaced with BrokerService which is easier to use now.
+*   The connection URL options have changed slightly to provided more persise configuration options of the transport and wireformat and to allow validation of the options.
+*   [Message Redelivery and DLQ Handling](../../Developers/Developer Guide/Design Documents/message-redelivery-and-dlq-handling.md) has been re-implemnted. Currently all messages sent poison messages are sent to a single DQL.
+*   The [JMS Streams](../../Features/Message Features/jms-streams.md) API has changed.
+
+### General Changes
+
+*   The JDBC persistence adapter now uses JDBC statement batching to increase it's performance with the database. This should reduce the amount of time a checkpoint takes.
+*   QueueBrowsers now play nicely with a queue that is currently being consumed from. It gives you a true snapshot of what the queue looked like when you created the browser and it does not affect the dispatching of messages to active consumers.
+*   we no longer have hand-crafted marshalling code any more; its all based on [OpenWire](../../Connectivity/Protocols/openwire.md) and autogenerated from the open wire commands in the org.activemq.command package
+*   The network bridges used for broker to broker messaging now use a lower level ActiveMQ command and transport API instead of the JMS API, this allows them to use more optimizations and have a lower per bridge resource consumption while letting the JMS client API implementation reduce it's complexity.
+*   Two types of network bridges are now supported:
+    *   A simple forwardng bridge - sends all messages as soon as possible to the remote broker. Great you know the usage patterns up front and allways want to do store and forward to a central broker.
+    *   A demand based forwarding bridge (same type of bridge that was using in ActiveMQ 3.x) which detects consumer demand on the remote broker and only forwards messages as needed.
+*   The demand based forwarding bridge now take advantage of the [Consumer Priority](../../Features/Consumer Features/consumer-priority.md) to avoid forwarding messages to a remote broker if there is a local consumer consuming it's messages.
+*   Message fragmentation is no longer done. Fragmented messages add yet another level of complexity when you introduce broker networks. Large objects/streams should be transfered using the [JMS Streams](../../Features/Message Features/jms-streams.md).
+*   JMS clients marshall fewer messages on the wire on for a rollback.
+*   JMS clients marshall fewer messages when sessions/consumers/producers are closed.
+*   The client and the broker make more extensive use of Thread Pools to avoid allocating idle threads that are not being used.
+
