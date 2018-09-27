@@ -1,5 +1,5 @@
 ---
 layout: iframe
 title: ActiveMQ 5 Documentation
-iframe: {{site.baseurl}}/gitbook/classic/documents/index.html
+iframe: /activemq-website/gitbook/classic/documents/index.html
 ---
