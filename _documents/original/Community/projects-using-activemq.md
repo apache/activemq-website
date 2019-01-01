@@ -19,4 +19,5 @@ Apache ActiveMQ ™ -- Projects Using ActiveMQ
 *   [plan/b](http://planb.cloudnine.net.nz/) a distributed backup system
 *   [Hermes](http://www.hermesjms.com/) is a Swing application that allows you to interact with JMS providers. Hermes will work with any JMS enabled transport making it easy to browse or seach queues and topics, copy (via drag and drop) messages and delete them.
 *   [SpringSide](http://sourceforge.net/projects/springside/) Pragmatic Enterprise Application KickStart and Common Library Stack. Use Spring Framework as core,provided a enterprise application develop platform and demo the best practice in enterprise application.
+*   [jms-testkit](https://github.com/sullis/jms-testkit/) in-memory JMS broker for unit testing
 
