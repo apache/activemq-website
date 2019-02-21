@@ -1,0 +1,1447 @@
+<!DOCTYPE HTML>
+<html lang="en-US" >
+    
+    <head>
+        
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9; IE=8; IE=7; IE=EDGE" />
+        <title>Configuring Transports | ActiveMQ Artemis Documentation</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 1.5.0">
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+        <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+        
+        
+    
+    
+    <link rel="next" href="./connection-ttl.html" />
+    
+    
+    <link rel="prev" href="./persistence.html" />
+    
+
+        
+    </head>
+    <body>
+        
+        
+<link rel="stylesheet" href="gitbook/style.css">
+
+
+        
+    <div class="book" data-level="17" data-basepath="." data-revision="1432117733651">
+    
+
+<div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Type to search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+    	
+    	
+    	
+
+        
+
+        
+    
+        
+        <li class="chapter " data-level="0" data-path="index.html">
+            
+                
+                    <a href="./index.html">
+                        <i class="fa fa-check"></i>
+                        
+                         Introduction
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="1" data-path="notice.html">
+            
+                
+                    <a href="./notice.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.</b>
+                        
+                         Legal Notice
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2" data-path="preface.html">
+            
+                
+                    <a href="./preface.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.</b>
+                        
+                         Preface
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3" data-path="project-info.html">
+            
+                
+                    <a href="./project-info.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.</b>
+                        
+                         Project Info
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="4" data-path="running-server.html">
+            
+                
+                    <a href="./running-server.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>4.</b>
+                        
+                         Running the Server
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="5" data-path="messaging-concepts.html">
+            
+                
+                    <a href="./messaging-concepts.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.</b>
+                        
+                         Messaging Concepts
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="6" data-path="architecture.html">
+            
+                
+                    <a href="./architecture.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>6.</b>
+                        
+                         Architecture
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="7" data-path="using-server.html">
+            
+                
+                    <a href="./using-server.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>7.</b>
+                        
+                         Using the Server
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="8" data-path="using-jms.html">
+            
+                
+                    <a href="./using-jms.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>8.</b>
+                        
+                         Using JMS
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="9" data-path="using-core.html">
+            
+                
+                    <a href="./using-core.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>9.</b>
+                        
+                         Using Core
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="10" data-path="jms-core-mapping.html">
+            
+                
+                    <a href="./jms-core-mapping.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>10.</b>
+                        
+                         Mapping JMS Concepts to the Core API
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="11" data-path="client-classpath.html">
+            
+                
+                    <a href="./client-classpath.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>11.</b>
+                        
+                         The Client Classpath
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="12" data-path="examples.html">
+            
+                
+                    <a href="./examples.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>12.</b>
+                        
+                         Examples
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="13" data-path="wildcard-routing.html">
+            
+                
+                    <a href="./wildcard-routing.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>13.</b>
+                        
+                         Routing Messages With Wild Cards
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="14" data-path="wildcard-syntax.html">
+            
+                
+                    <a href="./wildcard-syntax.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>14.</b>
+                        
+                         Understanding the Apache ActiveMQ Artemis Wildcard Syntax
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="15" data-path="filter-expressions.html">
+            
+                
+                    <a href="./filter-expressions.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>15.</b>
+                        
+                         Filter Expressions
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="16" data-path="persistence.html">
+            
+                
+                    <a href="./persistence.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>16.</b>
+                        
+                         Persistence
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter active" data-level="17" data-path="configuring-transports.html">
+            
+                
+                    <a href="./configuring-transports.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>17.</b>
+                        
+                         Configuring Transports
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="18" data-path="connection-ttl.html">
+            
+                
+                    <a href="./connection-ttl.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>18.</b>
+                        
+                         Detecting Dead Connections
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="19" data-path="slow-consumers.html">
+            
+                
+                    <a href="./slow-consumers.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>19.</b>
+                        
+                         Detecting Slow Consumers
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="20" data-path="transaction-config.html">
+            
+                
+                    <a href="./transaction-config.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>20.</b>
+                        
+                         Resource Manager Configuration
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="21" data-path="flow-control.html">
+            
+                
+                    <a href="./flow-control.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>21.</b>
+                        
+                         Flow Control
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="22" data-path="send-guarantees.html">
+            
+                
+                    <a href="./send-guarantees.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>22.</b>
+                        
+                         Guarantees of sends and commits
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="23" data-path="undelivered-messages.html">
+            
+                
+                    <a href="./undelivered-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>23.</b>
+                        
+                         Message Redelivery and Undelivered Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="24" data-path="message-expiry.html">
+            
+                
+                    <a href="./message-expiry.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>24.</b>
+                        
+                         Message Expiry
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="25" data-path="large-messages.html">
+            
+                
+                    <a href="./large-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>25.</b>
+                        
+                         Large Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="26" data-path="paging.html">
+            
+                
+                    <a href="./paging.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>26.</b>
+                        
+                         Paging
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="27" data-path="queue-attributes.html">
+            
+                
+                    <a href="./queue-attributes.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>27.</b>
+                        
+                         Queue Attributes
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="28" data-path="scheduled-messages.html">
+            
+                
+                    <a href="./scheduled-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>28.</b>
+                        
+                         Scheduled Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="29" data-path="last-value-queues.html">
+            
+                
+                    <a href="./last-value-queues.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>29.</b>
+                        
+                         Last-Value Queues
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="30" data-path="message-grouping.html">
+            
+                
+                    <a href="./message-grouping.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>30.</b>
+                        
+                         Message Grouping
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="31" data-path="pre-acknowledge.html">
+            
+                
+                    <a href="./pre-acknowledge.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>31.</b>
+                        
+                         Extra Acknowledge Modes
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="32" data-path="management.html">
+            
+                
+                    <a href="./management.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>32.</b>
+                        
+                         Management
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="33" data-path="security.html">
+            
+                
+                    <a href="./security.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>33.</b>
+                        
+                         Security
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="34" data-path="resource-limits.html">
+            
+                
+                    <a href="./resource-limits.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>34.</b>
+                        
+                         Resource Limits
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="35" data-path="jms-bridge.html">
+            
+                
+                    <a href="./jms-bridge.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>35.</b>
+                        
+                         The JMS Bridge
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="36" data-path="client-reconnection.html">
+            
+                
+                    <a href="./client-reconnection.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>36.</b>
+                        
+                         Client Reconnection and Session Reattachment
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="37" data-path="diverts.html">
+            
+                
+                    <a href="./diverts.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>37.</b>
+                        
+                         Diverting and Splitting Message Flows
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="38" data-path="core-bridges.html">
+            
+                
+                    <a href="./core-bridges.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>38.</b>
+                        
+                         Core Bridges
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="39" data-path="duplicate-detection.html">
+            
+                
+                    <a href="./duplicate-detection.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>39.</b>
+                        
+                         Duplicate Message Detection
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="40" data-path="clusters.html">
+            
+                
+                    <a href="./clusters.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>40.</b>
+                        
+                         Clusters
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="41" data-path="ha.html">
+            
+                
+                    <a href="./ha.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>41.</b>
+                        
+                         High Availability and Failover
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="42" data-path="graceful-shutdown.html">
+            
+                
+                    <a href="./graceful-shutdown.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>42.</b>
+                        
+                         Graceful Server Shutdown
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="43" data-path="libaio.html">
+            
+                
+                    <a href="./libaio.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>43.</b>
+                        
+                         Libaio Native Libraries
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="44" data-path="thread-pooling.html">
+            
+                
+                    <a href="./thread-pooling.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>44.</b>
+                        
+                         Thread management
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="45" data-path="logging.html">
+            
+                
+                    <a href="./logging.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>45.</b>
+                        
+                         Logging
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="46" data-path="rest.html">
+            
+                
+                    <a href="./rest.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>46.</b>
+                        
+                         REST Interface
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="47" data-path="embedding-activemq.html">
+            
+                
+                    <a href="./embedding-activemq.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>47.</b>
+                        
+                         Embedding Apache ActiveMQ Artemis
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="48" data-path="spring-integration.html">
+            
+                
+                    <a href="./spring-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>48.</b>
+                        
+                         Spring Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="49" data-path="aerogear-integration.html">
+            
+                
+                    <a href="./aerogear-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>49.</b>
+                        
+                         AeroGear Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="50" data-path="vertx-integration.html">
+            
+                
+                    <a href="./vertx-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>50.</b>
+                        
+                         VertX Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="51" data-path="intercepting-operations.html">
+            
+                
+                    <a href="./intercepting-operations.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>51.</b>
+                        
+                         Intercepting Operations
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="52" data-path="interoperability.html">
+            
+                
+                    <a href="./interoperability.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>52.</b>
+                        
+                         Interoperability
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="53" data-path="tools.html">
+            
+                
+                    <a href="./tools.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>53.</b>
+                        
+                         Tools
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="54" data-path="perf-tuning.html">
+            
+                
+                    <a href="./perf-tuning.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>54.</b>
+                        
+                         Performance Tuning
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="55" data-path="configuration-index.html">
+            
+                
+                    <a href="./configuration-index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>55.</b>
+                        
+                         Configuration Reference
+                    </a>
+                
+            
+            
+        </li>
+    
+
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="http://www.gitbook.io/" target="blank" class="gitbook-link">Published using GitBook</a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="book-header">
+    <!-- Actions Left -->
+    <a href="#" class="btn pull-left toggle-summary" aria-label="Toggle summary"><i class="fa fa-align-justify"></i></a>
+    <a href="#" class="btn pull-left toggle-search" aria-label="Toggle search"><i class="fa fa-search"></i></a>
+    
+    <div id="font-settings-wrapper" class="dropdown pull-left">
+        <a href="#" class="btn toggle-dropdown" aria-label="Toggle font settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+    <div class="dropdown-caret">
+        <span class="caret-outer"></span>
+        <span class="caret-inner"></span>
+    </div>
+
+    <div class="buttons">
+        <button type="button" id="reduce-font-size" class="button size-2">A</button>
+        <button type="button" id="enlarge-font-size" class="button size-2">A</button>
+    </div>
+
+    <div class="buttons font-family-list">
+        <button type="button" data-font="0" class="button">Serif</button>
+        <button type="button" data-font="1" class="button">Sans</button>
+    </div>
+
+    <div class="buttons color-theme-list">
+        <button type="button" id="color-theme-preview-0" class="button size-3" data-theme="0">White</button>
+        <button type="button" id="color-theme-preview-1" class="button size-3" data-theme="1">Sepia</button>
+        <button type="button" id="color-theme-preview-2" class="button size-3" data-theme="2">Night</button>
+    </div>
+</div>
+
+    </div>
+
+    <!-- Actions Right -->
+    
+    <div class="dropdown pull-right">
+        <a href="#" class="btn toggle-dropdown" aria-label="Toggle share dropdown"><i class="fa fa-share-alt"></i>
+        </a>
+        <div class="dropdown-menu font-settings dropdown-left">
+            <div class="dropdown-caret">
+                <span class="caret-outer"></span>
+                <span class="caret-inner"></span>
+            </div>
+            <div class="buttons">
+                <button type="button" data-sharing="twitter" class="button">Twitter</button>
+                <button type="button" data-sharing="google-plus" class="button">Google</button>
+                <button type="button" data-sharing="facebook" class="button">Facebook</button>
+                <button type="button" data-sharing="weibo" class="button">Weibo</button>
+                <button type="button" data-sharing="instapaper" class="button">Instapaper</button>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <a href="#" target="_blank" class="btn pull-right google-plus-sharing-link sharing-link" data-sharing="google-plus" aria-label="Share on Google Plus"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right facebook-sharing-link sharing-link" data-sharing="facebook" aria-label="Share on Facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right twitter-sharing-link sharing-link" data-sharing="twitter" aria-label="Share on Twitter"><i class="fa fa-twitter"></i></a>
+    
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="./" >ActiveMQ Artemis Documentation</a>
+    </h1>
+</div>
+
+            <div class="page-wrapper" tabindex="-1">
+                <div class="page-inner">
+                
+                
+                    <section class="normal" id="section-gitbook_10">
+                    
+                        <h1 id="configuring-the-transport">Configuring the Transport</h1>
+<p>In this chapter we&#39;ll describe the concepts required for understanding
+Apache ActiveMQ Artemis transports and where and how they&#39;re configured.</p>
+<h2 id="understanding-acceptors">Understanding Acceptors</h2>
+<p>One of the most important concepts in Apache ActiveMQ Artemis transports is the
+<em>acceptor</em>. Let&#39;s dive straight in and take a look at an acceptor
+defined in xml in the configuration file <code>broker.xml</code>.</p>
+<pre><code>&lt;acceptors&gt;
+   &lt;acceptor name=&quot;netty&quot;&gt;tcp://localhost:61617&lt;/acceptor&gt;
+&lt;/acceptors&gt;
+</code></pre><p>Acceptors are always defined inside an <code>acceptors</code> element. There can be
+one or more acceptors defined in the <code>acceptors</code> element. There&#39;s no
+upper limit to the number of acceptors per server.</p>
+<p>Each acceptor defines a way in which connections can be made to the
+Apache ActiveMQ Artemis server.</p>
+<p>In the above example we&#39;re defining an acceptor that uses
+<a href="http://netty.io/" target="_blank">Netty</a> to listen for connections at port
+<code>61617</code>.</p>
+<p>The <code>acceptor</code> element contains a <code>URI</code> that defines the kind of Acceptor
+to create along with its configuration. The <code>schema</code> part of the <code>URI</code>
+defines the Acceptor type which can either be <code>tcp</code> or <code>vm</code> which is
+<code>Netty</code> or an In VM Acceptor respectively. For <code>Netty</code> teh host and the
+port of the <code>URI</code> define what host and port the Acceptor will bind to. For
+In VM the <code>Authority</code> part of the <code>URI</code> defines a unique server id.</p>
+<p>The <code>acceptor</code> can also be configured with a set of key, value pairs
+used to configure the specific transport, the set of
+valid key-value pairs depends on the specific transport be used and are
+passed straight through to the underlying transport. These are set on the
+<code>URI</code> as part of the query, like so:</p>
+<pre><code>&lt;acceptor name=&quot;netty&quot;&gt;tcp://localhost:61617?sslEnabled=true;key-store-path=/path&lt;/acceptor&gt;
+</code></pre><h2 id="understanding-connectors">Understanding Connectors</h2>
+<p>Whereas acceptors are used on the server to define how we accept
+connections, connectors are used by a client to define how it connects
+to a server.</p>
+<p>Let&#39;s look at a connector defined in our <code>broker.xml</code>
+file:</p>
+<pre><code>&lt;connectors&gt;
+   &lt;connector name=&quot;netty&quot;&gt;tcp://localhost:61617&lt;/connector&gt;
+&lt;/connectors&gt;
+</code></pre><p>Connectors can be defined inside a <code>connectors</code> element. There can be
+one or more connectors defined in the <code>connectors</code> element. There&#39;s no
+upper limit to the number of connectors per server.</p>
+<p>You make ask yourself, if connectors are used by the <em>client</em> to make
+connections then why are they defined on the <em>server</em>? There are a
+couple of reasons for this:</p>
+<ul>
+<li><p>Sometimes the server acts as a client itself when it connects to
+another server, for example when one server is bridged to another,
+or when a server takes part in a cluster. In this cases the server
+needs to know how to connect to other servers. That&#39;s defined by
+<em>connectors</em>.</p>
+</li>
+<li><p>If you&#39;re using JMS and you&#39;re using JNDI on the client to look up
+your JMS connection factory instances then when creating the
+<code>ActiveMQConnectionFactory</code> it needs to know what server that
+connection factory will create connections to.</p>
+<p>That&#39;s defined by the <code>java.naming.provider.url</code> element in the JNDI
+context environment, e.g. <code>jndi.properties</code>. Behind the scenes, the
+<code>ActiveMQInitialContextFactory</code> uses the
+<code>java.naming.provider.url</code> to construct the transport. Here&#39;s a
+simple example:</p>
+<pre><code>java.naming.factory.initial=org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory
+connectionFactory.MyConnectionFactory=tcp://myhost:61616
+</code></pre></li>
+</ul>
+<h2 id="configuring-the-transport-directly-from-the-client-side">Configuring the transport directly from the client side.</h2>
+<p>How do we configure a core <code>ClientSessionFactory</code> with the information
+that it needs to connect with a server?</p>
+<p>Connectors are also used indirectly when directly configuring a core
+<code>ClientSessionFactory</code> to directly talk to a server. Although in this
+case there&#39;s no need to define such a connector in the server side
+configuration, instead we just create the parameters and tell the
+<code>ClientSessionFactory</code> which connector factory to use.</p>
+<p>Here&#39;s an example of creating a <code>ClientSessionFactory</code> which will
+connect directly to the acceptor we defined earlier in this chapter, it
+uses the standard Netty TCP transport and will try and connect on port
+61617 to localhost (default):</p>
+<pre><code class="lang-java">Map&lt;String, Object&gt; connectionParams = <span class="hljs-keyword">new</span> HashMap&lt;String, Object&gt;();
+
+connectionParams.put(org.apache.activemq.artemis.core.remoting.impl.netty.TransportConstants.PORT_PROP_NAME,
+                    <span class="hljs-number">61617</span>);
+
+TransportConfiguration transportConfiguration =
+    <span class="hljs-keyword">new</span> TransportConfiguration(
+    <span class="hljs-string">"org.apache.activemq.artemis.core.remoting.impl.netty.NettyConnectorFactory"</span>,
+    connectionParams);
+
+ServerLocator locator = ActiveMQClient.createServerLocatorWithoutHA(transportConfiguration);
+
+ClientSessionFactory sessionFactory = locator.createClientSessionFactory();
+
+ClientSession session = sessionFactory.createSession(...);
+
+etc
+</code></pre>
+<p>Similarly, if you&#39;re using JMS, you can configure the JMS connection
+factory directly on the client side without having to define a connector
+on the server side or define a connection factory in <code>activemq-jms.xml</code>:</p>
+<pre><code class="lang-java">Map&lt;String, Object&gt; connectionParams = <span class="hljs-keyword">new</span> HashMap&lt;String, Object&gt;();
+
+connectionParams.put(org.apache.activemq.artemis.core.remoting.impl.netty.TransportConstants.PORT_PROP_NAME, <span class="hljs-number">61617</span>);
+
+TransportConfiguration transportConfiguration =
+    <span class="hljs-keyword">new</span> TransportConfiguration(
+    <span class="hljs-string">"org.apache.activemq.artemis.core.remoting.impl.netty.NettyConnectorFactory"</span>,
+    connectionParams);
+
+ConnectionFactory connectionFactory = ActiveMQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, transportConfiguration);
+
+Connection jmsConnection = connectionFactory.createConnection();
+
+etc
+</code></pre>
+<h2 id="configuring-the-netty-transport">Configuring the Netty transport</h2>
+<p>Out of the box, Apache ActiveMQ Artemis currently uses
+<a href="http://netty.io/" target="_blank">Netty</a>, a high performance low level
+network library.</p>
+<p>Our Netty transport can be configured in several different ways; to use
+old (blocking) Java IO, or NIO (non-blocking), also to use
+straightforward TCP sockets, SSL, or to tunnel over HTTP or HTTPS..</p>
+<p>We believe this caters for the vast majority of transport requirements.</p>
+<h2 id="single-port-support">Single Port Support</h2>
+<p>Apache ActiveMQ Artemis supports using a single port for all
+protocols, Apache ActiveMQ Artemis will automatically detect which protocol is being
+used CORE, AMQP, STOMP or OPENWIRE and use the appropriate Apache ActiveMQ Artemis
+handler. It will also detect whether protocols such as HTTP or Web
+Sockets are being used and also use the appropriate decoders</p>
+<p>It is possible to limit which protocols are supported by using the
+<code>protocols</code> parameter on the Acceptor like so:</p>
+<pre><code>    &lt;connector name=&quot;netty&quot;&gt;tcp://localhost:61617?protocols=CORE,AMQP&lt;/connector&gt;
+</code></pre><h2 id="configuring-netty-tcp">Configuring Netty TCP</h2>
+<p>Netty TCP is a simple unencrypted TCP sockets based transport. Netty TCP
+can be configured to use old blocking Java IO or non blocking Java NIO.
+We recommend you use the Java NIO on the server side for better
+scalability with many concurrent connections. However using Java old IO
+can sometimes give you better latency than NIO when you&#39;re not so
+worried about supporting many thousands of concurrent connections.</p>
+<p>If you&#39;re running connections across an untrusted network please bear in
+mind this transport is unencrypted. You may want to look at the SSL or
+HTTPS configurations.</p>
+<p>With the Netty TCP transport all connections are initiated from the
+client side. I.e. the server does not initiate any connections to the
+client. This works well with firewall policies that typically only allow
+connections to be initiated in one direction.</p>
+<p>All the valid Netty transport keys are defined in the class
+<code>org.apache.activemq.artemis.core.remoting.impl.netty.TransportConstants</code>. Most
+parameters can be used either with acceptors or connectors, some only
+work with acceptors. The following parameters can be used to configure
+Netty for simple TCP:</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>The <code>host</code> and <code>port</code> parameters are only used in the core API, in
+XML configuration these are set in the URI host and port.</p>
+</blockquote>
+<ul>
+<li><p><code>host</code>. This specifies the host name or IP address to connect to
+(when configuring a connector) or to listen on (when configuring an
+acceptor). The default value for this property is <code>localhost</code>. When
+configuring acceptors, multiple hosts or IP addresses can be
+specified by separating them with commas. It is also possible to
+specify <code>0.0.0.0</code> to accept connection from all the host&#39;s network
+interfaces. It&#39;s not valid to specify multiple addresses when
+specifying the host for a connector; a connector makes a connection
+to one specific address.</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>Don&#39;t forget to specify a host name or IP address! If you want
+your server able to accept connections from other nodes you must
+specify a hostname or IP address at which the acceptor will bind
+and listen for incoming connections. The default is localhost
+which of course is not accessible from remote nodes!</p>
+</blockquote>
+</li>
+<li><p><code>port</code>. This specified the port to connect to (when configuring a
+connector) or to listen on (when configuring an acceptor). The
+default value for this property is <code>61616</code>.</p>
+</li>
+<li><p><code>tcpNoDelay</code>. If this is <code>true</code> then <a href="http://en.wikipedia.org/wiki/Nagle%27s_algorithm" target="_blank">Nagle&#39;s
+algorithm</a> will be
+disabled. This is a <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/net/socketOpt.html" target="_blank">Java (client) socket
+option</a>.
+The default value for this property is <code>true</code>.</p>
+</li>
+<li><p><code>tcpSendBufferSize</code>. This parameter determines the size of the
+TCP send buffer in bytes. The default value for this property is
+<code>32768</code> bytes (32KiB).</p>
+<p>TCP buffer sizes should be tuned according to the bandwidth and
+latency of your network. Here&#39;s a good link that explains the theory
+behind <a href="http://www-didc.lbl.gov/TCP-tuning/" target="_blank">this</a>.</p>
+<p>In summary TCP send/receive buffer sizes should be calculated as:</p>
+<pre><code>buffer_size = bandwidth * RTT.
+</code></pre><p>Where bandwidth is in <em>bytes per second</em> and network round trip time
+(RTT) is in seconds. RTT can be easily measured using the <code>ping</code>
+utility.</p>
+<p>For fast networks you may want to increase the buffer sizes from the
+defaults.</p>
+</li>
+<li><p><code>tcpReceiveBufferSize</code>. This parameter determines the size of the
+TCP receive buffer in bytes. The default value for this property is
+<code>32768</code> bytes (32KiB).</p>
+</li>
+<li><p><code>batchDelay</code>. Before writing packets to the transport, Apache ActiveMQ Artemis can
+be configured to batch up writes for a maximum of <code>batchDelay</code>
+milliseconds. This can increase overall throughput for very small
+messages. It does so at the expense of an increase in average
+latency for message transfer. The default value for this property is
+<code>0</code> ms.</p>
+</li>
+<li><p><code>directDeliver</code>. When a message arrives on the server and is
+delivered to waiting consumers, by default, the delivery is done on
+the same thread as that on which the message arrived. This gives
+good latency in environments with relatively small messages and a
+small number of consumers, but at the cost of overall throughput and
+scalability - especially on multi-core machines. If you want the
+lowest latency and a possible reduction in throughput then you can
+use the default value for <code>directDeliver</code> (i.e. true). If you are
+willing to take some small extra hit on latency but want the highest
+throughput set <code>directDeliver</code> to `false</p>
+<pre><code>                    `.
+</code></pre></li>
+<li><p><code>nioRemotingThreads</code>. When configured to use NIO, Apache ActiveMQ Artemis will,
+by default, use a number of threads equal to three times the number
+of cores (or hyper-threads) as reported by
+<code>Runtime.getRuntime().availableProcessors()</code> for processing incoming
+packets. If you want to override this value, you can set the number
+of threads by specifying this parameter. The default value for this
+parameter is <code>-1</code> which means use the value from
+<code>Runtime.getRuntime().availableProcessors()</code> * 3.</p>
+</li>
+<li><p><code>localAddress</code>. When configured a Netty Connector it is possible to
+specify which local address the client will use when connecting to
+the remote address. This is typically used in the Application Server
+or when running Embedded to control which address is used for
+outbound connections. If the local-address is not set then the
+connector will use any local address available</p>
+</li>
+<li><p><code>localPort</code>. When configured a Netty Connector it is possible to
+specify which local port the client will use when connecting to the
+remote address. This is typically used in the Application Server or
+when running Embedded to control which port is used for outbound
+connections. If the local-port default is used, which is 0, then the
+connector will let the system pick up an ephemeral port. valid ports
+are 0 to 65535</p>
+</li>
+<li><p><code>connectionsAllowed</code>. This is only valid for acceptors. It limits the
+number of connections which the acceptor will allow. When this limit
+is reached a DEBUG level message is issued to the log, and the connection
+is refused. The type of client in use will determine what happens when
+the connection is refused. In the case of a <code>core</code> client, it will
+result in a <code>org.apache.activemq.artemis.api.core.ActiveMQConnectionTimedOutException</code>.</p>
+</li>
+</ul>
+<h2 id="configuring-netty-ssl">Configuring Netty SSL</h2>
+<p>Netty SSL is similar to the Netty TCP transport but it provides
+additional security by encrypting TCP connections using the Secure
+Sockets Layer SSL</p>
+<p>Please see the examples for a full working example of using Netty SSL.</p>
+<p>Netty SSL uses all the same properties as Netty TCP but adds the
+following additional properties:</p>
+<ul>
+<li><p><code>sslEnabled</code></p>
+<p>Must be <code>true</code> to enable SSL. Default is <code>false</code>.</p>
+</li>
+<li><p><code>keyStorePath</code></p>
+<p>When used on an <code>acceptor</code> this is the path to the SSL key store on
+the server which holds the server&#39;s certificates (whether
+self-signed or signed by an authority).</p>
+<p>When used on a <code>connector</code> this is the path to the client-side SSL
+key store which holds the client certificates. This is only relevant
+for a <code>connector</code> if you are using 2-way SSL (i.e. mutual
+authentication). Although this value is configured on the server, it
+is downloaded and used by the client. If the client needs to use a
+different path from that set on the server then it can override the
+server-side setting by either using the customary
+&quot;javax.net.ssl.keyStore&quot; system property or the ActiveMQ-specific
+&quot;org.apache.activemq.ssl.keyStore&quot; system property. The
+ActiveMQ-specific system property is useful if another component on
+client is already making use of the standard, Java system property.</p>
+</li>
+<li><p><code>keyStorePassword</code></p>
+<p>When used on an <code>acceptor</code> this is the password for the server-side
+keystore.</p>
+<p>When used on a <code>connector</code> this is the password for the client-side
+keystore. This is only relevant for a <code>connector</code> if you are using
+2-way SSL (i.e. mutual authentication). Although this value can be
+configured on the server, it is downloaded and used by the client.
+If the client needs to use a different password from that set on the
+server then it can override the server-side setting by either using
+the customary &quot;javax.net.ssl.keyStorePassword&quot; system property or
+the ActiveMQ-specific &quot;org.apache.activemq.ssl.keyStorePassword&quot;
+system property. The ActiveMQ-specific system property is useful if
+another component on client is already making use of the standard,
+Java system property.</p>
+</li>
+<li><p><code>trustStorePath</code></p>
+<p>When used on an <code>acceptor</code> this is the path to the server-side SSL
+key store that holds the keys of all the clients that the server
+trusts. This is only relevant for an <code>acceptor</code> if you are using
+2-way SSL (i.e. mutual authentication).</p>
+<p>When used on a <code>connector</code> this is the path to the client-side SSL
+key store which holds the public keys of all the servers that the
+client trusts. Although this value can be configured on the server,
+it is downloaded and used by the client. If the client needs to use
+a different path from that set on the server then it can override
+the server-side setting by either using the customary
+&quot;javax.net.ssl.trustStore&quot; system property or the ActiveMQ-specific
+&quot;org.apache.activemq.ssl.trustStore&quot; system property. The
+ActiveMQ-specific system property is useful if another component on
+client is already making use of the standard, Java system property.</p>
+</li>
+<li><p><code>trustStorePassword</code></p>
+<p>When used on an <code>acceptor</code> this is the password for the server-side
+trust store. This is only relevant for an <code>acceptor</code> if you are
+using 2-way SSL (i.e. mutual authentication).</p>
+<p>When used on a <code>connector</code> this is the password for the client-side
+truststore. Although this value can be configured on the server, it
+is downloaded and used by the client. If the client needs to use a
+different password from that set on the server then it can override
+the server-side setting by either using the customary
+&quot;javax.net.ssl.trustStorePassword&quot; system property or the
+ActiveMQ-specific &quot;org.apache.activemq.ssl.trustStorePassword&quot;
+system property. The ActiveMQ-specific system property is useful if
+another component on client is already making use of the standard,
+Java system property.</p>
+</li>
+<li><p><code>enabledCipherSuites</code></p>
+<p>Whether used on an <code>acceptor</code> or <code>connector</code> this is a comma
+separated list of cipher suites used for SSL communication. The
+default value is <code>null</code> which means the JVM&#39;s default will be used.</p>
+</li>
+<li><p><code>enabledProtocols</code></p>
+<p>Whether used on an <code>acceptor</code> or <code>connector</code> this is a comma
+separated list of protocols used for SSL communication. The default
+value is <code>null</code> which means the JVM&#39;s default will be used.</p>
+</li>
+<li><p><code>needClientAuth</code></p>
+<p>This property is only for an <code>acceptor</code>. It tells a client
+connecting to this acceptor that 2-way SSL is required. Valid values
+are <code>true</code> or <code>false</code>. Default is <code>false</code>.</p>
+</li>
+</ul>
+<h2 id="configuring-netty-http">Configuring Netty HTTP</h2>
+<p>Netty HTTP tunnels packets over the HTTP protocol. It can be useful in
+scenarios where firewalls only allow HTTP traffic to pass.</p>
+<p>Please see the examples for a full working example of using Netty HTTP.</p>
+<p>Netty HTTP uses the same properties as Netty TCP but adds the following
+additional properties:</p>
+<ul>
+<li><p><code>httpEnabled</code>. This is now no longer needed as of version 2.4. With
+single port support Apache ActiveMQ Artemis will now automatically detect if http
+is being used and configure itself.</p>
+</li>
+<li><p><code>httpClientIdleTime</code>. How long a client can be idle before
+sending an empty http request to keep the connection alive</p>
+</li>
+<li><p><code>httpClientIdleScanPeriod</code>. How often, in milliseconds, to scan
+for idle clients</p>
+</li>
+<li><p><code>httpResponseTime</code>. How long the server can wait before sending an
+empty http response to keep the connection alive</p>
+</li>
+<li><p><code>httpServerScanPeriod</code>. How often, in milliseconds, to scan for
+clients needing responses</p>
+</li>
+<li><p><code>httpRequiresSessionId</code>. If true the client will wait after the
+first call to receive a session id. Used the http connector is
+connecting to servlet acceptor (not recommended)</p>
+</li>
+</ul>
+
+                    
+                    </section>
+                
+                
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="./persistence.html" class="navigation navigation-prev " aria-label="Previous page: Persistence"><i class="fa fa-angle-left"></i></a>
+        
+        
+        <a href="./connection-ttl.html" class="navigation navigation-next " aria-label="Next page: Detecting Dead Connections"><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+<script src="gitbook/app.js"></script>
+
+    
+    <script src="https://cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+    
+    <script src="gitbook/plugins/gitbook-plugin-mathjax/plugin.js"></script>
+    
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"fontSettings":{"theme":null,"family":"sans","size":2}};
+    gitbook.start(config);
+});
+</script>
+
+        
+    </body>
+    
+</html>
