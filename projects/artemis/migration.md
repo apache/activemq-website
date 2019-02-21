@@ -1,5 +1,7 @@
 ---
 layout: iframe
-title: Documentation
-iframe: https://activemq.apache.org/artemis/migration/index.html
+title: Apache ActiveMQ Artemis Migration Guide
+iframe: migration-documentation
+title-class: page-title-artemis
 ---
+

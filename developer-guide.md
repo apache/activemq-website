@@ -1,0 +1,26 @@
+---
+layout: default_md
+title: Developer Guide 
+title-class: page-title-activemq5
+type: activemq5
+---
+
+[Developers](developers) > [Developer Guide](developer-guide)
+
+
+The following documents might be interesting
+
+*   [Building](building)
+*   [Release Plans](release-plans)
+*   [Release Guide](release-guide)
+*   [Design Documents](design-documents)
+*   [Changes in 4.0](New Features/changes-in-40)
+*   [Apache ActiveMQ Board Reports](apache-activemq-board-reports)
+*   [Maven SNAPSHOT Repository in your POM](maven-snapshot-repository-in-your-pom)
+
+### Code walkthrough
+
+*   [Code Overview](code-overview)
+*   [Wire Protocol](wire-protocol)
+*   [Developing Plugins](developing-plugins)
+
