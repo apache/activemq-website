@@ -1,26 +1,25 @@
 ---
 layout: project_default
-project_name: NMS CLIENTS
+project_name: NMS Clients
 project_info: .NET Messaging API
-project_top_narative: The NMS API This allows you to build .NET applications in C#, VB, or any other .NET language, using a single API to connect to multiple different providers using a JMS style API.
+project_top_narative: The NMS API allows you to build .NET applications in C#, VB, or any other .NET language, using a single API to connect to multiple different providers using a JMS style API.
 project_class: nms
-latest_version: 2.6.0
 ---
 
 <div class="row project-narative">
   <div class="col-12">
-    <div class="container">
+    <div class="container nms">
       <!-- Narative 2 -->
       <div class="row">
         <div class="col-12">
           <div class="card card-orange">
             <div class="card-body">
               <div class="row">
-                <div class="col-sm-12 col-md-8">
+                <div class="col-sm-12 col-md-10">
                   <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title text-orange">NMS API Overview</h5>
-                      <p>The <a href="apachenms">NMS API</a> This allows you to build .NET applications in C#, VB, or any other .NET language, using a single API to connect to multiple different providers using a JMS style API.</p>
+                    <div class="card-body" style="font-weight: bold">
+                      <h5 class="card-title text-orange">Project Status</h5>
+                      <p>The NMS API, providers, etc. are no longer under active development, and no maintenance resources have stepped forward. With the rise of AMQP as an industry standard protocol with good cross-platform support the need for NMS has diminished. For a .NET client implementation which can be used with ActiveMQ brokers please refer to <a href="https://github.com/Azure/amqpnetlite">AMQP.NET Lite</a>.</p>
                     </div>
                   </div>
                 </div>
@@ -35,27 +34,166 @@ latest_version: 2.6.0
 
 <div class="row project-narative-alt">
   <div class="col-12">
-    <div class="container">
+    <div class="container nms">
       <!-- Narative 2 -->
       <div class="row project-narative-alt">
         <div class="col-12">
           <div class="card card-orange project-narative-alt">
             <div class="card-body">
               <div class="row">
-                <div class="col-sm-12 col-md-8">
+                <div class="col-sm-12 col-md-10">
                   <div class="card">
-                    <div class="card-body  project-narative-alt">
-                      <h5 class="card-title text-orange">NMS Providers</h5>
+                    <div class="card-body project-narative-alt">
+                      <h5 class="card-title text-orange">API Overview</h5>
+                      <p>The <a href="nms-api">NMS API</a> (<em>.Net Message Service API</em>) provides a standard .NET interface to Messaging Systems. There are multiple implementations for different <a href="#nms-providers">providers</a> (including MSMQ). The NMS API allows you to build .NET applications in C#, VB, or any other .NET language, using a single API to connect to multiple different providers using a JMS style API.</p>
+                      <p>NMS API currently supports all of the features of JMS in a simple pure C# API and implementation apart from XA. Current features include:</p>
+                      <ul>
+                        <li>creating &amp; disposing of connections, sessions, producers, consumers</li>
+                        <li>sending of messages to topics, queues with durable or non durable along with temporary destination support</li>
+                        <li>synchronous consuming (blocking receive, receive with no wait or receive with a timeout)</li>
+                        <li>asynchronous consuming (adding a MessageListener to be dispatched in the thread pool)</li>
+                        <li>message header support along with custom properties</li>
+                        <li>Text, Bytes, Stream and Map message support</li>
+                        <li>support for transactions (sending and acknowledging multiple messages in an atomic transaction)</li>
+                        <li>redelivery of messages in rollbacks up to some configured maximum redelivery count</li>
+                        <li>Optional Queue browser interface for providers that can support it.</li>
+                        <li>Optional .NET Distributed Transaction Support for providers that can support that.</li>
+                      </ul>
+                      <p>A provider implementation based on a pure C# implementation of OpenWire is provided for working with the Apache ActiveMQ broker.  There are other <a href="#nms-providers">provider implementations</a> for working with Stomp, TIBCO EMS, Microsoft Message Queue (MSMQ), AMQP, and Windows Communication Foundation (WCF).</p>
+                      <p>If you are curious you can browse the <a href="https://svn.apache.org/repos/asf/activemq/activemq-dotnet/">source code and tests</a> for the entire project or download an <a href="#nms-providers">NMS Provider</a>.</p>
+                      <ul>
+                        <li><a href="nms-api">API</a></li>
+                        <li><a href="nms-api-downloads">API Downloads</a></li>
+                        <li><a href="#nms-examples">Examples</a></li>
+                        <li><a href="#nms-providers">Providers</a></li>
+                        <li><a href="nms-uri-configuration">URI Configuration</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row project-narative">
+  <div class="col-12">
+    <div class="container nms">
+      <!-- Narative 2 -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card card-orange">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-12 col-md-10">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title text-orange">Providers</h5>
                       <p>An NMS Provider is a .NET Assembly that provides an implementation of the NMS API that provides connectivity with a particular Messaging Service or an implementation of a standard Messaging Protocol. Currently, the following providers are available:</p>
                       <ul>
-                        <li><a href="nmsProviders/apachenmsactivemq">ActiveMQ</a> client which communicates with ActiveMQ using its own native wire protocol and provides many advanced features beyond the standard NMS API.</li>
-                        <li><a href="nmsProviders/apachenmsstomp">STOMP</a> which connects to any STOMP Broker.  Also, when coupled with StompConnect, NMS can be used to communicate with pretty much any existing MOM provider! (Or at least those that support JMS which most MOM providers do).</li>
-                        <li><a href="nmsProviders/apachenmsmsmq">MSMQ</a> is an implementation of NMS using Microsoft's MSMQ API.</li>
-                        <li><a href="nmsProviders/apachenmsems">EMS</a> provider for talking to TIBCO's EMS message broker.  To use this, you will need to following TIBCO's licensing requirements to acquire the TIBCO client assembly DLL.  NMS does not ship with the TIBCO client assembly.</li>
-                        <li><a href="nmsProviders/apachenmswcf">WCF</a> provides support of Windows Communications Framework.</li>
-                        <li><a href="nmsProviders/apachenmsamqp">AMQP</a> is an implementation of NMS using the Apache Qpid Messaging API. AMQP 1.0 protocol support is provided by Apache Qpid Proton.</li>
-                        <li><a href="nmsProviders/apachenmsmqtt">MQTT</a> provider uses the publish-subscribe pattern that is a "light weight" messaging protocol for use on top of the TCP/IP protocol. </li>
-                        <li><a href="nmsProviders/apachenmsxms">XMS</a> provider connects to the IBM WebSphere MQ Series broker.</li>
+                        <li><a href="providers/activemq">ActiveMQ</a> client which communicates with ActiveMQ using its own native wire protocol and provides many <a href="providers/activemq/advanced-features">advanced features</a> beyond the standard NMS API.</li>
+                        <li><a href="providers/stomp">STOMP</a> which connects to any <a href="https://stomp.github.io/implementations.html">STOMP Broker</a>.  Also, when coupled with StompConnect, NMS can be used to communicate with pretty much any existing MOM provider! (Or at least those that support JMS which most MOM providers do).</li>
+                        <li><a href="providers/msmq">MSMQ</a> is an implementation of NMS using Microsoft's MSMQ API.</li>
+                        <li><a href="providers/ems">EMS</a> provider for talking to TIBCO's EMS message broker.  To use this, you will need to following TIBCO's licensing requirements to acquire the TIBCO client assembly DLL.  NMS does not ship with the TIBCO client assembly.</li>
+                        <li><a href="providers/wcf">WCF</a> provides support of Windows Communications Framework.</li>
+                        <li><a href="providers/amqp">AMQP</a> is an implementation of NMS using the <a href="https://qpid.apache.org/components/messaging-api/index.html">Apache Qpid Messaging API</a>. AMQP 1.0 protocol support is provided by <a href="https://qpid.apache.org/proton/index.html">Apache Qpid Proton</a>.</li>
+                        <!--li><a href="providers/mqtt">MQTT</a> provider uses the publish-subscribe pattern that is a "light weight" messaging protocol for use on top of the <a href="https://en.wikipedia.org/wiki/TCP/IP">TCP/IP protocol</a>. </li>
+                        <li><a href="providers/xms">XMS</a> provider connects to the IBM WebSphere MQ Series broker.</li-->
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row project-narative-alt">
+  <div class="col-12">
+    <div class="container nms">
+      <!-- Narative 2 -->
+      <div class="row project-narative-alt">
+        <div class="col-12">
+          <div class="card card-orange project-narative-alt">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-12 col-md-10">
+                  <div class="card">
+                    <div class="card-body project-narative-alt">
+                      <h5 class="card-title text-orange">Building the code</h5>
+                      <p>While there are binary distributions available for all the NMS Providers you sometimes might want to build the code from trunk in order to test out the latest changes or fixes. On Windows you can use Visual Studio to build the code. On Linux or OS X you can use [Mono](http://www.mono-project.com).</p>
+                      <p>The build uses <a href="http://nant.sourceforge.net/">NAnt</a> which both work on .Net and Mono.  You will need to have NAnt 0.91-Alpha2 or later.</p>
+                      <p>For more help see the <a href="building">Building NMS</a> guide.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row project-narative">
+  <div class="col-12">
+    <div class="container nms">
+      <!-- Narative 2 -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card card-orange">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-12 col-md-10">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title text-orange">Alternatives to NMS</h5>
+                      <p>There are currently a few alternatives to using NMS and working with ActiveMQ in .NET applications however the <a href="providers/activemq">NMS ActiveMQ Provider</a> is very feature rich and we recommend it as your starting point for .NET ActiveMQ inter-op.</p>
+                      <ul>
+                        <li>use the <a href="http://stomp.codehaus.org/DotNet">pure C# Stomp client</a> to access ActiveMQ from .Net using a lightweight client.</li>
+                        <li>use the ActiveMQ Java client from C# and .Net using IKVM. <a href="http://dotnetjunkies.com/WebLog/csteen/archive/2004/08/20/22813.aspx">More information</a>.</li>
+                        <li>use the <a href="http://activemq.apache.orgConnectivity/ProtocolsConnectivity/Protocols/Connectivity/Protocols/rest.md">ActiveMQ REST</a> API via HTTP</li>
+                        <li>use the <a href="http://activemq.apache.orgConnectivity/Cross Language ClientsConnectivity/Cross Language Clients/Connectivity/Cross Language Clients/c-integration.md">ActiveMQ C Integration</a> to reuse the C/C++ library.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<a name="nms-examples"></a>
+<div class="row project-narative-alt">
+  <div class="col-12">
+    <div class="container nms">
+      <!-- Narative 2 -->
+      <div class="row project-narative-alt">
+        <div class="col-12">
+          <div class="card card-orange project-narative-alt">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-12 col-md-10">
+                  <div class="card">
+                    <div class="card-body project-narative-alt">
+                      <h5 class="card-title text-orange">Examples</h5>
+                      <p>This is where you will find examples of how to use the NMS API. These examples demonstrate using the NMS API generically and are limited to features exposed directly through the API model. For examples covering more advanced features of a specific NMS Provider, refer to the documentation for that NMS Provider.</p>
+                      <ul>
+                        <li><a href="examples/nms-simple-asynchronous-consumer-example">NMS Simple Asynchronous Consumer Example</a></li>
+                        <li><a href="examples/nms-simple-synchronous-consumer-example">NMS Simple Synchronous Consumer Example</a></li>
                       </ul>
                     </div>
                   </div>
