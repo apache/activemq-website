@@ -1,18 +1,18 @@
 ---
 layout: default_md
-breadcrumb: Download
+title: ActiveMQ 5 Download
+title-class: page-title-activemq5
+type: activemq5
 ---
 
-# ActiveMQ Classic Download
+These are the current releases. For prior releases, please see the [past releases](../../../download-archives) page.
 
-These are the current releases. For prior releases, please see the [Past Releases](/projects/classic/download/past_releases) page.
+#### ActiveMQ 5.15.8 (Released Nov 21, 2018)
 
-## ActiveMQ Classic 5.15.2
+[Documentation](../documentation)
 
-| Release Notes | Documentation |
-| tar.gz    | apache-5.15.2-bin.tar.gz | SHA512 | MD5 | GPG Signature |
-| zip    | apache-5.15.2-bin.tar.zip | SHA512 | MD5 | GPG Signature |
-| source code distribution    | apache-5.15.2-source-release.tar.gz | SHA512 | MD5 | GPG Signature |
+Windows|[apache-activemq-5.15.8-bin.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip.asc)
+Unix/Linux/Cygwin|[apache-activemq-5.15.8-bin.tar.gz](http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz.asc)
+Source Code Distribution:|[activemq-parent-5.15.8-source-release.zip](http://www.apache.org/dyn/closer.cgi?path=/activemq/5.15.8/activemq-parent-5.15.8-source-release.zip)|[SHA512](https://www.apache.org/dist/activemq/5.15.8/activemq-parent-5.15.8-source-release.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/5.15.8/activemq-parent-5.15.8-source-release.zip.asc)
 
-
-The keys file for verifying the release can be obtained here.
+The keys file for verifying the release can be obtained [here](https://www.apache.org/dist/activemq/KEYS)
