@@ -156,7 +156,7 @@ Property Name|Default Value|Description
 useMBeanServer|true|If true then it avoids creating a new MBean server if a MBeanServer has already been created in the JVM
 jmxDomainName|org.apache.activemq|The jmx domain that all objects names will use
 createMBeanServer|true|If we should create the MBeanServer is none is found.
-createConnector|false|Please refer to [Java Management guide](http://docs.oracle.com/javase/6/docs/technotes/guides/management/agent.html) to configure the server for remote management and lock down the endpoint serialisation with an appropriate [jdk.serialFilter](http://openjdk.java.net/jeps/290)
+createConnector|false|Please refer to [Java Management guide](http://docs.oracle.com/javase/6/docs/technotes/guides/management/agent.html) to configure the server for remote management and lock down the endpoint serialisation with an appropriate [jdk.serialFilter](http://openjdk.java.net/jeps/290)<br><br>Note: if set to true:<br>*    lock down the endpoint serialisation with an appropriate jdk.serialFilter<br>*    configure rmiServerPort and connectorHost to lock down the RMI server interface binding
 connectorPort|1099|The port that the JMX connector will use
 connectorHost|localhost|The host that the JMX connector and RMI server (if rmiServerPort>0) will use
 rmiServerPort|0|The RMI server port, handy if port usage needs to be restricted behind a firewall
