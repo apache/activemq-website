@@ -24,9 +24,9 @@ Download Here
 
 |Description|Download Link|PGP Signature file of download|
 |---|---|---|---|
-|Source code for Windows|[activemq-cpp-library-3.9.1.src.zip](http://www.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.zip)|[activemq-cpp-library-3.9.1-src.zip.asc](http://www.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.zip.asc)|
-|Source code for Unix (gzipped)|[activemq-cpp-library-3.9.1-src.tar.gz](http://www.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.tar.gz)|[activemq-cpp-library-3.9.1-src.tar.gz.asc](http://www.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.tar.gz.asc)|
-|Source code for Unix (bz2)|[activemq-cpp-library-3.9.1-src.tar.bz2](http://www.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.tar.bz2)|[activemq-cpp-library-3.9.1.src.tar.bz2.asc](http://www.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.tar.bz2.asc)|
+|Source code for Windows|[activemq-cpp-library-3.9.1.src.zip](http://archive.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.zip)|[activemq-cpp-library-3.9.1-src.zip.asc](http://archive.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.zip.asc)|
+|Source code for Unix (gzipped)|[activemq-cpp-library-3.9.1-src.tar.gz](http://archive.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.tar.gz)|[activemq-cpp-library-3.9.1-src.tar.gz.asc](http://archive.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.tar.gz.asc)|
+|Source code for Unix (bz2)|[activemq-cpp-library-3.9.1-src.tar.bz2](http://archive.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.tar.bz2)|[activemq-cpp-library-3.9.1.src.tar.bz2.asc](http://archive.apache.org/dist/activemq/activemq-cpp/3.9.1/activemq-cpp-library-3.9.1-src.tar.bz2.asc)|
 
 Git Tag Checkout
 ----------------
