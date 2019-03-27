@@ -31,7 +31,7 @@ type: activemq5
 *   [Security Advisories](security-advisories)
 *   [Sponsorship](sponsorship)
 *   [Support](support)
-*   [Team](team)
+*   [Team](https://people.apache.org/phonebook.html?pmc=activemq)
 *   [Tips for getting help](tips-for-getting-help)
 *   [Users](users)
 
