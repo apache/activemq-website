@@ -17,8 +17,8 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 
 |Description|Download Link|PGP Signature File|Version|
 |---|---|---|---|
-|Apache.NMS.Stomp Source code|[Apache.NMS.Stomp-1.2.0-src.zip](http://www.apache.org/dyn/closer.cgi/activemq/apache-nms/1.2.0/Apache.NMS.Stomp-1.2.0-src.zip)|[Apache.NMS.Stomp-1.2.0-src.zip.asc](http://www.apache.org/dyn/closer.cgi/activemq/apache-nms/1.2.0/Apache.NMS.Stomp-1.2.0-src.zip.asc)|1.2.0.1858|
-|Apache.NMS.Stomp Binary Assemblies|[Apache.NMS.Stomp-1.2.0-bin.zip](http://www.apache.org/dyn/closer.cgi/activemq/apache-nms/1.2.0/Apache.NMS.Stomp-1.2.0-bin.zip)|[Apache.NMS.Stomp-1.2.0-bin.zip.asc](http://www.apache.org/dyn/closer.cgi/activemq/apache-nms/1.2.0/Apache.NMS.Stomp-1.2.0-bin.zip.asc)|1.2.0.1858|
+|Apache.NMS.Stomp Source code|[Apache.NMS.Stomp-1.2.0-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.2.0/Apache.NMS.Stomp-1.2.0-src.zip)|[Apache.NMS.Stomp-1.2.0-src.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.2.0/Apache.NMS.Stomp-1.2.0-src.zip.asc)|1.2.0.1858|
+|Apache.NMS.Stomp Binary Assemblies|[Apache.NMS.Stomp-1.2.0-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.2.0/Apache.NMS.Stomp-1.2.0-bin.zip)|[Apache.NMS.Stomp-1.2.0-bin.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.2.0/Apache.NMS.Stomp-1.2.0-bin.zip.asc)|1.2.0.1858|
 
 **NOTE:** Compatible with ActiveMQ Broker versions in the 4.X and 5.X family.
 

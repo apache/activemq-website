@@ -31,8 +31,8 @@ Download Here
 
 Description|Download Link|PGP Signature File|Version
 ---|---|---|---
-Apache.NMS.ActiveMQ Source code|[Apache.NMS.ActiveMQ-1.6.1-src.zip](http://www.apache.org/dyn/closer.cgi/activemq/apache-nms/1.6.0/Apache.NMS.ActiveMQ-1.6.1-src.zip)|[Apache.NMS.ActiveMQ-1.6.1-src.zip.asc](http://www.apache.org/dist/activemq/apache-nms/1.6.0/Apache.NMS.ActiveMQ-1.6.1-src.zip.asc)|1.6.0.3208
-Apache.NMS.ActiveMQ Binary Assemblies|[Apache.NMS.ActiveMQ-1.6.1-bin.zip](http://www.apache.org/dyn/closer.cgi/activemq/apache-nms/1.6.0/Apache.NMS.ActiveMQ-1.6.1-bin.zip)|[Apache.NMS.ActiveMQ-1.6.1-bin.zip.asc](http://www.apache.org/dist/activemq/apache-nms/1.6.0/Apache.NMS.ActiveMQ-1.6.1-bin.zip.asc)|1.6.0.3208
+Apache.NMS.ActiveMQ Source code|[Apache.NMS.ActiveMQ-1.6.1-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.6.0/Apache.NMS.ActiveMQ-1.6.1-src.zip)|[Apache.NMS.ActiveMQ-1.6.1-src.zip.asc](http://www.apache.org/dist/activemq/apache-nms/1.6.0/Apache.NMS.ActiveMQ-1.6.1-src.zip.asc)|1.6.0.3208
+Apache.NMS.ActiveMQ Binary Assemblies|[Apache.NMS.ActiveMQ-1.6.1-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.6.0/Apache.NMS.ActiveMQ-1.6.1-bin.zip)|[Apache.NMS.ActiveMQ-1.6.1-bin.zip.asc](http://www.apache.org/dist/activemq/apache-nms/1.6.0/Apache.NMS.ActiveMQ-1.6.1-bin.zip.asc)|1.6.0.3208
 
 SVN Tag Checkout
 ----------------
