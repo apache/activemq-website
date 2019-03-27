@@ -11,6 +11,16 @@ The keys file for verifying the release can be obtained [here](https://www.apach
 
 For any releases not shown here, check the [archive](https://archive.apache.org/dist/activemq/activemq-artemis/).
 
+#### ActiveMQ Artemis 2.6.4
+
+[Release Notes](release-notes-2.6.4) \| [Git Report](commit-report-2.6.4) \| [Documentation](../documentation/2.6.0)
+
+tar.gz:|[apache-artemis-2.6.4-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/2.6.4/apache-artemis-2.6.4-bin.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.6.4/apache-artemis-2.6.4-bin.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.6.4/apache-artemis-2.6.4-bin.tar.gz.asc)
+ZIP:|[apache-artemis-2.6.4-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/2.6.4/apache-artemis-2.6.4-bin.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.6.4/apache-artemis-2.6.4-bin.zip.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.6.4/apache-artemis-2.6.4-bin.zip.asc)
+Source Code Distribution:|[apache-artemis-2.6.4-source-release.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/2.6.4/apache-artemis-2.6.4-source-release.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.6.4/apache-artemis-2.6.4-source-release.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.6.4/apache-artemis-2.6.4-source-release.tar.gz.asc)
+
+<br/>
+
 #### ActiveMQ Artemis 2.6.3
 
 [Release Notes](release-notes-2.6.3) \| [Git Report](commit-report-2.6.3) \| [Documentation](../documentation/2.6.0)
