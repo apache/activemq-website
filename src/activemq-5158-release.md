@@ -1,23 +1,25 @@
 ---
 layout: default_md
-title: ActiveMQ 5.15.2 Release 
+title: ActiveMQ 5.15.8 Release 
 title-class: page-title-activemq5
 type: activemq5
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ 5.15.2 Release](activemq-5152-release)
+[Overview](overview) > [Download](download) > [ActiveMQ 5.15.8 Release](activemq-5158-release)
 
-ActiveMQ 5.15.2 Release
+> This release enables ActiveMQ client TLS hostname validation by default which can cause a client connection failure for server certificates that do not match the server hostname. Please refer to SSL Transport Reference for configuration and [AMQ-7047](https://issues.apache.org/jira/browse/AMQ-7047?src=confmacro) for more information.
+
+ActiveMQ 5.15.8 Release
 -----------------------
 
-Apache ActiveMQ 5.15.2 includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12341669) and bug fixes.
+Apache ActiveMQ 5.15.8 includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12344359) and bug fixes.
 
 ### Getting the Binary Distributions
 
 Description|Download Link|_Verify_
 ---|---|---
-Windows Distribution|[apache-activemq-5.15.2-bin.zip](https://archive.apache.org/dist/activemq/5.15.2/apache-activemq-5.15.2-bin.zip)|[ASC](https://archive.apache.org/dist/activemq/5.15.2/apache-activemq-5.15.2-bin.zip.asc), [MD5](https://archive.apache.org/dist/activemq/5.15.2/apache-activemq-5.15.2-bin.zip.md5), [SHA512](https://archive.apache.org/dist/activemq/5.15.2/apache-activemq-5.15.2-bin.zip.sha512)
-Unix/Linux/Cygwin Distribution|[apache-activemq-5.15.2-bin.tar.gz](https://archive.apache.org/dist/activemq/5.15.2/apache-activemq-5.15.2-bin.tar.gz)|[ASC](https://archive.apache.org/dist/activemq/5.15.2/apache-activemq-5.15.2-bin.tar.gz.asc), [MD5](https://archive.apache.org/dist/activemq/5.15.2/apache-activemq-5.15.2-bin.tar.gz.md5), [SHA512](https://archive.apache.org/dist/activemq/5.15.2/apache-activemq-5.15.2-bin.tar.gz.sha512)
+Windows Distribution|[apache-activemq-5.15.8-bin.zip](http://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip)|[ASC](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip.asc), [SHA512](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip.sha512)
+Unix/Linux/Cygwin Distribution|[apache-activemq-5.15.8-bin.tar.gz](http://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz)|[ASC](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz.asc), [SHA512](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz.sha512)
 
 Verify the Integrity of Downloads
 ---------------------------------
@@ -58,7 +60,7 @@ To use this release in your maven project, the simplest dependency that you can 
 <dependency>
   <groupId>org.apache.activemq</groupId>
   <artifactId>activemq-all</artifactId>
-  <version>5.15.2</version>
+  <version>5.15.8</version>
 </dependency>
 ```
 If you need more fine grained control of your dependencies (activemq-all is an uber jar) pick and choose from the various components activemq-client, activemq-broker, activemq-xx-store etc.
@@ -70,11 +72,11 @@ Getting the Source Code
 
 Description|Download Link|Verify
 ---|---|---
-Source Release|[activemq-parent-5.15.2-source-release.zip](http://www.apache.org/dyn/closer.cgi?path=/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip)|[ASC](https://www.apache.org/dist/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip.asc), [MD5](https://www.apache.org/dist/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip.md5), [SHA512](https://www.apache.org/dist/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip.sha512)
+Source Release|[activemq-parent-5.15.8-source-release.zip](http://www.apache.org/dyn/closer.cgi?path=/activemq/5.15.8/activemq-parent-5.15.8-source-release.zip)|[ASC](https://www.apache.org/dist/activemq/5.15.8/activemq-parent-5.15.8-source-release.zip.asc), [MD5](https://www.apache.org/dist/activemq/5.15.8/activemq-parent-5.15.8-source-release.zip.md5), [SHA512](https://www.apache.org/dist/activemq/5.15.8/activemq-parent-5.15.8-source-release.zip.sha512)
 
 ### Git Tag
 
-[https://git-wip-us.apache.org/repos/asf?p=activemq.git;a=tag;h=refs/tags/activemq-5.15.2](https://git-wip-us.apache.org/repos/asf?p=activemq.git;a=tag;h=refs/tags/activemq-5.15.2)
+[https://git-wip-us.apache.org/repos/asf?p=activemq.git;a=tag;h=refs/tags/activemq-5.15.8](https://git-wip-us.apache.org/repos/asf?p=activemq.git;a=tag;h=refs/tags/activemq-5.15.8)
 
 Change Log
 ----------

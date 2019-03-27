@@ -79,5 +79,12 @@ All time Apache ActiveMQ releases notes:
 *   [ActiveMQ 5.15.0 Release](activemq-5150-release)
 *   [ActiveMQ 5.15.1 Release](activemq-5151-release)
 *   [ActiveMQ 5.15.2 Release](activemq-5152-release)
+*   [ActiveMQ 5.15.3 Release](activemq-5153-release)
+*   [ActiveMQ 5.15.4 Release](activemq-5154-release)
+*   [ActiveMQ 5.15.5 Release](activemq-5155-release)
+*   [ActiveMQ 5.15.6 Release](activemq-5156-release)
+*   [ActiveMQ 5.15.7 Release](activemq-5157-release)
+*   [ActiveMQ 5.15.8 Release](activemq-5158-release)
+*   [ActiveMQ 5.15.9 Release](activemq-5159-release)
 *   [In Progress](in-progress)
 
