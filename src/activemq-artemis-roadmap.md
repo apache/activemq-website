@@ -36,6 +36,11 @@ This section should be used to identify all the ActiveMQ 5.x features that Artem
 
 *   Support full-duplex broker-to-broker cluster connections [ARTEMIS-838](https://issues.apache.org/jira/browse/ARTEMIS-838)
 
+### ActiveMQ 5.x Client Compatibility
+
+*    Full support of Openwire (TODO: specifically, which versions)
+*    PooledConnectionFactory
+
 ### Destination Interceptors
 
 *   Virtual Topic support [ARTEMIS-550](https://issues.apache.org/jira/browse/ARTEMIS-550)
