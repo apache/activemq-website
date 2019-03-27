@@ -9,7 +9,7 @@ type: activemq5
 
 
 We fully support Spring for configuration of the JMS client side as well as for configuring the JMS Message Broker.  
-There is a great [article](http://codedependents.com/2009/10/16/efficient-lightweight-jms-with-spring-and-activemq/) on using Spring with ActiveMQ - I'd recommend reading it first.
+There is a great [article](https://medium.com/@bdarfler/efficient-lightweight-jms-with-spring-and-activemq-51ff6a135946) on using Spring with ActiveMQ - I'd recommend reading it first.
 
 Configuring the JMS client
 --------------------------

@@ -64,10 +64,10 @@ This page captures resources and articles outside the ActiveMQ project which may
 
 *   [Spring JMS Examples with ActiveMQ](https://github.com/bsnyder/spring-jms-examples) by [Bruce Snyder](https://bsnyderblog.blogspot.com/) (June 2011)
 *   [Tuning JMS Message Consumption In Spring](https://bsnyderblog.blogspot.com/2010/05/tuning-jms-message-consumption-in.html) by [Bruce Snyder](https://bsnyderblog.blogspot.com/) (May 2010)
-*   [Synchronous Request Response with ActiveMQ and Spring](http://codedependents.com/2010/03/04/synchronous-request-response-with-activemq-and-spring/) _by [CodeDependents](http://codedependents.com/)_ (March 2010)
+*   [Synchronous Request Response with ActiveMQ and Spring](https://medium.com/@bdarfler/synchronous-request-response-with-activemq-and-spring-21359a438a86) _by [CodeDependents](http://codedependents.com/)_ (March 2010)
 *   [Using Spring to Receive JMS Messages](https://bsnyderblog.blogspot.com/2010/02/using-spring-to-receive-jms-messages.html) by [Bruce Snyder](https://bsnyderblog.blogspot.com/) (February 2010)
 *   [Using Spring to Send JMS Messages](https://bsnyderblog.blogspot.com/2010/02/using-spring-jmstemplate-to-send-jms.md) by [Bruce Snyder](https://bsnyderblog.blogspot.com/) (February 2010)
-*   [Efficient Lightweight JMS with Spring and ActiveMQ](http://codedependents.com/2009/10/16/efficient-lightweight-jms-with-spring-and-activemq/) _by [CodeDependents](http://codedependents.com/)_ (Octover 2009)
+*   [Efficient Lightweight JMS with Spring and ActiveMQ](https://medium.com/@bdarfler/efficient-lightweight-jms-with-spring-and-activemq-51ff6a135946) _by [CodeDependents](http://codedependents.com/)_ (Octover 2009)
 *   [ActiveMQ Message Consumer in Spring](http://javaandjava.blogspot.com/2008/10/activemq-message-consumer-in-spring.html) _by [Saveen Kumar](http://javaandjava.blogspot.com/)_ (October 2008)
 *   [Message-Driven Architectures at The Spring Experience](http://www.springframework.org/node/527) _by Keith Donald_ (September 2007)
 
