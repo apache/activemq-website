@@ -58,6 +58,21 @@ local|false|when true, don't fan out messages that were received over a network
 concurrentSend|false|when true, use an executor to fanout such that sends occur in parallel. This allows the journal to batch writes which will reduce disk io (5.12)
 transactedSend|false|when true, use a transaction for fanout sends such that there is a single disk sync. A local broker transaction will be created if there is no client transaction (5.13)
 dropOnResourceLimit|false|when true, ignore any ResourceAllocationException thrown during fanout (see: sendFailIfNoSpace policy entry) (5.16)
+setOriginalDestination|true|when true, the destination on the forwarded message is set to the consumer queue and the originalDestination message property tracks the virtual topic (5.16)
+
+VirtualSelectorCacheBrokerPlugin
+--------------------------------
+
+When selectorAware=true, only active consumers are condidered for selector matching. If consumers disconnect and reconnect they will miss messages. The intent of selectorAware=true is to not have messages build up. The virtualSelectorCacheBrokerPlugin provides a cache that tracks the selectors associated with a destination by a consumers such that they can apply in the absense of that consumer. In this way the just the selected messages build up. The existing set of selectors can be persisted such that it can be recovered on restart. the plugin is applied in the normal way to the plugins section.
+Code Block
+
+```
+<plugins>
+ <virtualSelectorCacheBrokerPlugin persistFile="<some path>/selectorcache.data" />
+</plugins>
+```
+
+Note: the persistFile option uses java serialisation that should be locked down with an appropriate jdk.serialFilter that allows ConcurrentHashMap
 
 Composite Destinations
 ----------------------
@@ -114,9 +129,13 @@ The following example shows how a message sent to the virtual destination **MY.Q
 Avoiding Duplicate Message in a Network of Brokers
 --------------------------------------------------
 
-You have to make sure that the messages sent to the **Consumer.*.VirtualTopic.>** destination are not forwarded when you're using both queue-based and non-queue based subscribers to the virtual topic (that is, if you have normal topic subscribers to the virtual topic). If you use Virtual Topics in a network of brokers, it is likely you will get duplicate messages if you use the default network configuration. This is because a network node will not only forward message sent to the virtual topic, but also the associated physical queues. To fix this, you should disable forwarding messages on the associated physical queues.
+**TLDR:** bridge consumer queues or virtual topics, not both.
 
-Here is an example of how to do that:
+Typically you would network consumer queues. In this case it is important to not bridge any normal topic consumer on the virtual topic because any forwarded message would again get fanned out to consumer queues on the networked broker, leading to duplicates.
+
+It is also possible to bridge the virtual topic in which case it is necessary exclude the consumer queues from any network connector configuration. 
+
+Here is an example of how to exclude virtual topic consumer queues:
 ```
 <networkConnectors> <networkConnector uri="static://([tcp://localhost:61617](tcp://localhost:61617))">
  <excludedDestinations> 
