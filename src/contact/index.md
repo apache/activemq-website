@@ -25,6 +25,8 @@ Slack|https://the-asf.slack.com|activemq|
 
 ActiveMQ Artemis JIRA|[https://issues.apache.org/jira/browse/ARTEMIS](https://issues.apache.org/jira/browse/ARTEMIS)
 ActiveMQ 5 JIRA|[https://issues.apache.org/jira/browse/AMQ](https://issues.apache.org/jira/browse/AMQ)
+ActiveMQ CMS JIRA|[https://issues.apache.org/jira/browse/AMQCPP](https://issues.apache.org/jira/browse/AMQCPP)
+ActiveMQ NMS JIRA|[https://issues.apache.org/jira/browse/AMQNET](https://issues.apache.org/jira/browse/AMQNET)
 
 <br/>
 
