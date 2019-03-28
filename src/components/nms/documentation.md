@@ -43,6 +43,7 @@ An NMS Provider is a .NET Assembly that provides an implementation of the NMS AP
 *   [MSMQ](providers/msmq) is an implementation of NMS using Microsoft's MSMQ API.
 *   [EMS](providers/ems) provider for talking to TIBCO's EMS message broker. To use this, you will need to following TIBCO's licensing requirements to acquire the TIBCO client assembly DLL. NMS does not ship with the TIBCO client assembly.
 *   [WCF](providers/wcf) provides support of Windows Communications Framework.
+*   [AMQP](providers/amqp) provides support for AMQP 1.0.
 
 ---
 
