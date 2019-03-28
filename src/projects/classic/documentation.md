@@ -6,14 +6,13 @@ type: activemq5
 ---
 
 *   [Overview](../../overview)
-    *   [Index](../../index)
     *   [New Features](../../new-features)
     *   [Getting Started](../../getting-started)
     *   [FAQ](../../faq)
     *   [Articles](../../articles)
     *   [Books](../../books)
-    *   [Download](../../download)
     *   [License](http://www.apache.org/licenses/)
+    *   [Download](download)
 *   [Community](../../community)
 *   [Features](../../features)
 *   [Connectivity](../../connectivity)
