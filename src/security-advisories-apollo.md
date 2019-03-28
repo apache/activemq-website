@@ -5,7 +5,7 @@ title-class: page-title-activemq5
 type: activemq5
 ---
 
-**NOTE: ActiveMQ Apollo is deprecated and no longer maintained. We strongly recommend you use [ActiveMQ 5.x](projects/classic) or [ActiveMQ Artemis](projects/artemis) instead.**
+**NOTE: ActiveMQ Apollo is deprecated and no longer maintained. We strongly recommend you use [ActiveMQ 5.x](components/classic) or [ActiveMQ Artemis](components/artemis) instead.**
 
 Details of security problems fixed in released versions of Apache ActiveMQ Apollo are detailed below.
 

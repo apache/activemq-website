@@ -8,5 +8,5 @@ type: activemq5
 [Features](features) > [New Features](new-features) > [New Features in 6.0](new-features-in-60)
 
 
-Once [Artemis](projects/artemis) reaches a sufficient level of feature parity with the 5.x code-base it will become ActiveMQ 6. Initial [migration documentation](projects/artemis/migration) is available.
+Once [Artemis](components/artemis) reaches a sufficient level of feature parity with the 5.x code-base it will become ActiveMQ 6. Initial [migration documentation](components/artemis/migration) is available.
 

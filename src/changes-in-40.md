@@ -16,7 +16,7 @@ type: activemq5
 *   New [JMX Management](how-can-i-monitor-activemq) and monitoring capabilities. You can now see statistics for each broker, destination, connector and connection!
 *   Improved [Security](security) plugin which provides JAAS support for authentication along with a pluggable strategy for authorization together with a default XML based implementation.
 *   A new [OpenWire C Client](openwire-c-client) is now available. This client talks the same wire protocol that the standard java client uses so every messaging broker feature available to the java client is available to the c client.
-*   An experimental [OpenWire dotNet](projects/nms) is available, written in pure C# along with a JMS-like API for working on the .Net platform with ActiveMQ
+*   An experimental [OpenWire dotNet](components/nms) is available, written in pure C# along with a JMS-like API for working on the .Net platform with ActiveMQ
 *   Queues can now be loaded up with persistent messages without locking up the broker. Persistent messages are now swapped out of memory when no consumer needs it soon.
 *   A new [Consumer Priority](consumer-priority) feature allows you to build location affinity by assignin a priority to consumers. The broker can then dispatch messages to higher priority consumers before dispatching to lower priority consumers.
 *   A configurable per [Consumer Dispatch Async](consumer-dispatch-async) flag which allows you to configure how messages are sent by the broker to a consumer. This controls if the broker uses [SEDA](seda) or [STP](#) style dispaching.
