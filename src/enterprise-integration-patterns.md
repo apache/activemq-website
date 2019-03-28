@@ -1,4 +1,4 @@
-xmpp---
+---
 layout: default_md
 title: Enterprise Integration Patterns 
 title-class: page-title-activemq5
