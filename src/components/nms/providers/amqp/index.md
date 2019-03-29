@@ -6,7 +6,7 @@ type: nms
 ---
 
 ### Overview
-The goal of this project is to combine the [.NET Message Service API](http://activemq.apache.org/nms/) (NMS) with
+The goal of this project is to combine the [.NET Message Service API](../..) (NMS) with
 the [Advanced Message Queuing Protocol (AMQP)](https://www.amqp.org/) 1.0 standard wireline protocol. Historically, the Apache community created the NMS API which provided a vendor agnostic .NET interface to a variety of messaging systems. 
 
 The NMS API gives the flexibility to write .NET applications in C#, VB or any other .NET language, all while using a single API to connect to any number of messaging providers. The Advanced Message Queuing Protocol (AMQP) is an open and standardized internet protocol for reliably passing messages between applications or organizations.
