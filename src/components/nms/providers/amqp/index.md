@@ -5,6 +5,8 @@ title-class: page-title-nms
 type: nms
 ---
 
+**NOTE:** *This component is currently a work in progress. This is info and developer docs, user docs such as downloads etc will be added upon release.*
+
 ### Overview
 The goal of this project is to combine the [.NET Message Service API](../..) (NMS) with
 the [Advanced Message Queuing Protocol (AMQP)](https://www.amqp.org/) 1.0 standard wireline protocol. Historically, the Apache community created the NMS API which provided a vendor agnostic .NET interface to a variety of messaging systems. 
@@ -18,8 +20,6 @@ The key to enabling vendor independence and mass adoption of technology is to co
  - __No Migration Risk:__ Since AMQP 1.0 is a wireline standard, you won't run into the problems that used to happen when switching between implementations.
  - __Innovation:__ Competition is a key component of technology innovation. Directly competitive messaging implementations, with seamless pluggability, forces vendors to innovate and differentiate.
 
-This component is currently a work in progress, once released releases/downloads will linked to, please see below.
-
 ### Contributing
 If you are a .NET developer that doesn't want to be locked into a messaging implementation then get engaged with this project. Here you will find the open source code base and please provide comments and make your own enhancements. 
 
@@ -27,7 +27,7 @@ Grab the Source from git
 https://github.com/apache/activemq-nms-amqp
 
 #### Overall Architecture
-Apache-NMS-AMQP should bridge the familiar NMS concepts to AMQP protocol concepts as described in the document [amqp-bindmap-jms-v1.0-wd07.pdf](https://www.oasis-open.org/committees/download.php/59981/amqp-bindmap-jms-v1.0-wd07.pdf).
+Apache-NMS-AMQP should bridge the familiar NMS concepts to AMQP protocol concepts as described in the document [amqp-bindmap-jms-v1.0-wd09.pdf](https://www.oasis-open.org/committees/download.php/60574/amqp-bindmap-jms-v1.0-wd09.pdf).
 So in general most of the top level classes that implement the Apache.NMS interface _Connection, Session, MessageProducer,_ etc  create, manage, and destroy the amqpnetlite equivalent object _Connection, Session, Link,_ etc.
 
 #### AMQP1.0 Protocol Engine AmqpNetLite
