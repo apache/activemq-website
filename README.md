@@ -1,4 +1,4 @@
-Apache ActiveMQ Webiste
+Apache ActiveMQ Website
 =======================
 
 This is the repository for the Apache ActiveMQ website, hosted at [activemq.apache.org](http://activemq.apache.org/).
@@ -15,7 +15,7 @@ files are taken from the `asf-site` branch and pushed to the live server.
 To Build the site
 -----------------
 
-Before building the site you will need to install [Jekyll](https://jekyllrb.com/).  The Jekyll site has [installation isntructions](https://jekyllrb.com/docs/installation/) shuold help get you started.
+Before building the site you will need to install [Jekyll](https://jekyllrb.com/).  The Jekyll site has [installation instructions](https://jekyllrb.com/docs/installation/) shuold help get you started.
 
 3. run the build script ./build.sh
 
