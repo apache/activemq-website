@@ -13,6 +13,7 @@ type: activemq5
     *   [Books](../../books)
     *   [License](http://www.apache.org/licenses/)
     *   [Download](download)
+    *   [Latest Javadoc](../../maven/apidocs/)
 *   [Community](../../community)
 *   [Features](../../features)
 *   [Connectivity](../../connectivity)
