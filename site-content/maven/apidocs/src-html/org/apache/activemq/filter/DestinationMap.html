@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.filter;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.util.Comparator;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.util.HashSet;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.util.Iterator;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.util.List;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.util.Set;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.util.SortedSet;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import java.util.TreeSet;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import java.util.stream.Collectors;<a name="line.26"></a>
+<span class="sourceLineNo">027</span><a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.apache.activemq.command.ActiveMQDestination;<a name="line.28"></a>
+<span class="sourceLineNo">029</span><a name="line.29"></a>
+<span class="sourceLineNo">030</span>/**<a name="line.30"></a>
+<span class="sourceLineNo">031</span> * A Map-like data structure allowing values to be indexed by<a name="line.31"></a>
+<span class="sourceLineNo">032</span> * {@link ActiveMQDestination} and retrieved by destination - supporting both *<a name="line.32"></a>
+<span class="sourceLineNo">033</span> * and &amp;gt; style of wildcard as well as composite destinations. &lt;br&gt;<a name="line.33"></a>
+<span class="sourceLineNo">034</span> * This class assumes that the index changes rarely but that fast lookup into<a name="line.34"></a>
+<span class="sourceLineNo">035</span> * the index is required. So this class maintains a pre-calculated index for<a name="line.35"></a>
+<span class="sourceLineNo">036</span> * destination steps. So looking up the values for "TEST.*" or "*.TEST" will be<a name="line.36"></a>
+<span class="sourceLineNo">037</span> * pretty fast. &lt;br&gt;<a name="line.37"></a>
+<span class="sourceLineNo">038</span> * Looking up of a value could return a single value or a List of matching<a name="line.38"></a>
+<span class="sourceLineNo">039</span> * values if a wildcard or composite destination is used.<a name="line.39"></a>
+<span class="sourceLineNo">040</span> */<a name="line.40"></a>
+<span class="sourceLineNo">041</span>public class DestinationMap {<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    protected static final String ANY_DESCENDENT = DestinationFilter.ANY_DESCENDENT;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    protected static final String ANY_CHILD = DestinationFilter.ANY_CHILD;<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>    private DestinationMapNode queueRootNode = new DestinationMapNode(null);<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    private DestinationMapNode tempQueueRootNode = new DestinationMapNode(null);<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    private DestinationMapNode topicRootNode = new DestinationMapNode(null);<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    private DestinationMapNode tempTopicRootNode = new DestinationMapNode(null);<a name="line.48"></a>
+<span class="sourceLineNo">049</span><a name="line.49"></a>
+<span class="sourceLineNo">050</span><a name="line.50"></a>
+<span class="sourceLineNo">051</span>    /**<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     * Looks up the value(s) matching the given Destination key. For simple<a name="line.52"></a>
+<span class="sourceLineNo">053</span>     * destinations this is typically a List of one single value, for wildcards<a name="line.53"></a>
+<span class="sourceLineNo">054</span>     * or composite destinations this will typically be a List of matching<a name="line.54"></a>
+<span class="sourceLineNo">055</span>     * values.<a name="line.55"></a>
+<span class="sourceLineNo">056</span>     *<a name="line.56"></a>
+<span class="sourceLineNo">057</span>     * @param key the destination to lookup<a name="line.57"></a>
+<span class="sourceLineNo">058</span>     * @return a List of matching values or an empty list if there are no<a name="line.58"></a>
+<span class="sourceLineNo">059</span>     *         matching values.<a name="line.59"></a>
+<span class="sourceLineNo">060</span>     */<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    @SuppressWarnings({"rawtypes", "unchecked"})<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    public Set get(ActiveMQDestination key) {<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        synchronized (this) {<a name="line.63"></a>
+<span class="sourceLineNo">064</span>            return unsynchronizedGet(key);<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        }<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>    @SuppressWarnings({"rawtypes", "unchecked"})<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    public Set unsynchronizedGet(ActiveMQDestination key) {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        if (key.isComposite()) {<a name="line.70"></a>
+<span class="sourceLineNo">071</span>            ActiveMQDestination[] destinations = key.getCompositeDestinations();<a name="line.71"></a>
+<span class="sourceLineNo">072</span>            Set answer = new HashSet(destinations.length);<a name="line.72"></a>
+<span class="sourceLineNo">073</span>            for (int i = 0; i &lt; destinations.length; i++) {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                ActiveMQDestination childDestination = destinations[i];<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                Object value = unsynchronizedGet(childDestination);<a name="line.75"></a>
+<span class="sourceLineNo">076</span>                if (value instanceof Set) {<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                    answer.addAll((Set) value);<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                } else if (value != null) {<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                    answer.add(value);<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                }<a name="line.80"></a>
+<span class="sourceLineNo">081</span>            }<a name="line.81"></a>
+<span class="sourceLineNo">082</span>            return answer;<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        }<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        return findWildcardMatches(key);<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    }<a name="line.85"></a>
+<span class="sourceLineNo">086</span><a name="line.86"></a>
+<span class="sourceLineNo">087</span>    public void put(ActiveMQDestination key, Object value) {<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        synchronized (this) {<a name="line.88"></a>
+<span class="sourceLineNo">089</span>            unsynchronizedPut(key, value);<a name="line.89"></a>
+<span class="sourceLineNo">090</span>        }<a name="line.90"></a>
+<span class="sourceLineNo">091</span>    }<a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span>    public void unsynchronizedPut(ActiveMQDestination key, Object value) {<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        if (key.isComposite()) {<a name="line.94"></a>
+<span class="sourceLineNo">095</span>            ActiveMQDestination[] destinations = key.getCompositeDestinations();<a name="line.95"></a>
+<span class="sourceLineNo">096</span>            for (int i = 0; i &lt; destinations.length; i++) {<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                ActiveMQDestination childDestination = destinations[i];<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                put(childDestination, value);<a name="line.98"></a>
+<span class="sourceLineNo">099</span>            }<a name="line.99"></a>
+<span class="sourceLineNo">100</span>            return;<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        }<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        String[] paths = key.getDestinationPaths();<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        getRootNode(key).add(paths, 0, value);<a name="line.103"></a>
+<span class="sourceLineNo">104</span>    }<a name="line.104"></a>
+<span class="sourceLineNo">105</span><a name="line.105"></a>
+<span class="sourceLineNo">106</span><a name="line.106"></a>
+<span class="sourceLineNo">107</span>    /**<a name="line.107"></a>
+<span class="sourceLineNo">108</span>     * Removes the value from the associated destination<a name="line.108"></a>
+<span class="sourceLineNo">109</span>     */<a name="line.109"></a>
+<span class="sourceLineNo">110</span>    public void remove(ActiveMQDestination key, Object value) {<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        synchronized (this) {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>            unsynchronizedRemove(key, value);<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        }<a name="line.113"></a>
+<span class="sourceLineNo">114</span>    }<a name="line.114"></a>
+<span class="sourceLineNo">115</span><a name="line.115"></a>
+<span class="sourceLineNo">116</span>    public void unsynchronizedRemove(ActiveMQDestination key, Object value) {<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        if (key.isComposite()) {<a name="line.117"></a>
+<span class="sourceLineNo">118</span>            ActiveMQDestination[] destinations = key.getCompositeDestinations();<a name="line.118"></a>
+<span class="sourceLineNo">119</span>            for (int i = 0; i &lt; destinations.length; i++) {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                ActiveMQDestination childDestination = destinations[i];<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                remove(childDestination, value);<a name="line.121"></a>
+<span class="sourceLineNo">122</span>            }<a name="line.122"></a>
+<span class="sourceLineNo">123</span>            return;<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        }<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        String[] paths = key.getDestinationPaths();<a name="line.125"></a>
+<span class="sourceLineNo">126</span>        getRootNode(key).remove(paths, 0, value);<a name="line.126"></a>
+<span class="sourceLineNo">127</span><a name="line.127"></a>
+<span class="sourceLineNo">128</span>    }<a name="line.128"></a>
+<span class="sourceLineNo">129</span><a name="line.129"></a>
+<span class="sourceLineNo">130</span>    public int getTopicRootChildCount() {<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        return topicRootNode.getChildCount();<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    }<a name="line.132"></a>
+<span class="sourceLineNo">133</span><a name="line.133"></a>
+<span class="sourceLineNo">134</span>    public int getQueueRootChildCount() {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>        return queueRootNode.getChildCount();<a name="line.135"></a>
+<span class="sourceLineNo">136</span>    }<a name="line.136"></a>
+<span class="sourceLineNo">137</span><a name="line.137"></a>
+<span class="sourceLineNo">138</span>    public DestinationMapNode getQueueRootNode() {<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        return queueRootNode;<a name="line.139"></a>
+<span class="sourceLineNo">140</span>    }<a name="line.140"></a>
+<span class="sourceLineNo">141</span><a name="line.141"></a>
+<span class="sourceLineNo">142</span>    public DestinationMapNode getTopicRootNode() {<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        return topicRootNode;<a name="line.143"></a>
+<span class="sourceLineNo">144</span>    }<a name="line.144"></a>
+<span class="sourceLineNo">145</span><a name="line.145"></a>
+<span class="sourceLineNo">146</span>    public DestinationMapNode getTempQueueRootNode() {<a name="line.146"></a>
+<span class="sourceLineNo">147</span>        return tempQueueRootNode;<a name="line.147"></a>
+<span class="sourceLineNo">148</span>    }<a name="line.148"></a>
+<span class="sourceLineNo">149</span><a name="line.149"></a>
+<span class="sourceLineNo">150</span>    public DestinationMapNode getTempTopicRootNode() {<a name="line.150"></a>
+<span class="sourceLineNo">151</span>        return tempTopicRootNode;<a name="line.151"></a>
+<span class="sourceLineNo">152</span>    }<a name="line.152"></a>
+<span class="sourceLineNo">153</span><a name="line.153"></a>
+<span class="sourceLineNo">154</span>    // Implementation methods<a name="line.154"></a>
+<span class="sourceLineNo">155</span>    // -------------------------------------------------------------------------<a name="line.155"></a>
+<span class="sourceLineNo">156</span><a name="line.156"></a>
+<span class="sourceLineNo">157</span>    /**<a name="line.157"></a>
+<span class="sourceLineNo">158</span>     * A helper method to allow the destination map to be populated from a<a name="line.158"></a>
+<span class="sourceLineNo">159</span>     * dependency injection framework such as Spring<a name="line.159"></a>
+<span class="sourceLineNo">160</span>     */<a name="line.160"></a>
+<span class="sourceLineNo">161</span>    @SuppressWarnings({"rawtypes"})<a name="line.161"></a>
+<span class="sourceLineNo">162</span>    protected void setEntries(List&lt;DestinationMapEntry&gt; entries) {<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        for (Object element : entries) {<a name="line.163"></a>
+<span class="sourceLineNo">164</span>            Class&lt;? extends DestinationMapEntry&gt; type = getEntryClass();<a name="line.164"></a>
+<span class="sourceLineNo">165</span>            if (type.isInstance(element)) {<a name="line.165"></a>
+<span class="sourceLineNo">166</span>                DestinationMapEntry entry = (DestinationMapEntry) element;<a name="line.166"></a>
+<span class="sourceLineNo">167</span>                put(entry.getDestination(), entry.getValue());<a name="line.167"></a>
+<span class="sourceLineNo">168</span>            } else {<a name="line.168"></a>
+<span class="sourceLineNo">169</span>                throw new IllegalArgumentException("Each entry must be an instance of type: " + type.getName() + " but was: " + element);<a name="line.169"></a>
+<span class="sourceLineNo">170</span>            }<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        }<a name="line.171"></a>
+<span class="sourceLineNo">172</span>    }<a name="line.172"></a>
+<span class="sourceLineNo">173</span><a name="line.173"></a>
+<span class="sourceLineNo">174</span>    /**<a name="line.174"></a>
+<span class="sourceLineNo">175</span>     * Returns the type of the allowed entries which can be set via the<a name="line.175"></a>
+<span class="sourceLineNo">176</span>     * {@link #setEntries(List)} method. This allows derived classes to further<a name="line.176"></a>
+<span class="sourceLineNo">177</span>     * restrict the type of allowed entries to make a type safe destination map<a name="line.177"></a>
+<span class="sourceLineNo">178</span>     * for custom policies.<a name="line.178"></a>
+<span class="sourceLineNo">179</span>     */<a name="line.179"></a>
+<span class="sourceLineNo">180</span>    @SuppressWarnings({"rawtypes"})<a name="line.180"></a>
+<span class="sourceLineNo">181</span>    protected Class&lt;? extends DestinationMapEntry&gt; getEntryClass() {<a name="line.181"></a>
+<span class="sourceLineNo">182</span>        return DestinationMapEntry.class;<a name="line.182"></a>
+<span class="sourceLineNo">183</span>    }<a name="line.183"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
+<span class="sourceLineNo">185</span>    @SuppressWarnings({"rawtypes", "unchecked"})<a name="line.185"></a>
+<span class="sourceLineNo">186</span>    protected Set findWildcardMatches(ActiveMQDestination key) {<a name="line.186"></a>
+<span class="sourceLineNo">187</span>       return findWildcardMatches(key, true);<a name="line.187"></a>
+<span class="sourceLineNo">188</span>    }<a name="line.188"></a>
+<span class="sourceLineNo">189</span><a name="line.189"></a>
+<span class="sourceLineNo">190</span>    @SuppressWarnings({"rawtypes", "unchecked"})<a name="line.190"></a>
+<span class="sourceLineNo">191</span>    protected Set findWildcardMatches(ActiveMQDestination key, boolean deep) {<a name="line.191"></a>
+<span class="sourceLineNo">192</span>        String[] paths = key.getDestinationPaths();<a name="line.192"></a>
+<span class="sourceLineNo">193</span>        Set answer = new HashSet();<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        getRootNode(key).appendMatchingValues(answer, paths, 0, deep);<a name="line.194"></a>
+<span class="sourceLineNo">195</span>        return answer;<a name="line.195"></a>
+<span class="sourceLineNo">196</span>    }<a name="line.196"></a>
+<span class="sourceLineNo">197</span><a name="line.197"></a>
+<span class="sourceLineNo">198</span>    /**<a name="line.198"></a>
+<span class="sourceLineNo">199</span>     * @param key<a name="line.199"></a>
+<span class="sourceLineNo">200</span>     * @return<a name="line.200"></a>
+<span class="sourceLineNo">201</span>     */<a name="line.201"></a>
+<span class="sourceLineNo">202</span>    @SuppressWarnings({"rawtypes", "unchecked"})<a name="line.202"></a>
+<span class="sourceLineNo">203</span>    public Set removeAll(ActiveMQDestination key) {<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        Set rc = new HashSet();<a name="line.204"></a>
+<span class="sourceLineNo">205</span>        if (key.isComposite()) {<a name="line.205"></a>
+<span class="sourceLineNo">206</span>            ActiveMQDestination[] destinations = key.getCompositeDestinations();<a name="line.206"></a>
+<span class="sourceLineNo">207</span>            for (int i = 0; i &lt; destinations.length; i++) {<a name="line.207"></a>
+<span class="sourceLineNo">208</span>                rc.add(removeAll(destinations[i]));<a name="line.208"></a>
+<span class="sourceLineNo">209</span>            }<a name="line.209"></a>
+<span class="sourceLineNo">210</span>            return rc;<a name="line.210"></a>
+<span class="sourceLineNo">211</span>        }<a name="line.211"></a>
+<span class="sourceLineNo">212</span>        String[] paths = key.getDestinationPaths();<a name="line.212"></a>
+<span class="sourceLineNo">213</span>        getRootNode(key).removeAll(rc, paths, 0);<a name="line.213"></a>
+<span class="sourceLineNo">214</span>        return rc;<a name="line.214"></a>
+<span class="sourceLineNo">215</span>    }<a name="line.215"></a>
+<span class="sourceLineNo">216</span><a name="line.216"></a>
+<span class="sourceLineNo">217</span>    /**<a name="line.217"></a>
+<span class="sourceLineNo">218</span>     * Returns the value which matches the given destination or null if there is<a name="line.218"></a>
+<span class="sourceLineNo">219</span>     * no matching value. If there are multiple values, the results are sorted<a name="line.219"></a>
+<span class="sourceLineNo">220</span>     * and the last item (the biggest) is returned.<a name="line.220"></a>
+<span class="sourceLineNo">221</span>     *<a name="line.221"></a>
+<span class="sourceLineNo">222</span>     * @param destination the destination to find the value for<a name="line.222"></a>
+<span class="sourceLineNo">223</span>     * @return the largest matching value or null if no value matches<a name="line.223"></a>
+<span class="sourceLineNo">224</span>     */<a name="line.224"></a>
+<span class="sourceLineNo">225</span>    @SuppressWarnings({"rawtypes", "unchecked"})<a name="line.225"></a>
+<span class="sourceLineNo">226</span>    public DestinationMapEntry chooseValue(final ActiveMQDestination destination) {<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        Set&lt;DestinationMapEntry&gt; set = get(destination);<a name="line.227"></a>
+<span class="sourceLineNo">228</span>        if (set == null || set.isEmpty()) {<a name="line.228"></a>
+<span class="sourceLineNo">229</span>            return null;<a name="line.229"></a>
+<span class="sourceLineNo">230</span>        }<a name="line.230"></a>
+<span class="sourceLineNo">231</span><a name="line.231"></a>
+<span class="sourceLineNo">232</span>        //Comparator to sort in order - we want to pick the exact match by destination or the<a name="line.232"></a>
+<span class="sourceLineNo">233</span>        //closest parent that applies<a name="line.233"></a>
+<span class="sourceLineNo">234</span>        final Comparator&lt;DestinationMapEntry&gt; comparator = new Comparator&lt;DestinationMapEntry&gt;() {<a name="line.234"></a>
+<span class="sourceLineNo">235</span>            @Override<a name="line.235"></a>
+<span class="sourceLineNo">236</span>            public int compare(DestinationMapEntry entry1, DestinationMapEntry entry2) {<a name="line.236"></a>
+<span class="sourceLineNo">237</span>                return destination.equals(entry1.destination) ? -1 : (destination.equals(entry2.destination) ? 1 : entry1.compareTo(entry2));<a name="line.237"></a>
+<span class="sourceLineNo">238</span>            }<a name="line.238"></a>
+<span class="sourceLineNo">239</span>        };<a name="line.239"></a>
+<span class="sourceLineNo">240</span><a name="line.240"></a>
+<span class="sourceLineNo">241</span>        //Sort and filter out any children and non matching entries<a name="line.241"></a>
+<span class="sourceLineNo">242</span>        final SortedSet&lt;DestinationMapEntry&gt; sortedSet = set.stream()<a name="line.242"></a>
+<span class="sourceLineNo">243</span>            .filter(entry -&gt; isMatchOrParent(destination, (DestinationMapEntry)entry))<a name="line.243"></a>
+<span class="sourceLineNo">244</span>            .collect(Collectors.toCollection(() -&gt; new TreeSet&lt;DestinationMapEntry&gt;(comparator)));<a name="line.244"></a>
+<span class="sourceLineNo">245</span><a name="line.245"></a>
+<span class="sourceLineNo">246</span>        return sortedSet.size() &gt; 0 ? sortedSet.first() : null;<a name="line.246"></a>
+<span class="sourceLineNo">247</span>    }<a name="line.247"></a>
+<span class="sourceLineNo">248</span><a name="line.248"></a>
+<span class="sourceLineNo">249</span>    @SuppressWarnings("rawtypes")<a name="line.249"></a>
+<span class="sourceLineNo">250</span>    //Used to filter out any child/unmatching entries<a name="line.250"></a>
+<span class="sourceLineNo">251</span>    private boolean isMatchOrParent(final ActiveMQDestination destination, final DestinationMapEntry entry) {<a name="line.251"></a>
+<span class="sourceLineNo">252</span>        //If destination not set then do not filter out<a name="line.252"></a>
+<span class="sourceLineNo">253</span>        if (entry.getDestination() == null) {<a name="line.253"></a>
+<span class="sourceLineNo">254</span>            return true;<a name="line.254"></a>
+<span class="sourceLineNo">255</span>        }<a name="line.255"></a>
+<span class="sourceLineNo">256</span>        final DestinationFilter filter = DestinationFilter.parseFilter(entry.getDestination());<a name="line.256"></a>
+<span class="sourceLineNo">257</span>        return destination.equals(entry.getDestination()) || filter.matches(destination);<a name="line.257"></a>
+<span class="sourceLineNo">258</span>    }<a name="line.258"></a>
+<span class="sourceLineNo">259</span><a name="line.259"></a>
+<span class="sourceLineNo">260</span>    /**<a name="line.260"></a>
+<span class="sourceLineNo">261</span>     * Returns the root node for the given destination type<a name="line.261"></a>
+<span class="sourceLineNo">262</span>     */<a name="line.262"></a>
+<span class="sourceLineNo">263</span>    protected DestinationMapNode getRootNode(ActiveMQDestination key) {<a name="line.263"></a>
+<span class="sourceLineNo">264</span>        if (key.isTemporary()) {<a name="line.264"></a>
+<span class="sourceLineNo">265</span>            if (key.isQueue()) {<a name="line.265"></a>
+<span class="sourceLineNo">266</span>                return tempQueueRootNode;<a name="line.266"></a>
+<span class="sourceLineNo">267</span>            } else {<a name="line.267"></a>
+<span class="sourceLineNo">268</span>                return tempTopicRootNode;<a name="line.268"></a>
+<span class="sourceLineNo">269</span>            }<a name="line.269"></a>
+<span class="sourceLineNo">270</span>        } else {<a name="line.270"></a>
+<span class="sourceLineNo">271</span>            if (key.isQueue()) {<a name="line.271"></a>
+<span class="sourceLineNo">272</span>                return queueRootNode;<a name="line.272"></a>
+<span class="sourceLineNo">273</span>            } else {<a name="line.273"></a>
+<span class="sourceLineNo">274</span>                return topicRootNode;<a name="line.274"></a>
+<span class="sourceLineNo">275</span>            }<a name="line.275"></a>
+<span class="sourceLineNo">276</span>        }<a name="line.276"></a>
+<span class="sourceLineNo">277</span>    }<a name="line.277"></a>
+<span class="sourceLineNo">278</span><a name="line.278"></a>
+<span class="sourceLineNo">279</span>    public void reset() {<a name="line.279"></a>
+<span class="sourceLineNo">280</span>        queueRootNode = new DestinationMapNode(null);<a name="line.280"></a>
+<span class="sourceLineNo">281</span>        tempQueueRootNode = new DestinationMapNode(null);<a name="line.281"></a>
+<span class="sourceLineNo">282</span>        topicRootNode = new DestinationMapNode(null);<a name="line.282"></a>
+<span class="sourceLineNo">283</span>        tempTopicRootNode = new DestinationMapNode(null);<a name="line.283"></a>
+<span class="sourceLineNo">284</span>    }<a name="line.284"></a>
+<span class="sourceLineNo">285</span><a name="line.285"></a>
+<span class="sourceLineNo">286</span>    public boolean isEmpty() {<a name="line.286"></a>
+<span class="sourceLineNo">287</span>        return queueRootNode.isEmpty() &amp;&amp; topicRootNode.isEmpty() &amp;&amp; tempQueueRootNode.isEmpty() &amp;&amp; tempTopicRootNode.isEmpty();<a name="line.287"></a>
+<span class="sourceLineNo">288</span>    }<a name="line.288"></a>
+<span class="sourceLineNo">289</span><a name="line.289"></a>
+<span class="sourceLineNo">290</span>    public static Set union(Set existing, Set candidates) {<a name="line.290"></a>
+<span class="sourceLineNo">291</span>        if (candidates != null) {<a name="line.291"></a>
+<span class="sourceLineNo">292</span>            if (existing != null) {<a name="line.292"></a>
+<span class="sourceLineNo">293</span>                for (Iterator&lt;Object&gt; iterator = existing.iterator(); iterator.hasNext(); ) {<a name="line.293"></a>
+<span class="sourceLineNo">294</span>                    Object toMatch = iterator.next();<a name="line.294"></a>
+<span class="sourceLineNo">295</span>                    if (!candidates.contains(toMatch)) {<a name="line.295"></a>
+<span class="sourceLineNo">296</span>                        iterator.remove();<a name="line.296"></a>
+<span class="sourceLineNo">297</span>                    }<a name="line.297"></a>
+<span class="sourceLineNo">298</span>                }<a name="line.298"></a>
+<span class="sourceLineNo">299</span>            } else {<a name="line.299"></a>
+<span class="sourceLineNo">300</span>                existing = candidates;<a name="line.300"></a>
+<span class="sourceLineNo">301</span>            }<a name="line.301"></a>
+<span class="sourceLineNo">302</span>        } else if (existing != null) {<a name="line.302"></a>
+<span class="sourceLineNo">303</span>            existing.clear();<a name="line.303"></a>
+<span class="sourceLineNo">304</span>        }<a name="line.304"></a>
+<span class="sourceLineNo">305</span>        return existing;<a name="line.305"></a>
+<span class="sourceLineNo">306</span>    }<a name="line.306"></a>
+<span class="sourceLineNo">307</span><a name="line.307"></a>
+<span class="sourceLineNo">308</span>}<a name="line.308"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

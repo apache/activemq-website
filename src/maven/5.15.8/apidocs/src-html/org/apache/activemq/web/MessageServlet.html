@@ -1,0 +1,542 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * &lt;p/&gt;<a name="line.8"></a>
+<span class="sourceLineNo">009</span> * http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> * &lt;p/&gt;<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span><a name="line.17"></a>
+<span class="sourceLineNo">018</span>package org.apache.activemq.web;<a name="line.18"></a>
+<span class="sourceLineNo">019</span><a name="line.19"></a>
+<span class="sourceLineNo">020</span>import org.apache.activemq.MessageAvailableConsumer;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import org.apache.activemq.MessageAvailableListener;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import org.eclipse.jetty.continuation.Continuation;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import org.eclipse.jetty.continuation.ContinuationSupport;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import org.slf4j.Logger;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.slf4j.LoggerFactory;<a name="line.25"></a>
+<span class="sourceLineNo">026</span><a name="line.26"></a>
+<span class="sourceLineNo">027</span>import javax.jms.*;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import javax.servlet.ServletConfig;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import javax.servlet.ServletException;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import javax.servlet.http.HttpServletRequest;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import javax.servlet.http.HttpServletResponse;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import java.io.IOException;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import java.io.PrintWriter;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import java.util.Enumeration;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import java.util.HashMap;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import java.util.HashSet;<a name="line.36"></a>
+<span class="sourceLineNo">037</span><a name="line.37"></a>
+<span class="sourceLineNo">038</span>/**<a name="line.38"></a>
+<span class="sourceLineNo">039</span> * A servlet for sending and receiving messages to/from JMS destinations using<a name="line.39"></a>
+<span class="sourceLineNo">040</span> * HTTP POST for sending and HTTP GET for receiving.<a name="line.40"></a>
+<span class="sourceLineNo">041</span> * &lt;p/&gt;<a name="line.41"></a>
+<span class="sourceLineNo">042</span> * You can specify the destination and whether it is a topic or queue via<a name="line.42"></a>
+<span class="sourceLineNo">043</span> * configuration details on the servlet or as request parameters.<a name="line.43"></a>
+<span class="sourceLineNo">044</span> * &lt;p/&gt;<a name="line.44"></a>
+<span class="sourceLineNo">045</span> * For reading messages you can specify a readTimeout parameter to determine how<a name="line.45"></a>
+<span class="sourceLineNo">046</span> * long the servlet should block for.<a name="line.46"></a>
+<span class="sourceLineNo">047</span> *<a name="line.47"></a>
+<span class="sourceLineNo">048</span> * One thing to keep in mind with this solution - due to the nature of REST,<a name="line.48"></a>
+<span class="sourceLineNo">049</span> * there will always be a chance of losing messages. Consider what happens when<a name="line.49"></a>
+<span class="sourceLineNo">050</span> * a message is retrieved from the broker but the web call is interrupted before<a name="line.50"></a>
+<span class="sourceLineNo">051</span> * the client receives the message in the response - the message is lost.<a name="line.51"></a>
+<span class="sourceLineNo">052</span> */<a name="line.52"></a>
+<span class="sourceLineNo">053</span>public class MessageServlet extends MessageServletSupport {<a name="line.53"></a>
+<span class="sourceLineNo">054</span><a name="line.54"></a>
+<span class="sourceLineNo">055</span>    // its a bit pita that this servlet got intermixed with jetty continuation/rest<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    // instead of creating a special for that. We should have kept a simple servlet<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    // for good old fashioned request/response blocked communication.<a name="line.57"></a>
+<span class="sourceLineNo">058</span><a name="line.58"></a>
+<span class="sourceLineNo">059</span>    private static final long serialVersionUID = 8737914695188481219L;<a name="line.59"></a>
+<span class="sourceLineNo">060</span><a name="line.60"></a>
+<span class="sourceLineNo">061</span>    private static final Logger LOG = LoggerFactory.getLogger(MessageServlet.class);<a name="line.61"></a>
+<span class="sourceLineNo">062</span><a name="line.62"></a>
+<span class="sourceLineNo">063</span>    private final String readTimeoutParameter = "readTimeout";<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    private final String readTimeoutRequestAtt = "xamqReadDeadline";<a name="line.64"></a>
+<span class="sourceLineNo">065</span>    private final String oneShotParameter = "oneShot";<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    private long defaultReadTimeout = -1;<a name="line.66"></a>
+<span class="sourceLineNo">067</span>    private long maximumReadTimeout = 20000;<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    private long requestTimeout = 1000;<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    private String defaultContentType = "application/xml";<a name="line.69"></a>
+<span class="sourceLineNo">070</span><a name="line.70"></a>
+<span class="sourceLineNo">071</span>    private final HashMap&lt;String, WebClient&gt; clients = new HashMap&lt;String, WebClient&gt;();<a name="line.71"></a>
+<span class="sourceLineNo">072</span>    private final HashSet&lt;MessageAvailableConsumer&gt; activeConsumers = new HashSet&lt;MessageAvailableConsumer&gt;();<a name="line.72"></a>
+<span class="sourceLineNo">073</span><a name="line.73"></a>
+<span class="sourceLineNo">074</span>    @Override<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    public void init() throws ServletException {<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        ServletConfig servletConfig = getServletConfig();<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        String name = servletConfig.getInitParameter("defaultReadTimeout");<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        if (name != null) {<a name="line.78"></a>
+<span class="sourceLineNo">079</span>            defaultReadTimeout = asLong(name);<a name="line.79"></a>
+<span class="sourceLineNo">080</span>        }<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        name = servletConfig.getInitParameter("maximumReadTimeout");<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        if (name != null) {<a name="line.82"></a>
+<span class="sourceLineNo">083</span>            maximumReadTimeout = asLong(name);<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        }<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        name = servletConfig.getInitParameter("replyTimeout");<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        if (name != null) {<a name="line.86"></a>
+<span class="sourceLineNo">087</span>            requestTimeout = asLong(name);<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        }<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        name = servletConfig.getInitParameter("defaultContentType");<a name="line.89"></a>
+<span class="sourceLineNo">090</span>        if (name != null) {<a name="line.90"></a>
+<span class="sourceLineNo">091</span>            defaultContentType = name;<a name="line.91"></a>
+<span class="sourceLineNo">092</span>        }<a name="line.92"></a>
+<span class="sourceLineNo">093</span>    }<a name="line.93"></a>
+<span class="sourceLineNo">094</span><a name="line.94"></a>
+<span class="sourceLineNo">095</span>    /**<a name="line.95"></a>
+<span class="sourceLineNo">096</span>     * Sends a message to a destination<a name="line.96"></a>
+<span class="sourceLineNo">097</span>     *<a name="line.97"></a>
+<span class="sourceLineNo">098</span>     * @param request<a name="line.98"></a>
+<span class="sourceLineNo">099</span>     * @param response<a name="line.99"></a>
+<span class="sourceLineNo">100</span>     * @throws ServletException<a name="line.100"></a>
+<span class="sourceLineNo">101</span>     * @throws IOException<a name="line.101"></a>
+<span class="sourceLineNo">102</span>     */<a name="line.102"></a>
+<span class="sourceLineNo">103</span>    @Override<a name="line.103"></a>
+<span class="sourceLineNo">104</span>    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        // lets turn the HTTP post into a JMS Message<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        try {<a name="line.106"></a>
+<span class="sourceLineNo">107</span><a name="line.107"></a>
+<span class="sourceLineNo">108</span>            String action = request.getParameter("action");<a name="line.108"></a>
+<span class="sourceLineNo">109</span>            String clientId = request.getParameter("clientId");<a name="line.109"></a>
+<span class="sourceLineNo">110</span>            if (action != null &amp;&amp; clientId != null &amp;&amp; action.equals("unsubscribe")) {<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                LOG.info("Unsubscribing client " + clientId);<a name="line.111"></a>
+<span class="sourceLineNo">112</span>                WebClient client = getWebClient(request);<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                client.close();<a name="line.113"></a>
+<span class="sourceLineNo">114</span>                clients.remove(clientId);<a name="line.114"></a>
+<span class="sourceLineNo">115</span>                return;<a name="line.115"></a>
+<span class="sourceLineNo">116</span>            }<a name="line.116"></a>
+<span class="sourceLineNo">117</span><a name="line.117"></a>
+<span class="sourceLineNo">118</span>            WebClient client = getWebClient(request);<a name="line.118"></a>
+<span class="sourceLineNo">119</span><a name="line.119"></a>
+<span class="sourceLineNo">120</span>            String text = getPostedMessageBody(request);<a name="line.120"></a>
+<span class="sourceLineNo">121</span><a name="line.121"></a>
+<span class="sourceLineNo">122</span>            // lets create the destination from the URI?<a name="line.122"></a>
+<span class="sourceLineNo">123</span>            Destination destination = getDestination(client, request);<a name="line.123"></a>
+<span class="sourceLineNo">124</span>            if (destination == null) {<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                throw new NoDestinationSuppliedException();<a name="line.125"></a>
+<span class="sourceLineNo">126</span>            }<a name="line.126"></a>
+<span class="sourceLineNo">127</span><a name="line.127"></a>
+<span class="sourceLineNo">128</span>            if (LOG.isDebugEnabled()) {<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                LOG.debug("Sending message to: " + destination + " with text: " + text);<a name="line.129"></a>
+<span class="sourceLineNo">130</span>            }<a name="line.130"></a>
+<span class="sourceLineNo">131</span><a name="line.131"></a>
+<span class="sourceLineNo">132</span>            boolean sync = isSync(request);<a name="line.132"></a>
+<span class="sourceLineNo">133</span>            TextMessage message = client.getSession().createTextMessage(text);<a name="line.133"></a>
+<span class="sourceLineNo">134</span><a name="line.134"></a>
+<span class="sourceLineNo">135</span>            appendParametersToMessage(request, message);<a name="line.135"></a>
+<span class="sourceLineNo">136</span>            boolean persistent = isSendPersistent(request);<a name="line.136"></a>
+<span class="sourceLineNo">137</span>            int priority = getSendPriority(request);<a name="line.137"></a>
+<span class="sourceLineNo">138</span>            long timeToLive = getSendTimeToLive(request);<a name="line.138"></a>
+<span class="sourceLineNo">139</span>            client.send(destination, message, persistent, priority, timeToLive);<a name="line.139"></a>
+<span class="sourceLineNo">140</span><a name="line.140"></a>
+<span class="sourceLineNo">141</span>            // lets return a unique URI for reliable messaging<a name="line.141"></a>
+<span class="sourceLineNo">142</span>            response.setHeader("messageID", message.getJMSMessageID());<a name="line.142"></a>
+<span class="sourceLineNo">143</span>            response.setStatus(HttpServletResponse.SC_OK);<a name="line.143"></a>
+<span class="sourceLineNo">144</span>            response.getWriter().write("Message sent");<a name="line.144"></a>
+<span class="sourceLineNo">145</span><a name="line.145"></a>
+<span class="sourceLineNo">146</span>        } catch (JMSException e) {<a name="line.146"></a>
+<span class="sourceLineNo">147</span>            throw new ServletException("Could not post JMS message: " + e, e);<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        }<a name="line.148"></a>
+<span class="sourceLineNo">149</span>    }<a name="line.149"></a>
+<span class="sourceLineNo">150</span><a name="line.150"></a>
+<span class="sourceLineNo">151</span>    /**<a name="line.151"></a>
+<span class="sourceLineNo">152</span>     * Supports a HTTP DELETE to be equivalent of consuming a singe message<a name="line.152"></a>
+<span class="sourceLineNo">153</span>     * from a queue<a name="line.153"></a>
+<span class="sourceLineNo">154</span>     */<a name="line.154"></a>
+<span class="sourceLineNo">155</span>    @Override<a name="line.155"></a>
+<span class="sourceLineNo">156</span>    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>        doMessages(request, response);<a name="line.157"></a>
+<span class="sourceLineNo">158</span>    }<a name="line.158"></a>
+<span class="sourceLineNo">159</span><a name="line.159"></a>
+<span class="sourceLineNo">160</span>    /**<a name="line.160"></a>
+<span class="sourceLineNo">161</span>     * Supports a HTTP DELETE to be equivalent of consuming a singe message<a name="line.161"></a>
+<span class="sourceLineNo">162</span>     * from a queue<a name="line.162"></a>
+<span class="sourceLineNo">163</span>     */<a name="line.163"></a>
+<span class="sourceLineNo">164</span>    @Override<a name="line.164"></a>
+<span class="sourceLineNo">165</span>    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        doMessages(request, response);<a name="line.166"></a>
+<span class="sourceLineNo">167</span>    }<a name="line.167"></a>
+<span class="sourceLineNo">168</span><a name="line.168"></a>
+<span class="sourceLineNo">169</span>    /**<a name="line.169"></a>
+<span class="sourceLineNo">170</span>     * Reads a message from a destination up to some specific timeout period<a name="line.170"></a>
+<span class="sourceLineNo">171</span>     *<a name="line.171"></a>
+<span class="sourceLineNo">172</span>     * @param request<a name="line.172"></a>
+<span class="sourceLineNo">173</span>     * @param response<a name="line.173"></a>
+<span class="sourceLineNo">174</span>     * @throws ServletException<a name="line.174"></a>
+<span class="sourceLineNo">175</span>     * @throws IOException<a name="line.175"></a>
+<span class="sourceLineNo">176</span>     */<a name="line.176"></a>
+<span class="sourceLineNo">177</span>    protected void doMessages(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        MessageAvailableConsumer consumer = null;<a name="line.178"></a>
+<span class="sourceLineNo">179</span><a name="line.179"></a>
+<span class="sourceLineNo">180</span>        try {<a name="line.180"></a>
+<span class="sourceLineNo">181</span>            WebClient client = getWebClient(request);<a name="line.181"></a>
+<span class="sourceLineNo">182</span>            Destination destination = getDestination(client, request);<a name="line.182"></a>
+<span class="sourceLineNo">183</span>            if (destination == null) {<a name="line.183"></a>
+<span class="sourceLineNo">184</span>                throw new NoDestinationSuppliedException();<a name="line.184"></a>
+<span class="sourceLineNo">185</span>            }<a name="line.185"></a>
+<span class="sourceLineNo">186</span>            consumer = (MessageAvailableConsumer) client.getConsumer(destination, request.getHeader(WebClient.selectorName));<a name="line.186"></a>
+<span class="sourceLineNo">187</span>            Continuation continuation = ContinuationSupport.getContinuation(request);<a name="line.187"></a>
+<span class="sourceLineNo">188</span><a name="line.188"></a>
+<span class="sourceLineNo">189</span>            // Don't allow concurrent use of the consumer. Do make sure to allow<a name="line.189"></a>
+<span class="sourceLineNo">190</span>            // subsequent calls on continuation to use the consumer.<a name="line.190"></a>
+<span class="sourceLineNo">191</span>            if (continuation.isInitial()) {<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                synchronized (activeConsumers) {<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                    if (activeConsumers.contains(consumer)) {<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                        throw new ServletException("Concurrent access to consumer is not supported");<a name="line.194"></a>
+<span class="sourceLineNo">195</span>                    } else {<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                        activeConsumers.add(consumer);<a name="line.196"></a>
+<span class="sourceLineNo">197</span>                    }<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                }<a name="line.198"></a>
+<span class="sourceLineNo">199</span>            }<a name="line.199"></a>
+<span class="sourceLineNo">200</span><a name="line.200"></a>
+<span class="sourceLineNo">201</span>            Message message = null;<a name="line.201"></a>
+<span class="sourceLineNo">202</span><a name="line.202"></a>
+<span class="sourceLineNo">203</span>            long deadline = getReadDeadline(request);<a name="line.203"></a>
+<span class="sourceLineNo">204</span>            long timeout = deadline - System.currentTimeMillis();<a name="line.204"></a>
+<span class="sourceLineNo">205</span><a name="line.205"></a>
+<span class="sourceLineNo">206</span>            // Set the message available listener *before* calling receive to eliminate any<a name="line.206"></a>
+<span class="sourceLineNo">207</span>            // chance of a missed notification between the time receive() completes without<a name="line.207"></a>
+<span class="sourceLineNo">208</span>            // a message and the time the listener is set.<a name="line.208"></a>
+<span class="sourceLineNo">209</span>            synchronized (consumer) {<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                Listener listener = (Listener) consumer.getAvailableListener();<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                if (listener == null) {<a name="line.211"></a>
+<span class="sourceLineNo">212</span>                    listener = new Listener(consumer);<a name="line.212"></a>
+<span class="sourceLineNo">213</span>                    consumer.setAvailableListener(listener);<a name="line.213"></a>
+<span class="sourceLineNo">214</span>                }<a name="line.214"></a>
+<span class="sourceLineNo">215</span>            }<a name="line.215"></a>
+<span class="sourceLineNo">216</span><a name="line.216"></a>
+<span class="sourceLineNo">217</span>            if (LOG.isDebugEnabled()) {<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                LOG.debug("Receiving message(s) from: " + destination + " with timeout: " + timeout);<a name="line.218"></a>
+<span class="sourceLineNo">219</span>            }<a name="line.219"></a>
+<span class="sourceLineNo">220</span><a name="line.220"></a>
+<span class="sourceLineNo">221</span>            // Look for any available messages (need a little timeout). Always<a name="line.221"></a>
+<span class="sourceLineNo">222</span>            // try at least one lookup; don't block past the deadline.<a name="line.222"></a>
+<span class="sourceLineNo">223</span>            if (timeout &lt;= 0) {<a name="line.223"></a>
+<span class="sourceLineNo">224</span>                message = consumer.receiveNoWait();<a name="line.224"></a>
+<span class="sourceLineNo">225</span>            } else if (timeout &lt; 10) {<a name="line.225"></a>
+<span class="sourceLineNo">226</span>                message = consumer.receive(timeout);<a name="line.226"></a>
+<span class="sourceLineNo">227</span>            } else {<a name="line.227"></a>
+<span class="sourceLineNo">228</span>                message = consumer.receive(10);<a name="line.228"></a>
+<span class="sourceLineNo">229</span>            }<a name="line.229"></a>
+<span class="sourceLineNo">230</span><a name="line.230"></a>
+<span class="sourceLineNo">231</span>            if (message == null) {<a name="line.231"></a>
+<span class="sourceLineNo">232</span>                handleContinuation(request, response, client, destination, consumer, deadline);<a name="line.232"></a>
+<span class="sourceLineNo">233</span>            } else {<a name="line.233"></a>
+<span class="sourceLineNo">234</span>                writeResponse(request, response, message);<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                closeConsumerOnOneShot(request, client, destination);<a name="line.235"></a>
+<span class="sourceLineNo">236</span><a name="line.236"></a>
+<span class="sourceLineNo">237</span>                synchronized (activeConsumers) {<a name="line.237"></a>
+<span class="sourceLineNo">238</span>                    activeConsumers.remove(consumer);<a name="line.238"></a>
+<span class="sourceLineNo">239</span>                }<a name="line.239"></a>
+<span class="sourceLineNo">240</span>            }<a name="line.240"></a>
+<span class="sourceLineNo">241</span>        } catch (JMSException e) {<a name="line.241"></a>
+<span class="sourceLineNo">242</span>            throw new ServletException("Could not post JMS message: " + e, e);<a name="line.242"></a>
+<span class="sourceLineNo">243</span>        }<a name="line.243"></a>
+<span class="sourceLineNo">244</span>    }<a name="line.244"></a>
+<span class="sourceLineNo">245</span><a name="line.245"></a>
+<span class="sourceLineNo">246</span>    protected void handleContinuation(HttpServletRequest request, HttpServletResponse response, WebClient client, Destination destination,<a name="line.246"></a>
+<span class="sourceLineNo">247</span>                                      MessageAvailableConsumer consumer, long deadline) {<a name="line.247"></a>
+<span class="sourceLineNo">248</span>        // Get an existing Continuation or create a new one if there are no events.<a name="line.248"></a>
+<span class="sourceLineNo">249</span>        Continuation continuation = ContinuationSupport.getContinuation(request);<a name="line.249"></a>
+<span class="sourceLineNo">250</span><a name="line.250"></a>
+<span class="sourceLineNo">251</span>        long timeout = deadline - System.currentTimeMillis();<a name="line.251"></a>
+<span class="sourceLineNo">252</span>        if ((continuation.isExpired()) || (timeout &lt;= 0)) {<a name="line.252"></a>
+<span class="sourceLineNo">253</span>            // Reset the continuation on the available listener for the consumer to prevent the<a name="line.253"></a>
+<span class="sourceLineNo">254</span>            // next message receipt from being consumed without a valid, active continuation.<a name="line.254"></a>
+<span class="sourceLineNo">255</span>            synchronized (consumer) {<a name="line.255"></a>
+<span class="sourceLineNo">256</span>                Object obj = consumer.getAvailableListener();<a name="line.256"></a>
+<span class="sourceLineNo">257</span>                if (obj instanceof Listener) {<a name="line.257"></a>
+<span class="sourceLineNo">258</span>                    ((Listener) obj).setContinuation(null);<a name="line.258"></a>
+<span class="sourceLineNo">259</span>                }<a name="line.259"></a>
+<span class="sourceLineNo">260</span>            }<a name="line.260"></a>
+<span class="sourceLineNo">261</span>            response.setStatus(HttpServletResponse.SC_NO_CONTENT);<a name="line.261"></a>
+<span class="sourceLineNo">262</span>            closeConsumerOnOneShot(request, client, destination);<a name="line.262"></a>
+<span class="sourceLineNo">263</span>            synchronized (activeConsumers) {<a name="line.263"></a>
+<span class="sourceLineNo">264</span>                activeConsumers.remove(consumer);<a name="line.264"></a>
+<span class="sourceLineNo">265</span>            }<a name="line.265"></a>
+<span class="sourceLineNo">266</span>            return;<a name="line.266"></a>
+<span class="sourceLineNo">267</span>        }<a name="line.267"></a>
+<span class="sourceLineNo">268</span><a name="line.268"></a>
+<span class="sourceLineNo">269</span>        continuation.setTimeout(timeout);<a name="line.269"></a>
+<span class="sourceLineNo">270</span>        continuation.suspend();<a name="line.270"></a>
+<span class="sourceLineNo">271</span><a name="line.271"></a>
+<span class="sourceLineNo">272</span>        synchronized (consumer) {<a name="line.272"></a>
+<span class="sourceLineNo">273</span>            Listener listener = (Listener) consumer.getAvailableListener();<a name="line.273"></a>
+<span class="sourceLineNo">274</span><a name="line.274"></a>
+<span class="sourceLineNo">275</span>            // register this continuation with our listener.<a name="line.275"></a>
+<span class="sourceLineNo">276</span>            listener.setContinuation(continuation);<a name="line.276"></a>
+<span class="sourceLineNo">277</span>        }<a name="line.277"></a>
+<span class="sourceLineNo">278</span>    }<a name="line.278"></a>
+<span class="sourceLineNo">279</span><a name="line.279"></a>
+<span class="sourceLineNo">280</span>    protected void writeResponse(HttpServletRequest request, HttpServletResponse response, Message message) throws IOException, JMSException {<a name="line.280"></a>
+<span class="sourceLineNo">281</span>        int messages = 0;<a name="line.281"></a>
+<span class="sourceLineNo">282</span>        try {<a name="line.282"></a>
+<span class="sourceLineNo">283</span>            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP<a name="line.283"></a>
+<span class="sourceLineNo">284</span>            // 1.1<a name="line.284"></a>
+<span class="sourceLineNo">285</span>            response.setHeader("Pragma", "no-cache"); // HTTP 1.0<a name="line.285"></a>
+<span class="sourceLineNo">286</span>            response.setDateHeader("Expires", 0);<a name="line.286"></a>
+<span class="sourceLineNo">287</span><a name="line.287"></a>
+<span class="sourceLineNo">288</span><a name="line.288"></a>
+<span class="sourceLineNo">289</span>            // Set content type as in request. This should be done before calling getWriter by specification<a name="line.289"></a>
+<span class="sourceLineNo">290</span>            String type = request.getContentType();<a name="line.290"></a>
+<span class="sourceLineNo">291</span><a name="line.291"></a>
+<span class="sourceLineNo">292</span>            if (type != null) {<a name="line.292"></a>
+<span class="sourceLineNo">293</span>                response.setContentType(type);<a name="line.293"></a>
+<span class="sourceLineNo">294</span>            } else {<a name="line.294"></a>
+<span class="sourceLineNo">295</span>                if (isXmlContent(message)) {<a name="line.295"></a>
+<span class="sourceLineNo">296</span>                    response.setContentType(defaultContentType);<a name="line.296"></a>
+<span class="sourceLineNo">297</span>                } else {<a name="line.297"></a>
+<span class="sourceLineNo">298</span>                    response.setContentType("text/plain");<a name="line.298"></a>
+<span class="sourceLineNo">299</span>                }<a name="line.299"></a>
+<span class="sourceLineNo">300</span>            }<a name="line.300"></a>
+<span class="sourceLineNo">301</span><a name="line.301"></a>
+<span class="sourceLineNo">302</span>            // write a responds<a name="line.302"></a>
+<span class="sourceLineNo">303</span>            PrintWriter writer = response.getWriter();<a name="line.303"></a>
+<span class="sourceLineNo">304</span><a name="line.304"></a>
+<span class="sourceLineNo">305</span>            // handle any message(s)<a name="line.305"></a>
+<span class="sourceLineNo">306</span>            if (message == null) {<a name="line.306"></a>
+<span class="sourceLineNo">307</span>                // No messages so OK response of for ajax else no content.<a name="line.307"></a>
+<span class="sourceLineNo">308</span>                response.setStatus(HttpServletResponse.SC_NO_CONTENT);<a name="line.308"></a>
+<span class="sourceLineNo">309</span>            } else {<a name="line.309"></a>
+<span class="sourceLineNo">310</span>                // We have at least one message so set up the response<a name="line.310"></a>
+<span class="sourceLineNo">311</span>                messages = 1;<a name="line.311"></a>
+<span class="sourceLineNo">312</span><a name="line.312"></a>
+<span class="sourceLineNo">313</span>                response.setStatus(HttpServletResponse.SC_OK);<a name="line.313"></a>
+<span class="sourceLineNo">314</span><a name="line.314"></a>
+<span class="sourceLineNo">315</span>                setResponseHeaders(response, message);<a name="line.315"></a>
+<span class="sourceLineNo">316</span>                writeMessageResponse(writer, message);<a name="line.316"></a>
+<span class="sourceLineNo">317</span>                writer.flush();<a name="line.317"></a>
+<span class="sourceLineNo">318</span>            }<a name="line.318"></a>
+<span class="sourceLineNo">319</span>        } finally {<a name="line.319"></a>
+<span class="sourceLineNo">320</span>            if (LOG.isDebugEnabled()) {<a name="line.320"></a>
+<span class="sourceLineNo">321</span>                LOG.debug("Received " + messages + " message(s)");<a name="line.321"></a>
+<span class="sourceLineNo">322</span>            }<a name="line.322"></a>
+<span class="sourceLineNo">323</span>        }<a name="line.323"></a>
+<span class="sourceLineNo">324</span>    }<a name="line.324"></a>
+<span class="sourceLineNo">325</span><a name="line.325"></a>
+<span class="sourceLineNo">326</span>    protected void writeMessageResponse(PrintWriter writer, Message message) throws JMSException, IOException {<a name="line.326"></a>
+<span class="sourceLineNo">327</span>        if (message instanceof TextMessage) {<a name="line.327"></a>
+<span class="sourceLineNo">328</span>            TextMessage textMsg = (TextMessage) message;<a name="line.328"></a>
+<span class="sourceLineNo">329</span>            String txt = textMsg.getText();<a name="line.329"></a>
+<span class="sourceLineNo">330</span>            if (txt != null) {<a name="line.330"></a>
+<span class="sourceLineNo">331</span>                if (txt.startsWith("&lt;?")) {<a name="line.331"></a>
+<span class="sourceLineNo">332</span>                    txt = txt.substring(txt.indexOf("?&gt;") + 2);<a name="line.332"></a>
+<span class="sourceLineNo">333</span>                }<a name="line.333"></a>
+<span class="sourceLineNo">334</span>                writer.print(txt);<a name="line.334"></a>
+<span class="sourceLineNo">335</span>            }<a name="line.335"></a>
+<span class="sourceLineNo">336</span>        } else if (message instanceof ObjectMessage) {<a name="line.336"></a>
+<span class="sourceLineNo">337</span>            ObjectMessage objectMsg = (ObjectMessage) message;<a name="line.337"></a>
+<span class="sourceLineNo">338</span>            Object object = objectMsg.getObject();<a name="line.338"></a>
+<span class="sourceLineNo">339</span>            if (object != null) {<a name="line.339"></a>
+<span class="sourceLineNo">340</span>                writer.print(object.toString());<a name="line.340"></a>
+<span class="sourceLineNo">341</span>            }<a name="line.341"></a>
+<span class="sourceLineNo">342</span>        }<a name="line.342"></a>
+<span class="sourceLineNo">343</span>    }<a name="line.343"></a>
+<span class="sourceLineNo">344</span><a name="line.344"></a>
+<span class="sourceLineNo">345</span>    protected boolean isXmlContent(Message message) throws JMSException {<a name="line.345"></a>
+<span class="sourceLineNo">346</span>        if (message instanceof TextMessage) {<a name="line.346"></a>
+<span class="sourceLineNo">347</span>            TextMessage textMsg = (TextMessage) message;<a name="line.347"></a>
+<span class="sourceLineNo">348</span>            String txt = textMsg.getText();<a name="line.348"></a>
+<span class="sourceLineNo">349</span>            if (txt != null) {<a name="line.349"></a>
+<span class="sourceLineNo">350</span>                // assume its xml when it starts with &lt;<a name="line.350"></a>
+<span class="sourceLineNo">351</span>                if (txt.startsWith("&lt;")) {<a name="line.351"></a>
+<span class="sourceLineNo">352</span>                    return true;<a name="line.352"></a>
+<span class="sourceLineNo">353</span>                }<a name="line.353"></a>
+<span class="sourceLineNo">354</span>            }<a name="line.354"></a>
+<span class="sourceLineNo">355</span>        }<a name="line.355"></a>
+<span class="sourceLineNo">356</span>        // for any other kind of messages we dont assume xml<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        return false;<a name="line.357"></a>
+<span class="sourceLineNo">358</span>    }<a name="line.358"></a>
+<span class="sourceLineNo">359</span><a name="line.359"></a>
+<span class="sourceLineNo">360</span>    public WebClient getWebClient(HttpServletRequest request) {<a name="line.360"></a>
+<span class="sourceLineNo">361</span>        String clientId = request.getParameter("clientId");<a name="line.361"></a>
+<span class="sourceLineNo">362</span>        if (clientId != null) {<a name="line.362"></a>
+<span class="sourceLineNo">363</span>            synchronized (this) {<a name="line.363"></a>
+<span class="sourceLineNo">364</span>                LOG.debug("Getting local client [" + clientId + "]");<a name="line.364"></a>
+<span class="sourceLineNo">365</span>                WebClient client = clients.get(clientId);<a name="line.365"></a>
+<span class="sourceLineNo">366</span>                if (client == null) {<a name="line.366"></a>
+<span class="sourceLineNo">367</span>                    LOG.debug("Creating new client [" + clientId + "]");<a name="line.367"></a>
+<span class="sourceLineNo">368</span>                    client = new WebClient();<a name="line.368"></a>
+<span class="sourceLineNo">369</span>                    clients.put(clientId, client);<a name="line.369"></a>
+<span class="sourceLineNo">370</span>                }<a name="line.370"></a>
+<span class="sourceLineNo">371</span>                return client;<a name="line.371"></a>
+<span class="sourceLineNo">372</span>            }<a name="line.372"></a>
+<span class="sourceLineNo">373</span><a name="line.373"></a>
+<span class="sourceLineNo">374</span>        } else {<a name="line.374"></a>
+<span class="sourceLineNo">375</span>            return WebClient.getWebClient(request);<a name="line.375"></a>
+<span class="sourceLineNo">376</span>        }<a name="line.376"></a>
+<span class="sourceLineNo">377</span>    }<a name="line.377"></a>
+<span class="sourceLineNo">378</span><a name="line.378"></a>
+<span class="sourceLineNo">379</span>    protected String getContentType(HttpServletRequest request) {<a name="line.379"></a>
+<span class="sourceLineNo">380</span>        String value = request.getParameter("xml");<a name="line.380"></a>
+<span class="sourceLineNo">381</span>        if (value != null &amp;&amp; "true".equalsIgnoreCase(value)) {<a name="line.381"></a>
+<span class="sourceLineNo">382</span>            return "application/xml";<a name="line.382"></a>
+<span class="sourceLineNo">383</span>        }<a name="line.383"></a>
+<span class="sourceLineNo">384</span>        value = request.getParameter("json");<a name="line.384"></a>
+<span class="sourceLineNo">385</span>        if (value != null &amp;&amp; "true".equalsIgnoreCase(value)) {<a name="line.385"></a>
+<span class="sourceLineNo">386</span>            return "application/json";<a name="line.386"></a>
+<span class="sourceLineNo">387</span>        }<a name="line.387"></a>
+<span class="sourceLineNo">388</span>        return null;<a name="line.388"></a>
+<span class="sourceLineNo">389</span>    }<a name="line.389"></a>
+<span class="sourceLineNo">390</span><a name="line.390"></a>
+<span class="sourceLineNo">391</span>    @SuppressWarnings("rawtypes")<a name="line.391"></a>
+<span class="sourceLineNo">392</span>    protected void setResponseHeaders(HttpServletResponse response, Message message) throws JMSException {<a name="line.392"></a>
+<span class="sourceLineNo">393</span>        response.setHeader("destination", message.getJMSDestination().toString());<a name="line.393"></a>
+<span class="sourceLineNo">394</span>        response.setHeader("id", message.getJMSMessageID());<a name="line.394"></a>
+<span class="sourceLineNo">395</span><a name="line.395"></a>
+<span class="sourceLineNo">396</span>        // Return JMS properties as header values.<a name="line.396"></a>
+<span class="sourceLineNo">397</span>        for (Enumeration names = message.getPropertyNames(); names.hasMoreElements(); ) {<a name="line.397"></a>
+<span class="sourceLineNo">398</span>            String name = (String) names.nextElement();<a name="line.398"></a>
+<span class="sourceLineNo">399</span>            response.setHeader(name, message.getObjectProperty(name).toString());<a name="line.399"></a>
+<span class="sourceLineNo">400</span>        }<a name="line.400"></a>
+<span class="sourceLineNo">401</span>    }<a name="line.401"></a>
+<span class="sourceLineNo">402</span><a name="line.402"></a>
+<span class="sourceLineNo">403</span>    /**<a name="line.403"></a>
+<span class="sourceLineNo">404</span>     * @return the timeout value for read requests which is always &gt;= 0 and &lt;=<a name="line.404"></a>
+<span class="sourceLineNo">405</span>     *         maximumReadTimeout to avoid DoS attacks<a name="line.405"></a>
+<span class="sourceLineNo">406</span>     */<a name="line.406"></a>
+<span class="sourceLineNo">407</span>    protected long getReadDeadline(HttpServletRequest request) {<a name="line.407"></a>
+<span class="sourceLineNo">408</span>        Long answer;<a name="line.408"></a>
+<span class="sourceLineNo">409</span><a name="line.409"></a>
+<span class="sourceLineNo">410</span>        answer = (Long) request.getAttribute(readTimeoutRequestAtt);<a name="line.410"></a>
+<span class="sourceLineNo">411</span><a name="line.411"></a>
+<span class="sourceLineNo">412</span>        if (answer == null) {<a name="line.412"></a>
+<span class="sourceLineNo">413</span>            long timeout = defaultReadTimeout;<a name="line.413"></a>
+<span class="sourceLineNo">414</span>            String name = request.getParameter(readTimeoutParameter);<a name="line.414"></a>
+<span class="sourceLineNo">415</span>            if (name != null) {<a name="line.415"></a>
+<span class="sourceLineNo">416</span>                timeout = asLong(name);<a name="line.416"></a>
+<span class="sourceLineNo">417</span>            }<a name="line.417"></a>
+<span class="sourceLineNo">418</span>            if (timeout &lt; 0 || timeout &gt; maximumReadTimeout) {<a name="line.418"></a>
+<span class="sourceLineNo">419</span>                timeout = maximumReadTimeout;<a name="line.419"></a>
+<span class="sourceLineNo">420</span>            }<a name="line.420"></a>
+<span class="sourceLineNo">421</span><a name="line.421"></a>
+<span class="sourceLineNo">422</span>            answer = Long.valueOf(System.currentTimeMillis() + timeout);<a name="line.422"></a>
+<span class="sourceLineNo">423</span>        }<a name="line.423"></a>
+<span class="sourceLineNo">424</span>        return answer.longValue();<a name="line.424"></a>
+<span class="sourceLineNo">425</span>    }<a name="line.425"></a>
+<span class="sourceLineNo">426</span><a name="line.426"></a>
+<span class="sourceLineNo">427</span>    /**<a name="line.427"></a>
+<span class="sourceLineNo">428</span>     * Close the consumer if one-shot mode is used on the given request.<a name="line.428"></a>
+<span class="sourceLineNo">429</span>     */<a name="line.429"></a>
+<span class="sourceLineNo">430</span>    protected void closeConsumerOnOneShot(HttpServletRequest request, WebClient client, Destination dest) {<a name="line.430"></a>
+<span class="sourceLineNo">431</span>        if (asBoolean(request.getParameter(oneShotParameter), false)) {<a name="line.431"></a>
+<span class="sourceLineNo">432</span>            try {<a name="line.432"></a>
+<span class="sourceLineNo">433</span>                client.closeConsumer(dest);<a name="line.433"></a>
+<span class="sourceLineNo">434</span>            } catch (JMSException jms_exc) {<a name="line.434"></a>
+<span class="sourceLineNo">435</span>                LOG.warn("JMS exception on closing consumer after request with one-shot mode", jms_exc);<a name="line.435"></a>
+<span class="sourceLineNo">436</span>            }<a name="line.436"></a>
+<span class="sourceLineNo">437</span>        }<a name="line.437"></a>
+<span class="sourceLineNo">438</span>    }<a name="line.438"></a>
+<span class="sourceLineNo">439</span><a name="line.439"></a>
+<span class="sourceLineNo">440</span>    /*<a name="line.440"></a>
+<span class="sourceLineNo">441</span>     * Listen for available messages and wakeup any continuations.<a name="line.441"></a>
+<span class="sourceLineNo">442</span>     */<a name="line.442"></a>
+<span class="sourceLineNo">443</span>    private static class Listener implements MessageAvailableListener {<a name="line.443"></a>
+<span class="sourceLineNo">444</span>        MessageConsumer consumer;<a name="line.444"></a>
+<span class="sourceLineNo">445</span>        Continuation continuation;<a name="line.445"></a>
+<span class="sourceLineNo">446</span><a name="line.446"></a>
+<span class="sourceLineNo">447</span>        Listener(MessageConsumer consumer) {<a name="line.447"></a>
+<span class="sourceLineNo">448</span>            this.consumer = consumer;<a name="line.448"></a>
+<span class="sourceLineNo">449</span>        }<a name="line.449"></a>
+<span class="sourceLineNo">450</span><a name="line.450"></a>
+<span class="sourceLineNo">451</span>        public void setContinuation(Continuation continuation) {<a name="line.451"></a>
+<span class="sourceLineNo">452</span>            synchronized (consumer) {<a name="line.452"></a>
+<span class="sourceLineNo">453</span>                this.continuation = continuation;<a name="line.453"></a>
+<span class="sourceLineNo">454</span>            }<a name="line.454"></a>
+<span class="sourceLineNo">455</span>        }<a name="line.455"></a>
+<span class="sourceLineNo">456</span><a name="line.456"></a>
+<span class="sourceLineNo">457</span>        @Override<a name="line.457"></a>
+<span class="sourceLineNo">458</span>        public void onMessageAvailable(MessageConsumer consumer) {<a name="line.458"></a>
+<span class="sourceLineNo">459</span>            assert this.consumer == consumer;<a name="line.459"></a>
+<span class="sourceLineNo">460</span><a name="line.460"></a>
+<span class="sourceLineNo">461</span>            ((MessageAvailableConsumer) consumer).setAvailableListener(null);<a name="line.461"></a>
+<span class="sourceLineNo">462</span><a name="line.462"></a>
+<span class="sourceLineNo">463</span>            synchronized (this.consumer) {<a name="line.463"></a>
+<span class="sourceLineNo">464</span>                if (continuation != null) {<a name="line.464"></a>
+<span class="sourceLineNo">465</span>                    continuation.resume();<a name="line.465"></a>
+<span class="sourceLineNo">466</span>                }<a name="line.466"></a>
+<span class="sourceLineNo">467</span>            }<a name="line.467"></a>
+<span class="sourceLineNo">468</span>        }<a name="line.468"></a>
+<span class="sourceLineNo">469</span>    }<a name="line.469"></a>
+<span class="sourceLineNo">470</span>}<a name="line.470"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

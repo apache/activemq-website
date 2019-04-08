@@ -1,0 +1,538 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.transport.vm;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.io.IOException;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.io.InterruptedIOException;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.net.URI;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.security.cert.X509Certificate;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.util.concurrent.BlockingQueue;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.util.concurrent.LinkedBlockingQueue;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import java.util.concurrent.TimeUnit;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import java.util.concurrent.atomic.AtomicBoolean;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import java.util.concurrent.atomic.AtomicLong;<a name="line.27"></a>
+<span class="sourceLineNo">028</span><a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.apache.activemq.command.ShutdownInfo;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.apache.activemq.thread.Task;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.apache.activemq.thread.TaskRunner;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.apache.activemq.thread.TaskRunnerFactory;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.apache.activemq.transport.FutureResponse;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.apache.activemq.transport.ResponseCallback;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.apache.activemq.transport.Transport;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.apache.activemq.transport.TransportDisposedIOException;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import org.apache.activemq.transport.TransportListener;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>import org.apache.activemq.util.IOExceptionSupport;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>import org.apache.activemq.wireformat.WireFormat;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>import org.slf4j.Logger;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import org.slf4j.LoggerFactory;<a name="line.41"></a>
+<span class="sourceLineNo">042</span><a name="line.42"></a>
+<span class="sourceLineNo">043</span>/**<a name="line.43"></a>
+<span class="sourceLineNo">044</span> * A Transport implementation that uses direct method invocations.<a name="line.44"></a>
+<span class="sourceLineNo">045</span> */<a name="line.45"></a>
+<span class="sourceLineNo">046</span>public class VMTransport implements Transport, Task {<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    protected static final Logger LOG = LoggerFactory.getLogger(VMTransport.class);<a name="line.47"></a>
+<span class="sourceLineNo">048</span><a name="line.48"></a>
+<span class="sourceLineNo">049</span>    private static final AtomicLong NEXT_ID = new AtomicLong(0);<a name="line.49"></a>
+<span class="sourceLineNo">050</span><a name="line.50"></a>
+<span class="sourceLineNo">051</span>    // Transport Configuration<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    protected VMTransport peer;<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    protected TransportListener transportListener;<a name="line.53"></a>
+<span class="sourceLineNo">054</span>    protected boolean marshal;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    protected boolean async = true;<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    protected int asyncQueueDepth = 2000;<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    protected final URI location;<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    protected final long id;<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>    // Implementation<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    private volatile LinkedBlockingQueue&lt;Object&gt; messageQueue;<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    private volatile TaskRunnerFactory taskRunnerFactory;<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    private volatile TaskRunner taskRunner;<a name="line.63"></a>
+<span class="sourceLineNo">064</span><a name="line.64"></a>
+<span class="sourceLineNo">065</span>    // Transport State<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    protected final AtomicBoolean started = new AtomicBoolean();<a name="line.66"></a>
+<span class="sourceLineNo">067</span>    protected final AtomicBoolean disposed = new AtomicBoolean();<a name="line.67"></a>
+<span class="sourceLineNo">068</span><a name="line.68"></a>
+<span class="sourceLineNo">069</span>    private volatile int receiveCounter;<a name="line.69"></a>
+<span class="sourceLineNo">070</span><a name="line.70"></a>
+<span class="sourceLineNo">071</span>    public VMTransport(URI location) {<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        this.location = location;<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        this.id = NEXT_ID.getAndIncrement();<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    }<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>    public void setPeer(VMTransport peer) {<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        this.peer = peer;<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    }<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>    @Override<a name="line.80"></a>
+<span class="sourceLineNo">081</span>    public void oneway(Object command) throws IOException {<a name="line.81"></a>
+<span class="sourceLineNo">082</span><a name="line.82"></a>
+<span class="sourceLineNo">083</span>        if (disposed.get()) {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>            throw new TransportDisposedIOException("Transport disposed.");<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        }<a name="line.85"></a>
+<span class="sourceLineNo">086</span><a name="line.86"></a>
+<span class="sourceLineNo">087</span>        if (peer == null) {<a name="line.87"></a>
+<span class="sourceLineNo">088</span>            throw new IOException("Peer not connected.");<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        }<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>        try {<a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span>            if (peer.disposed.get()) {<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                throw new TransportDisposedIOException("Peer (" + peer.toString() + ") disposed.");<a name="line.94"></a>
+<span class="sourceLineNo">095</span>            }<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>            if (peer.async) {<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                peer.getMessageQueue().put(command);<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                peer.wakeup();<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                return;<a name="line.100"></a>
+<span class="sourceLineNo">101</span>            }<a name="line.101"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
+<span class="sourceLineNo">103</span>            if (!peer.started.get()) {<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                LinkedBlockingQueue&lt;Object&gt; pending = peer.getMessageQueue();<a name="line.104"></a>
+<span class="sourceLineNo">105</span>                int sleepTimeMillis;<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                boolean accepted = false;<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                do {<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                    sleepTimeMillis = 0;<a name="line.108"></a>
+<span class="sourceLineNo">109</span>                    // the pending queue is drained on start so we need to ensure we add before<a name="line.109"></a>
+<span class="sourceLineNo">110</span>                    // the drain commences, otherwise we never get the command dispatched!<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                    synchronized (peer.started) {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>                        if (!peer.started.get()) {<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                            accepted = pending.offer(command);<a name="line.113"></a>
+<span class="sourceLineNo">114</span>                            if (!accepted) {<a name="line.114"></a>
+<span class="sourceLineNo">115</span>                                sleepTimeMillis = 500;<a name="line.115"></a>
+<span class="sourceLineNo">116</span>                            }<a name="line.116"></a>
+<span class="sourceLineNo">117</span>                        }<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                    }<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                    // give start thread a chance if we will loop<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                    TimeUnit.MILLISECONDS.sleep(sleepTimeMillis);<a name="line.120"></a>
+<span class="sourceLineNo">121</span><a name="line.121"></a>
+<span class="sourceLineNo">122</span>                } while (!accepted &amp;&amp; !peer.started.get());<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                if (accepted) {<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                    return;<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                }<a name="line.125"></a>
+<span class="sourceLineNo">126</span>            }<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        } catch (InterruptedException e) {<a name="line.127"></a>
+<span class="sourceLineNo">128</span>            Thread.currentThread().interrupt();<a name="line.128"></a>
+<span class="sourceLineNo">129</span>            InterruptedIOException iioe = new InterruptedIOException(e.getMessage());<a name="line.129"></a>
+<span class="sourceLineNo">130</span>            iioe.initCause(e);<a name="line.130"></a>
+<span class="sourceLineNo">131</span>            throw iioe;<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        }<a name="line.132"></a>
+<span class="sourceLineNo">133</span><a name="line.133"></a>
+<span class="sourceLineNo">134</span>        dispatch(peer, peer.messageQueue, command);<a name="line.134"></a>
+<span class="sourceLineNo">135</span>    }<a name="line.135"></a>
+<span class="sourceLineNo">136</span><a name="line.136"></a>
+<span class="sourceLineNo">137</span>    public void dispatch(VMTransport transport, BlockingQueue&lt;Object&gt; pending, Object command) {<a name="line.137"></a>
+<span class="sourceLineNo">138</span>        TransportListener transportListener = transport.getTransportListener();<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        if (transportListener != null) {<a name="line.139"></a>
+<span class="sourceLineNo">140</span>            // Lock here on the target transport's started since we want to wait for its start()<a name="line.140"></a>
+<span class="sourceLineNo">141</span>            // method to finish dispatching out of the queue before we do our own.<a name="line.141"></a>
+<span class="sourceLineNo">142</span>            synchronized (transport.started) {<a name="line.142"></a>
+<span class="sourceLineNo">143</span><a name="line.143"></a>
+<span class="sourceLineNo">144</span>                // Ensure that no additional commands entered the queue in the small time window<a name="line.144"></a>
+<span class="sourceLineNo">145</span>                // before the start method locks the dispatch lock and the oneway method was in<a name="line.145"></a>
+<span class="sourceLineNo">146</span>                // an put operation.<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                while(pending != null &amp;&amp; !pending.isEmpty() &amp;&amp; !transport.isDisposed()) {<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                    doDispatch(transport, transportListener, pending.poll());<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                }<a name="line.149"></a>
+<span class="sourceLineNo">150</span><a name="line.150"></a>
+<span class="sourceLineNo">151</span>                // We are now in sync mode and won't enqueue any more commands to the target<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                // transport so lets clean up its resources.<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                transport.messageQueue = null;<a name="line.153"></a>
+<span class="sourceLineNo">154</span><a name="line.154"></a>
+<span class="sourceLineNo">155</span>                // Don't dispatch if either end was disposed already.<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                if (command != null &amp;&amp; !this.disposed.get() &amp;&amp; !transport.isDisposed()) {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                    doDispatch(transport, transportListener, command);<a name="line.157"></a>
+<span class="sourceLineNo">158</span>                }<a name="line.158"></a>
+<span class="sourceLineNo">159</span>            }<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        }<a name="line.160"></a>
+<span class="sourceLineNo">161</span>    }<a name="line.161"></a>
+<span class="sourceLineNo">162</span><a name="line.162"></a>
+<span class="sourceLineNo">163</span>    public void doDispatch(VMTransport transport, TransportListener transportListener, Object command) {<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        transport.receiveCounter++;<a name="line.164"></a>
+<span class="sourceLineNo">165</span>        transportListener.onCommand(command);<a name="line.165"></a>
+<span class="sourceLineNo">166</span>    }<a name="line.166"></a>
+<span class="sourceLineNo">167</span><a name="line.167"></a>
+<span class="sourceLineNo">168</span>    @Override<a name="line.168"></a>
+<span class="sourceLineNo">169</span>    public void start() throws Exception {<a name="line.169"></a>
+<span class="sourceLineNo">170</span><a name="line.170"></a>
+<span class="sourceLineNo">171</span>        if (transportListener == null) {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>            throw new IOException("TransportListener not set.");<a name="line.172"></a>
+<span class="sourceLineNo">173</span>        }<a name="line.173"></a>
+<span class="sourceLineNo">174</span><a name="line.174"></a>
+<span class="sourceLineNo">175</span>        // If we are not in async mode we lock the dispatch lock here and then start to<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        // prevent any sync dispatches from occurring until we dispatch the pending messages<a name="line.176"></a>
+<span class="sourceLineNo">177</span>        // to maintain delivery order.  When async this happens automatically so just set<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        // started and wakeup the task runner.<a name="line.178"></a>
+<span class="sourceLineNo">179</span>        if (!async) {<a name="line.179"></a>
+<span class="sourceLineNo">180</span>            synchronized (started) {<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                if (started.compareAndSet(false, true)) {<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                    LinkedBlockingQueue&lt;Object&gt; mq = getMessageQueue();<a name="line.182"></a>
+<span class="sourceLineNo">183</span>                    Object command;<a name="line.183"></a>
+<span class="sourceLineNo">184</span>                    while ((command = mq.poll()) != null &amp;&amp; !disposed.get() ) {<a name="line.184"></a>
+<span class="sourceLineNo">185</span>                        receiveCounter++;<a name="line.185"></a>
+<span class="sourceLineNo">186</span>                        doDispatch(this, transportListener, command);<a name="line.186"></a>
+<span class="sourceLineNo">187</span>                    }<a name="line.187"></a>
+<span class="sourceLineNo">188</span>                }<a name="line.188"></a>
+<span class="sourceLineNo">189</span>            }<a name="line.189"></a>
+<span class="sourceLineNo">190</span>        } else {<a name="line.190"></a>
+<span class="sourceLineNo">191</span>            if (started.compareAndSet(false, true)) {<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                wakeup();<a name="line.192"></a>
+<span class="sourceLineNo">193</span>            }<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        }<a name="line.194"></a>
+<span class="sourceLineNo">195</span>    }<a name="line.195"></a>
+<span class="sourceLineNo">196</span><a name="line.196"></a>
+<span class="sourceLineNo">197</span>    @Override<a name="line.197"></a>
+<span class="sourceLineNo">198</span>    public void stop() throws Exception {<a name="line.198"></a>
+<span class="sourceLineNo">199</span>        // Only need to do this once, all future oneway calls will now<a name="line.199"></a>
+<span class="sourceLineNo">200</span>        // fail as will any asnyc jobs in the task runner.<a name="line.200"></a>
+<span class="sourceLineNo">201</span>        if (disposed.compareAndSet(false, true)) {<a name="line.201"></a>
+<span class="sourceLineNo">202</span><a name="line.202"></a>
+<span class="sourceLineNo">203</span>            TaskRunner tr = taskRunner;<a name="line.203"></a>
+<span class="sourceLineNo">204</span>            LinkedBlockingQueue&lt;Object&gt; mq = this.messageQueue;<a name="line.204"></a>
+<span class="sourceLineNo">205</span><a name="line.205"></a>
+<span class="sourceLineNo">206</span>            taskRunner = null;<a name="line.206"></a>
+<span class="sourceLineNo">207</span>            messageQueue = null;<a name="line.207"></a>
+<span class="sourceLineNo">208</span><a name="line.208"></a>
+<span class="sourceLineNo">209</span>            if (mq != null) {<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                mq.clear();<a name="line.210"></a>
+<span class="sourceLineNo">211</span>            }<a name="line.211"></a>
+<span class="sourceLineNo">212</span><a name="line.212"></a>
+<span class="sourceLineNo">213</span>            // don't wait for completion<a name="line.213"></a>
+<span class="sourceLineNo">214</span>            if (tr != null) {<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                try {<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                    tr.shutdown(1);<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                } catch(Exception e) {<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                }<a name="line.218"></a>
+<span class="sourceLineNo">219</span>                tr = null;<a name="line.219"></a>
+<span class="sourceLineNo">220</span>            }<a name="line.220"></a>
+<span class="sourceLineNo">221</span><a name="line.221"></a>
+<span class="sourceLineNo">222</span>            if (peer.transportListener != null) {<a name="line.222"></a>
+<span class="sourceLineNo">223</span>                // let the peer know that we are disconnecting after attempting<a name="line.223"></a>
+<span class="sourceLineNo">224</span>                // to cleanly shutdown the async tasks so that this is the last<a name="line.224"></a>
+<span class="sourceLineNo">225</span>                // command it see's.<a name="line.225"></a>
+<span class="sourceLineNo">226</span>                try {<a name="line.226"></a>
+<span class="sourceLineNo">227</span>                    peer.transportListener.onCommand(new ShutdownInfo());<a name="line.227"></a>
+<span class="sourceLineNo">228</span>                } catch (Exception ignore) {<a name="line.228"></a>
+<span class="sourceLineNo">229</span>                }<a name="line.229"></a>
+<span class="sourceLineNo">230</span><a name="line.230"></a>
+<span class="sourceLineNo">231</span>                // let any requests pending a response see an exception<a name="line.231"></a>
+<span class="sourceLineNo">232</span>                try {<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                    peer.transportListener.onException(new TransportDisposedIOException("peer (" + this + ") stopped."));<a name="line.233"></a>
+<span class="sourceLineNo">234</span>                } catch (Exception ignore) {<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                }<a name="line.235"></a>
+<span class="sourceLineNo">236</span>            }<a name="line.236"></a>
+<span class="sourceLineNo">237</span><a name="line.237"></a>
+<span class="sourceLineNo">238</span>            // shutdown task runner factory<a name="line.238"></a>
+<span class="sourceLineNo">239</span>            if (taskRunnerFactory != null) {<a name="line.239"></a>
+<span class="sourceLineNo">240</span>                taskRunnerFactory.shutdownNow();<a name="line.240"></a>
+<span class="sourceLineNo">241</span>                taskRunnerFactory = null;<a name="line.241"></a>
+<span class="sourceLineNo">242</span>            }<a name="line.242"></a>
+<span class="sourceLineNo">243</span>        }<a name="line.243"></a>
+<span class="sourceLineNo">244</span>    }<a name="line.244"></a>
+<span class="sourceLineNo">245</span><a name="line.245"></a>
+<span class="sourceLineNo">246</span>    protected void wakeup() {<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        if (async &amp;&amp; started.get()) {<a name="line.247"></a>
+<span class="sourceLineNo">248</span>            try {<a name="line.248"></a>
+<span class="sourceLineNo">249</span>                getTaskRunner().wakeup();<a name="line.249"></a>
+<span class="sourceLineNo">250</span>            } catch (InterruptedException e) {<a name="line.250"></a>
+<span class="sourceLineNo">251</span>                Thread.currentThread().interrupt();<a name="line.251"></a>
+<span class="sourceLineNo">252</span>            } catch (TransportDisposedIOException e) {<a name="line.252"></a>
+<span class="sourceLineNo">253</span>            }<a name="line.253"></a>
+<span class="sourceLineNo">254</span>        }<a name="line.254"></a>
+<span class="sourceLineNo">255</span>    }<a name="line.255"></a>
+<span class="sourceLineNo">256</span><a name="line.256"></a>
+<span class="sourceLineNo">257</span>    /**<a name="line.257"></a>
+<span class="sourceLineNo">258</span>     * @see org.apache.activemq.thread.Task#iterate()<a name="line.258"></a>
+<span class="sourceLineNo">259</span>     */<a name="line.259"></a>
+<span class="sourceLineNo">260</span>    @Override<a name="line.260"></a>
+<span class="sourceLineNo">261</span>    public boolean iterate() {<a name="line.261"></a>
+<span class="sourceLineNo">262</span><a name="line.262"></a>
+<span class="sourceLineNo">263</span>        final TransportListener tl = transportListener;<a name="line.263"></a>
+<span class="sourceLineNo">264</span><a name="line.264"></a>
+<span class="sourceLineNo">265</span>        LinkedBlockingQueue&lt;Object&gt; mq;<a name="line.265"></a>
+<span class="sourceLineNo">266</span>        try {<a name="line.266"></a>
+<span class="sourceLineNo">267</span>            mq = getMessageQueue();<a name="line.267"></a>
+<span class="sourceLineNo">268</span>        } catch (TransportDisposedIOException e) {<a name="line.268"></a>
+<span class="sourceLineNo">269</span>            return false;<a name="line.269"></a>
+<span class="sourceLineNo">270</span>        }<a name="line.270"></a>
+<span class="sourceLineNo">271</span><a name="line.271"></a>
+<span class="sourceLineNo">272</span>        Object command = mq.poll();<a name="line.272"></a>
+<span class="sourceLineNo">273</span>        if (command != null &amp;&amp; !disposed.get()) {<a name="line.273"></a>
+<span class="sourceLineNo">274</span>            try {<a name="line.274"></a>
+<span class="sourceLineNo">275</span>                tl.onCommand(command);<a name="line.275"></a>
+<span class="sourceLineNo">276</span>            } catch (Exception e) {<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                try {<a name="line.277"></a>
+<span class="sourceLineNo">278</span>                    peer.transportListener.onException(IOExceptionSupport.create(e));<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                } catch (Exception ignore) {<a name="line.279"></a>
+<span class="sourceLineNo">280</span>                }<a name="line.280"></a>
+<span class="sourceLineNo">281</span>            }<a name="line.281"></a>
+<span class="sourceLineNo">282</span>            return !mq.isEmpty() &amp;&amp; !disposed.get();<a name="line.282"></a>
+<span class="sourceLineNo">283</span>        } else {<a name="line.283"></a>
+<span class="sourceLineNo">284</span>            if(disposed.get()) {<a name="line.284"></a>
+<span class="sourceLineNo">285</span>                mq.clear();<a name="line.285"></a>
+<span class="sourceLineNo">286</span>            }<a name="line.286"></a>
+<span class="sourceLineNo">287</span>            return false;<a name="line.287"></a>
+<span class="sourceLineNo">288</span>        }<a name="line.288"></a>
+<span class="sourceLineNo">289</span>    }<a name="line.289"></a>
+<span class="sourceLineNo">290</span><a name="line.290"></a>
+<span class="sourceLineNo">291</span>    @Override<a name="line.291"></a>
+<span class="sourceLineNo">292</span>    public void setTransportListener(TransportListener commandListener) {<a name="line.292"></a>
+<span class="sourceLineNo">293</span>        this.transportListener = commandListener;<a name="line.293"></a>
+<span class="sourceLineNo">294</span>    }<a name="line.294"></a>
+<span class="sourceLineNo">295</span><a name="line.295"></a>
+<span class="sourceLineNo">296</span>    public LinkedBlockingQueue&lt;Object&gt; getMessageQueue() throws TransportDisposedIOException {<a name="line.296"></a>
+<span class="sourceLineNo">297</span>        LinkedBlockingQueue&lt;Object&gt; result = messageQueue;<a name="line.297"></a>
+<span class="sourceLineNo">298</span>        if (result == null) {<a name="line.298"></a>
+<span class="sourceLineNo">299</span>            synchronized (this) {<a name="line.299"></a>
+<span class="sourceLineNo">300</span>                result = messageQueue;<a name="line.300"></a>
+<span class="sourceLineNo">301</span>                if (result == null) {<a name="line.301"></a>
+<span class="sourceLineNo">302</span>                    if (disposed.get()) {<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                        throw new TransportDisposedIOException("The Transport has been disposed");<a name="line.303"></a>
+<span class="sourceLineNo">304</span>                    }<a name="line.304"></a>
+<span class="sourceLineNo">305</span><a name="line.305"></a>
+<span class="sourceLineNo">306</span>                    messageQueue = result = new LinkedBlockingQueue&lt;Object&gt;(this.asyncQueueDepth);<a name="line.306"></a>
+<span class="sourceLineNo">307</span>                }<a name="line.307"></a>
+<span class="sourceLineNo">308</span>            }<a name="line.308"></a>
+<span class="sourceLineNo">309</span>        }<a name="line.309"></a>
+<span class="sourceLineNo">310</span>        return result;<a name="line.310"></a>
+<span class="sourceLineNo">311</span>    }<a name="line.311"></a>
+<span class="sourceLineNo">312</span><a name="line.312"></a>
+<span class="sourceLineNo">313</span>    protected TaskRunner getTaskRunner() throws TransportDisposedIOException {<a name="line.313"></a>
+<span class="sourceLineNo">314</span>        TaskRunner result = taskRunner;<a name="line.314"></a>
+<span class="sourceLineNo">315</span>        if (result == null) {<a name="line.315"></a>
+<span class="sourceLineNo">316</span>            synchronized (this) {<a name="line.316"></a>
+<span class="sourceLineNo">317</span>                result = taskRunner;<a name="line.317"></a>
+<span class="sourceLineNo">318</span>                if (result == null) {<a name="line.318"></a>
+<span class="sourceLineNo">319</span>                    if (disposed.get()) {<a name="line.319"></a>
+<span class="sourceLineNo">320</span>                        throw new TransportDisposedIOException("The Transport has been disposed");<a name="line.320"></a>
+<span class="sourceLineNo">321</span>                    }<a name="line.321"></a>
+<span class="sourceLineNo">322</span><a name="line.322"></a>
+<span class="sourceLineNo">323</span>                    String name = "ActiveMQ VMTransport: " + toString();<a name="line.323"></a>
+<span class="sourceLineNo">324</span>                    if (taskRunnerFactory == null) {<a name="line.324"></a>
+<span class="sourceLineNo">325</span>                        taskRunnerFactory = new TaskRunnerFactory(name);<a name="line.325"></a>
+<span class="sourceLineNo">326</span>                        taskRunnerFactory.init();<a name="line.326"></a>
+<span class="sourceLineNo">327</span>                    }<a name="line.327"></a>
+<span class="sourceLineNo">328</span>                    taskRunner = result = taskRunnerFactory.createTaskRunner(this, name);<a name="line.328"></a>
+<span class="sourceLineNo">329</span>                }<a name="line.329"></a>
+<span class="sourceLineNo">330</span>            }<a name="line.330"></a>
+<span class="sourceLineNo">331</span>        }<a name="line.331"></a>
+<span class="sourceLineNo">332</span>        return result;<a name="line.332"></a>
+<span class="sourceLineNo">333</span>    }<a name="line.333"></a>
+<span class="sourceLineNo">334</span><a name="line.334"></a>
+<span class="sourceLineNo">335</span>    @Override<a name="line.335"></a>
+<span class="sourceLineNo">336</span>    public FutureResponse asyncRequest(Object command, ResponseCallback responseCallback) throws IOException {<a name="line.336"></a>
+<span class="sourceLineNo">337</span>        throw new AssertionError("Unsupported Method");<a name="line.337"></a>
+<span class="sourceLineNo">338</span>    }<a name="line.338"></a>
+<span class="sourceLineNo">339</span><a name="line.339"></a>
+<span class="sourceLineNo">340</span>    @Override<a name="line.340"></a>
+<span class="sourceLineNo">341</span>    public Object request(Object command) throws IOException {<a name="line.341"></a>
+<span class="sourceLineNo">342</span>        throw new AssertionError("Unsupported Method");<a name="line.342"></a>
+<span class="sourceLineNo">343</span>    }<a name="line.343"></a>
+<span class="sourceLineNo">344</span><a name="line.344"></a>
+<span class="sourceLineNo">345</span>    @Override<a name="line.345"></a>
+<span class="sourceLineNo">346</span>    public Object request(Object command, int timeout) throws IOException {<a name="line.346"></a>
+<span class="sourceLineNo">347</span>        throw new AssertionError("Unsupported Method");<a name="line.347"></a>
+<span class="sourceLineNo">348</span>    }<a name="line.348"></a>
+<span class="sourceLineNo">349</span><a name="line.349"></a>
+<span class="sourceLineNo">350</span>    @Override<a name="line.350"></a>
+<span class="sourceLineNo">351</span>    public TransportListener getTransportListener() {<a name="line.351"></a>
+<span class="sourceLineNo">352</span>        return transportListener;<a name="line.352"></a>
+<span class="sourceLineNo">353</span>    }<a name="line.353"></a>
+<span class="sourceLineNo">354</span><a name="line.354"></a>
+<span class="sourceLineNo">355</span>    @Override<a name="line.355"></a>
+<span class="sourceLineNo">356</span>    public &lt;T&gt; T narrow(Class&lt;T&gt; target) {<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        if (target.isAssignableFrom(getClass())) {<a name="line.357"></a>
+<span class="sourceLineNo">358</span>            return target.cast(this);<a name="line.358"></a>
+<span class="sourceLineNo">359</span>        }<a name="line.359"></a>
+<span class="sourceLineNo">360</span>        return null;<a name="line.360"></a>
+<span class="sourceLineNo">361</span>    }<a name="line.361"></a>
+<span class="sourceLineNo">362</span><a name="line.362"></a>
+<span class="sourceLineNo">363</span>    public boolean isMarshal() {<a name="line.363"></a>
+<span class="sourceLineNo">364</span>        return marshal;<a name="line.364"></a>
+<span class="sourceLineNo">365</span>    }<a name="line.365"></a>
+<span class="sourceLineNo">366</span><a name="line.366"></a>
+<span class="sourceLineNo">367</span>    public void setMarshal(boolean marshal) {<a name="line.367"></a>
+<span class="sourceLineNo">368</span>        this.marshal = marshal;<a name="line.368"></a>
+<span class="sourceLineNo">369</span>    }<a name="line.369"></a>
+<span class="sourceLineNo">370</span><a name="line.370"></a>
+<span class="sourceLineNo">371</span>    @Override<a name="line.371"></a>
+<span class="sourceLineNo">372</span>    public String toString() {<a name="line.372"></a>
+<span class="sourceLineNo">373</span>        return location + "#" + id;<a name="line.373"></a>
+<span class="sourceLineNo">374</span>    }<a name="line.374"></a>
+<span class="sourceLineNo">375</span><a name="line.375"></a>
+<span class="sourceLineNo">376</span>    @Override<a name="line.376"></a>
+<span class="sourceLineNo">377</span>    public String getRemoteAddress() {<a name="line.377"></a>
+<span class="sourceLineNo">378</span>        if (peer != null) {<a name="line.378"></a>
+<span class="sourceLineNo">379</span>            return peer.toString();<a name="line.379"></a>
+<span class="sourceLineNo">380</span>        }<a name="line.380"></a>
+<span class="sourceLineNo">381</span>        return null;<a name="line.381"></a>
+<span class="sourceLineNo">382</span>    }<a name="line.382"></a>
+<span class="sourceLineNo">383</span><a name="line.383"></a>
+<span class="sourceLineNo">384</span>    /**<a name="line.384"></a>
+<span class="sourceLineNo">385</span>     * @return the async<a name="line.385"></a>
+<span class="sourceLineNo">386</span>     */<a name="line.386"></a>
+<span class="sourceLineNo">387</span>    public boolean isAsync() {<a name="line.387"></a>
+<span class="sourceLineNo">388</span>        return async;<a name="line.388"></a>
+<span class="sourceLineNo">389</span>    }<a name="line.389"></a>
+<span class="sourceLineNo">390</span><a name="line.390"></a>
+<span class="sourceLineNo">391</span>    /**<a name="line.391"></a>
+<span class="sourceLineNo">392</span>     * @param async the async to set<a name="line.392"></a>
+<span class="sourceLineNo">393</span>     */<a name="line.393"></a>
+<span class="sourceLineNo">394</span>    public void setAsync(boolean async) {<a name="line.394"></a>
+<span class="sourceLineNo">395</span>        this.async = async;<a name="line.395"></a>
+<span class="sourceLineNo">396</span>    }<a name="line.396"></a>
+<span class="sourceLineNo">397</span><a name="line.397"></a>
+<span class="sourceLineNo">398</span>    /**<a name="line.398"></a>
+<span class="sourceLineNo">399</span>     * @return the asyncQueueDepth<a name="line.399"></a>
+<span class="sourceLineNo">400</span>     */<a name="line.400"></a>
+<span class="sourceLineNo">401</span>    public int getAsyncQueueDepth() {<a name="line.401"></a>
+<span class="sourceLineNo">402</span>        return asyncQueueDepth;<a name="line.402"></a>
+<span class="sourceLineNo">403</span>    }<a name="line.403"></a>
+<span class="sourceLineNo">404</span><a name="line.404"></a>
+<span class="sourceLineNo">405</span>    /**<a name="line.405"></a>
+<span class="sourceLineNo">406</span>     * @param asyncQueueDepth the asyncQueueDepth to set<a name="line.406"></a>
+<span class="sourceLineNo">407</span>     */<a name="line.407"></a>
+<span class="sourceLineNo">408</span>    public void setAsyncQueueDepth(int asyncQueueDepth) {<a name="line.408"></a>
+<span class="sourceLineNo">409</span>        this.asyncQueueDepth = asyncQueueDepth;<a name="line.409"></a>
+<span class="sourceLineNo">410</span>    }<a name="line.410"></a>
+<span class="sourceLineNo">411</span><a name="line.411"></a>
+<span class="sourceLineNo">412</span>    @Override<a name="line.412"></a>
+<span class="sourceLineNo">413</span>    public boolean isFaultTolerant() {<a name="line.413"></a>
+<span class="sourceLineNo">414</span>        return false;<a name="line.414"></a>
+<span class="sourceLineNo">415</span>    }<a name="line.415"></a>
+<span class="sourceLineNo">416</span><a name="line.416"></a>
+<span class="sourceLineNo">417</span>    @Override<a name="line.417"></a>
+<span class="sourceLineNo">418</span>    public boolean isDisposed() {<a name="line.418"></a>
+<span class="sourceLineNo">419</span>        return disposed.get();<a name="line.419"></a>
+<span class="sourceLineNo">420</span>    }<a name="line.420"></a>
+<span class="sourceLineNo">421</span><a name="line.421"></a>
+<span class="sourceLineNo">422</span>    @Override<a name="line.422"></a>
+<span class="sourceLineNo">423</span>    public boolean isConnected() {<a name="line.423"></a>
+<span class="sourceLineNo">424</span>        return !disposed.get();<a name="line.424"></a>
+<span class="sourceLineNo">425</span>    }<a name="line.425"></a>
+<span class="sourceLineNo">426</span><a name="line.426"></a>
+<span class="sourceLineNo">427</span>    @Override<a name="line.427"></a>
+<span class="sourceLineNo">428</span>    public void reconnect(URI uri) throws IOException {<a name="line.428"></a>
+<span class="sourceLineNo">429</span>        throw new IOException("Transport reconnect is not supported");<a name="line.429"></a>
+<span class="sourceLineNo">430</span>    }<a name="line.430"></a>
+<span class="sourceLineNo">431</span><a name="line.431"></a>
+<span class="sourceLineNo">432</span>    @Override<a name="line.432"></a>
+<span class="sourceLineNo">433</span>    public boolean isReconnectSupported() {<a name="line.433"></a>
+<span class="sourceLineNo">434</span>        return false;<a name="line.434"></a>
+<span class="sourceLineNo">435</span>    }<a name="line.435"></a>
+<span class="sourceLineNo">436</span><a name="line.436"></a>
+<span class="sourceLineNo">437</span>    @Override<a name="line.437"></a>
+<span class="sourceLineNo">438</span>    public boolean isUpdateURIsSupported() {<a name="line.438"></a>
+<span class="sourceLineNo">439</span>        return false;<a name="line.439"></a>
+<span class="sourceLineNo">440</span>    }<a name="line.440"></a>
+<span class="sourceLineNo">441</span><a name="line.441"></a>
+<span class="sourceLineNo">442</span>    @Override<a name="line.442"></a>
+<span class="sourceLineNo">443</span>    public void updateURIs(boolean reblance,URI[] uris) throws IOException {<a name="line.443"></a>
+<span class="sourceLineNo">444</span>        throw new IOException("URI update feature not supported");<a name="line.444"></a>
+<span class="sourceLineNo">445</span>    }<a name="line.445"></a>
+<span class="sourceLineNo">446</span><a name="line.446"></a>
+<span class="sourceLineNo">447</span>    @Override<a name="line.447"></a>
+<span class="sourceLineNo">448</span>    public int getReceiveCounter() {<a name="line.448"></a>
+<span class="sourceLineNo">449</span>        return receiveCounter;<a name="line.449"></a>
+<span class="sourceLineNo">450</span>    }<a name="line.450"></a>
+<span class="sourceLineNo">451</span><a name="line.451"></a>
+<span class="sourceLineNo">452</span>    @Override<a name="line.452"></a>
+<span class="sourceLineNo">453</span>    public X509Certificate[] getPeerCertificates() {<a name="line.453"></a>
+<span class="sourceLineNo">454</span>        return null;<a name="line.454"></a>
+<span class="sourceLineNo">455</span>    }<a name="line.455"></a>
+<span class="sourceLineNo">456</span><a name="line.456"></a>
+<span class="sourceLineNo">457</span>    @Override<a name="line.457"></a>
+<span class="sourceLineNo">458</span>    public void setPeerCertificates(X509Certificate[] certificates) {<a name="line.458"></a>
+<span class="sourceLineNo">459</span><a name="line.459"></a>
+<span class="sourceLineNo">460</span>    }<a name="line.460"></a>
+<span class="sourceLineNo">461</span><a name="line.461"></a>
+<span class="sourceLineNo">462</span>    @Override<a name="line.462"></a>
+<span class="sourceLineNo">463</span>    public WireFormat getWireFormat() {<a name="line.463"></a>
+<span class="sourceLineNo">464</span>        return null;<a name="line.464"></a>
+<span class="sourceLineNo">465</span>    }<a name="line.465"></a>
+<span class="sourceLineNo">466</span>}<a name="line.466"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

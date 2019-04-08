@@ -1,0 +1,570 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.jaas;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.io.IOException;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.net.URI;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.net.URISyntaxException;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.security.Principal;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.text.MessageFormat;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.util.*;<a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span>import javax.naming.*;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import javax.naming.directory.Attribute;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import javax.naming.directory.Attributes;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import javax.naming.directory.DirContext;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import javax.naming.directory.InitialDirContext;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import javax.naming.directory.SearchControls;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import javax.naming.directory.SearchResult;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import javax.security.auth.Subject;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import javax.security.auth.callback.Callback;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import javax.security.auth.callback.CallbackHandler;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import javax.security.auth.callback.NameCallback;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import javax.security.auth.callback.PasswordCallback;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>import javax.security.auth.callback.UnsupportedCallbackException;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>import javax.security.auth.login.FailedLoginException;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>import javax.security.auth.login.LoginException;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import javax.security.auth.spi.LoginModule;<a name="line.41"></a>
+<span class="sourceLineNo">042</span><a name="line.42"></a>
+<span class="sourceLineNo">043</span>import org.slf4j.Logger;<a name="line.43"></a>
+<span class="sourceLineNo">044</span>import org.slf4j.LoggerFactory;<a name="line.44"></a>
+<span class="sourceLineNo">045</span><a name="line.45"></a>
+<span class="sourceLineNo">046</span>/**<a name="line.46"></a>
+<span class="sourceLineNo">047</span> * @version $Rev: $ $Date: $<a name="line.47"></a>
+<span class="sourceLineNo">048</span> */<a name="line.48"></a>
+<span class="sourceLineNo">049</span>public class LDAPLoginModule implements LoginModule {<a name="line.49"></a>
+<span class="sourceLineNo">050</span><a name="line.50"></a>
+<span class="sourceLineNo">051</span>    private static final String INITIAL_CONTEXT_FACTORY = "initialContextFactory";<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    private static final String CONNECTION_URL = "connectionURL";<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    private static final String CONNECTION_USERNAME = "connectionUsername";<a name="line.53"></a>
+<span class="sourceLineNo">054</span>    private static final String CONNECTION_PASSWORD = "connectionPassword";<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    private static final String CONNECTION_PROTOCOL = "connectionProtocol";<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    private static final String AUTHENTICATION = "authentication";<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    private static final String USER_BASE = "userBase";<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    private static final String USER_SEARCH_MATCHING = "userSearchMatching";<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    private static final String USER_SEARCH_SUBTREE = "userSearchSubtree";<a name="line.59"></a>
+<span class="sourceLineNo">060</span>    private static final String ROLE_BASE = "roleBase";<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    private static final String ROLE_NAME = "roleName";<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    private static final String ROLE_SEARCH_MATCHING = "roleSearchMatching";<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    private static final String ROLE_SEARCH_SUBTREE = "roleSearchSubtree";<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    private static final String USER_ROLE_NAME = "userRoleName";<a name="line.64"></a>
+<span class="sourceLineNo">065</span>    private static final String EXPAND_ROLES = "expandRoles";<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    private static final String EXPAND_ROLES_MATCHING = "expandRolesMatching";<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>    private static Logger log = LoggerFactory.getLogger(LDAPLoginModule.class);<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>    protected DirContext context;<a name="line.70"></a>
+<span class="sourceLineNo">071</span><a name="line.71"></a>
+<span class="sourceLineNo">072</span>    private Subject subject;<a name="line.72"></a>
+<span class="sourceLineNo">073</span>    private CallbackHandler handler;  <a name="line.73"></a>
+<span class="sourceLineNo">074</span>    private LDAPLoginProperty [] config;<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    private String username;<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    private Set&lt;GroupPrincipal&gt; groups = new HashSet&lt;GroupPrincipal&gt;();<a name="line.76"></a>
+<span class="sourceLineNo">077</span><a name="line.77"></a>
+<span class="sourceLineNo">078</span>    @Override<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    public void initialize(Subject subject, CallbackHandler callbackHandler, Map sharedState, Map options) {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>        this.subject = subject;<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        this.handler = callbackHandler;<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        <a name="line.82"></a>
+<span class="sourceLineNo">083</span>        config = new LDAPLoginProperty [] {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                        new LDAPLoginProperty (INITIAL_CONTEXT_FACTORY, (String)options.get(INITIAL_CONTEXT_FACTORY)),<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                        new LDAPLoginProperty (CONNECTION_URL, (String)options.get(CONNECTION_URL)),<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                        new LDAPLoginProperty (CONNECTION_USERNAME, (String)options.get(CONNECTION_USERNAME)),<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                        new LDAPLoginProperty (CONNECTION_PASSWORD, (String)options.get(CONNECTION_PASSWORD)),<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                        new LDAPLoginProperty (CONNECTION_PROTOCOL, (String)options.get(CONNECTION_PROTOCOL)),<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                        new LDAPLoginProperty (AUTHENTICATION, (String)options.get(AUTHENTICATION)),<a name="line.89"></a>
+<span class="sourceLineNo">090</span>                        new LDAPLoginProperty (USER_BASE, (String)options.get(USER_BASE)),<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                        new LDAPLoginProperty (USER_SEARCH_MATCHING, (String)options.get(USER_SEARCH_MATCHING)),<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                        new LDAPLoginProperty (USER_SEARCH_SUBTREE, (String)options.get(USER_SEARCH_SUBTREE)),<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                        new LDAPLoginProperty (ROLE_BASE, (String)options.get(ROLE_BASE)),<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                        new LDAPLoginProperty (ROLE_NAME, (String)options.get(ROLE_NAME)),<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                        new LDAPLoginProperty (ROLE_SEARCH_MATCHING, (String)options.get(ROLE_SEARCH_MATCHING)),<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                        new LDAPLoginProperty (ROLE_SEARCH_SUBTREE, (String)options.get(ROLE_SEARCH_SUBTREE)),<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                        new LDAPLoginProperty (USER_ROLE_NAME, (String)options.get(USER_ROLE_NAME)),<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                new LDAPLoginProperty (EXPAND_ROLES, (String) options.get(EXPAND_ROLES)),<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                new LDAPLoginProperty (EXPAND_ROLES_MATCHING, (String) options.get(EXPAND_ROLES_MATCHING)),<a name="line.99"></a>
+<span class="sourceLineNo">100</span><a name="line.100"></a>
+<span class="sourceLineNo">101</span>        };<a name="line.101"></a>
+<span class="sourceLineNo">102</span>    }<a name="line.102"></a>
+<span class="sourceLineNo">103</span><a name="line.103"></a>
+<span class="sourceLineNo">104</span>    @Override<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    public boolean login() throws LoginException {<a name="line.105"></a>
+<span class="sourceLineNo">106</span><a name="line.106"></a>
+<span class="sourceLineNo">107</span>        Callback[] callbacks = new Callback[2];<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>        callbacks[0] = new NameCallback("User name");<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        callbacks[1] = new PasswordCallback("Password", false);<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        try {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>            handler.handle(callbacks);<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        } catch (IOException ioe) {<a name="line.113"></a>
+<span class="sourceLineNo">114</span>            throw (LoginException)new LoginException().initCause(ioe);<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        } catch (UnsupportedCallbackException uce) {<a name="line.115"></a>
+<span class="sourceLineNo">116</span>            throw (LoginException)new LoginException().initCause(uce);<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        }<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        <a name="line.118"></a>
+<span class="sourceLineNo">119</span>        String password;<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        <a name="line.120"></a>
+<span class="sourceLineNo">121</span>        username = ((NameCallback)callbacks[0]).getName();<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        if (username == null)<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                return false;<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                <a name="line.124"></a>
+<span class="sourceLineNo">125</span>        if (((PasswordCallback)callbacks[1]).getPassword() != null)<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                password = new String(((PasswordCallback)callbacks[1]).getPassword());<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        else<a name="line.127"></a>
+<span class="sourceLineNo">128</span>                password="";<a name="line.128"></a>
+<span class="sourceLineNo">129</span><a name="line.129"></a>
+<span class="sourceLineNo">130</span>        // authenticate will throw LoginException<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        // in case of failed authentication<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        authenticate(username, password);<a name="line.132"></a>
+<span class="sourceLineNo">133</span>        return true;<a name="line.133"></a>
+<span class="sourceLineNo">134</span>    }<a name="line.134"></a>
+<span class="sourceLineNo">135</span><a name="line.135"></a>
+<span class="sourceLineNo">136</span>    @Override<a name="line.136"></a>
+<span class="sourceLineNo">137</span>    public boolean logout() throws LoginException {<a name="line.137"></a>
+<span class="sourceLineNo">138</span>        username = null;<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        return true;<a name="line.139"></a>
+<span class="sourceLineNo">140</span>    }<a name="line.140"></a>
+<span class="sourceLineNo">141</span><a name="line.141"></a>
+<span class="sourceLineNo">142</span>    @Override<a name="line.142"></a>
+<span class="sourceLineNo">143</span>    public boolean commit() throws LoginException {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        Set&lt;Principal&gt; principals = subject.getPrincipals();<a name="line.144"></a>
+<span class="sourceLineNo">145</span>        principals.add(new UserPrincipal(username));<a name="line.145"></a>
+<span class="sourceLineNo">146</span>        for (GroupPrincipal gp : groups) {<a name="line.146"></a>
+<span class="sourceLineNo">147</span>            principals.add(gp);<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        }<a name="line.148"></a>
+<span class="sourceLineNo">149</span>        return true;<a name="line.149"></a>
+<span class="sourceLineNo">150</span>    }<a name="line.150"></a>
+<span class="sourceLineNo">151</span><a name="line.151"></a>
+<span class="sourceLineNo">152</span>    @Override<a name="line.152"></a>
+<span class="sourceLineNo">153</span>    public boolean abort() throws LoginException {<a name="line.153"></a>
+<span class="sourceLineNo">154</span>        username = null;<a name="line.154"></a>
+<span class="sourceLineNo">155</span>        return true;<a name="line.155"></a>
+<span class="sourceLineNo">156</span>    }<a name="line.156"></a>
+<span class="sourceLineNo">157</span><a name="line.157"></a>
+<span class="sourceLineNo">158</span>    protected void close(DirContext context) {<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        try {<a name="line.159"></a>
+<span class="sourceLineNo">160</span>            context.close();<a name="line.160"></a>
+<span class="sourceLineNo">161</span>        } catch (Exception e) {<a name="line.161"></a>
+<span class="sourceLineNo">162</span>            log.error(e.toString());<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        }<a name="line.163"></a>
+<span class="sourceLineNo">164</span>    }<a name="line.164"></a>
+<span class="sourceLineNo">165</span><a name="line.165"></a>
+<span class="sourceLineNo">166</span>    protected boolean authenticate(String username, String password) throws LoginException {<a name="line.166"></a>
+<span class="sourceLineNo">167</span><a name="line.167"></a>
+<span class="sourceLineNo">168</span>        MessageFormat userSearchMatchingFormat;<a name="line.168"></a>
+<span class="sourceLineNo">169</span>        boolean userSearchSubtreeBool;<a name="line.169"></a>
+<span class="sourceLineNo">170</span>        <a name="line.170"></a>
+<span class="sourceLineNo">171</span>        DirContext context = null;<a name="line.171"></a>
+<span class="sourceLineNo">172</span><a name="line.172"></a>
+<span class="sourceLineNo">173</span>        if (log.isDebugEnabled()) {<a name="line.173"></a>
+<span class="sourceLineNo">174</span>            log.debug("Create the LDAP initial context.");<a name="line.174"></a>
+<span class="sourceLineNo">175</span>        }<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        try {<a name="line.176"></a>
+<span class="sourceLineNo">177</span>            context = open();<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        } catch (NamingException ne) {<a name="line.178"></a>
+<span class="sourceLineNo">179</span>            FailedLoginException ex = new FailedLoginException("Error opening LDAP connection");<a name="line.179"></a>
+<span class="sourceLineNo">180</span>            ex.initCause(ne);<a name="line.180"></a>
+<span class="sourceLineNo">181</span>            throw ex;<a name="line.181"></a>
+<span class="sourceLineNo">182</span>        }<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        <a name="line.183"></a>
+<span class="sourceLineNo">184</span>        if (!isLoginPropertySet(USER_SEARCH_MATCHING))<a name="line.184"></a>
+<span class="sourceLineNo">185</span>                return false;<a name="line.185"></a>
+<span class="sourceLineNo">186</span><a name="line.186"></a>
+<span class="sourceLineNo">187</span>        userSearchMatchingFormat = new MessageFormat(getLDAPPropertyValue(USER_SEARCH_MATCHING));<a name="line.187"></a>
+<span class="sourceLineNo">188</span>        userSearchSubtreeBool = Boolean.valueOf(getLDAPPropertyValue(USER_SEARCH_SUBTREE)).booleanValue();<a name="line.188"></a>
+<span class="sourceLineNo">189</span><a name="line.189"></a>
+<span class="sourceLineNo">190</span>        try {<a name="line.190"></a>
+<span class="sourceLineNo">191</span><a name="line.191"></a>
+<span class="sourceLineNo">192</span>            String filter = userSearchMatchingFormat.format(new String[] {<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                doRFC2254Encoding(username)<a name="line.193"></a>
+<span class="sourceLineNo">194</span>            });<a name="line.194"></a>
+<span class="sourceLineNo">195</span>            SearchControls constraints = new SearchControls();<a name="line.195"></a>
+<span class="sourceLineNo">196</span>            if (userSearchSubtreeBool) {<a name="line.196"></a>
+<span class="sourceLineNo">197</span>                constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);<a name="line.197"></a>
+<span class="sourceLineNo">198</span>            } else {<a name="line.198"></a>
+<span class="sourceLineNo">199</span>                constraints.setSearchScope(SearchControls.ONELEVEL_SCOPE);<a name="line.199"></a>
+<span class="sourceLineNo">200</span>            }<a name="line.200"></a>
+<span class="sourceLineNo">201</span><a name="line.201"></a>
+<span class="sourceLineNo">202</span>            // setup attributes<a name="line.202"></a>
+<span class="sourceLineNo">203</span>            List&lt;String&gt; list = new ArrayList&lt;String&gt;();<a name="line.203"></a>
+<span class="sourceLineNo">204</span>            if (isLoginPropertySet(USER_ROLE_NAME)) {<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                list.add(getLDAPPropertyValue(USER_ROLE_NAME));<a name="line.205"></a>
+<span class="sourceLineNo">206</span>            }<a name="line.206"></a>
+<span class="sourceLineNo">207</span>            String[] attribs = new String[list.size()];<a name="line.207"></a>
+<span class="sourceLineNo">208</span>            list.toArray(attribs);<a name="line.208"></a>
+<span class="sourceLineNo">209</span>            constraints.setReturningAttributes(attribs);<a name="line.209"></a>
+<span class="sourceLineNo">210</span><a name="line.210"></a>
+<span class="sourceLineNo">211</span>            if (log.isDebugEnabled()) {<a name="line.211"></a>
+<span class="sourceLineNo">212</span>                log.debug("Get the user DN.");<a name="line.212"></a>
+<span class="sourceLineNo">213</span>                log.debug("Looking for the user in LDAP with ");<a name="line.213"></a>
+<span class="sourceLineNo">214</span>                log.debug("  base DN: " + getLDAPPropertyValue(USER_BASE));<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                log.debug("  filter: " + filter);<a name="line.215"></a>
+<span class="sourceLineNo">216</span>            }<a name="line.216"></a>
+<span class="sourceLineNo">217</span><a name="line.217"></a>
+<span class="sourceLineNo">218</span>            NamingEnumeration&lt;SearchResult&gt; results = context.search(getLDAPPropertyValue(USER_BASE), filter, constraints);<a name="line.218"></a>
+<span class="sourceLineNo">219</span><a name="line.219"></a>
+<span class="sourceLineNo">220</span>            if (results == null || !results.hasMore()) {<a name="line.220"></a>
+<span class="sourceLineNo">221</span>                log.warn("User " + username + " not found in LDAP.");<a name="line.221"></a>
+<span class="sourceLineNo">222</span>                throw new FailedLoginException("User " + username + " not found in LDAP.");<a name="line.222"></a>
+<span class="sourceLineNo">223</span>            }<a name="line.223"></a>
+<span class="sourceLineNo">224</span><a name="line.224"></a>
+<span class="sourceLineNo">225</span>            SearchResult result = results.next();<a name="line.225"></a>
+<span class="sourceLineNo">226</span><a name="line.226"></a>
+<span class="sourceLineNo">227</span>            if (results.hasMore()) {<a name="line.227"></a>
+<span class="sourceLineNo">228</span>                // ignore for now<a name="line.228"></a>
+<span class="sourceLineNo">229</span>            }<a name="line.229"></a>
+<span class="sourceLineNo">230</span><a name="line.230"></a>
+<span class="sourceLineNo">231</span>            String dn;<a name="line.231"></a>
+<span class="sourceLineNo">232</span>            if (result.isRelative()) {<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                log.debug("LDAP returned a relative name: {}", result.getName());<a name="line.233"></a>
+<span class="sourceLineNo">234</span><a name="line.234"></a>
+<span class="sourceLineNo">235</span>                NameParser parser = context.getNameParser("");<a name="line.235"></a>
+<span class="sourceLineNo">236</span>                Name contextName = parser.parse(context.getNameInNamespace());<a name="line.236"></a>
+<span class="sourceLineNo">237</span>                Name baseName = parser.parse(getLDAPPropertyValue(USER_BASE));<a name="line.237"></a>
+<span class="sourceLineNo">238</span>                Name entryName = parser.parse(result.getName());<a name="line.238"></a>
+<span class="sourceLineNo">239</span>                Name name = contextName.addAll(baseName);<a name="line.239"></a>
+<span class="sourceLineNo">240</span>                name = name.addAll(entryName);<a name="line.240"></a>
+<span class="sourceLineNo">241</span>                dn = name.toString();<a name="line.241"></a>
+<span class="sourceLineNo">242</span>            } else {<a name="line.242"></a>
+<span class="sourceLineNo">243</span>                log.debug("LDAP returned an absolute name: {}", result.getName());<a name="line.243"></a>
+<span class="sourceLineNo">244</span><a name="line.244"></a>
+<span class="sourceLineNo">245</span>                try {<a name="line.245"></a>
+<span class="sourceLineNo">246</span>                    URI uri = new URI(result.getName());<a name="line.246"></a>
+<span class="sourceLineNo">247</span>                    String path = uri.getPath();<a name="line.247"></a>
+<span class="sourceLineNo">248</span><a name="line.248"></a>
+<span class="sourceLineNo">249</span>                    if (path.startsWith("/")) {<a name="line.249"></a>
+<span class="sourceLineNo">250</span>                        dn = path.substring(1);<a name="line.250"></a>
+<span class="sourceLineNo">251</span>                    } else {<a name="line.251"></a>
+<span class="sourceLineNo">252</span>                        dn = path;<a name="line.252"></a>
+<span class="sourceLineNo">253</span>                    }<a name="line.253"></a>
+<span class="sourceLineNo">254</span>                } catch (URISyntaxException e) {<a name="line.254"></a>
+<span class="sourceLineNo">255</span>                    if (context != null) {<a name="line.255"></a>
+<span class="sourceLineNo">256</span>                        close(context);<a name="line.256"></a>
+<span class="sourceLineNo">257</span>                    }<a name="line.257"></a>
+<span class="sourceLineNo">258</span>                    FailedLoginException ex = new FailedLoginException("Error parsing absolute name as URI.");<a name="line.258"></a>
+<span class="sourceLineNo">259</span>                    ex.initCause(e);<a name="line.259"></a>
+<span class="sourceLineNo">260</span>                    throw ex;<a name="line.260"></a>
+<span class="sourceLineNo">261</span>                }<a name="line.261"></a>
+<span class="sourceLineNo">262</span>            }<a name="line.262"></a>
+<span class="sourceLineNo">263</span><a name="line.263"></a>
+<span class="sourceLineNo">264</span>            if (log.isDebugEnabled()) {<a name="line.264"></a>
+<span class="sourceLineNo">265</span>                log.debug("Using DN [" + dn + "] for binding.");<a name="line.265"></a>
+<span class="sourceLineNo">266</span>            }<a name="line.266"></a>
+<span class="sourceLineNo">267</span><a name="line.267"></a>
+<span class="sourceLineNo">268</span>            Attributes attrs = result.getAttributes();<a name="line.268"></a>
+<span class="sourceLineNo">269</span>            if (attrs == null) {<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                throw new FailedLoginException("User found, but LDAP entry malformed: " + username);<a name="line.270"></a>
+<span class="sourceLineNo">271</span>            }<a name="line.271"></a>
+<span class="sourceLineNo">272</span>            List&lt;String&gt; roles = null;<a name="line.272"></a>
+<span class="sourceLineNo">273</span>            if (isLoginPropertySet(USER_ROLE_NAME)) {<a name="line.273"></a>
+<span class="sourceLineNo">274</span>                roles = addAttributeValues(getLDAPPropertyValue(USER_ROLE_NAME), attrs, roles);<a name="line.274"></a>
+<span class="sourceLineNo">275</span>            }<a name="line.275"></a>
+<span class="sourceLineNo">276</span><a name="line.276"></a>
+<span class="sourceLineNo">277</span>            // check the credentials by binding to server<a name="line.277"></a>
+<span class="sourceLineNo">278</span>            if (bindUser(context, dn, password)) {<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                // if authenticated add more roles<a name="line.279"></a>
+<span class="sourceLineNo">280</span>                roles = getRoles(context, dn, username, roles);<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                if (log.isDebugEnabled()) {<a name="line.281"></a>
+<span class="sourceLineNo">282</span>                    log.debug("Roles " + roles + " for user " + username);<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                }<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                for (int i = 0; i &lt; roles.size(); i++) {<a name="line.284"></a>
+<span class="sourceLineNo">285</span>                    groups.add(new GroupPrincipal(roles.get(i)));<a name="line.285"></a>
+<span class="sourceLineNo">286</span>                }<a name="line.286"></a>
+<span class="sourceLineNo">287</span>            } else {<a name="line.287"></a>
+<span class="sourceLineNo">288</span>                throw new FailedLoginException("Password does not match for user: " + username);<a name="line.288"></a>
+<span class="sourceLineNo">289</span>            }<a name="line.289"></a>
+<span class="sourceLineNo">290</span>        } catch (CommunicationException e) {<a name="line.290"></a>
+<span class="sourceLineNo">291</span>            FailedLoginException ex = new FailedLoginException("Error contacting LDAP");<a name="line.291"></a>
+<span class="sourceLineNo">292</span>            ex.initCause(e);<a name="line.292"></a>
+<span class="sourceLineNo">293</span>            throw ex;<a name="line.293"></a>
+<span class="sourceLineNo">294</span>        } catch (NamingException e) {<a name="line.294"></a>
+<span class="sourceLineNo">295</span>            if (context != null) {<a name="line.295"></a>
+<span class="sourceLineNo">296</span>                close(context);<a name="line.296"></a>
+<span class="sourceLineNo">297</span>            }<a name="line.297"></a>
+<span class="sourceLineNo">298</span>            FailedLoginException ex = new FailedLoginException("Error contacting LDAP");<a name="line.298"></a>
+<span class="sourceLineNo">299</span>            ex.initCause(e);<a name="line.299"></a>
+<span class="sourceLineNo">300</span>            throw ex;<a name="line.300"></a>
+<span class="sourceLineNo">301</span>        }<a name="line.301"></a>
+<span class="sourceLineNo">302</span><a name="line.302"></a>
+<span class="sourceLineNo">303</span>        return true;<a name="line.303"></a>
+<span class="sourceLineNo">304</span>    }<a name="line.304"></a>
+<span class="sourceLineNo">305</span><a name="line.305"></a>
+<span class="sourceLineNo">306</span>    protected List&lt;String&gt; getRoles(DirContext context, String dn, String username, List&lt;String&gt; currentRoles) throws NamingException {<a name="line.306"></a>
+<span class="sourceLineNo">307</span>        List&lt;String&gt; list = currentRoles;<a name="line.307"></a>
+<span class="sourceLineNo">308</span>        MessageFormat roleSearchMatchingFormat;<a name="line.308"></a>
+<span class="sourceLineNo">309</span>        boolean roleSearchSubtreeBool;<a name="line.309"></a>
+<span class="sourceLineNo">310</span>        boolean expandRolesBool;<a name="line.310"></a>
+<span class="sourceLineNo">311</span>        roleSearchMatchingFormat = new MessageFormat(getLDAPPropertyValue(ROLE_SEARCH_MATCHING));<a name="line.311"></a>
+<span class="sourceLineNo">312</span>        roleSearchSubtreeBool = Boolean.valueOf(getLDAPPropertyValue(ROLE_SEARCH_SUBTREE)).booleanValue();<a name="line.312"></a>
+<span class="sourceLineNo">313</span>        expandRolesBool = Boolean.valueOf(getLDAPPropertyValue(EXPAND_ROLES)).booleanValue();<a name="line.313"></a>
+<span class="sourceLineNo">314</span>        <a name="line.314"></a>
+<span class="sourceLineNo">315</span>        if (list == null) {<a name="line.315"></a>
+<span class="sourceLineNo">316</span>            list = new ArrayList&lt;String&gt;();<a name="line.316"></a>
+<span class="sourceLineNo">317</span>        }<a name="line.317"></a>
+<span class="sourceLineNo">318</span>        if (!isLoginPropertySet(ROLE_NAME)) {<a name="line.318"></a>
+<span class="sourceLineNo">319</span>            return list;<a name="line.319"></a>
+<span class="sourceLineNo">320</span>        }<a name="line.320"></a>
+<span class="sourceLineNo">321</span>        String filter = roleSearchMatchingFormat.format(new String[] {<a name="line.321"></a>
+<span class="sourceLineNo">322</span>            doRFC2254Encoding(dn), doRFC2254Encoding(username)<a name="line.322"></a>
+<span class="sourceLineNo">323</span>        });<a name="line.323"></a>
+<span class="sourceLineNo">324</span><a name="line.324"></a>
+<span class="sourceLineNo">325</span>        SearchControls constraints = new SearchControls();<a name="line.325"></a>
+<span class="sourceLineNo">326</span>        if (roleSearchSubtreeBool) {<a name="line.326"></a>
+<span class="sourceLineNo">327</span>            constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);<a name="line.327"></a>
+<span class="sourceLineNo">328</span>        } else {<a name="line.328"></a>
+<span class="sourceLineNo">329</span>            constraints.setSearchScope(SearchControls.ONELEVEL_SCOPE);<a name="line.329"></a>
+<span class="sourceLineNo">330</span>        }<a name="line.330"></a>
+<span class="sourceLineNo">331</span>        if (log.isDebugEnabled()) {<a name="line.331"></a>
+<span class="sourceLineNo">332</span>            log.debug("Get user roles.");<a name="line.332"></a>
+<span class="sourceLineNo">333</span>            log.debug("Looking for the user roles in LDAP with ");<a name="line.333"></a>
+<span class="sourceLineNo">334</span>            log.debug("  base DN: " + getLDAPPropertyValue(ROLE_BASE));<a name="line.334"></a>
+<span class="sourceLineNo">335</span>            log.debug("  filter: " + filter);<a name="line.335"></a>
+<span class="sourceLineNo">336</span>        }<a name="line.336"></a>
+<span class="sourceLineNo">337</span>        HashSet&lt;String&gt; haveSeenNames = new HashSet&lt;String&gt;();<a name="line.337"></a>
+<span class="sourceLineNo">338</span>        Queue&lt;String&gt; pendingNameExpansion = new LinkedList&lt;String&gt;();<a name="line.338"></a>
+<span class="sourceLineNo">339</span>        NamingEnumeration&lt;SearchResult&gt; results = context.search(getLDAPPropertyValue(ROLE_BASE), filter, constraints);<a name="line.339"></a>
+<span class="sourceLineNo">340</span>        while (results.hasMore()) {<a name="line.340"></a>
+<span class="sourceLineNo">341</span>            SearchResult result = results.next();<a name="line.341"></a>
+<span class="sourceLineNo">342</span>            Attributes attrs = result.getAttributes();<a name="line.342"></a>
+<span class="sourceLineNo">343</span>            if (expandRolesBool) {<a name="line.343"></a>
+<span class="sourceLineNo">344</span>                haveSeenNames.add(result.getNameInNamespace());<a name="line.344"></a>
+<span class="sourceLineNo">345</span>                pendingNameExpansion.add(result.getNameInNamespace());<a name="line.345"></a>
+<span class="sourceLineNo">346</span>            }<a name="line.346"></a>
+<span class="sourceLineNo">347</span>            if (attrs == null) {<a name="line.347"></a>
+<span class="sourceLineNo">348</span>                continue;<a name="line.348"></a>
+<span class="sourceLineNo">349</span>            }<a name="line.349"></a>
+<span class="sourceLineNo">350</span>            list = addAttributeValues(getLDAPPropertyValue(ROLE_NAME), attrs, list);<a name="line.350"></a>
+<span class="sourceLineNo">351</span>        }<a name="line.351"></a>
+<span class="sourceLineNo">352</span>        if (expandRolesBool) {<a name="line.352"></a>
+<span class="sourceLineNo">353</span>            MessageFormat expandRolesMatchingFormat = new MessageFormat(getLDAPPropertyValue(EXPAND_ROLES_MATCHING));<a name="line.353"></a>
+<span class="sourceLineNo">354</span>            while (!pendingNameExpansion.isEmpty()) {<a name="line.354"></a>
+<span class="sourceLineNo">355</span>                String name = pendingNameExpansion.remove();<a name="line.355"></a>
+<span class="sourceLineNo">356</span>                filter = expandRolesMatchingFormat.format(new String[]{name});<a name="line.356"></a>
+<span class="sourceLineNo">357</span>                results = context.search(getLDAPPropertyValue(ROLE_BASE), filter, constraints);<a name="line.357"></a>
+<span class="sourceLineNo">358</span>                while (results.hasMore()) {<a name="line.358"></a>
+<span class="sourceLineNo">359</span>                    SearchResult result = results.next();<a name="line.359"></a>
+<span class="sourceLineNo">360</span>                    name = result.getNameInNamespace();<a name="line.360"></a>
+<span class="sourceLineNo">361</span>                    if (!haveSeenNames.contains(name)) {<a name="line.361"></a>
+<span class="sourceLineNo">362</span>                        Attributes attrs = result.getAttributes();<a name="line.362"></a>
+<span class="sourceLineNo">363</span>                        list = addAttributeValues(getLDAPPropertyValue(ROLE_NAME), attrs, list);<a name="line.363"></a>
+<span class="sourceLineNo">364</span>                        haveSeenNames.add(name);<a name="line.364"></a>
+<span class="sourceLineNo">365</span>                        pendingNameExpansion.add(name);<a name="line.365"></a>
+<span class="sourceLineNo">366</span>                    }<a name="line.366"></a>
+<span class="sourceLineNo">367</span>                }<a name="line.367"></a>
+<span class="sourceLineNo">368</span>            }<a name="line.368"></a>
+<span class="sourceLineNo">369</span>        }<a name="line.369"></a>
+<span class="sourceLineNo">370</span>        return list;<a name="line.370"></a>
+<span class="sourceLineNo">371</span>    }<a name="line.371"></a>
+<span class="sourceLineNo">372</span><a name="line.372"></a>
+<span class="sourceLineNo">373</span>    protected String doRFC2254Encoding(String inputString) {<a name="line.373"></a>
+<span class="sourceLineNo">374</span>        StringBuffer buf = new StringBuffer(inputString.length());<a name="line.374"></a>
+<span class="sourceLineNo">375</span>        for (int i = 0; i &lt; inputString.length(); i++) {<a name="line.375"></a>
+<span class="sourceLineNo">376</span>            char c = inputString.charAt(i);<a name="line.376"></a>
+<span class="sourceLineNo">377</span>            switch (c) {<a name="line.377"></a>
+<span class="sourceLineNo">378</span>            case '\\':<a name="line.378"></a>
+<span class="sourceLineNo">379</span>                buf.append("\\5c");<a name="line.379"></a>
+<span class="sourceLineNo">380</span>                break;<a name="line.380"></a>
+<span class="sourceLineNo">381</span>            case '*':<a name="line.381"></a>
+<span class="sourceLineNo">382</span>                buf.append("\\2a");<a name="line.382"></a>
+<span class="sourceLineNo">383</span>                break;<a name="line.383"></a>
+<span class="sourceLineNo">384</span>            case '(':<a name="line.384"></a>
+<span class="sourceLineNo">385</span>                buf.append("\\28");<a name="line.385"></a>
+<span class="sourceLineNo">386</span>                break;<a name="line.386"></a>
+<span class="sourceLineNo">387</span>            case ')':<a name="line.387"></a>
+<span class="sourceLineNo">388</span>                buf.append("\\29");<a name="line.388"></a>
+<span class="sourceLineNo">389</span>                break;<a name="line.389"></a>
+<span class="sourceLineNo">390</span>            case '\0':<a name="line.390"></a>
+<span class="sourceLineNo">391</span>                buf.append("\\00");<a name="line.391"></a>
+<span class="sourceLineNo">392</span>                break;<a name="line.392"></a>
+<span class="sourceLineNo">393</span>            default:<a name="line.393"></a>
+<span class="sourceLineNo">394</span>                buf.append(c);<a name="line.394"></a>
+<span class="sourceLineNo">395</span>                break;<a name="line.395"></a>
+<span class="sourceLineNo">396</span>            }<a name="line.396"></a>
+<span class="sourceLineNo">397</span>        }<a name="line.397"></a>
+<span class="sourceLineNo">398</span>        return buf.toString();<a name="line.398"></a>
+<span class="sourceLineNo">399</span>    }<a name="line.399"></a>
+<span class="sourceLineNo">400</span><a name="line.400"></a>
+<span class="sourceLineNo">401</span>    protected boolean bindUser(DirContext context, String dn, String password) throws NamingException {<a name="line.401"></a>
+<span class="sourceLineNo">402</span>        boolean isValid = false;<a name="line.402"></a>
+<span class="sourceLineNo">403</span><a name="line.403"></a>
+<span class="sourceLineNo">404</span>        if (log.isDebugEnabled()) {<a name="line.404"></a>
+<span class="sourceLineNo">405</span>            log.debug("Binding the user.");<a name="line.405"></a>
+<span class="sourceLineNo">406</span>        }<a name="line.406"></a>
+<span class="sourceLineNo">407</span>        context.addToEnvironment(Context.SECURITY_PRINCIPAL, dn);<a name="line.407"></a>
+<span class="sourceLineNo">408</span>        context.addToEnvironment(Context.SECURITY_CREDENTIALS, password);<a name="line.408"></a>
+<span class="sourceLineNo">409</span>        try {<a name="line.409"></a>
+<span class="sourceLineNo">410</span>            context.getAttributes("", null);<a name="line.410"></a>
+<span class="sourceLineNo">411</span>            isValid = true;<a name="line.411"></a>
+<span class="sourceLineNo">412</span>            if (log.isDebugEnabled()) {<a name="line.412"></a>
+<span class="sourceLineNo">413</span>                log.debug("User " + dn + " successfully bound.");<a name="line.413"></a>
+<span class="sourceLineNo">414</span>            }<a name="line.414"></a>
+<span class="sourceLineNo">415</span>        } catch (AuthenticationException e) {<a name="line.415"></a>
+<span class="sourceLineNo">416</span>            isValid = false;<a name="line.416"></a>
+<span class="sourceLineNo">417</span>            if (log.isDebugEnabled()) {<a name="line.417"></a>
+<span class="sourceLineNo">418</span>                log.debug("Authentication failed for dn=" + dn);<a name="line.418"></a>
+<span class="sourceLineNo">419</span>            }<a name="line.419"></a>
+<span class="sourceLineNo">420</span>        }<a name="line.420"></a>
+<span class="sourceLineNo">421</span><a name="line.421"></a>
+<span class="sourceLineNo">422</span>        if (isLoginPropertySet(CONNECTION_USERNAME)) {<a name="line.422"></a>
+<span class="sourceLineNo">423</span>            context.addToEnvironment(Context.SECURITY_PRINCIPAL, getLDAPPropertyValue(CONNECTION_USERNAME));<a name="line.423"></a>
+<span class="sourceLineNo">424</span>        } else {<a name="line.424"></a>
+<span class="sourceLineNo">425</span>            context.removeFromEnvironment(Context.SECURITY_PRINCIPAL);<a name="line.425"></a>
+<span class="sourceLineNo">426</span>        }<a name="line.426"></a>
+<span class="sourceLineNo">427</span>        if (isLoginPropertySet(CONNECTION_PASSWORD)) {<a name="line.427"></a>
+<span class="sourceLineNo">428</span>            context.addToEnvironment(Context.SECURITY_CREDENTIALS, getLDAPPropertyValue(CONNECTION_PASSWORD));<a name="line.428"></a>
+<span class="sourceLineNo">429</span>        } else {<a name="line.429"></a>
+<span class="sourceLineNo">430</span>            context.removeFromEnvironment(Context.SECURITY_CREDENTIALS);<a name="line.430"></a>
+<span class="sourceLineNo">431</span>        }<a name="line.431"></a>
+<span class="sourceLineNo">432</span><a name="line.432"></a>
+<span class="sourceLineNo">433</span>        return isValid;<a name="line.433"></a>
+<span class="sourceLineNo">434</span>    }<a name="line.434"></a>
+<span class="sourceLineNo">435</span><a name="line.435"></a>
+<span class="sourceLineNo">436</span>    private List&lt;String&gt; addAttributeValues(String attrId, Attributes attrs, List&lt;String&gt; values) throws NamingException {<a name="line.436"></a>
+<span class="sourceLineNo">437</span><a name="line.437"></a>
+<span class="sourceLineNo">438</span>        if (attrId == null || attrs == null) {<a name="line.438"></a>
+<span class="sourceLineNo">439</span>            return values;<a name="line.439"></a>
+<span class="sourceLineNo">440</span>        }<a name="line.440"></a>
+<span class="sourceLineNo">441</span>        if (values == null) {<a name="line.441"></a>
+<span class="sourceLineNo">442</span>            values = new ArrayList&lt;String&gt;();<a name="line.442"></a>
+<span class="sourceLineNo">443</span>        }<a name="line.443"></a>
+<span class="sourceLineNo">444</span>        Attribute attr = attrs.get(attrId);<a name="line.444"></a>
+<span class="sourceLineNo">445</span>        if (attr == null) {<a name="line.445"></a>
+<span class="sourceLineNo">446</span>            return values;<a name="line.446"></a>
+<span class="sourceLineNo">447</span>        }<a name="line.447"></a>
+<span class="sourceLineNo">448</span>        NamingEnumeration&lt;?&gt; e = attr.getAll();<a name="line.448"></a>
+<span class="sourceLineNo">449</span>        while (e.hasMore()) {<a name="line.449"></a>
+<span class="sourceLineNo">450</span>            String value = (String)e.next();<a name="line.450"></a>
+<span class="sourceLineNo">451</span>            values.add(value);<a name="line.451"></a>
+<span class="sourceLineNo">452</span>        }<a name="line.452"></a>
+<span class="sourceLineNo">453</span>        return values;<a name="line.453"></a>
+<span class="sourceLineNo">454</span>    }<a name="line.454"></a>
+<span class="sourceLineNo">455</span><a name="line.455"></a>
+<span class="sourceLineNo">456</span>    protected DirContext open() throws NamingException {<a name="line.456"></a>
+<span class="sourceLineNo">457</span>        try {<a name="line.457"></a>
+<span class="sourceLineNo">458</span>            Hashtable&lt;String, String&gt; env = new Hashtable&lt;String, String&gt;();<a name="line.458"></a>
+<span class="sourceLineNo">459</span>            env.put(Context.INITIAL_CONTEXT_FACTORY, getLDAPPropertyValue(INITIAL_CONTEXT_FACTORY));<a name="line.459"></a>
+<span class="sourceLineNo">460</span>            if (isLoginPropertySet(CONNECTION_USERNAME)) {<a name="line.460"></a>
+<span class="sourceLineNo">461</span>                env.put(Context.SECURITY_PRINCIPAL, getLDAPPropertyValue(CONNECTION_USERNAME));<a name="line.461"></a>
+<span class="sourceLineNo">462</span>            } else {<a name="line.462"></a>
+<span class="sourceLineNo">463</span>                throw new NamingException("Empty username is not allowed");<a name="line.463"></a>
+<span class="sourceLineNo">464</span>            }<a name="line.464"></a>
+<span class="sourceLineNo">465</span><a name="line.465"></a>
+<span class="sourceLineNo">466</span>            if (isLoginPropertySet(CONNECTION_PASSWORD)) {<a name="line.466"></a>
+<span class="sourceLineNo">467</span>                env.put(Context.SECURITY_CREDENTIALS, getLDAPPropertyValue(CONNECTION_PASSWORD));<a name="line.467"></a>
+<span class="sourceLineNo">468</span>            } else {<a name="line.468"></a>
+<span class="sourceLineNo">469</span>                throw new NamingException("Empty password is not allowed");<a name="line.469"></a>
+<span class="sourceLineNo">470</span>            }<a name="line.470"></a>
+<span class="sourceLineNo">471</span>            env.put(Context.SECURITY_PROTOCOL, getLDAPPropertyValue(CONNECTION_PROTOCOL));<a name="line.471"></a>
+<span class="sourceLineNo">472</span>            env.put(Context.PROVIDER_URL, getLDAPPropertyValue(CONNECTION_URL));<a name="line.472"></a>
+<span class="sourceLineNo">473</span>            env.put(Context.SECURITY_AUTHENTICATION, getLDAPPropertyValue(AUTHENTICATION));<a name="line.473"></a>
+<span class="sourceLineNo">474</span>            context = new InitialDirContext(env);<a name="line.474"></a>
+<span class="sourceLineNo">475</span><a name="line.475"></a>
+<span class="sourceLineNo">476</span>        } catch (NamingException e) {<a name="line.476"></a>
+<span class="sourceLineNo">477</span>            log.error(e.toString());<a name="line.477"></a>
+<span class="sourceLineNo">478</span>            throw e;<a name="line.478"></a>
+<span class="sourceLineNo">479</span>        }<a name="line.479"></a>
+<span class="sourceLineNo">480</span>        return context;<a name="line.480"></a>
+<span class="sourceLineNo">481</span>    }<a name="line.481"></a>
+<span class="sourceLineNo">482</span>    <a name="line.482"></a>
+<span class="sourceLineNo">483</span>    private String getLDAPPropertyValue (String propertyName){<a name="line.483"></a>
+<span class="sourceLineNo">484</span>        for (int i=0; i &lt; config.length; i++ )<a name="line.484"></a>
+<span class="sourceLineNo">485</span>                if (config[i].getPropertyName() == propertyName)<a name="line.485"></a>
+<span class="sourceLineNo">486</span>                        return config[i].getPropertyValue();<a name="line.486"></a>
+<span class="sourceLineNo">487</span>        return null;<a name="line.487"></a>
+<span class="sourceLineNo">488</span>    }<a name="line.488"></a>
+<span class="sourceLineNo">489</span>    <a name="line.489"></a>
+<span class="sourceLineNo">490</span>    private boolean isLoginPropertySet(String propertyName) {<a name="line.490"></a>
+<span class="sourceLineNo">491</span>        for (int i=0; i &lt; config.length; i++ ) {<a name="line.491"></a>
+<span class="sourceLineNo">492</span>                if (config[i].getPropertyName() == propertyName &amp;&amp; (config[i].getPropertyValue() != null &amp;&amp; !"".equals(config[i].getPropertyValue())))<a name="line.492"></a>
+<span class="sourceLineNo">493</span>                                return true;<a name="line.493"></a>
+<span class="sourceLineNo">494</span>        }<a name="line.494"></a>
+<span class="sourceLineNo">495</span>        return false;<a name="line.495"></a>
+<span class="sourceLineNo">496</span>    }<a name="line.496"></a>
+<span class="sourceLineNo">497</span><a name="line.497"></a>
+<span class="sourceLineNo">498</span>}<a name="line.498"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

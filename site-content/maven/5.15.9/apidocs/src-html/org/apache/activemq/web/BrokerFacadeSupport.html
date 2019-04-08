@@ -1,0 +1,383 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.web;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.util.ArrayList;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.util.Collection;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.util.Collections;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.util.Iterator;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.util.List;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.util.Set;<a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span>import javax.management.InstanceNotFoundException;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import javax.management.ObjectName;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import javax.management.QueryExp;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import javax.management.openmbean.CompositeData;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import javax.management.openmbean.TabularData;<a name="line.30"></a>
+<span class="sourceLineNo">031</span><a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.apache.activemq.broker.jmx.BrokerViewMBean;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.apache.activemq.broker.jmx.ConnectionViewMBean;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.apache.activemq.broker.jmx.ConnectorViewMBean;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.apache.activemq.broker.jmx.DestinationViewMBean;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.apache.activemq.broker.jmx.DurableSubscriptionViewMBean;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import org.apache.activemq.broker.jmx.JobSchedulerViewMBean;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>import org.apache.activemq.broker.jmx.ManagementContext;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>import org.apache.activemq.broker.jmx.NetworkBridgeViewMBean;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>import org.apache.activemq.broker.jmx.NetworkConnectorViewMBean;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import org.apache.activemq.broker.jmx.ProducerViewMBean;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>import org.apache.activemq.broker.jmx.QueueViewMBean;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>import org.apache.activemq.broker.jmx.SubscriptionViewMBean;<a name="line.43"></a>
+<span class="sourceLineNo">044</span>import org.apache.activemq.broker.jmx.TopicViewMBean;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>import org.apache.activemq.web.util.ExceptionUtils;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>import org.springframework.util.StringUtils;<a name="line.46"></a>
+<span class="sourceLineNo">047</span><a name="line.47"></a>
+<span class="sourceLineNo">048</span>/**<a name="line.48"></a>
+<span class="sourceLineNo">049</span> * A useful base class for an implementation of {@link BrokerFacade}<a name="line.49"></a>
+<span class="sourceLineNo">050</span> *<a name="line.50"></a>
+<span class="sourceLineNo">051</span> *<a name="line.51"></a>
+<span class="sourceLineNo">052</span> */<a name="line.52"></a>
+<span class="sourceLineNo">053</span>public abstract class BrokerFacadeSupport implements BrokerFacade {<a name="line.53"></a>
+<span class="sourceLineNo">054</span>    public abstract ManagementContext getManagementContext();<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    public abstract Set queryNames(ObjectName name, QueryExp query) throws Exception;<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    public abstract Object newProxyInstance( ObjectName objectName, Class interfaceClass, boolean notificationBroadcaster) throws Exception;<a name="line.56"></a>
+<span class="sourceLineNo">057</span><a name="line.57"></a>
+<span class="sourceLineNo">058</span>    @Override<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    public Collection&lt;QueueViewMBean&gt; getQueues() throws Exception {<a name="line.59"></a>
+<span class="sourceLineNo">060</span>        BrokerViewMBean broker = getBrokerAdmin();<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        if (broker == null) {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>            return Collections.EMPTY_LIST;<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        }<a name="line.63"></a>
+<span class="sourceLineNo">064</span>        ObjectName[] queues = broker.getQueues();<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        return getManagedObjects(queues, QueueViewMBean.class);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>    @Override<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    public Collection&lt;TopicViewMBean&gt; getTopics() throws Exception {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        BrokerViewMBean broker = getBrokerAdmin();<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        if (broker == null) {<a name="line.71"></a>
+<span class="sourceLineNo">072</span>            return Collections.EMPTY_LIST;<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        }<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        ObjectName[] topics = broker.getTopics();<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        return getManagedObjects(topics, TopicViewMBean.class);<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    }<a name="line.76"></a>
+<span class="sourceLineNo">077</span><a name="line.77"></a>
+<span class="sourceLineNo">078</span>    @Override<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    public Collection&lt;SubscriptionViewMBean&gt; getTopicSubscribers(String topicName) throws Exception {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>        String brokerName = getBrokerName();<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        topicName = StringUtils.replace(topicName, "\"", "_");<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                + ",destinationType=Topic,destinationName=" + topicName + ",endpoint=Consumer,*");<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        return getManagedObjects(queryResult.toArray(new ObjectName[queryResult.size()]), SubscriptionViewMBean.class);<a name="line.85"></a>
+<span class="sourceLineNo">086</span>    }<a name="line.86"></a>
+<span class="sourceLineNo">087</span><a name="line.87"></a>
+<span class="sourceLineNo">088</span>    @Override<a name="line.88"></a>
+<span class="sourceLineNo">089</span>    public Collection&lt;SubscriptionViewMBean&gt; getNonDurableTopicSubscribers() throws Exception {<a name="line.89"></a>
+<span class="sourceLineNo">090</span>        BrokerViewMBean broker = getBrokerAdmin();<a name="line.90"></a>
+<span class="sourceLineNo">091</span>        if (broker == null) {<a name="line.91"></a>
+<span class="sourceLineNo">092</span>            return Collections.EMPTY_LIST;<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        }<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        ObjectName[] subscribers = broker.getTopicSubscribers();<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        return getManagedObjects(subscribers, SubscriptionViewMBean.class);<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    }<a name="line.96"></a>
+<span class="sourceLineNo">097</span><a name="line.97"></a>
+<span class="sourceLineNo">098</span>    @Override<a name="line.98"></a>
+<span class="sourceLineNo">099</span>    public Collection&lt;DurableSubscriptionViewMBean&gt; getDurableTopicSubscribers() throws Exception {<a name="line.99"></a>
+<span class="sourceLineNo">100</span>        BrokerViewMBean broker = getBrokerAdmin();<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        if (broker == null) {<a name="line.101"></a>
+<span class="sourceLineNo">102</span>            return Collections.EMPTY_LIST;<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        }<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        ObjectName[] subscribers = broker.getDurableTopicSubscribers();<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        return getManagedObjects(subscribers, DurableSubscriptionViewMBean.class);<a name="line.105"></a>
+<span class="sourceLineNo">106</span>    }<a name="line.106"></a>
+<span class="sourceLineNo">107</span><a name="line.107"></a>
+<span class="sourceLineNo">108</span>    @Override<a name="line.108"></a>
+<span class="sourceLineNo">109</span>    public Collection&lt;DurableSubscriptionViewMBean&gt; getInactiveDurableTopicSubscribers() throws Exception {<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        BrokerViewMBean broker = getBrokerAdmin();<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        if (broker == null) {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>            return Collections.EMPTY_LIST;<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        }<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        ObjectName[] subscribers = broker.getInactiveDurableTopicSubscribers();<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        return getManagedObjects(subscribers, DurableSubscriptionViewMBean.class);<a name="line.115"></a>
+<span class="sourceLineNo">116</span>    }<a name="line.116"></a>
+<span class="sourceLineNo">117</span><a name="line.117"></a>
+<span class="sourceLineNo">118</span>    @Override<a name="line.118"></a>
+<span class="sourceLineNo">119</span>    public QueueViewMBean getQueue(String name) throws Exception {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        return (QueueViewMBean) getDestinationByName(getQueues(), name);<a name="line.120"></a>
+<span class="sourceLineNo">121</span>    }<a name="line.121"></a>
+<span class="sourceLineNo">122</span><a name="line.122"></a>
+<span class="sourceLineNo">123</span>    @Override<a name="line.123"></a>
+<span class="sourceLineNo">124</span>    public TopicViewMBean getTopic(String name) throws Exception {<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        return (TopicViewMBean) getDestinationByName(getTopics(), name);<a name="line.125"></a>
+<span class="sourceLineNo">126</span>    }<a name="line.126"></a>
+<span class="sourceLineNo">127</span><a name="line.127"></a>
+<span class="sourceLineNo">128</span>    protected DestinationViewMBean getDestinationByName(Collection&lt;? extends DestinationViewMBean&gt; collection,<a name="line.128"></a>
+<span class="sourceLineNo">129</span>            String name) {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        Iterator&lt;? extends DestinationViewMBean&gt; iter = collection.iterator();<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        while (iter.hasNext()) {<a name="line.131"></a>
+<span class="sourceLineNo">132</span>            try {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                DestinationViewMBean destinationViewMBean = iter.next();<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                if (name.equals(destinationViewMBean.getName())) {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                    return destinationViewMBean;<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                }<a name="line.136"></a>
+<span class="sourceLineNo">137</span>            } catch (Exception ex) {<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                if (!ExceptionUtils.isRootCause(ex, InstanceNotFoundException.class)) {<a name="line.138"></a>
+<span class="sourceLineNo">139</span>                    // Only throw if not an expected InstanceNotFoundException exception<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                    throw ex;<a name="line.140"></a>
+<span class="sourceLineNo">141</span>                }<a name="line.141"></a>
+<span class="sourceLineNo">142</span>            }<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        }<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        return null;<a name="line.144"></a>
+<span class="sourceLineNo">145</span>    }<a name="line.145"></a>
+<span class="sourceLineNo">146</span><a name="line.146"></a>
+<span class="sourceLineNo">147</span>    @SuppressWarnings("unchecked")<a name="line.147"></a>
+<span class="sourceLineNo">148</span>    protected &lt;T&gt; Collection&lt;T&gt; getManagedObjects(ObjectName[] names, Class&lt;T&gt; type) throws Exception {<a name="line.148"></a>
+<span class="sourceLineNo">149</span>        List&lt;T&gt; answer = new ArrayList&lt;T&gt;();<a name="line.149"></a>
+<span class="sourceLineNo">150</span>        for (int i = 0; i &lt; names.length; i++) {<a name="line.150"></a>
+<span class="sourceLineNo">151</span>            ObjectName name = names[i];<a name="line.151"></a>
+<span class="sourceLineNo">152</span>            T value = (T) newProxyInstance(name, type, true);<a name="line.152"></a>
+<span class="sourceLineNo">153</span>            if (value != null) {<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                answer.add(value);<a name="line.154"></a>
+<span class="sourceLineNo">155</span>            }<a name="line.155"></a>
+<span class="sourceLineNo">156</span>        }<a name="line.156"></a>
+<span class="sourceLineNo">157</span>        return answer;<a name="line.157"></a>
+<span class="sourceLineNo">158</span>    }<a name="line.158"></a>
+<span class="sourceLineNo">159</span><a name="line.159"></a>
+<span class="sourceLineNo">160</span>    @Override<a name="line.160"></a>
+<span class="sourceLineNo">161</span>    @SuppressWarnings("unchecked")<a name="line.161"></a>
+<span class="sourceLineNo">162</span>    public Collection&lt;ConnectionViewMBean&gt; getConnections() throws Exception {<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        String brokerName = getBrokerName();<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName + ",connector=clientConnectors,connectorName=*,connectionName=*");<a name="line.164"></a>
+<span class="sourceLineNo">165</span><a name="line.165"></a>
+<span class="sourceLineNo">166</span>        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        return getManagedObjects(queryResult.toArray(new ObjectName[queryResult.size()]), ConnectionViewMBean.class);<a name="line.167"></a>
+<span class="sourceLineNo">168</span>    }<a name="line.168"></a>
+<span class="sourceLineNo">169</span><a name="line.169"></a>
+<span class="sourceLineNo">170</span>    @Override<a name="line.170"></a>
+<span class="sourceLineNo">171</span>    @SuppressWarnings("unchecked")<a name="line.171"></a>
+<span class="sourceLineNo">172</span>    public Collection&lt;String&gt; getConnections(String connectorName) throws Exception {<a name="line.172"></a>
+<span class="sourceLineNo">173</span>        String brokerName = getBrokerName();<a name="line.173"></a>
+<span class="sourceLineNo">174</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName<a name="line.174"></a>
+<span class="sourceLineNo">175</span>            + ",connector=clientConnectors,connectorName=" + connectorName + ",connectionViewType=clientId" + ",connectionName=*");        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        Collection&lt;String&gt; result = new ArrayList&lt;String&gt;(queryResult.size());<a name="line.176"></a>
+<span class="sourceLineNo">177</span>        for (ObjectName on : queryResult) {<a name="line.177"></a>
+<span class="sourceLineNo">178</span>            String name = StringUtils.replace(on.getKeyProperty("connectionName"), "_", ":");<a name="line.178"></a>
+<span class="sourceLineNo">179</span>            result.add(name);<a name="line.179"></a>
+<span class="sourceLineNo">180</span>        }<a name="line.180"></a>
+<span class="sourceLineNo">181</span>        return result;<a name="line.181"></a>
+<span class="sourceLineNo">182</span>    }<a name="line.182"></a>
+<span class="sourceLineNo">183</span><a name="line.183"></a>
+<span class="sourceLineNo">184</span>    @Override<a name="line.184"></a>
+<span class="sourceLineNo">185</span>    @SuppressWarnings("unchecked")<a name="line.185"></a>
+<span class="sourceLineNo">186</span>    public ConnectionViewMBean getConnection(String connectionName) throws Exception {<a name="line.186"></a>
+<span class="sourceLineNo">187</span>        connectionName = StringUtils.replace(connectionName, ":", "_");<a name="line.187"></a>
+<span class="sourceLineNo">188</span>        String brokerName = getBrokerName();<a name="line.188"></a>
+<span class="sourceLineNo">189</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName<a name="line.189"></a>
+<span class="sourceLineNo">190</span>                + ",connector=clientConnectors,*,connectionName=" + connectionName);<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.191"></a>
+<span class="sourceLineNo">192</span>        if (queryResult.size() == 0)<a name="line.192"></a>
+<span class="sourceLineNo">193</span>            return null;<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        ObjectName objectName = queryResult.iterator().next();<a name="line.194"></a>
+<span class="sourceLineNo">195</span>        return (ConnectionViewMBean) newProxyInstance(objectName, ConnectionViewMBean.class,<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                true);<a name="line.196"></a>
+<span class="sourceLineNo">197</span>    }<a name="line.197"></a>
+<span class="sourceLineNo">198</span><a name="line.198"></a>
+<span class="sourceLineNo">199</span>    @Override<a name="line.199"></a>
+<span class="sourceLineNo">200</span>    @SuppressWarnings("unchecked")<a name="line.200"></a>
+<span class="sourceLineNo">201</span>    public Collection&lt;String&gt; getConnectors() throws Exception {<a name="line.201"></a>
+<span class="sourceLineNo">202</span>        String brokerName = getBrokerName();<a name="line.202"></a>
+<span class="sourceLineNo">203</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName + ",connector=clientConnectors,connectorName=*");<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.204"></a>
+<span class="sourceLineNo">205</span>        Collection&lt;String&gt; result = new ArrayList&lt;String&gt;(queryResult.size());<a name="line.205"></a>
+<span class="sourceLineNo">206</span>        for (ObjectName on : queryResult)<a name="line.206"></a>
+<span class="sourceLineNo">207</span>            result.add(on.getKeyProperty("connectorName"));<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        return result;<a name="line.208"></a>
+<span class="sourceLineNo">209</span>    }<a name="line.209"></a>
+<span class="sourceLineNo">210</span><a name="line.210"></a>
+<span class="sourceLineNo">211</span>    @Override<a name="line.211"></a>
+<span class="sourceLineNo">212</span>    public ConnectorViewMBean getConnector(String name) throws Exception {<a name="line.212"></a>
+<span class="sourceLineNo">213</span>        String brokerName = getBrokerName();<a name="line.213"></a>
+<span class="sourceLineNo">214</span>        ObjectName objectName = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                + ",connector=clientConnectors,connectorName=" + name);<a name="line.215"></a>
+<span class="sourceLineNo">216</span>        return (ConnectorViewMBean) newProxyInstance(objectName, ConnectorViewMBean.class, true);<a name="line.216"></a>
+<span class="sourceLineNo">217</span>    }<a name="line.217"></a>
+<span class="sourceLineNo">218</span><a name="line.218"></a>
+<span class="sourceLineNo">219</span>    @Override<a name="line.219"></a>
+<span class="sourceLineNo">220</span>    @SuppressWarnings("unchecked")<a name="line.220"></a>
+<span class="sourceLineNo">221</span>    public Collection&lt;NetworkConnectorViewMBean&gt; getNetworkConnectors() throws Exception {<a name="line.221"></a>
+<span class="sourceLineNo">222</span>        String brokerName = getBrokerName();<a name="line.222"></a>
+<span class="sourceLineNo">223</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName + ",connector=networkConnectors,networkConnectorName=*");<a name="line.223"></a>
+<span class="sourceLineNo">224</span>        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.224"></a>
+<span class="sourceLineNo">225</span>        return getManagedObjects(queryResult.toArray(new ObjectName[queryResult.size()]),<a name="line.225"></a>
+<span class="sourceLineNo">226</span>                NetworkConnectorViewMBean.class);<a name="line.226"></a>
+<span class="sourceLineNo">227</span>    }<a name="line.227"></a>
+<span class="sourceLineNo">228</span><a name="line.228"></a>
+<span class="sourceLineNo">229</span>    @Override<a name="line.229"></a>
+<span class="sourceLineNo">230</span>    public Collection&lt;NetworkBridgeViewMBean&gt; getNetworkBridges() throws Exception {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>        String brokerName = getBrokerName();<a name="line.231"></a>
+<span class="sourceLineNo">232</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName + ",connector=*,networkConnectorName=*,networkBridge=*");<a name="line.232"></a>
+<span class="sourceLineNo">233</span>        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.233"></a>
+<span class="sourceLineNo">234</span>        return getManagedObjects(queryResult.toArray(new ObjectName[queryResult.size()]),<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                NetworkBridgeViewMBean.class);<a name="line.235"></a>
+<span class="sourceLineNo">236</span>    }<a name="line.236"></a>
+<span class="sourceLineNo">237</span><a name="line.237"></a>
+<span class="sourceLineNo">238</span>    @Override<a name="line.238"></a>
+<span class="sourceLineNo">239</span>    @SuppressWarnings("unchecked")<a name="line.239"></a>
+<span class="sourceLineNo">240</span>    public Collection&lt;SubscriptionViewMBean&gt; getQueueConsumers(String queueName) throws Exception {<a name="line.240"></a>
+<span class="sourceLineNo">241</span>        String brokerName = getBrokerName();<a name="line.241"></a>
+<span class="sourceLineNo">242</span>        queueName = StringUtils.replace(queueName, "\"", "_");<a name="line.242"></a>
+<span class="sourceLineNo">243</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName<a name="line.243"></a>
+<span class="sourceLineNo">244</span>                + ",destinationType=Queue,destinationName=" + queueName + ",endpoint=Consumer,*");<a name="line.244"></a>
+<span class="sourceLineNo">245</span>        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.245"></a>
+<span class="sourceLineNo">246</span>        return getManagedObjects(queryResult.toArray(new ObjectName[queryResult.size()]), SubscriptionViewMBean.class);<a name="line.246"></a>
+<span class="sourceLineNo">247</span>    }<a name="line.247"></a>
+<span class="sourceLineNo">248</span><a name="line.248"></a>
+<span class="sourceLineNo">249</span>    @Override<a name="line.249"></a>
+<span class="sourceLineNo">250</span>    @SuppressWarnings("unchecked")<a name="line.250"></a>
+<span class="sourceLineNo">251</span>    public Collection&lt;ProducerViewMBean&gt; getQueueProducers(String queueName) throws Exception {<a name="line.251"></a>
+<span class="sourceLineNo">252</span>        String brokerName = getBrokerName();<a name="line.252"></a>
+<span class="sourceLineNo">253</span>        queueName = StringUtils.replace(queueName, "\"", "_");<a name="line.253"></a>
+<span class="sourceLineNo">254</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName<a name="line.254"></a>
+<span class="sourceLineNo">255</span>                + ",destinationType=Queue,destinationName=" + queueName + ",endpoint=Producer,*");<a name="line.255"></a>
+<span class="sourceLineNo">256</span>        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.256"></a>
+<span class="sourceLineNo">257</span>        return getManagedObjects(queryResult.toArray(new ObjectName[queryResult.size()]), ProducerViewMBean.class);<a name="line.257"></a>
+<span class="sourceLineNo">258</span>    }<a name="line.258"></a>
+<span class="sourceLineNo">259</span><a name="line.259"></a>
+<span class="sourceLineNo">260</span>    @Override<a name="line.260"></a>
+<span class="sourceLineNo">261</span>    @SuppressWarnings("unchecked")<a name="line.261"></a>
+<span class="sourceLineNo">262</span>    public Collection&lt;ProducerViewMBean&gt; getTopicProducers(String topicName) throws Exception {<a name="line.262"></a>
+<span class="sourceLineNo">263</span>        String brokerName = getBrokerName();<a name="line.263"></a>
+<span class="sourceLineNo">264</span>        topicName = StringUtils.replace(topicName, "\"", "_");<a name="line.264"></a>
+<span class="sourceLineNo">265</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName<a name="line.265"></a>
+<span class="sourceLineNo">266</span>                + ",destinationType=Topic,destinationName=" + topicName + ",endpoint=Producer,*");<a name="line.266"></a>
+<span class="sourceLineNo">267</span>        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.267"></a>
+<span class="sourceLineNo">268</span>        return getManagedObjects(queryResult.toArray(new ObjectName[queryResult.size()]), ProducerViewMBean.class);<a name="line.268"></a>
+<span class="sourceLineNo">269</span>    }<a name="line.269"></a>
+<span class="sourceLineNo">270</span><a name="line.270"></a>
+<span class="sourceLineNo">271</span>    @Override<a name="line.271"></a>
+<span class="sourceLineNo">272</span>    @SuppressWarnings("unchecked")<a name="line.272"></a>
+<span class="sourceLineNo">273</span>    public Collection&lt;SubscriptionViewMBean&gt; getConsumersOnConnection(String connectionName) throws Exception {<a name="line.273"></a>
+<span class="sourceLineNo">274</span>        connectionName = StringUtils.replace(connectionName, ":", "_");<a name="line.274"></a>
+<span class="sourceLineNo">275</span>        String brokerName = getBrokerName();<a name="line.275"></a>
+<span class="sourceLineNo">276</span>        ObjectName query = new ObjectName("org.apache.activemq:type=Broker,brokerName=" + brokerName<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                + ",*,endpoint=Consumer,clientId=" + connectionName);<a name="line.277"></a>
+<span class="sourceLineNo">278</span>        Set&lt;ObjectName&gt; queryResult = queryNames(query, null);<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        return getManagedObjects(queryResult.toArray(new ObjectName[queryResult.size()]), SubscriptionViewMBean.class);<a name="line.279"></a>
+<span class="sourceLineNo">280</span>    }<a name="line.280"></a>
+<span class="sourceLineNo">281</span><a name="line.281"></a>
+<span class="sourceLineNo">282</span>    @Override<a name="line.282"></a>
+<span class="sourceLineNo">283</span>    public JobSchedulerViewMBean getJobScheduler() throws Exception {<a name="line.283"></a>
+<span class="sourceLineNo">284</span>        ObjectName name = getBrokerAdmin().getJMSJobScheduler();<a name="line.284"></a>
+<span class="sourceLineNo">285</span>        return (JobSchedulerViewMBean) newProxyInstance(name, JobSchedulerViewMBean.class, true);<a name="line.285"></a>
+<span class="sourceLineNo">286</span>    }<a name="line.286"></a>
+<span class="sourceLineNo">287</span><a name="line.287"></a>
+<span class="sourceLineNo">288</span>    @Override<a name="line.288"></a>
+<span class="sourceLineNo">289</span>    public Collection&lt;JobFacade&gt; getScheduledJobs() throws Exception {<a name="line.289"></a>
+<span class="sourceLineNo">290</span>        JobSchedulerViewMBean jobScheduler = getJobScheduler();<a name="line.290"></a>
+<span class="sourceLineNo">291</span>        List&lt;JobFacade&gt; result = new ArrayList&lt;JobFacade&gt;();<a name="line.291"></a>
+<span class="sourceLineNo">292</span>        TabularData table = jobScheduler.getAllJobs();<a name="line.292"></a>
+<span class="sourceLineNo">293</span>        for (Object object : table.values()) {<a name="line.293"></a>
+<span class="sourceLineNo">294</span>            CompositeData cd = (CompositeData) object;<a name="line.294"></a>
+<span class="sourceLineNo">295</span>            JobFacade jf = new JobFacade(cd);<a name="line.295"></a>
+<span class="sourceLineNo">296</span>            result.add(jf);<a name="line.296"></a>
+<span class="sourceLineNo">297</span>        }<a name="line.297"></a>
+<span class="sourceLineNo">298</span>        return result;<a name="line.298"></a>
+<span class="sourceLineNo">299</span>    }<a name="line.299"></a>
+<span class="sourceLineNo">300</span><a name="line.300"></a>
+<span class="sourceLineNo">301</span><a name="line.301"></a>
+<span class="sourceLineNo">302</span>    @Override<a name="line.302"></a>
+<span class="sourceLineNo">303</span>    public boolean isJobSchedulerStarted() {<a name="line.303"></a>
+<span class="sourceLineNo">304</span>        try {<a name="line.304"></a>
+<span class="sourceLineNo">305</span>            JobSchedulerViewMBean jobScheduler = getJobScheduler();<a name="line.305"></a>
+<span class="sourceLineNo">306</span>            return true;<a name="line.306"></a>
+<span class="sourceLineNo">307</span>        } catch (Exception e) {<a name="line.307"></a>
+<span class="sourceLineNo">308</span>            return false;<a name="line.308"></a>
+<span class="sourceLineNo">309</span>        }<a name="line.309"></a>
+<span class="sourceLineNo">310</span>    }<a name="line.310"></a>
+<span class="sourceLineNo">311</span>}<a name="line.311"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

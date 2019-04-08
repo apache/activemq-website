@@ -1,0 +1,615 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.command;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.util.ArrayList;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.util.HashMap;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.util.List;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.util.Map;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.util.concurrent.ConcurrentHashMap;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.util.concurrent.atomic.AtomicLong;<a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.apache.activemq.filter.BooleanExpression;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.apache.activemq.state.CommandVisitor;<a name="line.27"></a>
+<span class="sourceLineNo">028</span><a name="line.28"></a>
+<span class="sourceLineNo">029</span>/**<a name="line.29"></a>
+<span class="sourceLineNo">030</span> * @openwire:marshaller code="5"<a name="line.30"></a>
+<span class="sourceLineNo">031</span> *<a name="line.31"></a>
+<span class="sourceLineNo">032</span> */<a name="line.32"></a>
+<span class="sourceLineNo">033</span>public class ConsumerInfo extends BaseCommand implements TransientInitializer {<a name="line.33"></a>
+<span class="sourceLineNo">034</span><a name="line.34"></a>
+<span class="sourceLineNo">035</span>    public static final byte DATA_STRUCTURE_TYPE = CommandTypes.CONSUMER_INFO;<a name="line.35"></a>
+<span class="sourceLineNo">036</span><a name="line.36"></a>
+<span class="sourceLineNo">037</span>    public static final byte HIGH_PRIORITY = 10;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    public static final byte NORMAL_PRIORITY = 0;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    public static final byte NETWORK_CONSUMER_PRIORITY = -5;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    public static final byte LOW_PRIORITY = -10;<a name="line.40"></a>
+<span class="sourceLineNo">041</span><a name="line.41"></a>
+<span class="sourceLineNo">042</span>    protected ConsumerId consumerId;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    protected ActiveMQDestination destination;<a name="line.43"></a>
+<span class="sourceLineNo">044</span>    protected int prefetchSize;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>    protected int maximumPendingMessageLimit;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    protected boolean browser;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    protected boolean dispatchAsync;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    protected String selector;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>    protected String clientId;<a name="line.49"></a>
+<span class="sourceLineNo">050</span>    protected String subscriptionName;<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    protected boolean noLocal;<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    protected boolean exclusive;<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    protected boolean retroactive;<a name="line.53"></a>
+<span class="sourceLineNo">054</span>    protected byte priority;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    protected BrokerId[] brokerPath;<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    protected boolean optimizedAcknowledge;<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    // used by the broker<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    protected transient int currentPrefetchSize;<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    // if true, the consumer will not send range<a name="line.59"></a>
+<span class="sourceLineNo">060</span>    protected boolean noRangeAcks;<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    // acks.<a name="line.61"></a>
+<span class="sourceLineNo">062</span><a name="line.62"></a>
+<span class="sourceLineNo">063</span>    protected BooleanExpression additionalPredicate;<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    protected transient boolean networkSubscription; // this subscription<a name="line.64"></a>
+<span class="sourceLineNo">065</span>    protected transient List&lt;ConsumerId&gt; networkConsumerIds; // the original consumerId<a name="line.65"></a>
+<span class="sourceLineNo">066</span><a name="line.66"></a>
+<span class="sourceLineNo">067</span>    // not marshalled, populated from RemoveInfo, the last message delivered, used<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    // to suppress redelivery on prefetched messages after close<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    private transient long lastDeliveredSequenceId = RemoveInfo.LAST_DELIVERED_UNSET;<a name="line.69"></a>
+<span class="sourceLineNo">070</span>    private transient Map&lt;ActiveMQDestination, AtomicLong&gt; assignedGroupCount = new ConcurrentHashMap&lt;&gt;();<a name="line.70"></a>
+<span class="sourceLineNo">071</span>    // originated from a<a name="line.71"></a>
+<span class="sourceLineNo">072</span>    // network connection<a name="line.72"></a>
+<span class="sourceLineNo">073</span><a name="line.73"></a>
+<span class="sourceLineNo">074</span>    public ConsumerInfo() {<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    }<a name="line.75"></a>
+<span class="sourceLineNo">076</span><a name="line.76"></a>
+<span class="sourceLineNo">077</span>    public ConsumerInfo(ConsumerId consumerId) {<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        this.consumerId = consumerId;<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    }<a name="line.79"></a>
+<span class="sourceLineNo">080</span><a name="line.80"></a>
+<span class="sourceLineNo">081</span>    public ConsumerInfo(SessionInfo sessionInfo, long consumerId) {<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        this.consumerId = new ConsumerId(sessionInfo.getSessionId(), consumerId);<a name="line.82"></a>
+<span class="sourceLineNo">083</span>    }<a name="line.83"></a>
+<span class="sourceLineNo">084</span><a name="line.84"></a>
+<span class="sourceLineNo">085</span>    public ConsumerInfo copy() {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        ConsumerInfo info = new ConsumerInfo();<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        copy(info);<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        return info;<a name="line.88"></a>
+<span class="sourceLineNo">089</span>    }<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>    public void copy(ConsumerInfo info) {<a name="line.91"></a>
+<span class="sourceLineNo">092</span>        super.copy(info);<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        info.consumerId = consumerId;<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        info.destination = destination;<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        info.prefetchSize = prefetchSize;<a name="line.95"></a>
+<span class="sourceLineNo">096</span>        info.maximumPendingMessageLimit = maximumPendingMessageLimit;<a name="line.96"></a>
+<span class="sourceLineNo">097</span>        info.browser = browser;<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        info.dispatchAsync = dispatchAsync;<a name="line.98"></a>
+<span class="sourceLineNo">099</span>        info.selector = selector;<a name="line.99"></a>
+<span class="sourceLineNo">100</span>        info.clientId = clientId;<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        info.subscriptionName = subscriptionName;<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        info.noLocal = noLocal;<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        info.exclusive = exclusive;<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        info.retroactive = retroactive;<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        info.priority = priority;<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        info.brokerPath = brokerPath;<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        info.networkSubscription = networkSubscription;<a name="line.107"></a>
+<span class="sourceLineNo">108</span>        if (networkConsumerIds != null) {<a name="line.108"></a>
+<span class="sourceLineNo">109</span>            if (info.networkConsumerIds==null){<a name="line.109"></a>
+<span class="sourceLineNo">110</span>                info.networkConsumerIds=new ArrayList&lt;ConsumerId&gt;();<a name="line.110"></a>
+<span class="sourceLineNo">111</span>            }<a name="line.111"></a>
+<span class="sourceLineNo">112</span>            info.networkConsumerIds.addAll(networkConsumerIds);<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        }<a name="line.113"></a>
+<span class="sourceLineNo">114</span>    }<a name="line.114"></a>
+<span class="sourceLineNo">115</span><a name="line.115"></a>
+<span class="sourceLineNo">116</span>    public boolean isDurable() {<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        return subscriptionName != null;<a name="line.117"></a>
+<span class="sourceLineNo">118</span>    }<a name="line.118"></a>
+<span class="sourceLineNo">119</span><a name="line.119"></a>
+<span class="sourceLineNo">120</span>    @Override<a name="line.120"></a>
+<span class="sourceLineNo">121</span>    public byte getDataStructureType() {<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        return DATA_STRUCTURE_TYPE;<a name="line.122"></a>
+<span class="sourceLineNo">123</span>    }<a name="line.123"></a>
+<span class="sourceLineNo">124</span><a name="line.124"></a>
+<span class="sourceLineNo">125</span>    /**<a name="line.125"></a>
+<span class="sourceLineNo">126</span>     * Is used to uniquely identify the consumer to the broker.<a name="line.126"></a>
+<span class="sourceLineNo">127</span>     *<a name="line.127"></a>
+<span class="sourceLineNo">128</span>     * @openwire:property version=1 cache=true<a name="line.128"></a>
+<span class="sourceLineNo">129</span>     */<a name="line.129"></a>
+<span class="sourceLineNo">130</span>    public ConsumerId getConsumerId() {<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        return consumerId;<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    }<a name="line.132"></a>
+<span class="sourceLineNo">133</span><a name="line.133"></a>
+<span class="sourceLineNo">134</span>    public void setConsumerId(ConsumerId consumerId) {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>        this.consumerId = consumerId;<a name="line.135"></a>
+<span class="sourceLineNo">136</span>    }<a name="line.136"></a>
+<span class="sourceLineNo">137</span><a name="line.137"></a>
+<span class="sourceLineNo">138</span>    /**<a name="line.138"></a>
+<span class="sourceLineNo">139</span>     * Is this consumer a queue browser?<a name="line.139"></a>
+<span class="sourceLineNo">140</span>     *<a name="line.140"></a>
+<span class="sourceLineNo">141</span>     * @openwire:property version=1<a name="line.141"></a>
+<span class="sourceLineNo">142</span>     */<a name="line.142"></a>
+<span class="sourceLineNo">143</span>    public boolean isBrowser() {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        return browser;<a name="line.144"></a>
+<span class="sourceLineNo">145</span>    }<a name="line.145"></a>
+<span class="sourceLineNo">146</span><a name="line.146"></a>
+<span class="sourceLineNo">147</span>    public void setBrowser(boolean browser) {<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        this.browser = browser;<a name="line.148"></a>
+<span class="sourceLineNo">149</span>    }<a name="line.149"></a>
+<span class="sourceLineNo">150</span><a name="line.150"></a>
+<span class="sourceLineNo">151</span>    /**<a name="line.151"></a>
+<span class="sourceLineNo">152</span>     * The destination that the consumer is interested in receiving messages<a name="line.152"></a>
+<span class="sourceLineNo">153</span>     * from. This destination could be a composite destination.<a name="line.153"></a>
+<span class="sourceLineNo">154</span>     *<a name="line.154"></a>
+<span class="sourceLineNo">155</span>     * @openwire:property version=1 cache=true<a name="line.155"></a>
+<span class="sourceLineNo">156</span>     */<a name="line.156"></a>
+<span class="sourceLineNo">157</span>    public ActiveMQDestination getDestination() {<a name="line.157"></a>
+<span class="sourceLineNo">158</span>        return destination;<a name="line.158"></a>
+<span class="sourceLineNo">159</span>    }<a name="line.159"></a>
+<span class="sourceLineNo">160</span><a name="line.160"></a>
+<span class="sourceLineNo">161</span>    public void setDestination(ActiveMQDestination destination) {<a name="line.161"></a>
+<span class="sourceLineNo">162</span>        this.destination = destination;<a name="line.162"></a>
+<span class="sourceLineNo">163</span>    }<a name="line.163"></a>
+<span class="sourceLineNo">164</span><a name="line.164"></a>
+<span class="sourceLineNo">165</span>    /**<a name="line.165"></a>
+<span class="sourceLineNo">166</span>     * How many messages a broker will send to the client without receiving an<a name="line.166"></a>
+<span class="sourceLineNo">167</span>     * ack before he stops dispatching messages to the client.<a name="line.167"></a>
+<span class="sourceLineNo">168</span>     *<a name="line.168"></a>
+<span class="sourceLineNo">169</span>     * @openwire:property version=1<a name="line.169"></a>
+<span class="sourceLineNo">170</span>     */<a name="line.170"></a>
+<span class="sourceLineNo">171</span>    public int getPrefetchSize() {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>        return prefetchSize;<a name="line.172"></a>
+<span class="sourceLineNo">173</span>    }<a name="line.173"></a>
+<span class="sourceLineNo">174</span><a name="line.174"></a>
+<span class="sourceLineNo">175</span>    public void setPrefetchSize(int prefetchSize) {<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        this.prefetchSize = prefetchSize;<a name="line.176"></a>
+<span class="sourceLineNo">177</span>        this.currentPrefetchSize = prefetchSize;<a name="line.177"></a>
+<span class="sourceLineNo">178</span>    }<a name="line.178"></a>
+<span class="sourceLineNo">179</span><a name="line.179"></a>
+<span class="sourceLineNo">180</span>    /**<a name="line.180"></a>
+<span class="sourceLineNo">181</span>     * How many messages a broker will keep around, above the prefetch limit,<a name="line.181"></a>
+<span class="sourceLineNo">182</span>     * for non-durable topics before starting to discard older messages.<a name="line.182"></a>
+<span class="sourceLineNo">183</span>     *<a name="line.183"></a>
+<span class="sourceLineNo">184</span>     * @openwire:property version=1<a name="line.184"></a>
+<span class="sourceLineNo">185</span>     */<a name="line.185"></a>
+<span class="sourceLineNo">186</span>    public int getMaximumPendingMessageLimit() {<a name="line.186"></a>
+<span class="sourceLineNo">187</span>        return maximumPendingMessageLimit;<a name="line.187"></a>
+<span class="sourceLineNo">188</span>    }<a name="line.188"></a>
+<span class="sourceLineNo">189</span><a name="line.189"></a>
+<span class="sourceLineNo">190</span>    public void setMaximumPendingMessageLimit(int maximumPendingMessageLimit) {<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        this.maximumPendingMessageLimit = maximumPendingMessageLimit;<a name="line.191"></a>
+<span class="sourceLineNo">192</span>    }<a name="line.192"></a>
+<span class="sourceLineNo">193</span><a name="line.193"></a>
+<span class="sourceLineNo">194</span>    /**<a name="line.194"></a>
+<span class="sourceLineNo">195</span>     * Should the broker dispatch a message to the consumer async? If he does it<a name="line.195"></a>
+<span class="sourceLineNo">196</span>     * async, then he uses a more SEDA style of processing while if it is not<a name="line.196"></a>
+<span class="sourceLineNo">197</span>     * done async, then he broker use a STP style of processing. STP is more<a name="line.197"></a>
+<span class="sourceLineNo">198</span>     * appropriate in high bandwidth situations or when being used by and in vm<a name="line.198"></a>
+<span class="sourceLineNo">199</span>     * transport.<a name="line.199"></a>
+<span class="sourceLineNo">200</span>     *<a name="line.200"></a>
+<span class="sourceLineNo">201</span>     * @openwire:property version=1<a name="line.201"></a>
+<span class="sourceLineNo">202</span>     */<a name="line.202"></a>
+<span class="sourceLineNo">203</span>    public boolean isDispatchAsync() {<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        return dispatchAsync;<a name="line.204"></a>
+<span class="sourceLineNo">205</span>    }<a name="line.205"></a>
+<span class="sourceLineNo">206</span><a name="line.206"></a>
+<span class="sourceLineNo">207</span>    public void setDispatchAsync(boolean dispatchAsync) {<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        this.dispatchAsync = dispatchAsync;<a name="line.208"></a>
+<span class="sourceLineNo">209</span>    }<a name="line.209"></a>
+<span class="sourceLineNo">210</span><a name="line.210"></a>
+<span class="sourceLineNo">211</span>    /**<a name="line.211"></a>
+<span class="sourceLineNo">212</span>     * The JMS selector used to filter out messages that this consumer is<a name="line.212"></a>
+<span class="sourceLineNo">213</span>     * interested in.<a name="line.213"></a>
+<span class="sourceLineNo">214</span>     *<a name="line.214"></a>
+<span class="sourceLineNo">215</span>     * @openwire:property version=1<a name="line.215"></a>
+<span class="sourceLineNo">216</span>     */<a name="line.216"></a>
+<span class="sourceLineNo">217</span>    public String getSelector() {<a name="line.217"></a>
+<span class="sourceLineNo">218</span>        return selector;<a name="line.218"></a>
+<span class="sourceLineNo">219</span>    }<a name="line.219"></a>
+<span class="sourceLineNo">220</span><a name="line.220"></a>
+<span class="sourceLineNo">221</span>    public void setSelector(String selector) {<a name="line.221"></a>
+<span class="sourceLineNo">222</span>        this.selector = selector;<a name="line.222"></a>
+<span class="sourceLineNo">223</span>    }<a name="line.223"></a>
+<span class="sourceLineNo">224</span><a name="line.224"></a>
+<span class="sourceLineNo">225</span>    /**<a name="line.225"></a>
+<span class="sourceLineNo">226</span>     * Used to identify the id of a client connection.<a name="line.226"></a>
+<span class="sourceLineNo">227</span>     *<a name="line.227"></a>
+<span class="sourceLineNo">228</span>     * @openwire:property version=10<a name="line.228"></a>
+<span class="sourceLineNo">229</span>     */<a name="line.229"></a>
+<span class="sourceLineNo">230</span>    public String getClientId() {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>        return clientId;<a name="line.231"></a>
+<span class="sourceLineNo">232</span>    }<a name="line.232"></a>
+<span class="sourceLineNo">233</span><a name="line.233"></a>
+<span class="sourceLineNo">234</span>    public void setClientId(String clientId) {<a name="line.234"></a>
+<span class="sourceLineNo">235</span>        this.clientId = clientId;<a name="line.235"></a>
+<span class="sourceLineNo">236</span>    }<a name="line.236"></a>
+<span class="sourceLineNo">237</span><a name="line.237"></a>
+<span class="sourceLineNo">238</span>    /**<a name="line.238"></a>
+<span class="sourceLineNo">239</span>     * Used to identify the name of a durable subscription.<a name="line.239"></a>
+<span class="sourceLineNo">240</span>     *<a name="line.240"></a>
+<span class="sourceLineNo">241</span>     * @openwire:property version=1<a name="line.241"></a>
+<span class="sourceLineNo">242</span>     */<a name="line.242"></a>
+<span class="sourceLineNo">243</span>    public String getSubscriptionName() {<a name="line.243"></a>
+<span class="sourceLineNo">244</span>        return subscriptionName;<a name="line.244"></a>
+<span class="sourceLineNo">245</span>    }<a name="line.245"></a>
+<span class="sourceLineNo">246</span><a name="line.246"></a>
+<span class="sourceLineNo">247</span>    public void setSubscriptionName(String durableSubscriptionId) {<a name="line.247"></a>
+<span class="sourceLineNo">248</span>        this.subscriptionName = durableSubscriptionId;<a name="line.248"></a>
+<span class="sourceLineNo">249</span>    }<a name="line.249"></a>
+<span class="sourceLineNo">250</span><a name="line.250"></a>
+<span class="sourceLineNo">251</span>    /**<a name="line.251"></a>
+<span class="sourceLineNo">252</span>     * Set noLocal to true to avoid receiving messages that were published<a name="line.252"></a>
+<span class="sourceLineNo">253</span>     * locally on the same connection.<a name="line.253"></a>
+<span class="sourceLineNo">254</span>     *<a name="line.254"></a>
+<span class="sourceLineNo">255</span>     * @openwire:property version=1<a name="line.255"></a>
+<span class="sourceLineNo">256</span>     */<a name="line.256"></a>
+<span class="sourceLineNo">257</span>    public boolean isNoLocal() {<a name="line.257"></a>
+<span class="sourceLineNo">258</span>        return noLocal;<a name="line.258"></a>
+<span class="sourceLineNo">259</span>    }<a name="line.259"></a>
+<span class="sourceLineNo">260</span><a name="line.260"></a>
+<span class="sourceLineNo">261</span>    public void setNoLocal(boolean noLocal) {<a name="line.261"></a>
+<span class="sourceLineNo">262</span>        this.noLocal = noLocal;<a name="line.262"></a>
+<span class="sourceLineNo">263</span>    }<a name="line.263"></a>
+<span class="sourceLineNo">264</span><a name="line.264"></a>
+<span class="sourceLineNo">265</span>    /**<a name="line.265"></a>
+<span class="sourceLineNo">266</span>     * An exclusive consumer locks out other consumers from being able to<a name="line.266"></a>
+<span class="sourceLineNo">267</span>     * receive messages from the destination. If there are multiple exclusive<a name="line.267"></a>
+<span class="sourceLineNo">268</span>     * consumers for a destination, the first one created will be the exclusive<a name="line.268"></a>
+<span class="sourceLineNo">269</span>     * consumer of the destination.<a name="line.269"></a>
+<span class="sourceLineNo">270</span>     *<a name="line.270"></a>
+<span class="sourceLineNo">271</span>     * @openwire:property version=1<a name="line.271"></a>
+<span class="sourceLineNo">272</span>     */<a name="line.272"></a>
+<span class="sourceLineNo">273</span>    public boolean isExclusive() {<a name="line.273"></a>
+<span class="sourceLineNo">274</span>        return exclusive;<a name="line.274"></a>
+<span class="sourceLineNo">275</span>    }<a name="line.275"></a>
+<span class="sourceLineNo">276</span><a name="line.276"></a>
+<span class="sourceLineNo">277</span>    public void setExclusive(boolean exclusive) {<a name="line.277"></a>
+<span class="sourceLineNo">278</span>        this.exclusive = exclusive;<a name="line.278"></a>
+<span class="sourceLineNo">279</span>    }<a name="line.279"></a>
+<span class="sourceLineNo">280</span><a name="line.280"></a>
+<span class="sourceLineNo">281</span>    /**<a name="line.281"></a>
+<span class="sourceLineNo">282</span>     * A retroactive consumer only has meaning for Topics. It allows a consumer<a name="line.282"></a>
+<span class="sourceLineNo">283</span>     * to retroactively see messages sent prior to the consumer being created.<a name="line.283"></a>
+<span class="sourceLineNo">284</span>     * If the consumer is not durable, it will be delivered the last message<a name="line.284"></a>
+<span class="sourceLineNo">285</span>     * published to the topic. If the consumer is durable then it will receive<a name="line.285"></a>
+<span class="sourceLineNo">286</span>     * all persistent messages that are still stored in persistent storage for<a name="line.286"></a>
+<span class="sourceLineNo">287</span>     * that topic.<a name="line.287"></a>
+<span class="sourceLineNo">288</span>     *<a name="line.288"></a>
+<span class="sourceLineNo">289</span>     * @openwire:property version=1<a name="line.289"></a>
+<span class="sourceLineNo">290</span>     */<a name="line.290"></a>
+<span class="sourceLineNo">291</span>    public boolean isRetroactive() {<a name="line.291"></a>
+<span class="sourceLineNo">292</span>        return retroactive;<a name="line.292"></a>
+<span class="sourceLineNo">293</span>    }<a name="line.293"></a>
+<span class="sourceLineNo">294</span><a name="line.294"></a>
+<span class="sourceLineNo">295</span>    public void setRetroactive(boolean retroactive) {<a name="line.295"></a>
+<span class="sourceLineNo">296</span>        this.retroactive = retroactive;<a name="line.296"></a>
+<span class="sourceLineNo">297</span>    }<a name="line.297"></a>
+<span class="sourceLineNo">298</span><a name="line.298"></a>
+<span class="sourceLineNo">299</span>    public RemoveInfo createRemoveCommand() {<a name="line.299"></a>
+<span class="sourceLineNo">300</span>        RemoveInfo command = new RemoveInfo(getConsumerId());<a name="line.300"></a>
+<span class="sourceLineNo">301</span>        command.setResponseRequired(isResponseRequired());<a name="line.301"></a>
+<span class="sourceLineNo">302</span>        return command;<a name="line.302"></a>
+<span class="sourceLineNo">303</span>    }<a name="line.303"></a>
+<span class="sourceLineNo">304</span><a name="line.304"></a>
+<span class="sourceLineNo">305</span>    /**<a name="line.305"></a>
+<span class="sourceLineNo">306</span>     * The broker will avoid dispatching to a lower priority consumer if there<a name="line.306"></a>
+<span class="sourceLineNo">307</span>     * are other higher priority consumers available to dispatch to. This allows<a name="line.307"></a>
+<span class="sourceLineNo">308</span>     * letting the broker to have an affinity to higher priority consumers.<a name="line.308"></a>
+<span class="sourceLineNo">309</span>     * Default priority is 0.<a name="line.309"></a>
+<span class="sourceLineNo">310</span>     *<a name="line.310"></a>
+<span class="sourceLineNo">311</span>     * @openwire:property version=1<a name="line.311"></a>
+<span class="sourceLineNo">312</span>     */<a name="line.312"></a>
+<span class="sourceLineNo">313</span>    public byte getPriority() {<a name="line.313"></a>
+<span class="sourceLineNo">314</span>        return priority;<a name="line.314"></a>
+<span class="sourceLineNo">315</span>    }<a name="line.315"></a>
+<span class="sourceLineNo">316</span><a name="line.316"></a>
+<span class="sourceLineNo">317</span>    public void setPriority(byte priority) {<a name="line.317"></a>
+<span class="sourceLineNo">318</span>        this.priority = priority;<a name="line.318"></a>
+<span class="sourceLineNo">319</span>    }<a name="line.319"></a>
+<span class="sourceLineNo">320</span><a name="line.320"></a>
+<span class="sourceLineNo">321</span>    /**<a name="line.321"></a>
+<span class="sourceLineNo">322</span>     * The route of brokers the command has moved through.<a name="line.322"></a>
+<span class="sourceLineNo">323</span>     *<a name="line.323"></a>
+<span class="sourceLineNo">324</span>     * @openwire:property version=1 cache=true<a name="line.324"></a>
+<span class="sourceLineNo">325</span>     */<a name="line.325"></a>
+<span class="sourceLineNo">326</span>    public BrokerId[] getBrokerPath() {<a name="line.326"></a>
+<span class="sourceLineNo">327</span>        return brokerPath;<a name="line.327"></a>
+<span class="sourceLineNo">328</span>    }<a name="line.328"></a>
+<span class="sourceLineNo">329</span><a name="line.329"></a>
+<span class="sourceLineNo">330</span>    public void setBrokerPath(BrokerId[] brokerPath) {<a name="line.330"></a>
+<span class="sourceLineNo">331</span>        this.brokerPath = brokerPath;<a name="line.331"></a>
+<span class="sourceLineNo">332</span>    }<a name="line.332"></a>
+<span class="sourceLineNo">333</span><a name="line.333"></a>
+<span class="sourceLineNo">334</span>    /**<a name="line.334"></a>
+<span class="sourceLineNo">335</span>     * A transient additional predicate that can be used it inject additional<a name="line.335"></a>
+<span class="sourceLineNo">336</span>     * predicates into the selector on the fly. Handy if if say a Security<a name="line.336"></a>
+<span class="sourceLineNo">337</span>     * Broker interceptor wants to filter out messages based on security level<a name="line.337"></a>
+<span class="sourceLineNo">338</span>     * of the consumer.<a name="line.338"></a>
+<span class="sourceLineNo">339</span>     *<a name="line.339"></a>
+<span class="sourceLineNo">340</span>     * @openwire:property version=1<a name="line.340"></a>
+<span class="sourceLineNo">341</span>     */<a name="line.341"></a>
+<span class="sourceLineNo">342</span>    public BooleanExpression getAdditionalPredicate() {<a name="line.342"></a>
+<span class="sourceLineNo">343</span>        return additionalPredicate;<a name="line.343"></a>
+<span class="sourceLineNo">344</span>    }<a name="line.344"></a>
+<span class="sourceLineNo">345</span><a name="line.345"></a>
+<span class="sourceLineNo">346</span>    public void setAdditionalPredicate(BooleanExpression additionalPredicate) {<a name="line.346"></a>
+<span class="sourceLineNo">347</span>        this.additionalPredicate = additionalPredicate;<a name="line.347"></a>
+<span class="sourceLineNo">348</span>    }<a name="line.348"></a>
+<span class="sourceLineNo">349</span><a name="line.349"></a>
+<span class="sourceLineNo">350</span>    @Override<a name="line.350"></a>
+<span class="sourceLineNo">351</span>    public Response visit(CommandVisitor visitor) throws Exception {<a name="line.351"></a>
+<span class="sourceLineNo">352</span>        return visitor.processAddConsumer(this);<a name="line.352"></a>
+<span class="sourceLineNo">353</span>    }<a name="line.353"></a>
+<span class="sourceLineNo">354</span><a name="line.354"></a>
+<span class="sourceLineNo">355</span>    /**<a name="line.355"></a>
+<span class="sourceLineNo">356</span>     * @openwire:property version=1<a name="line.356"></a>
+<span class="sourceLineNo">357</span>     * @return Returns the networkSubscription.<a name="line.357"></a>
+<span class="sourceLineNo">358</span>     */<a name="line.358"></a>
+<span class="sourceLineNo">359</span>    public boolean isNetworkSubscription() {<a name="line.359"></a>
+<span class="sourceLineNo">360</span>        return networkSubscription;<a name="line.360"></a>
+<span class="sourceLineNo">361</span>    }<a name="line.361"></a>
+<span class="sourceLineNo">362</span><a name="line.362"></a>
+<span class="sourceLineNo">363</span>    /**<a name="line.363"></a>
+<span class="sourceLineNo">364</span>     * @param networkSubscription The networkSubscription to set.<a name="line.364"></a>
+<span class="sourceLineNo">365</span>     */<a name="line.365"></a>
+<span class="sourceLineNo">366</span>    public void setNetworkSubscription(boolean networkSubscription) {<a name="line.366"></a>
+<span class="sourceLineNo">367</span>        this.networkSubscription = networkSubscription;<a name="line.367"></a>
+<span class="sourceLineNo">368</span>    }<a name="line.368"></a>
+<span class="sourceLineNo">369</span><a name="line.369"></a>
+<span class="sourceLineNo">370</span>    /**<a name="line.370"></a>
+<span class="sourceLineNo">371</span>     * @openwire:property version=1<a name="line.371"></a>
+<span class="sourceLineNo">372</span>     * @return Returns the optimizedAcknowledge.<a name="line.372"></a>
+<span class="sourceLineNo">373</span>     */<a name="line.373"></a>
+<span class="sourceLineNo">374</span>    public boolean isOptimizedAcknowledge() {<a name="line.374"></a>
+<span class="sourceLineNo">375</span>        return optimizedAcknowledge;<a name="line.375"></a>
+<span class="sourceLineNo">376</span>    }<a name="line.376"></a>
+<span class="sourceLineNo">377</span><a name="line.377"></a>
+<span class="sourceLineNo">378</span>    /**<a name="line.378"></a>
+<span class="sourceLineNo">379</span>     * @param optimizedAcknowledge The optimizedAcknowledge to set.<a name="line.379"></a>
+<span class="sourceLineNo">380</span>     */<a name="line.380"></a>
+<span class="sourceLineNo">381</span>    public void setOptimizedAcknowledge(boolean optimizedAcknowledge) {<a name="line.381"></a>
+<span class="sourceLineNo">382</span>        this.optimizedAcknowledge = optimizedAcknowledge;<a name="line.382"></a>
+<span class="sourceLineNo">383</span>    }<a name="line.383"></a>
+<span class="sourceLineNo">384</span><a name="line.384"></a>
+<span class="sourceLineNo">385</span>    /**<a name="line.385"></a>
+<span class="sourceLineNo">386</span>     * @return Returns the currentPrefetchSize.<a name="line.386"></a>
+<span class="sourceLineNo">387</span>     */<a name="line.387"></a>
+<span class="sourceLineNo">388</span>    public int getCurrentPrefetchSize() {<a name="line.388"></a>
+<span class="sourceLineNo">389</span>        return currentPrefetchSize;<a name="line.389"></a>
+<span class="sourceLineNo">390</span>    }<a name="line.390"></a>
+<span class="sourceLineNo">391</span><a name="line.391"></a>
+<span class="sourceLineNo">392</span>    /**<a name="line.392"></a>
+<span class="sourceLineNo">393</span>     * @param currentPrefetchSize The currentPrefetchSize to set.<a name="line.393"></a>
+<span class="sourceLineNo">394</span>     */<a name="line.394"></a>
+<span class="sourceLineNo">395</span>    public void setCurrentPrefetchSize(int currentPrefetchSize) {<a name="line.395"></a>
+<span class="sourceLineNo">396</span>        this.currentPrefetchSize = currentPrefetchSize;<a name="line.396"></a>
+<span class="sourceLineNo">397</span>    }<a name="line.397"></a>
+<span class="sourceLineNo">398</span><a name="line.398"></a>
+<span class="sourceLineNo">399</span>    /**<a name="line.399"></a>
+<span class="sourceLineNo">400</span>     * The broker may be able to optimize it's processing or provides better QOS<a name="line.400"></a>
+<span class="sourceLineNo">401</span>     * if it knows the consumer will not be sending ranged acks.<a name="line.401"></a>
+<span class="sourceLineNo">402</span>     *<a name="line.402"></a>
+<span class="sourceLineNo">403</span>     * @return true if the consumer will not send range acks.<a name="line.403"></a>
+<span class="sourceLineNo">404</span>     * @openwire:property version=1<a name="line.404"></a>
+<span class="sourceLineNo">405</span>     */<a name="line.405"></a>
+<span class="sourceLineNo">406</span>    public boolean isNoRangeAcks() {<a name="line.406"></a>
+<span class="sourceLineNo">407</span>        return noRangeAcks;<a name="line.407"></a>
+<span class="sourceLineNo">408</span>    }<a name="line.408"></a>
+<span class="sourceLineNo">409</span><a name="line.409"></a>
+<span class="sourceLineNo">410</span>    public void setNoRangeAcks(boolean noRangeAcks) {<a name="line.410"></a>
+<span class="sourceLineNo">411</span>        this.noRangeAcks = noRangeAcks;<a name="line.411"></a>
+<span class="sourceLineNo">412</span>    }<a name="line.412"></a>
+<span class="sourceLineNo">413</span><a name="line.413"></a>
+<span class="sourceLineNo">414</span>    public synchronized void addNetworkConsumerId(ConsumerId networkConsumerId) {<a name="line.414"></a>
+<span class="sourceLineNo">415</span>        if (networkConsumerIds == null) {<a name="line.415"></a>
+<span class="sourceLineNo">416</span>            networkConsumerIds = new ArrayList&lt;ConsumerId&gt;();<a name="line.416"></a>
+<span class="sourceLineNo">417</span>        }<a name="line.417"></a>
+<span class="sourceLineNo">418</span>        networkConsumerIds.add(networkConsumerId);<a name="line.418"></a>
+<span class="sourceLineNo">419</span>    }<a name="line.419"></a>
+<span class="sourceLineNo">420</span><a name="line.420"></a>
+<span class="sourceLineNo">421</span>    public synchronized void removeNetworkConsumerId(ConsumerId networkConsumerId) {<a name="line.421"></a>
+<span class="sourceLineNo">422</span>        if (networkConsumerIds != null) {<a name="line.422"></a>
+<span class="sourceLineNo">423</span>            networkConsumerIds.remove(networkConsumerId);<a name="line.423"></a>
+<span class="sourceLineNo">424</span>            if (networkConsumerIds.isEmpty()) {<a name="line.424"></a>
+<span class="sourceLineNo">425</span>                networkConsumerIds=null;<a name="line.425"></a>
+<span class="sourceLineNo">426</span>            }<a name="line.426"></a>
+<span class="sourceLineNo">427</span>        }<a name="line.427"></a>
+<span class="sourceLineNo">428</span>    }<a name="line.428"></a>
+<span class="sourceLineNo">429</span><a name="line.429"></a>
+<span class="sourceLineNo">430</span>    public synchronized boolean isNetworkConsumersEmpty() {<a name="line.430"></a>
+<span class="sourceLineNo">431</span>        return networkConsumerIds == null || networkConsumerIds.isEmpty();<a name="line.431"></a>
+<span class="sourceLineNo">432</span>    }<a name="line.432"></a>
+<span class="sourceLineNo">433</span><a name="line.433"></a>
+<span class="sourceLineNo">434</span>    public synchronized List&lt;ConsumerId&gt; getNetworkConsumerIds(){<a name="line.434"></a>
+<span class="sourceLineNo">435</span>        List&lt;ConsumerId&gt; result = new ArrayList&lt;ConsumerId&gt;();<a name="line.435"></a>
+<span class="sourceLineNo">436</span>        if (networkConsumerIds != null) {<a name="line.436"></a>
+<span class="sourceLineNo">437</span>            result.addAll(networkConsumerIds);<a name="line.437"></a>
+<span class="sourceLineNo">438</span>        }<a name="line.438"></a>
+<span class="sourceLineNo">439</span>        return result;<a name="line.439"></a>
+<span class="sourceLineNo">440</span>    }<a name="line.440"></a>
+<span class="sourceLineNo">441</span><a name="line.441"></a>
+<span class="sourceLineNo">442</span>    @Override<a name="line.442"></a>
+<span class="sourceLineNo">443</span>    public int hashCode() {<a name="line.443"></a>
+<span class="sourceLineNo">444</span>        return (consumerId == null) ? 0 : consumerId.hashCode();<a name="line.444"></a>
+<span class="sourceLineNo">445</span>    }<a name="line.445"></a>
+<span class="sourceLineNo">446</span><a name="line.446"></a>
+<span class="sourceLineNo">447</span>    @Override<a name="line.447"></a>
+<span class="sourceLineNo">448</span>    public boolean equals(Object obj) {<a name="line.448"></a>
+<span class="sourceLineNo">449</span>        if (this == obj) {<a name="line.449"></a>
+<span class="sourceLineNo">450</span>            return true;<a name="line.450"></a>
+<span class="sourceLineNo">451</span>        }<a name="line.451"></a>
+<span class="sourceLineNo">452</span>        if (obj == null) {<a name="line.452"></a>
+<span class="sourceLineNo">453</span>            return false;<a name="line.453"></a>
+<span class="sourceLineNo">454</span>        }<a name="line.454"></a>
+<span class="sourceLineNo">455</span>        if (getClass() != obj.getClass()) {<a name="line.455"></a>
+<span class="sourceLineNo">456</span>            return false;<a name="line.456"></a>
+<span class="sourceLineNo">457</span>        }<a name="line.457"></a>
+<span class="sourceLineNo">458</span><a name="line.458"></a>
+<span class="sourceLineNo">459</span>        ConsumerInfo other = (ConsumerInfo) obj;<a name="line.459"></a>
+<span class="sourceLineNo">460</span><a name="line.460"></a>
+<span class="sourceLineNo">461</span>        if (consumerId == null &amp;&amp; other.consumerId != null) {<a name="line.461"></a>
+<span class="sourceLineNo">462</span>            return false;<a name="line.462"></a>
+<span class="sourceLineNo">463</span>        } else if (!consumerId.equals(other.consumerId)) {<a name="line.463"></a>
+<span class="sourceLineNo">464</span>            return false;<a name="line.464"></a>
+<span class="sourceLineNo">465</span>        }<a name="line.465"></a>
+<span class="sourceLineNo">466</span>        return true;<a name="line.466"></a>
+<span class="sourceLineNo">467</span>    }<a name="line.467"></a>
+<span class="sourceLineNo">468</span><a name="line.468"></a>
+<span class="sourceLineNo">469</span>    /**<a name="line.469"></a>
+<span class="sourceLineNo">470</span>     * Tracks the original subscription id that causes a subscription to<a name="line.470"></a>
+<span class="sourceLineNo">471</span>     * percolate through a network when networkTTL &gt; 1. Tracking the original<a name="line.471"></a>
+<span class="sourceLineNo">472</span>     * subscription allows duplicate suppression.<a name="line.472"></a>
+<span class="sourceLineNo">473</span>     *<a name="line.473"></a>
+<span class="sourceLineNo">474</span>     * @return array of the current subscription path<a name="line.474"></a>
+<span class="sourceLineNo">475</span>     * @openwire:property version=4<a name="line.475"></a>
+<span class="sourceLineNo">476</span>     */<a name="line.476"></a>
+<span class="sourceLineNo">477</span>    public ConsumerId[] getNetworkConsumerPath() {<a name="line.477"></a>
+<span class="sourceLineNo">478</span>        ConsumerId[] result = null;<a name="line.478"></a>
+<span class="sourceLineNo">479</span>        if (networkConsumerIds != null) {<a name="line.479"></a>
+<span class="sourceLineNo">480</span>            result = networkConsumerIds.toArray(new ConsumerId[0]);<a name="line.480"></a>
+<span class="sourceLineNo">481</span>        }<a name="line.481"></a>
+<span class="sourceLineNo">482</span>        return result;<a name="line.482"></a>
+<span class="sourceLineNo">483</span>    }<a name="line.483"></a>
+<span class="sourceLineNo">484</span><a name="line.484"></a>
+<span class="sourceLineNo">485</span>    public void setNetworkConsumerPath(ConsumerId[] consumerPath) {<a name="line.485"></a>
+<span class="sourceLineNo">486</span>        if (consumerPath != null) {<a name="line.486"></a>
+<span class="sourceLineNo">487</span>            for (int i=0; i&lt;consumerPath.length; i++) {<a name="line.487"></a>
+<span class="sourceLineNo">488</span>                addNetworkConsumerId(consumerPath[i]);<a name="line.488"></a>
+<span class="sourceLineNo">489</span>            }<a name="line.489"></a>
+<span class="sourceLineNo">490</span>        }<a name="line.490"></a>
+<span class="sourceLineNo">491</span>    }<a name="line.491"></a>
+<span class="sourceLineNo">492</span><a name="line.492"></a>
+<span class="sourceLineNo">493</span>    public void setLastDeliveredSequenceId(long lastDeliveredSequenceId) {<a name="line.493"></a>
+<span class="sourceLineNo">494</span>        this.lastDeliveredSequenceId  = lastDeliveredSequenceId;<a name="line.494"></a>
+<span class="sourceLineNo">495</span>    }<a name="line.495"></a>
+<span class="sourceLineNo">496</span><a name="line.496"></a>
+<span class="sourceLineNo">497</span>    public long getLastDeliveredSequenceId() {<a name="line.497"></a>
+<span class="sourceLineNo">498</span>        return lastDeliveredSequenceId;<a name="line.498"></a>
+<span class="sourceLineNo">499</span>    }<a name="line.499"></a>
+<span class="sourceLineNo">500</span><a name="line.500"></a>
+<span class="sourceLineNo">501</span>    public void incrementAssignedGroupCount(final ActiveMQDestination dest) {<a name="line.501"></a>
+<span class="sourceLineNo">502</span>        AtomicLong value = assignedGroupCount.get(dest);<a name="line.502"></a>
+<span class="sourceLineNo">503</span>        if (value == null) {<a name="line.503"></a>
+<span class="sourceLineNo">504</span>            value = new AtomicLong(0);<a name="line.504"></a>
+<span class="sourceLineNo">505</span>            assignedGroupCount.put(dest, value);<a name="line.505"></a>
+<span class="sourceLineNo">506</span>        }<a name="line.506"></a>
+<span class="sourceLineNo">507</span>        value.incrementAndGet();<a name="line.507"></a>
+<span class="sourceLineNo">508</span>    }<a name="line.508"></a>
+<span class="sourceLineNo">509</span><a name="line.509"></a>
+<span class="sourceLineNo">510</span>    public void clearAssignedGroupCount(final ActiveMQDestination dest) {<a name="line.510"></a>
+<span class="sourceLineNo">511</span>        assignedGroupCount.remove(dest);<a name="line.511"></a>
+<span class="sourceLineNo">512</span>    }<a name="line.512"></a>
+<span class="sourceLineNo">513</span><a name="line.513"></a>
+<span class="sourceLineNo">514</span>    public void decrementAssignedGroupCount(final ActiveMQDestination dest) {<a name="line.514"></a>
+<span class="sourceLineNo">515</span>        AtomicLong value = assignedGroupCount.get(dest);<a name="line.515"></a>
+<span class="sourceLineNo">516</span>        if (value != null) {<a name="line.516"></a>
+<span class="sourceLineNo">517</span>            value.decrementAndGet();<a name="line.517"></a>
+<span class="sourceLineNo">518</span>        }<a name="line.518"></a>
+<span class="sourceLineNo">519</span>    }<a name="line.519"></a>
+<span class="sourceLineNo">520</span><a name="line.520"></a>
+<span class="sourceLineNo">521</span>    public long getAssignedGroupCount(final ActiveMQDestination dest) {<a name="line.521"></a>
+<span class="sourceLineNo">522</span>        long result = 0l;<a name="line.522"></a>
+<span class="sourceLineNo">523</span>        AtomicLong value = assignedGroupCount.get(dest);<a name="line.523"></a>
+<span class="sourceLineNo">524</span>        if (value != null) {<a name="line.524"></a>
+<span class="sourceLineNo">525</span>            result = value.longValue();<a name="line.525"></a>
+<span class="sourceLineNo">526</span>        }<a name="line.526"></a>
+<span class="sourceLineNo">527</span>        return result;<a name="line.527"></a>
+<span class="sourceLineNo">528</span>    }<a name="line.528"></a>
+<span class="sourceLineNo">529</span><a name="line.529"></a>
+<span class="sourceLineNo">530</span>    @Override<a name="line.530"></a>
+<span class="sourceLineNo">531</span>    public void initTransients() {<a name="line.531"></a>
+<span class="sourceLineNo">532</span>        assignedGroupCount = new ConcurrentHashMap&lt;&gt;();<a name="line.532"></a>
+<span class="sourceLineNo">533</span>        lastDeliveredSequenceId = RemoveInfo.LAST_DELIVERED_UNSET;<a name="line.533"></a>
+<span class="sourceLineNo">534</span>    }<a name="line.534"></a>
+<span class="sourceLineNo">535</span><a name="line.535"></a>
+<span class="sourceLineNo">536</span>    @Override<a name="line.536"></a>
+<span class="sourceLineNo">537</span>    public String toString() {<a name="line.537"></a>
+<span class="sourceLineNo">538</span>        HashMap&lt;String, Object&gt; overrideFields = new HashMap&lt;String, Object&gt;();<a name="line.538"></a>
+<span class="sourceLineNo">539</span>        overrideFields.put("networkConsumerIds", networkConsumerIds);<a name="line.539"></a>
+<span class="sourceLineNo">540</span>        return super.toString(overrideFields);<a name="line.540"></a>
+<span class="sourceLineNo">541</span>    }<a name="line.541"></a>
+<span class="sourceLineNo">542</span><a name="line.542"></a>
+<span class="sourceLineNo">543</span>}<a name="line.543"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
