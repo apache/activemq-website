@@ -1,0 +1,1152 @@
+<!DOCTYPE HTML>
+<html lang="en" >
+    
+    <head>
+        
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Thread management | ActiveMQ Artemis Documentation</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 2.1.0">
+        
+        
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+        <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+        
+    <link rel="stylesheet" href="gitbook/style.css">
+    
+    
+
+        
+    
+    
+    <link rel="next" href="./logging.html" />
+    
+    
+    <link rel="prev" href="./libaio.html" />
+    
+
+        
+    </head>
+    <body>
+        
+        
+    <div class="book" data-level="43" data-basepath="." data-revision="Wed Sep 23 2015 12:51:51 GMT+0100 (BST)">
+    
+
+<div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Type to search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+        
+        
+        
+
+        
+
+        
+    
+        <li class="chapter " data-level="0" data-path="index.html">
+            
+                
+                    <a href="./index.html">
+                        <i class="fa fa-check"></i>
+                        
+                        Introduction
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="1" data-path="notice.html">
+            
+                
+                    <a href="./notice.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.</b>
+                        
+                        Legal Notice
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="2" data-path="preface.html">
+            
+                
+                    <a href="./preface.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.</b>
+                        
+                        Preface
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="3" data-path="project-info.html">
+            
+                
+                    <a href="./project-info.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.</b>
+                        
+                        Project Info
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="4" data-path="messaging-concepts.html">
+            
+                
+                    <a href="./messaging-concepts.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>4.</b>
+                        
+                        Messaging Concepts
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="5" data-path="architecture.html">
+            
+                
+                    <a href="./architecture.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.</b>
+                        
+                        Architecture
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="6" data-path="using-server.html">
+            
+                
+                    <a href="./using-server.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>6.</b>
+                        
+                        Using the Server
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="7" data-path="using-jms.html">
+            
+                
+                    <a href="./using-jms.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>7.</b>
+                        
+                        Using JMS
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="8" data-path="using-core.html">
+            
+                
+                    <a href="./using-core.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>8.</b>
+                        
+                        Using Core
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="9" data-path="jms-core-mapping.html">
+            
+                
+                    <a href="./jms-core-mapping.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>9.</b>
+                        
+                        Mapping JMS Concepts to the Core API
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="10" data-path="client-classpath.html">
+            
+                
+                    <a href="./client-classpath.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>10.</b>
+                        
+                        The Client Classpath
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="11" data-path="examples.html">
+            
+                
+                    <a href="./examples.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>11.</b>
+                        
+                        Examples
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="12" data-path="wildcard-routing.html">
+            
+                
+                    <a href="./wildcard-routing.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>12.</b>
+                        
+                        Routing Messages With Wild Cards
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="13" data-path="wildcard-syntax.html">
+            
+                
+                    <a href="./wildcard-syntax.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>13.</b>
+                        
+                        Understanding the Apache ActiveMQ Artemis Wildcard Syntax
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="14" data-path="filter-expressions.html">
+            
+                
+                    <a href="./filter-expressions.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>14.</b>
+                        
+                        Filter Expressions
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="15" data-path="persistence.html">
+            
+                
+                    <a href="./persistence.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>15.</b>
+                        
+                        Persistence
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="16" data-path="configuring-transports.html">
+            
+                
+                    <a href="./configuring-transports.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>16.</b>
+                        
+                        Configuring Transports
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="17" data-path="connection-ttl.html">
+            
+                
+                    <a href="./connection-ttl.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>17.</b>
+                        
+                        Detecting Dead Connections
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="18" data-path="slow-consumers.html">
+            
+                
+                    <a href="./slow-consumers.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>18.</b>
+                        
+                        Detecting Slow Consumers
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="19" data-path="transaction-config.html">
+            
+                
+                    <a href="./transaction-config.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>19.</b>
+                        
+                        Resource Manager Configuration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="20" data-path="flow-control.html">
+            
+                
+                    <a href="./flow-control.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>20.</b>
+                        
+                        Flow Control
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="21" data-path="send-guarantees.html">
+            
+                
+                    <a href="./send-guarantees.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>21.</b>
+                        
+                        Guarantees of sends and commits
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="22" data-path="undelivered-messages.html">
+            
+                
+                    <a href="./undelivered-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>22.</b>
+                        
+                        Message Redelivery and Undelivered Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="23" data-path="message-expiry.html">
+            
+                
+                    <a href="./message-expiry.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>23.</b>
+                        
+                        Message Expiry
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="24" data-path="large-messages.html">
+            
+                
+                    <a href="./large-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>24.</b>
+                        
+                        Large Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="25" data-path="paging.html">
+            
+                
+                    <a href="./paging.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>25.</b>
+                        
+                        Paging
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="26" data-path="queue-attributes.html">
+            
+                
+                    <a href="./queue-attributes.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>26.</b>
+                        
+                        Queue Attributes
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="27" data-path="scheduled-messages.html">
+            
+                
+                    <a href="./scheduled-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>27.</b>
+                        
+                        Scheduled Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="28" data-path="last-value-queues.html">
+            
+                
+                    <a href="./last-value-queues.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>28.</b>
+                        
+                        Last-Value Queues
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="29" data-path="message-grouping.html">
+            
+                
+                    <a href="./message-grouping.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>29.</b>
+                        
+                        Message Grouping
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="30" data-path="pre-acknowledge.html">
+            
+                
+                    <a href="./pre-acknowledge.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>30.</b>
+                        
+                        Extra Acknowledge Modes
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="31" data-path="management.html">
+            
+                
+                    <a href="./management.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>31.</b>
+                        
+                        Management
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="32" data-path="security.html">
+            
+                
+                    <a href="./security.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>32.</b>
+                        
+                        Security
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="33" data-path="resource-limits.html">
+            
+                
+                    <a href="./resource-limits.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>33.</b>
+                        
+                        Resource Limits
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="34" data-path="jms-bridge.html">
+            
+                
+                    <a href="./jms-bridge.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>34.</b>
+                        
+                        The JMS Bridge
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="35" data-path="client-reconnection.html">
+            
+                
+                    <a href="./client-reconnection.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>35.</b>
+                        
+                        Client Reconnection and Session Reattachment
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="36" data-path="diverts.html">
+            
+                
+                    <a href="./diverts.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>36.</b>
+                        
+                        Diverting and Splitting Message Flows
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="37" data-path="core-bridges.html">
+            
+                
+                    <a href="./core-bridges.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>37.</b>
+                        
+                        Core Bridges
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="38" data-path="duplicate-detection.html">
+            
+                
+                    <a href="./duplicate-detection.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>38.</b>
+                        
+                        Duplicate Message Detection
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="39" data-path="clusters.html">
+            
+                
+                    <a href="./clusters.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>39.</b>
+                        
+                        Clusters
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="40" data-path="ha.html">
+            
+                
+                    <a href="./ha.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>40.</b>
+                        
+                        High Availability and Failover
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="41" data-path="graceful-shutdown.html">
+            
+                
+                    <a href="./graceful-shutdown.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>41.</b>
+                        
+                        Graceful Server Shutdown
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="42" data-path="libaio.html">
+            
+                
+                    <a href="./libaio.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>42.</b>
+                        
+                        Libaio Native Libraries
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter active" data-level="43" data-path="thread-pooling.html">
+            
+                
+                    <a href="./thread-pooling.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>43.</b>
+                        
+                        Thread management
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="44" data-path="logging.html">
+            
+                
+                    <a href="./logging.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>44.</b>
+                        
+                        Logging
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="45" data-path="rest.html">
+            
+                
+                    <a href="./rest.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>45.</b>
+                        
+                        REST Interface
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="46" data-path="embedding-activemq.html">
+            
+                
+                    <a href="./embedding-activemq.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>46.</b>
+                        
+                        Embedding Apache ActiveMQ Artemis
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="47" data-path="spring-integration.html">
+            
+                
+                    <a href="./spring-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>47.</b>
+                        
+                        Spring Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="48" data-path="aerogear-integration.html">
+            
+                
+                    <a href="./aerogear-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>48.</b>
+                        
+                        AeroGear Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="49" data-path="vertx-integration.html">
+            
+                
+                    <a href="./vertx-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>49.</b>
+                        
+                        VertX Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="50" data-path="intercepting-operations.html">
+            
+                
+                    <a href="./intercepting-operations.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>50.</b>
+                        
+                        Intercepting Operations
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="51" data-path="protocols-interoperability.html">
+            
+                
+                    <a href="./protocols-interoperability.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>51.</b>
+                        
+                        Protocols and Interoperability
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="52" data-path="tools.html">
+            
+                
+                    <a href="./tools.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>52.</b>
+                        
+                        Tools
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="53" data-path="maven-plugin.html">
+            
+                
+                    <a href="./maven-plugin.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>53.</b>
+                        
+                        Maven Plugin
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="54" data-path="perf-tuning.html">
+            
+                
+                    <a href="./perf-tuning.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>54.</b>
+                        
+                        Troubleshooting and Performance Tuning
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="55" data-path="configuration-index.html">
+            
+                
+                    <a href="./configuration-index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>55.</b>
+                        
+                        Configuration Reference
+                    </a>
+                
+            
+            
+        </li>
+    
+
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+                Published with GitBook
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="book-header">
+    <!-- Actions Left -->
+    <a href="#" class="btn pull-left toggle-summary" aria-label="Table of Contents"><i class="fa fa-align-justify"></i></a>
+    <a href="#" class="btn pull-left toggle-search" aria-label="Search"><i class="fa fa-search"></i></a>
+    
+    <div id="font-settings-wrapper" class="dropdown pull-left">
+        <a href="#" class="btn toggle-dropdown" aria-label="Font Settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+    <div class="dropdown-caret">
+        <span class="caret-outer"></span>
+        <span class="caret-inner"></span>
+    </div>
+
+    <div class="buttons">
+        <button type="button" id="reduce-font-size" class="button size-2">A</button>
+        <button type="button" id="enlarge-font-size" class="button size-2">A</button>
+    </div>
+
+    <div class="buttons font-family-list">
+        <button type="button" data-font="0" class="button">Serif</button>
+        <button type="button" data-font="1" class="button">Sans</button>
+    </div>
+
+    <div class="buttons color-theme-list">
+        <button type="button" id="color-theme-preview-0" class="button size-3" data-theme="0">White</button>
+        <button type="button" id="color-theme-preview-1" class="button size-3" data-theme="1">Sepia</button>
+        <button type="button" id="color-theme-preview-2" class="button size-3" data-theme="2">Night</button>
+    </div>
+</div>
+
+    </div>
+
+    <!-- Actions Right -->
+    
+    <div class="dropdown pull-right">
+        <a href="#" class="btn toggle-dropdown" aria-label="Share"><i class="fa fa-share-alt"></i>
+        </a>
+        <div class="dropdown-menu font-settings dropdown-left">
+            <div class="dropdown-caret">
+                <span class="caret-outer"></span>
+                <span class="caret-inner"></span>
+            </div>
+            <div class="buttons">
+                <button type="button" data-sharing="twitter" class="button">
+                    Share on Twitter
+                </button>
+                <button type="button" data-sharing="google-plus" class="button">
+                    Share on Google
+                </button>
+                <button type="button" data-sharing="facebook" class="button">
+                    Share on Facebook
+                </button>
+                <button type="button" data-sharing="weibo" class="button">
+                    Share on Weibo
+                </button>
+                <button type="button" data-sharing="instapaper" class="button">
+                    Share on Instapaper
+                </button>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <a href="#" target="_blank" class="btn pull-right google-plus-sharing-link sharing-link" data-sharing="google-plus" aria-label="Google"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right facebook-sharing-link sharing-link" data-sharing="facebook" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right twitter-sharing-link sharing-link" data-sharing="twitter" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+    
+    
+    
+
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="./" >ActiveMQ Artemis Documentation</a>
+    </h1>
+</div>
+
+            <div class="page-wrapper" tabindex="-1">
+                <div class="page-inner">
+                
+                
+                    <section class="normal" id="section-">
+                    
+                        <h1 id="thread-management">Thread management</h1>
+<p>This chapter describes how Apache ActiveMQ Artemis uses and pools threads and how you
+can manage them.</p>
+<p>First we&apos;ll discuss how threads are managed and used on the server side,
+then we&apos;ll look at the client side.</p>
+<h2 id="server-side-thread-management">Server-Side Thread Management</h2>
+<p>Each Apache ActiveMQ Artemis Server maintains a single thread pool for general use, and
+a scheduled thread pool for scheduled use. A Java scheduled thread pool
+cannot be configured to use a standard thread pool, otherwise we could
+use a single thread pool for both scheduled and non scheduled activity.</p>
+<p>A separate thread pool is also used to service connections. Apache ActiveMQ Artemis can
+use &quot;old&quot; (blocking) IO or &quot;new&quot; (non-blocking) IO also called NIO. Both
+of these options use a separate thread pool, but each of them behaves
+uniquely.</p>
+<p>Since old IO requires a thread per connection its thread pool is
+unbounded. The thread pool is created via <code>java.util.concurrent.Executors.newCachedThreadPool(ThreadFactory)</code>.
+As the JavaDoc for this method states: &#x201C;Creates a thread pool that
+creates new threads as needed, but will reuse previously constructed
+threads when they are available, and uses the provided ThreadFactory to
+create new threads when needed.&#x201D; Threads from this pool which are idle
+for more than 60 seconds will time out and be removed. If old IO
+connections were serviced from the standard pool the pool would easily
+get exhausted if too many connections were made, resulting in the server
+&quot;hanging&quot; since it has no remaining threads to do anything else.
+However, even an unbounded thread pool can run into trouble if it
+becomes too large. If you require the server to handle many concurrent
+connections you should use NIO, not old IO.</p>
+<p>When using new IO (NIO), Apache ActiveMQ Artemis will, by default, cap its thread pool
+at three times the number of cores (or hyper-threads) as reported by <code>Runtime.getRuntime().availableProcessors()</code> for processing
+incoming packets. To override this value, you can set the number of
+threads by specifying the parameter <code>nioRemotingThreads</code> in the
+transport configuration. See the <a href="configuring-transports.html">configuring transports</a>
+for more information on this.</p>
+<p>There are also a small number of other places where threads are used
+directly, we&apos;ll discuss each in turn.</p>
+<h3 id="server-scheduled-thread-pool">Server Scheduled Thread Pool</h3>
+<p>The server scheduled thread pool is used for most activities on the
+server side that require running periodically or with delays. It maps
+internally to a <code>java.util.concurrent.ScheduledThreadPoolExecutor</code>
+instance.</p>
+<p>The maximum number of thread used by this pool is configure in
+<code>broker.xml</code> with the <code>scheduled-thread-pool-max-size</code>
+parameter. The default value is <code>5</code> threads. A small number of threads
+is usually sufficient for this pool.</p>
+<h3 id="general-purpose-server-thread-pool">General Purpose Server Thread Pool</h3>
+<p>This general purpose thread pool is used for most asynchronous actions
+on the server side. It maps internally to a
+<code>java.util.concurrent.ThreadPoolExecutor</code> instance.</p>
+<p>The maximum number of thread used by this pool is configure in
+<code>broker.xml</code> with the <code>thread-pool-max-size</code> parameter.</p>
+<p>If a value of <code>-1</code> is used this signifies that the thread pool has no
+upper bound and new threads will be created on demand if there are not
+enough threads available to satisfy a request. If activity later
+subsides then threads are timed-out and closed.</p>
+<p>If a value of <code>n</code> where <code>n</code>is a positive integer greater than zero is
+used this signifies that the thread pool is bounded. If more requests
+come in and there are no free threads in the pool and the pool is full
+then requests will block until a thread becomes available. It is
+recommended that a bounded thread pool is used with caution since it can
+lead to dead-lock situations if the upper bound is chosen to be too low.</p>
+<p>The default value for <code>thread-pool-max-size</code> is <code>30</code>.</p>
+<p>See the <a href="http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ThreadPoolExecutor.htm" target="_blank">J2SE
+javadoc</a>
+for more information on unbounded (cached), and bounded (fixed) thread
+pools.</p>
+<h3 id="expiry-reaper-thread">Expiry Reaper Thread</h3>
+<p>A single thread is also used on the server side to scan for expired
+messages in queues. We cannot use either of the thread pools for this
+since this thread needs to run at its own configurable priority.</p>
+<p>For more information on configuring the reaper, please see <a href="message-expiry.html">message expiry</a>.</p>
+<h3 id="asynchronous-io">Asynchronous IO</h3>
+<p>Asynchronous IO has a thread pool for receiving and dispatching events
+out of the native layer. You will find it on a thread dump with the
+prefix ActiveMQ-AIO-poller-pool. Apache ActiveMQ Artemis uses one thread per opened
+file on the journal (there is usually one).</p>
+<p>There is also a single thread used to invoke writes on libaio. We do
+that to avoid context switching on libaio that would cause performance
+issues. You will find this thread on a thread dump with the prefix
+ActiveMQ-AIO-writer-pool.</p>
+<h2 id="client-side-thread-management">Client-Side Thread Management</h2>
+<p>On the client side, Apache ActiveMQ Artemis maintains a single static scheduled thread
+pool and a single static general thread pool for use by all clients
+using the same classloader in that JVM instance.</p>
+<p>The static scheduled thread pool has a maximum size of <code>5</code> threads, and
+the general purpose thread pool has an unbounded maximum size.</p>
+<p>If required Apache ActiveMQ Artemis can also be configured so that each
+<code>ClientSessionFactory</code> instance does not use these static pools but
+instead maintains its own scheduled and general purpose pool. Any
+sessions created from that <code>ClientSessionFactory</code> will use those pools
+instead.</p>
+<p>To configure a <code>ClientSessionFactory</code> instance to use its own pools,
+simply use the appropriate setter methods immediately after creation,
+for example:</p>
+<pre><code class="lang-java">ServerLocator locator = ActiveMQClient.createServerLocatorWithoutHA(...)
+
+ClientSessionFactory myFactory = locator.createClientSessionFactory();
+
+myFactory.setUseGlobalPools(<span class="hljs-keyword">false</span>);
+
+myFactory.setScheduledThreadPoolMaxSize(<span class="hljs-number">10</span>);
+
+myFactory.setThreadPoolMaxSize(-<span class="hljs-number">1</span>);
+</code></pre>
+<p>If you&apos;re using the JMS API, you can set the same parameters on the
+ClientSessionFactory and use it to create the <code>ConnectionFactory</code>
+instance, for example:</p>
+<pre><code class="lang-java">ConnectionFactory myConnectionFactory = ActiveMQJMSClient.createConnectionFactory(myFactory);
+</code></pre>
+<p>If you&apos;re using JNDI to instantiate <code>ActiveMQConnectionFactory</code>
+instances, you can also set these parameters in the JNDI context
+environment, e.g. <code>jndi.properties</code>. Here&apos;s a simple example using the
+&quot;ConnectionFactory&quot; connection factory which is available in the context
+by default:</p>
+<pre><code>java.naming.factory.initial=org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory
+
+java.naming.provider.url=tcp://localhost:61616
+
+connection.ConnectionFactory.useGlobalPools=false
+
+connection.ConnectionFactory.scheduledThreadPoolMaxSize=10
+
+connection.ConnectionFactory.threadPoolMaxSize=-1
+</code></pre>
+                    
+                    </section>
+                
+                
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="./libaio.html" class="navigation navigation-prev " aria-label="Previous page: Libaio Native Libraries"><i class="fa fa-angle-left"></i></a>
+        
+        
+        <a href="./logging.html" class="navigation navigation-next " aria-label="Next page: Logging"><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+<script src="gitbook/app.js"></script>
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"fontSettings":{"theme":null,"family":"sans","size":2}};
+    gitbook.start(config);
+});
+</script>
+
+        
+    </body>
+    
+</html>

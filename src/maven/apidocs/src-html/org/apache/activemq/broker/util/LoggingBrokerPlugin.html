@@ -1,0 +1,684 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.broker.util;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.util.Set;<a name="line.19"></a>
+<span class="sourceLineNo">020</span><a name="line.20"></a>
+<span class="sourceLineNo">021</span>import javax.annotation.PostConstruct;<a name="line.21"></a>
+<span class="sourceLineNo">022</span><a name="line.22"></a>
+<span class="sourceLineNo">023</span>import org.apache.activemq.broker.BrokerPluginSupport;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import org.apache.activemq.broker.Connection;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.apache.activemq.broker.ConnectionContext;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.apache.activemq.broker.ConsumerBrokerExchange;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.apache.activemq.broker.ProducerBrokerExchange;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.apache.activemq.broker.region.Destination;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.apache.activemq.broker.region.MessageReference;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.apache.activemq.broker.region.Subscription;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.apache.activemq.command.*;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.apache.activemq.usage.Usage;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.slf4j.Logger;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.slf4j.LoggerFactory;<a name="line.34"></a>
+<span class="sourceLineNo">035</span><a name="line.35"></a>
+<span class="sourceLineNo">036</span>/**<a name="line.36"></a>
+<span class="sourceLineNo">037</span> * A simple Broker intercepter which allows you to enable/disable logging.<a name="line.37"></a>
+<span class="sourceLineNo">038</span> *<a name="line.38"></a>
+<span class="sourceLineNo">039</span> * @org.apache.xbean.XBean<a name="line.39"></a>
+<span class="sourceLineNo">040</span> */<a name="line.40"></a>
+<span class="sourceLineNo">041</span>public class LoggingBrokerPlugin extends BrokerPluginSupport {<a name="line.41"></a>
+<span class="sourceLineNo">042</span><a name="line.42"></a>
+<span class="sourceLineNo">043</span>    private static final Logger LOG = LoggerFactory.getLogger(LoggingBrokerPlugin.class);<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>    private boolean logAll = false;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    private boolean logConnectionEvents = true;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    private boolean logSessionEvents = true;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    private boolean logTransactionEvents = false;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>    private boolean logConsumerEvents = false;<a name="line.49"></a>
+<span class="sourceLineNo">050</span>    private boolean logProducerEvents = false;<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    private boolean logInternalEvents = false;<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    private boolean perDestinationLogger = false;<a name="line.52"></a>
+<span class="sourceLineNo">053</span><a name="line.53"></a>
+<span class="sourceLineNo">054</span>    /**<a name="line.54"></a>
+<span class="sourceLineNo">055</span>     * JSR-250 callback wrapper; converts checked exceptions to runtime exceptions<a name="line.55"></a>
+<span class="sourceLineNo">056</span>     *<a name="line.56"></a>
+<span class="sourceLineNo">057</span>     * delegates to afterPropertiesSet, done to prevent backwards incompatible signature change<a name="line.57"></a>
+<span class="sourceLineNo">058</span>     */<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    @PostConstruct<a name="line.59"></a>
+<span class="sourceLineNo">060</span>    private void postConstruct() {<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        try {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>            afterPropertiesSet();<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        } catch (Exception ex) {<a name="line.63"></a>
+<span class="sourceLineNo">064</span>            throw new RuntimeException(ex);<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        }<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>    /**<a name="line.68"></a>
+<span class="sourceLineNo">069</span>     * @throws Exception<a name="line.69"></a>
+<span class="sourceLineNo">070</span>     * @org.apache.xbean.InitMethod<a name="line.70"></a>
+<span class="sourceLineNo">071</span>     */<a name="line.71"></a>
+<span class="sourceLineNo">072</span>    public void afterPropertiesSet() throws Exception {<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        LOG.info("Created LoggingBrokerPlugin: {}", this.toString());<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    }<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>    public boolean isLogAll() {<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        return logAll;<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    }<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>    /**<a name="line.80"></a>
+<span class="sourceLineNo">081</span>     * Logger all Events that go through the Plugin<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     */<a name="line.82"></a>
+<span class="sourceLineNo">083</span>    public void setLogAll(boolean logAll) {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        this.logAll = logAll;<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    }<a name="line.85"></a>
+<span class="sourceLineNo">086</span><a name="line.86"></a>
+<span class="sourceLineNo">087</span><a name="line.87"></a>
+<span class="sourceLineNo">088</span>    public boolean isLogConnectionEvents() {<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        return logConnectionEvents;<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    }<a name="line.90"></a>
+<span class="sourceLineNo">091</span><a name="line.91"></a>
+<span class="sourceLineNo">092</span>    /**<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     * Logger Events that are related to connections<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     */<a name="line.94"></a>
+<span class="sourceLineNo">095</span>    public void setLogConnectionEvents(boolean logConnectionEvents) {<a name="line.95"></a>
+<span class="sourceLineNo">096</span>        this.logConnectionEvents = logConnectionEvents;<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    }<a name="line.97"></a>
+<span class="sourceLineNo">098</span><a name="line.98"></a>
+<span class="sourceLineNo">099</span>    public boolean isLogSessionEvents() {<a name="line.99"></a>
+<span class="sourceLineNo">100</span>        return logSessionEvents;<a name="line.100"></a>
+<span class="sourceLineNo">101</span>    }<a name="line.101"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
+<span class="sourceLineNo">103</span>    /**<a name="line.103"></a>
+<span class="sourceLineNo">104</span>     * Logger Events that are related to sessions<a name="line.104"></a>
+<span class="sourceLineNo">105</span>     */<a name="line.105"></a>
+<span class="sourceLineNo">106</span>    public void setLogSessionEvents(boolean logSessionEvents) {<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        this.logSessionEvents = logSessionEvents;<a name="line.107"></a>
+<span class="sourceLineNo">108</span>    }<a name="line.108"></a>
+<span class="sourceLineNo">109</span><a name="line.109"></a>
+<span class="sourceLineNo">110</span>    public boolean isLogTransactionEvents() {<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        return logTransactionEvents;<a name="line.111"></a>
+<span class="sourceLineNo">112</span>    }<a name="line.112"></a>
+<span class="sourceLineNo">113</span><a name="line.113"></a>
+<span class="sourceLineNo">114</span>    /**<a name="line.114"></a>
+<span class="sourceLineNo">115</span>     * Logger Events that are related to transaction processing<a name="line.115"></a>
+<span class="sourceLineNo">116</span>     */<a name="line.116"></a>
+<span class="sourceLineNo">117</span>    public void setLogTransactionEvents(boolean logTransactionEvents) {<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        this.logTransactionEvents = logTransactionEvents;<a name="line.118"></a>
+<span class="sourceLineNo">119</span>    }<a name="line.119"></a>
+<span class="sourceLineNo">120</span><a name="line.120"></a>
+<span class="sourceLineNo">121</span>    public boolean isLogConsumerEvents() {<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        return logConsumerEvents;<a name="line.122"></a>
+<span class="sourceLineNo">123</span>    }<a name="line.123"></a>
+<span class="sourceLineNo">124</span><a name="line.124"></a>
+<span class="sourceLineNo">125</span>    /**<a name="line.125"></a>
+<span class="sourceLineNo">126</span>     * Logger Events that are related to Consumers<a name="line.126"></a>
+<span class="sourceLineNo">127</span>     */<a name="line.127"></a>
+<span class="sourceLineNo">128</span>    public void setLogConsumerEvents(boolean logConsumerEvents) {<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        this.logConsumerEvents = logConsumerEvents;<a name="line.129"></a>
+<span class="sourceLineNo">130</span>    }<a name="line.130"></a>
+<span class="sourceLineNo">131</span><a name="line.131"></a>
+<span class="sourceLineNo">132</span>    public boolean isLogProducerEvents() {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>        return logProducerEvents;<a name="line.133"></a>
+<span class="sourceLineNo">134</span>    }<a name="line.134"></a>
+<span class="sourceLineNo">135</span><a name="line.135"></a>
+<span class="sourceLineNo">136</span>    /**<a name="line.136"></a>
+<span class="sourceLineNo">137</span>     * Logger Events that are related to Producers<a name="line.137"></a>
+<span class="sourceLineNo">138</span>     */<a name="line.138"></a>
+<span class="sourceLineNo">139</span>    public void setLogProducerEvents(boolean logProducerEvents) {<a name="line.139"></a>
+<span class="sourceLineNo">140</span>        this.logProducerEvents = logProducerEvents;<a name="line.140"></a>
+<span class="sourceLineNo">141</span>    }<a name="line.141"></a>
+<span class="sourceLineNo">142</span><a name="line.142"></a>
+<span class="sourceLineNo">143</span>    public boolean isLogInternalEvents() {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        return logInternalEvents;<a name="line.144"></a>
+<span class="sourceLineNo">145</span>    }<a name="line.145"></a>
+<span class="sourceLineNo">146</span><a name="line.146"></a>
+<span class="sourceLineNo">147</span>    /**<a name="line.147"></a>
+<span class="sourceLineNo">148</span>     * Logger Events that are normally internal to the broker<a name="line.148"></a>
+<span class="sourceLineNo">149</span>     */<a name="line.149"></a>
+<span class="sourceLineNo">150</span>    public void setLogInternalEvents(boolean logInternalEvents) {<a name="line.150"></a>
+<span class="sourceLineNo">151</span>        this.logInternalEvents = logInternalEvents;<a name="line.151"></a>
+<span class="sourceLineNo">152</span>    }<a name="line.152"></a>
+<span class="sourceLineNo">153</span><a name="line.153"></a>
+<span class="sourceLineNo">154</span>    @Override<a name="line.154"></a>
+<span class="sourceLineNo">155</span>    public void acknowledge(ConsumerBrokerExchange consumerExchange, MessageAck ack) throws Exception {<a name="line.155"></a>
+<span class="sourceLineNo">156</span>        if (isLogAll() || isLogConsumerEvents()) {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>            LOG.info("Acknowledging message for client ID: {}{}", consumerExchange.getConnectionContext().getClientId(), (ack.getMessageCount() == 1 ? ", " + ack.getLastMessageId() : ""));<a name="line.157"></a>
+<span class="sourceLineNo">158</span>            if (ack.getMessageCount() &gt; 1) {<a name="line.158"></a>
+<span class="sourceLineNo">159</span>                LOG.trace("Message count: {}, First Message Id: {}, Last Message Id: {}", new Object[]{ ack.getMessageCount(), ack.getFirstMessageId(), ack.getLastMessageId() });<a name="line.159"></a>
+<span class="sourceLineNo">160</span>            }<a name="line.160"></a>
+<span class="sourceLineNo">161</span>        }<a name="line.161"></a>
+<span class="sourceLineNo">162</span>        super.acknowledge(consumerExchange, ack);<a name="line.162"></a>
+<span class="sourceLineNo">163</span>    }<a name="line.163"></a>
+<span class="sourceLineNo">164</span><a name="line.164"></a>
+<span class="sourceLineNo">165</span>    @Override<a name="line.165"></a>
+<span class="sourceLineNo">166</span>    public Response messagePull(ConnectionContext context, MessagePull pull) throws Exception {<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        if (isLogAll() || isLogConsumerEvents()) {<a name="line.167"></a>
+<span class="sourceLineNo">168</span>            LOG.info("Message Pull from: {} on {}", context.getClientId(), pull.getDestination().getPhysicalName());<a name="line.168"></a>
+<span class="sourceLineNo">169</span>        }<a name="line.169"></a>
+<span class="sourceLineNo">170</span>        return super.messagePull(context, pull);<a name="line.170"></a>
+<span class="sourceLineNo">171</span>    }<a name="line.171"></a>
+<span class="sourceLineNo">172</span><a name="line.172"></a>
+<span class="sourceLineNo">173</span>    @Override<a name="line.173"></a>
+<span class="sourceLineNo">174</span>    public void addConnection(ConnectionContext context, ConnectionInfo info) throws Exception {<a name="line.174"></a>
+<span class="sourceLineNo">175</span>        if (isLogAll() || isLogConnectionEvents()) {<a name="line.175"></a>
+<span class="sourceLineNo">176</span>            LOG.info("Adding Connection: {}", info);<a name="line.176"></a>
+<span class="sourceLineNo">177</span>        }<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        super.addConnection(context, info);<a name="line.178"></a>
+<span class="sourceLineNo">179</span>    }<a name="line.179"></a>
+<span class="sourceLineNo">180</span><a name="line.180"></a>
+<span class="sourceLineNo">181</span>    @Override<a name="line.181"></a>
+<span class="sourceLineNo">182</span>    public Subscription addConsumer(ConnectionContext context, ConsumerInfo info) throws Exception {<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        if (isLogAll() || isLogConsumerEvents()) {<a name="line.183"></a>
+<span class="sourceLineNo">184</span>            LOG.info("Adding Consumer: {}", info);<a name="line.184"></a>
+<span class="sourceLineNo">185</span>        }<a name="line.185"></a>
+<span class="sourceLineNo">186</span>        return super.addConsumer(context, info);<a name="line.186"></a>
+<span class="sourceLineNo">187</span>    }<a name="line.187"></a>
+<span class="sourceLineNo">188</span><a name="line.188"></a>
+<span class="sourceLineNo">189</span>    @Override<a name="line.189"></a>
+<span class="sourceLineNo">190</span>    public void addProducer(ConnectionContext context, ProducerInfo info) throws Exception {<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        if (isLogAll() || isLogProducerEvents()) {<a name="line.191"></a>
+<span class="sourceLineNo">192</span>            LOG.info("Adding Producer: {}", info);<a name="line.192"></a>
+<span class="sourceLineNo">193</span>        }<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        super.addProducer(context, info);<a name="line.194"></a>
+<span class="sourceLineNo">195</span>    }<a name="line.195"></a>
+<span class="sourceLineNo">196</span><a name="line.196"></a>
+<span class="sourceLineNo">197</span>    @Override<a name="line.197"></a>
+<span class="sourceLineNo">198</span>    public void commitTransaction(ConnectionContext context, TransactionId xid, boolean onePhase) throws Exception {<a name="line.198"></a>
+<span class="sourceLineNo">199</span>        if (isLogAll() || isLogTransactionEvents()) {<a name="line.199"></a>
+<span class="sourceLineNo">200</span>            LOG.info("Committing transaction: {}", xid.getTransactionKey());<a name="line.200"></a>
+<span class="sourceLineNo">201</span>        }<a name="line.201"></a>
+<span class="sourceLineNo">202</span>        super.commitTransaction(context, xid, onePhase);<a name="line.202"></a>
+<span class="sourceLineNo">203</span>    }<a name="line.203"></a>
+<span class="sourceLineNo">204</span><a name="line.204"></a>
+<span class="sourceLineNo">205</span>    @Override<a name="line.205"></a>
+<span class="sourceLineNo">206</span>    public void removeSubscription(ConnectionContext context, RemoveSubscriptionInfo info) throws Exception {<a name="line.206"></a>
+<span class="sourceLineNo">207</span>        if (isLogAll() || isLogConsumerEvents()) {<a name="line.207"></a>
+<span class="sourceLineNo">208</span>            LOG.info("Removing subscription: {}", info);<a name="line.208"></a>
+<span class="sourceLineNo">209</span>        }<a name="line.209"></a>
+<span class="sourceLineNo">210</span>        super.removeSubscription(context, info);<a name="line.210"></a>
+<span class="sourceLineNo">211</span>    }<a name="line.211"></a>
+<span class="sourceLineNo">212</span><a name="line.212"></a>
+<span class="sourceLineNo">213</span>    @Override<a name="line.213"></a>
+<span class="sourceLineNo">214</span>    public TransactionId[] getPreparedTransactions(ConnectionContext context) throws Exception {<a name="line.214"></a>
+<span class="sourceLineNo">215</span><a name="line.215"></a>
+<span class="sourceLineNo">216</span>        TransactionId[] result = super.getPreparedTransactions(context);<a name="line.216"></a>
+<span class="sourceLineNo">217</span>        if ((isLogAll() || isLogTransactionEvents()) &amp;&amp; result != null) {<a name="line.217"></a>
+<span class="sourceLineNo">218</span>            StringBuffer tids = new StringBuffer();<a name="line.218"></a>
+<span class="sourceLineNo">219</span>            for (TransactionId tid : result) {<a name="line.219"></a>
+<span class="sourceLineNo">220</span>                if (tids.length() &gt; 0) {<a name="line.220"></a>
+<span class="sourceLineNo">221</span>                    tids.append(", ");<a name="line.221"></a>
+<span class="sourceLineNo">222</span>                }<a name="line.222"></a>
+<span class="sourceLineNo">223</span>                tids.append(tid.getTransactionKey());<a name="line.223"></a>
+<span class="sourceLineNo">224</span>            }<a name="line.224"></a>
+<span class="sourceLineNo">225</span>            LOG.info("Prepared transactions: {}", tids);<a name="line.225"></a>
+<span class="sourceLineNo">226</span>        }<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        return result;<a name="line.227"></a>
+<span class="sourceLineNo">228</span>    }<a name="line.228"></a>
+<span class="sourceLineNo">229</span><a name="line.229"></a>
+<span class="sourceLineNo">230</span>    @Override<a name="line.230"></a>
+<span class="sourceLineNo">231</span>    public int prepareTransaction(ConnectionContext context, TransactionId xid) throws Exception {<a name="line.231"></a>
+<span class="sourceLineNo">232</span>        if (isLogAll() || isLogTransactionEvents()) {<a name="line.232"></a>
+<span class="sourceLineNo">233</span>            LOG.info("Preparing transaction: {}", xid.getTransactionKey());<a name="line.233"></a>
+<span class="sourceLineNo">234</span>        }<a name="line.234"></a>
+<span class="sourceLineNo">235</span>        return super.prepareTransaction(context, xid);<a name="line.235"></a>
+<span class="sourceLineNo">236</span>    }<a name="line.236"></a>
+<span class="sourceLineNo">237</span><a name="line.237"></a>
+<span class="sourceLineNo">238</span>    @Override<a name="line.238"></a>
+<span class="sourceLineNo">239</span>    public void removeConnection(ConnectionContext context, ConnectionInfo info, Throwable error) throws Exception {<a name="line.239"></a>
+<span class="sourceLineNo">240</span>        if (isLogAll() || isLogConnectionEvents()) {<a name="line.240"></a>
+<span class="sourceLineNo">241</span>            LOG.info("Removing Connection: {}", info);<a name="line.241"></a>
+<span class="sourceLineNo">242</span>        }<a name="line.242"></a>
+<span class="sourceLineNo">243</span>        super.removeConnection(context, info, error);<a name="line.243"></a>
+<span class="sourceLineNo">244</span>    }<a name="line.244"></a>
+<span class="sourceLineNo">245</span><a name="line.245"></a>
+<span class="sourceLineNo">246</span>    @Override<a name="line.246"></a>
+<span class="sourceLineNo">247</span>    public void removeConsumer(ConnectionContext context, ConsumerInfo info) throws Exception {<a name="line.247"></a>
+<span class="sourceLineNo">248</span>        if (isLogAll() || isLogConsumerEvents()) {<a name="line.248"></a>
+<span class="sourceLineNo">249</span>            LOG.info("Removing Consumer: {}", info);<a name="line.249"></a>
+<span class="sourceLineNo">250</span>        }<a name="line.250"></a>
+<span class="sourceLineNo">251</span>        super.removeConsumer(context, info);<a name="line.251"></a>
+<span class="sourceLineNo">252</span>    }<a name="line.252"></a>
+<span class="sourceLineNo">253</span><a name="line.253"></a>
+<span class="sourceLineNo">254</span>    @Override<a name="line.254"></a>
+<span class="sourceLineNo">255</span>    public void removeProducer(ConnectionContext context, ProducerInfo info) throws Exception {<a name="line.255"></a>
+<span class="sourceLineNo">256</span>        if (isLogAll() || isLogProducerEvents()) {<a name="line.256"></a>
+<span class="sourceLineNo">257</span>            LOG.info("Removing Producer: {}", info);<a name="line.257"></a>
+<span class="sourceLineNo">258</span>        }<a name="line.258"></a>
+<span class="sourceLineNo">259</span>        super.removeProducer(context, info);<a name="line.259"></a>
+<span class="sourceLineNo">260</span>    }<a name="line.260"></a>
+<span class="sourceLineNo">261</span><a name="line.261"></a>
+<span class="sourceLineNo">262</span>    @Override<a name="line.262"></a>
+<span class="sourceLineNo">263</span>    public void rollbackTransaction(ConnectionContext context, TransactionId xid) throws Exception {<a name="line.263"></a>
+<span class="sourceLineNo">264</span>        if (isLogAll() || isLogTransactionEvents()) {<a name="line.264"></a>
+<span class="sourceLineNo">265</span>            LOG.info("Rolling back Transaction: {}", xid.getTransactionKey());<a name="line.265"></a>
+<span class="sourceLineNo">266</span>        }<a name="line.266"></a>
+<span class="sourceLineNo">267</span>        super.rollbackTransaction(context, xid);<a name="line.267"></a>
+<span class="sourceLineNo">268</span>    }<a name="line.268"></a>
+<span class="sourceLineNo">269</span><a name="line.269"></a>
+<span class="sourceLineNo">270</span>    @Override<a name="line.270"></a>
+<span class="sourceLineNo">271</span>    public void send(ProducerBrokerExchange producerExchange, Message messageSend) throws Exception {<a name="line.271"></a>
+<span class="sourceLineNo">272</span>        if (isLogAll() || isLogProducerEvents()) {<a name="line.272"></a>
+<span class="sourceLineNo">273</span>            logSend(messageSend.copy());<a name="line.273"></a>
+<span class="sourceLineNo">274</span>        }<a name="line.274"></a>
+<span class="sourceLineNo">275</span>        super.send(producerExchange, messageSend);<a name="line.275"></a>
+<span class="sourceLineNo">276</span>    }<a name="line.276"></a>
+<span class="sourceLineNo">277</span><a name="line.277"></a>
+<span class="sourceLineNo">278</span>    private void logSend(Message copy) {<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        copy.getSize();<a name="line.279"></a>
+<span class="sourceLineNo">280</span>        Logger perDestinationsLogger = LOG;<a name="line.280"></a>
+<span class="sourceLineNo">281</span>        if (isPerDestinationLogger()) {<a name="line.281"></a>
+<span class="sourceLineNo">282</span>            ActiveMQDestination destination = copy.getDestination();<a name="line.282"></a>
+<span class="sourceLineNo">283</span>            perDestinationsLogger = LoggerFactory.getLogger(LOG.getName() +<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                    "." + destination.getDestinationTypeAsString() + "." + destination.getPhysicalName());<a name="line.284"></a>
+<span class="sourceLineNo">285</span>        }<a name="line.285"></a>
+<span class="sourceLineNo">286</span>        perDestinationsLogger.info("Sending message: {}", copy);<a name="line.286"></a>
+<span class="sourceLineNo">287</span>    }<a name="line.287"></a>
+<span class="sourceLineNo">288</span><a name="line.288"></a>
+<span class="sourceLineNo">289</span>    @Override<a name="line.289"></a>
+<span class="sourceLineNo">290</span>    public void beginTransaction(ConnectionContext context, TransactionId xid) throws Exception {<a name="line.290"></a>
+<span class="sourceLineNo">291</span>        if (isLogAll() || isLogTransactionEvents()) {<a name="line.291"></a>
+<span class="sourceLineNo">292</span>            LOG.info("Beginning transaction: {}", xid.getTransactionKey());<a name="line.292"></a>
+<span class="sourceLineNo">293</span>        }<a name="line.293"></a>
+<span class="sourceLineNo">294</span>        super.beginTransaction(context, xid);<a name="line.294"></a>
+<span class="sourceLineNo">295</span>    }<a name="line.295"></a>
+<span class="sourceLineNo">296</span><a name="line.296"></a>
+<span class="sourceLineNo">297</span>    @Override<a name="line.297"></a>
+<span class="sourceLineNo">298</span>    public void forgetTransaction(ConnectionContext context, TransactionId transactionId) throws Exception {<a name="line.298"></a>
+<span class="sourceLineNo">299</span>        if (isLogAll() || isLogTransactionEvents()) {<a name="line.299"></a>
+<span class="sourceLineNo">300</span>            LOG.info("Forgetting transaction: {}", transactionId.getTransactionKey());<a name="line.300"></a>
+<span class="sourceLineNo">301</span>        }<a name="line.301"></a>
+<span class="sourceLineNo">302</span>        super.forgetTransaction(context, transactionId);<a name="line.302"></a>
+<span class="sourceLineNo">303</span>    }<a name="line.303"></a>
+<span class="sourceLineNo">304</span><a name="line.304"></a>
+<span class="sourceLineNo">305</span>    @Override<a name="line.305"></a>
+<span class="sourceLineNo">306</span>    public Connection[] getClients() throws Exception {<a name="line.306"></a>
+<span class="sourceLineNo">307</span>        Connection[] result = super.getClients();<a name="line.307"></a>
+<span class="sourceLineNo">308</span><a name="line.308"></a>
+<span class="sourceLineNo">309</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.309"></a>
+<span class="sourceLineNo">310</span>            if (result == null) {<a name="line.310"></a>
+<span class="sourceLineNo">311</span>                LOG.info("Get Clients returned empty list.");<a name="line.311"></a>
+<span class="sourceLineNo">312</span>            } else {<a name="line.312"></a>
+<span class="sourceLineNo">313</span>                StringBuffer cids = new StringBuffer();<a name="line.313"></a>
+<span class="sourceLineNo">314</span>                for (Connection c : result) {<a name="line.314"></a>
+<span class="sourceLineNo">315</span>                    cids.append(cids.length() &gt; 0 ? ", " : "");<a name="line.315"></a>
+<span class="sourceLineNo">316</span>                    cids.append(c.getConnectionId());<a name="line.316"></a>
+<span class="sourceLineNo">317</span>                }<a name="line.317"></a>
+<span class="sourceLineNo">318</span>                LOG.info("Connected clients: {}", cids);<a name="line.318"></a>
+<span class="sourceLineNo">319</span>            }<a name="line.319"></a>
+<span class="sourceLineNo">320</span>        }<a name="line.320"></a>
+<span class="sourceLineNo">321</span>        return super.getClients();<a name="line.321"></a>
+<span class="sourceLineNo">322</span>    }<a name="line.322"></a>
+<span class="sourceLineNo">323</span><a name="line.323"></a>
+<span class="sourceLineNo">324</span>    @Override<a name="line.324"></a>
+<span class="sourceLineNo">325</span>    public org.apache.activemq.broker.region.Destination addDestination(ConnectionContext context,<a name="line.325"></a>
+<span class="sourceLineNo">326</span>            ActiveMQDestination destination, boolean create) throws Exception {<a name="line.326"></a>
+<span class="sourceLineNo">327</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.327"></a>
+<span class="sourceLineNo">328</span>            LOG.info("Adding destination: {}:{}", destination.getDestinationTypeAsString(), destination.getPhysicalName());<a name="line.328"></a>
+<span class="sourceLineNo">329</span>        }<a name="line.329"></a>
+<span class="sourceLineNo">330</span>        return super.addDestination(context, destination, create);<a name="line.330"></a>
+<span class="sourceLineNo">331</span>    }<a name="line.331"></a>
+<span class="sourceLineNo">332</span><a name="line.332"></a>
+<span class="sourceLineNo">333</span>    @Override<a name="line.333"></a>
+<span class="sourceLineNo">334</span>    public void removeDestination(ConnectionContext context, ActiveMQDestination destination, long timeout)<a name="line.334"></a>
+<span class="sourceLineNo">335</span>            throws Exception {<a name="line.335"></a>
+<span class="sourceLineNo">336</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.336"></a>
+<span class="sourceLineNo">337</span>            LOG.info("Removing destination: {}:{}", destination.getDestinationTypeAsString(), destination.getPhysicalName());<a name="line.337"></a>
+<span class="sourceLineNo">338</span>        }<a name="line.338"></a>
+<span class="sourceLineNo">339</span>        super.removeDestination(context, destination, timeout);<a name="line.339"></a>
+<span class="sourceLineNo">340</span>    }<a name="line.340"></a>
+<span class="sourceLineNo">341</span><a name="line.341"></a>
+<span class="sourceLineNo">342</span>    @Override<a name="line.342"></a>
+<span class="sourceLineNo">343</span>    public ActiveMQDestination[] getDestinations() throws Exception {<a name="line.343"></a>
+<span class="sourceLineNo">344</span>        ActiveMQDestination[] result = super.getDestinations();<a name="line.344"></a>
+<span class="sourceLineNo">345</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.345"></a>
+<span class="sourceLineNo">346</span>            if (result == null) {<a name="line.346"></a>
+<span class="sourceLineNo">347</span>                LOG.info("Get Destinations returned empty list.");<a name="line.347"></a>
+<span class="sourceLineNo">348</span>            } else {<a name="line.348"></a>
+<span class="sourceLineNo">349</span>                StringBuffer destinations = new StringBuffer();<a name="line.349"></a>
+<span class="sourceLineNo">350</span>                for (ActiveMQDestination dest : result) {<a name="line.350"></a>
+<span class="sourceLineNo">351</span>                    destinations.append(destinations.length() &gt; 0 ? ", " : "");<a name="line.351"></a>
+<span class="sourceLineNo">352</span>                    destinations.append(dest.getPhysicalName());<a name="line.352"></a>
+<span class="sourceLineNo">353</span>                }<a name="line.353"></a>
+<span class="sourceLineNo">354</span>                LOG.info("Get Destinations: {}", destinations);<a name="line.354"></a>
+<span class="sourceLineNo">355</span>            }<a name="line.355"></a>
+<span class="sourceLineNo">356</span>        }<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        return result;<a name="line.357"></a>
+<span class="sourceLineNo">358</span>    }<a name="line.358"></a>
+<span class="sourceLineNo">359</span><a name="line.359"></a>
+<span class="sourceLineNo">360</span>    @Override<a name="line.360"></a>
+<span class="sourceLineNo">361</span>    public void start() throws Exception {<a name="line.361"></a>
+<span class="sourceLineNo">362</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.362"></a>
+<span class="sourceLineNo">363</span>            LOG.info("Starting {}", getBrokerName());<a name="line.363"></a>
+<span class="sourceLineNo">364</span>        }<a name="line.364"></a>
+<span class="sourceLineNo">365</span>        super.start();<a name="line.365"></a>
+<span class="sourceLineNo">366</span>    }<a name="line.366"></a>
+<span class="sourceLineNo">367</span><a name="line.367"></a>
+<span class="sourceLineNo">368</span>    @Override<a name="line.368"></a>
+<span class="sourceLineNo">369</span>    public void stop() throws Exception {<a name="line.369"></a>
+<span class="sourceLineNo">370</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.370"></a>
+<span class="sourceLineNo">371</span>            LOG.info("Stopping {}", getBrokerName());<a name="line.371"></a>
+<span class="sourceLineNo">372</span>        }<a name="line.372"></a>
+<span class="sourceLineNo">373</span>        super.stop();<a name="line.373"></a>
+<span class="sourceLineNo">374</span>    }<a name="line.374"></a>
+<span class="sourceLineNo">375</span><a name="line.375"></a>
+<span class="sourceLineNo">376</span>    @Override<a name="line.376"></a>
+<span class="sourceLineNo">377</span>    public void addSession(ConnectionContext context, SessionInfo info) throws Exception {<a name="line.377"></a>
+<span class="sourceLineNo">378</span>        if (isLogAll() || isLogSessionEvents()) {<a name="line.378"></a>
+<span class="sourceLineNo">379</span>            LOG.info("Adding Session: {}", info);<a name="line.379"></a>
+<span class="sourceLineNo">380</span>        }<a name="line.380"></a>
+<span class="sourceLineNo">381</span>        super.addSession(context, info);<a name="line.381"></a>
+<span class="sourceLineNo">382</span>    }<a name="line.382"></a>
+<span class="sourceLineNo">383</span><a name="line.383"></a>
+<span class="sourceLineNo">384</span>    @Override<a name="line.384"></a>
+<span class="sourceLineNo">385</span>    public void removeSession(ConnectionContext context, SessionInfo info) throws Exception {<a name="line.385"></a>
+<span class="sourceLineNo">386</span>        if (isLogAll() || isLogSessionEvents()) {<a name="line.386"></a>
+<span class="sourceLineNo">387</span>            LOG.info("Removing Session: {}", info);<a name="line.387"></a>
+<span class="sourceLineNo">388</span>        }<a name="line.388"></a>
+<span class="sourceLineNo">389</span>        super.removeSession(context, info);<a name="line.389"></a>
+<span class="sourceLineNo">390</span>    }<a name="line.390"></a>
+<span class="sourceLineNo">391</span><a name="line.391"></a>
+<span class="sourceLineNo">392</span>    @Override<a name="line.392"></a>
+<span class="sourceLineNo">393</span>    public void addBroker(Connection connection, BrokerInfo info) {<a name="line.393"></a>
+<span class="sourceLineNo">394</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.394"></a>
+<span class="sourceLineNo">395</span>            LOG.info("Adding Broker {}", info.getBrokerName());<a name="line.395"></a>
+<span class="sourceLineNo">396</span>        }<a name="line.396"></a>
+<span class="sourceLineNo">397</span>        super.addBroker(connection, info);<a name="line.397"></a>
+<span class="sourceLineNo">398</span>    }<a name="line.398"></a>
+<span class="sourceLineNo">399</span><a name="line.399"></a>
+<span class="sourceLineNo">400</span>    @Override<a name="line.400"></a>
+<span class="sourceLineNo">401</span>    public void removeBroker(Connection connection, BrokerInfo info) {<a name="line.401"></a>
+<span class="sourceLineNo">402</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.402"></a>
+<span class="sourceLineNo">403</span>            LOG.info("Removing Broker {}", info.getBrokerName());<a name="line.403"></a>
+<span class="sourceLineNo">404</span>        }<a name="line.404"></a>
+<span class="sourceLineNo">405</span>        super.removeBroker(connection, info);<a name="line.405"></a>
+<span class="sourceLineNo">406</span>    }<a name="line.406"></a>
+<span class="sourceLineNo">407</span><a name="line.407"></a>
+<span class="sourceLineNo">408</span>    @Override<a name="line.408"></a>
+<span class="sourceLineNo">409</span>    public BrokerInfo[] getPeerBrokerInfos() {<a name="line.409"></a>
+<span class="sourceLineNo">410</span>        BrokerInfo[] result = super.getPeerBrokerInfos();<a name="line.410"></a>
+<span class="sourceLineNo">411</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.411"></a>
+<span class="sourceLineNo">412</span>            if (result == null) {<a name="line.412"></a>
+<span class="sourceLineNo">413</span>                LOG.info("Get Peer Broker Infos returned empty list.");<a name="line.413"></a>
+<span class="sourceLineNo">414</span>            } else {<a name="line.414"></a>
+<span class="sourceLineNo">415</span>                StringBuffer peers = new StringBuffer();<a name="line.415"></a>
+<span class="sourceLineNo">416</span>                for (BrokerInfo bi : result) {<a name="line.416"></a>
+<span class="sourceLineNo">417</span>                    peers.append(peers.length() &gt; 0 ? ", " : "");<a name="line.417"></a>
+<span class="sourceLineNo">418</span>                    peers.append(bi.getBrokerName());<a name="line.418"></a>
+<span class="sourceLineNo">419</span>                }<a name="line.419"></a>
+<span class="sourceLineNo">420</span>                LOG.info("Get Peer Broker Infos: {}", peers);<a name="line.420"></a>
+<span class="sourceLineNo">421</span>            }<a name="line.421"></a>
+<span class="sourceLineNo">422</span>        }<a name="line.422"></a>
+<span class="sourceLineNo">423</span>        return result;<a name="line.423"></a>
+<span class="sourceLineNo">424</span>    }<a name="line.424"></a>
+<span class="sourceLineNo">425</span><a name="line.425"></a>
+<span class="sourceLineNo">426</span>    @Override<a name="line.426"></a>
+<span class="sourceLineNo">427</span>    public void preProcessDispatch(MessageDispatch messageDispatch) {<a name="line.427"></a>
+<span class="sourceLineNo">428</span>        if (isLogAll() || isLogInternalEvents() || isLogConsumerEvents()) {<a name="line.428"></a>
+<span class="sourceLineNo">429</span>            LOG.info("preProcessDispatch: {}", messageDispatch);<a name="line.429"></a>
+<span class="sourceLineNo">430</span>        }<a name="line.430"></a>
+<span class="sourceLineNo">431</span>        super.preProcessDispatch(messageDispatch);<a name="line.431"></a>
+<span class="sourceLineNo">432</span>    }<a name="line.432"></a>
+<span class="sourceLineNo">433</span><a name="line.433"></a>
+<span class="sourceLineNo">434</span>    @Override<a name="line.434"></a>
+<span class="sourceLineNo">435</span>    public void postProcessDispatch(MessageDispatch messageDispatch) {<a name="line.435"></a>
+<span class="sourceLineNo">436</span>        if (isLogAll() || isLogInternalEvents() || isLogConsumerEvents()) {<a name="line.436"></a>
+<span class="sourceLineNo">437</span>            LOG.info("postProcessDispatch: {}", messageDispatch);<a name="line.437"></a>
+<span class="sourceLineNo">438</span>        }<a name="line.438"></a>
+<span class="sourceLineNo">439</span>        super.postProcessDispatch(messageDispatch);<a name="line.439"></a>
+<span class="sourceLineNo">440</span>    }<a name="line.440"></a>
+<span class="sourceLineNo">441</span><a name="line.441"></a>
+<span class="sourceLineNo">442</span>    @Override<a name="line.442"></a>
+<span class="sourceLineNo">443</span>    public void processDispatchNotification(MessageDispatchNotification messageDispatchNotification) throws Exception {<a name="line.443"></a>
+<span class="sourceLineNo">444</span>        if (isLogAll() || isLogInternalEvents() || isLogConsumerEvents()) {<a name="line.444"></a>
+<span class="sourceLineNo">445</span>            LOG.info("ProcessDispatchNotification: {}", messageDispatchNotification);<a name="line.445"></a>
+<span class="sourceLineNo">446</span>        }<a name="line.446"></a>
+<span class="sourceLineNo">447</span>        super.processDispatchNotification(messageDispatchNotification);<a name="line.447"></a>
+<span class="sourceLineNo">448</span>    }<a name="line.448"></a>
+<span class="sourceLineNo">449</span><a name="line.449"></a>
+<span class="sourceLineNo">450</span>    @Override<a name="line.450"></a>
+<span class="sourceLineNo">451</span>    public Set&lt;ActiveMQDestination&gt; getDurableDestinations() {<a name="line.451"></a>
+<span class="sourceLineNo">452</span>        Set&lt;ActiveMQDestination&gt; result = super.getDurableDestinations();<a name="line.452"></a>
+<span class="sourceLineNo">453</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.453"></a>
+<span class="sourceLineNo">454</span>            if (result == null) {<a name="line.454"></a>
+<span class="sourceLineNo">455</span>                LOG.info("Get Durable Destinations returned empty list.");<a name="line.455"></a>
+<span class="sourceLineNo">456</span>            } else {<a name="line.456"></a>
+<span class="sourceLineNo">457</span>                StringBuffer destinations = new StringBuffer();<a name="line.457"></a>
+<span class="sourceLineNo">458</span>                for (ActiveMQDestination dest : result) {<a name="line.458"></a>
+<span class="sourceLineNo">459</span>                    destinations.append(destinations.length() &gt; 0 ? ", " : "");<a name="line.459"></a>
+<span class="sourceLineNo">460</span>                    destinations.append(dest.getPhysicalName());<a name="line.460"></a>
+<span class="sourceLineNo">461</span>                }<a name="line.461"></a>
+<span class="sourceLineNo">462</span>                LOG.info("Get Durable Destinations: {}", destinations);<a name="line.462"></a>
+<span class="sourceLineNo">463</span>            }<a name="line.463"></a>
+<span class="sourceLineNo">464</span>        }<a name="line.464"></a>
+<span class="sourceLineNo">465</span>        return result;<a name="line.465"></a>
+<span class="sourceLineNo">466</span>    }<a name="line.466"></a>
+<span class="sourceLineNo">467</span><a name="line.467"></a>
+<span class="sourceLineNo">468</span>    @Override<a name="line.468"></a>
+<span class="sourceLineNo">469</span>    public void addDestinationInfo(ConnectionContext context, DestinationInfo info) throws Exception {<a name="line.469"></a>
+<span class="sourceLineNo">470</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.470"></a>
+<span class="sourceLineNo">471</span>            LOG.info("Adding destination info: {}", info);<a name="line.471"></a>
+<span class="sourceLineNo">472</span>        }<a name="line.472"></a>
+<span class="sourceLineNo">473</span>        super.addDestinationInfo(context, info);<a name="line.473"></a>
+<span class="sourceLineNo">474</span>    }<a name="line.474"></a>
+<span class="sourceLineNo">475</span><a name="line.475"></a>
+<span class="sourceLineNo">476</span>    @Override<a name="line.476"></a>
+<span class="sourceLineNo">477</span>    public void removeDestinationInfo(ConnectionContext context, DestinationInfo info) throws Exception {<a name="line.477"></a>
+<span class="sourceLineNo">478</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.478"></a>
+<span class="sourceLineNo">479</span>            LOG.info("Removing destination info: {}", info);<a name="line.479"></a>
+<span class="sourceLineNo">480</span>        }<a name="line.480"></a>
+<span class="sourceLineNo">481</span>        super.removeDestinationInfo(context, info);<a name="line.481"></a>
+<span class="sourceLineNo">482</span>    }<a name="line.482"></a>
+<span class="sourceLineNo">483</span><a name="line.483"></a>
+<span class="sourceLineNo">484</span>    @Override<a name="line.484"></a>
+<span class="sourceLineNo">485</span>    public void messageExpired(ConnectionContext context, MessageReference message, Subscription subscription) {<a name="line.485"></a>
+<span class="sourceLineNo">486</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.486"></a>
+<span class="sourceLineNo">487</span>            String msg = "Unable to display message.";<a name="line.487"></a>
+<span class="sourceLineNo">488</span><a name="line.488"></a>
+<span class="sourceLineNo">489</span>            msg = message.getMessage().toString();<a name="line.489"></a>
+<span class="sourceLineNo">490</span><a name="line.490"></a>
+<span class="sourceLineNo">491</span>            LOG.info("Message has expired: {}", msg);<a name="line.491"></a>
+<span class="sourceLineNo">492</span>        }<a name="line.492"></a>
+<span class="sourceLineNo">493</span>        super.messageExpired(context, message, subscription);<a name="line.493"></a>
+<span class="sourceLineNo">494</span>    }<a name="line.494"></a>
+<span class="sourceLineNo">495</span><a name="line.495"></a>
+<span class="sourceLineNo">496</span>    @Override<a name="line.496"></a>
+<span class="sourceLineNo">497</span>    public boolean sendToDeadLetterQueue(ConnectionContext context, MessageReference messageReference,<a name="line.497"></a>
+<span class="sourceLineNo">498</span>                                         Subscription subscription, Throwable poisonCause) {<a name="line.498"></a>
+<span class="sourceLineNo">499</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.499"></a>
+<span class="sourceLineNo">500</span>            String msg = "Unable to display message.";<a name="line.500"></a>
+<span class="sourceLineNo">501</span><a name="line.501"></a>
+<span class="sourceLineNo">502</span>            msg = messageReference.getMessage().toString();<a name="line.502"></a>
+<span class="sourceLineNo">503</span><a name="line.503"></a>
+<span class="sourceLineNo">504</span>            LOG.info("Sending to DLQ: {}", msg);<a name="line.504"></a>
+<span class="sourceLineNo">505</span>        }<a name="line.505"></a>
+<span class="sourceLineNo">506</span>        return super.sendToDeadLetterQueue(context, messageReference, subscription, poisonCause);<a name="line.506"></a>
+<span class="sourceLineNo">507</span>    }<a name="line.507"></a>
+<span class="sourceLineNo">508</span><a name="line.508"></a>
+<span class="sourceLineNo">509</span>    @Override<a name="line.509"></a>
+<span class="sourceLineNo">510</span>    public void fastProducer(ConnectionContext context, ProducerInfo producerInfo,ActiveMQDestination destination) {<a name="line.510"></a>
+<span class="sourceLineNo">511</span>        if (isLogAll() || isLogProducerEvents() || isLogInternalEvents()) {<a name="line.511"></a>
+<span class="sourceLineNo">512</span>            LOG.info("Fast Producer: {}", producerInfo);<a name="line.512"></a>
+<span class="sourceLineNo">513</span>        }<a name="line.513"></a>
+<span class="sourceLineNo">514</span>        super.fastProducer(context, producerInfo, destination);<a name="line.514"></a>
+<span class="sourceLineNo">515</span>    }<a name="line.515"></a>
+<span class="sourceLineNo">516</span><a name="line.516"></a>
+<span class="sourceLineNo">517</span>    @Override<a name="line.517"></a>
+<span class="sourceLineNo">518</span>    public void isFull(ConnectionContext context, Destination destination, Usage&lt;?&gt; usage) {<a name="line.518"></a>
+<span class="sourceLineNo">519</span>        if (isLogAll() || isLogProducerEvents() || isLogInternalEvents()) {<a name="line.519"></a>
+<span class="sourceLineNo">520</span>            LOG.info("Destination is full: {}", destination.getName());<a name="line.520"></a>
+<span class="sourceLineNo">521</span>        }<a name="line.521"></a>
+<span class="sourceLineNo">522</span>        super.isFull(context, destination, usage);<a name="line.522"></a>
+<span class="sourceLineNo">523</span>    }<a name="line.523"></a>
+<span class="sourceLineNo">524</span><a name="line.524"></a>
+<span class="sourceLineNo">525</span>    @Override<a name="line.525"></a>
+<span class="sourceLineNo">526</span>    public void messageConsumed(ConnectionContext context, MessageReference messageReference) {<a name="line.526"></a>
+<span class="sourceLineNo">527</span>        if (isLogAll() || isLogConsumerEvents() || isLogInternalEvents()) {<a name="line.527"></a>
+<span class="sourceLineNo">528</span>            String msg = "Unable to display message.";<a name="line.528"></a>
+<span class="sourceLineNo">529</span><a name="line.529"></a>
+<span class="sourceLineNo">530</span>            msg = messageReference.getMessage().toString();<a name="line.530"></a>
+<span class="sourceLineNo">531</span><a name="line.531"></a>
+<span class="sourceLineNo">532</span>            LOG.info("Message consumed: {}", msg);<a name="line.532"></a>
+<span class="sourceLineNo">533</span>        }<a name="line.533"></a>
+<span class="sourceLineNo">534</span>        super.messageConsumed(context, messageReference);<a name="line.534"></a>
+<span class="sourceLineNo">535</span>    }<a name="line.535"></a>
+<span class="sourceLineNo">536</span><a name="line.536"></a>
+<span class="sourceLineNo">537</span>    @Override<a name="line.537"></a>
+<span class="sourceLineNo">538</span>    public void messageDelivered(ConnectionContext context, MessageReference messageReference) {<a name="line.538"></a>
+<span class="sourceLineNo">539</span>        if (isLogAll() || isLogConsumerEvents() || isLogInternalEvents()) {<a name="line.539"></a>
+<span class="sourceLineNo">540</span>            String msg = "Unable to display message.";<a name="line.540"></a>
+<span class="sourceLineNo">541</span><a name="line.541"></a>
+<span class="sourceLineNo">542</span>            msg = messageReference.getMessage().toString();<a name="line.542"></a>
+<span class="sourceLineNo">543</span><a name="line.543"></a>
+<span class="sourceLineNo">544</span>            LOG.info("Message delivered: {}", msg);<a name="line.544"></a>
+<span class="sourceLineNo">545</span>        }<a name="line.545"></a>
+<span class="sourceLineNo">546</span>        super.messageDelivered(context, messageReference);<a name="line.546"></a>
+<span class="sourceLineNo">547</span>    }<a name="line.547"></a>
+<span class="sourceLineNo">548</span><a name="line.548"></a>
+<span class="sourceLineNo">549</span>    @Override<a name="line.549"></a>
+<span class="sourceLineNo">550</span>    public void messageDiscarded(ConnectionContext context, Subscription sub, MessageReference messageReference) {<a name="line.550"></a>
+<span class="sourceLineNo">551</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.551"></a>
+<span class="sourceLineNo">552</span>            String msg = "Unable to display message.";<a name="line.552"></a>
+<span class="sourceLineNo">553</span><a name="line.553"></a>
+<span class="sourceLineNo">554</span>            msg = messageReference.getMessage().toString();<a name="line.554"></a>
+<span class="sourceLineNo">555</span><a name="line.555"></a>
+<span class="sourceLineNo">556</span>            LOG.info("Message discarded: {}", msg);<a name="line.556"></a>
+<span class="sourceLineNo">557</span>        }<a name="line.557"></a>
+<span class="sourceLineNo">558</span>        super.messageDiscarded(context, sub, messageReference);<a name="line.558"></a>
+<span class="sourceLineNo">559</span>    }<a name="line.559"></a>
+<span class="sourceLineNo">560</span><a name="line.560"></a>
+<span class="sourceLineNo">561</span>    @Override<a name="line.561"></a>
+<span class="sourceLineNo">562</span>    public void slowConsumer(ConnectionContext context, Destination destination, Subscription subs) {<a name="line.562"></a>
+<span class="sourceLineNo">563</span>        if (isLogAll() || isLogConsumerEvents() || isLogInternalEvents()) {<a name="line.563"></a>
+<span class="sourceLineNo">564</span>            LOG.info("Detected slow consumer on {}", destination.getName());<a name="line.564"></a>
+<span class="sourceLineNo">565</span>            StringBuffer buf = new StringBuffer("Connection(");<a name="line.565"></a>
+<span class="sourceLineNo">566</span>            buf.append(subs.getConsumerInfo().getConsumerId().getConnectionId());<a name="line.566"></a>
+<span class="sourceLineNo">567</span>            buf.append(") Session(");<a name="line.567"></a>
+<span class="sourceLineNo">568</span>            buf.append(subs.getConsumerInfo().getConsumerId().getSessionId());<a name="line.568"></a>
+<span class="sourceLineNo">569</span>            buf.append(")");<a name="line.569"></a>
+<span class="sourceLineNo">570</span>            LOG.info(buf.toString());<a name="line.570"></a>
+<span class="sourceLineNo">571</span>        }<a name="line.571"></a>
+<span class="sourceLineNo">572</span>        super.slowConsumer(context, destination, subs);<a name="line.572"></a>
+<span class="sourceLineNo">573</span>    }<a name="line.573"></a>
+<span class="sourceLineNo">574</span><a name="line.574"></a>
+<span class="sourceLineNo">575</span>    @Override<a name="line.575"></a>
+<span class="sourceLineNo">576</span>    public void nowMasterBroker() {<a name="line.576"></a>
+<span class="sourceLineNo">577</span>        if (isLogAll() || isLogInternalEvents()) {<a name="line.577"></a>
+<span class="sourceLineNo">578</span>            LOG.info("Is now the master broker: {}", getBrokerName());<a name="line.578"></a>
+<span class="sourceLineNo">579</span>        }<a name="line.579"></a>
+<span class="sourceLineNo">580</span>        super.nowMasterBroker();<a name="line.580"></a>
+<span class="sourceLineNo">581</span>    }<a name="line.581"></a>
+<span class="sourceLineNo">582</span><a name="line.582"></a>
+<span class="sourceLineNo">583</span>    @Override<a name="line.583"></a>
+<span class="sourceLineNo">584</span>    public String toString() {<a name="line.584"></a>
+<span class="sourceLineNo">585</span>        StringBuffer buf = new StringBuffer();<a name="line.585"></a>
+<span class="sourceLineNo">586</span>        buf.append("LoggingBrokerPlugin(");<a name="line.586"></a>
+<span class="sourceLineNo">587</span>        buf.append("logAll=");<a name="line.587"></a>
+<span class="sourceLineNo">588</span>        buf.append(isLogAll());<a name="line.588"></a>
+<span class="sourceLineNo">589</span>        buf.append(", logConnectionEvents=");<a name="line.589"></a>
+<span class="sourceLineNo">590</span>        buf.append(isLogConnectionEvents());<a name="line.590"></a>
+<span class="sourceLineNo">591</span>        buf.append(", logSessionEvents=");<a name="line.591"></a>
+<span class="sourceLineNo">592</span>        buf.append(isLogSessionEvents());<a name="line.592"></a>
+<span class="sourceLineNo">593</span>        buf.append(", logConsumerEvents=");<a name="line.593"></a>
+<span class="sourceLineNo">594</span>        buf.append(isLogConsumerEvents());<a name="line.594"></a>
+<span class="sourceLineNo">595</span>        buf.append(", logProducerEvents=");<a name="line.595"></a>
+<span class="sourceLineNo">596</span>        buf.append(isLogProducerEvents());<a name="line.596"></a>
+<span class="sourceLineNo">597</span>        buf.append(", logTransactionEvents=");<a name="line.597"></a>
+<span class="sourceLineNo">598</span>        buf.append(isLogTransactionEvents());<a name="line.598"></a>
+<span class="sourceLineNo">599</span>        buf.append(", logInternalEvents=");<a name="line.599"></a>
+<span class="sourceLineNo">600</span>        buf.append(isLogInternalEvents());<a name="line.600"></a>
+<span class="sourceLineNo">601</span>        buf.append(")");<a name="line.601"></a>
+<span class="sourceLineNo">602</span>        return buf.toString();<a name="line.602"></a>
+<span class="sourceLineNo">603</span>    }<a name="line.603"></a>
+<span class="sourceLineNo">604</span><a name="line.604"></a>
+<span class="sourceLineNo">605</span>    public void setPerDestinationLogger(boolean perDestinationLogger) {<a name="line.605"></a>
+<span class="sourceLineNo">606</span>        this.perDestinationLogger = perDestinationLogger;<a name="line.606"></a>
+<span class="sourceLineNo">607</span>    }<a name="line.607"></a>
+<span class="sourceLineNo">608</span><a name="line.608"></a>
+<span class="sourceLineNo">609</span>    public boolean isPerDestinationLogger() {<a name="line.609"></a>
+<span class="sourceLineNo">610</span>        return perDestinationLogger;<a name="line.610"></a>
+<span class="sourceLineNo">611</span>    }<a name="line.611"></a>
+<span class="sourceLineNo">612</span>}<a name="line.612"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

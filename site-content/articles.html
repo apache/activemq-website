@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="#"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Articles</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p><a href="community">Community</a> &gt; <a href="articles">Articles</a></p>
+
+<p>This page captures resources and articles outside the ActiveMQ project which may assist your development. Please add any new resources that you come across by clicking the edit link at the bottom of the page. If you do this, please make sure to attach a date to the article as well so users are aware of how recent it is.</p>
+
+<h3 id="interviews-and-podcasts">Interviews and Podcasts</h3>
+
+<ul>
+  <li><a href="http://feathercast.org/?p=42">ActiveMQ FeatherCast</a>, James Strachan is interviewed on the ActiveMQ project</li>
+</ul>
+
+<h3 id="webinars-videos-and-screencasts">Webinars, Videos and Screencasts</h3>
+
+<ul>
+  <li><a href="http://download.progress.com/5331/open/adobe/prc/psc/perf_tuning_activemq/index.htm">Apache ActiveMQ - Connecting Applications everywhere</a> by <em><a href="http://rajdavies.blogspot.com/">Rob Davies</a></em></li>
+  <li><a href="http://download.progress.com/5331/open/adobe/prc/psc/perf_tuning_activemq/index.htm">Performance Tuning ActiveMQ webinar</a> <em>by <a href="http://rajdavies.blogspot.com/">Rob Davies</a></em></li>
+  <li><a href="http://fusesource.com/resources/video-archived-webinars/">FuseSource Webinars</a> - Upcoming and archived webinars on Apache ActiveMQ and other related Apache products.</li>
+  <li><a href="http://fusesource.com/resources/fuse-tv/">FuseSource TV</a> - webcasts about Apache ActiveMQ and related Apache projects.</li>
+</ul>
+
+<h3 id="articles-on-activemq-messaging-and-jms">Articles on ActiveMQ, Messaging and JMS</h3>
+
+<h4 id="general-articles">General Articles</h4>
+
+<ul>
+  <li><a href="http://blog.payara.fish/connecting-to-activemq-with-payara-server">Connecting to ActiveMQ with Payara Server</a> by Steve Millidge (December, 2015)</li>
+  <li><a href="http://de.slideshare.net/dejanb/messaging-for-web-and-mobile-with-apache-activemq">Messaging for Web and Mobile with Apache ActiveMQ</a> by <a href="http://Dejan Bosanac">Dejan Bosanac</a> (June, 2013)</li>
+  <li><a href="http://de.slideshare.net/bruce.snyder/activemq-in-action">ActiveMQ in Action: Common Problems and Solutions</a> by Bruce Snyder (July, 2011)</li>
+  <li><a href="http://blog.phatboyg.com/2009/07/12/accessing-activemq-on-mac-osx-from-a-windows-vm/">Accessing ActiveMQ on Mac OSX from a Windows VM</a></li>
+  <li><a href="http://www.theserverlabs.com/blog/2009/01/22/flex-with-jms-using-blazeds-jetty-and-activemq/">Flex with JMS using BlazeDS, Jetty and ActiveMQ</a> <em>by Kevin McCormack</em> (January, 2009)</li>
+  <li><a href="http://christopherhunt-software.blogspot.com/2009/03/mutual-ssl-authentication-and-ldap.html">Mutual SSL authentication and LDAP authorisation for ActiveMQ</a> <em>by <a href="http://christopherhunt-software.blogspot.com">Christopher Hunt</a></em> (March, 2009)</li>
+  <li><a href="http://www.slideshare.net/carsonified/dopplr-its-made-of-messages-matt-biddulph-presentation">Made of Messages</a> <em>by Matt Biddulph of <a href="http://www.dopplr.com/">Dopplr</a></em></li>
+  <li><a href="http://mmartinsoftware.blogspot.com/2008/05/simplified-blazeds-and-jms.md">Simplified BlazeDS and JMS article</a> <em>by <a href="http://mmartinsoftware.blogspot.com/">Michael Martin</a></em> (May, 2008)</li>
+  <li><a href="http://ourcraft.wordpress.com/2008/07/03/trying-out-xa/">Trying out XA</a> with ActiveMQ <em>by Daniel Meyer</em> (July, 2008)</li>
+  <li><a href="http://latrz.com/2586">Squawk (simple queues using awk)</a> <em>by <a href="http://www.nobugs.org/blog/">Andrew Birkett</a></em></li>
+  <li><a href="http://p-st.blogspot.com/2007/12/activemq-and-rest.md">Using ActiveMQ and REST</a> <em>by <a href="http://p-st.blogspot.com/">marlet</a></em> (December, 2007)</li>
+  <li><a href="http://esammer.blogspot.com/2007/09/apache-activemq-and-perl.md">Apache ActiveMQ and Perl</a> (September, 2007)</li>
+  <li><a href="http://remark.wordpress.com/articles/publish-subscribe-with-activemq-and-nms/">Publish-Subscribe with ActiveMQ and NMS</a></li>
+  <li><a href="http://note19.com/2007/06/24/activemq-masterslave-setup/">ActiveMQ Master/Slave Setup</a></li>
+  <li><a href="http://weblogs.java.net/blog/rampsarathy/archive/2007/03/glassfish_v2_an.html">GlassFish and ActiveMQ</a> <em>by Ramesh Parthasarathy</em> (March, 2007)</li>
+  <li><a href="http://jroller.com/page/sjivan?entry=asynchronous_calls_and_callbacks_using">Asynchronous calls and callbacks with Lingo and ActiveMQ</a> <em>by Sanjiv Jivan</em> (May, 2006)</li>
+  <li><a href="http://www-128.ibm.com/developerworks/opensource/library/os-ag-jmsbeans/">Magic with JMS, MDBs, and ActiveMQ in Geronimo</a> <em>by Sing Li</em> (July, 2005)</li>
+  <li><a href="http://remark.wordpress.com/articles/implementing-request-response-with-activemq-and-nms/">Implementing Request-Response with ActiveMQ and NMS</a> <em>by Mark</em></li>
+  <li><a href="http://www.christianposta.com/blog/?p=273">Understanding Memory Usage</a> <em>by Christian Posta</em> gives an overview and dive into the memory usage of the broker.</li>
+</ul>
+
+<h4 id="activemq-maintenance-and-monitoring">ActiveMQ Maintenance and Monitoring</h4>
+
+<ul>
+  <li><a href="http://www.bennet-schulz.com/2016/07/apache-activemq-and-hawtio.html">Running ActiveMQ and hawtio in Standalone Mode</a> by <a href="https://twitter.com/bennetelli">Bennet Schulz</a> (July, 2016)</li>
+  <li><a href="http://sensatic.net/activemq/activemq-and-hawtio.html">Management and monitoring ActiveMQ using hawtio</a> (how to install hawtio out of  the box in ActiveMQ) by Dejan Bosanac (April 2014)</li>
+  <li><a href="http://it.toolbox.com/blogs/unix-sysadmin/monitoring-activemq-from-nagios-27743">Monitoring ActiveMQ from Nagios</a> <em>by <a href="http://it.toolbox.com/people/therek/">Cezary Morga</a></em></li>
+  <li><a href="http://soatechlab.blogspot.com/2008/01/use-jconsole-with-activemq-for-quick.html">Use JConsole with ActiveMQ for a quick JMS test client</a> <em>by <a href="http://soatechlab.blogspot.com/">Rod Biresch</a></em> (January 2008)</li>
+  <li><a href="http://www.oreillynet.com/onjava/blog/2007/06/integrating_activemq_web_conso.html">Integrating ActiveMQ Web Console</a> <em>by <a href="http://www.oreillynet.com/pub/au/1763">Dejan Bosanac</a></em> (June 2007)</li>
+  <li><a href="http://hermesjms.com/demos/messagestores.html">Hermes Message Stores with ActiveMQ demo</a> <em>by Colin Crist</em></li>
+</ul>
+
+<h4 id="activemq-and-databases">ActiveMQ and Databases</h4>
+
+<ul>
+  <li><a href="http://barkingiguana.com/2008/12/16/high-availability-activemq-using-a-mysql-datastore">High Availability ActiveMQ using MySQL and Ruby</a> <em>by <a href="http://barkingiguana.com/">Craig R Webster</a></em> (December 2008)</li>
+  <li><a href="http://trenaman.blogspot.com/2008/09/setting-up-postgresql-database-for.html">Setting up a PostgreSQL database for ActiveMQ</a> <em>by <a href="http://trenaman.blogspot.com/">Adrian Trenaman</a></em> (September 2008)</li>
+  <li><a href="http://note19.com/2007/06/23/configure-activemq-with-mysql/">Configure ActiveMQ with MySQL</a> <em>By Shahram Javey</em> (June 2007)</li>
+</ul>
+
+<h4 id="activemq-and-spring">ActiveMQ and Spring</h4>
+
+<ul>
+  <li><a href="https://github.com/bsnyder/spring-jms-examples">Spring JMS Examples with ActiveMQ</a> by <a href="https://bsnyderblog.blogspot.com/">Bruce Snyder</a> (June 2011)</li>
+  <li><a href="https://bsnyderblog.blogspot.com/2010/05/tuning-jms-message-consumption-in.html">Tuning JMS Message Consumption In Spring</a> by <a href="https://bsnyderblog.blogspot.com/">Bruce Snyder</a> (May 2010)</li>
+  <li><a href="https://medium.com/@bdarfler/synchronous-request-response-with-activemq-and-spring-21359a438a86">Synchronous Request Response with ActiveMQ and Spring</a> <em>by <a href="http://codedependents.com/">CodeDependents</a></em> (March 2010)</li>
+  <li><a href="https://bsnyderblog.blogspot.com/2010/02/using-spring-to-receive-jms-messages.html">Using Spring to Receive JMS Messages</a> by <a href="https://bsnyderblog.blogspot.com/">Bruce Snyder</a> (February 2010)</li>
+  <li><a href="https://bsnyderblog.blogspot.com/2010/02/using-spring-jmstemplate-to-send-jms.md">Using Spring to Send JMS Messages</a> by <a href="https://bsnyderblog.blogspot.com/">Bruce Snyder</a> (February 2010)</li>
+  <li><a href="https://medium.com/@bdarfler/efficient-lightweight-jms-with-spring-and-activemq-51ff6a135946">Efficient Lightweight JMS with Spring and ActiveMQ</a> <em>by <a href="http://codedependents.com/">CodeDependents</a></em> (Octover 2009)</li>
+  <li><a href="http://javaandjava.blogspot.com/2008/10/activemq-message-consumer-in-spring.html">ActiveMQ Message Consumer in Spring</a> <em>by <a href="http://javaandjava.blogspot.com/">Saveen Kumar</a></em> (October 2008)</li>
+  <li><a href="http://www.springframework.org/node/527">Message-Driven Architectures at The Spring Experience</a> <em>by Keith Donald</em> (September 2007)</li>
+</ul>
+
+<h4 id="activemq-with-jrubyruby-rails-andor-stomp">ActiveMQ with JRuby/Ruby, Rails and/or Stomp</h4>
+
+<ul>
+  <li><a href="http://beechbonanza.blogspot.com/2007/07/jruby-jms-as-replacement-for.html">JRuby JMS as a replacement for ActiveMessaging</a></li>
+  <li><a href="http://nutrun.com/weblog/jms-with-jruby-and-activemq/">JMS with JRuby and ActiveMQ</a></li>
+  <li><a href="http://romjethoughts.blogspot.com/2007/05/first-steps-with-rubystomp-and-activemq.html">First Steps on Ruby/STOMP and ActiveMQ</a> <em>by <a href="http://romjethoughts.blogspot.com/">jerome moliere</a></em></li>
+  <li><a href="http://beechbonanza.blogspot.com/2007/06/asynchronous-messaging-with-rails.html">Asynchronous Messaging with Rails</a> <em>by <a href="http://beechbonanza.blogspot.com/">Shane Harvie</a></em></li>
+  <li><a href="http://notdennisbyrne.blogspot.com/2007/06/integrating-rails-and-activemq-with.html">Integrating Rails and ActiveMQ with ActiveMessaging/REST</a> <em>by <a href="http://notdennisbyrne.blogspot.com/">(not) Dennis Byrne</a></em></li>
+  <li><a href="http://ramesh-rubyonrails.blogspot.com/2007/09/asynchronous-messaging-using-rails.html">Asynchronous Messaging using Rails</a></li>
+  <li><a href="http://www.infoq.com/articles/intro-active-messaging-rails">Introduction to ActiveMessaging, using Rails with ActiveMQ or Stomp</a> <em>by Andrew Kuklewicz</em></li>
+  <li><a href="http://flexonrails.net/?p=83">Flex, Rails, ActiveMQ and Stomp</a> <em>by <a href="http://flexonrails.net">Flex On Rails</a></em></li>
+  <li><a href="http://just-another.net/2008/09/03/activemq-stomp-end-end-test-nagios/">ActiveMQ stomp end to end test for nagios</a> <em>by <a href="http://just-another.net/">Benjamin Smith</a></em></li>
+  <li><a href="http://www.kaazing.org/confluence/display/Doc/JavaScript+STOMP+Client+How-To">How to Create a Stomp-Driven Application in JavaScript Using Apache ActiveMQ as a Message Broker</a> <em>by <a href="http://www.kaazing.org/confluence/display/KAAZING/Home">Kaazing</a></em></li>
+  <li><a href="http://cometdaily.com/2008/10/08/scalable-real-time-web-architecture-part-1-stomp-comet-and-message-queues/">Scalable Real-Time Web Architecture, Part 1: Stomp, Comet, and Message Queues</a> <em>by <a href="http://cometdaily.com/people/michael_carter/">Michael Carter</a></em></li>
+</ul>
+
+<h4 id="activemq-and-net">ActiveMQ and .NET</h4>
+
+<ul>
+  <li><a href="http://remark.wordpress.com/articles/messaging-with-net-and-activemq/">Messaging with .NET and ActiveMQ</a> <em>by <a href="http://remark.wordpress.com/">Re.Mark</a></em></li>
+  <li><a href="http://remark.wordpress.com/articles/messaging-with-net-and-activemq/">Using .Net and ActiveMQ</a> <em>by <a href="http://remark.wordpress.com/">Re.Mark</a></em></li>
+</ul>
+
+<h3 id="message-broker-comparison">Message Broker Comparison</h3>
+
+<ul>
+  <li><a href="http://bhavin.directi.com/rabbitmq-vs-apache-activemq-vs-apache-qpid/">RabbitMQ vs Apache ActiveMQ vs Apache qpid</a> <em>by Bhavin Turakhia</em> (May, 2010)</li>
+  <li><a href="http://www.nighttale.net/activemq/python-messaging-activemq-and-rabbitmq.html">Python messaging: ActiveMQ and RabbitMQ</a> <em>by Night Tale</em></li>
+  <li><a href="http://stackoverflow.com/questions/32851/multicasting-messaging-activemq-vs-msmq">Multicasting, Messaging, ActiveMQ vs. MSMQ?</a> <em>by stackoverflow.com</em></li>
+  <li><a href="http://www.fiorano.com/whitepapers/java-message-service/JMS-performance-comparison.php">JMS Performance Comparison</a> <em>by www.fiarano.com</em></li>
+  <li><a href="http://activemq.apache.org/how-does-activemq-compare-to-jbossmq.md">How does ActiveMQ compare to JBossMQ</a></li>
+  <li><a href="http://www.mail-archive.com/activemq-users@geronimo.apache.org/msg05630.html">Why use ActiveMQ over JBossMQ?</a></li>
+  <li><a href="http://www.manning-sandbox.com/thread.jspa?threadID=39270&amp;tstart=45">Thread: ActiveMQ vs Websphere MQ</a></li>
+  <li><a href="http://activemq.apache.orgCommunity/FAQ/GeneralCommunity/FAQ/General/Community/FAQ/General/how-does-activemq-compare-to-mule.md">How does ActiveMQ compare to Mule?</a></li>
+  <li><a href="http://www.roklee.com/?p=52">HornetQ 2.0GA vs ActiveMQ 5.3 – feature by feature comparison</a> <em>by www.roklee.com</em></li>
+  <li><a href="http://www.theserverside.com/discussions/thread.tss?thread_id=57192">Performance and scalability: Analysis and comparison of ActiveMQ, Websphere MQ and SonicMQ</a></li>
+  <li><a href="http://activemq.2283324.n4.nabble.com/ActiveMQ-vs-Camel-vs-Qpid-td2355914.html">ActiveMQ vs. Camel vs. Qpid</a></li>
+</ul>
+
+<h3 id="activemq-tooling-and-scripts">ActiveMQ tooling and scripts</h3>
+
+<ul>
+  <li><a href="https://github.com/ebuzzing/bash-mq">Bash-MQ</a> - a bash/awk producer/consumer for activemq or any STOMP compatible MQ</li>
+</ul>
+
+<h3 id="books-and-reference-guides">Books and Reference Guides</h3>
+
+<ul>
+  <li>Beside these extract of interviews, articles and videos there are also some books available. Take a look at the <a href="books">Books</a> page.</li>
+</ul>
+
+<h3 id="additional-resources">Additional Resources</h3>
+
+<ul>
+  <li>Many of the Commercial Providers listed on the <a href="support">Support</a> page provide additional examples, articles, tutorials, documentation, etc…</li>
+</ul>
+
+<h3 id="activemq-bloggers">ActiveMQ bloggers</h3>
+
+<ul>
+  <li><a href="http://rajdavies.blogspot.com/">Rob Davies</a></li>
+  <li><a href="http://hiramchirino.com/blog/">Hiram Chirino</a></li>
+  <li><a href="http://blog.garytully.com/">Gary Tully</a></li>
+  <li><a href="http://www.nighttale.net">Dejan Bosanac</a></li>
+  <li><a href="http://bruceblog.org/">Bruce Snyder</a></li>
+  <li><a href="http://www.christianposta.com/blog">Christian Posta</a></li>
+</ul>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

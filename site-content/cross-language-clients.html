@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="#"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Cross Language Clients</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p><a href="connectivity">Connectivity</a> &gt; <a href="cross-language-clients">Cross Language Clients</a></p>
+
+<p>Apache ActiveMQ is a message broker written in Java with JMS, <a href="rest">REST</a> and <a href="websockets">WebSocket</a> interfaces, however it supports protocols like <a href="amqp">AMQP</a>, <a href="mqtt">MQTT</a>, <a href="openwire">OpenWire</a> and <a href="stomp">STOMP</a> that can be used by applications in different languages.</p>
+
+<h2 id="libraries">Libraries</h2>
+
+<ul>
+  <li><a href="http://activemq.apache.org/nms/">.NET</a></li>
+  <li><a href="http://docs.codehaus.org/display/STOMP/C">C</a> (defunct)</li>
+  <li><a href="http://activemq.apache.org/cms/">C++</a></li>
+  <li><a href="https://github.com/igb/Erlang-STOMP-Client">Erlang</a></li>
+  <li><a href="https://github.com/go-stomp/stomp">Go</a></li>
+  <li><a href="https://github.com/toschoo/mom">Haskell</a></li>
+  <li><a href="https://code.google.com/p/hxstomp">Haxe</a> (defunct)</li>
+  <li><a href="https://github.com/fribeiro1/jekpro-activemq-library">Jekejeke Prolog</a></li>
+  <li><a href="https://github.com/fribeiro1/ActiveMQ-Extension">NetLogo</a></li>
+  <li><a href="https://github.com/gdaws/node-stomp">Node.js</a></li>
+  <li><a href="http://search.cpan.org/%7Elcons/Net-STOMP-Client/">Perl 5</a></li>
+  <li><a href="https://github.com/hww3/pike_modules-public_protocols_stomp">Pike</a></li>
+  <li><a href="https://github.com/jasonrbriggs/stomp.py">Python</a></li>
+  <li><a href="https://github.com/tonyg/racket-stomp">Racket</a></li>
+  <li><a href="https://github.com/kookster/activemessaging">Ruby on Rails</a></li>
+  <li><a href="https://github.com/siemens/tstomp">Tcl/Tk</a></li>
+</ul>
+
+<h2 id="code-samples">Code Samples</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Language</th>
+      <th>Variant</th>
+      <th>Interface</th>
+      <th>Protocol</th>
+      <th>Links</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Awk</td>
+      <td>Gawk</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/06/how-to-send-a-message-to-an-apache-activemq-queue-with-gawk/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/06/how-to-send-a-message-to-an-apache-activemq-topic-with-gawk/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/06/how-to-receive-a-message-from-an-apache-activemq-queue-with-gawk/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/06/how-to-receive-a-message-from-an-apache-activemq-topic-with-gawk/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>C/C++</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/02/23/how-to-send-a-message-to-an-apache-activemq-queue-with-cc/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/23/how-to-send-a-message-to-an-apache-activemq-topic-with-cc/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/02/23/how-to-receive-a-message-from-an-apache-activemq-queue-with-cc/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/23/how-to-receive-a-message-from-an-apache-activemq-topic-with-cc/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>COBOL</td>
+      <td>GNU COBOL</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/04/15/how-to-send-a-message-to-an-apache-activemq-queue-with-gnu-cobol/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/15/how-to-send-a-message-to-an-apache-activemq-topic-with-gnu-cobol/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/04/17/how-to-receive-a-message-from-an-apache-activemq-queue-with-gnu-cobol/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/17/how-to-receive-a-message-from-an-apache-activemq-topic-with-gnu-cobol/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>COBOL</td>
+      <td>Visual COBOL</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2013/11/12/how-to-send-a-message-to-an-apache-activemq-queue-with-visual-cobol/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2013/11/12/how-to-send-a-message-to-an-apache-activemq-topic-with-visual-cobol/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2013/11/13/how-to-receive-a-message-from-an-apache-activemq-queue-with-visual-cobol/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2013/11/13/how-to-receive-a-message-from-an-apache-activemq-topic-with-visual-cobol/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Ceylon</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2013/12/28/how-to-send-a-message-to-an-apache-activemq-queue-with-ceylon/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/28/how-to-send-a-message-to-an-apache-activemq-topic-with-ceylon/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2013/12/28/how-to-receive-a-message-from-an-apache-activemq-queue-with-ceylon/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/28/how-to-receive-a-message-from-an-apache-activemq-topic-with-ceylon/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Clojure</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2013/12/31/how-to-send-a-message-to-an-apache-activemq-queue-with-clojure/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-send-a-message-to-an-apache-activemq-topic-with-clojure/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-receive-a-message-from-an-apache-activemq-queue-with-clojure/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-receive-a-message-from-an-apache-activemq-topic-with-clojure/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>D</td>
+      <td>None</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/12/02/how-to-send-a-message-to-an-apache-activemq-queue-with-d/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/12/02/how-to-send-a-message-to-an-apache-activemq-topic-with-d/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/12/03/how-to-receive-a-message-from-an-apache-activemq-queue-with-d/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/12/03/how-to-receive-a-message-from-an-apache-activemq-topic-with-d/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Dylan</td>
+      <td>Open Dylan</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2016/02/06/how-to-send-a-message-to-an-apache-activemq-queue-with-open-dylan/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2016/02/06/how-to-send-a-message-to-an-apache-activemq-topic-with-open-dylan/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2016/02/06/how-to-receive-a-message-from-an-apache-activemq-queue-with-open-dylan/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2016/02/06/how-to-receive-a-message-from-an-apache-activemq-topic-with-open-dylan/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Efene</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2016/01/11/how-to-send-a-message-to-an-apache-activemq-queue-with-efene/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/11/how-to-send-a-message-to-an-apache-activemq-topic-with-efene/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2016/01/11/how-to-receive-a-message-from-an-apache-activemq-queue-with-efene/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/11/how-to-receive-a-message-from-an-apache-activemq-topic-with-efene/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Eiffel</td>
+      <td>EiffelStudio</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2016/01/24/how-to-send-a-message-to-an-apache-activemq-queue-with-eiffelstudio/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/24/how-to-send-a-message-to-an-apache-activemq-topic-with-eiffelstudio/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2016/01/24/how-to-receive-a-message-from-an-apache-activemq-queue-with-eiffelstudio/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/24/how-to-receive-a-message-from-an-apache-activemq-queue-with-eiffelstudio/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Eiffel</td>
+      <td>GNU Eiffel</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2016/01/25/how-to-send-a-message-to-an-apache-activemq-queue-with-gnu-eiffel/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/25/how-to-send-a-message-to-an-apache-activemq-topic-with-gnu-eiffel/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2016/01/25/how-to-receive-a-message-from-an-apache-activemq-queue-with-gnu-eiffel/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/25/how-to-receive-a-message-from-an-apache-activemq-topic-with-gnu-eiffel/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Elixir</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/02/09/how-to-send-a-message-to-an-apache-activemq-queue-with-elixir/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/09/how-to-send-a-message-to-an-apache-activemq-topic-with-elixir/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/02/09/how-to-receive-a-message-from-an-apache-activemq-queue-with-elixir/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/09/how-to-receive-a-message-from-an-apache-activemq-topic-with-elixir/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Erlang</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/02/06/how-to-send-a-message-to-an-apache-activemq-queue-with-erlang/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/06/how-to-send-a-message-to-an-apache-activemq-topic-with-erlang/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/02/07/how-to-receive-a-message-from-an-apache-activemq-queue-with-erlang/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/07/how-to-receive-a-message-from-an-apache-activemq-topic-with-erlang/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Factor</td>
+      <td>None</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/12/13/how-to-send-a-message-to-an-apache-activemq-queue-with-factor/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/12/13/how-to-send-a-message-to-an-apache-activemq-topic-with-factor/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/12/13/how-to-receive-a-message-from-an-apache-activemq-queue-with-factor/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/12/13/how-to-receive-a-message-from-an-apache-activemq-topic-with-factor/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Fantom</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/01/11/how-to-send-a-message-to-an-apache-activemq-queue-with-fantom/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/11/how-to-send-a-message-to-an-apache-activemq-topic-with-fantom/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/01/11/how-to-receive-a-message-from-an-apache-activemq-queue-with-fantom/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/11/how-to-receive-a-message-from-an-apache-activemq-topic-with-fantom/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Frege</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/01/06/how-to-send-a-message-to-an-apache-activemq-queue-with-frege/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/06/how-to-send-a-message-to-an-apache-activemq-topic-with-frege/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/01/06/how-to-receive-a-message-from-an-apache-activemq-queue-with-frege/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/06/how-to-receive-a-message-from-an-apache-activemq-topic-with-frege/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Go</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/02/16/how-to-send-a-message-to-an-apache-activemq-queue-with-go/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/16/how-to-send-a-message-to-an-apache-activemq-topic-with-go/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/02/16/how-to-receive-a-message-from-an-apache-activemq-queue-with-go/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/16/how-to-receive-a-message-from-an-apache-activemq-topic-with-go/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Golo</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/01/10/how-to-send-a-message-to-an-apache-activemq-queue-with-golo/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/10/how-to-send-a-message-to-an-apache-activemq-topic-with-golo/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/01/10/how-to-receive-a-message-from-an-apache-activemq-queue-with-golo/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/10/how-to-receive-a-message-from-an-apache-activemq-topic-with-golo/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Gosu</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/12/31/how-to-send-a-message-to-an-apache-activemq-queue-with-gosu/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/12/31/how-to-send-a-message-to-an-apache-activemq-topic-with-gosu/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/12/31/how-to-receive-a-message-from-an-apache-activemq-queue-with-gosu/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/12/31/how-to-receive-a-message-from-an-apache-activemq-topic-with-gosu/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Groovy</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/01/01/how-to-send-a-message-to-an-apache-activemq-queue-with-groovy/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/01/how-to-send-a-message-to-an-apache-activemq-topic-with-groovy/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/01/01/how-to-receive-a-message-from-an-apache-activemq-queue-with-groovy/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/01/how-to-receive-a-message-from-an-apache-activemq-topic-with-groovy/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Haxe</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/12/how-to-send-a-message-to-an-apache-activemq-queue-with-haxe/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/12/how-to-send-a-message-to-an-apache-activemq-topic-with-haxe/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/12/how-to-receive-a-message-from-an-apache-activemq-queue-with-haxe/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/12/how-to-receive-a-message-from-an-apache-activemq-topic-with-haxe/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Haskell</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/02/14/how-to-send-a-message-to-an-apache-activemq-queue-with-haskell/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/14/how-to-send-a-message-to-an-apache-activemq-topic-with-haskell/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/02/14/how-to-receive-a-message-from-an-apache-activemq-queue-with-haskell/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/14/how-to-receive-a-message-from-an-apache-activemq-topic-with-haskell/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Interfix</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2016/01/12/how-to-send-a-message-to-an-apache-activemq-queue-with-interfix/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/12/how-to-send-a-message-to-an-apache-activemq-topic-with-interfix/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2016/01/12/how-to-receive-a-message-from-an-apache-activemq-queue-with-interfix/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/12/how-to-receive-a-message-from-an-apache-activemq-topic-with-interfix/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Ioke</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/12/10/how-to-send-a-message-to-an-apache-activemq-queue-with-ioke/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/12/10/how-to-send-a-message-to-an-apache-activemq-topic-with-ioke/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/12/10/how-to-receive-a-message-from-an-apache-activemq-queue-with-ioke/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/12/10/how-to-receive-a-message-from-an-apache-activemq-topic-with-ioke/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Java</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/02/19/how-to-send-a-message-to-an-apache-activemq-queue-with-java/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/19/how-to-send-a-message-to-an-apache-activemq-topic-with-java/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2013/11/10/how-to-receive-a-message-from-an-apache-activemq-queue-with-java/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2013/11/10/how-to-receive-a-message-from-an-apache-activemq-topic-with-java/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Java</td>
+      <td>Apache Camel</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/04/21/how-to-send-a-message-to-an-apache-activemq-queue-with-apache-camel/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/21/how-to-send-a-message-to-an-apache-activemq-topic-with-apache-camel/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/04/21/how-to-receive-a-message-from-an-apache-activemq-queue-with-apache-camel/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/21/how-to-receive-a-message-from-an-apache-activemq-topic-with-apache-camel/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Java</td>
+      <td>JAX-RS</td>
+      <td>REST</td>
+      <td>REST</td>
+      <td><a href="https://simplesassim.wordpress.com/2013/11/07/how-to-send-a-message-to-an-apache-activemq-queue-with-jax-rs/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2013/11/07/how-to-send-a-message-to-an-apache-activemq-topic-with-jax-rs/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2013/11/07/how-to-receive-a-message-from-an-apache-activemq-queue-with-jax-rs/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2013/11/07/how-to-receive-a-message-from-an-apache-activemq-topic-with-jax-rs/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Java</td>
+      <td>Java API for WebSocket</td>
+      <td>WebSocket</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2016/01/23/how-to-send-a-message-to-an-apache-activemq-queue-with-the-java-api-for-websocket/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/23/how-to-send-a-message-to-an-apache-activemq-topic-with-the-java-api-for-websocket/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2016/01/23/how-to-receive-a-message-from-an-apache-activemq-queue-with-the-java-api-for-websocket/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/23/how-to-receive-a-message-from-an-apache-activemq-topic-with-the-java-api-for-websocket/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>JavaScript</td>
+      <td>None</td>
+      <td>WebSocket</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2016/02/02/how-to-send-a-message-to-an-apache-activemq-queue-with-javascript/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2016/02/02/how-to-send-a-message-to-an-apache-activemq-topic-with-javascript/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2016/02/02/how-to-receive-a-message-from-an-apache-activemq-queue-with-javascript/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2016/02/02/how-to-receive-a-message-from-an-apache-activemq-topic-with-javascript/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>JavaScript</td>
+      <td>DynJS</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/01/02/how-to-send-a-message-to-an-apache-activemq-queue-with-dynjs/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/02/how-to-send-a-message-to-an-apache-activemq-topic-with-dynjs/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/01/02/how-to-receive-a-message-from-an-apache-activemq-queue-with-dynjs/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/02/how-to-receive-a-message-from-an-apache-activemq-topic-with-dynjs/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>JavaScript</td>
+      <td>Rhino</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2013/12/31/how-to-send-a-message-to-an-apache-activemq-queue-with-rhino/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-send-a-message-to-an-apache-activemq-topic-with-rhino/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-receive-a-message-from-an-apache-activemq-queue-with-rhino/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-receive-a-message-from-an-apache-activemq-topic-with-rhino/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>JavaScript</td>
+      <td>Nashorn</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2013/12/31/how-to-send-a-message-to-an-apache-activemq-queue-with-nashorn/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-send-a-message-to-an-apache-activemq-topic-with-nashorn/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-receive-a-message-from-an-apache-activemq-queue-with-nashorn/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-receive-a-message-from-an-apache-activemq-topic-with-nashorn/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>JavaScript</td>
+      <td>Node.js</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2016/03/13/how-to-send-a-message-to-an-apache-activemq-queue-with-node-js/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2016/03/13/how-to-send-a-message-to-an-apache-activemq-topic-with-node-js/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2016/03/13/how-to-receive-a-message-from-an-apache-activemq-queue-with-node-js/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2016/03/13/how-to-receive-a-message-from-an-apache-activemq-topic-with-node-js/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>JudoScript</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/01/10/how-to-send-a-message-to-an-apache-activemq-queue-with-judoscript/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/10/how-to-send-a-message-to-an-apache-activemq-topic-with-judoscript/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/01/10/how-to-receive-a-message-from-an-apache-activemq-queue-with-judoscript/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/10/how-to-receive-a-message-from-an-apache-activemq-topic-with-judoscript/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Julia</td>
+      <td>None</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2016/01/02/how-to-send-a-message-to-an-apache-activemq-queue-with-julia/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/02/how-to-send-a-message-to-an-apache-activemq-topic-with-julia/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2016/01/02/how-to-receive-a-message-from-an-apache-activemq-queue-with-julia/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2016/01/02/how-to-receive-a-message-from-an-apache-activemq-topic-with-julia/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Kotlin</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/01/10/how-to-send-a-message-to-an-apache-activemq-queue-with-kotlin/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/10/how-to-send-a-message-to-an-apache-activemq-topic-with-kotlin/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/01/10/how-to-receive-a-message-from-an-apache-activemq-queue-with-kotlin/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/10/how-to-receive-a-message-from-an-apache-activemq-topic-with-kotlin/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>ABCL</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/04/02/how-to-send-a-message-to-an-apache-activemq-queue-with-abcl/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/02/how-to-send-a-message-to-an-apache-activemq-topic-with-abcl/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/04/02/how-to-receive-a-message-from-an-apache-activemq-queue-with-abcl/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/02/how-to-receive-a-message-from-an-apache-activemq-topic-with-abcl/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>Allegro CL</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/04/05/how-to-send-a-message-to-an-apache-activemq-queue-with-allegro-cl/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/05/how-to-send-a-message-to-an-apache-activemq-topic-with-allegro-cl/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/04/05/how-to-receive-a-message-from-an-apache-activemq-queue-with-allegro-cl/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/05/how-to-receive-a-message-from-an-apache-activemq-topic-with-allegro-cl/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>Bigloo</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/04/02/how-to-send-a-message-to-an-apache-activemq-queue-with-bigloo/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/02/how-to-send-a-message-to-an-apache-activemq-topic-with-bigloo/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/04/02/how-to-receive-a-message-from-an-apache-activemq-queue-with-bigloo/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/02/how-to-receive-a-message-from-an-apache-activemq-topic-with-bigloo/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>GNU CLISP</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/17/how-to-send-a-message-to-an-apache-activemq-queue-with-gnu-clisp/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/17/how-to-send-a-message-to-an-apache-activemq-topic-with-gnu-clisp/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/17/how-to-receive-a-message-from-an-apache-activemq-queue-with-gnu-clisp/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/17/how-to-receive-a-message-from-an-apache-activemq-topic-with-gnu-clisp/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>JScheme</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/30/how-to-send-a-message-to-an-apache-activemq-queue-with-jscheme/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/30/how-to-send-a-message-to-an-apache-activemq-topic-with-jscheme/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/30/how-to-receive-a-message-from-an-apache-activemq-queue-with-jscheme/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/30/how-to-receive-a-message-from-an-apache-activemq-topic-with-jscheme/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>Joxa</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/02/11/how-to-send-a-message-to-an-apache-activemq-queue-with-joxa/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/11/how-to-send-a-message-to-an-apache-activemq-topic-with-joxa/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/02/11/how-to-receive-a-message-from-an-apache-activemq-queue-with-joxa/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/11/how-to-receive-a-message-from-an-apache-activemq-topic-with-joxa/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>Kawa</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/17/how-to-send-a-message-to-an-apache-activemq-queue-with-kawa/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/17/how-to-send-a-message-to-an-apache-activemq-topic-with-kawa/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/17/how-to-receive-a-message-from-an-apache-activemq-queue-with-kawa/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/17/how-to-receive-a-message-from-an-apache-activemq-topic-with-kawa/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>LFE</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/02/11/how-to-send-a-message-to-an-apache-activemq-queue-with-lfe/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/11/how-to-send-a-message-to-an-apache-activemq-topic-with-lfe/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/02/11/how-to-receive-a-message-from-an-apache-activemq-queue-with-lfe/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/11/how-to-receive-a-message-from-an-apache-activemq-topic-with-lfe/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>MIT/GNU Scheme</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/24/how-to-send-a-message-to-an-apache-activemq-queue-with-mitgnu-scheme/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/24/how-to-send-a-message-to-an-apache-activemq-topic-with-mitgnu-scheme/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/25/how-to-receive-a-message-from-an-apache-activemq-queue-with-mitgnu-scheme/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/25/how-to-receive-a-message-from-an-apache-activemq-topic-with-mitgnu-scheme/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>Racket</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/29/how-to-send-a-message-to-an-apache-activemq-queue-with-racket/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/29/how-to-send-a-message-to-an-apache-activemq-topic-with-racket/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/29/how-to-receive-a-message-from-an-apache-activemq-queue-with-racket/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/29/how-to-receive-a-message-from-an-apache-activemq-topic-with-racket/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lisp/Scheme</td>
+      <td>SISC</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/04/06/how-to-send-a-message-to-an-apache-activemq-queue-with-sisc/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/06/how-to-send-a-message-to-an-apache-activemq-topic-with-sisc/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/04/06/how-to-receive-a-message-from-an-apache-activemq-queue-with-sisc/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/04/06/how-to-receive-a-message-from-an-apache-activemq-topic-with-sisc/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Logo</td>
+      <td>NetLogo</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/12/06/how-to-send-a-message-to-an-apache-activemq-queue-with-netlogo/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/12/06/how-to-send-a-message-to-an-apache-activemq-topic-with-netlogo/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/12/06/how-to-receive-a-message-from-an-apache-activemq-queue-with-netlogo/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/12/06/how-to-receive-a-message-from-an-apache-activemq-topic-with-netlogo/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lua</td>
+      <td>Lua</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/13/how-to-send-a-message-to-an-apache-activemq-queue-with-lua/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/13/how-to-send-a-message-to-an-apache-activemq-topic-with-lua/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/13/how-to-receive-a-message-from-an-apache-activemq-queue-with-lua/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/13/how-to-receive-a-message-from-an-apache-activemq-topic-with-lua/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Lua</td>
+      <td>Luaj</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/01/25/how-to-send-a-message-to-an-apache-activemq-queue-with-luaj/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/25/how-to-send-a-message-to-an-apache-activemq-topic-with-luaj/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/01/25/how-to-receive-a-message-from-an-apache-activemq-queue-with-luaj/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/25/how-to-receive-a-message-from-an-apache-activemq-topic-with-luaj/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>ML</td>
+      <td>OCaml</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/02/21/how-to-send-a-message-to-an-apache-activemq-queue-with-ocaml/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/02/22/how-to-send-a-message-to-an-apache-activemq-topic-with-ocaml/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/02/22/how-to-receive-a-message-from-an-apache-activemq-queue-with-ocaml/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/02/22/how-to-receive-a-message-from-an-apache-activemq-topic-with-ocaml/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>ML</td>
+      <td>OCaml-Java</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/02/15/how-to-send-a-message-to-an-apache-activemq-queue-with-ocaml-java/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/02/15/how-to-send-a-message-to-an-apache-activemq-topic-with-ocaml-java/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/02/15/how-to-receive-a-message-from-an-apache-activemq-queue-with-ocaml-java/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/02/15/how-to-receive-a-message-from-an-apache-activemq-topic-with-ocaml-java/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Mirah</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/12/30/how-to-send-a-message-to-an-apache-activemq-queue-with-mirah/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/12/30/how-to-send-a-message-to-an-apache-activemq-topic-with-mirah/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/12/30/how-to-receive-a-message-from-an-apache-activemq-queue-with-mirah/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/12/30/how-to-receive-a-message-from-an-apache-activemq-topic-with-mirah/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Perl</td>
+      <td>Perl 5</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/08/how-to-send-a-message-to-an-apache-activemq-queue-with-perl-5/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/08/how-to-send-a-message-to-an-apache-activemq-topic-with-perl-5/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/08/how-to-receive-a-message-from-an-apache-activemq-queue-with-perl-5/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/08/how-to-receive-a-message-from-an-apache-activemq-topic-with-perl-5/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Pike</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/16/how-to-send-a-message-to-an-apache-activemq-queue-with-pike/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/16/how-to-send-a-message-to-an-apache-activemq-topic-with-pike/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/16/how-to-receive-a-message-from-an-apache-activemq-queue-with-pike/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/16/how-to-receive-a-message-from-an-apache-activemq-topic-with-pike/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Prolog</td>
+      <td>JIProlog</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/01/14/how-to-send-a-message-to-an-apache-activemq-queue-with-jiprolog/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/14/how-to-send-a-message-to-an-apache-activemq-topic-with-jiprolog/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/01/14/how-to-receive-a-message-from-an-apache-activemq-queue-with-jiprolog/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/14/how-to-receive-a-message-from-an-apache-activemq-topic-with-jiprolog/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Prolog</td>
+      <td>Jekejeke Prolog</td>
+      <td>Library</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/01/26/how-to-send-a-message-to-an-apache-activemq-queue-with-jekejeke-prolog/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/26/how-to-send-a-message-to-an-apache-activemq-topic-with-jekejeke-prolog/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/01/26/how-to-receive-a-message-from-an-apache-activemq-queue-with-jekejeke-prolog/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/26/how-to-receive-a-message-from-an-apache-activemq-topic-with-jekejeke-prolog/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Prolog</td>
+      <td>tuProlog</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/01/21/how-to-send-a-message-to-an-apache-activemq-queue-with-tuprolog/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/21/how-to-send-a-message-to-an-apache-activemq-topic-with-tuprolog/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/01/21/how-to-receive-a-message-from-an-apache-activemq-queue-with-tuprolog/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/21/how-to-receive-a-message-from-an-apache-activemq-topic-with-tuprolog/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Python</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/14/how-to-send-a-message-to-an-apache-activemq-queue-with-python/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/14/how-to-send-a-message-to-an-apache-activemq-topic-with-python/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/14/how-to-receive-a-message-from-an-apache-activemq-queue-with-python/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/14/how-to-receive-a-message-from-an-apache-activemq-topic-with-python/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Python</td>
+      <td>Jython</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2013/12/30/how-to-send-a-message-to-an-apache-activemq-queue-with-jython/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/30/how-to-send-a-message-to-an-apache-activemq-topic-with-jython/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2013/12/30/how-to-receive-a-message-from-an-apache-activemq-queue-with-jython/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/30/how-to-receive-a-message-from-an-apache-activemq-topic-with-jython/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>R</td>
+      <td>GNU R</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/19/how-to-send-a-message-to-an-apache-activemq-queue-with-gnu-r/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/19/how-to-send-a-message-to-an-apache-activemq-topic-with-gnu-r/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/19/how-to-receive-a-message-from-an-apache-activemq-queue-with-gnu-r/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/19/how-to-receive-a-message-from-an-apache-activemq-topic-with-gnu-r/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>R</td>
+      <td>Renjin</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/12/31/how-to-send-a-message-to-an-apache-activemq-queue-with-renjin/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/12/31/how-to-send-a-message-to-an-apache-activemq-topic-with-renjin/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/12/31/how-to-receive-a-message-from-an-apache-activemq-queue-with-renjin/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/12/31/how-to-receive-a-message-from-an-apache-activemq-topic-with-renjin/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Rebol</td>
+      <td>None</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/11/28/how-to-send-a-message-to-an-apache-activemq-queue-with-rebol/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/11/28/how-to-send-a-message-to-an-apache-activemq-topic-with-rebol/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/11/28/how-to-receive-a-message-from-an-apache-activemq-queue-with-rebol/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/11/28/how-to-receive-a-message-from-an-apache-activemq-topic-with-rebol/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Rexx</td>
+      <td>BSF4ooRexx</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/08/21/how-to-send-a-message-to-an-apache-activemq-queue-with-bsf4oorexx/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/08/21/how-to-send-a-message-to-an-apache-activemq-topic-with-bsf4oorexx/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/08/22/how-to-receive-a-message-from-an-apache-activemq-queue-with-bsf4oorexx/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/08/22/how-to-receive-a-message-from-an-apache-activemq-topic-with-bsf4oorexx/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Rexx</td>
+      <td>NetRexx</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/08/17/how-to-send-a-message-to-an-apache-activemq-queue-with-netrexx/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/08/17/how-to-send-a-message-to-an-apache-activemq-topic-with-netrexx/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/08/17/how-to-receive-a-message-from-an-apache-activemq-queue-with-netrexx/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/08/17/how-to-receive-a-message-from-an-apache-activemq-topic-with-netrexx/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Rexx</td>
+      <td>ooRexx</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/08/21/how-to-send-a-message-to-an-apache-activemq-queue-with-oorexx/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/08/21/how-to-send-a-message-to-an-apache-activemq-topic-with-oorexx/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/08/21/how-to-receive-a-message-from-an-apache-activemq-queue-with-oorexx/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/08/21/how-to-receive-a-message-from-an-apache-activemq-topic-with-oorexx/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Ruby</td>
+      <td>None</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/02/02/how-to-send-a-message-to-an-apache-activemq-queue-with-ruby/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/03/how-to-send-a-message-to-an-apache-activemq-topic-with-ruby/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/02/03/how-to-receive-a-message-from-an-apache-activemq-queue-with-ruby/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/03/how-to-receive-a-message-from-an-apache-activemq-topic-with-ruby/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Ruby</td>
+      <td>Ruby on Rails</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/01/27/how-to-send-a-message-to-an-apache-activemq-queue-with-ruby-on-rails/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/27/how-to-send-a-message-to-an-apache-activemq-topic-with-ruby-on-rails/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/01/27/how-to-receive-a-message-from-an-apache-activemq-queue-with-ruby-on-rails/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/27/how-to-receive-a-message-from-an-apache-activemq-topic-with-ruby-on-rails/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Ruby</td>
+      <td>JRuby</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2013/12/30/how-to-send-a-message-to-an-apache-activemq-queue-with-jruby/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/30/how-to-send-a-message-to-an-apache-activemq-topic-with-jruby/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2013/12/30/how-to-receive-a-message-from-an-apache-activemq-queue-with-jruby/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/30/how-to-receive-a-message-from-an-apache-activemq-topic-with-jruby/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Rust</td>
+      <td>None</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2015/01/16/how-to-send-a-message-to-an-apache-activemq-queue-with-rust/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/16/how-to-send-a-message-to-an-apache-activemq-topic-with-rust/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2015/01/16/how-to-receive-a-message-from-an-apache-activemq-queue-with-rust/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2015/01/16/how-to-receive-a-message-from-an-apache-activemq-topic-with-rust/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Scala</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2013/12/31/how-to-send-a-message-to-an-apache-activemq-queue-with-scala/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-send-a-message-to-an-apache-activemq-topic-with-scala/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-receive-a-message-from-an-apache-activemq-queue-with-scala/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2013/12/31/how-to-receive-a-message-from-an-apache-activemq-topic-with-scala/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Smalltalk</td>
+      <td>GNU Smalltalk</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/28/how-to-send-a-message-to-an-apache-activemq-queue-with-gnu-smalltalk/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/28/how-to-send-a-message-to-an-apache-activemq-topic-with-gnu-smalltalk/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/28/how-to-receive-a-message-from-an-apache-activemq-queue-with-gnu-smalltalk/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/28/how-to-receive-a-message-from-an-apache-activemq-topic-with-gnu-smalltalk/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Smalltalk</td>
+      <td>Squeak</td>
+      <td>Sockets</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/03/30/how-to-send-a-message-to-an-apache-activemq-queue-with-squeak/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/30/how-to-send-a-message-to-an-apache-activemq-topic-with-squeak/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/03/30/how-to-receive-a-message-from-an-apache-activemq-queue-with-squeak/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/03/30/how-to-receive-a-message-from-an-apache-activemq-topic-with-squeak/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Tcl</td>
+      <td>Tcl/Tk</td>
+      <td>Library</td>
+      <td>STOMP</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/02/27/how-to-send-a-message-to-an-apache-activemq-queue-with-tcltk/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/27/how-to-send-a-message-to-an-apache-activemq-topic-with-tcltk/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/02/27/how-to-receive-a-message-from-an-apache-activemq-queue-with-tcltk/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/02/27/how-to-receive-a-message-from-an-apache-activemq-topic-with-tcltk/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Tcl</td>
+      <td>Tcl/Java</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/08/24/how-to-send-a-message-to-an-apache-activemq-queue-with-tcljava/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/08/24/how-to-send-a-message-to-an-apache-activemq-topic-with-tcljava/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/08/24/how-to-receive-a-message-from-an-apache-activemq-queue-with-tcljava/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/08/24/how-to-receive-a-message-from-an-apache-activemq-topic-with-tcljava/">Receive from Topic</a></td>
+    </tr>
+    <tr>
+      <td>Xtend</td>
+      <td>None</td>
+      <td>JMS</td>
+      <td>OpenWire</td>
+      <td><a href="https://simplesassim.wordpress.com/2014/01/01/how-to-send-a-message-to-an-apache-activemq-queue-with-xtend/">Send to Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/01/how-to-send-a-message-to-an-apache-activemq-topic-with-xtend/">Send to Topic</a>, <a href="https://simplesassim.wordpress.com/2014/01/01/how-to-receive-a-message-from-an-apache-activemq-queue-with-xtend/">Receive from Queue</a>, <a href="https://simplesassim.wordpress.com/2014/01/01/how-to-receive-a-message-from-an-apache-activemq-topic-with-xtend/">Receive from Topic</a></td>
+    </tr>
+  </tbody>
+</table>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

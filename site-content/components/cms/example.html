@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="#"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-cms">
+    <div class="container">
+      <h1>ActiveMQ-CPP Example</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 cms">
+        <h2 id="activemq-cpp-in-action">ActiveMQ-CPP in Action</h2>
+
+<p>In the example below we create two classes <strong>HolloWorldConsumer</strong> and <strong>HelloWorldProducer</strong> each of which runs in its own thread. The Producer sends TextMessage objects via a <strong>MessageProducer</strong> instance to the ActiveMQ broker. The Consumer receives messages asynchronously from the broker on the same Topic or Queue as the Producer looking for a set number of TextMessages to arrive.</p>
+
+<p>The following example is taken from the source code and shows a basic usage scenario of ActiveMQ-CPP, you can find other examples in the examples folder that ships with the source distribution of ActiveMQ-CPP:</p>
+
+<p><strong>main.cpp</strong></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// START SNIPPET: demo
+
+#include &lt;activemq/library/ActiveMQCPP.h&gt;
+#include &lt;decaf/lang/Thread.h&gt;
+#include &lt;decaf/lang/Runnable.h&gt;
+#include &lt;decaf/util/concurrent/CountDownLatch.h&gt;
+#include &lt;decaf/lang/Integer.h&gt;
+#include &lt;decaf/lang/Long.h&gt;
+#include &lt;decaf/lang/System.h&gt;
+#include &lt;activemq/core/ActiveMQConnectionFactory.h&gt;
+#include &lt;activemq/util/Config.h&gt;
+#include &lt;cms/Connection.h&gt;
+#include &lt;cms/Session.h&gt;
+#include &lt;cms/TextMessage.h&gt;
+#include &lt;cms/BytesMessage.h&gt;
+#include &lt;cms/MapMessage.h&gt;
+#include &lt;cms/ExceptionListener.h&gt;
+#include &lt;cms/MessageListener.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+using namespace activemq::core;
+using namespace decaf::util::concurrent;
+using namespace decaf::util;
+using namespace decaf::lang;
+using namespace cms;
+using namespace std;
+
+class HelloWorldProducer : public Runnable {
+private:
+
+    Connection* connection;
+    Session* session;
+    Destination* destination;
+    MessageProducer* producer;
+    int numMessages;
+    bool useTopic;
+    bool sessionTransacted;
+    std::string brokerURI;
+
+private:
+
+    HelloWorldProducer(const HelloWorldProducer&amp;);
+    HelloWorldProducer&amp; operator=(const HelloWorldProducer&amp;);
+
+public:
+
+    HelloWorldProducer(const std::string&amp; brokerURI, int numMessages, bool useTopic = false, bool sessionTransacted = false) :
+        connection(NULL),
+        session(NULL),
+        destination(NULL),
+        producer(NULL),
+        numMessages(numMessages),
+        useTopic(useTopic),
+        sessionTransacted(sessionTransacted),
+        brokerURI(brokerURI) {
+    }
+
+    virtual ~HelloWorldProducer(){
+        cleanup();
+    }
+
+    void close() {
+        this-&gt;cleanup();
+    }
+
+    virtual void run() {
+
+        try {
+
+            // Create a ConnectionFactory
+            auto_ptr&lt;ConnectionFactory&gt; connectionFactory(
+                ConnectionFactory::createCMSConnectionFactory(brokerURI));
+
+            // Create a Connection
+            connection = connectionFactory-&gt;createConnection();
+            connection-&gt;start();
+
+            // Create a Session
+            if (this-&gt;sessionTransacted) {
+                session = connection-&gt;createSession(Session::SESSION_TRANSACTED);
+            } else {
+                session = connection-&gt;createSession(Session::AUTO_ACKNOWLEDGE);
+            }
+
+            // Create the destination (Topic or Queue)
+            if (useTopic) {
+                destination = session-&gt;createTopic("TEST.FOO");
+            } else {
+                destination = session-&gt;createQueue("TEST.FOO");
+            }
+
+            // Create a MessageProducer from the Session to the Topic or Queue
+            producer = session-&gt;createProducer(destination);
+            producer-&gt;setDeliveryMode(DeliveryMode::NON_PERSISTENT);
+
+            // Create the Thread Id String
+            string threadIdStr = Long::toString(Thread::currentThread()-&gt;getId());
+
+            // Create a messages
+            string text = (string) "Hello world! from thread " + threadIdStr;
+
+            for (int ix = 0; ix &lt; numMessages; ++ix) {
+                std::auto_ptr&lt;TextMessage&gt; message(session-&gt;createTextMessage(text));
+                message-&gt;setIntProperty("Integer", ix);
+                printf("Sent message #%d from thread %s\\n", ix + 1, threadIdStr.c_str());
+                producer-&gt;send(message.get());
+            }
+
+        } catch (CMSException&amp; e) {
+            e.printStackTrace();
+        }
+    }
+
+private:
+
+    void cleanup() {
+
+        if (connection != NULL) {
+            try {
+                connection-&gt;close();
+            } catch (cms::CMSException&amp; ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        // Destroy resources.
+        try {
+            delete destination;
+            destination = NULL;
+            delete producer;
+            producer = NULL;
+            delete session;
+            session = NULL;
+            delete connection;
+            connection = NULL;
+        } catch (CMSException&amp; e) {
+            e.printStackTrace();
+        }
+    }
+};
+
+class HelloWorldConsumer : public ExceptionListener,
+                           public MessageListener,
+                           public Runnable {
+
+private:
+
+    CountDownLatch latch;
+    CountDownLatch doneLatch;
+    Connection* connection;
+    Session* session;
+    Destination* destination;
+    MessageConsumer* consumer;
+    long waitMillis;
+    bool useTopic;
+    bool sessionTransacted;
+    std::string brokerURI;
+
+private:
+
+    HelloWorldConsumer(const HelloWorldConsumer&amp;);
+    HelloWorldConsumer&amp; operator=(const HelloWorldConsumer&amp;);
+
+public:
+
+    HelloWorldConsumer(const std::string&amp; brokerURI, int numMessages, bool useTopic = false, bool sessionTransacted = false, int waitMillis = 30000) :
+        latch(1),
+        doneLatch(numMessages),
+        connection(NULL),
+        session(NULL),
+        destination(NULL),
+        consumer(NULL),
+        waitMillis(waitMillis),
+        useTopic(useTopic),
+        sessionTransacted(sessionTransacted),
+        brokerURI(brokerURI) {
+    }
+
+    virtual ~HelloWorldConsumer() {
+        cleanup();
+    }
+
+    void close() {
+        this-&gt;cleanup();
+    }
+
+    void waitUntilReady() {
+        latch.await();
+    }
+
+    virtual void run() {
+
+        try {
+
+            // Create a ConnectionFactory
+            auto_ptr&lt;ConnectionFactory&gt; connectionFactory(
+                ConnectionFactory::createCMSConnectionFactory(brokerURI));
+
+            // Create a Connection
+            connection = connectionFactory-&gt;createConnection();
+            connection-&gt;start();
+            connection-&gt;setExceptionListener(this);
+
+            // Create a Session
+            if (this-&gt;sessionTransacted == true) {
+                session = connection-&gt;createSession(Session::SESSION_TRANSACTED);
+            } else {
+                session = connection-&gt;createSession(Session::AUTO_ACKNOWLEDGE);
+            }
+
+            // Create the destination (Topic or Queue)
+            if (useTopic) {
+                destination = session-&gt;createTopic("TEST.FOO");
+            } else {
+                destination = session-&gt;createQueue("TEST.FOO");
+            }
+
+            // Create a MessageConsumer from the Session to the Topic or Queue
+            consumer = session-&gt;createConsumer(destination);
+
+            consumer-&gt;setMessageListener(this);
+
+            std::cout.flush();
+            std::cerr.flush();
+
+            // Indicate we are ready for messages.
+            latch.countDown();
+
+            // Wait while asynchronous messages come in.
+            doneLatch.await(waitMillis);
+
+        } catch (CMSException&amp; e) {
+            // Indicate we are ready for messages.
+            latch.countDown();
+            e.printStackTrace();
+        }
+    }
+
+    // Called from the consumer since this class is a registered MessageListener.
+    virtual void onMessage(const Message* message) {
+
+        static int count = 0;
+
+        try {
+            count++;
+            const TextMessage* textMessage = dynamic_cast&lt;const TextMessage*&gt; (message);
+            string text = "";
+
+            if (textMessage != NULL) {
+                text = textMessage-&gt;getText();
+            } else {
+                text = "NOT A TEXTMESSAGE!";
+            }
+
+            printf("Message #%d Received: %s\\n", count, text.c_str());
+
+        } catch (CMSException&amp; e) {
+            e.printStackTrace();
+        }
+
+        // Commit all messages.
+        if (this-&gt;sessionTransacted) {
+            session-&gt;commit();
+        }
+
+        // No matter what, tag the count down latch until done.
+        doneLatch.countDown();
+    }
+
+    // If something bad happens you see it here as this class is also been
+    // registered as an ExceptionListener with the connection.
+    virtual void onException(const CMSException&amp; ex AMQCPP_UNUSED) {
+        printf("CMS Exception occurred.  Shutting down client.\\n");
+        ex.printStackTrace();
+        exit(1);
+    }
+
+private:
+
+    void cleanup() {
+        if (connection != NULL) {
+            try {
+                connection-&gt;close();
+            } catch (cms::CMSException&amp; ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        // Destroy resources.
+        try {
+            delete destination;
+            destination = NULL;
+            delete consumer;
+            consumer = NULL;
+            delete session;
+            session = NULL;
+            delete connection;
+            connection = NULL;
+        } catch (CMSException&amp; e) {
+            e.printStackTrace();
+        }
+    }
+};
+
+int main(int argc AMQCPP\_UNUSED, char* argv\[\] AMQCPP\_UNUSED) {
+
+    activemq::library::ActiveMQCPP::initializeLibrary();
+    {
+    std::cout &lt;&lt; "=====================================================\\n";
+    std::cout &lt;&lt; "Starting the example:" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "-----------------------------------------------------\\n";
+
+
+    // Set the URI to point to the IP Address of your broker.
+    // add any optional params to the url to enable things like
+    // tightMarshalling or tcp logging etc.  See the CMS web site for
+    // a full list of configuration options.
+    //
+    //  http://activemq.apache.org/cms/
+    //
+    // Wire Format Options:
+    // =========================
+    // Use either stomp or openwire, the default ports are different for each
+    //
+    // Examples:
+    //    tcp://127.0.0.1:61616                      default to openwire
+    //    tcp://127.0.0.1:61613?wireFormat=stomp     use stomp instead
+    //
+    // SSL:
+    // =========================
+    // To use SSL you need to specify the location of the trusted Root CA or the
+    // certificate for the broker you want to connect to.  Using the Root CA allows
+    // you to use failover with multiple servers all using certificates signed by
+    // the trusted root.  If using client authentication you also need to specify
+    // the location of the client Certificate.
+    //
+    //     System::setProperty( "decaf.net.ssl.keyStore", "&lt;path&gt;/client.pem" );
+    //     System::setProperty( "decaf.net.ssl.keyStorePassword", "password" );
+    //     System::setProperty( "decaf.net.ssl.trustStore", "&lt;path&gt;/rootCA.pem" );
+    //
+    // The you just specify the ssl transport in the URI, for example:
+    //
+    //     ssl://localhost:61617
+    //
+    std::string brokerURI =
+        "failover:(tcp://localhost:61616)";
+
+    //============================================================
+    // set to true to use topics instead of queues
+    // Note in the code above that this causes createTopic or
+    // createQueue to be used in both consumer an producer.
+    //============================================================
+    bool useTopics = true;
+    bool sessionTransacted = false;
+    int numMessages = 2000;
+
+    long long startTime = System::currentTimeMillis();
+
+    HelloWorldProducer producer(brokerURI, numMessages, useTopics);
+        HelloWorldConsumer consumer(brokerURI, numMessages, useTopics, sessionTransacted);
+
+    // Start the consumer thread.
+    Thread consumerThread(&amp;consumer);
+    consumerThread.start();
+
+    // Wait for the consumer to indicate that its ready to go.
+    consumer.waitUntilReady();
+
+    // Start the producer thread.
+    Thread producerThread(&amp;producer);
+    producerThread.start();
+
+    // Wait for the threads to complete.
+    producerThread.join();
+    consumerThread.join();
+
+    long long endTime = System::currentTimeMillis();
+    double totalTime = (double)(endTime - startTime) / 1000.0;
+
+    consumer.close();
+    producer.close();
+
+    std::cout &lt;&lt; "Time to completion = " &lt;&lt; totalTime &lt;&lt; " seconds." &lt;&lt; std::endl;
+    std::cout &lt;&lt; "-----------------------------------------------------\\n";
+    std::cout &lt;&lt; "Finished with the example." &lt;&lt; std::endl;
+    std::cout &lt;&lt; "=====================================================\\n";
+
+    }
+    activemq::library::ActiveMQCPP::shutdownLibrary();
+}
+
+// END SNIPPET: demo
+</code></pre></div></div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

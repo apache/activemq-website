@@ -1,0 +1,566 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.security;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.text.MessageFormat;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.util.HashSet;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.util.Hashtable;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.util.Iterator;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.util.Map;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.util.Set;<a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span>import javax.naming.Context;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import javax.naming.NamingEnumeration;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import javax.naming.NamingException;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import javax.naming.directory.Attribute;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import javax.naming.directory.Attributes;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import javax.naming.directory.DirContext;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import javax.naming.directory.InitialDirContext;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import javax.naming.directory.SearchControls;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import javax.naming.directory.SearchResult;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import javax.naming.ldap.LdapName;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import javax.naming.ldap.Rdn;<a name="line.36"></a>
+<span class="sourceLineNo">037</span><a name="line.37"></a>
+<span class="sourceLineNo">038</span>import org.apache.activemq.advisory.AdvisorySupport;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>import org.apache.activemq.command.ActiveMQDestination;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>import org.apache.activemq.filter.DestinationMap;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import org.apache.activemq.jaas.GroupPrincipal;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>import org.apache.activemq.jaas.LDAPLoginModule;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>import org.slf4j.Logger;<a name="line.43"></a>
+<span class="sourceLineNo">044</span>import org.slf4j.LoggerFactory;<a name="line.44"></a>
+<span class="sourceLineNo">045</span><a name="line.45"></a>
+<span class="sourceLineNo">046</span>/**<a name="line.46"></a>
+<span class="sourceLineNo">047</span> * An {@link AuthorizationMap} which uses LDAP<a name="line.47"></a>
+<span class="sourceLineNo">048</span> *<a name="line.48"></a>
+<span class="sourceLineNo">049</span> * @org.apache.xbean.XBean<a name="line.49"></a>
+<span class="sourceLineNo">050</span> * @author ngcutura<a name="line.50"></a>
+<span class="sourceLineNo">051</span> */<a name="line.51"></a>
+<span class="sourceLineNo">052</span>public class LDAPAuthorizationMap implements AuthorizationMap {<a name="line.52"></a>
+<span class="sourceLineNo">053</span><a name="line.53"></a>
+<span class="sourceLineNo">054</span>    public static final String INITIAL_CONTEXT_FACTORY = "initialContextFactory";<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    public static final String CONNECTION_URL = "connectionURL";<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    public static final String CONNECTION_USERNAME = "connectionUsername";<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    public static final String CONNECTION_PASSWORD = "connectionPassword";<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    public static final String CONNECTION_PROTOCOL = "connectionProtocol";<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    public static final String AUTHENTICATION = "authentication";<a name="line.59"></a>
+<span class="sourceLineNo">060</span><a name="line.60"></a>
+<span class="sourceLineNo">061</span>    public static final String TOPIC_SEARCH_MATCHING = "topicSearchMatching";<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    public static final String TOPIC_SEARCH_SUBTREE = "topicSearchSubtree";<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    public static final String QUEUE_SEARCH_MATCHING = "queueSearchMatching";<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    public static final String QUEUE_SEARCH_SUBTREE = "queueSearchSubtree";<a name="line.64"></a>
+<span class="sourceLineNo">065</span><a name="line.65"></a>
+<span class="sourceLineNo">066</span>    public static final String ADMIN_BASE = "adminBase";<a name="line.66"></a>
+<span class="sourceLineNo">067</span>    public static final String ADMIN_ATTRIBUTE = "adminAttribute";<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    public static final String READ_BASE = "readBase";<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    public static final String READ_ATTRIBUTE = "readAttribute";<a name="line.69"></a>
+<span class="sourceLineNo">070</span>    public static final String WRITE_BASE = "writeBAse";<a name="line.70"></a>
+<span class="sourceLineNo">071</span>    public static final String WRITE_ATTRIBUTE = "writeAttribute";<a name="line.71"></a>
+<span class="sourceLineNo">072</span><a name="line.72"></a>
+<span class="sourceLineNo">073</span>    private static final Logger LOG = LoggerFactory.getLogger(LDAPLoginModule.class);<a name="line.73"></a>
+<span class="sourceLineNo">074</span><a name="line.74"></a>
+<span class="sourceLineNo">075</span>    private String initialContextFactory;<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    private String connectionURL;<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    private String connectionUsername;<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    private String connectionPassword;<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    private String connectionProtocol;<a name="line.79"></a>
+<span class="sourceLineNo">080</span>    private String authentication;<a name="line.80"></a>
+<span class="sourceLineNo">081</span><a name="line.81"></a>
+<span class="sourceLineNo">082</span>    private DirContext context;<a name="line.82"></a>
+<span class="sourceLineNo">083</span><a name="line.83"></a>
+<span class="sourceLineNo">084</span>    private MessageFormat topicSearchMatchingFormat;<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    private MessageFormat queueSearchMatchingFormat;<a name="line.85"></a>
+<span class="sourceLineNo">086</span>    private String advisorySearchBase = "uid=ActiveMQ.Advisory,ou=topics,ou=destinations,o=ActiveMQ,dc=example,dc=com";<a name="line.86"></a>
+<span class="sourceLineNo">087</span>    private String tempSearchBase = "uid=ActiveMQ.Temp,ou=topics,ou=destinations,o=ActiveMQ,dc=example,dc=com";<a name="line.87"></a>
+<span class="sourceLineNo">088</span><a name="line.88"></a>
+<span class="sourceLineNo">089</span>    private boolean topicSearchSubtreeBool = true;<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    private boolean queueSearchSubtreeBool = true;<a name="line.90"></a>
+<span class="sourceLineNo">091</span>    private boolean useAdvisorySearchBase = true;<a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span>    private String adminBase;<a name="line.93"></a>
+<span class="sourceLineNo">094</span>    private String adminAttribute;<a name="line.94"></a>
+<span class="sourceLineNo">095</span>    private String readBase;<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    private String readAttribute;<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    private String writeBase;<a name="line.97"></a>
+<span class="sourceLineNo">098</span>    private String writeAttribute;<a name="line.98"></a>
+<span class="sourceLineNo">099</span><a name="line.99"></a>
+<span class="sourceLineNo">100</span>    public LDAPAuthorizationMap() {<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        // lets setup some sensible defaults<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        initialContextFactory = "com.sun.jndi.ldap.LdapCtxFactory";<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        connectionURL = "ldap://localhost:10389";<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        connectionUsername = "uid=admin,ou=system";<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        connectionPassword = "secret";<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        connectionProtocol = "s";<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        authentication = "simple";<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>        topicSearchMatchingFormat = new MessageFormat("uid={0},ou=topics,ou=destinations,o=ActiveMQ,dc=example,dc=com");<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        queueSearchMatchingFormat = new MessageFormat("uid={0},ou=queues,ou=destinations,o=ActiveMQ,dc=example,dc=com");<a name="line.110"></a>
+<span class="sourceLineNo">111</span><a name="line.111"></a>
+<span class="sourceLineNo">112</span><a name="line.112"></a>
+<span class="sourceLineNo">113</span>        adminBase = "(cn=admin)";<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        adminAttribute = "uniqueMember";<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        readBase = "(cn=read)";<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        readAttribute = "uniqueMember";<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        writeBase = "(cn=write)";<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        writeAttribute = "uniqueMember";<a name="line.118"></a>
+<span class="sourceLineNo">119</span>    }<a name="line.119"></a>
+<span class="sourceLineNo">120</span><a name="line.120"></a>
+<span class="sourceLineNo">121</span>    public LDAPAuthorizationMap(Map&lt;String,String&gt; options) {<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        initialContextFactory = options.get(INITIAL_CONTEXT_FACTORY);<a name="line.122"></a>
+<span class="sourceLineNo">123</span>        connectionURL = options.get(CONNECTION_URL);<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        connectionUsername = options.get(CONNECTION_USERNAME);<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        connectionPassword = options.get(CONNECTION_PASSWORD);<a name="line.125"></a>
+<span class="sourceLineNo">126</span>        connectionProtocol = options.get(CONNECTION_PROTOCOL);<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        authentication = options.get(AUTHENTICATION);<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>        adminBase = options.get(ADMIN_BASE);<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        adminAttribute = options.get(ADMIN_ATTRIBUTE);<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        readBase = options.get(READ_BASE);<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        readAttribute = options.get(READ_ATTRIBUTE);<a name="line.132"></a>
+<span class="sourceLineNo">133</span>        writeBase = options.get(WRITE_BASE);<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        writeAttribute = options.get(WRITE_ATTRIBUTE);<a name="line.134"></a>
+<span class="sourceLineNo">135</span><a name="line.135"></a>
+<span class="sourceLineNo">136</span>        String topicSearchMatching = options.get(TOPIC_SEARCH_MATCHING);<a name="line.136"></a>
+<span class="sourceLineNo">137</span>        String topicSearchSubtree = options.get(TOPIC_SEARCH_SUBTREE);<a name="line.137"></a>
+<span class="sourceLineNo">138</span>        String queueSearchMatching = options.get(QUEUE_SEARCH_MATCHING);<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        String queueSearchSubtree = options.get(QUEUE_SEARCH_SUBTREE);<a name="line.139"></a>
+<span class="sourceLineNo">140</span>        topicSearchMatchingFormat = new MessageFormat(topicSearchMatching);<a name="line.140"></a>
+<span class="sourceLineNo">141</span>        queueSearchMatchingFormat = new MessageFormat(queueSearchMatching);<a name="line.141"></a>
+<span class="sourceLineNo">142</span>        topicSearchSubtreeBool = Boolean.valueOf(topicSearchSubtree).booleanValue();<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        queueSearchSubtreeBool = Boolean.valueOf(queueSearchSubtree).booleanValue();<a name="line.143"></a>
+<span class="sourceLineNo">144</span>    }<a name="line.144"></a>
+<span class="sourceLineNo">145</span><a name="line.145"></a>
+<span class="sourceLineNo">146</span>    public Set&lt;GroupPrincipal&gt; getTempDestinationAdminACLs() {<a name="line.146"></a>
+<span class="sourceLineNo">147</span>        try {<a name="line.147"></a>
+<span class="sourceLineNo">148</span>            context = open();<a name="line.148"></a>
+<span class="sourceLineNo">149</span>        } catch (NamingException e) {<a name="line.149"></a>
+<span class="sourceLineNo">150</span>            LOG.error(e.toString());<a name="line.150"></a>
+<span class="sourceLineNo">151</span>            return new HashSet&lt;GroupPrincipal&gt;();<a name="line.151"></a>
+<span class="sourceLineNo">152</span>        }<a name="line.152"></a>
+<span class="sourceLineNo">153</span>        SearchControls constraints = new SearchControls();<a name="line.153"></a>
+<span class="sourceLineNo">154</span>        constraints.setReturningAttributes(new String[] {adminAttribute});<a name="line.154"></a>
+<span class="sourceLineNo">155</span>        return getACLs(tempSearchBase, constraints, adminBase, adminAttribute);<a name="line.155"></a>
+<span class="sourceLineNo">156</span>    }<a name="line.156"></a>
+<span class="sourceLineNo">157</span><a name="line.157"></a>
+<span class="sourceLineNo">158</span>    public Set&lt;GroupPrincipal&gt; getTempDestinationReadACLs() {<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        try {<a name="line.159"></a>
+<span class="sourceLineNo">160</span>            context = open();<a name="line.160"></a>
+<span class="sourceLineNo">161</span>        } catch (NamingException e) {<a name="line.161"></a>
+<span class="sourceLineNo">162</span>            LOG.error(e.toString());<a name="line.162"></a>
+<span class="sourceLineNo">163</span>            return new HashSet&lt;GroupPrincipal&gt;();<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        }<a name="line.164"></a>
+<span class="sourceLineNo">165</span>        SearchControls constraints = new SearchControls();<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        constraints.setReturningAttributes(new String[] {readAttribute});<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        return getACLs(tempSearchBase, constraints, readBase, readAttribute);<a name="line.167"></a>
+<span class="sourceLineNo">168</span>    }<a name="line.168"></a>
+<span class="sourceLineNo">169</span><a name="line.169"></a>
+<span class="sourceLineNo">170</span>    public Set&lt;GroupPrincipal&gt; getTempDestinationWriteACLs() {<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        try {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>            context = open();<a name="line.172"></a>
+<span class="sourceLineNo">173</span>        } catch (NamingException e) {<a name="line.173"></a>
+<span class="sourceLineNo">174</span>            LOG.error(e.toString());<a name="line.174"></a>
+<span class="sourceLineNo">175</span>            return new HashSet&lt;GroupPrincipal&gt;();<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        }<a name="line.176"></a>
+<span class="sourceLineNo">177</span>        SearchControls constraints = new SearchControls();<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        constraints.setReturningAttributes(new String[] {writeAttribute});<a name="line.178"></a>
+<span class="sourceLineNo">179</span>        return getACLs(tempSearchBase, constraints, writeBase, writeAttribute);<a name="line.179"></a>
+<span class="sourceLineNo">180</span>    }<a name="line.180"></a>
+<span class="sourceLineNo">181</span><a name="line.181"></a>
+<span class="sourceLineNo">182</span>    public Set&lt;GroupPrincipal&gt; getAdminACLs(ActiveMQDestination destination) {<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        if (destination.isComposite()) {<a name="line.183"></a>
+<span class="sourceLineNo">184</span>            return getCompositeACLs(destination, adminBase, adminAttribute);<a name="line.184"></a>
+<span class="sourceLineNo">185</span>        }<a name="line.185"></a>
+<span class="sourceLineNo">186</span>        return getACLs(destination, adminBase, adminAttribute);<a name="line.186"></a>
+<span class="sourceLineNo">187</span>    }<a name="line.187"></a>
+<span class="sourceLineNo">188</span><a name="line.188"></a>
+<span class="sourceLineNo">189</span>    public Set&lt;GroupPrincipal&gt; getReadACLs(ActiveMQDestination destination) {<a name="line.189"></a>
+<span class="sourceLineNo">190</span>        if (destination.isComposite()) {<a name="line.190"></a>
+<span class="sourceLineNo">191</span>            return getCompositeACLs(destination, readBase, readAttribute);<a name="line.191"></a>
+<span class="sourceLineNo">192</span>        }<a name="line.192"></a>
+<span class="sourceLineNo">193</span>        return getACLs(destination, readBase, readAttribute);<a name="line.193"></a>
+<span class="sourceLineNo">194</span>    }<a name="line.194"></a>
+<span class="sourceLineNo">195</span><a name="line.195"></a>
+<span class="sourceLineNo">196</span>    public Set&lt;GroupPrincipal&gt; getWriteACLs(ActiveMQDestination destination) {<a name="line.196"></a>
+<span class="sourceLineNo">197</span>        if (destination.isComposite()) {<a name="line.197"></a>
+<span class="sourceLineNo">198</span>            return getCompositeACLs(destination, writeBase, writeAttribute);<a name="line.198"></a>
+<span class="sourceLineNo">199</span>        }<a name="line.199"></a>
+<span class="sourceLineNo">200</span>        return getACLs(destination, writeBase, writeAttribute);<a name="line.200"></a>
+<span class="sourceLineNo">201</span>    }<a name="line.201"></a>
+<span class="sourceLineNo">202</span><a name="line.202"></a>
+<span class="sourceLineNo">203</span>    // Properties<a name="line.203"></a>
+<span class="sourceLineNo">204</span>    // -------------------------------------------------------------------------<a name="line.204"></a>
+<span class="sourceLineNo">205</span><a name="line.205"></a>
+<span class="sourceLineNo">206</span>    public String getAdminAttribute() {<a name="line.206"></a>
+<span class="sourceLineNo">207</span>        return adminAttribute;<a name="line.207"></a>
+<span class="sourceLineNo">208</span>    }<a name="line.208"></a>
+<span class="sourceLineNo">209</span><a name="line.209"></a>
+<span class="sourceLineNo">210</span>    public void setAdminAttribute(String adminAttribute) {<a name="line.210"></a>
+<span class="sourceLineNo">211</span>        this.adminAttribute = adminAttribute;<a name="line.211"></a>
+<span class="sourceLineNo">212</span>    }<a name="line.212"></a>
+<span class="sourceLineNo">213</span><a name="line.213"></a>
+<span class="sourceLineNo">214</span>    public String getAdminBase() {<a name="line.214"></a>
+<span class="sourceLineNo">215</span>        return adminBase;<a name="line.215"></a>
+<span class="sourceLineNo">216</span>    }<a name="line.216"></a>
+<span class="sourceLineNo">217</span><a name="line.217"></a>
+<span class="sourceLineNo">218</span>    public void setAdminBase(String adminBase) {<a name="line.218"></a>
+<span class="sourceLineNo">219</span>        this.adminBase = adminBase;<a name="line.219"></a>
+<span class="sourceLineNo">220</span>    }<a name="line.220"></a>
+<span class="sourceLineNo">221</span><a name="line.221"></a>
+<span class="sourceLineNo">222</span>    public String getAuthentication() {<a name="line.222"></a>
+<span class="sourceLineNo">223</span>        return authentication;<a name="line.223"></a>
+<span class="sourceLineNo">224</span>    }<a name="line.224"></a>
+<span class="sourceLineNo">225</span><a name="line.225"></a>
+<span class="sourceLineNo">226</span>    public void setAuthentication(String authentication) {<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        this.authentication = authentication;<a name="line.227"></a>
+<span class="sourceLineNo">228</span>    }<a name="line.228"></a>
+<span class="sourceLineNo">229</span><a name="line.229"></a>
+<span class="sourceLineNo">230</span>    public String getConnectionPassword() {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>        return connectionPassword;<a name="line.231"></a>
+<span class="sourceLineNo">232</span>    }<a name="line.232"></a>
+<span class="sourceLineNo">233</span><a name="line.233"></a>
+<span class="sourceLineNo">234</span>    public void setConnectionPassword(String connectionPassword) {<a name="line.234"></a>
+<span class="sourceLineNo">235</span>        this.connectionPassword = connectionPassword;<a name="line.235"></a>
+<span class="sourceLineNo">236</span>    }<a name="line.236"></a>
+<span class="sourceLineNo">237</span><a name="line.237"></a>
+<span class="sourceLineNo">238</span>    public String getConnectionProtocol() {<a name="line.238"></a>
+<span class="sourceLineNo">239</span>        return connectionProtocol;<a name="line.239"></a>
+<span class="sourceLineNo">240</span>    }<a name="line.240"></a>
+<span class="sourceLineNo">241</span><a name="line.241"></a>
+<span class="sourceLineNo">242</span>    public void setConnectionProtocol(String connectionProtocol) {<a name="line.242"></a>
+<span class="sourceLineNo">243</span>        this.connectionProtocol = connectionProtocol;<a name="line.243"></a>
+<span class="sourceLineNo">244</span>    }<a name="line.244"></a>
+<span class="sourceLineNo">245</span><a name="line.245"></a>
+<span class="sourceLineNo">246</span>    public String getConnectionURL() {<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        return connectionURL;<a name="line.247"></a>
+<span class="sourceLineNo">248</span>    }<a name="line.248"></a>
+<span class="sourceLineNo">249</span><a name="line.249"></a>
+<span class="sourceLineNo">250</span>    public void setConnectionURL(String connectionURL) {<a name="line.250"></a>
+<span class="sourceLineNo">251</span>        this.connectionURL = connectionURL;<a name="line.251"></a>
+<span class="sourceLineNo">252</span>    }<a name="line.252"></a>
+<span class="sourceLineNo">253</span><a name="line.253"></a>
+<span class="sourceLineNo">254</span>    public String getConnectionUsername() {<a name="line.254"></a>
+<span class="sourceLineNo">255</span>        return connectionUsername;<a name="line.255"></a>
+<span class="sourceLineNo">256</span>    }<a name="line.256"></a>
+<span class="sourceLineNo">257</span><a name="line.257"></a>
+<span class="sourceLineNo">258</span>    public void setConnectionUsername(String connectionUsername) {<a name="line.258"></a>
+<span class="sourceLineNo">259</span>        this.connectionUsername = connectionUsername;<a name="line.259"></a>
+<span class="sourceLineNo">260</span>    }<a name="line.260"></a>
+<span class="sourceLineNo">261</span><a name="line.261"></a>
+<span class="sourceLineNo">262</span>    public DirContext getContext() {<a name="line.262"></a>
+<span class="sourceLineNo">263</span>        return context;<a name="line.263"></a>
+<span class="sourceLineNo">264</span>    }<a name="line.264"></a>
+<span class="sourceLineNo">265</span><a name="line.265"></a>
+<span class="sourceLineNo">266</span>    public void setContext(DirContext context) {<a name="line.266"></a>
+<span class="sourceLineNo">267</span>        this.context = context;<a name="line.267"></a>
+<span class="sourceLineNo">268</span>    }<a name="line.268"></a>
+<span class="sourceLineNo">269</span><a name="line.269"></a>
+<span class="sourceLineNo">270</span>    public String getInitialContextFactory() {<a name="line.270"></a>
+<span class="sourceLineNo">271</span>        return initialContextFactory;<a name="line.271"></a>
+<span class="sourceLineNo">272</span>    }<a name="line.272"></a>
+<span class="sourceLineNo">273</span><a name="line.273"></a>
+<span class="sourceLineNo">274</span>    public void setInitialContextFactory(String initialContextFactory) {<a name="line.274"></a>
+<span class="sourceLineNo">275</span>        this.initialContextFactory = initialContextFactory;<a name="line.275"></a>
+<span class="sourceLineNo">276</span>    }<a name="line.276"></a>
+<span class="sourceLineNo">277</span><a name="line.277"></a>
+<span class="sourceLineNo">278</span>    public MessageFormat getQueueSearchMatchingFormat() {<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        return queueSearchMatchingFormat;<a name="line.279"></a>
+<span class="sourceLineNo">280</span>    }<a name="line.280"></a>
+<span class="sourceLineNo">281</span><a name="line.281"></a>
+<span class="sourceLineNo">282</span>    public void setQueueSearchMatchingFormat(MessageFormat queueSearchMatchingFormat) {<a name="line.282"></a>
+<span class="sourceLineNo">283</span>        this.queueSearchMatchingFormat = queueSearchMatchingFormat;<a name="line.283"></a>
+<span class="sourceLineNo">284</span>    }<a name="line.284"></a>
+<span class="sourceLineNo">285</span><a name="line.285"></a>
+<span class="sourceLineNo">286</span>    public boolean isQueueSearchSubtreeBool() {<a name="line.286"></a>
+<span class="sourceLineNo">287</span>        return queueSearchSubtreeBool;<a name="line.287"></a>
+<span class="sourceLineNo">288</span>    }<a name="line.288"></a>
+<span class="sourceLineNo">289</span><a name="line.289"></a>
+<span class="sourceLineNo">290</span>    public void setQueueSearchSubtreeBool(boolean queueSearchSubtreeBool) {<a name="line.290"></a>
+<span class="sourceLineNo">291</span>        this.queueSearchSubtreeBool = queueSearchSubtreeBool;<a name="line.291"></a>
+<span class="sourceLineNo">292</span>    }<a name="line.292"></a>
+<span class="sourceLineNo">293</span><a name="line.293"></a>
+<span class="sourceLineNo">294</span>    public String getReadAttribute() {<a name="line.294"></a>
+<span class="sourceLineNo">295</span>        return readAttribute;<a name="line.295"></a>
+<span class="sourceLineNo">296</span>    }<a name="line.296"></a>
+<span class="sourceLineNo">297</span><a name="line.297"></a>
+<span class="sourceLineNo">298</span>    public void setReadAttribute(String readAttribute) {<a name="line.298"></a>
+<span class="sourceLineNo">299</span>        this.readAttribute = readAttribute;<a name="line.299"></a>
+<span class="sourceLineNo">300</span>    }<a name="line.300"></a>
+<span class="sourceLineNo">301</span><a name="line.301"></a>
+<span class="sourceLineNo">302</span>    public String getReadBase() {<a name="line.302"></a>
+<span class="sourceLineNo">303</span>        return readBase;<a name="line.303"></a>
+<span class="sourceLineNo">304</span>    }<a name="line.304"></a>
+<span class="sourceLineNo">305</span><a name="line.305"></a>
+<span class="sourceLineNo">306</span>    public void setReadBase(String readBase) {<a name="line.306"></a>
+<span class="sourceLineNo">307</span>        this.readBase = readBase;<a name="line.307"></a>
+<span class="sourceLineNo">308</span>    }<a name="line.308"></a>
+<span class="sourceLineNo">309</span><a name="line.309"></a>
+<span class="sourceLineNo">310</span>    public MessageFormat getTopicSearchMatchingFormat() {<a name="line.310"></a>
+<span class="sourceLineNo">311</span>        return topicSearchMatchingFormat;<a name="line.311"></a>
+<span class="sourceLineNo">312</span>    }<a name="line.312"></a>
+<span class="sourceLineNo">313</span><a name="line.313"></a>
+<span class="sourceLineNo">314</span>    public void setTopicSearchMatchingFormat(MessageFormat topicSearchMatchingFormat) {<a name="line.314"></a>
+<span class="sourceLineNo">315</span>        this.topicSearchMatchingFormat = topicSearchMatchingFormat;<a name="line.315"></a>
+<span class="sourceLineNo">316</span>    }<a name="line.316"></a>
+<span class="sourceLineNo">317</span><a name="line.317"></a>
+<span class="sourceLineNo">318</span>    public boolean isTopicSearchSubtreeBool() {<a name="line.318"></a>
+<span class="sourceLineNo">319</span>        return topicSearchSubtreeBool;<a name="line.319"></a>
+<span class="sourceLineNo">320</span>    }<a name="line.320"></a>
+<span class="sourceLineNo">321</span><a name="line.321"></a>
+<span class="sourceLineNo">322</span>    public void setTopicSearchSubtreeBool(boolean topicSearchSubtreeBool) {<a name="line.322"></a>
+<span class="sourceLineNo">323</span>        this.topicSearchSubtreeBool = topicSearchSubtreeBool;<a name="line.323"></a>
+<span class="sourceLineNo">324</span>    }<a name="line.324"></a>
+<span class="sourceLineNo">325</span><a name="line.325"></a>
+<span class="sourceLineNo">326</span>    public String getWriteAttribute() {<a name="line.326"></a>
+<span class="sourceLineNo">327</span>        return writeAttribute;<a name="line.327"></a>
+<span class="sourceLineNo">328</span>    }<a name="line.328"></a>
+<span class="sourceLineNo">329</span><a name="line.329"></a>
+<span class="sourceLineNo">330</span>    public void setWriteAttribute(String writeAttribute) {<a name="line.330"></a>
+<span class="sourceLineNo">331</span>        this.writeAttribute = writeAttribute;<a name="line.331"></a>
+<span class="sourceLineNo">332</span>    }<a name="line.332"></a>
+<span class="sourceLineNo">333</span><a name="line.333"></a>
+<span class="sourceLineNo">334</span>    public String getWriteBase() {<a name="line.334"></a>
+<span class="sourceLineNo">335</span>        return writeBase;<a name="line.335"></a>
+<span class="sourceLineNo">336</span>    }<a name="line.336"></a>
+<span class="sourceLineNo">337</span><a name="line.337"></a>
+<span class="sourceLineNo">338</span>    public void setWriteBase(String writeBase) {<a name="line.338"></a>
+<span class="sourceLineNo">339</span>        this.writeBase = writeBase;<a name="line.339"></a>
+<span class="sourceLineNo">340</span>    }<a name="line.340"></a>
+<span class="sourceLineNo">341</span><a name="line.341"></a>
+<span class="sourceLineNo">342</span>    public boolean isUseAdvisorySearchBase() {<a name="line.342"></a>
+<span class="sourceLineNo">343</span>        return useAdvisorySearchBase;<a name="line.343"></a>
+<span class="sourceLineNo">344</span>    }<a name="line.344"></a>
+<span class="sourceLineNo">345</span><a name="line.345"></a>
+<span class="sourceLineNo">346</span>    public void setUseAdvisorySearchBase(boolean useAdvisorySearchBase) {<a name="line.346"></a>
+<span class="sourceLineNo">347</span>        this.useAdvisorySearchBase = useAdvisorySearchBase;<a name="line.347"></a>
+<span class="sourceLineNo">348</span>    }<a name="line.348"></a>
+<span class="sourceLineNo">349</span><a name="line.349"></a>
+<span class="sourceLineNo">350</span>    public String getAdvisorySearchBase() {<a name="line.350"></a>
+<span class="sourceLineNo">351</span>        return advisorySearchBase;<a name="line.351"></a>
+<span class="sourceLineNo">352</span>    }<a name="line.352"></a>
+<span class="sourceLineNo">353</span><a name="line.353"></a>
+<span class="sourceLineNo">354</span>    public void setAdvisorySearchBase(String advisorySearchBase) {<a name="line.354"></a>
+<span class="sourceLineNo">355</span>        this.advisorySearchBase = advisorySearchBase;<a name="line.355"></a>
+<span class="sourceLineNo">356</span>    }<a name="line.356"></a>
+<span class="sourceLineNo">357</span><a name="line.357"></a>
+<span class="sourceLineNo">358</span>    public String getTempSearchBase() {<a name="line.358"></a>
+<span class="sourceLineNo">359</span>        return tempSearchBase;<a name="line.359"></a>
+<span class="sourceLineNo">360</span>    }<a name="line.360"></a>
+<span class="sourceLineNo">361</span><a name="line.361"></a>
+<span class="sourceLineNo">362</span>    public void setTempSearchBase(String tempSearchBase) {<a name="line.362"></a>
+<span class="sourceLineNo">363</span>        this.tempSearchBase = tempSearchBase;<a name="line.363"></a>
+<span class="sourceLineNo">364</span>    }<a name="line.364"></a>
+<span class="sourceLineNo">365</span><a name="line.365"></a>
+<span class="sourceLineNo">366</span>    protected Set&lt;GroupPrincipal&gt; getCompositeACLs(ActiveMQDestination destination, String roleBase, String roleAttribute) {<a name="line.366"></a>
+<span class="sourceLineNo">367</span>        ActiveMQDestination[] dests = destination.getCompositeDestinations();<a name="line.367"></a>
+<span class="sourceLineNo">368</span>        Set&lt;GroupPrincipal&gt; acls = null;<a name="line.368"></a>
+<span class="sourceLineNo">369</span>        for (ActiveMQDestination dest : dests) {<a name="line.369"></a>
+<span class="sourceLineNo">370</span>            acls = DestinationMap.union(acls, getACLs(dest, roleBase, roleAttribute));<a name="line.370"></a>
+<span class="sourceLineNo">371</span>            if (acls == null || acls.isEmpty()) {<a name="line.371"></a>
+<span class="sourceLineNo">372</span>                break;<a name="line.372"></a>
+<span class="sourceLineNo">373</span>            }<a name="line.373"></a>
+<span class="sourceLineNo">374</span>        }<a name="line.374"></a>
+<span class="sourceLineNo">375</span>        return acls;<a name="line.375"></a>
+<span class="sourceLineNo">376</span>    }<a name="line.376"></a>
+<span class="sourceLineNo">377</span><a name="line.377"></a>
+<span class="sourceLineNo">378</span>    // Implementation methods<a name="line.378"></a>
+<span class="sourceLineNo">379</span>    // -------------------------------------------------------------------------<a name="line.379"></a>
+<span class="sourceLineNo">380</span>    protected Set&lt;GroupPrincipal&gt; getACLs(ActiveMQDestination destination, String roleBase, String roleAttribute) {<a name="line.380"></a>
+<span class="sourceLineNo">381</span>        try {<a name="line.381"></a>
+<span class="sourceLineNo">382</span>            context = open();<a name="line.382"></a>
+<span class="sourceLineNo">383</span>        } catch (NamingException e) {<a name="line.383"></a>
+<span class="sourceLineNo">384</span>            LOG.error(e.toString());<a name="line.384"></a>
+<span class="sourceLineNo">385</span>            return new HashSet&lt;GroupPrincipal&gt;();<a name="line.385"></a>
+<span class="sourceLineNo">386</span>        }<a name="line.386"></a>
+<span class="sourceLineNo">387</span><a name="line.387"></a>
+<span class="sourceLineNo">388</span><a name="line.388"></a>
+<span class="sourceLineNo">389</span><a name="line.389"></a>
+<span class="sourceLineNo">390</span>        String destinationBase = "";<a name="line.390"></a>
+<span class="sourceLineNo">391</span>        SearchControls constraints = new SearchControls();<a name="line.391"></a>
+<span class="sourceLineNo">392</span>        if (AdvisorySupport.isAdvisoryTopic(destination) &amp;&amp; useAdvisorySearchBase) {<a name="line.392"></a>
+<span class="sourceLineNo">393</span>            destinationBase = advisorySearchBase;<a name="line.393"></a>
+<span class="sourceLineNo">394</span>        } else {<a name="line.394"></a>
+<span class="sourceLineNo">395</span>            if ((destination.getDestinationType() &amp; ActiveMQDestination.QUEUE_TYPE) == ActiveMQDestination.QUEUE_TYPE) {<a name="line.395"></a>
+<span class="sourceLineNo">396</span>                destinationBase = queueSearchMatchingFormat.format(new String[]{destination.getPhysicalName()});<a name="line.396"></a>
+<span class="sourceLineNo">397</span>                if (queueSearchSubtreeBool) {<a name="line.397"></a>
+<span class="sourceLineNo">398</span>                    constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);<a name="line.398"></a>
+<span class="sourceLineNo">399</span>                } else {<a name="line.399"></a>
+<span class="sourceLineNo">400</span>                    constraints.setSearchScope(SearchControls.ONELEVEL_SCOPE);<a name="line.400"></a>
+<span class="sourceLineNo">401</span>                }<a name="line.401"></a>
+<span class="sourceLineNo">402</span>            }<a name="line.402"></a>
+<span class="sourceLineNo">403</span>            if ((destination.getDestinationType() &amp; ActiveMQDestination.TOPIC_TYPE) == ActiveMQDestination.TOPIC_TYPE) {<a name="line.403"></a>
+<span class="sourceLineNo">404</span>                destinationBase = topicSearchMatchingFormat.format(new String[]{destination.getPhysicalName()});<a name="line.404"></a>
+<span class="sourceLineNo">405</span>                if (topicSearchSubtreeBool) {<a name="line.405"></a>
+<span class="sourceLineNo">406</span>                    constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);<a name="line.406"></a>
+<span class="sourceLineNo">407</span>                } else {<a name="line.407"></a>
+<span class="sourceLineNo">408</span>                    constraints.setSearchScope(SearchControls.ONELEVEL_SCOPE);<a name="line.408"></a>
+<span class="sourceLineNo">409</span>                }<a name="line.409"></a>
+<span class="sourceLineNo">410</span>            }<a name="line.410"></a>
+<span class="sourceLineNo">411</span>        }<a name="line.411"></a>
+<span class="sourceLineNo">412</span><a name="line.412"></a>
+<span class="sourceLineNo">413</span>        constraints.setReturningAttributes(new String[] {roleAttribute});<a name="line.413"></a>
+<span class="sourceLineNo">414</span><a name="line.414"></a>
+<span class="sourceLineNo">415</span>        return getACLs(destinationBase, constraints, roleBase, roleAttribute);<a name="line.415"></a>
+<span class="sourceLineNo">416</span>    }<a name="line.416"></a>
+<span class="sourceLineNo">417</span><a name="line.417"></a>
+<span class="sourceLineNo">418</span>    protected Set&lt;GroupPrincipal&gt; getACLs(String destinationBase, SearchControls constraints, String roleBase, String roleAttribute) {<a name="line.418"></a>
+<span class="sourceLineNo">419</span>        try {<a name="line.419"></a>
+<span class="sourceLineNo">420</span>            Set&lt;GroupPrincipal&gt; roles = new HashSet&lt;GroupPrincipal&gt;();<a name="line.420"></a>
+<span class="sourceLineNo">421</span>            Set&lt;String&gt; acls = new HashSet&lt;String&gt;();<a name="line.421"></a>
+<span class="sourceLineNo">422</span>            NamingEnumeration&lt;?&gt; results = context.search(destinationBase, roleBase, constraints);<a name="line.422"></a>
+<span class="sourceLineNo">423</span>            while (results.hasMore()) {<a name="line.423"></a>
+<span class="sourceLineNo">424</span>                SearchResult result = (SearchResult)results.next();<a name="line.424"></a>
+<span class="sourceLineNo">425</span>                Attributes attrs = result.getAttributes();<a name="line.425"></a>
+<span class="sourceLineNo">426</span>                if (attrs == null) {<a name="line.426"></a>
+<span class="sourceLineNo">427</span>                    continue;<a name="line.427"></a>
+<span class="sourceLineNo">428</span>                }<a name="line.428"></a>
+<span class="sourceLineNo">429</span>                acls = addAttributeValues(roleAttribute, attrs, acls);<a name="line.429"></a>
+<span class="sourceLineNo">430</span>            }<a name="line.430"></a>
+<span class="sourceLineNo">431</span>            for (Iterator&lt;String&gt; iter = acls.iterator(); iter.hasNext();) {<a name="line.431"></a>
+<span class="sourceLineNo">432</span>                String roleName = iter.next();<a name="line.432"></a>
+<span class="sourceLineNo">433</span>                LdapName ldapname = new LdapName(roleName);<a name="line.433"></a>
+<span class="sourceLineNo">434</span>                Rdn rdn = ldapname.getRdn(ldapname.size() - 1);<a name="line.434"></a>
+<span class="sourceLineNo">435</span>                LOG.debug("Found role: [" + rdn.getValue().toString() + "]");<a name="line.435"></a>
+<span class="sourceLineNo">436</span>                roles.add(new GroupPrincipal(rdn.getValue().toString()));<a name="line.436"></a>
+<span class="sourceLineNo">437</span>            }<a name="line.437"></a>
+<span class="sourceLineNo">438</span>            return roles;<a name="line.438"></a>
+<span class="sourceLineNo">439</span>        } catch (NamingException e) {<a name="line.439"></a>
+<span class="sourceLineNo">440</span>            LOG.error(e.toString());<a name="line.440"></a>
+<span class="sourceLineNo">441</span>            return new HashSet&lt;GroupPrincipal&gt;();<a name="line.441"></a>
+<span class="sourceLineNo">442</span>        }<a name="line.442"></a>
+<span class="sourceLineNo">443</span>    }<a name="line.443"></a>
+<span class="sourceLineNo">444</span><a name="line.444"></a>
+<span class="sourceLineNo">445</span>    protected Set&lt;String&gt; addAttributeValues(String attrId, Attributes attrs, Set&lt;String&gt; values) throws NamingException {<a name="line.445"></a>
+<span class="sourceLineNo">446</span>        if (attrId == null || attrs == null) {<a name="line.446"></a>
+<span class="sourceLineNo">447</span>            return values;<a name="line.447"></a>
+<span class="sourceLineNo">448</span>        }<a name="line.448"></a>
+<span class="sourceLineNo">449</span>        if (values == null) {<a name="line.449"></a>
+<span class="sourceLineNo">450</span>            values = new HashSet&lt;String&gt;();<a name="line.450"></a>
+<span class="sourceLineNo">451</span>        }<a name="line.451"></a>
+<span class="sourceLineNo">452</span>        Attribute attr = attrs.get(attrId);<a name="line.452"></a>
+<span class="sourceLineNo">453</span>        if (attr == null) {<a name="line.453"></a>
+<span class="sourceLineNo">454</span>            return values;<a name="line.454"></a>
+<span class="sourceLineNo">455</span>        }<a name="line.455"></a>
+<span class="sourceLineNo">456</span>        NamingEnumeration&lt;?&gt; e = attr.getAll();<a name="line.456"></a>
+<span class="sourceLineNo">457</span>        while (e.hasMore()) {<a name="line.457"></a>
+<span class="sourceLineNo">458</span>            String value = (String)e.next();<a name="line.458"></a>
+<span class="sourceLineNo">459</span>            values.add(value);<a name="line.459"></a>
+<span class="sourceLineNo">460</span>        }<a name="line.460"></a>
+<span class="sourceLineNo">461</span>        return values;<a name="line.461"></a>
+<span class="sourceLineNo">462</span>    }<a name="line.462"></a>
+<span class="sourceLineNo">463</span><a name="line.463"></a>
+<span class="sourceLineNo">464</span>    protected DirContext open() throws NamingException {<a name="line.464"></a>
+<span class="sourceLineNo">465</span>        if (context != null) {<a name="line.465"></a>
+<span class="sourceLineNo">466</span>            return context;<a name="line.466"></a>
+<span class="sourceLineNo">467</span>        }<a name="line.467"></a>
+<span class="sourceLineNo">468</span><a name="line.468"></a>
+<span class="sourceLineNo">469</span>        try {<a name="line.469"></a>
+<span class="sourceLineNo">470</span>            Hashtable&lt;String, String&gt; env = new Hashtable&lt;String, String&gt;();<a name="line.470"></a>
+<span class="sourceLineNo">471</span>            env.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);<a name="line.471"></a>
+<span class="sourceLineNo">472</span>            if (connectionUsername != null &amp;&amp; !"".equals(connectionUsername)) {<a name="line.472"></a>
+<span class="sourceLineNo">473</span>                env.put(Context.SECURITY_PRINCIPAL, connectionUsername);<a name="line.473"></a>
+<span class="sourceLineNo">474</span>            } else {<a name="line.474"></a>
+<span class="sourceLineNo">475</span>                throw new NamingException("Empty username is not allowed");<a name="line.475"></a>
+<span class="sourceLineNo">476</span>            }<a name="line.476"></a>
+<span class="sourceLineNo">477</span>            if (connectionPassword != null &amp;&amp; !"".equals(connectionPassword)) {<a name="line.477"></a>
+<span class="sourceLineNo">478</span>                env.put(Context.SECURITY_CREDENTIALS, connectionPassword);<a name="line.478"></a>
+<span class="sourceLineNo">479</span>            } else {<a name="line.479"></a>
+<span class="sourceLineNo">480</span>                throw new NamingException("Empty password is not allowed");<a name="line.480"></a>
+<span class="sourceLineNo">481</span>            }<a name="line.481"></a>
+<span class="sourceLineNo">482</span>            env.put(Context.SECURITY_PROTOCOL, connectionProtocol);<a name="line.482"></a>
+<span class="sourceLineNo">483</span>            env.put(Context.PROVIDER_URL, connectionURL);<a name="line.483"></a>
+<span class="sourceLineNo">484</span>            env.put(Context.SECURITY_AUTHENTICATION, authentication);<a name="line.484"></a>
+<span class="sourceLineNo">485</span>            context = new InitialDirContext(env);<a name="line.485"></a>
+<span class="sourceLineNo">486</span><a name="line.486"></a>
+<span class="sourceLineNo">487</span>        } catch (NamingException e) {<a name="line.487"></a>
+<span class="sourceLineNo">488</span>            LOG.error(e.toString());<a name="line.488"></a>
+<span class="sourceLineNo">489</span>            throw e;<a name="line.489"></a>
+<span class="sourceLineNo">490</span>        }<a name="line.490"></a>
+<span class="sourceLineNo">491</span>        return context;<a name="line.491"></a>
+<span class="sourceLineNo">492</span>    }<a name="line.492"></a>
+<span class="sourceLineNo">493</span><a name="line.493"></a>
+<span class="sourceLineNo">494</span>}<a name="line.494"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

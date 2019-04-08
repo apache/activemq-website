@@ -1,0 +1,1090 @@
+<!DOCTYPE HTML>
+<html lang="en" >
+    
+    <head>
+        
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Message Expiry | ActiveMQ Artemis Documentation</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 2.1.0">
+        
+        
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+        <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+        
+    <link rel="stylesheet" href="gitbook/style.css">
+    
+    
+
+        
+    
+    
+    <link rel="next" href="./large-messages.html" />
+    
+    
+    <link rel="prev" href="./undelivered-messages.html" />
+    
+
+        
+    </head>
+    <body>
+        
+        
+    <div class="book" data-level="23" data-basepath="." data-revision="Fri Dec 18 2015 09:51:48 GMT+0000 (GMT)">
+    
+
+<div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Type to search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+        
+        
+        
+
+        
+
+        
+    
+        <li class="chapter " data-level="0" data-path="index.html">
+            
+                
+                    <a href="./index.html">
+                        <i class="fa fa-check"></i>
+                        
+                        Introduction
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="1" data-path="notice.html">
+            
+                
+                    <a href="./notice.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.</b>
+                        
+                        Legal Notice
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="2" data-path="preface.html">
+            
+                
+                    <a href="./preface.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.</b>
+                        
+                        Preface
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="3" data-path="project-info.html">
+            
+                
+                    <a href="./project-info.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.</b>
+                        
+                        Project Info
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="4" data-path="messaging-concepts.html">
+            
+                
+                    <a href="./messaging-concepts.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>4.</b>
+                        
+                        Messaging Concepts
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="5" data-path="architecture.html">
+            
+                
+                    <a href="./architecture.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.</b>
+                        
+                        Architecture
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="6" data-path="using-server.html">
+            
+                
+                    <a href="./using-server.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>6.</b>
+                        
+                        Using the Server
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="7" data-path="using-jms.html">
+            
+                
+                    <a href="./using-jms.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>7.</b>
+                        
+                        Using JMS
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="8" data-path="using-core.html">
+            
+                
+                    <a href="./using-core.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>8.</b>
+                        
+                        Using Core
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="9" data-path="jms-core-mapping.html">
+            
+                
+                    <a href="./jms-core-mapping.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>9.</b>
+                        
+                        Mapping JMS Concepts to the Core API
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="10" data-path="client-classpath.html">
+            
+                
+                    <a href="./client-classpath.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>10.</b>
+                        
+                        The Client Classpath
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="11" data-path="examples.html">
+            
+                
+                    <a href="./examples.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>11.</b>
+                        
+                        Examples
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="12" data-path="wildcard-routing.html">
+            
+                
+                    <a href="./wildcard-routing.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>12.</b>
+                        
+                        Routing Messages With Wild Cards
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="13" data-path="wildcard-syntax.html">
+            
+                
+                    <a href="./wildcard-syntax.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>13.</b>
+                        
+                        Understanding the Apache ActiveMQ Artemis Wildcard Syntax
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="14" data-path="filter-expressions.html">
+            
+                
+                    <a href="./filter-expressions.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>14.</b>
+                        
+                        Filter Expressions
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="15" data-path="persistence.html">
+            
+                
+                    <a href="./persistence.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>15.</b>
+                        
+                        Persistence
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="16" data-path="configuring-transports.html">
+            
+                
+                    <a href="./configuring-transports.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>16.</b>
+                        
+                        Configuring Transports
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="17" data-path="connection-ttl.html">
+            
+                
+                    <a href="./connection-ttl.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>17.</b>
+                        
+                        Detecting Dead Connections
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="18" data-path="slow-consumers.html">
+            
+                
+                    <a href="./slow-consumers.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>18.</b>
+                        
+                        Detecting Slow Consumers
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="19" data-path="transaction-config.html">
+            
+                
+                    <a href="./transaction-config.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>19.</b>
+                        
+                        Resource Manager Configuration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="20" data-path="flow-control.html">
+            
+                
+                    <a href="./flow-control.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>20.</b>
+                        
+                        Flow Control
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="21" data-path="send-guarantees.html">
+            
+                
+                    <a href="./send-guarantees.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>21.</b>
+                        
+                        Guarantees of sends and commits
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="22" data-path="undelivered-messages.html">
+            
+                
+                    <a href="./undelivered-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>22.</b>
+                        
+                        Message Redelivery and Undelivered Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter active" data-level="23" data-path="message-expiry.html">
+            
+                
+                    <a href="./message-expiry.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>23.</b>
+                        
+                        Message Expiry
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="24" data-path="large-messages.html">
+            
+                
+                    <a href="./large-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>24.</b>
+                        
+                        Large Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="25" data-path="paging.html">
+            
+                
+                    <a href="./paging.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>25.</b>
+                        
+                        Paging
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="26" data-path="queue-attributes.html">
+            
+                
+                    <a href="./queue-attributes.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>26.</b>
+                        
+                        Queue Attributes
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="27" data-path="scheduled-messages.html">
+            
+                
+                    <a href="./scheduled-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>27.</b>
+                        
+                        Scheduled Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="28" data-path="last-value-queues.html">
+            
+                
+                    <a href="./last-value-queues.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>28.</b>
+                        
+                        Last-Value Queues
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="29" data-path="message-grouping.html">
+            
+                
+                    <a href="./message-grouping.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>29.</b>
+                        
+                        Message Grouping
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="30" data-path="pre-acknowledge.html">
+            
+                
+                    <a href="./pre-acknowledge.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>30.</b>
+                        
+                        Extra Acknowledge Modes
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="31" data-path="management.html">
+            
+                
+                    <a href="./management.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>31.</b>
+                        
+                        Management
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="32" data-path="security.html">
+            
+                
+                    <a href="./security.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>32.</b>
+                        
+                        Security
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="33" data-path="resource-limits.html">
+            
+                
+                    <a href="./resource-limits.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>33.</b>
+                        
+                        Resource Limits
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="34" data-path="jms-bridge.html">
+            
+                
+                    <a href="./jms-bridge.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>34.</b>
+                        
+                        The JMS Bridge
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="35" data-path="client-reconnection.html">
+            
+                
+                    <a href="./client-reconnection.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>35.</b>
+                        
+                        Client Reconnection and Session Reattachment
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="36" data-path="diverts.html">
+            
+                
+                    <a href="./diverts.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>36.</b>
+                        
+                        Diverting and Splitting Message Flows
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="37" data-path="core-bridges.html">
+            
+                
+                    <a href="./core-bridges.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>37.</b>
+                        
+                        Core Bridges
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="38" data-path="duplicate-detection.html">
+            
+                
+                    <a href="./duplicate-detection.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>38.</b>
+                        
+                        Duplicate Message Detection
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="39" data-path="clusters.html">
+            
+                
+                    <a href="./clusters.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>39.</b>
+                        
+                        Clusters
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="40" data-path="ha.html">
+            
+                
+                    <a href="./ha.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>40.</b>
+                        
+                        High Availability and Failover
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="41" data-path="graceful-shutdown.html">
+            
+                
+                    <a href="./graceful-shutdown.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>41.</b>
+                        
+                        Graceful Server Shutdown
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="42" data-path="libaio.html">
+            
+                
+                    <a href="./libaio.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>42.</b>
+                        
+                        Libaio Native Libraries
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="43" data-path="thread-pooling.html">
+            
+                
+                    <a href="./thread-pooling.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>43.</b>
+                        
+                        Thread management
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="44" data-path="logging.html">
+            
+                
+                    <a href="./logging.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>44.</b>
+                        
+                        Logging
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="45" data-path="rest.html">
+            
+                
+                    <a href="./rest.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>45.</b>
+                        
+                        REST Interface
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="46" data-path="embedding-activemq.html">
+            
+                
+                    <a href="./embedding-activemq.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>46.</b>
+                        
+                        Embedding Apache ActiveMQ Artemis
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="47" data-path="spring-integration.html">
+            
+                
+                    <a href="./spring-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>47.</b>
+                        
+                        Spring Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="48" data-path="aerogear-integration.html">
+            
+                
+                    <a href="./aerogear-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>48.</b>
+                        
+                        AeroGear Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="49" data-path="vertx-integration.html">
+            
+                
+                    <a href="./vertx-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>49.</b>
+                        
+                        VertX Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="50" data-path="intercepting-operations.html">
+            
+                
+                    <a href="./intercepting-operations.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>50.</b>
+                        
+                        Intercepting Operations
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="51" data-path="protocols-interoperability.html">
+            
+                
+                    <a href="./protocols-interoperability.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>51.</b>
+                        
+                        Protocols and Interoperability
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="52" data-path="tools.html">
+            
+                
+                    <a href="./tools.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>52.</b>
+                        
+                        Tools
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="53" data-path="maven-plugin.html">
+            
+                
+                    <a href="./maven-plugin.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>53.</b>
+                        
+                        Maven Plugin
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="54" data-path="perf-tuning.html">
+            
+                
+                    <a href="./perf-tuning.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>54.</b>
+                        
+                        Troubleshooting and Performance Tuning
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="55" data-path="configuration-index.html">
+            
+                
+                    <a href="./configuration-index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>55.</b>
+                        
+                        Configuration Reference
+                    </a>
+                
+            
+            
+        </li>
+    
+
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+                Published with GitBook
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="book-header">
+    <!-- Actions Left -->
+    <a href="#" class="btn pull-left toggle-summary" aria-label="Table of Contents"><i class="fa fa-align-justify"></i></a>
+    <a href="#" class="btn pull-left toggle-search" aria-label="Search"><i class="fa fa-search"></i></a>
+    
+    <div id="font-settings-wrapper" class="dropdown pull-left">
+        <a href="#" class="btn toggle-dropdown" aria-label="Font Settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+    <div class="dropdown-caret">
+        <span class="caret-outer"></span>
+        <span class="caret-inner"></span>
+    </div>
+
+    <div class="buttons">
+        <button type="button" id="reduce-font-size" class="button size-2">A</button>
+        <button type="button" id="enlarge-font-size" class="button size-2">A</button>
+    </div>
+
+    <div class="buttons font-family-list">
+        <button type="button" data-font="0" class="button">Serif</button>
+        <button type="button" data-font="1" class="button">Sans</button>
+    </div>
+
+    <div class="buttons color-theme-list">
+        <button type="button" id="color-theme-preview-0" class="button size-3" data-theme="0">White</button>
+        <button type="button" id="color-theme-preview-1" class="button size-3" data-theme="1">Sepia</button>
+        <button type="button" id="color-theme-preview-2" class="button size-3" data-theme="2">Night</button>
+    </div>
+</div>
+
+    </div>
+
+    <!-- Actions Right -->
+    
+    <div class="dropdown pull-right">
+        <a href="#" class="btn toggle-dropdown" aria-label="Share"><i class="fa fa-share-alt"></i>
+        </a>
+        <div class="dropdown-menu font-settings dropdown-left">
+            <div class="dropdown-caret">
+                <span class="caret-outer"></span>
+                <span class="caret-inner"></span>
+            </div>
+            <div class="buttons">
+                <button type="button" data-sharing="twitter" class="button">
+                    Share on Twitter
+                </button>
+                <button type="button" data-sharing="google-plus" class="button">
+                    Share on Google
+                </button>
+                <button type="button" data-sharing="facebook" class="button">
+                    Share on Facebook
+                </button>
+                <button type="button" data-sharing="weibo" class="button">
+                    Share on Weibo
+                </button>
+                <button type="button" data-sharing="instapaper" class="button">
+                    Share on Instapaper
+                </button>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <a href="#" target="_blank" class="btn pull-right google-plus-sharing-link sharing-link" data-sharing="google-plus" aria-label="Google"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right facebook-sharing-link sharing-link" data-sharing="facebook" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right twitter-sharing-link sharing-link" data-sharing="twitter" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+    
+    
+    
+
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="./" >ActiveMQ Artemis Documentation</a>
+    </h1>
+</div>
+
+            <div class="page-wrapper" tabindex="-1">
+                <div class="page-inner">
+                
+                
+                    <section class="normal" id="section-">
+                    
+                        <h1 id="message-expiry">Message Expiry</h1>
+<p>Messages can be set with an optional <em>time to live</em> when sending them.</p>
+<p>Apache ActiveMQ Artemis will not deliver a message to a consumer after it&apos;s time to
+live has been exceeded. If the message hasn&apos;t been delivered by the time
+that time to live is reached the server can discard it.</p>
+<p>Apache ActiveMQ Artemis&apos;s addresses can be assigned a expiry address so that, when
+messages are expired, they are removed from the queue and sent to the
+expiry address. Many different queues can be bound to an expiry address.
+These <em>expired</em> messages can later be consumed for further inspection.</p>
+<h2 id="message-expiry">Message Expiry</h2>
+<p>Using Apache ActiveMQ Artemis Core API, you can set an expiration time directly on the
+message:</p>
+<pre><code>// message will expire in 5000ms from now
+message.setExpiration(System.currentTimeMillis() + 5000);
+</code></pre><p>JMS MessageProducer allows to set a TimeToLive for the messages it sent:</p>
+<pre><code>// messages sent by this producer will be retained for 5s (5000ms) before expiration
+producer.setTimeToLive(5000);
+</code></pre><p>Expired messages which are consumed from an expiry address have the
+following properties:</p>
+<ul>
+<li><p><code>_AMQ_ORIG_ADDRESS</code></p>
+<p>a String property containing the <em>original address</em> of the expired
+message</p>
+</li>
+<li><p><code>_AMQ_ORIG_QUEUE</code></p>
+<p>a String property containing the <em>original queue</em> of the expired
+message</p>
+</li>
+<li><p><code>_AMQ_ACTUAL_EXPIRY</code></p>
+<p>a Long property containing the <em>actual expiration time</em> of the
+expired message</p>
+</li>
+</ul>
+<h2 id="configuring-expiry-addresses">Configuring Expiry Addresses</h2>
+<p>Expiry address are defined in the address-setting configuration:</p>
+<pre><code>&lt;!-- expired messages in exampleQueue will be sent to the expiry address expiryQueue --&gt;
+&lt;address-setting match=&quot;jms.queue.exampleQueue&quot;&gt;
+   &lt;expiry-address&gt;jms.queue.expiryQueue&lt;/expiry-address&gt;
+&lt;/address-setting&gt;
+</code></pre><p>If messages are expired and no expiry address is specified, messages are
+simply removed from the queue and dropped. Address wildcards can be used
+to configure expiry address for a set of addresses (see <a href="wildcard-syntax.html">Understanding the Wildcard Syntax</a>).</p>
+<h2 id="configuring-the-expiry-reaper-thread">Configuring The Expiry Reaper Thread</h2>
+<p>A reaper thread will periodically inspect the queues to check if
+messages have expired.</p>
+<p>The reaper thread can be configured with the following properties in
+<code>broker.xml</code></p>
+<ul>
+<li><p><code>message-expiry-scan-period</code></p>
+<p>How often the queues will be scanned to detect expired messages (in
+milliseconds, default is 30000ms, set to <code>-1</code> to disable the reaper
+thread)</p>
+</li>
+<li><p><code>message-expiry-thread-priority</code></p>
+<p>The reaper thread priority (it must be between 1 and 10, 10 being the
+highest priority, default is 3)</p>
+</li>
+</ul>
+<h2 id="example">Example</h2>
+<p>See the <a href="examples.html">examples.md</a> chapter for an example which shows how message expiry is configured and used with JMS.</p>
+
+                    
+                    </section>
+                
+                
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="./undelivered-messages.html" class="navigation navigation-prev " aria-label="Previous page: Message Redelivery and Undelivered Messages"><i class="fa fa-angle-left"></i></a>
+        
+        
+        <a href="./large-messages.html" class="navigation navigation-next " aria-label="Next page: Large Messages"><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+<script src="gitbook/app.js"></script>
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"fontSettings":{"theme":null,"family":"sans","size":2}};
+    gitbook.start(config);
+});
+</script>
+
+        
+    </body>
+    
+</html>

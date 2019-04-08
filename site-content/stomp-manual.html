@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="#"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Title</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <ul>
+  <li><a href="index.html">Apollo 1.7.1</a></li>
+  <li><a href="communitydevelopers">Developers</a></li>
+  <li><a href="community/index.html">Community</a></li>
+  <li><a href="..OverviewOverview/Overview/download">Download</a></li>
+</ul>
+
+<h1 id="apollo-171-stomp-protocol-manual">Apollo 1.7.1 STOMP Protocol Manual</h1>
+
+<ul>
+  <li><a href="#Using_the_STOMP_Protocol">Using the STOMP Protocol</a></li>
+  <li>
+    <ul>
+      <li><a href="#Stomp_Protocol_Options">Stomp Protocol Options</a></li>
+      <li><a href="#Client_Libraries">Client Libraries</a></li>
+      <li><a href="#Connecting">Connecting</a></li>
+      <li><a href="#Destination_Types">Destination Types</a></li>
+      <li><a href="#Topic_Retained_Messages">Topic Retained Messages</a></li>
+      <li><a href="#Reliable_Messaging">Reliable Messaging</a></li>
+      <li><a href="#Message_Expiration">Message Expiration</a></li>
+      <li><a href="#Subscription_Flow_Control">Subscription Flow Control</a></li>
+      <li><a href="#Topic_Durable_Subscriptions">Topic Durable Subscriptions</a></li>
+      <li><a href="#Browsing_Subscriptions">Browsing Subscriptions</a></li>
+      <li><a href="#Queue_Message_Sequences">Queue Message Sequences</a></li>
+      <li><a href="#Using_Queue_Browsers_to_Implement_Durable_Topic_Subscriptions">Using Queue Browsers to Implement Durable Topic Subscriptions</a></li>
+      <li><a href="#Exclusive_Subscriptions">Exclusive Subscriptions</a></li>
+      <li><a href="#Message_Groups">Message Groups</a></li>
+      <li><a href="#Temporary_Destinations">Temporary Destinations</a></li>
+      <li><a href="#Destination_Wildcards">Destination Wildcards</a></li>
+      <li><a href="#Composite_Destinations">Composite Destinations</a></li>
+      <li><a href="#Message_Selectors">Message Selectors</a></li>
+      <li><a href="#Destination_Name_Restrictions">Destination Name Restrictions</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="using-the-stomp-protocol">Using the STOMP Protocol</h2>
+
+<p>Clients can connect to Apollo using the <a href="http://stomp.github.com/">STOMP</a> protocol. STOMP provides an interoperable messaging wire level protocol that allows any STOMP clients can communicate with any STOMP message broker. It aims to provide easy and widespread messaging interoperability among many languages, platforms and brokers.</p>
+
+<p>Apollo supports the following versions of the STOMP specification:</p>
+
+<ul>
+  <li><a href="http://stomp.github.com/stomp-specification-1.0.html">STOMP 1.0</a></li>
+  <li><a href="http://stomp.github.com/stomp-specification-1.1.html">STOMP 1.1</a></li>
+  <li><a href="http://stomp.github.com/stomp-specification-1.2.html">STOMP 1.2</a></li>
+</ul>
+
+<p>The specification is short and simple to read, it is highly recommend that users to get familiar with it before using one of the many available client libraries.</p>
+
+<h3 id="stomp-protocol-options">Stomp Protocol Options</h3>
+
+<p>You can use the <code class="highlighter-rouge">stomp</code> configuration element within the <code class="highlighter-rouge">connector</code> element in the <code class="highlighter-rouge">apollo.xml</code> configuration file to change the default settings used in the STOMP protocol implementation. The <code class="highlighter-rouge">stomp</code> element supports the following configuration attributes:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">buffer_size</code> : How much each producer or subscription will buffer between the client and the broker. If not set, it will be auto tuned between <code class="highlighter-rouge">640k</code> and <code class="highlighter-rouge">20k</code> depending on the number of connections open on the broker.</li>
+  <li><code class="highlighter-rouge">add_user_header</code> : Name of the header which will be added to every received message received. The value of the header will be set to the id of user that sent the message. Not set by default.</li>
+  <li><code class="highlighter-rouge">add_timestamp_header</code> : Name of the header which will be added to every received message received. The value of the header will be set to the time the message was received. The time will be represented as the number of milliseconds elapsed since the UNIX epoch in GMT. Not set by default.</li>
+  <li><code class="highlighter-rouge">add_redeliveries_header</code> : Name of the header which will be added to messages sent to consumers if the messages has been redelivered. The value of the header will be set to the number of times the message has been redeliverd. Not set by default.</li>
+  <li><code class="highlighter-rouge">max_header_length</code> : The maximum allowed length of a STOMP header. Defaults to <code class="highlighter-rouge">10k</code>.</li>
+  <li><code class="highlighter-rouge">max_headers</code> : The maximum number of allowed headers in a frame. Defaults to 1000.</li>
+  <li><code class="highlighter-rouge">max_data_length</code> : The maximum size of the body portion of a STOMP frame.<br />
+Defaults to <code class="highlighter-rouge">100M</code>.</li>
+  <li><code class="highlighter-rouge">die_delay</code> : The amount of time to delay in milliseconds after an <code class="highlighter-rouge">ERROR</code> message is sent to the client and the socket is closed.</li>
+</ul>
+
+<p>The stomp configuration element can also be used to control how the destination headers are parsed and interpreted. The supported attributes are:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">queue_prefix</code> : Defaults to <code class="highlighter-rouge">/queue/</code></li>
+  <li><code class="highlighter-rouge">topic_prefix</code> : Defaults to <code class="highlighter-rouge">/topic/</code></li>
+  <li><code class="highlighter-rouge">path_separator</code> : Defaults to <code class="highlighter-rouge">.</code></li>
+  <li><code class="highlighter-rouge">destination_separator</code> : Defaults to <code class="highlighter-rouge">,</code></li>
+  <li><code class="highlighter-rouge">any_child_wildcard</code> : Defaults to <code class="highlighter-rouge">*</code></li>
+  <li><code class="highlighter-rouge">regex_wildcard_start</code> : Defaults to <code class="highlighter-rouge">{</code></li>
+  <li><code class="highlighter-rouge">regex_wildcard_end</code> : Defaults to <code class="highlighter-rouge">}</code></li>
+  <li><code class="highlighter-rouge">any_descendant_wildcard</code> : Defaults to <code class="highlighter-rouge">**</code></li>
+</ul>
+
+<p>It also supports nested <code class="highlighter-rouge">add_user_header</code> elements to more finely control how user headers are added to received STOMP messages. The <code class="highlighter-rouge">add_user_header</code> element should contain the name of the header to set on the STOMP message. It also supports the following attributes:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">separator</code> : If user has multiple principles which match, this separator will be used to delimit them in the header. If not set, then only the first matching principle will be set in the header.</li>
+  <li><code class="highlighter-rouge">kind</code> : The principle kind to look for. Defaults to <code class="highlighter-rouge">*</code> (matches all principle kinds)</li>
+</ul>
+
+<p>Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
+  &lt;stomp max_header_length="10000"&gt;
+    &lt;add_user_header separator=","&gt;user&lt;/add_user_header&gt;
+  &lt;/stomp&gt;
+&lt;/connector&gt;
+</code></pre></div></div>
+
+<h3 id="client-libraries">Client Libraries</h3>
+
+<p>There are many open source STOMP clients for different platforms and languages. You can find a full listing of available clients at:</p>
+
+<ul>
+  <li><a href="http://stomp.github.com/implementations.html#Clients"><code class="highlighter-rouge">http://stomp.github.com/implementations.html#Clients</code></a></li>
+</ul>
+
+<p>The Apollo distribution ships with an <code class="highlighter-rouge">examples</code> directory where you can find some simple examples of how to use some of those clients to send and receive messages from a broker instance.</p>
+
+<p>This section will focus on clarifying the parts of the STOMP specification which allow servers to choose their behavior and to describe how to access Apollo specific features.</p>
+
+<h3 id="connecting">Connecting</h3>
+
+<p>The default broker configuration secures access to the broker so that only the <code class="highlighter-rouge">admin</code> user can connect. The default password for the <code class="highlighter-rouge">admin</code> user is <code class="highlighter-rouge">password</code>.</p>
+
+<p>Example STOMP frame to connect to the broker:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CONNECT
+
+login:admin
+passcode:password
+
+^@
+</code></pre></div></div>
+
+<p>STOMP 1.0 clients don’t specify which virtual host they are connecting to so the broker connects those clients to the first virtual host defined in it’s configuration. STOMP 1.1 clients must specify a virtual host when they connect. If no configured virtual host <code class="highlighter-rouge">host_name</code> matches the client’s requested host, the connection is terminated with an ERROR. Therefore, it is critical that the virtual hosts configuration define all the possible host names that clients may connect to host with.</p>
+
+<h3 id="destination-types">Destination Types</h3>
+
+<p>Apollo supports three types of destinations, queues, topics, and durable subscriptions.</p>
+
+<p>The difference between queues and topics is how messages are delivered to consumers. A queue will load balance it’s messages over the connected subscribers so that only one subscriber gets a message. Topics replicate every message sent to it to all the connected subscribers. Queues hold on to unconsumed messages even when there are no subscriptions attached, while a topic will drop messages when there are no connected subscriptions.</p>
+
+<p>A durable subscription allows you to create a subscription against a topic which will queue messages even after the client disconnects. Clients can reconnect and consume the queued message originating from the topic at a later time.</p>
+
+<p>If you want to send or subscribe to a queue, topic, or durable subscription the STOMP destination should be prefixed with <code class="highlighter-rouge">/queue/</code>, <code class="highlighter-rouge">/topic/</code> or <code class="highlighter-rouge">/dsub/</code> respectively.</p>
+
+<p>Example STOMP frame sending to a queue:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SEND
+destination:/queue/a
+
+hello queue a
+^@
+</code></pre></div></div>
+
+<h3 id="topic-retained-messages">Topic Retained Messages</h3>
+
+<p>If a message sent to a Topic has the <code class="highlighter-rouge">retain:set</code> header, then the message will be ‘remembered’ by the topic so that if a new subscription arrives, the last retained message is sent to the subscription. For example if you want a topic to remember the last price published you can send a message that looks like:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SEND
+destination:/topic/stock/IBM
+retain:true
+
+112.12
+^@
+</code></pre></div></div>
+
+<p>You can also send a new message with the <code class="highlighter-rouge">retain:remove</code> header to have the topic forget about the last retained message.</p>
+
+<p>Note: retained messages are not retained between broker restarts.</p>
+
+<h3 id="reliable-messaging">Reliable Messaging</h3>
+
+<p>Apollo supports reliable messaging by allowing messages to be persisted so that they can be recovered if there is failure which kills the broker. Processing persistent messages has orders of magnitude more overhead than non-persistent variety. You should only use it if your application really needs it.</p>
+
+<p>To have a message be persistent, the sender must add the <code class="highlighter-rouge">persistent:true</code> header to the <code class="highlighter-rouge">SEND</code> STOMP frame. Furthermore, if you are not sending the message in a transaction, it is recommend that you also add a <code class="highlighter-rouge">receipt</code> header. Once the broker responds with a <code class="highlighter-rouge">RECEIPT</code> frame correlated to the send, you are guaranteed the broker will not drop the message even if a failure occurs.</p>
+
+<p>Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SEND
+destination:/queue/a
+receipt:001
+
+hello queue a
+^@
+</code></pre></div></div>
+
+<p>The client should not consider the send to have succeeded until he receives the correlated <code class="highlighter-rouge">RECEIPT</code> frame from the server. Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RECEIPT
+receipt-id:001
+
+^@
+</code></pre></div></div>
+
+<p>It is important to note that to do reliable messaging, your system will be prone to receive duplicate messages. For example, if your sending application dies before it receives the <code class="highlighter-rouge">RECEIPT</code> frame, then when it starts up again will probably try to send the same message again which may cause a duplicate message to get placed on the broker.</p>
+
+<p>You should only use subscribers which use the <code class="highlighter-rouge">client</code> or <code class="highlighter-rouge">client-individual</code> ack mode to consume reliable messages. Any messages on a queue delivered to a client which have not been acked when the client disconnects will get redelivered to another subscribed client.</p>
+
+<h3 id="message-expiration">Message Expiration</h3>
+
+<p>Apollo supports expiring old messages. Unconsumed expired messages are automatically removed from the queue. There’s two way to specify when the message will be expired. Y</p>
+
+<p>The first way to configure the expiration is by setting the <code class="highlighter-rouge">expires</code> message header. The expiration time must be specified as the number of milliseconds since the Unix epoch.</p>
+
+<p>Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SEND
+destination:/queue/a
+expires:1308690148000
+
+this message will expire on Tue Jun 21 17:02:28 EDT 2011
+^@
+</code></pre></div></div>
+
+<p>The first way to configure the expiration is by setting the <code class="highlighter-rouge">ttl</code> message header. The ttl will be intereted to mean the number of milliseconds from when the server receives the message. The broker will add an <code class="highlighter-rouge">expires</code> header to the message on your behalf.</p>
+
+<p>Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SEND
+destination:/queue/a
+ttl:2000
+
+This message will expire in 2 seconds.
+^@
+</code></pre></div></div>
+
+<h3 id="subscription-flow-control">Subscription Flow Control</h3>
+
+<p>You can add a <code class="highlighter-rouge">credit</code> header to the <code class="highlighter-rouge">SUBSCRIBE</code> frame to control the flow of messages delivered to the client. Each subscription maintains 2 credit windows which allows you to control the flow of messages either based on number of messages sent or total number of content bytes delivered to the client. The content bytes are the body of the frame which is usually also set on the <code class="highlighter-rouge">content-length</code> header. If either of the two credit windows have a positive value, the server will deliver messages to the client.</p>
+
+<p>The <code class="highlighter-rouge">credit</code> header value is expected to use the <code class="highlighter-rouge">count[,size]</code> syntax where:</p>
+
+<ul>
+  <li>count: initial setting of the credit window tracking the remaining number of messages that can be sent. Must be specified.</li>
+  <li>size: initial setting of the credit window tracking the remaining number of content bytes that can be sent. Defaults to the receive buffer size of the TCP socket which is typically 65536 bytes.</li>
+</ul>
+
+<p>If the <code class="highlighter-rouge">credit</code> header is not specified it has the same effect as if it had been set to <code class="highlighter-rouge">credit:655360,655360</code>. This setting allows the broker to optimally stream many small messages to the client or without overloading the clients processing buffers.</p>
+
+<p>As messages are sent from the server to the client, the credit windows are reduced by the corresponding amount. When the client send <code class="highlighter-rouge">ACK</code> frames to the server, the credit windows are incremented by the number of messages and content sizes corresponding to the messages that were acknowledged.</p>
+
+<p>Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SUBSCRIBE
+id:mysub
+destination:/queue/foo
+credit:5,0
+
+^@
+</code></pre></div></div>
+
+<p>The above example would cause the subscription to only receive at most 5 messages if the client is not sending any <code class="highlighter-rouge">ACK</code> messages back to the server.</p>
+
+<p>If you need to receive more messages without acknowledging them than the size of the credit window, you should use transactions and transactionally <code class="highlighter-rouge">ACK</code> messages as they are received. A transactional ACK increases the credit window without actually consuming the messages. If the transaction is aborted subsequent acknowledgements of a previously acknowledged message does not increase the credit window.</p>
+
+<h3 id="topic-durable-subscriptions">Topic Durable Subscriptions</h3>
+
+<p>A durable subscription is a queue which is subscribed to a topic so that even if the client which created the durable subscription is not online, he can still get a copy of all the messages sent to the topic when he comes back online. Multiple clients can subscribe to the same durable subscription and since it’s backed by a queue, those subscribers will have the topic’s messages load balanced across them.</p>
+
+<p>To create or reattach to a a durable subscription with STOMP, you uniquely name the durable subscription using the <code class="highlighter-rouge">id</code> header on the <code class="highlighter-rouge">SUBSCRIBE</code> frame and also adding a <code class="highlighter-rouge">persistent:true</code> header. Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SUBSCRIBE
+id:mysub
+persistent:true
+destination:/topic/foo
+
+^@
+</code></pre></div></div>
+
+<p>A standard <code class="highlighter-rouge">UNSUBSCRIBE</code> frame does not destroy the durable subscription, it only disconnects the client from the durable subscription. To destroy a durable subscription, you must once again add <code class="highlighter-rouge">persistent:true</code> header to the <code class="highlighter-rouge">UNSUBSCRIBE</code> frame. Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>UNSUBSCRIBE
+id:mysub
+persistent:true
+
+^@
+</code></pre></div></div>
+
+<p>If the durable subscription already exists you can address it directly using <code class="highlighter-rouge">/dsub/</code> prefix on the <code class="highlighter-rouge">destination</code> header. For example, send a message to the previously created <code class="highlighter-rouge">mysub</code> durable subscription, you send the following STOMP frame:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SEND
+destination:/dsub/mysub
+
+hello durable sub!
+^@
+</code></pre></div></div>
+
+<p>Similarly, you can also subscribe to the subscription in the same way:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SUBSCRIBE
+id:0
+destination:/dsub/mysub
+
+^@
+</code></pre></div></div>
+
+<p>Unlike typical STOMP subscriptions id’s which are local to the STOMP client’s connection, the durable subscription id’s are global across a virtual host. If two different connections use the same durable subscription id, then messages from the subscription will get load balanced across the two connections. If the second connection uses a different <code class="highlighter-rouge">destination</code> or <code class="highlighter-rouge">selector</code> header, then updates the original subscription, and the original connection will subsequently only receive messages matching the updated destination or selector.</p>
+
+<h3 id="browsing-subscriptions">Browsing Subscriptions</h3>
+
+<p>A normal subscription on a queue will consume messages so that no other subscription will get a copy of the message. If you want to browse all the messages on a queue in a non-destructive fashion, you can create browsing subscription. Browsing subscriptions also works with durable subscriptions since they are backed by a queue. To make a a browsing subscription, just add the <code class="highlighter-rouge">browser:true</code> header to the <code class="highlighter-rouge">SUBSCRIBE</code> frame. For example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SUBSCRIBE
+id:mysub
+browser:true
+destination:/queue/foo
+
+^@
+</code></pre></div></div>
+
+<p>Once the broker sends a browsing subscription the last message in the queue, it will send the subscription a special “end of browse” message to indicate browsing has completed and that the subscription should not expect any more messages. The “end of browse” message will have a <code class="highlighter-rouge">browser:end</code> header set. Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MESSAGE
+subscription:mysub
+destination:
+message-id:
+browser:end
+
+^@
+</code></pre></div></div>
+
+<p>If you want the browsing subscription to remain active and continue to listen for message once the last message on the queue is reached, you should add the <code class="highlighter-rouge">browser-end:false</code> header to the <code class="highlighter-rouge">SUBSCRIBE</code> frame. When the <code class="highlighter-rouge">browser-end:false</code> header is added the subscription will not be sent the “end of browse” message previously described.</p>
+
+<h3 id="queue-message-sequences">Queue Message Sequences</h3>
+
+<p>As messages are added to a queue in a broker, they are assigned an incrementing sequence number. Messages delivered to subscribers can be updated to include the sequence number if the <code class="highlighter-rouge">include-seq</code> header is added to the <code class="highlighter-rouge">SUBSCRIBE</code> frame. This header should be set to a header name which will be added messages delivered to hold value of the sequence number.</p>
+
+<p>Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SUBSCRIBE
+id:mysub
+destination:/queue/foo
+include-seq:seq
+
+^@
+</code></pre></div></div>
+
+<p>Then you can expect to receive messages like:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MESSAGE
+subscription:mysub
+destination:/queue/foo
+seq:1
+
+Hello
+^@
+MESSAGE
+subscription:mysub
+destination:/queue/foo
+seq:2
+
+World
+^@
+</code></pre></div></div>
+
+<p>Furthermore, you can configure the <code class="highlighter-rouge">SUBSCRIBE</code> frame so that the subscription only receives messages that have a sequence id that is equal to or greater than a requested value by using the <code class="highlighter-rouge">from-seq</code> header. Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SUBSCRIBE
+id:mysub
+destination:/queue/foo
+from-seq:10
+
+^@
+</code></pre></div></div>
+
+<p>If the <code class="highlighter-rouge">from-seq</code> is set to <code class="highlighter-rouge">-1</code>, then the subscription will receive messages from the tail of the queue. In other words, it will only receive new messages sent to the queue.</p>
+
+<p>Note: You can only use the <code class="highlighter-rouge">from-seq</code> header with normal destinations. If you attempt to use it with a wildcard or composite destination then the connection will be closed due to invalid usage.</p>
+
+<h3 id="using-queue-browsers-to-implement-durable-topic-subscriptions">Using Queue Browsers to Implement Durable Topic Subscriptions</h3>
+
+<p>You can use queue browsers with consumer side message sequence tracking to achieve the same semantics as durable topics subscriptions but with a better performance profile. Since browsers do not delete messages from a queue, when you use multiple browsers against one queue you get the same broadcast effects that a topic provides.</p>
+
+<p>In this approach the subscribing application keeps track of the last sequence number processed from the subscription. The sequence number is typically stored as part of the unit of work which is processing the message. The subscription can use the default auto acknowledge mode but still get ‘once and only once’ delivery guarantees since:</p>
+
+<ul>
+  <li>consuming application records the last message sequence that was processed</li>
+  <li>message are not deleted when delivered to the subscriber</li>
+  <li>on restart consuming application continues receiving from the queue for the last sequence that it received.</li>
+</ul>
+
+<p>The <code class="highlighter-rouge">SUBSCRIBE</code> frame used to create the browser should add the <code class="highlighter-rouge">include-seq</code>, <code class="highlighter-rouge">from-seq</code>, and <code class="highlighter-rouge">browser-end</code> headers so that they can resume receiving messages from the queue from the last known sequence. If you are starting a new consumer that does not have a last processed sequence number, you can either set <code class="highlighter-rouge">from-seq</code> to:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">0</code> to start receiving at the head of the queue which sends the subscription a copy of all the messages that are currently queued.</li>
+  <li><code class="highlighter-rouge">-1</code> to start receiving at the tail of the queue which to skips over all the message that exist in the queue so that the subscription only receives new messages.</li>
+</ul>
+
+<p>Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SUBSCRIBE
+id:mysub
+destination:/queue/foo
+browser:true
+browser-end:false
+include-seq:seq
+from-seq:0
+
+^@
+</code></pre></div></div>
+
+<p>Since this approach does not consume the messages from the queue, you should either:</p>
+
+<ul>
+  <li>Send messages to the queue with an expiration time so that they are automatically delete once the expiration time is reached.</li>
+  <li>Periodically run a normal consumer application which can cursor the queue and delete messages are are deemed no longer needed.</li>
+</ul>
+
+<h3 id="exclusive-subscriptions">Exclusive Subscriptions</h3>
+
+<p>We maintain the order of messages in queues and dispatch them to subscriptions in order. However if you have multiple subscriptions consuming from the same queue, you will loose the guarantee of processing the messages in order; since the messages may be processed concurrently on different subscribers.</p>
+
+<p>Sometimes it is important to guarantee the order in which messages are processed. e.g. you don’t want to process the update to an order until an insert has been done; or to go backwards in time, overwriting an newer update of an order with an older one etc.</p>
+
+<p>So what folks have to do in clusters is often to only run one consumer process in a cluster to avoid loosing the ordering. The problem with this is that if that process goes down, no one is processing the queue any more, which can be problem.</p>
+
+<p>Apollo supports exclusive subscriptions which avoids the end user having to restrict himself to only running one process. The broker will pick a single subscription to get all the messages for a queue to ensure ordering. If that subscription fails, the broker will auto failover and choose another subscription.</p>
+
+<p>An exclusive subscription is created by adding a <code class="highlighter-rouge">exclusive:true</code> header to the <code class="highlighter-rouge">SUBSCRIBE</code> frame. Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SUBSCRIBE
+id:mysub
+exclusive:true
+destination:/queue/foo
+
+^@
+</code></pre></div></div>
+
+<h3 id="message-groups">Message Groups</h3>
+
+<p>Message Groups are an enhancement to the Exclusive Consumer feature to provide</p>
+
+<ul>
+  <li>guaranteed ordering of the processing of related messages across a single queue</li>
+  <li>load balancing of the processing of messages across multiple consumers</li>
+  <li>high availability / auto-failover to other consumers if a JVM goes down</li>
+</ul>
+
+<p>Message Groups are logically like a parallel Exclusive Consumer. Rather than all messages going to a single consumer, the stomp <code class="highlighter-rouge">message_group</code> header is used to define which message group the message belongs to. The Message Group feature then ensures that all messages for the same message group will be sent to the currently assigned consumer for the group. The assigned consumer consumer for a message group may change but not before all messages sent to the previous consumer are acked or if the consumer is disconnected.</p>
+
+<p>Another way of explaining Message Groups is that it provides sticky load balancing of messages across consumers; where the message group value is kinda like a HTTP session ID or cookie value and the message broker is acting like a HTTP load balancer.</p>
+
+<p>Here is an example message with the message group set:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MESSAGE
+destination:/queue/PO.REQUEST
+message_group:hiram
+
+PO145
+^@
+</code></pre></div></div>
+
+<p>The broker uses consistent hashing to map message groups to consumers. When you add another subscription to a queue, the broker will first wait for messages sent to previous subscriptions to be processed and then the broker rebalances the message groups across the attached consumers.</p>
+
+<h3 id="temporary-destinations">Temporary Destinations</h3>
+
+<p>Temporary destinations are typically used to receive response messages in a request/response messaging exchange. A temporary destination can only be consumed by a subscription created on the connection which is associated with the temporary destination. Once the connection is closed, all associated temporary destinations are removed. Temporary destinations are prefixed with:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">/temp-queue/</code> - For temporary queues. Has the same delivery semantics as queues.</li>
+  <li><code class="highlighter-rouge">/temp-topic/</code> - For temporary topics. It has the same delivery semantics of topics.</li>
+</ul>
+
+<p>In a request/response scenario, you would first subscribe to the temporary topic:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SUBSCRIBE
+id:mysub
+destination:/temp-queue/example
+
+^@
+</code></pre></div></div>
+
+<p>Then you would send a request with the reply-to header set to the temporary destination. Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SEND
+destination:/queue/PO.REQUEST
+reply-to:/temp-queue/example
+
+PO145
+^@
+</code></pre></div></div>
+
+<p>The consumer receiving the request will receive a message similar to:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MESSAGE
+subscription:foo
+reply-to:/queue/temp.default.23.example
+destination:/queue/PO.REQUEST
+reply-to:/temp-queue/example
+
+PO145
+</code></pre></div></div>
+
+<p>Notice that the reply-to<code class="highlighter-rouge"> header value is updated from a temporary destination name to normal destination name. The subscription servicing he requests should respond to the updated destination value (</code>/queue/temp.default.23.example` in the example above).</p>
+
+<p>Temporary destination names actually map to normal queues and topics. They just have a <code class="highlighter-rouge">temp.&lt;broker_id&gt;.&lt;connection_id&gt;.</code> prefix. Any destination which starts with <code class="highlighter-rouge">temp.</code> has a security policy which only allows the connection which created it to subscribe from it. These destinations are also auto deleted once the connection is closed.</p>
+
+<h3 id="destination-wildcards">Destination Wildcards</h3>
+
+<p>We support destination wildcards to easily subscribe to multiple destinations with one subscription. This concept has been popular in financial market data for some time as a way of organizing events (such as price changes) into hierarchies and to use wildcards for easy subscription of the range of information you’re interested in.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">.</code> is used to separate names in a path</li>
+  <li><code class="highlighter-rouge">*</code> is used to match any name in a path</li>
+  <li><code class="highlighter-rouge">{regex}</code> is used to match a path name against a regular expression.</li>
+  <li><code class="highlighter-rouge">**</code> is used to recursively match path names</li>
+</ul>
+
+<p>For example imagine you are sending price messages from a stock exchange feed. You might use some kind of destination naming conventions such as:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">/topic/PRICE.STOCK.NASDAQ.IBM</code> to publish IBM’s price on NASDAQ and</li>
+  <li><code class="highlighter-rouge">/topic/PRICE.STOCK.NYSE.SUNW</code> to publish Sun’s price on the New York Stock Exchange</li>
+</ul>
+
+<p>A subscriber could then use exact destinations to subscribe to exactly the prices it requires. Or it could use wildcards to define hierarchical pattern matches to the destinations to subscribe from.</p>
+
+<p>For example using the example above, these subscriptions are possible</p>
+
+<ul>
+  <li><code class="highlighter-rouge">/topic/PRICE.**</code> : Any price for any product on any exchange</li>
+  <li><code class="highlighter-rouge">/topic/PRICE.STOCK.**</code> : Any price for a stock on any exchange</li>
+  <li><code class="highlighter-rouge">/topic/PRICE.STOCK.NASDAQ.*</code> : Any stock price on NASDAQ</li>
+  <li><code class="highlighter-rouge">/topic/PRICE.STOCK.*.IBM</code> : Any IBM stock price on any exchange</li>
+  <li><code class="highlighter-rouge">/topic/PRICE.STOCK.*.I*</code> : Any stock price starting with ‘I’ on any exchange</li>
+  <li><code class="highlighter-rouge">/topic/PRICE.STOCK.*.*{[0-9]}</code> : Any stock price that ends in a digit on any exchange</li>
+</ul>
+
+<p>Destination wildcards can only be used in a SUBSCRIBE frame.</p>
+
+<h3 id="composite-destinations">Composite Destinations</h3>
+
+<p>You can use composite destinations to send or subscribe to multiple destinations at one time. You use separator of <code class="highlighter-rouge">,</code> between destination names. For example, to send one message to 2 queues and 1 topic:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SEND
+destination:/queue/a,/queue/b,/topic/c
+
+Composites rock!
+^@
+</code></pre></div></div>
+
+<h3 id="message-selectors">Message Selectors</h3>
+
+<p>Message selectors allow a subscription to only receive a subset of the messages sent to a destination. The selector acts like a filter which is applied against the message properties and only those messages which match pass through to the subscription.</p>
+
+<p>Selectors are defined using SQL 92 syntax and typically apply to message headers; whether the standard properties available on a JMS message or custom headers you can add via the JMS code.</p>
+
+<p>Here is an example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type = 'car' AND color = 'blue' AND weight &gt; 2500
+</code></pre></div></div>
+
+<p>To create a subscription with a message selector, you set the <code class="highlighter-rouge">selector</code> header in the STOMP <code class="highlighter-rouge">SUBSCRIBE</code> frame to the desired selector. Example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SUBSCRIBE
+id:sub0
+selector:type = 'car' AND color = 'blue' AND weight &gt; 2500
+destination:/topic/foo
+
+^@
+</code></pre></div></div>
+
+<h3 id="destination-name-restrictions">Destination Name Restrictions</h3>
+
+<p>Destination names are restricted to using the characters <code class="highlighter-rouge">a-z</code>, <code class="highlighter-rouge">A-Z</code>, <code class="highlighter-rouge">0-9</code>, <code class="highlighter-rouge">_</code>, <code class="highlighter-rouge">-</code> <code class="highlighter-rouge">%</code>, <code class="highlighter-rouge">~</code>, <code class="highlighter-rouge">:</code>, ‘ ‘, ‘(‘, ‘)’ or <code class="highlighter-rouge">.</code> in addition to composite separator <code class="highlighter-rouge">,</code> and the wild card <code class="highlighter-rouge">*</code>. Any other characters must be UTF-8 and then URL encoded if you wish to preserve their significance.</p>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

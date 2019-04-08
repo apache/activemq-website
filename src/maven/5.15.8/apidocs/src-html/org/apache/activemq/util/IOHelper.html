@@ -1,0 +1,407 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.util;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.io.File;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.io.FileInputStream;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.io.FileOutputStream;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.io.FilenameFilter;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.io.IOException;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.io.InputStream;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import java.io.OutputStream;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import java.nio.file.Files;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import java.nio.file.Path;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import java.nio.file.StandardCopyOption;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import java.util.ArrayList;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import java.util.List;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import java.util.Stack;<a name="line.31"></a>
+<span class="sourceLineNo">032</span><a name="line.32"></a>
+<span class="sourceLineNo">033</span>/**<a name="line.33"></a>
+<span class="sourceLineNo">034</span> * Collection of File and Folder utility methods.<a name="line.34"></a>
+<span class="sourceLineNo">035</span> */<a name="line.35"></a>
+<span class="sourceLineNo">036</span>public final class IOHelper {<a name="line.36"></a>
+<span class="sourceLineNo">037</span><a name="line.37"></a>
+<span class="sourceLineNo">038</span>    protected static final int MAX_DIR_NAME_LENGTH;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    protected static final int MAX_FILE_NAME_LENGTH;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    private static final int DEFAULT_BUFFER_SIZE = 4096;<a name="line.40"></a>
+<span class="sourceLineNo">041</span><a name="line.41"></a>
+<span class="sourceLineNo">042</span>    private IOHelper() {<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    }<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>    public static String getDefaultDataDirectory() {<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        return getDefaultDirectoryPrefix() + "activemq-data";<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    }<a name="line.47"></a>
+<span class="sourceLineNo">048</span><a name="line.48"></a>
+<span class="sourceLineNo">049</span>    public static String getDefaultStoreDirectory() {<a name="line.49"></a>
+<span class="sourceLineNo">050</span>        return getDefaultDirectoryPrefix() + "amqstore";<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    }<a name="line.51"></a>
+<span class="sourceLineNo">052</span><a name="line.52"></a>
+<span class="sourceLineNo">053</span>    /**<a name="line.53"></a>
+<span class="sourceLineNo">054</span>     * Allows a system property to be used to overload the default data<a name="line.54"></a>
+<span class="sourceLineNo">055</span>     * directory which can be useful for forcing the test cases to use a target/<a name="line.55"></a>
+<span class="sourceLineNo">056</span>     * prefix<a name="line.56"></a>
+<span class="sourceLineNo">057</span>     */<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    public static String getDefaultDirectoryPrefix() {<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        try {<a name="line.59"></a>
+<span class="sourceLineNo">060</span>            return System.getProperty("org.apache.activemq.default.directory.prefix", "");<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        } catch (Exception e) {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>            return "";<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        }<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    }<a name="line.64"></a>
+<span class="sourceLineNo">065</span><a name="line.65"></a>
+<span class="sourceLineNo">066</span>    /**<a name="line.66"></a>
+<span class="sourceLineNo">067</span>     * Converts any string into a string that is safe to use as a file name. The<a name="line.67"></a>
+<span class="sourceLineNo">068</span>     * result will only include ascii characters and numbers, and the "-","_",<a name="line.68"></a>
+<span class="sourceLineNo">069</span>     * and "." characters.<a name="line.69"></a>
+<span class="sourceLineNo">070</span>     *<a name="line.70"></a>
+<span class="sourceLineNo">071</span>     * @param name<a name="line.71"></a>
+<span class="sourceLineNo">072</span>     * @return safe name of the directory<a name="line.72"></a>
+<span class="sourceLineNo">073</span>     */<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    public static String toFileSystemDirectorySafeName(String name) {<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        return toFileSystemSafeName(name, true, MAX_DIR_NAME_LENGTH);<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    }<a name="line.76"></a>
+<span class="sourceLineNo">077</span><a name="line.77"></a>
+<span class="sourceLineNo">078</span>    public static String toFileSystemSafeName(String name) {<a name="line.78"></a>
+<span class="sourceLineNo">079</span>        return toFileSystemSafeName(name, false, MAX_FILE_NAME_LENGTH);<a name="line.79"></a>
+<span class="sourceLineNo">080</span>    }<a name="line.80"></a>
+<span class="sourceLineNo">081</span><a name="line.81"></a>
+<span class="sourceLineNo">082</span>    /**<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     * Converts any string into a string that is safe to use as a file name. The<a name="line.83"></a>
+<span class="sourceLineNo">084</span>     * result will only include ascii characters and numbers, and the "-","_",<a name="line.84"></a>
+<span class="sourceLineNo">085</span>     * and "." characters.<a name="line.85"></a>
+<span class="sourceLineNo">086</span>     *<a name="line.86"></a>
+<span class="sourceLineNo">087</span>     * @param name<a name="line.87"></a>
+<span class="sourceLineNo">088</span>     * @param dirSeparators<a name="line.88"></a>
+<span class="sourceLineNo">089</span>     * @param maxFileLength<a name="line.89"></a>
+<span class="sourceLineNo">090</span>     * @return file system safe name<a name="line.90"></a>
+<span class="sourceLineNo">091</span>     */<a name="line.91"></a>
+<span class="sourceLineNo">092</span>    public static String toFileSystemSafeName(String name, boolean dirSeparators, int maxFileLength) {<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        int size = name.length();<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        StringBuffer rc = new StringBuffer(size * 2);<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        for (int i = 0; i &lt; size; i++) {<a name="line.95"></a>
+<span class="sourceLineNo">096</span>            char c = name.charAt(i);<a name="line.96"></a>
+<span class="sourceLineNo">097</span>            boolean valid = c &gt;= 'a' &amp;&amp; c &lt;= 'z';<a name="line.97"></a>
+<span class="sourceLineNo">098</span>            valid = valid || (c &gt;= 'A' &amp;&amp; c &lt;= 'Z');<a name="line.98"></a>
+<span class="sourceLineNo">099</span>            valid = valid || (c &gt;= '0' &amp;&amp; c &lt;= '9');<a name="line.99"></a>
+<span class="sourceLineNo">100</span>            valid = valid || (c == '_') || (c == '-') || (c == '.') || (c == '#') || (dirSeparators &amp;&amp; ((c == '/') || (c == '\\')));<a name="line.100"></a>
+<span class="sourceLineNo">101</span><a name="line.101"></a>
+<span class="sourceLineNo">102</span>            if (valid) {<a name="line.102"></a>
+<span class="sourceLineNo">103</span>                rc.append(c);<a name="line.103"></a>
+<span class="sourceLineNo">104</span>            } else {<a name="line.104"></a>
+<span class="sourceLineNo">105</span>                // Encode the character using hex notation<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                rc.append('#');<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                rc.append(HexSupport.toHexFromInt(c, true));<a name="line.107"></a>
+<span class="sourceLineNo">108</span>            }<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        }<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        String result = rc.toString();<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        if (result.length() &gt; maxFileLength) {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>            result = result.substring(result.length() - maxFileLength, result.length());<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        }<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        return result;<a name="line.114"></a>
+<span class="sourceLineNo">115</span>    }<a name="line.115"></a>
+<span class="sourceLineNo">116</span><a name="line.116"></a>
+<span class="sourceLineNo">117</span>    public static boolean delete(File top) {<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        boolean result = true;<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        Stack&lt;File&gt; files = new Stack&lt;File&gt;();<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        // Add file to the stack to be processed...<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        files.push(top);<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        // Process all files until none remain...<a name="line.122"></a>
+<span class="sourceLineNo">123</span>        while (!files.isEmpty()) {<a name="line.123"></a>
+<span class="sourceLineNo">124</span>            File file = files.pop();<a name="line.124"></a>
+<span class="sourceLineNo">125</span>            if (file.isDirectory()) {<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                File list[] = file.listFiles();<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                if (list == null || list.length == 0) {<a name="line.127"></a>
+<span class="sourceLineNo">128</span>                    // The current directory contains no entries...<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                    // delete directory and continue...<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                    result &amp;= file.delete();<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                } else {<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                    // Add back the directory since it is not empty....<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                    // and when we process it again it will be empty and can be<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                    // deleted safely...<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                    files.push(file);<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                    for (File dirFile : list) {<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                        if (dirFile.isDirectory()) {<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                            // Place the directory on the stack...<a name="line.138"></a>
+<span class="sourceLineNo">139</span>                            files.push(dirFile);<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                        } else {<a name="line.140"></a>
+<span class="sourceLineNo">141</span>                            // This is a simple file, delete it...<a name="line.141"></a>
+<span class="sourceLineNo">142</span>                            result &amp;= dirFile.delete();<a name="line.142"></a>
+<span class="sourceLineNo">143</span>                        }<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                    }<a name="line.144"></a>
+<span class="sourceLineNo">145</span>                }<a name="line.145"></a>
+<span class="sourceLineNo">146</span>            } else {<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                // This is a simple file, delete it...<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                result &amp;= file.delete();<a name="line.148"></a>
+<span class="sourceLineNo">149</span>            }<a name="line.149"></a>
+<span class="sourceLineNo">150</span>        }<a name="line.150"></a>
+<span class="sourceLineNo">151</span>        return result;<a name="line.151"></a>
+<span class="sourceLineNo">152</span>    }<a name="line.152"></a>
+<span class="sourceLineNo">153</span><a name="line.153"></a>
+<span class="sourceLineNo">154</span>    public static boolean deleteFile(File fileToDelete) {<a name="line.154"></a>
+<span class="sourceLineNo">155</span>        if (fileToDelete == null || !fileToDelete.exists()) {<a name="line.155"></a>
+<span class="sourceLineNo">156</span>            return true;<a name="line.156"></a>
+<span class="sourceLineNo">157</span>        }<a name="line.157"></a>
+<span class="sourceLineNo">158</span>        boolean result = deleteChildren(fileToDelete);<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        result &amp;= fileToDelete.delete();<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        return result;<a name="line.160"></a>
+<span class="sourceLineNo">161</span>    }<a name="line.161"></a>
+<span class="sourceLineNo">162</span><a name="line.162"></a>
+<span class="sourceLineNo">163</span>    public static boolean deleteChildren(File parent) {<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        if (parent == null || !parent.exists()) {<a name="line.164"></a>
+<span class="sourceLineNo">165</span>            return false;<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        }<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        boolean result = true;<a name="line.167"></a>
+<span class="sourceLineNo">168</span>        if (parent.isDirectory()) {<a name="line.168"></a>
+<span class="sourceLineNo">169</span>            File[] files = parent.listFiles();<a name="line.169"></a>
+<span class="sourceLineNo">170</span>            if (files == null) {<a name="line.170"></a>
+<span class="sourceLineNo">171</span>                result = false;<a name="line.171"></a>
+<span class="sourceLineNo">172</span>            } else {<a name="line.172"></a>
+<span class="sourceLineNo">173</span>                for (int i = 0; i &lt; files.length; i++) {<a name="line.173"></a>
+<span class="sourceLineNo">174</span>                    File file = files[i];<a name="line.174"></a>
+<span class="sourceLineNo">175</span>                    if (file.getName().equals(".") || file.getName().equals("..")) {<a name="line.175"></a>
+<span class="sourceLineNo">176</span>                        continue;<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                    }<a name="line.177"></a>
+<span class="sourceLineNo">178</span>                    if (file.isDirectory()) {<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                        result &amp;= deleteFile(file);<a name="line.179"></a>
+<span class="sourceLineNo">180</span>                    } else {<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                        result &amp;= file.delete();<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                    }<a name="line.182"></a>
+<span class="sourceLineNo">183</span>                }<a name="line.183"></a>
+<span class="sourceLineNo">184</span>            }<a name="line.184"></a>
+<span class="sourceLineNo">185</span>        }<a name="line.185"></a>
+<span class="sourceLineNo">186</span><a name="line.186"></a>
+<span class="sourceLineNo">187</span>        return result;<a name="line.187"></a>
+<span class="sourceLineNo">188</span>    }<a name="line.188"></a>
+<span class="sourceLineNo">189</span><a name="line.189"></a>
+<span class="sourceLineNo">190</span>    public static void moveFile(File src, File targetDirectory) throws IOException {<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        if (!src.renameTo(new File(targetDirectory, src.getName()))) {<a name="line.191"></a>
+<span class="sourceLineNo">192</span><a name="line.192"></a>
+<span class="sourceLineNo">193</span>            // If rename fails we must do a true deep copy instead.<a name="line.193"></a>
+<span class="sourceLineNo">194</span>            Path sourcePath = src.toPath();<a name="line.194"></a>
+<span class="sourceLineNo">195</span>            Path targetDirPath = targetDirectory.toPath();<a name="line.195"></a>
+<span class="sourceLineNo">196</span><a name="line.196"></a>
+<span class="sourceLineNo">197</span>            try {<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                Files.move(sourcePath, targetDirPath.resolve(sourcePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);<a name="line.198"></a>
+<span class="sourceLineNo">199</span>            } catch (IOException ex) {<a name="line.199"></a>
+<span class="sourceLineNo">200</span>                throw new IOException("Failed to move " + src + " to " + targetDirectory + " - " + ex.getMessage());<a name="line.200"></a>
+<span class="sourceLineNo">201</span>            }<a name="line.201"></a>
+<span class="sourceLineNo">202</span>        }<a name="line.202"></a>
+<span class="sourceLineNo">203</span>    }<a name="line.203"></a>
+<span class="sourceLineNo">204</span><a name="line.204"></a>
+<span class="sourceLineNo">205</span>    public static void moveFiles(File srcDirectory, File targetDirectory, FilenameFilter filter) throws IOException {<a name="line.205"></a>
+<span class="sourceLineNo">206</span>        if (!srcDirectory.isDirectory()) {<a name="line.206"></a>
+<span class="sourceLineNo">207</span>            throw new IOException("source is not a directory");<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        }<a name="line.208"></a>
+<span class="sourceLineNo">209</span><a name="line.209"></a>
+<span class="sourceLineNo">210</span>        if (targetDirectory.exists() &amp;&amp; !targetDirectory.isDirectory()) {<a name="line.210"></a>
+<span class="sourceLineNo">211</span>            throw new IOException("target exists and is not a directory");<a name="line.211"></a>
+<span class="sourceLineNo">212</span>        } else {<a name="line.212"></a>
+<span class="sourceLineNo">213</span>            mkdirs(targetDirectory);<a name="line.213"></a>
+<span class="sourceLineNo">214</span>        }<a name="line.214"></a>
+<span class="sourceLineNo">215</span><a name="line.215"></a>
+<span class="sourceLineNo">216</span>        List&lt;File&gt; filesToMove = new ArrayList&lt;File&gt;();<a name="line.216"></a>
+<span class="sourceLineNo">217</span>        getFiles(srcDirectory, filesToMove, filter);<a name="line.217"></a>
+<span class="sourceLineNo">218</span><a name="line.218"></a>
+<span class="sourceLineNo">219</span>        for (File file : filesToMove) {<a name="line.219"></a>
+<span class="sourceLineNo">220</span>            if (!file.isDirectory()) {<a name="line.220"></a>
+<span class="sourceLineNo">221</span>                moveFile(file, targetDirectory);<a name="line.221"></a>
+<span class="sourceLineNo">222</span>            }<a name="line.222"></a>
+<span class="sourceLineNo">223</span>        }<a name="line.223"></a>
+<span class="sourceLineNo">224</span>    }<a name="line.224"></a>
+<span class="sourceLineNo">225</span><a name="line.225"></a>
+<span class="sourceLineNo">226</span>    public static void copyFile(File src, File dest) throws IOException {<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        copyFile(src, dest, null);<a name="line.227"></a>
+<span class="sourceLineNo">228</span>    }<a name="line.228"></a>
+<span class="sourceLineNo">229</span><a name="line.229"></a>
+<span class="sourceLineNo">230</span>    public static void copyFile(File src, File dest, FilenameFilter filter) throws IOException {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>        if (src.getCanonicalPath().equals(dest.getCanonicalPath()) == false) {<a name="line.231"></a>
+<span class="sourceLineNo">232</span>            if (src.isDirectory()) {<a name="line.232"></a>
+<span class="sourceLineNo">233</span><a name="line.233"></a>
+<span class="sourceLineNo">234</span>                mkdirs(dest);<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                List&lt;File&gt; list = getFiles(src, filter);<a name="line.235"></a>
+<span class="sourceLineNo">236</span>                for (File f : list) {<a name="line.236"></a>
+<span class="sourceLineNo">237</span>                    if (f.isFile()) {<a name="line.237"></a>
+<span class="sourceLineNo">238</span>                        File target = new File(getCopyParent(src, dest, f), f.getName());<a name="line.238"></a>
+<span class="sourceLineNo">239</span>                        copySingleFile(f, target);<a name="line.239"></a>
+<span class="sourceLineNo">240</span>                    }<a name="line.240"></a>
+<span class="sourceLineNo">241</span>                }<a name="line.241"></a>
+<span class="sourceLineNo">242</span><a name="line.242"></a>
+<span class="sourceLineNo">243</span>            } else if (dest.isDirectory()) {<a name="line.243"></a>
+<span class="sourceLineNo">244</span>                mkdirs(dest);<a name="line.244"></a>
+<span class="sourceLineNo">245</span>                File target = new File(dest, src.getName());<a name="line.245"></a>
+<span class="sourceLineNo">246</span>                copySingleFile(src, target);<a name="line.246"></a>
+<span class="sourceLineNo">247</span>            } else {<a name="line.247"></a>
+<span class="sourceLineNo">248</span>                copySingleFile(src, dest);<a name="line.248"></a>
+<span class="sourceLineNo">249</span>            }<a name="line.249"></a>
+<span class="sourceLineNo">250</span>        }<a name="line.250"></a>
+<span class="sourceLineNo">251</span>    }<a name="line.251"></a>
+<span class="sourceLineNo">252</span><a name="line.252"></a>
+<span class="sourceLineNo">253</span>    static File getCopyParent(File from, File to, File src) {<a name="line.253"></a>
+<span class="sourceLineNo">254</span>        File result = null;<a name="line.254"></a>
+<span class="sourceLineNo">255</span>        File parent = src.getParentFile();<a name="line.255"></a>
+<span class="sourceLineNo">256</span>        String fromPath = from.getAbsolutePath();<a name="line.256"></a>
+<span class="sourceLineNo">257</span>        if (parent.getAbsolutePath().equals(fromPath)) {<a name="line.257"></a>
+<span class="sourceLineNo">258</span>            // one level down<a name="line.258"></a>
+<span class="sourceLineNo">259</span>            result = to;<a name="line.259"></a>
+<span class="sourceLineNo">260</span>        } else {<a name="line.260"></a>
+<span class="sourceLineNo">261</span>            String parentPath = parent.getAbsolutePath();<a name="line.261"></a>
+<span class="sourceLineNo">262</span>            String path = parentPath.substring(fromPath.length());<a name="line.262"></a>
+<span class="sourceLineNo">263</span>            result = new File(to.getAbsolutePath() + File.separator + path);<a name="line.263"></a>
+<span class="sourceLineNo">264</span>        }<a name="line.264"></a>
+<span class="sourceLineNo">265</span>        return result;<a name="line.265"></a>
+<span class="sourceLineNo">266</span>    }<a name="line.266"></a>
+<span class="sourceLineNo">267</span><a name="line.267"></a>
+<span class="sourceLineNo">268</span>    static List&lt;File&gt; getFiles(File dir, FilenameFilter filter) {<a name="line.268"></a>
+<span class="sourceLineNo">269</span>        List&lt;File&gt; result = new ArrayList&lt;File&gt;();<a name="line.269"></a>
+<span class="sourceLineNo">270</span>        getFiles(dir, result, filter);<a name="line.270"></a>
+<span class="sourceLineNo">271</span>        return result;<a name="line.271"></a>
+<span class="sourceLineNo">272</span>    }<a name="line.272"></a>
+<span class="sourceLineNo">273</span><a name="line.273"></a>
+<span class="sourceLineNo">274</span>    static void getFiles(File dir, List&lt;File&gt; list, FilenameFilter filter) {<a name="line.274"></a>
+<span class="sourceLineNo">275</span>        if (!list.contains(dir)) {<a name="line.275"></a>
+<span class="sourceLineNo">276</span>            list.add(dir);<a name="line.276"></a>
+<span class="sourceLineNo">277</span>            String[] fileNames = dir.list(filter);<a name="line.277"></a>
+<span class="sourceLineNo">278</span>            for (int i = 0; i &lt; fileNames.length; i++) {<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                File f = new File(dir, fileNames[i]);<a name="line.279"></a>
+<span class="sourceLineNo">280</span>                if (f.isFile()) {<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                    list.add(f);<a name="line.281"></a>
+<span class="sourceLineNo">282</span>                } else {<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                    getFiles(dir, list, filter);<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                }<a name="line.284"></a>
+<span class="sourceLineNo">285</span>            }<a name="line.285"></a>
+<span class="sourceLineNo">286</span>        }<a name="line.286"></a>
+<span class="sourceLineNo">287</span>    }<a name="line.287"></a>
+<span class="sourceLineNo">288</span><a name="line.288"></a>
+<span class="sourceLineNo">289</span>    public static void copySingleFile(File src, File dest) throws IOException {<a name="line.289"></a>
+<span class="sourceLineNo">290</span>        FileInputStream fileSrc = new FileInputStream(src);<a name="line.290"></a>
+<span class="sourceLineNo">291</span>        FileOutputStream fileDest = new FileOutputStream(dest);<a name="line.291"></a>
+<span class="sourceLineNo">292</span>        copyInputStream(fileSrc, fileDest);<a name="line.292"></a>
+<span class="sourceLineNo">293</span>    }<a name="line.293"></a>
+<span class="sourceLineNo">294</span><a name="line.294"></a>
+<span class="sourceLineNo">295</span>    public static void copyInputStream(InputStream in, OutputStream out) throws IOException {<a name="line.295"></a>
+<span class="sourceLineNo">296</span>        try {<a name="line.296"></a>
+<span class="sourceLineNo">297</span>            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];<a name="line.297"></a>
+<span class="sourceLineNo">298</span>            int len = in.read(buffer);<a name="line.298"></a>
+<span class="sourceLineNo">299</span>            while (len &gt;= 0) {<a name="line.299"></a>
+<span class="sourceLineNo">300</span>                out.write(buffer, 0, len);<a name="line.300"></a>
+<span class="sourceLineNo">301</span>                len = in.read(buffer);<a name="line.301"></a>
+<span class="sourceLineNo">302</span>            }<a name="line.302"></a>
+<span class="sourceLineNo">303</span>        } finally {<a name="line.303"></a>
+<span class="sourceLineNo">304</span>            in.close();<a name="line.304"></a>
+<span class="sourceLineNo">305</span>            out.close();<a name="line.305"></a>
+<span class="sourceLineNo">306</span>        }<a name="line.306"></a>
+<span class="sourceLineNo">307</span>    }<a name="line.307"></a>
+<span class="sourceLineNo">308</span><a name="line.308"></a>
+<span class="sourceLineNo">309</span>    static {<a name="line.309"></a>
+<span class="sourceLineNo">310</span>        MAX_DIR_NAME_LENGTH = Integer.getInteger("MaximumDirNameLength", 200);<a name="line.310"></a>
+<span class="sourceLineNo">311</span>        MAX_FILE_NAME_LENGTH = Integer.getInteger("MaximumFileNameLength", 64);<a name="line.311"></a>
+<span class="sourceLineNo">312</span>    }<a name="line.312"></a>
+<span class="sourceLineNo">313</span><a name="line.313"></a>
+<span class="sourceLineNo">314</span>    public static int getMaxDirNameLength() {<a name="line.314"></a>
+<span class="sourceLineNo">315</span>        return MAX_DIR_NAME_LENGTH;<a name="line.315"></a>
+<span class="sourceLineNo">316</span>    }<a name="line.316"></a>
+<span class="sourceLineNo">317</span><a name="line.317"></a>
+<span class="sourceLineNo">318</span>    public static int getMaxFileNameLength() {<a name="line.318"></a>
+<span class="sourceLineNo">319</span>        return MAX_FILE_NAME_LENGTH;<a name="line.319"></a>
+<span class="sourceLineNo">320</span>    }<a name="line.320"></a>
+<span class="sourceLineNo">321</span><a name="line.321"></a>
+<span class="sourceLineNo">322</span>    public static void mkdirs(File dir) throws IOException {<a name="line.322"></a>
+<span class="sourceLineNo">323</span>        if (dir.exists()) {<a name="line.323"></a>
+<span class="sourceLineNo">324</span>            if (!dir.isDirectory()) {<a name="line.324"></a>
+<span class="sourceLineNo">325</span>                throw new IOException("Failed to create directory '" + dir +<a name="line.325"></a>
+<span class="sourceLineNo">326</span>                                      "', regular file already existed with that name");<a name="line.326"></a>
+<span class="sourceLineNo">327</span>            }<a name="line.327"></a>
+<span class="sourceLineNo">328</span><a name="line.328"></a>
+<span class="sourceLineNo">329</span>        } else {<a name="line.329"></a>
+<span class="sourceLineNo">330</span>            if (!dir.mkdirs()) {<a name="line.330"></a>
+<span class="sourceLineNo">331</span>                throw new IOException("Failed to create directory '" + dir + "'");<a name="line.331"></a>
+<span class="sourceLineNo">332</span>            }<a name="line.332"></a>
+<span class="sourceLineNo">333</span>        }<a name="line.333"></a>
+<span class="sourceLineNo">334</span>    }<a name="line.334"></a>
+<span class="sourceLineNo">335</span>}<a name="line.335"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="#"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Geronimo</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p><a href="connectivity">Connectivity</a> &gt; <a href="containers">Containers</a> &gt; <a href="geronimo">Geronimo</a></p>
+
+<p>ActiveMQ is the default JMS provider in <a href="http://geronimo.apache.org">Apache Geronimo</a>.</p>
+
+<p>ActiveMQ can be used both as JMS Client and a JMS Broker. This short<br />
+article explains how to use it on a standalone client to access the<br />
+topics/queues setup on a remote Geronimo/ActiveMQ broker.</p>
+
+<p>1) Setup the queues and topics on the ActiveMQ Broker<br />
+If you’re using a standalone ActiveMQ broker, then following the instructions on<br />
+ActiveMQ’s website should be enough to setup everything.<br />
+However, if your ActiveMQ’s instance is embedded inside the J2EE Geronimo<br />
+Application Server, creating Queues and Topics is about deploying Resource<br />
+Adapters to your Geronimo server.<br />
+The following deployment descriptor can be used to deploy two topics and a<br />
+ConnectionFactory: weatherTopic and weatherRequestsTopic</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;connector</span> <span class="na">xmlns=</span><span class="s">"http://geronimo.apache.org/xml/ns/j2ee/connector"</span>
+    <span class="na">version=</span><span class="s">"1.5"</span>
+    <span class="na">configId=</span><span class="s">"weather/Topics"</span>
+    <span class="na">parentId=</span><span class="s">"org/apache/geronimo/SystemJMS"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;resourceadapter&gt;</span>
+        <span class="nt">&lt;resourceadapter-instance&gt;</span>
+            <span class="nt">&lt;resourceadapter-name&gt;</span>ActiveMQ RA<span class="nt">&lt;/resourceadapter-name&gt;</span>
+            <span class="nt">&lt;config-property-setting</span> <span class="na">name=</span><span class="s">"ServerUrl"</span><span class="nt">&gt;</span>tcp://localhost:61616<span class="nt">&lt;/config-property-setting&gt;</span>
+            <span class="nt">&lt;config-property-setting</span> <span class="na">name=</span><span class="s">"UserName"</span><span class="nt">&gt;</span>geronimo<span class="nt">&lt;/config-property-setting&gt;</span>
+            <span class="nt">&lt;config-property-setting</span> <span class="na">name=</span><span class="s">"Password"</span><span class="nt">&gt;</span>geronimo<span class="nt">&lt;/config-property-setting&gt;</span>
+            <span class="nt">&lt;workmanager&gt;</span>
+                <span class="nt">&lt;gbean-link&gt;</span>DefaultWorkManager<span class="nt">&lt;/gbean-link&gt;</span>
+            <span class="nt">&lt;/workmanager&gt;</span>
+        <span class="nt">&lt;/resourceadapter-instance&gt;</span>
+        <span class="nt">&lt;outbound-resourceadapter&gt;</span>
+            <span class="nt">&lt;connection-definition&gt;</span>
+
+<span class="nt">&lt;connectionfactory-interface&gt;</span>javax.jms.ConnectionFactory<span class="nt">&lt;/connectionfactory-interface&gt;</span>
+                <span class="nt">&lt;connectiondefinition-instance&gt;</span>
+                    <span class="nt">&lt;name&gt;</span>ConnectionFactory<span class="nt">&lt;/name&gt;</span>
+
+<span class="nt">&lt;implemented-interface&gt;</span>javax.jms.QueueConnectionFactory<span class="nt">&lt;/implemented-interface&gt;</span>
+
+<span class="nt">&lt;implemented-interface&gt;</span>javax.jms.TopicConnectionFactory<span class="nt">&lt;/implemented-interface&gt;</span>
+                    <span class="nt">&lt;connectionmanager&gt;</span>
+                        <span class="nt">&lt;xa-transaction&gt;</span>
+                            <span class="nt">&lt;transaction-caching/&gt;</span>
+                        <span class="nt">&lt;/xa-transaction&gt;</span>
+                        <span class="nt">&lt;single-pool&gt;</span>
+                            <span class="nt">&lt;max-size&gt;</span>10<span class="nt">&lt;/max-size&gt;</span>
+
+<span class="nt">&lt;blocking-timeout-milliseconds&gt;</span>5000<span class="nt">&lt;/blocking-timeout-milliseconds&gt;</span>
+                            <span class="nt">&lt;match-one/&gt;</span>
+                        <span class="nt">&lt;/single-pool&gt;</span>
+                    <span class="nt">&lt;/connectionmanager&gt;</span>
+                    <span class="nt">&lt;global-jndi-name&gt;</span>ConnectionFactory<span class="nt">&lt;/global-jndi-name&gt;</span>
+                    <span class="c">&lt;!--
+&lt;credential-interface&gt;javax.resource.spi.security.PasswordCredential&lt;/credential-interface&gt;
+--&gt;</span>
+                <span class="nt">&lt;/connectiondefinition-instance&gt;</span>
+            <span class="nt">&lt;/connection-definition&gt;</span>
+        <span class="nt">&lt;/outbound-resourceadapter&gt;</span>
+    <span class="nt">&lt;/resourceadapter&gt;</span>
+    <span class="nt">&lt;adminobject&gt;</span>
+        <span class="nt">&lt;adminobject-interface&gt;</span>javax.jms.Topic<span class="nt">&lt;/adminobject-interface&gt;</span>
+
+<span class="nt">&lt;adminobject-class&gt;</span>org.codehaus.activemq.message.ActiveMQTopic<span class="nt">&lt;/adminobject-class&gt;</span>
+        <span class="nt">&lt;adminobject-instance&gt;</span>
+            <span class="nt">&lt;message-destination-name&gt;</span>weatherTopic<span class="nt">&lt;/message-destination-name&gt;</span>
+            <span class="nt">&lt;config-property-setting</span>
+<span class="na">name=</span><span class="s">"PhysicalName"</span><span class="nt">&gt;</span>weatherTopic<span class="nt">&lt;/config-property-setting&gt;</span>
+        <span class="nt">&lt;/adminobject-instance&gt;</span>
+    <span class="nt">&lt;/adminobject&gt;</span>
+    <span class="nt">&lt;adminobject&gt;</span>
+        <span class="nt">&lt;adminobject-interface&gt;</span>javax.jms.Topic<span class="nt">&lt;/adminobject-interface&gt;</span>
+
+<span class="nt">&lt;adminobject-class&gt;</span>org.codehaus.activemq.message.ActiveMQTopic<span class="nt">&lt;/adminobject-class&gt;</span>
+        <span class="nt">&lt;adminobject-instance&gt;</span>
+
+<span class="nt">&lt;message-destination-name&gt;</span>weatherRequestsTopic<span class="nt">&lt;/message-destination-name&gt;</span>
+            <span class="nt">&lt;config-property-setting</span>
+<span class="na">name=</span><span class="s">"PhysicalName"</span><span class="nt">&gt;</span>weatherRequestsTopic<span class="nt">&lt;/config-property-setting&gt;</span>
+        <span class="nt">&lt;/adminobject-instance&gt;</span>
+    <span class="nt">&lt;/adminobject&gt;</span>
+
+<span class="nt">&lt;/connector&gt;</span>
+</code></pre></div></div>
+
+<p>Then deploy it using Geronimo’s deploy tool :</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>D:\\geronimo&gt;java -jar bin\\deployer.jar deploy d:\\projects\\weather\\src\\resources\
+geronimo-activemq.xml repository\\activemq\\rars\\activemq-ra-3.1-SNAPSHOT.rar
+Username: system
+Password: manager
+Deployed weather/Topics
+</code></pre></div></div>
+
+<p>The geronimo.log file should now refer to these newly deployed Topics.</p>
+
+<p>2) Now that the queues are available server-side, what we want is access them<br />
+thanks to a standalone Client.<br />
+Usually, the process is the following one :</p>
+
+<ul>
+  <li>Contact the J2EE naming server (port 1099, RMI) to get an JNDI InitialContext.</li>
+  <li>The J2EE server automatically exposes the ConnectionFactory and the Topics<br />
+through JNDI, so the InitialContext allows you to retrieve both the<br />
+ConnectionFactory and the Topics</li>
+  <li>Once you have your Topics, you just use them..</li>
+</ul>
+
+<p>However, ActiveMQ’s JNDI Implementation does NOT talk to the naming server. It’s<br />
+a stripped down version of a JNDI client that just allows to get Topics and<br />
+Queues directly from a JMS instance.<br />
+So, instead of supplying the naming server address, you have to supply the JMS<br />
+server address.<br />
+Most JNDI implementations use the java.naming.provider.url property to specify<br />
+the naming server’s address. ActiveMQ uses the brokerURL one. Using the<br />
+java.naming.provider.url one instead will result in ActiveMQ trying to load the<br />
+whole Broker.</p>
+
+<p>3) So, now we have explained the process, let’s detail the Spring way of doing<br />
+things :</p>
+
+<ul>
+  <li>Create a bootstrap.properties file that’s available in your classpath
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jms.connectionFactoryName=ConnectionFactory  
+jms.jndiProviderUrl=tcp://localhost:61616  
+jms.jndiContextFactory=org.activemq.jndi.ActiveMQInitialContextFactory
+    
+jms.weatherTopic=weatherTopic  
+jms.weatherRequestsTopic=weatherRequestsTopic
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Now, in your Spring description file, declare the bean that will read the properties from the bootstrap.properties file</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="placeholderConfig" 
+      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"&gt;
+    &lt;property name="location"&gt;&lt;value&gt;classpath:/bootstrap.properties&lt;/value&gt;&lt;/property&gt;
+&lt;/bean&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>Create a JNDI template (A Spring-specific wrapper around the JNDI InitialContext
+   ```
+    <bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate">
+        <property name="environment">
+            <props>
+                <prop key="java.naming.factory.initial">${jms.jndiContextFactory}</prop>
+    
+				&lt;!\-\- Specific to ActiveMQ --&gt;
+    
+				&lt;!\-\- the address of the ActiveMQ broker --&gt;
+                <prop key="brokerURL">${jms.jndiProviderUrl}</prop>
+				&lt;!\-\- Some Topics Registration, since we are using a fake JNDI implementation --&gt;
+                <prop key="topic.${jms.weatherTopic}">${jms.weatherTopic}</prop>
+                <prop key="topic.${jms.weatherRequestsTopic}">${jms.weatherRequestsTopic}</prop>
+			</props>
+        </property>
+    </bean>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Retrieve the ConnectionFactory from the JNDI context</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="internalJmsQueueConnectionFactory"
+    class="org.springframework.jndi.JndiObjectFactoryBean"&gt;
+    &lt;property name="jndiTemplate"&gt;
+        &lt;ref bean="jndiTemplate"/&gt;
+    &lt;/property&gt;
+    &lt;property name="jndiName"&gt;
+        &lt;value&gt;${jms.connectionFactoryName}&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+</code></pre></div>    </div>
+    <p>I’m not 100% sure, but I think that you can put any Factory Name, it will just<br />
+work. (In a scenario where the JNDI context actually contacts a naming server,<br />
+it should match the name of the deployed ConnectionFactory)</p>
+  </li>
+  <li>Get the Topics instances from the JNDI Context
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="weatherTopic"
+    class="org.springframework.jndi.JndiObjectFactoryBean"
+    singleton="true"&gt;
+    &lt;property name="jndiTemplate"&gt;
+        &lt;ref bean="jndiTemplate"/&gt;
+    &lt;/property&gt;
+    &lt;property name="jndiName"&gt;
+        &lt;value&gt;${jms.weatherTopic}&lt;/value&gt;
+    &lt;/property&gt;
+  	&lt;/bean&gt;
+  	
+&lt;bean id="weatherRequestTopic"
+  		class="org.springframework.jndi.JndiObjectFactoryBean"
+  		singleton="true"&gt;
+      &lt;property name="jndiTemplate"&gt;
+          &lt;ref bean="jndiTemplate"/&gt;
+      &lt;/property&gt;
+      &lt;property name="jndiName"&gt;
+          &lt;value&gt;${jms.weatherRequestsTopic}&lt;/value&gt;
+      &lt;/property&gt;
+  	&lt;/bean&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>Now, you can reuse these Topics beans the way you want.</li>
+</ul>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

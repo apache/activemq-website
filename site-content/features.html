@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="#"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Features</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p><a href="features">Features</a></p>
+
+<h2 id="apache-activemq-features">Apache ActiveMQ Features</h2>
+
+<p>Apache ActiveMQ is packed with features; to get an idea you might want to look at the <a href="features-overview">Features Overview</a> otherwise here is the list of all of the main features…</p>
+
+<ul>
+  <li><a href="active-groups">Active Groups</a></li>
+  <li><a href="activemq-real-time">ActiveMQ Real Time</a>
+    <ul>
+      <li><a href="broadcasting">Broadcasting</a></li>
+      <li><a href="group-membership">Group Membership</a></li>
+      <li><a href="life-cycle">Life Cycle</a></li>
+      <li><a href="the-activeblaze-message-type">The ActiveBlaze Message type</a></li>
+    </ul>
+  </li>
+  <li><a href="broker-camel-component">Broker Camel Component</a></li>
+  <li><a href="clustering">Clustering</a>
+    <ul>
+      <li><a href="masterslave">MasterSlave</a>
+        <ul>
+          <li><a href="jdbc-master-slave">JDBC Master Slave</a></li>
+          <li><a href="kahadb-replication-experimental">KahaDB Replication (Experimental)</a></li>
+          <li><a href="pure-master-slave">Pure Master Slave</a></li>
+          <li><a href="shared-file-system-master-slave">Shared File System Master Slave</a></li>
+        </ul>
+      </li>
+      <li><a href="networks-of-brokers">Networks of Brokers</a></li>
+      <li><a href="replicated-message-store">Replicated Message Store</a></li>
+    </ul>
+  </li>
+  <li><a href="command-agent">Command Agent</a></li>
+  <li><a href="consumer-features">Consumer Features</a>
+    <ul>
+      <li><a href="consumer-dispatch-async">Consumer Dispatch Async</a></li>
+      <li><a href="consumer-priority">Consumer Priority</a></li>
+      <li><a href="exclusive-consumer">Exclusive Consumer</a></li>
+      <li><a href="manage-durable-subscribers">Manage Durable Subscribers</a></li>
+      <li><a href="message-groups">Message Groups</a></li>
+      <li><a href="redelivery-policy">Redelivery Policy</a></li>
+      <li><a href="retroactive-consumer">Retroactive Consumer</a></li>
+      <li><a href="selectors">Selectors</a></li>
+      <li><a href="slow-consumer-handling">Slow Consumer Handling</a></li>
+      <li><a href="subscription-recovery-policy">Subscription Recovery Policy</a></li>
+    </ul>
+  </li>
+  <li><a href="destination-features">Destination Features</a>
+    <ul>
+      <li><a href="composite-destinations">Composite Destinations</a></li>
+      <li><a href="configure-startup-destinations">Configure Startup Destinations</a></li>
+      <li><a href="delete-inactive-destinations">Delete Inactive Destinations</a></li>
+      <li><a href="destination-options">Destination Options</a></li>
+      <li><a href="mirrored-queues">Mirrored Queues</a></li>
+      <li><a href="per-destination-policies">Per Destination Policies</a></li>
+      <li><a href="virtual-destinations">Virtual Destinations</a></li>
+      <li><a href="wildcards">Wildcards</a></li>
+    </ul>
+  </li>
+  <li><a href="discovery">Discovery</a></li>
+  <li><a href="enterprise-integration-patterns">Enterprise Integration Patterns</a></li>
+  <li><a href="features-overview">Features Overview</a></li>
+  <li><a href="horizontal-scaling">Horizontal Scaling</a>
+    <ul>
+      <li><a href="scaling-queues">Scaling Queues</a></li>
+    </ul>
+  </li>
+  <li><a href="interceptors">Interceptors</a>
+    <ul>
+      <li><a href="destinations-plugin">Destinations Plugin</a></li>
+      <li><a href="logging-interceptor">Logging Interceptor</a></li>
+      <li><a href="statisticsplugin">StatisticsPlugin</a></li>
+      <li><a href="timestampplugin">TimeStampPlugin</a></li>
+    </ul>
+  </li>
+  <li><a href="jmsxuserid">JMSXUserID</a></li>
+  <li><a href="jmx">JMX</a>
+    <ul>
+      <li><a href="jmx-support">JMX Support</a></li>
+    </ul>
+  </li>
+  <li><a href="logging-a-warning-if-you-forget-to-start-a-connection">Logging a warning if you forget to start a Connection</a></li>
+  <li><a href="mdc-logging">MDC Logging</a></li>
+  <li><a href="message-dispatching-features">Message Dispatching Features</a>
+    <ul>
+      <li><a href="async-sends">Async Sends</a></li>
+      <li><a href="dispatch-policies">Dispatch Policies</a></li>
+      <li><a href="message-cursors">Message Cursors</a></li>
+      <li><a href="optimized-acknowledgement">Optimized Acknowledgement</a></li>
+      <li><a href="producer-flow-control">Producer Flow Control</a></li>
+      <li><a href="total-ordering">Total Ordering</a></li>
+    </ul>
+  </li>
+  <li><a href="message-features">Message Features</a>
+    <ul>
+      <li><a href="activemq-message-properties">ActiveMQ Message Properties</a></li>
+      <li><a href="advisory-message">Advisory Message</a></li>
+      <li><a href="blob-messages">Blob Messages</a></li>
+      <li><a href="delay-and-schedule-message-delivery">Delay and Schedule Message Delivery</a></li>
+      <li><a href="jms-streams">JMS Streams</a></li>
+      <li><a href="message-transformation">Message Transformation</a></li>
+      <li><a href="objectmessage">ObjectMessage</a></li>
+      <li><a href="structured-message-properties-and-mapmessages">Structured Message Properties and MapMessages</a></li>
+    </ul>
+  </li>
+  <li><a href="new-features">New Features</a>
+    <ul>
+      <li><a href="changes-in-40">Changes in 4.0</a></li>
+      <li><a href="new-features-in-41">New Features in 4.1</a></li>
+      <li><a href="new-features-in-50">New Features in 5.0</a></li>
+      <li><a href="new-features-in-51">New Features in 5.1</a></li>
+      <li><a href="new-features-in-52">New Features in 5.2</a></li>
+      <li><a href="new-features-in-53">New Features in 5.3</a></li>
+      <li><a href="new-features-in-54">New Features in 5.4</a></li>
+      <li><a href="new-features-in-55">New Features in 5.5</a></li>
+      <li><a href="new-features-in-56">New Features in 5.6</a></li>
+      <li><a href="new-features-in-57">New Features in 5.7</a></li>
+      <li><a href="new-features-in-58">New Features in 5.8</a></li>
+      <li><a href="new-features-in-59">New Features in 5.9</a>
+        <ul>
+          <li><a href="runtime-configuration">Runtime Configuration</a></li>
+        </ul>
+      </li>
+      <li><a href="new-features-in-511">New Features in 5.11</a></li>
+      <li><a href="new-features-in-513">New Features in 5.13</a></li>
+      <li><a href="new-features-in-60">New Features in 6.0</a></li>
+    </ul>
+  </li>
+  <li><a href="performance">Performance</a>
+    <ul>
+      <li><a href="activemq-performance-module-users-manual">ActiveMQ Performance Module Users Manual</a>
+        <ul>
+          <li><a href="sample-report">sample report</a></li>
+        </ul>
+      </li>
+      <li><a href="load-testing-with-camel">Load Testing with Camel</a></li>
+      <li><a href="performance-report">Performance report</a></li>
+    </ul>
+  </li>
+  <li><a href="persistence">Persistence</a>
+    <ul>
+      <li><a href="amq-message-store">AMQ Message Store</a></li>
+      <li><a href="configurable-ioexception-handling">Configurable IOException Handling</a></li>
+      <li><a href="jdbc-support">JDBC Support</a>
+        <ul>
+          <li><a href="sqlserver">SQLServer</a></li>
+          <li><a href="sybase">Sybase</a></li>
+        </ul>
+      </li>
+      <li><a href="kahadb">KahaDB</a></li>
+      <li><a href="kaha-persistence">Kaha Persistence</a></li>
+      <li><a href="leveldb-store">LevelDB Store</a></li>
+      <li><a href="periodically-checking-disk-limits">Periodically checking disk limits</a></li>
+      <li><a href="pluggable-storage-lockers">Pluggable storage lockers</a></li>
+      <li><a href="replicated-Persistenceleveldb-store">Replicated LevelDB Store</a></li>
+    </ul>
+  </li>
+  <li><a href="scaling-the-depth-of-a-queue">Scaling the Depth of a Queue</a></li>
+  <li><a href="security">Security</a>
+    <ul>
+      <li><a href="audit-logging">Audit Logging</a></li>
+      <li><a href="cached-ldap-authorization-module">Cached LDAP Authorization Module</a></li>
+      <li><a href="encrypted-passwords">Encrypted passwords</a></li>
+      <li><a href="shiro">Shiro</a></li>
+    </ul>
+  </li>
+  <li><a href="the-proxy-connector">The Proxy Connector</a></li>
+  <li><a href="unix">Unix</a>
+    <ul>
+      <li><a href="unix-service">Unix Service</a></li>
+      <li><a href="unix-shell-script">Unix Shell Script</a></li>
+    </ul>
+  </li>
+  <li><a href="uri-protocols">URI Protocols</a>
+    <ul>
+      <li><a href="vm-protocol">VM Protocol</a></li>
+    </ul>
+  </li>
+  <li><a href="visualisation">Visualisation</a>
+    <ul>
+      <li><a href="visualisation-wish-list">Visualisation Wish List</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
