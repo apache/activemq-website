@@ -18,7 +18,7 @@ This is the first official release of the C++ Messaging Service (CMS)!! CMS prov
 API
 ---
 
-Check out the API for this release [here](http://activemq.apache.org/cms/api_docs/cms-1.0)
+Check out the API for this release [here](../api_docs/cms-1.0)
 
 Download Here
 -------------

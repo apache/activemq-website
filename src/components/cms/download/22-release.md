@@ -21,7 +21,7 @@ Some notable new features in this release
 API
 ---
 
-Check out the API for this release [here](http://activemq.apache.org/cms/api_docs/activemqcpp-2.2.1)
+Check out the API for this release [here](../api_docs/activemqcpp-2.2.1)
 
 Download Here
 -------------

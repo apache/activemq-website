@@ -15,7 +15,7 @@ This version includes several bugfixes, as well as some new features. Also a lot
 API
 ---
 
-Check out the API for this release [here](http://activemq.apache.org/cms/api_docs/activemqcpp-2.1)
+Check out the API for this release [here](../api_docs/activemqcpp-2.1)
 
 Download Here
 -------------

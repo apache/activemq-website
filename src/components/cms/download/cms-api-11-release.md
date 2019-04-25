@@ -16,7 +16,7 @@ This is a minor release of the C++ Messaging Service (CMS). This release is was 
 API
 ---
 
-Check out the API for this release [here](http://activemq.apache.org/cms/api_docs/cms-1.1)
+Check out the API for this release [here](../api_docs/cms-1.1)
 
 Download Here
 -------------

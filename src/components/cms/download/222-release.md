@@ -15,7 +15,7 @@ This is a minor release that contains bugfixes that were found since the 2.2.2 r
 API
 ---
 
-Check out the API for this release [here](http://activemq.apache.org/cms/api_docs/activemqcpp-2.2.2)
+Check out the API for this release [here](../api_docs/activemqcpp-2.2.2)
 
 Download Here
 -------------

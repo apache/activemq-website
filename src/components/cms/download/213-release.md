@@ -15,7 +15,7 @@ This version adds more support for building the client code on the Solaris platf
 API
 ---
 
-Check out the API for this release [here](http://activemq.apache.org/cms/api_docs/activemqcpp-2.1.1)
+Check out the API for this release [here](../api_docs/activemqcpp-2.1.1)
 
 Download Here
 -------------

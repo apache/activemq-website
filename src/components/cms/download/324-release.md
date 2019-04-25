@@ -17,7 +17,7 @@ API
 
 This release is based on the CMS 2.2 API.
 
-Check out the API for this release [here](http://activemq.apache.org/cms/api_docs/activemqcpp-3.0)
+Check out the API for this release [here](../api_docs/activemqcpp-3.0)
 
 Download Here
 -------------
