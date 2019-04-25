@@ -18,8 +18,8 @@ Read more in the dedicated [CMS API overview](overview).
 
 ### API Reference <a name="#api"></a>
 
-*   [ActiveMQ-CPP 3.9.x](http://activemq.apache.org/cms/api_docs/activemqcpp-3.9.0/html/)
-*   [ActiveMQ-CPP 3.6.x](http://activemq.apache.org/cms/api_docs/activemqcpp-3.6.0/html/)
+*   [ActiveMQ-CPP 3.9.x](api_docs/activemqcpp-3.9.0/html/)
+*   [ActiveMQ-CPP 3.6.x](api_docs/activemqcpp-3.6.0/html/)
 
 ### Connectivity
 
