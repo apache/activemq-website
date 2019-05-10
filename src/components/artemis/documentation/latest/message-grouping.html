@@ -1207,6 +1207,55 @@ message.setIntProperty(<span class="hljs-string">&quot;JMSXGroupSeq&quot;</span>
 producer.send(message);
 </code></pre>
 <p>This then closes the message group so if another message is sent in the future with the same message group ID it will be reassigned to a new consumer.</p>
+<h4 id="notifying-consumer-of-group-ownership-change">Notifying Consumer of Group Ownership change</h4>
+<p>ActiveMQ supports putting a boolean header, set on the first message sent to a consumer for a particular message group.</p>
+<p>To enable this, you must set a header key that the broker will use to set the flag.</p>
+<p>In the examples we use <code>JMSXGroupFirstForConsumer</code> but it can be any header key value you want.</p>
+<p>By setting <code>group-first-key</code> to <code>JMSXGroupFirstForConsumer</code> at the queue level, every time a new group is assigned a consumer the header <code>JMSXGroupFirstForConsumer</code> will be set to true on the first message.</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">address</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;foo.bar&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">multicast</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">queue</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;orders1&quot;</span> <span class="hljs-attr">group-first-key</span>=<span class="hljs-string">&quot;JMSXGroupFirstForConsumer&quot;</span>/&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">multicast</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">address</span>&gt;</span>
+</code></pre>
+<p>Or on auto-create when using the JMS Client by using address parameters when 
+creating the destination used by the consumer.</p>
+<pre><code class="lang-java">Queue queue = session.createQueue(<span class="hljs-string">&quot;my.destination.name?group-first-key=JMSXGroupFirstForConsumer&quot;</span>);
+Topic topic = session.createTopic(<span class="hljs-string">&quot;my.destination.name?group-first-key=JMSXGroupFirstForConsumer&quot;</span>);
+</code></pre>
+<p>Also the default for all queues under and address can be defaulted using the 
+<code>address-setting</code> configuration:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">address-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;my.address&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">default-group-first-key</span>&gt;</span>JMSXGroupFirstForConsumer<span class="hljs-tag">&lt;/<span class="hljs-name">default-group-first-key</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">address-setting</span>&gt;</span>
+</code></pre>
+<p>By default this is null, and therefor OFF. </p>
+<h4 id="rebalancing-message-groups">Rebalancing Message Groups</h4>
+<p>Sometimes after new consumers are added you can find that if you have long lived groups, that they have no groups assigned, and thus are not being utilised, this is because the long lived groups will already be assigned to existing consumers.</p>
+<p>It is possibly to rebalance the groups.</p>
+<p><strong><em>note</em></strong> during the split moment of reset, a message to the original associated consumer could be in flight at the same time, a new message for the same group is dispatched to the new associated consumer.</p>
+<h5 id="manually">Manually</h5>
+<p>via the management API or managment console by invoking <code>resetAllGroups</code></p>
+<h5 id="automatically">Automatically</h5>
+<p>By setting <code>group-rebalance</code> to <code>true</code> at the queue level, every time a consumer is added it will trigger a rebalance/reset of the groups.</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">address</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;foo.bar&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">multicast</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">queue</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;orders1&quot;</span> <span class="hljs-attr">group-rebalance</span>=<span class="hljs-string">&quot;true&quot;</span>/&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">multicast</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">address</span>&gt;</span>
+</code></pre>
+<p>Or on auto-create when using the JMS Client by using address parameters when 
+creating the destination used by the consumer.</p>
+<pre><code class="lang-java">Queue queue = session.createQueue(<span class="hljs-string">&quot;my.destination.name?group-rebalance=true&quot;</span>);
+Topic topic = session.createTopic(<span class="hljs-string">&quot;my.destination.name?group-rebalance=true&quot;</span>);
+</code></pre>
+<p>Also the default for all queues under and address can be defaulted using the 
+<code>address-setting</code> configuration:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">address-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;my.address&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">default-group-rebalance</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">default-group-rebalance</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">address-setting</span>&gt;</span>
+</code></pre>
+<p>By default, <code>default-group-rebalance</code> is <code>false</code> meaning this is disabled/off.</p>
 <h4 id="group-buckets">Group Buckets</h4>
 <p>For handling groups in a queue with bounded memory allowing better scaling of groups, 
 you can enable group buckets, essentially the group id is hashed into a bucket instead of keeping track of every single group id.</p>
@@ -1234,7 +1283,7 @@ Topic topic = session.createTopic(<span class="hljs-string">&quot;my.destination
 <span class="hljs-tag">&lt;/<span class="hljs-name">address-setting</span>&gt;</span>
 </code></pre>
 <p>By default, <code>default-group-buckets</code> is <code>-1</code> this is to keep compatibility with existing default behaviour. </p>
-<p>Address <a href="wildcard-syntax.html">wildcards</a> can be used to configure exclusive queues for a 
+<p>Address <a href="wildcard-syntax.html">wildcards</a> can be used to configure group-buckets for a 
 set of addresses.</p>
 <h2 id="example">Example</h2>
 <p>See the <a href="examples.html#message-group">Message Group Example</a> which shows how
@@ -1368,7 +1417,7 @@ shows how to configure message groups with a ActiveMQ Artemis Cluster.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Message Grouping","level":"1.41","depth":1,"next":{"title":"Consumer Priority","level":"1.42","depth":1,"path":"consumer-priority.md","ref":"consumer-priority.md","articles":[]},"previous":{"title":"Exclusive Queues","level":"1.40","depth":1,"path":"exclusive-queues.md","ref":"exclusive-queues.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"message-grouping.md","mtime":"2019-03-14T17:39:56.530Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2019-03-14T17:45:44.282Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Message Grouping","level":"1.41","depth":1,"next":{"title":"Consumer Priority","level":"1.42","depth":1,"path":"consumer-priority.md","ref":"consumer-priority.md","articles":[]},"previous":{"title":"Exclusive Queues","level":"1.40","depth":1,"path":"exclusive-queues.md","ref":"exclusive-queues.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"message-grouping.md","mtime":"2019-05-02T20:52:47.593Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2019-05-02T20:58:46.573Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
