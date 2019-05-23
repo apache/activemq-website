@@ -15,8 +15,8 @@ Apache ActiveMQ 5.14.5 includes several resolved[ issues](https://issues.apache
 ### Getting the Binary Distributions
 
 Description|Download Link|_Verify_
-Windows Distribution|[apache-activemq-5.14.5-bin.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.14.5/apache-activemq-5.14.5-bin.zip&action=download)|[ASC](https://www.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.zip.asc), [MD5](https://www.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.zip.md5), [SHA1](https://www.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.zip.sha1)
-Unix/Linux/Cygwin Distribution|[apache-activemq-5.14.5-bin.tar.gz](http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.14.5/apache-activemq-5.14.5-bin.tar.gz&action=download)|[ASC](https://www.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.tar.gz.asc), [MD5](https://www.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.tar.gz.md5), [SHA1](https://www.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.tar.gz.sha1)
+Windows Distribution|[apache-activemq-5.14.5-bin.zip](https://archive.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.zip)|[ASC](https://archive.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.zip.asc), [MD5](https://archive.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.zip.md5), [SHA1](https://archive.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.zip.sha1)
+Unix/Linux/Cygwin Distribution|[apache-activemq-5.14.5-bin.tar.gz](https://archive.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.tar.gz)|[ASC](https://archive.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.tar.gz.asc), [MD5](https://archive.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.tar.gz.md5), [SHA1](https://archive.apache.org/dist/activemq/5.14.5/apache-activemq-5.14.5-bin.tar.gz.sha1)
 
 Verify the Integrity of Downloads
 ---------------------------------
@@ -69,7 +69,7 @@ Getting the Source Code
 
 Description|Download Link|Verify
 ---|---|---
-Source Release|[activemq-parent-5.14.5-source-release.zip](http://www.apache.org/dyn/closer.cgi?path=/activemq/5.14.5/activemq-parent-5.14.5-source-release.zip)|[ASC](https://www.apache.org/dist/activemq/5.14.5/activemq-parent-5.14.5-source-release.zip.asc), [MD5](https://www.apache.org/dist/activemq/5.14.5/activemq-parent-5.14.5-source-release.zip.md5), [SHA1](https://www.apache.org/dist/activemq/5.14.5/activemq-parent-5.14.5-source-release.zip.sha1)
+Source Release|[activemq-parent-5.14.5-source-release.zip](https://archive.apache.org/dist/activemq/5.14.5/activemq-parent-5.14.5-source-release.zip)|[ASC](https://archive.apache.org/dist/activemq/5.14.5/activemq-parent-5.14.5-source-release.zip.asc), [MD5](https://archive.apache.org/dist/activemq/5.14.5/activemq-parent-5.14.5-source-release.zip.md5), [SHA1](https://archive.apache.org/dist/activemq/5.14.5/activemq-parent-5.14.5-source-release.zip.sha1)
 
 ### Git Tag
 
