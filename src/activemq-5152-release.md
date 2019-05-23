@@ -70,7 +70,7 @@ Getting the Source Code
 
 Description|Download Link|Verify
 ---|---|---
-Source Release|[activemq-parent-5.15.2-source-release.zip](http://www.apache.org/dyn/closer.cgi?path=/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip)|[ASC](https://www.apache.org/dist/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip.asc), [MD5](https://www.apache.org/dist/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip.md5), [SHA512](https://www.apache.org/dist/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip.sha512)
+Source Release|[activemq-parent-5.15.2-source-release.zip](https://archive.apache.org/dist/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip)|[ASC](https://archive.apache.org/dist/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip.asc), [MD5](https://archive.apache.org/dist/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip.md5), [SHA512](https://archive.apache.org/dist/activemq/5.15.2/activemq-parent-5.15.2-source-release.zip.sha512)
 
 ### Git Tag
 
