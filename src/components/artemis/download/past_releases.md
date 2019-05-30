@@ -12,20 +12,20 @@ The keys file for verifying the release can be obtained [here](https://www.apach
 For any releases not shown here, check the [archive](https://archive.apache.org/dist/activemq/activemq-artemis/).
 
 #### ActiveMQ Artemis 2.8.0  (May 8, 2019)
-[Release Notes](release-notes-2.8.0) | [Git Report](commit-report-2.8.0) | [Documentation](../documentation/2.7.0)
+[Release Notes](release-notes-2.8.0) | [Git Report](commit-report-2.8.0) | [Documentation](../documentation/latest)
 
-tar.gz:|[apache-artemis-2.8.0-bin.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.tar.gz.asc)
-ZIP:|[apache-artemis-2.8.0-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.zip&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.zip.asc)
-Source Distribution:|[apache-artemis-2.8.0-source-release.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-source-release.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-source-release.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-source-release.tar.gz.asc)|
+tar.gz:|[apache-artemis-2.8.0-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.tar.gz.asc)
+ZIP:|[apache-artemis-2.8.0-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.zip.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-bin.zip.asc)
+Source Distribution:|[apache-artemis-2.8.0-source-release.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-source-release.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-source-release.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.8.0/apache-artemis-2.8.0-source-release.tar.gz.asc)|
 
 <br/>
 
 #### ActiveMQ Artemis 2.7.0  (March 20, 2019)
-[Release Notes](release-notes-2.7.0) | [Git Report](commit-report-2.7.0) | [Documentation](../documentation/latest)
+[Release Notes](release-notes-2.7.0) | [Git Report](commit-report-2.7.0) | [Documentation](../documentation/2.7.0)
 
-tar.gz:|[apache-artemis-2.7.0-bin.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.tar.gz.asc)
-ZIP:|[apache-artemis-2.7.0-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.zip&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.zip.asc)
-Source Distribution:|[apache-artemis-2.7.0-source-release.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-source-release.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-source-release.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-source-release.tar.gz.asc)|
+tar.gz:|[apache-artemis-2.7.0-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.tar.gz.asc)
+ZIP:|[apache-artemis-2.7.0-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.zip.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-bin.zip.asc)
+Source Distribution:|[apache-artemis-2.7.0-source-release.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-source-release.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-source-release.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.7.0/apache-artemis-2.7.0-source-release.tar.gz.asc)|
 
 <br/>
 
