@@ -5,7 +5,7 @@ title-class: page-title-artemis
 type: artemis
 ---
 
-These are older releases. For current releases, please see the [download](..) page.
+These are older releases. For current releases, please see the [download](./) page.
 
 The keys file for verifying the release can be obtained [here](https://www.apache.org/dist/activemq/KEYS)
 
