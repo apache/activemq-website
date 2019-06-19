@@ -8,7 +8,21 @@ type: activemq5
  [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq) > [How do I unack the message with Stomp](how-do-i-unack-the-message-with-stomp)
 
 
-There is no explicit "unack" command in Stomp. Once the client receives the message it cannot be marked as "unconsumed" and sent to another subscriber (or redelivered to the same subscriber again). It's up to your application (or Stomp client) to handle failed processing of received messages and implement "message redelivery".
+Since ActiveMQ 5.6.0
+--------------------
+
+Since version 5.6.0 ActiveMQ supports Stomp 1.1, which added an UNACK frame. This can be used to tell the server that the client could not consume the message.
+
+If ActiveMQ receives a NACK frame, then by default if the message is persistent it places it into the DLQ. If it isn't, nothing happens.
+
+You may change this behaviour.
+
+Before ActiveMQ 5.6.0
+-----------------------
+
+Before ActiveMQ 5.6.0 the only Stomp protocol supported was Stomp 1.0. 
+
+There is no explicit "unack" command in Stomp 1.0. Once the client receives the message it cannot be marked as "unconsumed" and sent to another subscriber (or redelivered to the same subscriber again). It's up to your application (or Stomp client) to handle failed processing of received messages and implement "message redelivery".
 
 Stomp transactions are often mistakenly considered to be a solution for this use case. But that's not the case, since transactions are only related to sending messages and acknowledgments. If you start a transaction, send a message ack in a transaction and finally abort it, the message will not be redelivered again. It just means that broker will not send any more messages to the client if the prefetch limit is reached.
 
