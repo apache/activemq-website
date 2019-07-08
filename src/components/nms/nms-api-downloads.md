@@ -5,6 +5,37 @@ title-class: page-title-nms
 type: nms
 ---
 
+1.8.0 (01/07/2019)
+-----
+
+##### New and Noteworthy
+
+This is a major release of the NMS API which adds .net standard 2.0 support, it also is the first apache release providing nuget packages.
+
+##### Download Here
+
+|Description|Download Link|PGP Signature File|Version|
+|---|---|---|---|
+|Apache.NMS Source code|[Apache.NMS-1.8.0-src.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-src.zip)|[Apache.NMS-1.8.0-src.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-src.zip.asc)|1.8.0|
+|Apache.NMS Binary Assemblies|[Apache.NMS-1.8.0-bin.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-bin.zip)|[Apache.NMS-1.8.0-bin.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-bin.zip.asc)|1.8.0|
+|Apache.NMS Nuget Package|[Apache.NMS.1.8.0.nupkg](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/1.8.0/Apache.NMS.1.8.0.nupkg)|[Apache.NMS.1.8.0.nupkg.asc](http://www.apache.org/dist/activemq/apache-nms-api/1.8.0/Apache.NMS.1.8.0.nupkg.asc)|1.8.0|
+|Apache.NMS Documentation |[Apache.NMS-1.8.0-docs.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-docs.zip)|[Apache.NMS-1.8.0-docs.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-docs.zip.asc)|1.8.0|
+
+
+##### Git Tag Checkout
+```
+git clone https://gitbox.apache.org/repos/asf/activemq-nms-api.git
+git checkout tags/1.8.0
+```
+
+##### Changelog
+
+https://issues.apache.org/jira/browse/AMQNET-565
+
+https://issues.apache.org/jira/browse/AMQNET-588
+  
+---
+
 1.7.1 (09/04/2015)
 -----
 
