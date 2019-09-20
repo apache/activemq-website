@@ -7,7 +7,7 @@ type: activemq5
 
 These are the current releases. For prior releases, please see the [past releases](../../../download-archives) page.
 
-#### ActiveMQ 5.15.10 (August 28, 2019)
+#### ActiveMQ 5.15.10 (September 1, 2019)
 
 [Documentation](../documentation)
 
