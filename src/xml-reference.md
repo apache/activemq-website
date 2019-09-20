@@ -51,6 +51,7 @@ XBean XML Reference 5.14.2|[Reference](http://activemq.apache.org/schema/core/ac
 XBean XML Reference 5.14.3|[Reference](http://activemq.apache.org/schema/core/activemq-core-5.14.3-schema.html)|[http://activemq.apache.org/schema/core/activemq-core-5.14.3.xsd](http://activemq.apache.org/schema/core/activemq-core-5.14.3.xsd)|[http://activemq.apache.org/schema/core](http://activemq.apache.org/schema/core)
 XBean XML Reference 5.14.4|[Reference](http://activemq.apache.org/schema/core/activemq-core-5.14.4-schema.html)|[http://activemq.apache.org/schema/core/activemq-core-5.14.4.xsd](http://activemq.apache.org/schema/core/activemq-core-5.14.4.xsd)|[http://activemq.apache.org/schema/core](http://activemq.apache.org/schema/core)
 XBean XML Reference 5.14.5|[Reference](http://activemq.apache.org/schema/core/activemq-core-5.14.5-schema.html)|[http://activemq.apache.org/schema/core/activemq-core-5.14.5.xsd](http://activemq.apache.org/schema/core/activemq-core-5.14.5.xsd)|[http://activemq.apache.org/schema/core](http://activemq.apache.org/schema/core)
+XBean XML Reference 5.15.10|[Reference](http://activemq.apache.org/schema/core/activemq-core-5.15.10-schema.html)|[http://activemq.apache.org/schema/core/activemq-core-5.15.10.xsd](http://activemq.apache.org/schema/core/activemq-core-5.15.10.xsd)|[http://activemq.apache.org/schema/core](http://activemq.apache.org/schema/core)
 
 Using the XSDs in configuration files
 -------------------------------------
