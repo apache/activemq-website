@@ -1166,7 +1166,22 @@ chapter in addition to any version-specific upgrade instructions outlined here.<
 </ul>
 </li>
 </ul>
-<h2 id="290">2.9.0</h2>
+<h2 id="2100">2.10.0</h2>
+<p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12345602" target="_blank">Full release notes</a>.</p>
+<p>This was mainly a bug-fix release with a notable dependency change impacting version upgrade.</p>
+<h4 id="upgrading-from-290">Upgrading from 2.9.0</h4>
+<p>Due to the WildFly dependency upgrade the broker start scripts/configuration need to be adjusted after upgrading.</p>
+<h5 id="on-nix">On *nix</h5>
+<p>Locate this statement in <code>bin/artemis</code>:</p>
+<pre><code>WILDFLY_COMMON=&quot;$ARTEMIS_HOME/lib/wildfly-common-1.5.1.Final.jar&quot;
+</code></pre><p>This needs to be replaced with this:</p>
+<pre><code>WILDFLY_COMMON=&quot;$ARTEMIS_HOME/lib/wildfly-common-1.5.2.Final.jar&quot;
+</code></pre><h5 id="on-windows">On Windows</h5>
+<p>Locate this part of <code>JAVA_ARGS</code> in <code>etc/artemis.profile.cmd</code> respectively <code>bin/artemis-service.xml</code>:</p>
+<pre><code>%ARTEMIS_HOME%\lib\wildfly-common-1.5.1.Final.jar
+</code></pre><p>This needs to be replaced with this:</p>
+<pre><code>%ARTEMIS_HOME%\lib\wildfly-common-1.5.2.Final.jar
+</code></pre><h2 id="290">2.9.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12345527" target="_blank">Full release notes</a>.</p>
 <p>This was a light release. It included a handful of bug fixes, a few improvements, and one major new feature.</p>
 <p>Highlights:</p>
@@ -1508,7 +1523,7 @@ production.</li>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2019-09-05T13:30:57.327Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2019-09-05T21:22:12.282Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2019-09-23T17:32:43.958Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2019-09-23T17:39:00.612Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
