@@ -2,6 +2,7 @@ set -e
 echo "Building ActiveMQ site (output is in ./site-content) ..."
 jekyll build -s ./src/ -d ./site-content
 COMMIT_HASH=`git rev-parse HEAD`
+COMMIT_MESSAGE=`git show -s --format=%s HEAD`
 
 echo "Build of ActiveMQ site successful."
 git checkout asf-site
@@ -10,7 +11,7 @@ mv site-content content
 git add content
 
 echo "Commiting changes to asf-site branch from master branch."
-git commit --author "ActiveMQ Dev <dev@activemq.apache.org>" -m "from $COMMIT_HASH"
+git commit --author "ActiveMQ Dev <dev@activemq.apache.org>" -m "from $COMMIT_MESSAGE / $COMMIT_HASH"
 
 echo "-----------------------------------------------------"
 echo "SITE BUILD SUCCESSFUL. You are now on the asf-site branch."
