@@ -11,7 +11,7 @@ mv site-content content
 git add content
 
 echo "Commiting changes to asf-site branch from master branch."
-git commit --author "ActiveMQ Dev <dev@activemq.apache.org>" -m "from $COMMIT_MESSAGE / $COMMIT_HASH"
+git commit --author "ActiveMQ Dev <dev@activemq.apache.org>" -m "$COMMIT_MESSAGE / built from commit $COMMIT_HASH"
 
 echo "-----------------------------------------------------"
 echo "SITE BUILD SUCCESSFUL. You are now on the asf-site branch."
