@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.tool.reports.plugins;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.util.ArrayList;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.util.HashMap;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.util.List;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.util.Map;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.util.StringTokenizer;<a name="line.23"></a>
+<span class="sourceLineNo">024</span><a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.apache.activemq.tool.reports.PerformanceStatisticsUtil;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.slf4j.Logger;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.slf4j.LoggerFactory;<a name="line.27"></a>
+<span class="sourceLineNo">028</span><a name="line.28"></a>
+<span class="sourceLineNo">029</span>public class CpuReportPlugin implements ReportPlugin {<a name="line.29"></a>
+<span class="sourceLineNo">030</span><a name="line.30"></a>
+<span class="sourceLineNo">031</span>    public static final String NAME_IGNORE_LIST = "$index$timeUnit$r$b$w$swpd$inact$active$free$buff$cache$si$so$in$";<a name="line.31"></a>
+<span class="sourceLineNo">032</span>    public static final String NAME_BLOCK_RECV = "bi";<a name="line.32"></a>
+<span class="sourceLineNo">033</span>    public static final String NAME_BLOCK_SENT = "bo";<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    public static final String NAME_CTX_SWITCH = "cs";<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    public static final String NAME_USER_TIME  = "us";<a name="line.35"></a>
+<span class="sourceLineNo">036</span>    public static final String NAME_SYS_TIME   = "sy";<a name="line.36"></a>
+<span class="sourceLineNo">037</span>    public static final String NAME_IDLE_TIME  = "id";<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    public static final String NAME_WAIT_TIME  = "wa";<a name="line.38"></a>
+<span class="sourceLineNo">039</span><a name="line.39"></a>
+<span class="sourceLineNo">040</span>    public static final String KEY_BLOCK_RECV = "BlocksReceived";<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    public static final String KEY_BLOCK_SENT = "BlocksSent";<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    public static final String KEY_CTX_SWITCH = "ContextSwitches";<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    public static final String KEY_USER_TIME  = "UserTime";<a name="line.43"></a>
+<span class="sourceLineNo">044</span>    public static final String KEY_SYS_TIME   = "SystemTime";<a name="line.44"></a>
+<span class="sourceLineNo">045</span>    public static final String KEY_IDLE_TIME  = "IdleTime";<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    public static final String KEY_WAIT_TIME  = "WaitingTime";<a name="line.46"></a>
+<span class="sourceLineNo">047</span><a name="line.47"></a>
+<span class="sourceLineNo">048</span>    public static final String KEY_AVE_BLOCK_RECV = "AveBlocksReceived";<a name="line.48"></a>
+<span class="sourceLineNo">049</span>    public static final String KEY_AVE_BLOCK_SENT = "AveBlocksSent";<a name="line.49"></a>
+<span class="sourceLineNo">050</span>    public static final String KEY_AVE_CTX_SWITCH = "AveContextSwitches";<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    public static final String KEY_AVE_USER_TIME  = "AveUserTime";<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    public static final String KEY_AVE_SYS_TIME   = "AveSystemTime";<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    public static final String KEY_AVE_IDLE_TIME  = "AveIdleTime";<a name="line.53"></a>
+<span class="sourceLineNo">054</span>    public static final String KEY_AVE_WAIT_TIME  = "AveWaitingTime";<a name="line.54"></a>
+<span class="sourceLineNo">055</span><a name="line.55"></a>
+<span class="sourceLineNo">056</span>    private static final Logger LOG = LoggerFactory.getLogger(CpuReportPlugin.class);<a name="line.56"></a>
+<span class="sourceLineNo">057</span><a name="line.57"></a>
+<span class="sourceLineNo">058</span>    protected List&lt;Long&gt; blockRecv = new ArrayList&lt;Long&gt;();<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    protected List&lt;Long&gt; blockSent = new ArrayList&lt;Long&gt;();<a name="line.59"></a>
+<span class="sourceLineNo">060</span>    protected List&lt;Long&gt; ctxSwitch = new ArrayList&lt;Long&gt;();<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    protected List&lt;Long&gt; userTime  = new ArrayList&lt;Long&gt;();<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    protected List&lt;Long&gt; sysTime   = new ArrayList&lt;Long&gt;();<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    protected List&lt;Long&gt; idleTime  = new ArrayList&lt;Long&gt;();<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    protected List&lt;Long&gt; waitTime  = new ArrayList&lt;Long&gt;();<a name="line.64"></a>
+<span class="sourceLineNo">065</span><a name="line.65"></a>
+<span class="sourceLineNo">066</span>    public void handleCsvData(String csvData) {<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        StringTokenizer tokenizer = new StringTokenizer(csvData, ",");<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        String data;<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        String key;<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        String val;<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        while (tokenizer.hasMoreTokens()) {<a name="line.71"></a>
+<span class="sourceLineNo">072</span>            data = tokenizer.nextToken();<a name="line.72"></a>
+<span class="sourceLineNo">073</span>            key  = data.substring(0, data.indexOf("="));<a name="line.73"></a>
+<span class="sourceLineNo">074</span>            val  = data.substring(data.indexOf("=") + 1);<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>            addToCpuList(key, val);<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        }<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    }<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>    public Map&lt;String, String&gt; getSummary() {<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        long val;<a name="line.81"></a>
+<span class="sourceLineNo">082</span><a name="line.82"></a>
+<span class="sourceLineNo">083</span>        Map&lt;String, String&gt; summary = new HashMap&lt;String, String&gt;();<a name="line.83"></a>
+<span class="sourceLineNo">084</span><a name="line.84"></a>
+<span class="sourceLineNo">085</span>        if (blockRecv.size() &gt; 0) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>            val = PerformanceStatisticsUtil.getSum(blockRecv);<a name="line.86"></a>
+<span class="sourceLineNo">087</span>            summary.put(KEY_BLOCK_RECV, String.valueOf(val));<a name="line.87"></a>
+<span class="sourceLineNo">088</span>            summary.put(KEY_AVE_BLOCK_RECV, String.valueOf((double)val / (double)blockRecv.size()));<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        }<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>        if (blockSent.size() &gt; 0) {<a name="line.91"></a>
+<span class="sourceLineNo">092</span>            val = PerformanceStatisticsUtil.getSum(blockSent);<a name="line.92"></a>
+<span class="sourceLineNo">093</span>            summary.put(KEY_BLOCK_SENT, String.valueOf(val));<a name="line.93"></a>
+<span class="sourceLineNo">094</span>            summary.put(KEY_AVE_BLOCK_SENT, String.valueOf((double)val / (double)blockSent.size()));<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        }<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>        if (ctxSwitch.size() &gt; 0) {<a name="line.97"></a>
+<span class="sourceLineNo">098</span>            val = PerformanceStatisticsUtil.getSum(ctxSwitch);<a name="line.98"></a>
+<span class="sourceLineNo">099</span>            summary.put(KEY_CTX_SWITCH, String.valueOf(val));<a name="line.99"></a>
+<span class="sourceLineNo">100</span>            summary.put(KEY_AVE_CTX_SWITCH, String.valueOf((double)val / (double)ctxSwitch.size()));<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        }<a name="line.101"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
+<span class="sourceLineNo">103</span>        if (userTime.size() &gt; 0) {<a name="line.103"></a>
+<span class="sourceLineNo">104</span>            val = PerformanceStatisticsUtil.getSum(userTime);<a name="line.104"></a>
+<span class="sourceLineNo">105</span>            summary.put(KEY_USER_TIME, String.valueOf(val));<a name="line.105"></a>
+<span class="sourceLineNo">106</span>            summary.put(KEY_AVE_USER_TIME, String.valueOf((double)val / (double)userTime.size()));<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        }<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>        if (sysTime.size() &gt; 0) {<a name="line.109"></a>
+<span class="sourceLineNo">110</span>            val = PerformanceStatisticsUtil.getSum(sysTime);<a name="line.110"></a>
+<span class="sourceLineNo">111</span>            summary.put(KEY_SYS_TIME, String.valueOf(val));<a name="line.111"></a>
+<span class="sourceLineNo">112</span>            summary.put(KEY_AVE_SYS_TIME, String.valueOf((double)val / (double)sysTime.size()));<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        }<a name="line.113"></a>
+<span class="sourceLineNo">114</span><a name="line.114"></a>
+<span class="sourceLineNo">115</span>        if (idleTime.size() &gt; 0) {<a name="line.115"></a>
+<span class="sourceLineNo">116</span>            val = PerformanceStatisticsUtil.getSum(idleTime);<a name="line.116"></a>
+<span class="sourceLineNo">117</span>            summary.put(KEY_IDLE_TIME, String.valueOf(val));<a name="line.117"></a>
+<span class="sourceLineNo">118</span>            summary.put(KEY_AVE_IDLE_TIME, String.valueOf((double)val / (double)idleTime.size()));<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        }<a name="line.119"></a>
+<span class="sourceLineNo">120</span><a name="line.120"></a>
+<span class="sourceLineNo">121</span>        if (waitTime.size() &gt; 0) {<a name="line.121"></a>
+<span class="sourceLineNo">122</span>            val = PerformanceStatisticsUtil.getSum(waitTime);<a name="line.122"></a>
+<span class="sourceLineNo">123</span>            summary.put(KEY_WAIT_TIME, String.valueOf(val));<a name="line.123"></a>
+<span class="sourceLineNo">124</span>            summary.put(KEY_AVE_WAIT_TIME, String.valueOf((double)val / (double)waitTime.size()));<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        }<a name="line.125"></a>
+<span class="sourceLineNo">126</span><a name="line.126"></a>
+<span class="sourceLineNo">127</span>        if (summary.size() &gt; 0) {<a name="line.127"></a>
+<span class="sourceLineNo">128</span>            return summary;<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        } else {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>            return null;<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        }<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    }<a name="line.132"></a>
+<span class="sourceLineNo">133</span><a name="line.133"></a>
+<span class="sourceLineNo">134</span>    protected void addToCpuList(String key, String val) {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>        if (key.equals(NAME_BLOCK_RECV)) {<a name="line.135"></a>
+<span class="sourceLineNo">136</span>            blockRecv.add(Long.valueOf(val));<a name="line.136"></a>
+<span class="sourceLineNo">137</span>        } else if (key.equals(NAME_BLOCK_SENT)) {<a name="line.137"></a>
+<span class="sourceLineNo">138</span>            blockSent.add(Long.valueOf(val));<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        } else if (key.equals(NAME_CTX_SWITCH)) {<a name="line.139"></a>
+<span class="sourceLineNo">140</span>            ctxSwitch.add(Long.valueOf(val));<a name="line.140"></a>
+<span class="sourceLineNo">141</span>        } else if (key.equals(NAME_USER_TIME)) {<a name="line.141"></a>
+<span class="sourceLineNo">142</span>            userTime.add(Long.valueOf(val));<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        } else if (key.equals(NAME_SYS_TIME)) {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>            sysTime.add(Long.valueOf(val));<a name="line.144"></a>
+<span class="sourceLineNo">145</span>        } else if (key.equals(NAME_IDLE_TIME)) {<a name="line.145"></a>
+<span class="sourceLineNo">146</span>            idleTime.add(Long.valueOf(val));<a name="line.146"></a>
+<span class="sourceLineNo">147</span>        } else if (key.equals(NAME_WAIT_TIME)) {<a name="line.147"></a>
+<span class="sourceLineNo">148</span>            waitTime.add(Long.valueOf(val));<a name="line.148"></a>
+<span class="sourceLineNo">149</span>        } else if (NAME_IGNORE_LIST.indexOf("$" + key + "$") != -1) {<a name="line.149"></a>
+<span class="sourceLineNo">150</span>            // Ignore key<a name="line.150"></a>
+<span class="sourceLineNo">151</span>        } else {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>            LOG.warn("Unrecognized CPU data. " + key + "=" + val);<a name="line.152"></a>
+<span class="sourceLineNo">153</span>        }<a name="line.153"></a>
+<span class="sourceLineNo">154</span>    }<a name="line.154"></a>
+<span class="sourceLineNo">155</span>}<a name="line.155"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

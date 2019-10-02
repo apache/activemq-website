@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import javax.jms.DeliveryMode;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import javax.jms.Destination;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import javax.jms.IllegalStateException;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import javax.jms.JMSException;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import javax.jms.Message;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import javax.jms.MessageProducer;<a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span>/**<a name="line.26"></a>
+<span class="sourceLineNo">027</span> * A useful base class for implementing a {@link MessageProducer}<a name="line.27"></a>
+<span class="sourceLineNo">028</span> *<a name="line.28"></a>
+<span class="sourceLineNo">029</span> *<a name="line.29"></a>
+<span class="sourceLineNo">030</span> */<a name="line.30"></a>
+<span class="sourceLineNo">031</span>public abstract class ActiveMQMessageProducerSupport implements MessageProducer, Closeable {<a name="line.31"></a>
+<span class="sourceLineNo">032</span>    protected ActiveMQSession session;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>    protected boolean disableMessageID;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    protected boolean disableMessageTimestamp;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    protected int defaultDeliveryMode;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>    protected int defaultPriority;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>    protected long defaultTimeToLive;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    protected int sendTimeout=0;<a name="line.38"></a>
+<span class="sourceLineNo">039</span><a name="line.39"></a>
+<span class="sourceLineNo">040</span>    public ActiveMQMessageProducerSupport(ActiveMQSession session) {<a name="line.40"></a>
+<span class="sourceLineNo">041</span>        this.session = session;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        disableMessageTimestamp = session.connection.isDisableTimeStampsByDefault();<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    }<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>    /**<a name="line.45"></a>
+<span class="sourceLineNo">046</span>     * Sets whether message IDs are disabled.<a name="line.46"></a>
+<span class="sourceLineNo">047</span>     * &lt;P&gt;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>     * Since message IDs take some effort to create and increase a message's<a name="line.48"></a>
+<span class="sourceLineNo">049</span>     * size, some JMS providers may be able to optimize message overhead if<a name="line.49"></a>
+<span class="sourceLineNo">050</span>     * they are given a hint that the message ID is not used by an application.<a name="line.50"></a>
+<span class="sourceLineNo">051</span>     * By calling the &lt;CODE&gt;setDisableMessageID&lt;/CODE&gt; method on this message<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     * producer, a JMS client enables this potential optimization for all<a name="line.52"></a>
+<span class="sourceLineNo">053</span>     * messages sent by this message producer. If the JMS provider accepts this<a name="line.53"></a>
+<span class="sourceLineNo">054</span>     * hint, these messages must have the message ID set to null; if the<a name="line.54"></a>
+<span class="sourceLineNo">055</span>     * provider ignores the hint, the message ID must be set to its normal<a name="line.55"></a>
+<span class="sourceLineNo">056</span>     * unique value.<a name="line.56"></a>
+<span class="sourceLineNo">057</span>     * &lt;P&gt;<a name="line.57"></a>
+<span class="sourceLineNo">058</span>     * Message IDs are enabled by default.<a name="line.58"></a>
+<span class="sourceLineNo">059</span>     *<a name="line.59"></a>
+<span class="sourceLineNo">060</span>     * @param value indicates if message IDs are disabled<a name="line.60"></a>
+<span class="sourceLineNo">061</span>     * @throws javax.jms.JMSException if the JMS provider fails to close the producer due to<a name="line.61"></a>
+<span class="sourceLineNo">062</span>     *                      some internal error.<a name="line.62"></a>
+<span class="sourceLineNo">063</span>     */<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    public void setDisableMessageID(boolean value) throws JMSException {<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        checkClosed();<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        this.disableMessageID = value;<a name="line.66"></a>
+<span class="sourceLineNo">067</span>    }<a name="line.67"></a>
+<span class="sourceLineNo">068</span><a name="line.68"></a>
+<span class="sourceLineNo">069</span>    /**<a name="line.69"></a>
+<span class="sourceLineNo">070</span>     * Gets an indication of whether message IDs are disabled.<a name="line.70"></a>
+<span class="sourceLineNo">071</span>     *<a name="line.71"></a>
+<span class="sourceLineNo">072</span>     * @return an indication of whether message IDs are disabled<a name="line.72"></a>
+<span class="sourceLineNo">073</span>     * @throws javax.jms.JMSException if the JMS provider fails to determine if message IDs are<a name="line.73"></a>
+<span class="sourceLineNo">074</span>     *                      disabled due to some internal error.<a name="line.74"></a>
+<span class="sourceLineNo">075</span>     */<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    public boolean getDisableMessageID() throws JMSException {<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        checkClosed();<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        return this.disableMessageID;<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    }<a name="line.79"></a>
+<span class="sourceLineNo">080</span><a name="line.80"></a>
+<span class="sourceLineNo">081</span>    /**<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     * Sets whether message timestamps are disabled.<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     * &lt;P&gt;<a name="line.83"></a>
+<span class="sourceLineNo">084</span>     * Since timestamps take some effort to create and increase a message's<a name="line.84"></a>
+<span class="sourceLineNo">085</span>     * size, some JMS providers may be able to optimize message overhead if<a name="line.85"></a>
+<span class="sourceLineNo">086</span>     * they are given a hint that the timestamp is not used by an application.<a name="line.86"></a>
+<span class="sourceLineNo">087</span>     * By calling the &lt;CODE&gt;setDisableMessageTimestamp&lt;/CODE&gt; method on this<a name="line.87"></a>
+<span class="sourceLineNo">088</span>     * message producer, a JMS client enables this potential optimization for<a name="line.88"></a>
+<span class="sourceLineNo">089</span>     * all messages sent by this message producer. If the JMS provider accepts<a name="line.89"></a>
+<span class="sourceLineNo">090</span>     * this hint, these messages must have the timestamp set to zero; if the<a name="line.90"></a>
+<span class="sourceLineNo">091</span>     * provider ignores the hint, the timestamp must be set to its normal<a name="line.91"></a>
+<span class="sourceLineNo">092</span>     * value.<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     * &lt;P&gt;<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     * Message timestamps are enabled by default.<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     *<a name="line.95"></a>
+<span class="sourceLineNo">096</span>     * @param value indicates if message timestamps are disabled<a name="line.96"></a>
+<span class="sourceLineNo">097</span>     * @throws javax.jms.JMSException if the JMS provider fails to close the producer due to<a name="line.97"></a>
+<span class="sourceLineNo">098</span>     *                      some internal error.<a name="line.98"></a>
+<span class="sourceLineNo">099</span>     */<a name="line.99"></a>
+<span class="sourceLineNo">100</span>    public void setDisableMessageTimestamp(boolean value) throws JMSException {<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        checkClosed();<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        this.disableMessageTimestamp = value;<a name="line.102"></a>
+<span class="sourceLineNo">103</span>    }<a name="line.103"></a>
+<span class="sourceLineNo">104</span><a name="line.104"></a>
+<span class="sourceLineNo">105</span>    /**<a name="line.105"></a>
+<span class="sourceLineNo">106</span>     * Gets an indication of whether message timestamps are disabled.<a name="line.106"></a>
+<span class="sourceLineNo">107</span>     *<a name="line.107"></a>
+<span class="sourceLineNo">108</span>     * @return an indication of whether message timestamps are disabled<a name="line.108"></a>
+<span class="sourceLineNo">109</span>     * @throws javax.jms.JMSException if the JMS provider fails to close the producer due to<a name="line.109"></a>
+<span class="sourceLineNo">110</span>     *                      some internal error.<a name="line.110"></a>
+<span class="sourceLineNo">111</span>     */<a name="line.111"></a>
+<span class="sourceLineNo">112</span>    public boolean getDisableMessageTimestamp() throws JMSException {<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        checkClosed();<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        return this.disableMessageTimestamp;<a name="line.114"></a>
+<span class="sourceLineNo">115</span>    }<a name="line.115"></a>
+<span class="sourceLineNo">116</span><a name="line.116"></a>
+<span class="sourceLineNo">117</span>    /**<a name="line.117"></a>
+<span class="sourceLineNo">118</span>     * Sets the producer's default delivery mode.<a name="line.118"></a>
+<span class="sourceLineNo">119</span>     * &lt;P&gt;<a name="line.119"></a>
+<span class="sourceLineNo">120</span>     * Delivery mode is set to &lt;CODE&gt;PERSISTENT&lt;/CODE&gt; by default.<a name="line.120"></a>
+<span class="sourceLineNo">121</span>     *<a name="line.121"></a>
+<span class="sourceLineNo">122</span>     * @param newDeliveryMode the message delivery mode for this message producer; legal<a name="line.122"></a>
+<span class="sourceLineNo">123</span>     *                        values are &lt;code&gt;DeliveryMode.NON_PERSISTENT&lt;/code&gt; and<a name="line.123"></a>
+<span class="sourceLineNo">124</span>     *                        &lt;code&gt;DeliveryMode.PERSISTENT&lt;/code&gt;<a name="line.124"></a>
+<span class="sourceLineNo">125</span>     * @throws javax.jms.JMSException if the JMS provider fails to set the delivery mode due to<a name="line.125"></a>
+<span class="sourceLineNo">126</span>     *                      some internal error.<a name="line.126"></a>
+<span class="sourceLineNo">127</span>     * @see javax.jms.MessageProducer#getDeliveryMode<a name="line.127"></a>
+<span class="sourceLineNo">128</span>     * @see javax.jms.DeliveryMode#NON_PERSISTENT<a name="line.128"></a>
+<span class="sourceLineNo">129</span>     * @see javax.jms.DeliveryMode#PERSISTENT<a name="line.129"></a>
+<span class="sourceLineNo">130</span>     * @see javax.jms.Message#DEFAULT_DELIVERY_MODE<a name="line.130"></a>
+<span class="sourceLineNo">131</span>     */<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    public void setDeliveryMode(int newDeliveryMode) throws JMSException {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>        if (newDeliveryMode != DeliveryMode.PERSISTENT &amp;&amp; newDeliveryMode != DeliveryMode.NON_PERSISTENT) {<a name="line.133"></a>
+<span class="sourceLineNo">134</span>            throw new javax.jms.IllegalStateException("unknown delivery mode: " + newDeliveryMode);<a name="line.134"></a>
+<span class="sourceLineNo">135</span>        }<a name="line.135"></a>
+<span class="sourceLineNo">136</span>        checkClosed();<a name="line.136"></a>
+<span class="sourceLineNo">137</span>        this.defaultDeliveryMode = newDeliveryMode;<a name="line.137"></a>
+<span class="sourceLineNo">138</span>    }<a name="line.138"></a>
+<span class="sourceLineNo">139</span><a name="line.139"></a>
+<span class="sourceLineNo">140</span>    /**<a name="line.140"></a>
+<span class="sourceLineNo">141</span>     * Gets the producer's default delivery mode.<a name="line.141"></a>
+<span class="sourceLineNo">142</span>     *<a name="line.142"></a>
+<span class="sourceLineNo">143</span>     * @return the message delivery mode for this message producer<a name="line.143"></a>
+<span class="sourceLineNo">144</span>     * @throws javax.jms.JMSException if the JMS provider fails to close the producer due to<a name="line.144"></a>
+<span class="sourceLineNo">145</span>     *                      some internal error.<a name="line.145"></a>
+<span class="sourceLineNo">146</span>     */<a name="line.146"></a>
+<span class="sourceLineNo">147</span>    public int getDeliveryMode() throws JMSException {<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        checkClosed();<a name="line.148"></a>
+<span class="sourceLineNo">149</span>        return this.defaultDeliveryMode;<a name="line.149"></a>
+<span class="sourceLineNo">150</span>    }<a name="line.150"></a>
+<span class="sourceLineNo">151</span><a name="line.151"></a>
+<span class="sourceLineNo">152</span>    /**<a name="line.152"></a>
+<span class="sourceLineNo">153</span>     * Sets the producer's default priority.<a name="line.153"></a>
+<span class="sourceLineNo">154</span>     * &lt;P&gt;<a name="line.154"></a>
+<span class="sourceLineNo">155</span>     * The JMS API defines ten levels of priority value, with 0 as the lowest<a name="line.155"></a>
+<span class="sourceLineNo">156</span>     * priority and 9 as the highest. Clients should consider priorities 0-4 as<a name="line.156"></a>
+<span class="sourceLineNo">157</span>     * gradations of normal priority and priorities 5-9 as gradations of<a name="line.157"></a>
+<span class="sourceLineNo">158</span>     * expedited priority. Priority is set to 4 by default.<a name="line.158"></a>
+<span class="sourceLineNo">159</span>     *<a name="line.159"></a>
+<span class="sourceLineNo">160</span>     * @param newDefaultPriority the message priority for this message producer; must be a<a name="line.160"></a>
+<span class="sourceLineNo">161</span>     *                           value between 0 and 9<a name="line.161"></a>
+<span class="sourceLineNo">162</span>     * @throws javax.jms.JMSException if the JMS provider fails to set the delivery mode due to<a name="line.162"></a>
+<span class="sourceLineNo">163</span>     *                      some internal error.<a name="line.163"></a>
+<span class="sourceLineNo">164</span>     * @see javax.jms.MessageProducer#getPriority<a name="line.164"></a>
+<span class="sourceLineNo">165</span>     * @see javax.jms.Message#DEFAULT_PRIORITY<a name="line.165"></a>
+<span class="sourceLineNo">166</span>     */<a name="line.166"></a>
+<span class="sourceLineNo">167</span>    public void setPriority(int newDefaultPriority) throws JMSException {<a name="line.167"></a>
+<span class="sourceLineNo">168</span>        if (newDefaultPriority &lt; 0 || newDefaultPriority &gt; 9) {<a name="line.168"></a>
+<span class="sourceLineNo">169</span>            throw new IllegalStateException("default priority must be a value between 0 and 9");<a name="line.169"></a>
+<span class="sourceLineNo">170</span>        }<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        checkClosed();<a name="line.171"></a>
+<span class="sourceLineNo">172</span>        this.defaultPriority = newDefaultPriority;<a name="line.172"></a>
+<span class="sourceLineNo">173</span>    }<a name="line.173"></a>
+<span class="sourceLineNo">174</span><a name="line.174"></a>
+<span class="sourceLineNo">175</span>    /**<a name="line.175"></a>
+<span class="sourceLineNo">176</span>     * Gets the producer's default priority.<a name="line.176"></a>
+<span class="sourceLineNo">177</span>     *<a name="line.177"></a>
+<span class="sourceLineNo">178</span>     * @return the message priority for this message producer<a name="line.178"></a>
+<span class="sourceLineNo">179</span>     * @throws javax.jms.JMSException if the JMS provider fails to close the producer due to<a name="line.179"></a>
+<span class="sourceLineNo">180</span>     *                      some internal error.<a name="line.180"></a>
+<span class="sourceLineNo">181</span>     * @see javax.jms.MessageProducer#setPriority<a name="line.181"></a>
+<span class="sourceLineNo">182</span>     */<a name="line.182"></a>
+<span class="sourceLineNo">183</span>    public int getPriority() throws JMSException {<a name="line.183"></a>
+<span class="sourceLineNo">184</span>        checkClosed();<a name="line.184"></a>
+<span class="sourceLineNo">185</span>        return this.defaultPriority;<a name="line.185"></a>
+<span class="sourceLineNo">186</span>    }<a name="line.186"></a>
+<span class="sourceLineNo">187</span><a name="line.187"></a>
+<span class="sourceLineNo">188</span>    /**<a name="line.188"></a>
+<span class="sourceLineNo">189</span>     * Sets the default length of time in milliseconds from its dispatch time<a name="line.189"></a>
+<span class="sourceLineNo">190</span>     * that a produced message should be retained by the message system.<a name="line.190"></a>
+<span class="sourceLineNo">191</span>     * &lt;P&gt;<a name="line.191"></a>
+<span class="sourceLineNo">192</span>     * Time to live is set to zero by default.<a name="line.192"></a>
+<span class="sourceLineNo">193</span>     *<a name="line.193"></a>
+<span class="sourceLineNo">194</span>     * @param timeToLive the message time to live in milliseconds; zero is unlimited<a name="line.194"></a>
+<span class="sourceLineNo">195</span>     * @throws javax.jms.JMSException if the JMS provider fails to set the time to live due to<a name="line.195"></a>
+<span class="sourceLineNo">196</span>     *                      some internal error.<a name="line.196"></a>
+<span class="sourceLineNo">197</span>     * @see javax.jms.MessageProducer#getTimeToLive<a name="line.197"></a>
+<span class="sourceLineNo">198</span>     * @see javax.jms.Message#DEFAULT_TIME_TO_LIVE<a name="line.198"></a>
+<span class="sourceLineNo">199</span>     */<a name="line.199"></a>
+<span class="sourceLineNo">200</span>    public void setTimeToLive(long timeToLive) throws JMSException {<a name="line.200"></a>
+<span class="sourceLineNo">201</span>        if (timeToLive &lt; 0L) {<a name="line.201"></a>
+<span class="sourceLineNo">202</span>            throw new IllegalStateException("cannot set a negative timeToLive");<a name="line.202"></a>
+<span class="sourceLineNo">203</span>        }<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        checkClosed();<a name="line.204"></a>
+<span class="sourceLineNo">205</span>        this.defaultTimeToLive = timeToLive;<a name="line.205"></a>
+<span class="sourceLineNo">206</span>    }<a name="line.206"></a>
+<span class="sourceLineNo">207</span><a name="line.207"></a>
+<span class="sourceLineNo">208</span>    /**<a name="line.208"></a>
+<span class="sourceLineNo">209</span>     * Gets the default length of time in milliseconds from its dispatch time<a name="line.209"></a>
+<span class="sourceLineNo">210</span>     * that a produced message should be retained by the message system.<a name="line.210"></a>
+<span class="sourceLineNo">211</span>     *<a name="line.211"></a>
+<span class="sourceLineNo">212</span>     * @return the message time to live in milliseconds; zero is unlimited<a name="line.212"></a>
+<span class="sourceLineNo">213</span>     * @throws javax.jms.JMSException if the JMS provider fails to get the time to live due to<a name="line.213"></a>
+<span class="sourceLineNo">214</span>     *                      some internal error.<a name="line.214"></a>
+<span class="sourceLineNo">215</span>     * @see javax.jms.MessageProducer#setTimeToLive<a name="line.215"></a>
+<span class="sourceLineNo">216</span>     */<a name="line.216"></a>
+<span class="sourceLineNo">217</span>    public long getTimeToLive() throws JMSException {<a name="line.217"></a>
+<span class="sourceLineNo">218</span>        checkClosed();<a name="line.218"></a>
+<span class="sourceLineNo">219</span>        return this.defaultTimeToLive;<a name="line.219"></a>
+<span class="sourceLineNo">220</span>    }<a name="line.220"></a>
+<span class="sourceLineNo">221</span><a name="line.221"></a>
+<span class="sourceLineNo">222</span>    /**<a name="line.222"></a>
+<span class="sourceLineNo">223</span>     * Sends a message using the &lt;CODE&gt;MessageProducer&lt;/CODE&gt;'s default<a name="line.223"></a>
+<span class="sourceLineNo">224</span>     * delivery mode, priority, and time to live.<a name="line.224"></a>
+<span class="sourceLineNo">225</span>     *<a name="line.225"></a>
+<span class="sourceLineNo">226</span>     * @param message the message to send<a name="line.226"></a>
+<span class="sourceLineNo">227</span>     * @throws javax.jms.JMSException                if the JMS provider fails to send the message due to some<a name="line.227"></a>
+<span class="sourceLineNo">228</span>     *                                     internal error.<a name="line.228"></a>
+<span class="sourceLineNo">229</span>     * @throws javax.jms.MessageFormatException      if an invalid message is specified.<a name="line.229"></a>
+<span class="sourceLineNo">230</span>     * @throws javax.jms.InvalidDestinationException if a client uses this method with a &lt;CODE&gt;<a name="line.230"></a>
+<span class="sourceLineNo">231</span>     *                                     MessageProducer&lt;/CODE&gt; with an invalid destination.<a name="line.231"></a>
+<span class="sourceLineNo">232</span>     * @throws UnsupportedOperationException<a name="line.232"></a>
+<span class="sourceLineNo">233</span>     *                                     if a client uses this method with a &lt;CODE&gt;<a name="line.233"></a>
+<span class="sourceLineNo">234</span>     *                                     MessageProducer&lt;/CODE&gt; that did not specify a<a name="line.234"></a>
+<span class="sourceLineNo">235</span>     *                                     destination at creation time.<a name="line.235"></a>
+<span class="sourceLineNo">236</span>     * @see javax.jms.Session#createProducer<a name="line.236"></a>
+<span class="sourceLineNo">237</span>     * @see javax.jms.MessageProducer<a name="line.237"></a>
+<span class="sourceLineNo">238</span>     * @since 1.1<a name="line.238"></a>
+<span class="sourceLineNo">239</span>     */<a name="line.239"></a>
+<span class="sourceLineNo">240</span>    public void send(Message message) throws JMSException {<a name="line.240"></a>
+<span class="sourceLineNo">241</span>        this.send(this.getDestination(),<a name="line.241"></a>
+<span class="sourceLineNo">242</span>                  message,<a name="line.242"></a>
+<span class="sourceLineNo">243</span>                  this.defaultDeliveryMode,<a name="line.243"></a>
+<span class="sourceLineNo">244</span>                  this.defaultPriority,<a name="line.244"></a>
+<span class="sourceLineNo">245</span>                  this.defaultTimeToLive);<a name="line.245"></a>
+<span class="sourceLineNo">246</span>    }<a name="line.246"></a>
+<span class="sourceLineNo">247</span><a name="line.247"></a>
+<span class="sourceLineNo">248</span>    /**<a name="line.248"></a>
+<span class="sourceLineNo">249</span>     * Sends a message to the destination, specifying delivery mode, priority,<a name="line.249"></a>
+<span class="sourceLineNo">250</span>     * and time to live.<a name="line.250"></a>
+<span class="sourceLineNo">251</span>     *<a name="line.251"></a>
+<span class="sourceLineNo">252</span>     * @param message      the message to send<a name="line.252"></a>
+<span class="sourceLineNo">253</span>     * @param deliveryMode the delivery mode to use<a name="line.253"></a>
+<span class="sourceLineNo">254</span>     * @param priority     the priority for this message<a name="line.254"></a>
+<span class="sourceLineNo">255</span>     * @param timeToLive   the message's lifetime (in milliseconds)<a name="line.255"></a>
+<span class="sourceLineNo">256</span>     * @throws javax.jms.JMSException                if the JMS provider fails to send the message due to some<a name="line.256"></a>
+<span class="sourceLineNo">257</span>     *                                     internal error.<a name="line.257"></a>
+<span class="sourceLineNo">258</span>     * @throws javax.jms.MessageFormatException      if an invalid message is specified.<a name="line.258"></a>
+<span class="sourceLineNo">259</span>     * @throws javax.jms.InvalidDestinationException if a client uses this method with a &lt;CODE&gt;<a name="line.259"></a>
+<span class="sourceLineNo">260</span>     *                                     MessageProducer&lt;/CODE&gt; with an invalid destination.<a name="line.260"></a>
+<span class="sourceLineNo">261</span>     * @throws UnsupportedOperationException<a name="line.261"></a>
+<span class="sourceLineNo">262</span>     *                                     if a client uses this method with a &lt;CODE&gt;<a name="line.262"></a>
+<span class="sourceLineNo">263</span>     *                                     MessageProducer&lt;/CODE&gt; that did not specify a<a name="line.263"></a>
+<span class="sourceLineNo">264</span>     *                                     destination at creation time.<a name="line.264"></a>
+<span class="sourceLineNo">265</span>     * @see javax.jms.Session#createProducer<a name="line.265"></a>
+<span class="sourceLineNo">266</span>     * @since 1.1<a name="line.266"></a>
+<span class="sourceLineNo">267</span>     */<a name="line.267"></a>
+<span class="sourceLineNo">268</span>    public void send(Message message, int deliveryMode, int priority, long timeToLive) throws JMSException {<a name="line.268"></a>
+<span class="sourceLineNo">269</span>        this.send(this.getDestination(),<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                  message,<a name="line.270"></a>
+<span class="sourceLineNo">271</span>                  deliveryMode,<a name="line.271"></a>
+<span class="sourceLineNo">272</span>                  priority,<a name="line.272"></a>
+<span class="sourceLineNo">273</span>                  timeToLive);<a name="line.273"></a>
+<span class="sourceLineNo">274</span>    }<a name="line.274"></a>
+<span class="sourceLineNo">275</span><a name="line.275"></a>
+<span class="sourceLineNo">276</span>    /**<a name="line.276"></a>
+<span class="sourceLineNo">277</span>     * Sends a message to a destination for an unidentified message producer.<a name="line.277"></a>
+<span class="sourceLineNo">278</span>     * Uses the &lt;CODE&gt;MessageProducer&lt;/CODE&gt;'s default delivery mode,<a name="line.278"></a>
+<span class="sourceLineNo">279</span>     * priority, and time to live.<a name="line.279"></a>
+<span class="sourceLineNo">280</span>     * &lt;P&gt;<a name="line.280"></a>
+<span class="sourceLineNo">281</span>     * Typically, a message producer is assigned a destination at creation<a name="line.281"></a>
+<span class="sourceLineNo">282</span>     * time; however, the JMS API also supports unidentified message producers,<a name="line.282"></a>
+<span class="sourceLineNo">283</span>     * which require that the destination be supplied every time a message is<a name="line.283"></a>
+<span class="sourceLineNo">284</span>     * sent.<a name="line.284"></a>
+<span class="sourceLineNo">285</span>     *<a name="line.285"></a>
+<span class="sourceLineNo">286</span>     * @param destination the destination to send this message to<a name="line.286"></a>
+<span class="sourceLineNo">287</span>     * @param message     the message to send<a name="line.287"></a>
+<span class="sourceLineNo">288</span>     * @throws javax.jms.JMSException                if the JMS provider fails to send the message due to some<a name="line.288"></a>
+<span class="sourceLineNo">289</span>     *                                     internal error.<a name="line.289"></a>
+<span class="sourceLineNo">290</span>     * @throws javax.jms.MessageFormatException      if an invalid message is specified.<a name="line.290"></a>
+<span class="sourceLineNo">291</span>     * @throws javax.jms.InvalidDestinationException if a client uses this method with an invalid destination.<a name="line.291"></a>
+<span class="sourceLineNo">292</span>     * @throws UnsupportedOperationException<a name="line.292"></a>
+<span class="sourceLineNo">293</span>     *                                     if a client uses this method with a &lt;CODE&gt;<a name="line.293"></a>
+<span class="sourceLineNo">294</span>     *                                     MessageProducer&lt;/CODE&gt; that specified a destination at<a name="line.294"></a>
+<span class="sourceLineNo">295</span>     *                                     creation time.<a name="line.295"></a>
+<span class="sourceLineNo">296</span>     * @see javax.jms.Session#createProducer<a name="line.296"></a>
+<span class="sourceLineNo">297</span>     * @see javax.jms.MessageProducer<a name="line.297"></a>
+<span class="sourceLineNo">298</span>     */<a name="line.298"></a>
+<span class="sourceLineNo">299</span>    public void send(Destination destination, Message message) throws JMSException {<a name="line.299"></a>
+<span class="sourceLineNo">300</span>        this.send(destination,<a name="line.300"></a>
+<span class="sourceLineNo">301</span>                  message,<a name="line.301"></a>
+<span class="sourceLineNo">302</span>                  this.defaultDeliveryMode,<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                  this.defaultPriority,<a name="line.303"></a>
+<span class="sourceLineNo">304</span>                  this.defaultTimeToLive);<a name="line.304"></a>
+<span class="sourceLineNo">305</span>    }<a name="line.305"></a>
+<span class="sourceLineNo">306</span><a name="line.306"></a>
+<span class="sourceLineNo">307</span><a name="line.307"></a>
+<span class="sourceLineNo">308</span>    protected abstract void checkClosed() throws IllegalStateException;<a name="line.308"></a>
+<span class="sourceLineNo">309</span><a name="line.309"></a>
+<span class="sourceLineNo">310</span>    /**<a name="line.310"></a>
+<span class="sourceLineNo">311</span>     * @return the sendTimeout<a name="line.311"></a>
+<span class="sourceLineNo">312</span>     */<a name="line.312"></a>
+<span class="sourceLineNo">313</span>    public int getSendTimeout() {<a name="line.313"></a>
+<span class="sourceLineNo">314</span>        return sendTimeout;<a name="line.314"></a>
+<span class="sourceLineNo">315</span>    }<a name="line.315"></a>
+<span class="sourceLineNo">316</span><a name="line.316"></a>
+<span class="sourceLineNo">317</span>    /**<a name="line.317"></a>
+<span class="sourceLineNo">318</span>     * @param sendTimeout the sendTimeout to set<a name="line.318"></a>
+<span class="sourceLineNo">319</span>     */<a name="line.319"></a>
+<span class="sourceLineNo">320</span>    public void setSendTimeout(int sendTimeout) {<a name="line.320"></a>
+<span class="sourceLineNo">321</span>        this.sendTimeout = sendTimeout;<a name="line.321"></a>
+<span class="sourceLineNo">322</span>    }<a name="line.322"></a>
+<span class="sourceLineNo">323</span>}<a name="line.323"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="#"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-nms">
+    <div class="container">
+      <h1>NMS.ActiveMQ URI Configuration</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 nms">
+        <h2 id="configuring-nmsactivemq">Configuring NMS.ActiveMQ</h2>
+
+<p>All configuration is achieved via URI-encoded parameters, either on the connection or destinations. Through the URIs, you can configure virtually every facet of your NMS.ActiveMQ client. The tables below show the comprehensive set of parameters.</p>
+
+<h2 id="connection-uri-parameters">Connection URI Parameters</h2>
+<hr />
+<h4 id="example-configuration">Example Configuration</h4>
+
+<p>Using the Generic NMSConnectionFactory class would look as follows:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var cf = new NMSConnectionFactory("activemq:tcp://localhost:61616?wireFormat.tightEncodingEnabled=true");
+</code></pre></div></div>
+<p>You can also use the ActiveMQ ConecctionFactory implementation directory:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var cf = new Apache.NMS.ActiveMQ.ConnectionFactory("tcp://localhost:61616?wireFormat.tightEncodingEnabled=true");
+</code></pre></div></div>
+<h2 id="protocol-options">Protocol Options</h2>
+<hr />
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>tcp</td>
+      <td>Uses TCP/IP Sockets to connect to the Broker.</td>
+    </tr>
+    <tr>
+      <td>ssl</td>
+      <td>Uses TCP/IP Sockets to connect to the Broker with an added SSL layer.</td>
+    </tr>
+    <tr>
+      <td>discovery</td>
+      <td>Uses The Discovery Transport to find a Broker</td>
+    </tr>
+    <tr>
+      <td>failover</td>
+      <td>Uses the Failover Transport to connect and reconnect to one or more Brokers</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="transport-options">Transport Options</h2>
+<hr />
+<h3 id="tcp-transport-options">TCP Transport Options</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>transport.useLogging</td>
+      <td>false</td>
+      <td>Log data that is sent across the Transport.</td>
+    </tr>
+    <tr>
+      <td>transport.receiveBufferSize</td>
+      <td>8192</td>
+      <td>Amount of Data to buffer from the Socket</td>
+    </tr>
+    <tr>
+      <td>transport.sendBufferSize</td>
+      <td>8192</td>
+      <td>Amount of Data to buffer before writing to the Socket</td>
+    </tr>
+    <tr>
+      <td>transport.receiveTimeout</td>
+      <td>0</td>
+      <td>Time to wait for more data, zero means wait infinitely</td>
+    </tr>
+    <tr>
+      <td>transport.sendTimeout</td>
+      <td>0</td>
+      <td>Timeout on sends, 0 means wait forever for completion</td>
+    </tr>
+    <tr>
+      <td>transport.requestTimeout</td>
+      <td>0</td>
+      <td>Time to wait before a Request Command is considered to have failed</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="discovery-transport-options">Discovery Transport Options</h3>
+
+<h3 id="failover-transport-options">Failover Transport Options</h3>
+
+<p>Prior to NMS.ActiveMQ v1.4.0 the failover transport options did not use the <code class="highlighter-rouge">transport.*</code> prefix.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>transport.timeout</td>
+      <td>-1</td>
+      <td>Time that a send operation blocks before failing.</td>
+    </tr>
+    <tr>
+      <td>transport.initialReconnectDelay</td>
+      <td>10</td>
+      <td>Time in Milliseconds that the transport waits before attempting to reconnect the first time.</td>
+    </tr>
+    <tr>
+      <td>transport.maxReconnectDelay</td>
+      <td>30000</td>
+      <td>The max time in Milliseconds that the transport will wait before attempting to reconnect.</td>
+    </tr>
+    <tr>
+      <td>transport.backOffMultiplier</td>
+      <td>2</td>
+      <td>The amount by which the reconnect delay will be multiplied by if useExponentialBackOff is enabled.</td>
+    </tr>
+    <tr>
+      <td>transport.useExponentialBackOff</td>
+      <td>true</td>
+      <td>Should the delay between connection attempt grow on each try up to the max reconnect delay.</td>
+    </tr>
+    <tr>
+      <td>transport.randomize</td>
+      <td>true</td>
+      <td>Should the Uri to connect to be chosen at random from the list of available Uris.</td>
+    </tr>
+    <tr>
+      <td>transport.maxReconnectAttempts</td>
+      <td>0</td>
+      <td>Maximum number of time the transport will attempt to reconnect before failing (0 means infinite retries)</td>
+    </tr>
+    <tr>
+      <td>transport.startupMaxReconnectAttempts</td>
+      <td>0</td>
+      <td>Maximum number of time the transport will attempt to reconnect before failing when there has never been a connection made. (0 means infinite retries) <strong>(included in NMS.ActiveMQ v1.5.0+)</strong></td>
+    </tr>
+    <tr>
+      <td>transport.reconnectDelay</td>
+      <td>10</td>
+      <td>The delay in milliseconds that the transport waits before attempting a reconnection.</td>
+    </tr>
+    <tr>
+      <td>transport.backup</td>
+      <td>false</td>
+      <td>Should the Failover transport maintain hot backups.</td>
+    </tr>
+    <tr>
+      <td>transport.backupPoolSize</td>
+      <td>1</td>
+      <td>If enabled, how many hot backup connections are made.</td>
+    </tr>
+    <tr>
+      <td>transport.trackMessages</td>
+      <td>false</td>
+      <td>keep a cache of in-flight messages that will flushed to a broker on reconnect</td>
+    </tr>
+    <tr>
+      <td>transport.maxCacheSize</td>
+      <td>256</td>
+      <td>Number of messages that are cached if trackMessages is enabled.</td>
+    </tr>
+    <tr>
+      <td>transport.updateURIsSupported</td>
+      <td>true</td>
+      <td>Update the list of known brokers based on BrokerInfo messages sent to the client.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="connection-options">Connection Options</h2>
+<hr />
+<p>Connection options can either be set via the <code class="highlighter-rouge">connection.*</code> prefix or the <code class="highlighter-rouge">nms.*</code> prefix similar to the java client’s <code class="highlighter-rouge">jms.*</code> prefix settings.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>connection.AsyncSend</td>
+      <td>false</td>
+      <td>Are message sent Asynchronously.</td>
+    </tr>
+    <tr>
+      <td>connection.AsyncClose</td>
+      <td>true</td>
+      <td>Should the close command be sent Asynchronously</td>
+    </tr>
+    <tr>
+      <td>connection.AlwaysSyncSend</td>
+      <td>false</td>
+      <td>Causes all messages a Producer sends to be sent Asynchronously.</td>
+    </tr>
+    <tr>
+      <td>connection.CopyMessageOnSend</td>
+      <td>true</td>
+      <td>Copies the Message objects a Producer sends so that the client can reuse Message objects without affecting an in-flight message.</td>
+    </tr>
+    <tr>
+      <td>connection.ProducerWindowSize</td>
+      <td>0</td>
+      <td>The ProducerWindowSize is the maximum number of bytes in memory that a producer will transmit to a broker before waiting for acknowledgement messages from the broker that it has accepted the previously sent messages. In other words, this how you configure the producer flow control window that is used for async sends where the client is responsible for managing memory usage. The default value of 0 means no flow control at the client. See also <a href="http://activemq.apache.orgFeatures/Message Dispatching FeaturesFeatures/Message Dispatching Features/Features/Message Dispatching Features/producer-flow-control.md">Producer Flow Control</a></td>
+    </tr>
+    <tr>
+      <td>connection.useCompression</td>
+      <td>false</td>
+      <td>Should message bodies be compressed before being sent.</td>
+    </tr>
+    <tr>
+      <td>connection.sendAcksAsync</td>
+      <td>false</td>
+      <td>Should message acks be sent asynchronously</td>
+    </tr>
+    <tr>
+      <td>connection.messagePrioritySupported</td>
+      <td>true</td>
+      <td>Should messages be delivered to the client based on the value of the Message Priority header.</td>
+    </tr>
+    <tr>
+      <td>connection.dispatchAsync</td>
+      <td>false</td>
+      <td>Should the broker <a href="../advanced-features/consumer-dispatch-async">dispatch messages asynchronously</a> to the connection’s consumers.</td>
+    </tr>
+    <tr>
+      <td>connection.watchTopicAdvisories</td>
+      <td>true</td>
+      <td>Should the client watch for advisory messages from the broker to track the creation and deletion of temporary destinations.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="openwire-options">OpenWire Options</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>wireFormat.stackTraceEnabled</td>
+      <td>false</td>
+      <td>Should the stack trace of exception that occur on the broker be sent to the client? Only used by openwire protocol.</td>
+    </tr>
+    <tr>
+      <td>wireFormat.cacheEnabled</td>
+      <td>false</td>
+      <td>Should commonly repeated values be cached so that less marshalling occurs? Only used by openwire protocol.</td>
+    </tr>
+    <tr>
+      <td>wireFormat.tcpNoDelayEnabled</td>
+      <td>false</td>
+      <td>Does not affect the wire format, but provides a hint to the peer that TCP nodelay should be enabled on the communications Socket. Only used by openwire protocol.</td>
+    </tr>
+    <tr>
+      <td>wireFormat.sizePrefixDisabled</td>
+      <td>false</td>
+      <td>Should serialized messages include a payload length prefix? Only used by openwire protocol.</td>
+    </tr>
+    <tr>
+      <td>wireFormat.tightEncodingEnabled</td>
+      <td>false</td>
+      <td>Should wire size be optimized over CPU usage? Only used by the openwire protocol.</td>
+    </tr>
+    <tr>
+      <td>wireFormat.maxInactivityDuration</td>
+      <td>30000</td>
+      <td>The maximum inactivity duration (before which the socket is considered dead) in milliseconds. On some platforms it can take a long time for a socket to appear to die, so we allow the broker to kill connections if they are inactive for a period of time. Use by some transports to enable a keep alive heart beat feature. Set to a value &lt;= 0 to disable inactivity monitoring.</td>
+    </tr>
+    <tr>
+      <td>maxInactivityDurationInitalDelay</td>
+      <td>10000</td>
+      <td>The initial delay in starting the maximum inactivity checks (and, yes, the word ‘Inital’ is supposed to be misspelled like that)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="destination-uri-parameters">Destination URI Parameters</h2>
+<hr />
+<h4 id="example-configuration-1">Example Configuration</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d = session.CreateTopic("com.foo?consumer.prefetchSize=2000&amp;consumer.noLocal=true");
+</code></pre></div></div>
+
+<h3 id="general-options">General Options</h3>
+<hr />
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>consumer.prefetchSize</td>
+      <td>1000</td>
+      <td>The number of message the consumer will <a href="http://activemq.apache.orgCommunity/FAQ/Using Apache ActiveMQCommunity/FAQ/Using Apache ActiveMQ/Community/FAQ/Using Apache ActiveMQ/what-is-the-prefetch-limit-for.md">prefetch</a>.  <strong>Removed in v1.7.0 use connection prefetch policy instead.</strong></td>
+    </tr>
+    <tr>
+      <td>consumer.maximumPendingMessageLimit</td>
+      <td>0</td>
+      <td>Use to control if messages are dropped if a <a href="../advanced-features/slow-consumer-handling">slow consumer</a> situation exists.</td>
+    </tr>
+    <tr>
+      <td>consumer.noLocal</td>
+      <td>false</td>
+      <td>Same as the noLocal flag on a Topic consumer. Exposed here so that it can be used with a queue.</td>
+    </tr>
+    <tr>
+      <td>consumer.dispatchAsync</td>
+      <td>false</td>
+      <td>Should the broker <a href="../advanced-features/consumer-dispatch-async">dispatch messages asynchronously</a> to the consumer.</td>
+    </tr>
+    <tr>
+      <td>consumer.retroactive</td>
+      <td>false</td>
+      <td>Is this a <a href="../advanced-features/retroactive-consumers">Retroactive Consumer</a>.</td>
+    </tr>
+    <tr>
+      <td>consumer.selector</td>
+      <td>null</td>
+      <td>JMS Selector used with the consumer.</td>
+    </tr>
+    <tr>
+      <td>consumer.exclusive</td>
+      <td>false</td>
+      <td>Is this an <a href="../advanced-features/exclusive-consumers">Exclusive Consumer</a>.</td>
+    </tr>
+    <tr>
+      <td>consumer.priority</td>
+      <td>0</td>
+      <td>Allows you to configure a <a href="../advanced-features/consumer-priority">Consumer Priority</a>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="openwire-only-options">OpenWire-only Options</h3>
+<hr />
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>consumer.browser</td>
+      <td>false</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>consumer.networkSubscription</td>
+      <td>false</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>consumer.optimizedAcknowledge</td>
+      <td>false</td>
+      <td>Enables an optimised acknowledgement mode where messages are acknowledged in batches rather than individually. Alternatively, you could use <code class="highlighter-rouge">Session.DUPS_OK_ACKNOWLEDGE</code> acknowledgement mode for the consumers which can often be faster. <strong>WARNING</strong> enabling this issue could cause some issues with auto-acknowledgement on reconnection</td>
+    </tr>
+    <tr>
+      <td>consumer.noRangeAcks</td>
+      <td>false</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>consumer.retroactive</td>
+      <td>false</td>
+      <td>Sets whether or not retroactive consumers are enabled. Retroactive consumers allow non-durable topic subscribers to receive old messages that were published before the non-durable subscriber started.</td>
+    </tr>
+  </tbody>
+</table>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

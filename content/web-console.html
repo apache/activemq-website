@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="#"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Web Console</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p><a href="tools">Tools</a> &gt; <a href="web-console">Web Console</a></p>
+
+<p>The ActiveMQ Web Console is a web based administration tool for working with ActiveMQ. When used with the <a href="jmx">JMX</a> support it can be an invaluable tool for working with ActiveMQ</p>
+
+<h3 id="running-the-web-console-on-activemq-50-or-later">Running the Web Console on ActiveMQ 5.0 or later</h3>
+
+<p>We have integrated the Web Console into the binary distribution. So <a href="download">Download</a> a binary distribution then follow the instructions for <a href="Using ActiveMQ 5/version-5-Using ActiveMQ/run-broker">Version 5 Run Broker</a>. Then you can point your web browser at the URL</p>
+
+<ul>
+  <li><a href="http://localhost:8161/admin">http://localhost:8161/admin</a></li>
+</ul>
+
+<p>And hey presto, you should now have the Web Console running.</p>
+
+<p>In the event that you are running a standalone broker and the Web Console is not reachable, check that the following lines are included in your ActiveMQ config xml:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"&gt;
+&lt;property name="locations"&gt;
+&lt;value&gt;file:${activemq.base}/conf/credentials.properties&lt;/value&gt;
+&lt;/property&gt;
+&lt;/bean&gt;
+
+&lt;!-- your broker config goes here --&gt;
+
+&lt;import resource="${activemq.base}/conf/jetty.xml" /&gt;
+</code></pre></div></div>
+<p>The import will start up an embedded Jetty container. To verify that the config is working, the following should appear in your ActiveMQ console/logs on next startup:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO | jetty-7.1.6.v20100715
+INFO | ActiveMQ WebConsole initialized.
+</code></pre></div></div>
+
+<h3 id="changing-the-port">Changing the port</h3>
+
+<p>If you want to change the port number of the web console, see the configuration files in the conf directory.</p>
+
+<h3 id="securing-web-console">Securing Web Console</h3>
+
+<p>Starting with ActiveMQ 5.4.0, Web Console comes pre-configured with basic access authentication setup. It’s turned off by default, so you need to turn it on explicitly, but it’s really simple. Go to the <code class="highlighter-rouge">${ACTIVEMQ_HOME}/conf/jetty.xml</code> and find the following line</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;property name="authenticate" value="false" /&gt;
+</code></pre></div></div>
+<p>and change it to</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;property name="authenticate" value="true" /&gt;
+</code></pre></div></div>
+<p>That’s it. From that point on, web server will look at <code class="highlighter-rouge">${ACTIVEMQ_HOME}/conf/jetty-realm.properties</code> file trying to match provided credentials with those listed in the file. By default, you can access the web console with <code class="highlighter-rouge">admin/admin</code> credentials. That can be changed (and more users can be added) in the <code class="highlighter-rouge">jetty-realm.properties</code> file.</p>
+
+<p>You may also wish to enable <strong>ssl connector</strong> to further secure access to the web console and other web resources of the broker. To do that, go to the <code class="highlighter-rouge">${ACTIVEMQ_HOME}/conf/jetty.xml</code> and make sure you have the secure connector enabled. In versions 5.7 and newer just uncomment a predefined config. In any case make sure your connectors settings looks similar to this.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;property name="connectors"&gt;
+    &lt;list&gt;
+        &lt;bean id="Connector" class="org.eclipse.jetty.server.nio.SelectChannelConnector"&gt;
+            &lt;property name="port" value="8161" /&gt;
+        &lt;/bean&gt;
+        &lt;bean id="SecureConnector" class="org.eclipse.jetty.server.ssl.SslSelectChannelConnector"&gt;
+            &lt;property name="port" value="8162" /&gt;
+            &lt;property name="keystore" value="file:${activemq.conf}/broker.ks" /&gt;
+            &lt;property name="password" value="password" /&gt;
+        &lt;/bean&gt;
+    &lt;/list&gt;
+&lt;/property&gt;
+</code></pre></div></div>
+<p>Standard connector is left enabled in this example, but you can remove it in your configuration if you wish.</p>
+
+<p>Note that these changes will affect the whole web server, so if you’re using <a href="rest">REST</a> API or blob fileserver be sure to provide appropriate credentials.</p>
+
+<p>If you’re interested in securing 5.3.1 (and 5.3.2) Web consoles, take a look at <a href="http://www.nighttale.net/activemq/securing-activemq-531-console.html">this article</a>. For older versions, please refer to <a href="http://it.toolbox.com/blogs/unix-sysadmin/securing-activemq-web-console-27727">this article</a></p>
+
+<h3 id="using-the-web-console">Using the Web Console</h3>
+
+<p>The web console is depicted in the following image:</p>
+
+<p><img src="assets/img/web_console.png" alt="" /></p>
+
+<p>To get started, go to the <a href="http://localhost:8080/activemq-web-console/send.jsp">Send</a> page and send a message to a queue (you can send multiple if you like, see the message count field).</p>
+
+<p>Now that you have sent messages to a queue you should be able to <a href="http://localhost:8080/activemq-web-console/browse.jsp">Browse</a> then and view the queue as an RSS or Atom feed.</p>
+
+<p>The Web Console has many features relative to it’s tabs as shown in the following table.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tab</th>
+      <th>Features</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Home</td>
+      <td><a href="producer-flow-control.md#ProducerFlowControl-Systemusage">System Usage</a></td>
+    </tr>
+    <tr>
+      <td>Queues</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Topics</td>
+      <td><a href="advisory-message">Viewing Advisory Messages</a></td>
+    </tr>
+    <tr>
+      <td>Subscribers</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Connections</td>
+      <td><a href="protocols">Protocols</a></td>
+    </tr>
+    <tr>
+      <td>Scheduled</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Send</td>
+      <td><a href="delay-and-schedule-message-delivery">Delay and Schedule Message Delivery</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="external-web-consoles">External Web Consoles</h1>
+
+<p>There are a number of external web consoles for Apache ActiveMQ in separate open source projects:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>External Project</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="http://hawt.io/">hawtio</a></td>
+      <td>hawtio is an open source HTML5 web application for visualising, managing, tracing and debugging Camel routes &amp; endpoints, ActiveMQ brokers, JMX, OSGi and logging. Here is a <a href="http://www.bennet-schulz.com/2016/07/apache-activemq-and-hawtio.html">blog entry</a> how to install hawtio as web console for ActiveMQ.</td>
+    </tr>
+    <tr>
+      <td><a href="http://www.jboss.org/rhq">RHQ</a></td>
+      <td>RHQ is an open source operational monitoring tool which has support for Apache Camel (along with other Apache projects like Tomcat, httpd, ActiveMQ etc)</td>
+    </tr>
+    <tr>
+      <td><a href="http://www.hermesjms.com/confluence/display/HJMS/Home">Hermes JMS</a></td>
+      <td>HermesJMS is an extensible console that helps you interact with JMS providers making it simple to publish and edit messages, browse or seach queues and topics, copy messages around and delete them.</td>
+    </tr>
+  </tbody>
+</table>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

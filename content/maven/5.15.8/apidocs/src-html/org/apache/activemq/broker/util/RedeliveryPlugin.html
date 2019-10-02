@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.broker.util;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.io.IOException;<a name="line.19"></a>
+<span class="sourceLineNo">020</span><a name="line.20"></a>
+<span class="sourceLineNo">021</span>import org.apache.activemq.RedeliveryPolicy;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import org.apache.activemq.ScheduledMessage;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import org.apache.activemq.broker.Broker;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import org.apache.activemq.broker.BrokerPluginSupport;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.apache.activemq.broker.ConnectionContext;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.apache.activemq.broker.ProducerBrokerExchange;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.apache.activemq.broker.region.Destination;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.apache.activemq.broker.region.MessageReference;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.apache.activemq.broker.region.Subscription;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.apache.activemq.broker.region.policy.RedeliveryPolicyMap;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.apache.activemq.command.ActiveMQDestination;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.apache.activemq.command.ActiveMQQueue;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.apache.activemq.command.ActiveMQTopic;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.apache.activemq.command.Message;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.apache.activemq.command.ProducerInfo;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.apache.activemq.filter.AnyDestination;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import org.apache.activemq.state.ProducerState;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>import org.slf4j.Logger;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>import org.slf4j.LoggerFactory;<a name="line.39"></a>
+<span class="sourceLineNo">040</span><a name="line.40"></a>
+<span class="sourceLineNo">041</span>/**<a name="line.41"></a>
+<span class="sourceLineNo">042</span> * Replace regular DLQ handling with redelivery via a resend to the original destination<a name="line.42"></a>
+<span class="sourceLineNo">043</span> * after a delay<a name="line.43"></a>
+<span class="sourceLineNo">044</span> * A destination matching RedeliveryPolicy controls the quantity and delay for re-sends<a name="line.44"></a>
+<span class="sourceLineNo">045</span> * If there is no matching policy or an existing policy limit is exceeded by default<a name="line.45"></a>
+<span class="sourceLineNo">046</span> * regular DLQ processing resumes. This is controlled via sendToDlqIfMaxRetriesExceeded<a name="line.46"></a>
+<span class="sourceLineNo">047</span> * and fallbackToDeadLetter<a name="line.47"></a>
+<span class="sourceLineNo">048</span> *<a name="line.48"></a>
+<span class="sourceLineNo">049</span> * @org.apache.xbean.XBean element="redeliveryPlugin"<a name="line.49"></a>
+<span class="sourceLineNo">050</span> */<a name="line.50"></a>
+<span class="sourceLineNo">051</span>public class RedeliveryPlugin extends BrokerPluginSupport {<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    private static final Logger LOG = LoggerFactory.getLogger(RedeliveryPlugin.class);<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    public static final String REDELIVERY_DELAY = "redeliveryDelay";<a name="line.53"></a>
+<span class="sourceLineNo">054</span><a name="line.54"></a>
+<span class="sourceLineNo">055</span>    RedeliveryPolicyMap redeliveryPolicyMap = new RedeliveryPolicyMap();<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    boolean sendToDlqIfMaxRetriesExceeded = true;<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    private boolean fallbackToDeadLetter = true;<a name="line.57"></a>
+<span class="sourceLineNo">058</span><a name="line.58"></a>
+<span class="sourceLineNo">059</span>    @Override<a name="line.59"></a>
+<span class="sourceLineNo">060</span>    public Broker installPlugin(Broker broker) throws Exception {<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        if (!broker.getBrokerService().isSchedulerSupport()) {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>            throw new IllegalStateException("RedeliveryPlugin requires schedulerSupport=true on the broker");<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        }<a name="line.63"></a>
+<span class="sourceLineNo">064</span>        validatePolicyDelay(1000);<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        return super.installPlugin(broker);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>    /*<a name="line.68"></a>
+<span class="sourceLineNo">069</span>     * sending to dlq is called as part of a poison ack processing, before the message is acknowledged  and removed<a name="line.69"></a>
+<span class="sourceLineNo">070</span>     * by the destination so a delay is vital to avoid resending before it has been consumed<a name="line.70"></a>
+<span class="sourceLineNo">071</span>     */<a name="line.71"></a>
+<span class="sourceLineNo">072</span>    private void validatePolicyDelay(long limit) {<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        final ActiveMQDestination matchAll = new AnyDestination(new ActiveMQDestination[]{new ActiveMQQueue("&gt;"), new ActiveMQTopic("&gt;")});<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        for (Object entry : redeliveryPolicyMap.get(matchAll)) {<a name="line.74"></a>
+<span class="sourceLineNo">075</span>            RedeliveryPolicy redeliveryPolicy = (RedeliveryPolicy) entry;<a name="line.75"></a>
+<span class="sourceLineNo">076</span>            validateLimit(limit, redeliveryPolicy);<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        }<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        RedeliveryPolicy defaultEntry = redeliveryPolicyMap.getDefaultEntry();<a name="line.78"></a>
+<span class="sourceLineNo">079</span>        if (defaultEntry != null) {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>            validateLimit(limit, defaultEntry);<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        }<a name="line.81"></a>
+<span class="sourceLineNo">082</span>    }<a name="line.82"></a>
+<span class="sourceLineNo">083</span><a name="line.83"></a>
+<span class="sourceLineNo">084</span>    private void validateLimit(long limit, RedeliveryPolicy redeliveryPolicy) {<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        if (redeliveryPolicy.getInitialRedeliveryDelay() &lt; limit) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>            throw new IllegalStateException("RedeliveryPolicy initialRedeliveryDelay must exceed: " + limit + ". " + redeliveryPolicy);<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        }<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        if (redeliveryPolicy.getRedeliveryDelay() &lt; limit) {<a name="line.88"></a>
+<span class="sourceLineNo">089</span>            throw new IllegalStateException("RedeliveryPolicy redeliveryDelay must exceed: " + limit + ". " + redeliveryPolicy);<a name="line.89"></a>
+<span class="sourceLineNo">090</span>        }<a name="line.90"></a>
+<span class="sourceLineNo">091</span>    }<a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span>    public RedeliveryPolicyMap getRedeliveryPolicyMap() {<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        return redeliveryPolicyMap;<a name="line.94"></a>
+<span class="sourceLineNo">095</span>    }<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>    public void setRedeliveryPolicyMap(RedeliveryPolicyMap redeliveryPolicyMap) {<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        this.redeliveryPolicyMap = redeliveryPolicyMap;<a name="line.98"></a>
+<span class="sourceLineNo">099</span>    }<a name="line.99"></a>
+<span class="sourceLineNo">100</span><a name="line.100"></a>
+<span class="sourceLineNo">101</span>    public boolean isSendToDlqIfMaxRetriesExceeded() {<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        return sendToDlqIfMaxRetriesExceeded;<a name="line.102"></a>
+<span class="sourceLineNo">103</span>    }<a name="line.103"></a>
+<span class="sourceLineNo">104</span><a name="line.104"></a>
+<span class="sourceLineNo">105</span>    /**<a name="line.105"></a>
+<span class="sourceLineNo">106</span>     * What to do if the maxretries on a matching redelivery policy is exceeded.<a name="line.106"></a>
+<span class="sourceLineNo">107</span>     * when true, the region broker DLQ processing will be used via sendToDeadLetterQueue<a name="line.107"></a>
+<span class="sourceLineNo">108</span>     * when false, there is no action<a name="line.108"></a>
+<span class="sourceLineNo">109</span>     * @param sendToDlqIfMaxRetriesExceeded<a name="line.109"></a>
+<span class="sourceLineNo">110</span>     */<a name="line.110"></a>
+<span class="sourceLineNo">111</span>    public void setSendToDlqIfMaxRetriesExceeded(boolean sendToDlqIfMaxRetriesExceeded) {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        this.sendToDlqIfMaxRetriesExceeded = sendToDlqIfMaxRetriesExceeded;<a name="line.112"></a>
+<span class="sourceLineNo">113</span>    }<a name="line.113"></a>
+<span class="sourceLineNo">114</span><a name="line.114"></a>
+<span class="sourceLineNo">115</span>    public boolean isFallbackToDeadLetter() {<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        return fallbackToDeadLetter;<a name="line.116"></a>
+<span class="sourceLineNo">117</span>    }<a name="line.117"></a>
+<span class="sourceLineNo">118</span><a name="line.118"></a>
+<span class="sourceLineNo">119</span>    /**<a name="line.119"></a>
+<span class="sourceLineNo">120</span>     * What to do if there is no matching redelivery policy for a destination.<a name="line.120"></a>
+<span class="sourceLineNo">121</span>     * when true, the region broker DLQ processing will be used via sendToDeadLetterQueue<a name="line.121"></a>
+<span class="sourceLineNo">122</span>     * when false, there is no action<a name="line.122"></a>
+<span class="sourceLineNo">123</span>     * @param fallbackToDeadLetter<a name="line.123"></a>
+<span class="sourceLineNo">124</span>     */<a name="line.124"></a>
+<span class="sourceLineNo">125</span>    public void setFallbackToDeadLetter(boolean fallbackToDeadLetter) {<a name="line.125"></a>
+<span class="sourceLineNo">126</span>        this.fallbackToDeadLetter = fallbackToDeadLetter;<a name="line.126"></a>
+<span class="sourceLineNo">127</span>    }<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>    @Override<a name="line.129"></a>
+<span class="sourceLineNo">130</span>    public boolean sendToDeadLetterQueue(ConnectionContext context, MessageReference messageReference, Subscription subscription, Throwable poisonCause) {<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        if (messageReference.isExpired()) {<a name="line.131"></a>
+<span class="sourceLineNo">132</span>            // there are two uses of  sendToDeadLetterQueue, we are only interested in valid messages<a name="line.132"></a>
+<span class="sourceLineNo">133</span>            return super.sendToDeadLetterQueue(context, messageReference, subscription, poisonCause);<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        } else {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>            try {<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                Destination regionDestination = (Destination) messageReference.getRegionDestination();<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                final RedeliveryPolicy redeliveryPolicy = redeliveryPolicyMap.getEntryFor(regionDestination.getActiveMQDestination());<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                if (redeliveryPolicy != null) {<a name="line.138"></a>
+<span class="sourceLineNo">139</span>                    final int maximumRedeliveries = redeliveryPolicy.getMaximumRedeliveries();<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                    int redeliveryCount = messageReference.getRedeliveryCounter();<a name="line.140"></a>
+<span class="sourceLineNo">141</span>                    if (RedeliveryPolicy.NO_MAXIMUM_REDELIVERIES == maximumRedeliveries || redeliveryCount &lt; maximumRedeliveries) {<a name="line.141"></a>
+<span class="sourceLineNo">142</span><a name="line.142"></a>
+<span class="sourceLineNo">143</span>                        long delay = redeliveryPolicy.getInitialRedeliveryDelay();<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                        for (int i = 0; i &lt; redeliveryCount; i++) {<a name="line.144"></a>
+<span class="sourceLineNo">145</span>                            delay = redeliveryPolicy.getNextRedeliveryDelay(delay);<a name="line.145"></a>
+<span class="sourceLineNo">146</span>                        }<a name="line.146"></a>
+<span class="sourceLineNo">147</span><a name="line.147"></a>
+<span class="sourceLineNo">148</span>                        scheduleRedelivery(context, messageReference, delay, ++redeliveryCount);<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                    } else if (isSendToDlqIfMaxRetriesExceeded()) {<a name="line.149"></a>
+<span class="sourceLineNo">150</span>                        return super.sendToDeadLetterQueue(context, messageReference, subscription, poisonCause);<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                    } else {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                        LOG.debug("Discarding message that exceeds max redelivery count({}), {}", maximumRedeliveries, messageReference.getMessageId());<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                    }<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                } else if (isFallbackToDeadLetter()) {<a name="line.154"></a>
+<span class="sourceLineNo">155</span>                    return super.sendToDeadLetterQueue(context, messageReference, subscription, poisonCause);<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                } else {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                    LOG.debug("Ignoring dlq request for: {}, RedeliveryPolicy not found (and no fallback) for: {}", messageReference.getMessageId(), regionDestination.getActiveMQDestination());<a name="line.157"></a>
+<span class="sourceLineNo">158</span>                }<a name="line.158"></a>
+<span class="sourceLineNo">159</span><a name="line.159"></a>
+<span class="sourceLineNo">160</span>                return false;<a name="line.160"></a>
+<span class="sourceLineNo">161</span>            } catch (Exception exception) {<a name="line.161"></a>
+<span class="sourceLineNo">162</span>                // abort the ack, will be effective if client use transactions or individual ack with sync send<a name="line.162"></a>
+<span class="sourceLineNo">163</span>                RuntimeException toThrow =  new RuntimeException("Failed to schedule redelivery for: " + messageReference.getMessageId(), exception);<a name="line.163"></a>
+<span class="sourceLineNo">164</span>                LOG.error(toThrow.toString(), exception);<a name="line.164"></a>
+<span class="sourceLineNo">165</span>                throw toThrow;<a name="line.165"></a>
+<span class="sourceLineNo">166</span>            }<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        }<a name="line.167"></a>
+<span class="sourceLineNo">168</span>    }<a name="line.168"></a>
+<span class="sourceLineNo">169</span><a name="line.169"></a>
+<span class="sourceLineNo">170</span>    private void scheduleRedelivery(ConnectionContext context, MessageReference messageReference, long delay, int redeliveryCount) throws Exception {<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        if (LOG.isTraceEnabled()) {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>            Destination regionDestination = (Destination) messageReference.getRegionDestination();<a name="line.172"></a>
+<span class="sourceLineNo">173</span>            LOG.trace("redelivery #{} of: {} with delay: {}, dest: {}", new Object[]{<a name="line.173"></a>
+<span class="sourceLineNo">174</span>                    redeliveryCount, messageReference.getMessageId(), delay, regionDestination.getActiveMQDestination()<a name="line.174"></a>
+<span class="sourceLineNo">175</span>            });<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        }<a name="line.176"></a>
+<span class="sourceLineNo">177</span>        final Message old = messageReference.getMessage();<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        Message message = old.copy();<a name="line.178"></a>
+<span class="sourceLineNo">179</span><a name="line.179"></a>
+<span class="sourceLineNo">180</span>        message.setTransactionId(null);<a name="line.180"></a>
+<span class="sourceLineNo">181</span>        message.setMemoryUsage(null);<a name="line.181"></a>
+<span class="sourceLineNo">182</span>        message.removeProperty(ScheduledMessage.AMQ_SCHEDULED_ID);<a name="line.182"></a>
+<span class="sourceLineNo">183</span><a name="line.183"></a>
+<span class="sourceLineNo">184</span>        message.setProperty(REDELIVERY_DELAY, delay);<a name="line.184"></a>
+<span class="sourceLineNo">185</span>        message.setProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, delay);<a name="line.185"></a>
+<span class="sourceLineNo">186</span>        message.setRedeliveryCounter(redeliveryCount);<a name="line.186"></a>
+<span class="sourceLineNo">187</span><a name="line.187"></a>
+<span class="sourceLineNo">188</span>        boolean originalFlowControl = context.isProducerFlowControl();<a name="line.188"></a>
+<span class="sourceLineNo">189</span>        try {<a name="line.189"></a>
+<span class="sourceLineNo">190</span>            context.setProducerFlowControl(false);<a name="line.190"></a>
+<span class="sourceLineNo">191</span>            ProducerInfo info = new ProducerInfo();<a name="line.191"></a>
+<span class="sourceLineNo">192</span>            ProducerState state = new ProducerState(info);<a name="line.192"></a>
+<span class="sourceLineNo">193</span>            ProducerBrokerExchange producerExchange = new ProducerBrokerExchange();<a name="line.193"></a>
+<span class="sourceLineNo">194</span>            producerExchange.setProducerState(state);<a name="line.194"></a>
+<span class="sourceLineNo">195</span>            producerExchange.setMutable(true);<a name="line.195"></a>
+<span class="sourceLineNo">196</span>            producerExchange.setConnectionContext(context);<a name="line.196"></a>
+<span class="sourceLineNo">197</span>            context.getBroker().send(producerExchange, message);<a name="line.197"></a>
+<span class="sourceLineNo">198</span>        } finally {<a name="line.198"></a>
+<span class="sourceLineNo">199</span>            context.setProducerFlowControl(originalFlowControl);<a name="line.199"></a>
+<span class="sourceLineNo">200</span>        }<a name="line.200"></a>
+<span class="sourceLineNo">201</span>    }<a name="line.201"></a>
+<span class="sourceLineNo">202</span><a name="line.202"></a>
+<span class="sourceLineNo">203</span>}<a name="line.203"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

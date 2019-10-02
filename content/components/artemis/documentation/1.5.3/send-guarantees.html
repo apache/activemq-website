@@ -1,0 +1,1150 @@
+<!DOCTYPE HTML>
+<html lang="en" >
+    
+    <head>
+        
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Guarantees of sends and commits | ActiveMQ Artemis Documentation</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 2.1.0">
+        
+        
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+        <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+        
+    <link rel="stylesheet" href="gitbook/style.css">
+    
+    
+
+        
+    
+    
+    <link rel="next" href="./undelivered-messages.html" />
+    
+    
+    <link rel="prev" href="./flow-control.html" />
+    
+
+        
+    </head>
+    <body>
+        
+        
+    <div class="book" data-level="21" data-basepath="." data-revision="Wed Sep 23 2015 12:51:51 GMT+0100 (BST)">
+    
+
+<div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Type to search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+        
+        
+        
+
+        
+
+        
+    
+        <li class="chapter " data-level="0" data-path="index.html">
+            
+                
+                    <a href="./index.html">
+                        <i class="fa fa-check"></i>
+                        
+                        Introduction
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="1" data-path="notice.html">
+            
+                
+                    <a href="./notice.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.</b>
+                        
+                        Legal Notice
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="2" data-path="preface.html">
+            
+                
+                    <a href="./preface.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.</b>
+                        
+                        Preface
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="3" data-path="project-info.html">
+            
+                
+                    <a href="./project-info.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.</b>
+                        
+                        Project Info
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="4" data-path="messaging-concepts.html">
+            
+                
+                    <a href="./messaging-concepts.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>4.</b>
+                        
+                        Messaging Concepts
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="5" data-path="architecture.html">
+            
+                
+                    <a href="./architecture.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.</b>
+                        
+                        Architecture
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="6" data-path="using-server.html">
+            
+                
+                    <a href="./using-server.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>6.</b>
+                        
+                        Using the Server
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="7" data-path="using-jms.html">
+            
+                
+                    <a href="./using-jms.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>7.</b>
+                        
+                        Using JMS
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="8" data-path="using-core.html">
+            
+                
+                    <a href="./using-core.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>8.</b>
+                        
+                        Using Core
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="9" data-path="jms-core-mapping.html">
+            
+                
+                    <a href="./jms-core-mapping.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>9.</b>
+                        
+                        Mapping JMS Concepts to the Core API
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="10" data-path="client-classpath.html">
+            
+                
+                    <a href="./client-classpath.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>10.</b>
+                        
+                        The Client Classpath
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="11" data-path="examples.html">
+            
+                
+                    <a href="./examples.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>11.</b>
+                        
+                        Examples
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="12" data-path="wildcard-routing.html">
+            
+                
+                    <a href="./wildcard-routing.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>12.</b>
+                        
+                        Routing Messages With Wild Cards
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="13" data-path="wildcard-syntax.html">
+            
+                
+                    <a href="./wildcard-syntax.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>13.</b>
+                        
+                        Understanding the Apache ActiveMQ Artemis Wildcard Syntax
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="14" data-path="filter-expressions.html">
+            
+                
+                    <a href="./filter-expressions.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>14.</b>
+                        
+                        Filter Expressions
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="15" data-path="persistence.html">
+            
+                
+                    <a href="./persistence.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>15.</b>
+                        
+                        Persistence
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="16" data-path="configuring-transports.html">
+            
+                
+                    <a href="./configuring-transports.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>16.</b>
+                        
+                        Configuring Transports
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="17" data-path="connection-ttl.html">
+            
+                
+                    <a href="./connection-ttl.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>17.</b>
+                        
+                        Detecting Dead Connections
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="18" data-path="slow-consumers.html">
+            
+                
+                    <a href="./slow-consumers.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>18.</b>
+                        
+                        Detecting Slow Consumers
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="19" data-path="transaction-config.html">
+            
+                
+                    <a href="./transaction-config.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>19.</b>
+                        
+                        Resource Manager Configuration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="20" data-path="flow-control.html">
+            
+                
+                    <a href="./flow-control.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>20.</b>
+                        
+                        Flow Control
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter active" data-level="21" data-path="send-guarantees.html">
+            
+                
+                    <a href="./send-guarantees.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>21.</b>
+                        
+                        Guarantees of sends and commits
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="22" data-path="undelivered-messages.html">
+            
+                
+                    <a href="./undelivered-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>22.</b>
+                        
+                        Message Redelivery and Undelivered Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="23" data-path="message-expiry.html">
+            
+                
+                    <a href="./message-expiry.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>23.</b>
+                        
+                        Message Expiry
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="24" data-path="large-messages.html">
+            
+                
+                    <a href="./large-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>24.</b>
+                        
+                        Large Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="25" data-path="paging.html">
+            
+                
+                    <a href="./paging.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>25.</b>
+                        
+                        Paging
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="26" data-path="queue-attributes.html">
+            
+                
+                    <a href="./queue-attributes.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>26.</b>
+                        
+                        Queue Attributes
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="27" data-path="scheduled-messages.html">
+            
+                
+                    <a href="./scheduled-messages.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>27.</b>
+                        
+                        Scheduled Messages
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="28" data-path="last-value-queues.html">
+            
+                
+                    <a href="./last-value-queues.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>28.</b>
+                        
+                        Last-Value Queues
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="29" data-path="message-grouping.html">
+            
+                
+                    <a href="./message-grouping.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>29.</b>
+                        
+                        Message Grouping
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="30" data-path="pre-acknowledge.html">
+            
+                
+                    <a href="./pre-acknowledge.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>30.</b>
+                        
+                        Extra Acknowledge Modes
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="31" data-path="management.html">
+            
+                
+                    <a href="./management.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>31.</b>
+                        
+                        Management
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="32" data-path="security.html">
+            
+                
+                    <a href="./security.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>32.</b>
+                        
+                        Security
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="33" data-path="resource-limits.html">
+            
+                
+                    <a href="./resource-limits.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>33.</b>
+                        
+                        Resource Limits
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="34" data-path="jms-bridge.html">
+            
+                
+                    <a href="./jms-bridge.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>34.</b>
+                        
+                        The JMS Bridge
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="35" data-path="client-reconnection.html">
+            
+                
+                    <a href="./client-reconnection.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>35.</b>
+                        
+                        Client Reconnection and Session Reattachment
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="36" data-path="diverts.html">
+            
+                
+                    <a href="./diverts.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>36.</b>
+                        
+                        Diverting and Splitting Message Flows
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="37" data-path="core-bridges.html">
+            
+                
+                    <a href="./core-bridges.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>37.</b>
+                        
+                        Core Bridges
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="38" data-path="duplicate-detection.html">
+            
+                
+                    <a href="./duplicate-detection.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>38.</b>
+                        
+                        Duplicate Message Detection
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="39" data-path="clusters.html">
+            
+                
+                    <a href="./clusters.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>39.</b>
+                        
+                        Clusters
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="40" data-path="ha.html">
+            
+                
+                    <a href="./ha.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>40.</b>
+                        
+                        High Availability and Failover
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="41" data-path="graceful-shutdown.html">
+            
+                
+                    <a href="./graceful-shutdown.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>41.</b>
+                        
+                        Graceful Server Shutdown
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="42" data-path="libaio.html">
+            
+                
+                    <a href="./libaio.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>42.</b>
+                        
+                        Libaio Native Libraries
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="43" data-path="thread-pooling.html">
+            
+                
+                    <a href="./thread-pooling.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>43.</b>
+                        
+                        Thread management
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="44" data-path="logging.html">
+            
+                
+                    <a href="./logging.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>44.</b>
+                        
+                        Logging
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="45" data-path="rest.html">
+            
+                
+                    <a href="./rest.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>45.</b>
+                        
+                        REST Interface
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="46" data-path="embedding-activemq.html">
+            
+                
+                    <a href="./embedding-activemq.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>46.</b>
+                        
+                        Embedding Apache ActiveMQ Artemis
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="47" data-path="spring-integration.html">
+            
+                
+                    <a href="./spring-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>47.</b>
+                        
+                        Spring Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="48" data-path="aerogear-integration.html">
+            
+                
+                    <a href="./aerogear-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>48.</b>
+                        
+                        AeroGear Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="49" data-path="vertx-integration.html">
+            
+                
+                    <a href="./vertx-integration.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>49.</b>
+                        
+                        VertX Integration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="50" data-path="intercepting-operations.html">
+            
+                
+                    <a href="./intercepting-operations.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>50.</b>
+                        
+                        Intercepting Operations
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="51" data-path="protocols-interoperability.html">
+            
+                
+                    <a href="./protocols-interoperability.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>51.</b>
+                        
+                        Protocols and Interoperability
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="52" data-path="tools.html">
+            
+                
+                    <a href="./tools.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>52.</b>
+                        
+                        Tools
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="53" data-path="maven-plugin.html">
+            
+                
+                    <a href="./maven-plugin.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>53.</b>
+                        
+                        Maven Plugin
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="54" data-path="perf-tuning.html">
+            
+                
+                    <a href="./perf-tuning.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>54.</b>
+                        
+                        Troubleshooting and Performance Tuning
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="55" data-path="configuration-index.html">
+            
+                
+                    <a href="./configuration-index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>55.</b>
+                        
+                        Configuration Reference
+                    </a>
+                
+            
+            
+        </li>
+    
+
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+                Published with GitBook
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="book-header">
+    <!-- Actions Left -->
+    <a href="#" class="btn pull-left toggle-summary" aria-label="Table of Contents"><i class="fa fa-align-justify"></i></a>
+    <a href="#" class="btn pull-left toggle-search" aria-label="Search"><i class="fa fa-search"></i></a>
+    
+    <div id="font-settings-wrapper" class="dropdown pull-left">
+        <a href="#" class="btn toggle-dropdown" aria-label="Font Settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+    <div class="dropdown-caret">
+        <span class="caret-outer"></span>
+        <span class="caret-inner"></span>
+    </div>
+
+    <div class="buttons">
+        <button type="button" id="reduce-font-size" class="button size-2">A</button>
+        <button type="button" id="enlarge-font-size" class="button size-2">A</button>
+    </div>
+
+    <div class="buttons font-family-list">
+        <button type="button" data-font="0" class="button">Serif</button>
+        <button type="button" data-font="1" class="button">Sans</button>
+    </div>
+
+    <div class="buttons color-theme-list">
+        <button type="button" id="color-theme-preview-0" class="button size-3" data-theme="0">White</button>
+        <button type="button" id="color-theme-preview-1" class="button size-3" data-theme="1">Sepia</button>
+        <button type="button" id="color-theme-preview-2" class="button size-3" data-theme="2">Night</button>
+    </div>
+</div>
+
+    </div>
+
+    <!-- Actions Right -->
+    
+    <div class="dropdown pull-right">
+        <a href="#" class="btn toggle-dropdown" aria-label="Share"><i class="fa fa-share-alt"></i>
+        </a>
+        <div class="dropdown-menu font-settings dropdown-left">
+            <div class="dropdown-caret">
+                <span class="caret-outer"></span>
+                <span class="caret-inner"></span>
+            </div>
+            <div class="buttons">
+                <button type="button" data-sharing="twitter" class="button">
+                    Share on Twitter
+                </button>
+                <button type="button" data-sharing="google-plus" class="button">
+                    Share on Google
+                </button>
+                <button type="button" data-sharing="facebook" class="button">
+                    Share on Facebook
+                </button>
+                <button type="button" data-sharing="weibo" class="button">
+                    Share on Weibo
+                </button>
+                <button type="button" data-sharing="instapaper" class="button">
+                    Share on Instapaper
+                </button>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <a href="#" target="_blank" class="btn pull-right google-plus-sharing-link sharing-link" data-sharing="google-plus" aria-label="Google"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right facebook-sharing-link sharing-link" data-sharing="facebook" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right twitter-sharing-link sharing-link" data-sharing="twitter" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+    
+    
+    
+
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="./" >ActiveMQ Artemis Documentation</a>
+    </h1>
+</div>
+
+            <div class="page-wrapper" tabindex="-1">
+                <div class="page-inner">
+                
+                
+                    <section class="normal" id="section-">
+                    
+                        <h1 id="guarantees-of-sends-and-commits">Guarantees of sends and commits</h1>
+<h2 id="guarantees-of-transaction-completion">Guarantees of Transaction Completion</h2>
+<p>When committing or rolling back a transaction with Apache ActiveMQ Artemis, the request
+to commit or rollback is sent to the server, and the call will block on
+the client side until a response has been received from the server that
+the commit or rollback was executed.</p>
+<p>When the commit or rollback is received on the server, it will be
+committed to the journal, and depending on the value of the parameter
+<code>journal-sync-transactional</code> the server will ensure that the commit or
+rollback is durably persisted to storage before sending the response
+back to the client. If this parameter has the value <code>false</code> then commit
+or rollback may not actually get persisted to storage until some time
+after the response has been sent to the client. In event of server
+failure this may mean the commit or rollback never gets persisted to
+storage. The default value of this parameter is <code>true</code> so the client can
+be sure all transaction commits or rollbacks have been persisted to
+storage by the time the call to commit or rollback returns.</p>
+<p>Setting this parameter to <code>false</code> can improve performance at the expense
+of some loss of transaction durability.</p>
+<p>This parameter is set in <code>broker.xml</code></p>
+<h2 id="guarantees-of-non-transactional-message-sends">Guarantees of Non Transactional Message Sends</h2>
+<p>If you are sending messages to a server using a non transacted session,
+Apache ActiveMQ Artemis can be configured to block the call to send until the message
+has definitely reached the server, and a response has been sent back to
+the client. This can be configured individually for durable and
+non-durable messages, and is determined by the following two parameters:</p>
+<ul>
+<li><p><code>BlockOnDurableSend</code>. If this is set to <code>true</code> then all calls to
+send for durable messages on non transacted sessions will block
+until the message has reached the server, and a response has been
+sent back. The default value is <code>true</code>.</p>
+</li>
+<li><p><code>BlockOnNonDurableSend</code>. If this is set to <code>true</code> then all calls to
+send for non-durable messages on non transacted sessions will block
+until the message has reached the server, and a response has been
+sent back. The default value is <code>false</code>.</p>
+</li>
+</ul>
+<p>Setting block on sends to <code>true</code> can reduce performance since each send
+requires a network round trip before the next send can be performed.
+This means the performance of sending messages will be limited by the
+network round trip time (RTT) of your network, rather than the bandwidth
+of your network. For better performance we recommend either batching
+many messages sends together in a transaction since with a transactional
+session, only the commit / rollback blocks not every send, or, using
+Apache ActiveMQ Artemis&apos;s advanced <em>asynchronous send acknowledgements feature</em>
+described in Asynchronous Send Acknowledgements.</p>
+<p>If you are using JMS and JNDI then using the elements
+<code>blockOnDurableSend</code> and <code>blockOnNonDurableSend</code>. If you&apos;re using
+JMS but not using JNDI then you can set these values directly on the
+<code>ActiveMQConnectionFactory</code> instance using the appropriate setter
+methods.</p>
+<p>If you&apos;re using core you can set these values directly on the
+<code>ClientSessionFactory</code> instance using the appropriate setter methods.</p>
+<p>When the server receives a message sent from a non transactional
+session, and that message is durable and the message is routed to at
+least one durable queue, then the server will persist the message in
+permanent storage. If the journal parameter
+<code>journal-sync-non-transactional</code> is set to <code>true</code> the server will not
+send a response back to the client until the message has been persisted
+and the server has a guarantee that the data has been persisted to disk.
+The default value for this parameter is <code>true</code>.</p>
+<h2 id="guarantees-of-non-transactional-acknowledgements">Guarantees of Non Transactional Acknowledgements</h2>
+<p>If you are acknowledging the delivery of a message at the client side
+using a non transacted session, Apache ActiveMQ Artemis can be configured to block the
+call to acknowledge until the acknowledge has definitely reached the
+server, and a response has been sent back to the client. This is
+configured with the parameter <code>BlockOnAcknowledge</code>. If this is set to
+<code>true</code> then all calls to acknowledge on non transacted sessions will
+block until the acknowledge has reached the server, and a response has
+been sent back. You might want to set this to <code>true</code> if you want to
+implement a strict <em>at most once</em> delivery policy. The default value is
+<code>false</code></p>
+<h2 id="asynchronous-send-acknowledgements">Asynchronous Send Acknowledgements</h2>
+<p>If you are using a non transacted session but want a guarantee that
+every message sent to the server has reached it, then, as discussed in
+Guarantees of Non Transactional Message Sends, you can configure Apache ActiveMQ Artemis to block the call to send until the server
+has received the message, persisted it and sent back a response. This
+works well but has a severe performance penalty - each call to send
+needs to block for at least the time of a network round trip (RTT) - the
+performance of sending is thus limited by the latency of the network,
+<em>not</em> limited by the network bandwidth.</p>
+<p>Let&apos;s do a little bit of maths to see how severe that is. We&apos;ll consider
+a standard 1Gib ethernet network with a network round trip between the
+server and the client of 0.25 ms.</p>
+<p>With a RTT of 0.25 ms, the client can send <em>at most</em> 1000/ 0.25 = 4000
+messages per second if it blocks on each message send.</p>
+<p>If each message is \&lt; 1500 bytes and a standard 1500 bytes MTU size is
+used on the network, then a 1GiB network has a <em>theoretical</em> upper limit
+of (1024 * 1024 * 1024 / 8) / 1500 = 89478 messages per second if
+messages are sent without blocking! These figures aren&apos;t an exact
+science but you can clearly see that being limited by network RTT can
+have serious effect on performance.</p>
+<p>To remedy this, Apache ActiveMQ Artemis provides an advanced new feature called
+<em>asynchronous send acknowledgements</em>. With this feature, Apache ActiveMQ Artemis can be
+configured to send messages without blocking in one direction and
+asynchronously getting acknowledgement from the server that the messages
+were received in a separate stream. By de-coupling the send from the
+acknowledgement of the send, the system is not limited by the network
+RTT, but is limited by the network bandwidth. Consequently better
+throughput can be achieved than is possible using a blocking approach,
+while at the same time having absolute guarantees that messages have
+successfully reached the server.</p>
+<p>The window size for send acknowledgements is determined by the
+confirmation-window-size parameter on the connection factory or client
+session factory. Please see <a href="client-reconnection.html">Client Reconnection and Session Reattachment</a> for more info on this.</p>
+<h1 id="asynchronous-send-acknowledgements">Asynchronous Send Acknowledgements</h1>
+<p>To use the feature using the core API, you implement the interface
+<code>org.apache.activemq.artemis.api.core.client.SendAcknowledgementHandler</code> and set
+a handler instance on your <code>ClientSession</code>.</p>
+<p>Then, you just send messages as normal using your <code>ClientSession</code>, and
+as messages reach the server, the server will send back an
+acknowledgement of the send asynchronously, and some time later you are
+informed at the client side by Apache ActiveMQ Artemis calling your handler&apos;s
+<code>sendAcknowledged(ClientMessage message)</code> method, passing in a reference
+to the message that was sent.</p>
+<p>To enable asynchronous send acknowledgements you must make sure
+<code>confirmationWindowSize</code> is set to a positive integer value, e.g.
+10MiB</p>
+<p>Please see <a href="examples.html">the examples chapter</a> for a full working example.</p>
+
+                    
+                    </section>
+                
+                
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="./flow-control.html" class="navigation navigation-prev " aria-label="Previous page: Flow Control"><i class="fa fa-angle-left"></i></a>
+        
+        
+        <a href="./undelivered-messages.html" class="navigation navigation-next " aria-label="Next page: Message Redelivery and Undelivered Messages"><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+<script src="gitbook/app.js"></script>
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"fontSettings":{"theme":null,"family":"sans","size":2}};
+    gitbook.start(config);
+});
+</script>
+
+        
+    </body>
+    
+</html>
