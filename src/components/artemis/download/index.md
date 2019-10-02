@@ -9,7 +9,7 @@ These are the current releases from both major branches. For prior releases, ple
 
 The keys file for verifying these releases can be obtained <a href="https://www.apache.org/dist/activemq/KEYS">here</a>.
 
-#### ActiveMQ Artemis 2.10.1  (September 23, 2019)
+#### ActiveMQ Artemis 2.10.1  (September 26, 2019)
 [Release Notes](release-notes-2.10.1) | [Git Report](commit-report-2.10.1) | [Documentation](../documentation/latest)
 
 tar.gz:|[apache-artemis-2.10.1-bin.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/2.10.1/apache-artemis-2.10.1-bin.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/2.10.1/apache-artemis-2.10.1-bin.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/2.10.1/apache-artemis-2.10.1-bin.tar.gz.asc)
