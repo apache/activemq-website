@@ -19,8 +19,8 @@ Click on the provider name to visit the URI configuration documentation for your
 
 |Option Name|Description|
 |---|---|
-|[activemq](../providers/activemq/uri-configuration)|Use the NMS.ActiveMQ Provider to talk to an ActiveMQ Broker.|
-|[stomp](../providers/stomp/uri-configuration)|Use the NMS.Stomp Provider to talk to an Stomp Broker ActivemMQ Broker supports the Stomp protocol natively.|
+|[activemq](providers/activemq/uri-configuration)|Use the NMS.ActiveMQ Provider to talk to an ActiveMQ Broker.|
+|[stomp](providers/stomp/uri-configuration)|Use the NMS.Stomp Provider to talk to an Stomp Broker ActivemMQ Broker supports the Stomp protocol natively.|
 |ems|Use the NMS.EMS Provider to talk to a TIBCO Broker.|
 |msmq|Use the NMS.MSMQ Provider to talk to a Microsoft Messaging (MSMQ) Broker.|
 |wcf|Use the NMS.WCF Provider to support a Windows Communication Foundation (WCF) endpoint connection for connecting to a back-end broker.|
