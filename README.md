@@ -5,23 +5,25 @@ This is the repository for the Apache ActiveMQ website, hosted at [activemq.apac
 
 How it works
 ------------
-The master branch of this repo contains the source files that are used to generate the HTML that ultimately gets pushed to the site.
-The `asf-site` branch is where the actual generated files are stored. Note that this branch must contain exactly one folder called `content`,
-and so has been checked out as an orphan branch with its own commit history apart from the master branch. See the *Contributing* section below.
+The `master` branch of this repo contains the source files that are used to generate the HTML that ultimately gets pushed to the site, along with
+a copy of the generated site output located within the `content` directory, which is published to the live server using
+[gitpubsub](http://www.apache.org/dev/gitpubsub.html) whenever changes are pushed to it.
 
-Through a [gitpubsub](http://www.apache.org/dev/gitpubsub.html) mechanism on the apache.org server,
-files are taken from the `asf-site` branch and pushed to the live server.
+See the *Contributing* section below for more.
+
 
 To Build the site
 -----------------
 
-Before building the site you will need to install [Jekyll](https://jekyllrb.com/).  The Jekyll site has [installation instructions](https://jekyllrb.com/docs/installation/) shuold help get you started.
+Before building the site you will need to install [Jekyll](https://jekyllrb.com/).  The Jekyll site has [installation instructions](https://jekyllrb.com/docs/installation/) to help get you started.
 
-3. run the build script ./build.sh
+To build the site from the `src` directory and store the output in the `content` directory, run the build script:
 
-Alternately you can build the site and test it using Jekyll to serve the site locally
+    ./build.sh
 
-1. Run the command: jekyll serve -s ./src
+Alternatively, you can build and serve the site locally using Jekyll to test changes you have made or are making:
+
+    jekyll serve -s ./src
 
 Contributing to the site
 ------------------------
@@ -36,9 +38,7 @@ If you would like to make a change to the ActiveMQ site:
 
 If you are a committer, do the following:
 
-1. Update the master branch with your (or a Pull Request's) change.
-2. Merge the pull request to the [Apache ActiveMQ site repository](https://github.com/apache/activemq-website) 
-2. Run `build.sh` from the master branch directory. This will:
-  - checks out and updates the `asf-site` branch with a new commit of the build from the current branch
-3. At this point, you should be on the `asf-site` branch. Simply push this branch to the asf remote and the site will automatically be updated within seconds.
+1. Update the `master` branch with your (or a Pull Request's) changes.
+2. Run `build.sh` and ensure that all updates made are reflected in the `content` directory, commit any that are not.
+3. Push this branch to the ASF remote and the site will automatically be updated within seconds.
 
