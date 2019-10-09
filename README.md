@@ -23,7 +23,7 @@ To build the site from the `src` directory and store the output in the `content`
 
 Alternatively, you can build and serve the site locally using Jekyll to test changes you have made or are making:
 
-    jekyll serve -s ./src
+    ./serve.sh
 
 Contributing to the site
 ------------------------
