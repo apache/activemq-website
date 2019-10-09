@@ -68,7 +68,7 @@ genericra.rar
 mymodules.jar
 ```
 Inside the mymodules.jar (where I put my MDB), the sun-ejb-jar.xml should look like this:
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sun-ejb-jar
   PUBLIC "-//Sun Microsystems, Inc.//DTD Application Server 8.1 EJB 2.1//EN"
@@ -98,7 +98,7 @@ Inside the mymodules.jar (where I put my MDB), the sun-ejb-jar.xml should look l
 </sun-ejb-jar>
 ```
 And the application.xml should look like this:
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <application
     xmlns="http://java.sun.com/xml/ns/javaee"
