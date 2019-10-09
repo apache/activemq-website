@@ -207,7 +207,7 @@ For more information about JCA, please consult the [J2EE Connector Architecture 
 Open the `META-INF/ra.xml` file and look for the following section:
 
 `META-INF/ra.xml**
-```
+```xml
 <config-property>
     <description>
       The URL to the ActiveMQ server that you want this connection to connect to.  If using
@@ -222,7 +222,7 @@ Open the `META-INF/ra.xml` file and look for the following section:
 The section above is used to tell the ActiveMQ RAR where ActiveMQ is located. By default, the in-VM protocol is commented out in favor of the tcp protocol. This will find ActiveMQ running on any interface on the localhost on port 61616. It's ok to just leave this alone if you don't mind the inefficiency of communicating within the JVM via TCP. However, it is recommended that `vm://` transport be used for an embedded broker, so comment out the `tcp://` transport and uncomment the `vm://` transport. Below is an example of this:
 
 `META-INF/ra.xml**
-```
+```xml
 <config-property>
     <description>
       The URL to the ActiveMQ server that you want this connection to connect to.  If using
@@ -239,7 +239,7 @@ Because we're embedding ActiveMQ inside of JBoss, it is more efficient to use th
 Now look further down the `META-INF/ra.xml` file and locate the following section:
 
 `META-INF/ra.xml**
-```
+```xml
 <config-property>
     <description>
       Sets the XML configuration file used to configure the embedded ActiveMQ broker via
@@ -261,7 +261,7 @@ Now look further down the `META-INF/ra.xml` file and locate the following sectio
 The section above needs to be changed to uncomment the second to last line and remove/replace the empty element that is above it. Below is an example of how this should be changed:
 
 `META-INF/ra.xml**
-```
+```xml
 <config-property>
     <description>
       Sets the XML configuration file used to configure the embedded ActiveMQ broker via
@@ -282,7 +282,7 @@ This change tells the ActiveMQ RAR to read a configuration file named `broker-co
 The `broker-config.xml` file _is_ the ActiveMQ configuration file. This is the file used to configure ActiveMQ. The default contents of this file are usable, but should be customized to suit your environment. There are several items of note about this configuration. The most prominent sections to note in this file are the `<persistenceAdapter>` element and the `<transportConnectors>` and `<networkConnectors>` elements as seen below:
 
 `broker-config.xml**
-```
+```xml
 <beans xmlns="http://activemq.org/config/1.0">
 
   <broker useJmx="true">
@@ -313,22 +313,22 @@ The `broker-config.xml` file _is_ the ActiveMQ configuration file. This is the f
 </beans>
 ```
 The first change to this file is to add the brokerName attribute to the broker element and provide a name:
-```
+```xml
 <broker useJmx="true" brokerName="bruce.broker1">
 ```
 In addition, this same name is used further down the configuration to provide a name for the `<transportConnector>` element:
-```
+```xml
 <transportConnector name="bruce.broker1" uri="tcp://localhost:61616" discoveryUri="multicast://default"/>
 ```
 Now we'll tell ActiveMQ not to initialize JMX because we'll use the existing one that JBoss has:
-```
+```xml
 <!-- put the following as the first child of the broker tag -->
 <managementContext><!-- we'll use an existing one (JBoss) instead of creating one -->
   <managementContext createConnector="false"/>
 </managementContext>
 ```
 The `<persistenceAdapter>` element should be reconfigured to store its data in an appropriate place. On JBoss, that's most likely within the "data" directory of the server configuration you're using. We're going to set this dynamically using an XBean and Spring feature that allows us to inject system properties values into the configuration. First this needs to be enabled:
-```
+```xml
 <!-- put the following as the first child of the beans element -->
 <bean xmlns="" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
 ```
@@ -380,7 +380,7 @@ Configuring JBoss
 The sixth step is to configure JBoss to initialize and start ActiveMQ whenever JBoss starts up. This is accomplished using an XML file that abides by the [JBoss JCA DTD](http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd) for data sources. Like most other Java application servers on the market, the JBoss architecture uses the J2EE Connector Architecture to manage connections of any kind including JDBC, JMS, etc. and the JBoss JCA DTD denotes the allowed contents for creating an XML data source instance to configure JBoss JCA. Below is an example XML data source instance for use with JBoss:
 
 `activemq-jms-ds.xml**
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE connection-factories

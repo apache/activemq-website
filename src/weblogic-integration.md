@@ -151,7 +151,7 @@ This section discusses the code, libraries, and configuration files necessary to
 ActiveMQ needs to start when the web application is deployed or started, and stop when the web application is stopped or undeployed. The easiest way to do this is to a use the commonly available Spring listeners, which start a Spring context, which can point ActiveMQ to an XBean configuration file, which starts ActiveMQ. A little roundabout, but it works well in practice with very little configuration.
 
 **J2EE WEB-INF/web.xml**
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
 <web-app version="2.4"
@@ -164,7 +164,7 @@ ActiveMQ needs to start when the web application is deployed or started, and sto
 </web-app>
 ```
 **Spring WEB-INF/applicationContext.xml**
-```
+```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
@@ -365,7 +365,7 @@ This section shows three sample ActiveMQ configuration files – one for a singl
 It also shows a Log4J configuration file, which controls the ActiveMQ log output.
 
 **Single Broker**
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://activemq.org/config/1.0">
   <!-- Allows us to use system properties as variables in this configuration file -->
@@ -421,7 +421,7 @@ It also shows a Log4J configuration file, which controls the ActiveMQ log output
 ```
 
 **Network of Brokers (Broker 1/2)**
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://activemq.org/config/1.0">
   <!-- Allows us to use system properties as variables in this configuration file -->
@@ -483,7 +483,7 @@ It also shows a Log4J configuration file, which controls the ActiveMQ log output
 ```
 
 **Network of Brokers (Broker 2/2)**
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://activemq.org/config/1.0">
   <!-- Allows us to use system properties as variables in this configuration file -->

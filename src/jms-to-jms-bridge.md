@@ -115,7 +115,7 @@ outboundQueueName|null|the foreign queue name to send to
 ### Example XBean Configuration
 
 The following [example config file](http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/network/jms/queue-xbean.xml) shows how to use the regular [Xml Configuration](xml-configuration) to configure a JMS to JMS bridge.
-```
+```xml
 <broker xmlns="http://activemq.apache.org/schema/core" id="localbroker"
   brokerName="localBroker" persistent="false">
   <jmsBridgeConnectors>
@@ -141,7 +141,7 @@ The following [example config file](http://svn.apache.org/repos/asf/activemq/tru
 ### Example pure Spring Configuration
 
 The following example shows how to use raw Spring XML to wire together a broker - bridging to a Foreign JMS provider
-```
+```xml
 <!-- local broker with embedded Jms to Jms bridge (ok - it's contrived) -->
 <bean id="localbroker" class="org.apache.activemq.broker.BrokerService"
   init-method="start">
@@ -186,7 +186,7 @@ The following example shows how to use raw Spring XML to wire together a broker 
 ### Example XBean Configuration to Bridge ActiveMQ to Provider With No URL Setter
 
 Some JMS providers, WebLogic for instance, do not expose a setter for connection properties like host and port (setBrokerUrl) on their ConnectionFactory object. In this case you need to set outboundQueueConnectionFactoryName and jndiOutboundTemplate in your activemq.xml config file.
-```
+```xml
 <!-- START SNIPPET: example -->
 <beans>
 
@@ -246,7 +246,7 @@ Some JMS providers, WebLogic for instance, do not expose a setter for connection
 ### Example pure Spring Configuration for sending messages to external ActiveMQ destination through bridge
 
 Spring beans:
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
