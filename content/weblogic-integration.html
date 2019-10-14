@@ -249,7 +249,7 @@ An ActiveMQ broker may be run within WebLogic to provide JMS features while avoi
 <p>ActiveMQ needs to start when the web application is deployed or started, and stop when the web application is stopped or undeployed. The easiest way to do this is to a use the commonly available Spring listeners, which start a Spring context, which can point ActiveMQ to an XBean configuration file, which starts ActiveMQ. A little roundabout, but it works well in practice with very little configuration.</p>
 
 <p><strong>J2EE WEB-INF/web.xml</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 
 <span class="nt">&lt;web-app</span> <span class="na">version=</span><span class="s">"2.4"</span>
          <span class="na">xmlns=</span><span class="s">"http://java.sun.com/xml/ns/j2ee"</span>
@@ -261,7 +261,7 @@ An ActiveMQ broker may be run within WebLogic to provide JMS features while avoi
 <span class="nt">&lt;/web-app&gt;</span>
 </code></pre></div></div>
 <p><strong>Spring WEB-INF/applicationContext.xml</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span>
 <span class="cp">&lt;!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd"&gt;</span>
 <span class="nt">&lt;beans&gt;</span>
     <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"brokerService"</span> <span class="na">class=</span><span class="s">"org.apache.activemq.xbean.BrokerFactoryBean"</span><span class="nt">&gt;</span>
@@ -461,7 +461,7 @@ public class ActiveMQWebLogicAuthenticationFilter extends BrokerFilter {
 <p>It also shows a Log4J configuration file, which controls the ActiveMQ log output.</p>
 
 <p><strong>Single Broker</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://activemq.org/config/1.0"</span><span class="nt">&gt;</span>
   <span class="c">&lt;!-- Allows us to use system properties as variables in this configuration file --&gt;</span>
   <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"</span><span class="nt">/&gt;</span>
@@ -516,7 +516,7 @@ public class ActiveMQWebLogicAuthenticationFilter extends BrokerFilter {
 </code></pre></div></div>
 
 <p><strong>Network of Brokers (Broker 1/2)</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://activemq.org/config/1.0"</span><span class="nt">&gt;</span>
   <span class="c">&lt;!-- Allows us to use system properties as variables in this configuration file --&gt;</span>
   <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"</span><span class="nt">/&gt;</span>
@@ -577,7 +577,7 @@ public class ActiveMQWebLogicAuthenticationFilter extends BrokerFilter {
 </code></pre></div></div>
 
 <p><strong>Network of Brokers (Broker 2/2)</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://activemq.org/config/1.0"</span><span class="nt">&gt;</span>
   <span class="c">&lt;!-- Allows us to use system properties as variables in this configuration file --&gt;</span>
   <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"</span><span class="nt">/&gt;</span>

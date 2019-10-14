@@ -284,38 +284,38 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 <p>Open the <code class="highlighter-rouge">META-INF/ra.xml</code> file and look for the following section:</p>
 
 <p>`META-INF/ra.xml**</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;config-property&gt;
-    &lt;description&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
+    <span class="nt">&lt;description&gt;</span>
       The URL to the ActiveMQ server that you want this connection to connect to.  If using
       an embedded broker, this value should be 'vm://localhost'.
-    &lt;/description&gt;
-    &lt;config-property-name&gt;ServerUrl&lt;/config-property-name&gt;
-    &lt;config-property-type&gt;java.lang.String&lt;/config-property-type&gt;
-    &lt;config-property-value&gt;tcp://localhost:61616&lt;/config-property-value&gt;
-&lt;!-- &lt;config-property-value&gt;vm://localhost&lt;/config-property-value&gt; --&gt;
-  &lt;/config-property&gt;
+    <span class="nt">&lt;/description&gt;</span>
+    <span class="nt">&lt;config-property-name&gt;</span>ServerUrl<span class="nt">&lt;/config-property-name&gt;</span>
+    <span class="nt">&lt;config-property-type&gt;</span>java.lang.String<span class="nt">&lt;/config-property-type&gt;</span>
+    <span class="nt">&lt;config-property-value&gt;</span>tcp://localhost:61616<span class="nt">&lt;/config-property-value&gt;</span>
+<span class="c">&lt;!-- &lt;config-property-value&gt;vm://localhost&lt;/config-property-value&gt; --&gt;</span>
+  <span class="nt">&lt;/config-property&gt;</span>
 </code></pre></div></div>
 <p>The section above is used to tell the ActiveMQ RAR where ActiveMQ is located. By default, the in-VM protocol is commented out in favor of the tcp protocol. This will find ActiveMQ running on any interface on the localhost on port 61616. It’s ok to just leave this alone if you don’t mind the inefficiency of communicating within the JVM via TCP. However, it is recommended that <code class="highlighter-rouge">vm://</code> transport be used for an embedded broker, so comment out the <code class="highlighter-rouge">tcp://</code> transport and uncomment the <code class="highlighter-rouge">vm://</code> transport. Below is an example of this:</p>
 
 <p>`META-INF/ra.xml**</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;config-property&gt;
-    &lt;description&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
+    <span class="nt">&lt;description&gt;</span>
       The URL to the ActiveMQ server that you want this connection to connect to.  If using
       an embedded broker, this value should be 'vm://localhost'.
-    &lt;/description&gt;
-    &lt;config-property-name&gt;ServerUrl&lt;/config-property-name&gt;
-    &lt;config-property-type&gt;java.lang.String&lt;/config-property-type&gt;
-    &lt;!-- &lt;config-property-value&gt;tcp://localhost:61616&lt;/config-property-value&gt; --&gt;
-    &lt;config-property-value&gt;vm://localhost&lt;/config-property-value&gt;
-  &lt;/config-property&gt;
+    <span class="nt">&lt;/description&gt;</span>
+    <span class="nt">&lt;config-property-name&gt;</span>ServerUrl<span class="nt">&lt;/config-property-name&gt;</span>
+    <span class="nt">&lt;config-property-type&gt;</span>java.lang.String<span class="nt">&lt;/config-property-type&gt;</span>
+    <span class="c">&lt;!-- &lt;config-property-value&gt;tcp://localhost:61616&lt;/config-property-value&gt; --&gt;</span>
+    <span class="nt">&lt;config-property-value&gt;</span>vm://localhost<span class="nt">&lt;/config-property-value&gt;</span>
+  <span class="nt">&lt;/config-property&gt;</span>
 </code></pre></div></div>
 <p>Because we’re embedding ActiveMQ inside of JBoss, it is more efficient to use the <code class="highlighter-rouge">vm://</code> transport, rather than to perform messaging over the <code class="highlighter-rouge">tcp://</code> transport.</p>
 
 <p>Now look further down the <code class="highlighter-rouge">META-INF/ra.xml</code> file and locate the following section:</p>
 
 <p>`META-INF/ra.xml**</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;config-property&gt;
-    &lt;description&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
+    <span class="nt">&lt;description&gt;</span>
       Sets the XML configuration file used to configure the embedded ActiveMQ broker via
       Spring if using embedded mode.
 
@@ -323,20 +323,20 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
       a URL is specified. So a value of foo/bar.xml would be assumed to be on the
       classpath whereas file:dir/file.xml would use the file system.
       Any valid URL string is supported.
-    &lt;/description&gt;
-    &lt;config-property-name&gt;BrokerXmlConfig&lt;/config-property-name&gt;
-    &lt;config-property-type&gt;java.lang.String&lt;/config-property-type&gt;
-    &lt;config-property-value&gt;&lt;/config-property-value&gt;
-    &lt;!--
+    <span class="nt">&lt;/description&gt;</span>
+    <span class="nt">&lt;config-property-name&gt;</span>BrokerXmlConfig<span class="nt">&lt;/config-property-name&gt;</span>
+    <span class="nt">&lt;config-property-type&gt;</span>java.lang.String<span class="nt">&lt;/config-property-type&gt;</span>
+    <span class="nt">&lt;config-property-value&gt;&lt;/config-property-value&gt;</span>
+    <span class="c">&lt;!--
     &lt;config-property-value&gt;xbean:broker-config.xml&lt;/config-property-value&gt;
-    --&gt;
-  &lt;/config-property&gt;
+    --&gt;</span>
+  <span class="nt">&lt;/config-property&gt;</span>
 </code></pre></div></div>
 <p>The section above needs to be changed to uncomment the second to last line and remove/replace the empty element that is above it. Below is an example of how this should be changed:</p>
 
 <p>`META-INF/ra.xml**</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;config-property&gt;
-    &lt;description&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
+    <span class="nt">&lt;description&gt;</span>
       Sets the XML configuration file used to configure the embedded ActiveMQ broker via
       Spring if using embedded mode.
 
@@ -344,61 +344,61 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
       a URL is specified. So a value of foo/bar.xml would be assumed to be on the
       classpath whereas file:dir/file.xml would use the file system.
       Any valid URL string is supported.
-    &lt;/description&gt;
-    &lt;config-property-name&gt;BrokerXmlConfig&lt;/config-property-name&gt;
-    &lt;config-property-type&gt;java.lang.String&lt;/config-property-type&gt;
-    &lt;config-property-value&gt;xbean:broker-config.xml&lt;/config-property-value&gt;
-  &lt;/config-property&gt;
+    <span class="nt">&lt;/description&gt;</span>
+    <span class="nt">&lt;config-property-name&gt;</span>BrokerXmlConfig<span class="nt">&lt;/config-property-name&gt;</span>
+    <span class="nt">&lt;config-property-type&gt;</span>java.lang.String<span class="nt">&lt;/config-property-type&gt;</span>
+    <span class="nt">&lt;config-property-value&gt;</span>xbean:broker-config.xml<span class="nt">&lt;/config-property-value&gt;</span>
+  <span class="nt">&lt;/config-property&gt;</span>
 </code></pre></div></div>
 <p>This change tells the ActiveMQ RAR to read a configuration file named <code class="highlighter-rouge">broker-config.xml</code> (the <code class="highlighter-rouge">xbean:</code> that proceeds the filename is simply a hint to class doing the reading of the configuration file) which is located on the CLASSPATH. In this case, the <code class="highlighter-rouge">broker-config.xml</code> file is located in the <code class="highlighter-rouge">activemq-ra.rar</code> directory. Save the changes to that file and then open the <code class="highlighter-rouge">broker-config.xml</code> file.</p>
 
 <p>The <code class="highlighter-rouge">broker-config.xml</code> file <em>is</em> the ActiveMQ configuration file. This is the file used to configure ActiveMQ. The default contents of this file are usable, but should be customized to suit your environment. There are several items of note about this configuration. The most prominent sections to note in this file are the <code class="highlighter-rouge">&lt;persistenceAdapter&gt;</code> element and the <code class="highlighter-rouge">&lt;transportConnectors&gt;</code> and <code class="highlighter-rouge">&lt;networkConnectors&gt;</code> elements as seen below:</p>
 
 <p>`broker-config.xml**</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://activemq.org/config/1.0"&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://activemq.org/config/1.0"</span><span class="nt">&gt;</span>
 
-  &lt;broker useJmx="true"&gt;
+  <span class="nt">&lt;broker</span> <span class="na">useJmx=</span><span class="s">"true"</span><span class="nt">&gt;</span>
   ...
-    &lt;persistenceAdapter&gt;
-      &lt;journaledJDBC journalLogFiles="5" dataDirectory="activemq-data"/&gt;
-      &lt;!-- To use a different datasource, use th following syntax : --&gt;
-      &lt;!--
+    <span class="nt">&lt;persistenceAdapter&gt;</span>
+      <span class="nt">&lt;journaledJDBC</span> <span class="na">journalLogFiles=</span><span class="s">"5"</span> <span class="na">dataDirectory=</span><span class="s">"activemq-data"</span><span class="nt">/&gt;</span>
+      <span class="c">&lt;!-- To use a different datasource, use th following syntax : --&gt;</span>
+      <span class="c">&lt;!--
       &lt;journaledJDBC journalLogFiles="5" dataDirectory="../data" dataSource="#postgres-ds"/&gt;
-       --&gt;
-    &lt;/persistenceAdapter&gt;
+       --&gt;</span>
+    <span class="nt">&lt;/persistenceAdapter&gt;</span>
 
-    &lt;transportConnectors&gt;
-      &lt;!-- prefixing a connector with discovery: causes the connector to be advertiesed over rendezvous --&gt;
-      &lt;transportConnector uri="tcp://localhost:61616" discoveryUri="multicast://default"/&gt;
-    &lt;/transportConnectors&gt;
+    <span class="nt">&lt;transportConnectors&gt;</span>
+      <span class="c">&lt;!-- prefixing a connector with discovery: causes the connector to be advertiesed over rendezvous --&gt;</span>
+      <span class="nt">&lt;transportConnector</span> <span class="na">uri=</span><span class="s">"tcp://localhost:61616"</span> <span class="na">discoveryUri=</span><span class="s">"multicast://default"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/transportConnectors&gt;</span>
 
-    &lt;networkConnectors&gt;
-      &lt;!-- by default just auto discover the other brokers --&gt;
-      &lt;networkConnector uri="multicast://default"/&gt;
-      &lt;!--
+    <span class="nt">&lt;networkConnectors&gt;</span>
+      <span class="c">&lt;!-- by default just auto discover the other brokers --&gt;</span>
+      <span class="nt">&lt;networkConnector</span> <span class="na">uri=</span><span class="s">"multicast://default"</span><span class="nt">/&gt;</span>
+      <span class="c">&lt;!--
       &lt;networkConnector uri="static://(tcp://host1:61616,tcp://host2:61616)"/&gt;
-      --&gt;
-    &lt;/networkConnectors&gt;
+      --&gt;</span>
+    <span class="nt">&lt;/networkConnectors&gt;</span>
 
-  &lt;/broker&gt;
+  <span class="nt">&lt;/broker&gt;</span>
 
-&lt;/beans&gt;
+<span class="nt">&lt;/beans&gt;</span>
 </code></pre></div></div>
 <p>The first change to this file is to add the brokerName attribute to the broker element and provide a name:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker useJmx="true" brokerName="bruce.broker1"&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;broker</span> <span class="na">useJmx=</span><span class="s">"true"</span> <span class="na">brokerName=</span><span class="s">"bruce.broker1"</span><span class="nt">&gt;</span>
 </code></pre></div></div>
 <p>In addition, this same name is used further down the configuration to provide a name for the <code class="highlighter-rouge">&lt;transportConnector&gt;</code> element:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="bruce.broker1" uri="tcp://localhost:61616" discoveryUri="multicast://default"/&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;transportConnector</span> <span class="na">name=</span><span class="s">"bruce.broker1"</span> <span class="na">uri=</span><span class="s">"tcp://localhost:61616"</span> <span class="na">discoveryUri=</span><span class="s">"multicast://default"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 <p>Now we’ll tell ActiveMQ not to initialize JMX because we’ll use the existing one that JBoss has:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- put the following as the first child of the broker tag --&gt;
-&lt;managementContext&gt;&lt;!-- we'll use an existing one (JBoss) instead of creating one --&gt;
-  &lt;managementContext createConnector="false"/&gt;
-&lt;/managementContext&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- put the following as the first child of the broker tag --&gt;</span>
+<span class="nt">&lt;managementContext&gt;</span><span class="c">&lt;!-- we'll use an existing one (JBoss) instead of creating one --&gt;</span>
+  <span class="nt">&lt;managementContext</span> <span class="na">createConnector=</span><span class="s">"false"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/managementContext&gt;</span>
 </code></pre></div></div>
 <p>The <code class="highlighter-rouge">&lt;persistenceAdapter&gt;</code> element should be reconfigured to store its data in an appropriate place. On JBoss, that’s most likely within the “data” directory of the server configuration you’re using. We’re going to set this dynamically using an XBean and Spring feature that allows us to inject system properties values into the configuration. First this needs to be enabled:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- put the following as the first child of the beans element --&gt;
-&lt;bean xmlns="" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- put the following as the first child of the beans element --&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">xmlns=</span><span class="s">""</span> <span class="na">class=</span><span class="s">"org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 <p>Now, modify the <code class="highlighter-rouge">dataDirectory</code> attribute of the <code class="highlighter-rouge">journaledJDBC</code> element to be the following: <code class="highlighter-rouge">${jboss.server.data.dir}/activemq</code>.</p>
 
@@ -446,7 +446,7 @@ Started in 28s:576ms
 <p>The sixth step is to configure JBoss to initialize and start ActiveMQ whenever JBoss starts up. This is accomplished using an XML file that abides by the <a href="http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd">JBoss JCA DTD</a> for data sources. Like most other Java application servers on the market, the JBoss architecture uses the J2EE Connector Architecture to manage connections of any kind including JDBC, JMS, etc. and the JBoss JCA DTD denotes the allowed contents for creating an XML data source instance to configure JBoss JCA. Below is an example XML data source instance for use with JBoss:</p>
 
 <p>`activemq-jms-ds.xml**</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 
 <span class="cp">&lt;!DOCTYPE connection-factories
     PUBLIC "-//JBoss//DTD JBOSS JCA Config 1.5//EN"

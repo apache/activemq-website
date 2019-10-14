@@ -429,135 +429,135 @@
 <h3 id="example-xbean-configuration">Example XBean Configuration</h3>
 
 <p>The following <a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/network/jms/queue-xbean.xml">example config file</a> shows how to use the regular <a href="xml-configuration">Xml Configuration</a> to configure a JMS to JMS bridge.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker xmlns="http://activemq.apache.org/schema/core" id="localbroker"
-  brokerName="localBroker" persistent="false"&gt;
-  &lt;jmsBridgeConnectors&gt;
-    &lt;jmsQueueConnector
-      outboundQueueConnectionFactory="#remoteFactory"&gt;
-      &lt;inboundQueueBridges&gt;
-        &lt;inboundQueueBridge
-          inboundQueueName="org.apache.activemq.network.jms.QueueBridgeXBeanTest" /&gt;
-      &lt;/inboundQueueBridges&gt;
-    &lt;/jmsQueueConnector&gt;
-  &lt;/jmsBridgeConnectors&gt;
-  &lt;transportConnectors&gt;
-    &lt;transportConnector uri="tcp://localhost:61234" /&gt;
-  &lt;/transportConnectors&gt;
-&lt;/broker&gt;
-&lt;!-- JMS ConnectionFactory to use remote --&gt;
-&lt;bean id="remoteFactory"
-  class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
-  &lt;property name="brokerURL" value="tcp://localhost:61666" /&gt;
-&lt;/bean&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema/core"</span> <span class="na">id=</span><span class="s">"localbroker"</span>
+  <span class="na">brokerName=</span><span class="s">"localBroker"</span> <span class="na">persistent=</span><span class="s">"false"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;jmsBridgeConnectors&gt;</span>
+    <span class="nt">&lt;jmsQueueConnector</span>
+      <span class="na">outboundQueueConnectionFactory=</span><span class="s">"#remoteFactory"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;inboundQueueBridges&gt;</span>
+        <span class="nt">&lt;inboundQueueBridge</span>
+          <span class="na">inboundQueueName=</span><span class="s">"org.apache.activemq.network.jms.QueueBridgeXBeanTest"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/inboundQueueBridges&gt;</span>
+    <span class="nt">&lt;/jmsQueueConnector&gt;</span>
+  <span class="nt">&lt;/jmsBridgeConnectors&gt;</span>
+  <span class="nt">&lt;transportConnectors&gt;</span>
+    <span class="nt">&lt;transportConnector</span> <span class="na">uri=</span><span class="s">"tcp://localhost:61234"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/transportConnectors&gt;</span>
+<span class="nt">&lt;/broker&gt;</span>
+<span class="c">&lt;!-- JMS ConnectionFactory to use remote --&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"remoteFactory"</span>
+  <span class="na">class=</span><span class="s">"org.apache.activemq.ActiveMQConnectionFactory"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"brokerURL"</span> <span class="na">value=</span><span class="s">"tcp://localhost:61666"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
 </code></pre></div></div>
 
 <h3 id="example-pure-spring-configuration">Example pure Spring Configuration</h3>
 
 <p>The following example shows how to use raw Spring XML to wire together a broker - bridging to a Foreign JMS provider</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- local broker with embedded Jms to Jms bridge (ok - it's contrived) --&gt;
-&lt;bean id="localbroker" class="org.apache.activemq.broker.BrokerService"
-  init-method="start"&gt;
-  &lt;property name="brokerName" value = "localBroker"/&gt;
-    &lt;property name="persistent" value = "false"/&gt;
-  &lt;property name="transportConnectorURIs"&gt;
-    &lt;list&gt;
-      &lt;value&gt;tcp://localhost:61234&lt;/value&gt;
-    &lt;/list&gt;
-  &lt;/property&gt;
-  &lt;property name="jmsBridgeConnectors"&gt;
-    &lt;list&gt;
-      &lt;ref bean="jmsConnector"/&gt;
-    &lt;/list&gt;
-  &lt;/property&gt;
-&lt;/bean&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- local broker with embedded Jms to Jms bridge (ok - it's contrived) --&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"localbroker"</span> <span class="na">class=</span><span class="s">"org.apache.activemq.broker.BrokerService"</span>
+  <span class="na">init-method=</span><span class="s">"start"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"brokerName"</span> <span class="na">value =</span> <span class="s">"localBroker"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"persistent"</span> <span class="na">value =</span> <span class="s">"false"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"transportConnectorURIs"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;list&gt;</span>
+      <span class="nt">&lt;value&gt;</span>tcp://localhost:61234<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/list&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"jmsBridgeConnectors"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;list&gt;</span>
+      <span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">"jmsConnector"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/list&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
 
-&lt;!-- JMS ConnectionFactory to use local broker (the one with the bridge) --&gt;
-&lt;bean id="localFactory"
-  class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
-  &lt;property name="brokerURL" value="tcp://localhost:61234" /&gt;
-&lt;/bean&gt;
+<span class="c">&lt;!-- JMS ConnectionFactory to use local broker (the one with the bridge) --&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"localFactory"</span>
+  <span class="na">class=</span><span class="s">"org.apache.activemq.ActiveMQConnectionFactory"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"brokerURL"</span> <span class="na">value=</span><span class="s">"tcp://localhost:61234"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
 
-&lt;!--JmsTopicConnector - the Jms bridge --&gt;
-&lt;bean id="jmsConnector"
-  class="org.apache.activemq.network.jms.JmsTopicConnector"&gt;
-  &lt;property name = "outboundTopicConnectionFactory" ref = "remoteFactory"/&gt;
+<span class="c">&lt;!--JmsTopicConnector - the Jms bridge --&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"jmsConnector"</span>
+  <span class="na">class=</span><span class="s">"org.apache.activemq.network.jms.JmsTopicConnector"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name =</span> <span class="s">"outboundTopicConnectionFactory"</span> <span class="na">ref =</span> <span class="s">"remoteFactory"</span><span class="nt">/&gt;</span>
 
-  &lt;property name = "inboundTopicBridges"&gt;
-    &lt;list&gt;
-      &lt;ref bean="InboundTopicBridge" /&gt;
-    &lt;/list&gt;
-  &lt;/property&gt;
+  <span class="nt">&lt;property</span> <span class="na">name =</span> <span class="s">"inboundTopicBridges"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;list&gt;</span>
+      <span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">"InboundTopicBridge"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/list&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
 
-&lt;/bean&gt;
+<span class="nt">&lt;/bean&gt;</span>
 
-&lt;bean id ="InboundTopicBridge" class="org.apache.activemq.network.jms.InboundTopicBridge"&gt;
-  &lt;property name = "inboundTopicName" value = "org.apache.activemq.network.jms.TopicBridgeSpringTest"/&gt;
-&lt;/bean&gt;
+<span class="nt">&lt;bean</span> <span class="na">id =</span><span class="s">"InboundTopicBridge"</span> <span class="na">class=</span><span class="s">"org.apache.activemq.network.jms.InboundTopicBridge"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name =</span> <span class="s">"inboundTopicName"</span> <span class="na">value =</span> <span class="s">"org.apache.activemq.network.jms.TopicBridgeSpringTest"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
 </code></pre></div></div>
 
 <h3 id="example-xbean-configuration-to-bridge-activemq-to-provider-with-no-url-setter">Example XBean Configuration to Bridge ActiveMQ to Provider With No URL Setter</h3>
 
 <p>Some JMS providers, WebLogic for instance, do not expose a setter for connection properties like host and port (setBrokerUrl) on their ConnectionFactory object. In this case you need to set outboundQueueConnectionFactoryName and jndiOutboundTemplate in your activemq.xml config file.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- START SNIPPET: example --&gt;
-&lt;beans&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- START SNIPPET: example --&gt;</span>
+<span class="nt">&lt;beans&gt;</span>
 
-  &lt;!-- Allows us to use system properties as variables in this configuration file --&gt;
-  &lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/&gt;
+  <span class="c">&lt;!-- Allows us to use system properties as variables in this configuration file --&gt;</span>
+  <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"</span><span class="nt">/&gt;</span>
 
-  &lt;broker useJmx="true" xmlns="http://activemq.org/config/1.0"&gt;
+  <span class="nt">&lt;broker</span> <span class="na">useJmx=</span><span class="s">"true"</span> <span class="na">xmlns=</span><span class="s">"http://activemq.org/config/1.0"</span><span class="nt">&gt;</span>
 
-    &lt;persistenceAdapter&gt;
-        &lt;journaledJDBC journalLogFiles="5" dataDirectory="${activemq.home}/activemq-data"/&gt;
-    &lt;/persistenceAdapter&gt;
+    <span class="nt">&lt;persistenceAdapter&gt;</span>
+        <span class="nt">&lt;journaledJDBC</span> <span class="na">journalLogFiles=</span><span class="s">"5"</span> <span class="na">dataDirectory=</span><span class="s">"${activemq.home}/activemq-data"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/persistenceAdapter&gt;</span>
 
-    &lt;transportConnectors&gt;
-       &lt;transportConnector name="default" uri="tcp://localhost:61616" discoveryUri="multicast://default"/&gt;
-       &lt;transportConnector name="stomp"   uri="stomp://localhost:61613"/&gt;
-    &lt;/transportConnectors&gt;
+    <span class="nt">&lt;transportConnectors&gt;</span>
+       <span class="nt">&lt;transportConnector</span> <span class="na">name=</span><span class="s">"default"</span> <span class="na">uri=</span><span class="s">"tcp://localhost:61616"</span> <span class="na">discoveryUri=</span><span class="s">"multicast://default"</span><span class="nt">/&gt;</span>
+       <span class="nt">&lt;transportConnector</span> <span class="na">name=</span><span class="s">"stomp"</span>   <span class="na">uri=</span><span class="s">"stomp://localhost:61613"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/transportConnectors&gt;</span>
 
-    &lt;networkConnectors&gt;
-      &lt;networkConnector name="default" uri="multicast://default"/&gt;
-    &lt;/networkConnectors&gt;
+    <span class="nt">&lt;networkConnectors&gt;</span>
+      <span class="nt">&lt;networkConnector</span> <span class="na">name=</span><span class="s">"default"</span> <span class="na">uri=</span><span class="s">"multicast://default"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/networkConnectors&gt;</span>
 
-    &lt;jmsBridgeConnectors&gt;
-     &lt;jmsQueueConnector name="JreportRequestBridge-Inbound"
-        jndiOutboundTemplate="#remoteJndi"
-        outboundQueueConnectionFactoryName="jms/ConnectionFactory"
-        localQueueConnectionFactory="#localFactory"&gt;
-        &lt;inboundQueueBridges&gt;
-          &lt;inboundQueueBridge inboundQueueName="jms/queue/jreport/request"/&gt;
-        &lt;/inboundQueueBridges&gt;
-      &lt;/jmsQueueConnector&gt;
-    &lt;/jmsBridgeConnectors&gt;
+    <span class="nt">&lt;jmsBridgeConnectors&gt;</span>
+     <span class="nt">&lt;jmsQueueConnector</span> <span class="na">name=</span><span class="s">"JreportRequestBridge-Inbound"</span>
+        <span class="na">jndiOutboundTemplate=</span><span class="s">"#remoteJndi"</span>
+        <span class="na">outboundQueueConnectionFactoryName=</span><span class="s">"jms/ConnectionFactory"</span>
+        <span class="na">localQueueConnectionFactory=</span><span class="s">"#localFactory"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;inboundQueueBridges&gt;</span>
+          <span class="nt">&lt;inboundQueueBridge</span> <span class="na">inboundQueueName=</span><span class="s">"jms/queue/jreport/request"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/inboundQueueBridges&gt;</span>
+      <span class="nt">&lt;/jmsQueueConnector&gt;</span>
+    <span class="nt">&lt;/jmsBridgeConnectors&gt;</span>
 
-  &lt;/broker&gt;
+  <span class="nt">&lt;/broker&gt;</span>
 
-    &lt;!-- Set up the template for connecting to Weblogic --&gt;
-    &lt;bean id="remoteJndi" class="org.springframework.jndi.JndiTemplate"&gt;
-        &lt;property name="environment"&gt;
-                &lt;props&gt;
-                        &lt;prop key="java.naming.factory.initial"&gt;weblogic.jndi.WLInitialContextFactory&lt;/prop&gt;
-                        &lt;prop key="java.naming.provider.url"&gt;t3://&lt;your ip here&gt;:7001&lt;/prop&gt;
-                &lt;/props&gt;
-        &lt;/property&gt;
-    &lt;/bean&gt;
+    <span class="c">&lt;!-- Set up the template for connecting to Weblogic --&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"remoteJndi"</span> <span class="na">class=</span><span class="s">"org.springframework.jndi.JndiTemplate"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"environment"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;props&gt;</span>
+                        <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">"java.naming.factory.initial"</span><span class="nt">&gt;</span>weblogic.jndi.WLInitialContextFactory<span class="nt">&lt;/prop&gt;</span>
+                        <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">"java.naming.provider.url"</span><span class="nt">&gt;</span>t3://<span class="nt">&lt;your</span> <span class="err">ip</span> <span class="err">here</span><span class="nt">&gt;</span>:7001<span class="nt">&lt;/prop&gt;</span>
+                <span class="nt">&lt;/props&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
 
-  &lt;bean id="localFactory"
-    class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
-    &lt;property name="brokerURL" value="tcp://localhost:61616" /&gt;
-  &lt;/bean&gt;
+  <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"localFactory"</span>
+    <span class="na">class=</span><span class="s">"org.apache.activemq.ActiveMQConnectionFactory"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"brokerURL"</span> <span class="na">value=</span><span class="s">"tcp://localhost:61616"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/bean&gt;</span>
 
-  &lt;bean id="localQueue" class="org.apache.activemq.command.ActiveMQQueue"&gt;
-    &lt;constructor-arg value="dynamic/jms.queue.jreport.request"/&gt;
-  &lt;/bean&gt;
-&lt;/beans&gt;
-&lt;!-- END SNIPPET: xbean --&gt;
+  <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"localQueue"</span> <span class="na">class=</span><span class="s">"org.apache.activemq.command.ActiveMQQueue"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"dynamic/jms.queue.jreport.request"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;/beans&gt;</span>
+<span class="c">&lt;!-- END SNIPPET: xbean --&gt;</span>
 </code></pre></div></div>
 
 <h3 id="example-pure-spring-configuration-for-sending-messages-to-external-activemq-destination-through-bridge">Example pure Spring Configuration for sending messages to external ActiveMQ destination through bridge</h3>
 
 <p>Spring beans:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="cp">&lt;!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd"&gt;</span>
 
 <span class="nt">&lt;beans&gt;</span>
