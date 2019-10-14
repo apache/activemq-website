@@ -25,6 +25,10 @@ Alternatively, you can build and serve the site locally using Jekyll to test cha
 
     ./serve.sh
 
+Note that these helper scripts perform incremental builds. If for some reason you need to clear the metadata/cache used to support the build process, you can run:
+
+    rm -rf src/.jekyll-metadata .sass-cache/
+
 Contributing to the site
 ------------------------
 If you would like to make a change to the ActiveMQ site:
