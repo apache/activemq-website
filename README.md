@@ -3,6 +3,13 @@ Apache ActiveMQ Website
 
 This is the repository for the Apache ActiveMQ website, hosted at [activemq.apache.org](http://activemq.apache.org/).
 
+*Warning*
+-------
+
+Do not change **anything** under ./content directly.
+This website is using [Jekyll](https://jekyllrb.com/), and the ./src will generate the ./content output.
+Please read it through this README before you contribute!
+
 How it works
 ------------
 The `master` branch of this repo contains the source files that are used to generate the HTML that ultimately gets pushed to the site, along with
