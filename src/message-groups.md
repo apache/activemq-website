@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: Message Groups 
+title: Message Groups
 title-class: page-title-activemq5
 type: activemq5
 ---
@@ -131,13 +131,13 @@ As [the appropriate test case](https://github.com/apache/activemq/blob/master/ac
 
 ### Competing demands of memory consumption, load balancing, complexity, etc.
 
-The default behavior called CachedMessageGroupMap is limited to 1024 message groups in an LRU cache may not match you expectation w.r.t message order. CachedMessageGroupMap has bounded memory use, but only keeps track of up to 1024 (or the maximum configured size) groups, then loses track of any groups older than the newest 1024. In this way, if there are more groups than the maximum, **ordering will be lost for the oldest groups**.
+The default behavior called `CachedMessageGroupMap` is limited to 1024 message groups in an LRU cache may not match you expectation w.r.t message order. `CachedMessageGroupMap` has bounded memory use, but only keeps track of up to 1024 (or the maximum configured size) groups, then loses track of any groups older than the newest 1024. In this way, if there are more groups than the maximum, **ordering will be lost for the oldest groups**.
 
 Typically users would close groups such that the in memory set can be retained below the configured limits. Some usefull discussion at [AMQ-6851](https://issues.apache.org/jira/browse/AMQ-6851)
 
-In order to prevent this limitation you can use MessageGroupHashBucket or SimpleMessageGroupMap. Their are working by associating each group with a consumer.
+In order to prevent this limitation you can use `MessageGroupHashBucket` or `SimpleMessageGroupMap`. Their are working by associating each group with a consumer.
 
-**SimpleMessageGroupMap** keeps track of every group but suffers from unbounded memory use.
+`SimpleMessageGroupMap` keeps track of every group but suffers from unbounded memory use.
 
 The following code snippet shows how to enable it :
 
@@ -156,7 +156,7 @@ The following code snippet shows how to enable it :
 
 ```
 
-**MessageGroupHashBucked** keeps track of every group and has bounded memory use. The following code snippet shows how to enable it :
+`MessageGroupHashBucked` keeps track of every group and has bounded memory use. The following code snippet shows how to enable it :
 
 ```
 <destinationPolicy>
@@ -175,4 +175,3 @@ The following code snippet shows how to enable it :
 ### See
 
 *   [How do Message Groups compare to Selectors](how-do-message-groups-compare-to-selectors)
-
