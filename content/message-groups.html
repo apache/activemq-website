@@ -216,26 +216,50 @@ if (message.getBooleanProperty("JMSXGroupFirstForConsumer")) {
 
 <h3 id="competing-demands-of-memory-consumption-load-balancing-complexity-etc">Competing demands of memory consumption, load balancing, complexity, etc.</h3>
 
-<p>The default behavior which is limited to 1024 message groups in an LRU cache may not match you expectation w.r.t message order… some detail to explain:</p>
-
-<p>MessageGroupHashBucket and SimpleMessageGroupMap message groups work by associating each group with a consumer.</p>
-
-<p>SimpleMessageGroupMap keeps track of every group but suffers from unbounded memory use.</p>
-
-<p>MessageGroupHashBucked keeps track of every group and has bounded memory use.</p>
-
-<p>CachedMessageGroupMap has bounded memory use, but only keeps track of up to 1024 (or the maximum configured size) groups, then loses track of any groups older than the newest 1024.</p>
-
-<p>In this way, if there are more groups than the maximum, <strong>ordering will be lost for the oldest groups</strong>.</p>
+<p>The default behavior called <code class="highlighter-rouge">CachedMessageGroupMap</code> is limited to 1024 message groups in an LRU cache may not match you expectation w.r.t message order. <code class="highlighter-rouge">CachedMessageGroupMap</code> has bounded memory use, but only keeps track of up to 1024 (or the maximum configured size) groups, then loses track of any groups older than the newest 1024. In this way, if there are more groups than the maximum, <strong>ordering will be lost for the oldest groups</strong>.</p>
 
 <p>Typically users would close groups such that the in memory set can be retained below the configured limits. Some usefull discussion at <a href="https://issues.apache.org/jira/browse/AMQ-6851">AMQ-6851</a></p>
+
+<p>In order to prevent this limitation you can use <code class="highlighter-rouge">MessageGroupHashBucket</code> or <code class="highlighter-rouge">SimpleMessageGroupMap</code>. Their are working by associating each group with a consumer.</p>
+
+<p><code class="highlighter-rouge">SimpleMessageGroupMap</code> keeps track of every group but suffers from unbounded memory use.</p>
+
+<p>The following code snippet shows how to enable it :</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;destinationPolicy&gt;
+  &lt;policyMap&gt;
+    &lt;policyEntries&gt;
+      &lt;policyEntry queue="&gt;"&gt;
+          &lt;messageGroupMapFactory&gt;
+            &lt;simpleMessageGroupMapFactory/&gt;
+          &lt;/messageGroupMapFactory&gt;
+      &lt;/policyEntry&gt;
+    &lt;/policyEntries&gt;
+  &lt;/policyMap&gt;
+&lt;/destinationPolicy&gt;
+
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">MessageGroupHashBucked</code> keeps track of every group and has bounded memory use. The following code snippet shows how to enable it :</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;destinationPolicy&gt;
+  &lt;policyMap&gt;
+    &lt;policyEntries&gt;
+      &lt;policyEntry queue="&gt;"&gt;
+          &lt;messageGroupMapFactory&gt;
+            &lt;messageGroupHashBucked cachedSize=1024 /&gt;
+          &lt;/messageGroupMapFactory&gt;
+      &lt;/policyEntry&gt;
+    &lt;/policyEntries&gt;
+  &lt;/policyMap&gt;
+&lt;/destinationPolicy&gt;
+</code></pre></div></div>
 
 <h3 id="see">See</h3>
 
 <ul>
   <li><a href="how-do-message-groups-compare-to-selectors">How do Message Groups compare to Selectors</a></li>
 </ul>
-
 
       </div>
     </div>
