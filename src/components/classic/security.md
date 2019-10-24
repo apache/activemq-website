@@ -11,8 +11,8 @@ See the main [Security Advisories](../../security-advisories) page for details f
 
 *   [CVE-2019-0222](../../security-advisories.data/CVE-2019-0222-announcement.txt) - Corrupt MQTT frame can cause broker shutdown
 *   [CVE-2018-8006](../../security-advisories.data/CVE-2018-8006-announcement.txt) - ActiveMQ Web Console - Cross-Site Scripting
-*   [CVE-2017-15709](../../security-advisories.data/CVE-2017-15709-announcement.txt) - Information Leak
 *   [CVE-2018-11775](../../security-advisories.data/CVE-2018-11775-announcement.txt) - Missing TLS Hostname Verification
+*   [CVE-2017-15709](../../security-advisories.data/CVE-2017-15709-announcement.txt) - Information Leak
 *   [CVE-2015-7559](../../security-advisories.data/CVE-2015-7559-announcement.txt) - DoS in client via shutdown command
 *   [CVE-2016-6810](../../security-advisories.data/CVE-2016-6810-announcement.txt) - ActiveMQ Web Console - Cross-Site Scripting
 *   [CVE-2016-0734](../../security-advisories.data/CVE-2016-0734-announcement.txt) - ActiveMQ Web Console - Clickjacking
