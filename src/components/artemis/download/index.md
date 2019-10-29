@@ -5,7 +5,7 @@ title-class: page-title-artemis
 type: artemis
 ---
 
-These are the current releases from both major branches. For prior releases, please see the <a href="past_releases">past releases</a> page.
+This is the current release. For prior releases, please see the <a href="past_releases">past releases</a> page.
 
 The keys file for verifying these releases can be obtained <a href="https://www.apache.org/dist/activemq/KEYS">here</a>.
 
@@ -18,11 +18,13 @@ Source Distribution:|[apache-artemis-2.10.1-source-release.tar.gz](https://www.a
 
 <br/>
 
-#### ActiveMQ Artemis Native Layer 1.0.0  (March 7, 2019)
+This is the current ActiveMQ Artemis Native release which is a sub component used. For prior releases, please see the <a href="past_native_releases">past native releases</a> page.
 
-[Release Notes](release-notes-native-1.0.0)
+#### ActiveMQ Artemis Native Layer 1.0.1  (Oct 24, 2019)
 
-Source Distribution:|[apache-artemis-native-1.0.0-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-native/1.0.0/activemq-artemis-native-1.0.0-source-release.zip&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis-native/1.0.0/activemq-artemis-native-1.0.0-source-release.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis-native/1.0.0/activemq-artemis-native-1.0.0-source-release.zip.asc)|
+[Release Notes](release-notes-native-1.0.1)
+
+Source Distribution:|[apache-artemis-native-1.0.1-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-native/1.0.1/activemq-artemis-native-1.0.1-source-release.zip&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis-native/1.0.1/activemq-artemis-native-1.0.1-source-release.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis-native/1.0.1/activemq-artemis-native-1.0.1-source-release.zip.asc)|
 
 This is the native layer used by ActiveMQ Artemis on storage.
 
