@@ -38,12 +38,12 @@ If you are curious you can browse the [source code and tests](https://svn.apache
 
 An NMS Provider is a .NET Assembly that provides an implementation of the NMS API that provides connectivity with a particular Messaging Service or an implementation of a standard Messaging Protocol. Currently, the following providers are available:
 
-*   [ActiveMQ](providers/activemq) client which communicates with ActiveMQ using its own native wire protocol and provides many [advanced features](providers/activemq/advanced-features) beyond the standard NMS API.
+*   [AMQP](providers/amqp) provides support for AMQP 1.0 protocol. Compatible with ActiveMQ 5.x, ActiveMQ Artemis and any other AMQP 1.0 compliant broker.
+*   [ActiveMQ (OpenWire)](providers/activemq) client which communicates with ActiveMQ 5.x using its own native wire protocol and provides many [advanced features](providers/activemq/advanced-features) beyond the standard NMS API.
 *   [STOMP](providers/stomp) which connects to any [STOMP Broker](https://stomp.github.io/implementations.html). Also, when coupled with StompConnect, NMS can be used to communicate with pretty much any existing MOM provider! (Or at least those that support JMS which most MOM providers do).
 *   [MSMQ](providers/msmq) is an implementation of NMS using Microsoft's MSMQ API.
 *   [EMS](providers/ems) provider for talking to TIBCO's EMS message broker. To use this, you will need to following TIBCO's licensing requirements to acquire the TIBCO client assembly DLL. NMS does not ship with the TIBCO client assembly.
 *   [WCF](providers/wcf) provides support of Windows Communications Framework.
-*   [AMQP](providers/amqp) provides support for AMQP 1.0.
 
 ---
 

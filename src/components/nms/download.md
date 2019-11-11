@@ -7,7 +7,8 @@ type: nms
 
 * [NMS API Downloads](nms-api-downloads)
 * Providers
-  * [ActiveMQ](providers/activemq/downloads)
+  * [AMQP](providers/amqp/downloads)
+  * [ActiveMQ (OpenWire)](providers/activemq/downloads)
   * [STOMP](providers/stomp/downloads)
   * [MSMQ](providers/msmq/downloads)
   * [EMS](providers/ems/downloads)
