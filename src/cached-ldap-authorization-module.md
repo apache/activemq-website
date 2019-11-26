@@ -69,7 +69,7 @@ The list of all properties for `cachedLDAPAuthorizationMap`
 
 property|default value|description|version
 ---|---|---
-connectionURL|ldap://localhost:1024|LDAP Server connection address|
+connectionURL|ldap://localhost:1024|LDAP Server connection address. This can either be a single URL or a space-separated list of URLs.|
 connectionUsername|uid=admin,ou=system|Dn to be used for connecting to the server|
 connectionPassword|secret|Password to be used for connecting to the server|
 connectionProtocol|s|Connection protocol to be used for connecting to the server|
