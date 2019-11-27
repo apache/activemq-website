@@ -28,6 +28,7 @@ Property Name|Type|Default Value|Description
 
 JMS Defined:
 ------------
+
 Property Name|Type|Default Value|Description
 ---|---|---|---
 `JMSXDeliveryCount`|`int`|`0`|Number of attempts to send the message.
@@ -37,6 +38,7 @@ Property Name|Type|Default Value|Description
 
 ActiveMQ Defined:
 -----------------
+
 Property Name|Type|Default Value|Description
 ---|---|---|---
 `JMSActiveMQBrokerInTime`|`long`|`0`|Time stamp (in milliseconds) for when the message arrived at the broker.

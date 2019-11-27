@@ -28,53 +28,13 @@ Note that you can configure the subscription recovery policy, and most other pol
 
 ### Summary of Available Recovery Policies
 
-Policy Name
-
-Sample Configuration
-
-Description
-
-FixedSizedSubscriptionRecoveryPolicy
-
-<fixedSizedSubscriptionRecoveryPolicy maximumSize="1024"/>
-
-Keep a fixed amount of memory in RAM for message history which is evicted in time order.
-
-FixedCountSubscriptionRecoveryPolicy
-
-<fixedCountSubscriptionRecoveryPolicy maximumSize="100"/>
-
-Keep a fixed count of last messages.
-
-LastImageSubscriptionRecoveryPolicy
-
-<lastImageSubscriptionRecoveryPolicy/>
-
-Keep only the last message.
-
-NoSubscriptionRecoveryPolicy
-
-<noSubscriptionRecoveryPolicy/>
-
-Disables message recovery.
-
-QueryBasedSubscriptionRecoveryPolicy
-
-<queryBasedSubscriptionRecoveryPolicy query="JMSType = 'car' AND color = 'blue'"/>
-
-Perform a user specific query mechanism to load any message they may have missed. Details on message selectors are available here:
-
-[http://java.sun.com/j2ee/1.4/docs/api/javax/jms/Message.html](http://java.sun.com/j2ee/1.4/docs/api/javax/jms/Message.html)
-
-TimedSubscriptionRecoveryPolicy
-
-<timedSubscriptionRecoveryPolicy recoverDuration="60000" />
-
-Keep a timed buffer of messages around in memory and use that to recover new subscriptions. Recovery time is in milliseconds.
-
-RetainedMessageSubscriptionRecoveryPolicy
-
-<retainedMessageSubscriptionRecoveryPolicy/>
-
-Keep the last message with ActiveMQ.Retain property set to true
+Policy Name|Sample Configuration|Description
+---|---|---
+FixedSizedSubscriptionRecoveryPolicy|`<fixedSizedSubscriptionRecoveryPolicy maximumSize="1024"/>`|Keep a fixed amount of memory in RAM for message history which is evicted in time order.
+FixedCountSubscriptionRecoveryPolicy|`<fixedCountSubscriptionRecoveryPolicy maximumSize="100"/>`|Keep a fixed count of last messages.
+LastImageSubscriptionRecoveryPolicy|`<lastImageSubscriptionRecoveryPolicy/>`|Keep only the last message.
+NoSubscriptionRecoveryPolicy|`<noSubscriptionRecoveryPolicy/>`|Disables message recovery.
+QueryBasedSubscriptionRecoveryPolicy|`<queryBasedSubscriptionRecoveryPolicy query="JMSType = 'car' AND color = 'blue'"/>`|Perform a user specific query mechanism to load any message they may have missed. Details on message selectors are available [here](http://java.sun.com/j2ee/1.4/docs/api/javax/jms/Message.html)
+TimedSubscriptionRecoveryPolicy|`<timedSubscriptionRecoveryPolicy recoverDuration="60000" />`|Keep a timed buffer of messages around in memory and use that to recover new subscriptions. Recovery time is in milliseconds.
+RetainedMessageSubscriptionRecoveryPolicy|`<retainedMessageSubscriptionRecoveryPolicy/>`|Keep the last message with ActiveMQ.Retain property set to true
 
