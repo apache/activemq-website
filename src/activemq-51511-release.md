@@ -81,8 +81,4 @@ Change Log
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12345958)
 
-> **Java 8 Required**
-> 
-> The minimum Java version has been upgraded to Java 8.
-
-Also see the previous [ActiveMQ 5.15.9 Release](activemq-5159-release)
+Also see the previous [ActiveMQ 5.15.10 Release](activemq-51510-release)
