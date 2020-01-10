@@ -66,7 +66,7 @@ Keep in mind that not every feature must have an &#9989;. Artemis may still be r
 |[Retroactive Consumer](retroactive-consumer)|&#9989;|[ARTEMIS-2504](https://issues.apache.org/jira/browse/ARTEMIS-2504)|documentation coming in 2.11|
 |[Selectors](selectors)|&#9989;||[documentation](components/artemis/documentation/latest/filter-expressions)|
 |[Slow Consumer Handling](slow-consumer-handling)|&#9989;||[documentation](components/artemis/documentation/latest/slow-consumers)|
-|[Subscription Recovery Policy](subscription-recovery-policy)|&#10060;||rough equivalent via retroactive addresses and [last value queues](components/artemis/documentation/latest/last-value-queues)|
+|[Subscription Recovery Policy](subscription-recovery-policy)|&#9989;||see retroactive addresses|
 
 ### Destination Features
 
