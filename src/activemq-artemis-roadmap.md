@@ -74,7 +74,7 @@ Keep in mind that not every feature must have an &#9989;. Artemis may still be r
 |---|:---:|---|---|
 |[Composite Destinations](composite-destinations)|&#9989;||supported for OpenWire clients; see also [diverts](components/artemis/documentation/latest/diverts)|
 |[Configure Startup Destinations](configure-startup-destinations)|&#9989;|||
-|[Delete Inactive Destinations](delete-inactive-destinations)|&#10060;|||
+|[Delete Inactive Destinations](delete-inactive-destinations)|&#9989;|||
 |[Destination Options](destination-options)|&#9989;|||
 |[Mirrored Queues](mirrored-queues)|&#10060;||rough equivalent via non-exclusive [diverts](components/artemis/documentation/latest/diverts)|
 |[Per Destination Policies](per-destination-policies)|&#9989;||config via `address-settings`|
