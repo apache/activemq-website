@@ -36,7 +36,7 @@ Then we can add your issue to the test suite and then we'll know when its really
 If you want to help out with the documentation
 ----------------------------------------------
 
-If you want to contribute to the ActiveMQ documentation you should first subscribe our [dev@](mailto:dev-subscribe@activemq.apache.org) where ActiveMQ developers interact with each other. If you want edit rights on the ActiveMQ site, create an account in the [ActiveMQ wiki](https://cwiki.apache.org/confluence/display/ACTIVEMQ) and fill in and submit an ICLA to the ASF (see the [Committer Guide](Developers/becoming-a-committer.md)). Then ask on the dev@ list to be granted edit rights and an admin will do so fairly quickly. If you want to just contribute the content, please submit the content on the dev@ list or create an issue and attach it there. **All** contributions are highly appreciated.
+If you want to contribute to the ActiveMQ documentation you should first subscribe our [dev@](mailto:dev-subscribe@activemq.apache.org) where ActiveMQ developers interact with each other. If you want edit rights on the ActiveMQ site, create an account in the [ActiveMQ wiki](https://cwiki.apache.org/confluence/display/ACTIVEMQ) and fill in and submit an ICLA to the ASF (see the [Committer Guide](becoming-a-committer)). Then ask on the dev@ list to be granted edit rights and an admin will do so fairly quickly. If you want to just contribute the content, please submit the content on the dev@ list or create an issue and attach it there. **All** contributions are highly appreciated.
 
 Working on the code
 -------------------
@@ -75,12 +75,12 @@ git diff Main.java >> patchfile.txt
 Submitting patches
 ------------------
 
-The easiest way to submit a patch is to create a new JIRA issue, attach the patch and tick the ASF license grant check box, tick the Patch Attached button on the issue then fire off an email to the [Mailing Lists](Community/mailing-lists.md) or [Discussion Forums](CommunityCommunity/Community/discussion-forums.md).
+The easiest way to submit a patch is to create a new JIRA issue, attach the patch and tick the ASF license grant check box, tick the Patch Attached button on the issue then fire off an email to the [Mailing Lists](mailing-lists) or [Discussion Forums](discussion-forums).
 
 Becoming a commmitter
 ---------------------
 
-Once you've got involved as above, we may well invite you to be a committer. See [Becoming a committer](Developers/becoming-a-committer.md) for more details.
+Once you've got involved as above, we may well invite you to be a committer. See [Becoming a committer](becoming-a-committer) for more details.
 
 Using the issue tracker
 -----------------------
@@ -94,5 +94,5 @@ Why not dive in the [issue tracker](https://issues.apache.org/jira/browse/AMQ), 
 Becoming a committer
 --------------------
 
-The first step is contributing to the project; if you want to take that a step forward and become a fellow committer on the project then see the [Committer Guide](Developers/becoming-a-committer.md)
+The first step is contributing to the project; if you want to take that a step forward and become a fellow committer on the project then see the [Committer Guide](becoming-a-committer)
 
