@@ -406,9 +406,11 @@ For example, if using distributed queues, you may wish to have equivalent weight
 **N.B.** You can only use [wildcards](wildcards) in the `excludedDestinations` and `dynamicallyIncludedDestinations` properties.  
 **N.B.** **Do not** change the name of the bridge or the name of the Broker if you are using durable topic subscribers across the network. Internally ActiveMQ uses the network name and broker name to build a unique but repeatable durable subscriber name for the network.
 
-### Stuck Messages (version 5.6)
+### Stuck Messages
 
-By default, it is not permissible for a message to be replayed back to the broker from which it came. This ensures that messages do not loop when duplex or by directional network connectors are configured. Occasionally it is desirable to allow replay for queues. Consider a scenario where a bidirectional bridge exists between a broker pair. Producers and Consumers get to randomly choose a broker using the failover transport. If one broker is restarted for maintenance, messages accumulated on that broker, that crossed the network bridge, will not be available to consumers till they reconnect to the broker. One solution to this problem is to force a client reconnect using [rebalanceClusterClients](http://activemq.apache.orgUsing ActiveMQ/Configuring Transports/ActiveMQ Connection URIs/failover-transport-reference.md#FailoverTransportReference-BrokersideOptionsforFailover). Another, is to allow replay of messages back to the origin as there is no local consumer on that broker.  
+There might have multiples cause for Stuck Message, paragrapĥs below aim to give advice setting that may help to fix this issue.
+
+#### Disable replayWhenNoConsumers (version 5.6)
 There is a destination policy that allows this behavior for queues by configuring a `conditionalNetworkBridgeFilterFactory` with `replayWhenNoConsumers=true`. The `conditionalNetworkBridgeFilterFactory` provides an optional `replayDelay` based on the broker-in time.
 ```
     <destinationPolicy>
@@ -426,7 +428,19 @@ There is a destination policy that allows this behavior for queues by configurin
 
 **N.B.:** When using `replayWhenNoConsumers=true` for versions < 5.9, it is necessary to also disable the cursors duplicate detection using `enableAudit=false` as the cursor could mark the replayed messages as duplicates (depending on the time window between playing and replaying these messages over the network bridge). The problem is fully explained in this [blog post](http://tmielke.blogspot.de/2012/03/i-have-messages-on-queue-but-they-dont.html).
 
-#### Throttling a network consumer
+#### Activate decreaseNetworkConsumerPriority
+
+Set decreaseNetworkConsumerPriority="true" in the networkConnector to limit the number of advisory and prefer local consumers. (more information on [AMQ-7316](https://issues.apache.org/jira/browse/AMQ-7316 )
+
+    <networkConnectors>
+      <networkConnector uri="static:(tcp://mybroker:61616)" decreaseNetworkConsumerPriority="true" />
+    </networkConnectors>
+
+
+#### Increase prefetchsize if you're using Message Group and Consumer Pool
+
+If message group is enabled, one group might block the replication of a queue (if the size of message in this group is higher than the configured prefetchsize), providing a prefetchSize sufficient to ensure that all comsumers threads can consume their attributed group.
+
+### Throttling a network consumer
 
 The `conditionalNetworkBridgeFilterFactory` factory allows a rate limit to be specified for a destination, such that network consumer can be throttled. Prefetch for a network consumer is largely negated by the fact that a network consumer relays a message typically acks very quickly so even with a low prefetch and decreased priority a network consumer can starve a modestly quick local consumer. Throttling provides a remedy for this.
-
