@@ -408,7 +408,7 @@ For example, if using distributed queues, you may wish to have equivalent weight
 
 ### Stuck Messages
 
-There might have multiples cause for Stuck Message, paragrapĥs below aim to give advice setting that may help to fix this issue.
+There might have multiples cause for Stuck Message, sections below aim to give advice setting that may help to fix this issue.
 
 #### Disable replayWhenNoConsumers (version 5.6)
 There is a destination policy that allows this behavior for queues by configuring a `conditionalNetworkBridgeFilterFactory` with `replayWhenNoConsumers=true`. The `conditionalNetworkBridgeFilterFactory` provides an optional `replayDelay` based on the broker-in time.
@@ -440,6 +440,12 @@ Set decreaseNetworkConsumerPriority="true" in the networkConnector to limit the 
 #### Increase prefetchsize if you're using Message Group and Consumer Pool
 
 If message group is enabled, one group might block the replication of a queue (if the size of message in this group is higher than the configured prefetchsize), providing a prefetchSize sufficient to ensure that all comsumers threads can consume their attributed group.
+
+#### Increase TTL
+
+TTL setting (networkTTL, messageTTL and consumerTTL) for the Network of Brokers should be high enough to allow messages exchange between the brokers several times in case the consumer
+fails back and forth several times. 
+
 
 ### Throttling a network consumer
 

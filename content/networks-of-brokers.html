@@ -586,7 +586,7 @@ sources are networked, in the event of a failure, inflight messages can be lost.
 
 <h3 id="stuck-messages">Stuck Messages</h3>
 
-<p>There might have multiples cause for Stuck Message, paragrapĥs below aim to give advice setting that may help to fix this issue.</p>
+<p>There might have multiples cause for Stuck Message, sections below aim to give advice setting that may help to fix this issue.</p>
 
 <h4 id="disable-replaywhennoconsumers-version-56">Disable replayWhenNoConsumers (version 5.6)</h4>
 <p>There is a destination policy that allows this behavior for queues by configuring a <code class="highlighter-rouge">conditionalNetworkBridgeFilterFactory</code> with <code class="highlighter-rouge">replayWhenNoConsumers=true</code>. The <code class="highlighter-rouge">conditionalNetworkBridgeFilterFactory</code> provides an optional <code class="highlighter-rouge">replayDelay</code> based on the broker-in time.</p>
@@ -617,6 +617,11 @@ sources are networked, in the event of a failure, inflight messages can be lost.
 <h4 id="increase-prefetchsize-if-youre-using-message-group-and-consumer-pool">Increase prefetchsize if you’re using Message Group and Consumer Pool</h4>
 
 <p>If message group is enabled, one group might block the replication of a queue (if the size of message in this group is higher than the configured prefetchsize), providing a prefetchSize sufficient to ensure that all comsumers threads can consume their attributed group.</p>
+
+<h4 id="increase-ttl">Increase TTL</h4>
+
+<p>TTL setting (networkTTL, messageTTL and consumerTTL) for the Network of Brokers should be high enough to allow messages exchange between the brokers several times in case the consumer
+fails back and forth several times.</p>
 
 <h3 id="throttling-a-network-consumer">Throttling a network consumer</h3>
 
