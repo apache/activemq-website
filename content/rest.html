@@ -265,13 +265,18 @@ curl -XGET http://admin:admin@localhost:8161/api/message?destination=topic://ord
 <h2 id="rest-management">Rest Management</h2>
 
 <p>Starting with version 5.8 we provide a REST management API for the broker. Using <a href="http://www.jolokia.org/">Jolokia</a> JMX-HTTP bridge it’s possible to access all broker metrics (like memory usage) and execute management operations (like purging queues) using REST API. By default the management API is exposed at <a href="http://localhost:8161/api/jolokia/">http://localhost:8161/api/jolokia/</a> URL. So you can for example get basic broker data with</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget --user admin --password admin --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget --user admin --password admin --header "Origin: http://localhost" --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost
 </code></pre></div></div>
 <p>or to be more specific, total consumer count with</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget --user admin --password admin --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost/TotalConsumerCount
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget --user admin --password admin --header "Origin: http://localhost" --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost/TotalConsumerCount
 </code></pre></div></div>
 <p>By default, ActiveMQ uses the <a href="https://github.com/apache/activemq/blob/master/assembly/src/release/webapps/api/WEB-INF/classes/jolokia-access.xml">following</a> Jolokia security policy:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;restrict&gt;
+
+  &lt;!-- Enforce that an Origin/Referer header is present to prevent CSRF --&gt;
+  &lt;cors&gt;
+    &lt;strict-checking/&gt;
+  &lt;/cors&gt;
 
   &lt;!-- deny calling operations or getting attributes from these mbeans --&gt;
   &lt;deny&gt;
