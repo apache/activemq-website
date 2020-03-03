@@ -199,15 +199,20 @@ Rest Management
 
 Starting with version 5.8 we provide a REST management API for the broker. Using [Jolokia](http://www.jolokia.org/) JMX-HTTP bridge it's possible to access all broker metrics (like memory usage) and execute management operations (like purging queues) using REST API. By default the management API is exposed at [http://localhost:8161/api/jolokia/](http://localhost:8161/api/jolokia/) URL. So you can for example get basic broker data with
 ```
-wget --user admin --password admin --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost
+wget --user admin --password admin --header "Origin: http://localhost" --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost
 ```
 or to be more specific, total consumer count with
 ```
-wget --user admin --password admin --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost/TotalConsumerCount
+wget --user admin --password admin --header "Origin: http://localhost" --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost/TotalConsumerCount
 ```
 By default, ActiveMQ uses the [following](https://github.com/apache/activemq/blob/master/assembly/src/release/webapps/api/WEB-INF/classes/jolokia-access.xml) Jolokia security policy:
 ```
 <restrict>
+
+  <!-- Enforce that an Origin/Referer header is present to prevent CSRF -->
+  <cors>
+    <strict-checking/>
+  </cors>
 
   <!-- deny calling operations or getting attributes from these mbeans -->
   <deny>
