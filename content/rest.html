@@ -270,7 +270,28 @@ curl -XGET http://admin:admin@localhost:8161/api/message?destination=topic://ord
 <p>or to be more specific, total consumer count with</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget --user admin --password admin --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost/TotalConsumerCount
 </code></pre></div></div>
-<p>For more information on Jolokia protocol, see its reference manual. An API like this makes it easy to script monitoring and management operations against the broker, see also <a href="how-can-i-monitor-activemq">How can I monitor ActiveMQ</a>?</p>
+<p>By default, ActiveMQ uses the <a href="https://github.com/apache/activemq/blob/master/assembly/src/release/webapps/api/WEB-INF/classes/jolokia-access.xml">following</a> Jolokia security policy:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;restrict&gt;
+
+  &lt;!-- deny calling operations or getting attributes from these mbeans --&gt;
+  &lt;deny&gt;
+    &lt;mbean&gt;
+      &lt;name&gt;com.sun.management:type=DiagnosticCommand&lt;/name&gt;
+      &lt;attribute&gt;*&lt;/attribute&gt;
+      &lt;operation&gt;*&lt;/operation&gt;
+    &lt;/mbean&gt;
+    &lt;mbean&gt;
+      &lt;name&gt;com.sun.management:type=HotSpotDiagnostic&lt;/name&gt;
+      &lt;attribute&gt;*&lt;/attribute&gt;
+      &lt;operation&gt;*&lt;/operation&gt;
+    &lt;/mbean&gt;
+  &lt;/deny&gt;
+
+&lt;/restrict&gt;
+</code></pre></div></div>
+<p>A custom Jolokia security policy can be configured by editing ‘webapps/api/WEB-INF/web.xml’ and specifying the ‘policyLocation’ parameter under the ‘jolokia-agent’ servlet.</p>
+
+<p>For more information on Jolokia security, please refer to the <a href="https://jolokia.org/reference/html/security.html">security section</a> of its reference manual. An API like this makes it easy to script monitoring and management operations against the broker, see also <a href="how-can-i-monitor-activemq">How can I monitor ActiveMQ</a>?</p>
 
 <h2 id="gotchas-and-other-trivia">Gotcha’s and other trivia</h2>
 

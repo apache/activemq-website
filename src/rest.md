@@ -205,7 +205,29 @@ or to be more specific, total consumer count with
 ```
 wget --user admin --password admin --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost/TotalConsumerCount
 ```
-For more information on Jolokia protocol, see its reference manual. An API like this makes it easy to script monitoring and management operations against the broker, see also [How can I monitor ActiveMQ](how-can-i-monitor-activemq)?
+By default, ActiveMQ uses the [following](https://github.com/apache/activemq/blob/master/assembly/src/release/webapps/api/WEB-INF/classes/jolokia-access.xml) Jolokia security policy:
+```
+<restrict>
+
+  <!-- deny calling operations or getting attributes from these mbeans -->
+  <deny>
+    <mbean>
+      <name>com.sun.management:type=DiagnosticCommand</name>
+      <attribute>*</attribute>
+      <operation>*</operation>
+    </mbean>
+    <mbean>
+      <name>com.sun.management:type=HotSpotDiagnostic</name>
+      <attribute>*</attribute>
+      <operation>*</operation>
+    </mbean>
+  </deny>
+
+</restrict>
+```
+A custom Jolokia security policy can be configured by editing 'webapps/api/WEB-INF/web.xml' and specifying the 'policyLocation' parameter under the 'jolokia-agent' servlet.
+
+For more information on Jolokia security, please refer to the [security section](https://jolokia.org/reference/html/security.html) of its reference manual. An API like this makes it easy to script monitoring and management operations against the broker, see also [How can I monitor ActiveMQ](how-can-i-monitor-activemq)?
 
 Gotcha's and other trivia
 -------------------------
