@@ -18,15 +18,15 @@ Apache ActiveMQ 5.15.8 includes several resolved[ issues](https://issues.apache
 
 Description|Download Link|_Verify_
 ---|---|---
-Windows Distribution|[apache-activemq-5.15.8-bin.zip](http://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip)|[ASC](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip.asc), [SHA512](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip.sha512)
-Unix/Linux/Cygwin Distribution|[apache-activemq-5.15.8-bin.tar.gz](http://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz)|[ASC](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz.asc), [SHA512](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz.sha512)
+Windows Distribution|[apache-activemq-5.15.8-bin.zip](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip)|[ASC](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip.asc), [SHA512](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.zip.sha512)
+Unix/Linux/Cygwin Distribution|[apache-activemq-5.15.8-bin.tar.gz](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz)|[ASC](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz.asc), [SHA512](https://archive.apache.org/dist/activemq/5.15.8/apache-activemq-5.15.8-bin.tar.gz.sha512)
 
 Verify the Integrity of Downloads
 ---------------------------------
 
 It is essential that you verify the integrity of the downloaded files using the PGP or MD5 signatures. The PGP signatures can be verified using PGP or GPG. Begin by following these steps:
 
-1.  Download the [KEYS](http://www.apache.org/dist/activemq/KEYS)
+1.  Download the [KEYS](https://downloads.apache.org/dist/activemq/KEYS)
 2.  Download the asc signature file for the relevant distribution
 3.  Verify the signatures using the following commands, depending on your use of PGP or GPG:
     ```
