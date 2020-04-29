@@ -2,12 +2,12 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <meta charset="UTF-8">
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <title>STOMP · ActiveMQ Artemis Documentation</title>
+        <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="generator" content="GitBook 3.1.1">
         
         
         
@@ -1213,47 +1213,83 @@ anycast or multicast).</p>
 extremely useful for debugging or simply monitoring client activity. Along with
 the STOMP frame itself the remote IP address of the client is logged as well as
 the internal connection ID so that frames from the same client can be correlated.</p>
-<h2 id="sending">Sending</h2>
+<h2 id="routing-semantics">Routing Semantics</h2>
+<p>The STOMP specification is intentionally ambiguous about message routing
+semantics. When providing an overview of the protocol the STOMP 1.2 specification
+<a href="https://stomp.github.io/stomp-specification-1.2.html#Protocol_Overview" target="_blank">says</a>:</p>
+<pre><code>A STOMP server is modelled as a set of destinations to which messages can be sent.
+The STOMP protocol treats destinations as opaque string and their syntax is
+server implementation specific. Additionally STOMP does not define what the
+delivery semantics of destinations should be. The delivery, or
+&quot;message exchange&quot;, semantics of destinations can vary from server to server and
+even from destination to destination. This allows servers to be creative with the
+semantics that they can support with STOMP.
+</code></pre><p>Therefore, there are a handful of different ways to specify which semantics are
+desired both on the client-side and broker-side.</p>
+<h3 id="configuring-routing-semantics-from-the-client-side">Configuring Routing Semantics from the Client Side</h3>
+<h4 id="sending">Sending</h4>
 <p>When a STOMP client sends a message (using a <code>SEND</code> frame), the protocol
-manager looks at the message to determine where to route it and potentially how
-to create the address and/or queue to which it is being sent. The protocol
-manager uses either of the following bits of information from the frame to
-determine the routing type:</p>
-<ol>
-<li><p>The value of the <code>destination-type</code> header. Valid values are <code>ANYCAST</code> and
-<code>MULTICAST</code> (case sensitive).</p>
-</li>
-<li><p>The &quot;prefix&quot; on the <code>destination</code> header. See <a href="address-model.html#using-prefixes-to-determine-routing-type">additional
-info</a> on
-prefixes.</p>
-</li>
-</ol>
-<p>If no indication of routing type is supplied then the default defined in the
-corresponding <code>default-address-routing-type</code> &amp; <code>default-queue-routing-type</code>
-address-settings will be used.</p>
-<p>The <code>destination</code> header maps to an address of the same name. If the
-<code>destination</code> header used a prefix then the prefix is stripped.</p>
-<h2 id="subscribing">Subscribing</h2>
+manager looks at the <code>destination-type</code> header to determine where to route
+it and potentially how to create the address and/or queue to which it is
+being sent. Valid values are <code>ANYCAST</code> and <code>MULTICAST</code> (case sensitive).
+If no indication of routing type is supplied (either by the client or the
+broker) then the default defined in the corresponding
+<code>default-address-routing-type</code> &amp; <code>default-queue-routing-type</code>
+address-settings will be used as necessary.</p>
+<p>The <code>destination</code> header maps to an address of the same name if <code>MULTICAST</code> is
+used and additionally to a queue of the same name if <code>ANYCAST</code> is used.</p>
+<h4 id="subscribing">Subscribing</h4>
 <p>When a STOMP client subscribes to a destination (using a <code>SUBSCRIBE</code> frame),
-the protocol manager looks at the frame to determine what subscription
-semantics to use and potentially how to create the address and/or queue for the
-subscription. The protocol manager uses either of the following bits of
-information from the frame to determine the routing type:</p>
-<ol>
-<li><p>The value of the <code>subscription-type</code> header. Valid values are <code>ANYCAST</code> and
-<code>MULTICAST</code> (case sensitive).</p>
-</li>
-<li><p>The &quot;prefix&quot; on the <code>destination</code> header. See <a href="address-model.html#using-prefixes-to-determine-routing-type">additional
-info</a> on
-prefixes.</p>
-</li>
-</ol>
-<p>If no indication of routing type is supplied then the default defined in the
+the protocol manager looks at the <code>subscription-type</code> header frame to determine
+what subscription semantics to use and potentially how to create the address
+and/or queue for the subscription. If no indication of routing type is
+supplied (either by the client or the broker) then the default defined in the
 corresponding <code>default-address-routing-type</code> &amp; <code>default-queue-routing-type</code>
-address-settings will be used.</p>
-<p>The <code>destination</code> header maps to an address of the same name if multicast is
-used or to a queue of the same name if anycast is used. If the <code>destination</code>
-header used a prefix then the prefix is stripped.</p>
+address-settings will be used as necessary.</p>
+<p>The <code>destination</code> header maps to an address of the same name if <code>MULTICAST</code> is
+used and additionally to a queue of the same name if <code>ANYCAST</code> is used.</p>
+<h3 id="configuring-routing-semantics-from-the-broker-side">Configuring Routing Semantics from the Broker side</h3>
+<p>On the broker-side there are two main options for specifying routing semantics -
+prefixes and address settings</p>
+<h4 id="prefixes">Prefixes</h4>
+<p>Using prefixes involves specifying the <code>anycastPrefix</code> and/or the
+<code>multicastPrefix</code> on the acceptor which the STOMP client is using. For the STOMP
+use-case these prefixes tell the broker that destinations using them should be
+treated as anycast or multicast. For example, if the acceptor has
+<code>anycastPrefix=queue/</code> then when a STOMP client sends a message to
+<code>destination:queue/foo</code> the broker will auto-create the address <code>foo</code> and queue
+<code>foo</code> appropriately as anycast and the message will be placed in that queue.
+Additionally, if the acceptor has <code>multicastPrefix=topic/</code> then when a STOMP
+client sends a message to <code>destination:topic/bar</code> the broker will auto-create
+the address bar as multicast, but it won&apos;t create a queue since multicast
+(i.e. pub/sub) semantics require a client to explicitly create a subscription
+to receive those messages.</p>
+<p>Note: The <code>anycastPrefix</code> and/or <code>multicastPrefix</code> on the acceptor will be
+stripped from the <code>destination</code> value.</p>
+<h4 id="address-settings">Address Settings</h4>
+<p>Using address settings involves defining address-setting elements whose <code>match</code>
+corresponds with the destination names the clients will use along with the proper
+<code>delimiter</code> to enabled matching. For example, broker.xml could use the following:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">address-settings</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">address-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;queue/#&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">default-address-routing-type</span>&gt;</span>ANYCAST<span class="hljs-tag">&lt;/<span class="hljs-name">default-address-routing-type</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">default-queue-routing-type</span>&gt;</span>ANYCAST<span class="hljs-tag">&lt;/<span class="hljs-name">default-queue-routing-type</span>&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">address</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">address-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;topic/#&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">default-address-routing-type</span>&gt;</span>MULTICAST<span class="hljs-tag">&lt;/<span class="hljs-name">default-address-routing-type</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">default-queue-routing-type</span>&gt;</span>MULTICAST<span class="hljs-tag">&lt;/<span class="hljs-name">default-queue-routing-type</span>&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">address</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">address-settings</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">wildcard-addresses</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">delimiter</span>&gt;</span>/<span class="hljs-tag">&lt;/<span class="hljs-name">delimiter</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">wildcard-addresses</span>&gt;</span>
+</code></pre>
+<p>Then if a STOMP client sends a message to <code>destination:queue/foo</code> the broker will
+auto-create the address <code>queue/foo</code> and queue <code>queue/foo</code> appropriately as
+anycast and the message will be placed in that queue. Additionally, if a STOMP
+client sends a message to <code>destination:topic/bar</code> the broker will auto-create the
+address <code>topic/bar</code> as multicast, but it won&apos;t create a queue as previously
+explained.</p>
 <h2 id="stomp-heart-beating-and-connection-ttl">STOMP heart-beating and connection-ttl</h2>
 <p>Well behaved STOMP clients will always send a <code>DISCONNECT</code> frame before closing
 their connections. In this case the server will clear up any server side
@@ -1350,10 +1386,10 @@ message. If you want each STOMP message to have a unique ID, just set the
 </code></pre>
 <p>When the server starts with the above setting, each stomp message sent through
 this acceptor will have an extra property added. The property key is
-<code>amq-message-id</code> and the value is a String representation of a long type
+<code>amqMessageId</code> and the value is a String representation of a long type
 internal message id prefixed with <code>STOMP</code>, like:</p>
-<pre><code>amq-message-id : STOMP12345
-</code></pre><p>The default <code>stomp-enable-message-id</code> value is <code>false</code>.</p>
+<pre><code>amqMessageId : STOMP12345
+</code></pre><p>The default <code>stompEnableMessageId</code> value is <code>false</code>.</p>
 <h2 id="durable-subscriptions">Durable Subscriptions</h2>
 <p>The <code>SUBSCRIBE</code> and <code>UNSUBSCRIBE</code> frames can be augmented with special headers
 to create and destroy durable subscriptions respectively.</p>
@@ -1404,9 +1440,9 @@ message to a normal message, before sending it to the client.</p>
 <p>If a large message is compressed, the server will uncompressed it before
 sending it to stomp clients. The default value of <code>stompMinLargeMessageSize</code> is
 the same as the default value of
-<a href="large-messages.html#configuring-parameters">min-large-message-size</a>.</p>
+<a href="large-messages.html#configuring-parameters">minLargeMessageSize</a>.</p>
 <h2 id="web-sockets">Web Sockets</h2>
-<p>Apache ActiveMQ Artemis also support STOMP over <a href="https://html.spec.whatwg.org/multipage/web-sockets.html" target="_blank">Web
+<p>Apache ActiveMQ Artemis also supports STOMP over <a href="https://html.spec.whatwg.org/multipage/web-sockets.html" target="_blank">Web
 Sockets</a>.  Modern web
 browsers which support Web Sockets can send and receive STOMP messages.</p>
 <p>STOMP over Web Sockets is supported via the normal STOMP acceptor:</p>
@@ -1469,7 +1505,7 @@ Artemis broker to have web browsers and Java applications exchanges messages.</p
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"STOMP","level":"1.14","depth":1,"next":{"title":"OpenWire","level":"1.15","depth":1,"path":"openwire.md","ref":"openwire.md","articles":[]},"previous":{"title":"MQTT","level":"1.13","depth":1,"path":"mqtt.md","ref":"mqtt.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"stomp.md","mtime":"2020-01-10T14:13:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-10T14:51:01.535Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"STOMP","level":"1.14","depth":1,"next":{"title":"OpenWire","level":"1.15","depth":1,"path":"openwire.md","ref":"openwire.md","articles":[]},"previous":{"title":"MQTT","level":"1.13","depth":1,"path":"mqtt.md","ref":"mqtt.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"stomp.md","mtime":"2020-04-27T19:30:24.000Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-04-29T20:47:49.444Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
