@@ -14,8 +14,8 @@ The documentation is available in several formats, click on the relevant version
 
 #### Hacking Guide
 
-*   [HTML](latest/hacking-guide)
-*   [PDF](latest/hacking-guide/book.pdf)
+*   [HTML](./hacking-guide)
+*   [PDF](./hacking-guide/book.pdf)
 
 #### API
 
