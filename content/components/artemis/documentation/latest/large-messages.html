@@ -2,12 +2,12 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <meta charset="UTF-8">
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <title>Large Messages · ActiveMQ Artemis Documentation</title>
+        <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="generator" content="GitBook 3.1.1">
         
         
         
@@ -1181,23 +1181,10 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="large-messages">Large Messages</h1>
-<p>Apache ActiveMQ Artemis supports sending and receiving of huge messages, even
-when the client and server are running with limited memory. The only realistic
-limit to the size of a message that can be sent or consumed is the amount of
-disk space you have available. We have tested sending and consuming messages up
-to 8 GiB in size with a client and server running in just 50MiB of RAM!</p>
-<p>To send a large message, the user can set an <code>InputStream</code> on a message body,
-and when that message is sent, Apache ActiveMQ Artemis will read the
-<code>InputStream</code>. A <code>FileInputStream</code> could be used for example to send a huge
-message from a huge file on disk.</p>
-<p>As the <code>InputStream</code> is read the data is sent to the server as a stream of
-fragments. The server persists these fragments to disk as it receives them and
-when the time comes to deliver them to a consumer they are read back of the
-disk, also in fragments and sent down the wire. When the consumer receives a
-large message it initially receives just the message with an empty body, it can
-then set an <code>OutputStream</code> on the message to stream the huge message body to a
-file on disk or elsewhere. At no time is the entire message body stored fully
-in memory, either on the client or the server.</p>
+<p>Apache ActiveMQ Artemis can be configured to store messages as files when these messages are beyond a configured value.</p>
+<p>Instead of keeping these messages in memory ActiveMQ Artemis will hold just a thin object on the queues with a
+reference to a file into a specific folder configured as large-messages-directory.</p>
+<p>This is supported on Core Protocol and on the AMQP Protocol.</p>
 <h2 id="configuring-the-server">Configuring the server</h2>
 <p>Large messages are stored on a disk directory on the server side, as configured
 on the main configuration file.</p>
@@ -1219,7 +1206,7 @@ configured.</p>
 <p>For the best performance we recommend using file store with large messages
 directory stored on a different physical volume to the message journal or
 paging directory.</p>
-<h2 id="configuring-the-client">Configuring the Client</h2>
+<h2 id="configuring-the-core-client">Configuring the Core Client</h2>
 <p>Any message larger than a certain size is considered a large message.  Large
 messages will be split up and sent in fragments. This is determined by the URL
 parameter <code>minLargeMessageSize</code></p>
@@ -1237,7 +1224,7 @@ then turns into a &quot;large&quot; message once it is encoded.</p>
 side</a>
 will provide more information on how to instantiate the core session factory or
 JMS connection factory.</p>
-<h2 id="compressed-large-messages">Compressed Large Messages</h2>
+<h2 id="compressed-large-messages-on-core-protocol">Compressed Large Messages on Core Protocol</h2>
 <p>You can choose to send large messages in compressed form using
 <code>compressLargeMessages</code> URL parameter.</p>
 <p>If you specify the boolean URL parameter <code>compressLargeMessages</code> as true, The
@@ -1249,7 +1236,7 @@ client.</p>
 sent to server as regular messages. This means that the message won&apos;t be
 written into the server&apos;s large-message data directory, thus reducing the disk
 I/O.</p>
-<h2 id="streaming-large-messages">Streaming large messages</h2>
+<h2 id="streaming-large-messages-from-core-protocol">Streaming large messages from Core Protocol</h2>
 <p>Apache ActiveMQ Artemis supports setting the body of messages using input and
 output streams (<code>java.lang.io</code>)</p>
 <p>These streams are then used directly for sending (input streams) and receiving
@@ -1351,7 +1338,7 @@ messageReceived.setObjectProperty(<span class="hljs-string">&quot;JMS_AMQ_Output
 <p>When using JMS, Streaming large messages are only supported on
 <code>StreamMessage</code> and <code>BytesMessage</code>.</p>
 </blockquote>
-<h3 id="streaming-alternative">Streaming Alternative</h3>
+<h3 id="streaming-alternative-on-core-protocol">Streaming Alternative on Core Protocol</h3>
 <p>If you choose not to use the <code>InputStream</code> or <code>OutputStream</code> capability of
 Apache ActiveMQ Artemis You could still access the data directly in an
 alternative fashion.</p>
@@ -1376,6 +1363,18 @@ transparently.</p>
    <span class="hljs-keyword">int</span> numberOfBytes = rm.readBytes(data);
    <span class="hljs-comment">// Do whatever you want with the data</span>
 }
+</code></pre>
+<h2 id="configuring-amqp-acceptor">Configuring AMQP Acceptor</h2>
+<p>You can configure the property <code>amqpMinLargeMessageSize</code> at the acceptor.</p>
+<p>The default value is 102400 (100KBytes).</p>
+<p>Setting it to -1 will disable large message support.</p>
+<p><strong>Warning:</strong> setting amqpMinLargeMessageSize to -1, your AMQP message might be stored as a Core Large Message if the 
+size of the message does not fit into the journal. This is the former semantic of the broker and it is kept this way for
+compatibility reasons.</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">acceptors</span>&gt;</span>
+      <span class="hljs-comment">&lt;!-- AMQP Acceptor.  Listens on default AMQP port for AMQP traffic.--&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">acceptor</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;amqp&quot;</span>&gt;</span>tcp://0.0.0.0:5672?;   ..... amqpMinLargeMessageSize=102400; .... <span class="hljs-tag">&lt;/<span class="hljs-name">acceptor</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">acceptors</span>&gt;</span>
 </code></pre>
 <h2 id="large-message-example">Large message example</h2>
 <p>Please see the <a href="examples.html#large-message">Large Message Example</a> which shows
@@ -1423,7 +1422,7 @@ how large messages are configured and used with JMS.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Large Messages","level":"1.36","depth":1,"next":{"title":"Paging","level":"1.37","depth":1,"path":"paging.md","ref":"paging.md","articles":[]},"previous":{"title":"Message Expiry","level":"1.35","depth":1,"path":"message-expiry.md","ref":"message-expiry.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"large-messages.md","mtime":"2020-01-10T14:13:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-10T14:51:01.535Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Large Messages","level":"1.36","depth":1,"next":{"title":"Paging","level":"1.37","depth":1,"path":"paging.md","ref":"paging.md","articles":[]},"previous":{"title":"Message Expiry","level":"1.35","depth":1,"path":"message-expiry.md","ref":"message-expiry.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"large-messages.md","mtime":"2020-04-27T19:30:24.000Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-04-29T20:47:49.444Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

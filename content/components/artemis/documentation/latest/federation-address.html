@@ -2,12 +2,12 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <meta charset="UTF-8">
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <title>Address Federation · ActiveMQ Artemis Documentation</title>
+        <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="generator" content="GitBook 3.1.1">
         
         
         
@@ -1220,6 +1220,16 @@ Figure 5. Address Federation - Fan Out</p>
 <p>One master address (it would required no configuration) is linked to by a tree of downstream federated addresses, 
 the tree can extend to any depth, and can be extended to without needing to re-configure existing brokers. </p>
 <p>In this case messages published to the master address can be received by any consumer connected to any broker in the tree.</p>
+<h3 id="divert-binding-support">Divert Binding Support</h3>
+<p>Divert binding support can be added as part of the address policy configuration. This will allow the federation to respond
+to divert bindings to create demand. For example, let&apos;s say there is one address called &quot;test.federation.source&quot; that is
+included as a match for the federated address and another address called &quot;test.federation.target&quot; that is not included. Normally
+when a queue is created on &quot;test.federation.target&quot; this would not cause a federated consumer to be created because the address
+is not part of the included matches. However, if we create a divert binding such that &quot;test.federation.source&quot; is the source address
+and &quot;test.federation.target&quot; is the forwarded address then demand will now be created. The source address still must be multicast
+but the target address can be multicast or anycast.</p>
+<p>An example use case for this might be a divert that redirects JMS topics (multicast addresses) to a JMS queue (anycast addresses) to
+allow for load balancing of the messages on a topic for legacy consumers not supporting JMS 2.0 and shared subscriptions.</p>
 <h2 id="configuring-address-federation">Configuring Address Federation</h2>
 <p>Federation is configured in <code>broker.xml</code>.</p>
 <p>Sample Address Federation setup:</p>
@@ -1276,6 +1286,9 @@ and the delay and message count params have been met. This is useful if you want
 <li><p><code>auto-delete-message-count</code>. The amount number messages in the upstream queue that the message count must be equal or below before the downstream broker has disconnected before the upstream queue can be eligable for <code>auto-delete</code>.</p>
 </li>
 <li><p><code>transformer-ref</code>. The ref name for a transformer (see transformer config) that you may wish to configure to transform the message on federation transfer.</p>
+</li>
+<li><p><code>enable-divert-bindings</code>. Setting to true will enable divert bindings to be listened for demand. If there is a divert binding with an address that matches the included
+addresses for the stream, any queue bindings that match the forward address of the divert will create demand. Default is false</p>
 </li>
 </ul>
 <p><strong>note</strong> <code>address-policy</code>&apos;s and <code>queue-policy</code>&apos;s are able to be defined in the same federation, and be linked to the same upstream.</p>
@@ -1476,7 +1489,7 @@ extra configuration flag that needs to be set:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Address Federation","level":"1.60.1","depth":2,"next":{"title":"Queue Federation","level":"1.60.2","depth":2,"path":"federation-queue.md","ref":"federation-queue.md","articles":[]},"previous":{"title":"Federation","level":"1.60","depth":1,"path":"federation.md","ref":"federation.md","articles":[{"title":"Address Federation","level":"1.60.1","depth":2,"path":"federation-address.md","ref":"federation-address.md","articles":[]},{"title":"Queue Federation","level":"1.60.2","depth":2,"path":"federation-queue.md","ref":"federation-queue.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"federation-address.md","mtime":"2020-01-10T14:13:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-10T14:51:01.535Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Address Federation","level":"1.60.1","depth":2,"next":{"title":"Queue Federation","level":"1.60.2","depth":2,"path":"federation-queue.md","ref":"federation-queue.md","articles":[]},"previous":{"title":"Federation","level":"1.60","depth":1,"path":"federation.md","ref":"federation.md","articles":[{"title":"Address Federation","level":"1.60.1","depth":2,"path":"federation-address.md","ref":"federation-address.md","articles":[]},{"title":"Queue Federation","level":"1.60.2","depth":2,"path":"federation-queue.md","ref":"federation-queue.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"federation-address.md","mtime":"2020-04-27T19:30:24.000Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-04-29T20:47:49.444Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
