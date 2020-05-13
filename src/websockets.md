@@ -24,9 +24,11 @@ ActiveMQ comes with _WebSocket_ transport which implements Stomp over WebSockets
 
 To configure it, you need to place something like this to your ActiveMQ configuration file
 
+```xml
 <transportConnectors>
   <transportConnector name="websocket" uri="ws://0.0.0.0:61614"/>
 </transportConnectors>
+```
 
 One thing worth noting is that web sockets (just as Ajax) implements the _same origin policy_, so you can access only brokers running on the same host as the web application running the client.
 
@@ -35,18 +37,22 @@ Secure Web Sockets
 
 Version 5.7.0 introduced _Secure Web Socket_ transport. To configure it you need two things. First, you need to configure a new transport connector like this
 
+```xml
 <transportConnectors>
   <transportConnector name="secure_websocket" uri="wss://0.0.0.0:61614"/>
 </transportConnectors>
+```
 
 Note that we use _wss_ url prefix to denote a secured version of the protocol. Next you need to provide SSL context for this transport. You can do that by providing _sslContext_ in your broker configuration in a similar fashion as you'd do for _ssl_ or _https_ transports.
 
+```xml
 <sslContext>
     <sslContext keyStore="file:${activemq.conf}/broker.ks"
                 keyStorePassword="password" trustStore="file:${activemq.conf}/broker.ts"
                 trustStorePassword="password"
     />
 </sslContext>
+```
 
 That's it, your secure websocket transport is ready. Take a look at the next section to see how to use a demo to test it out.
 
