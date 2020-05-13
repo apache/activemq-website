@@ -108,9 +108,10 @@
 
 <p>To configure it, you need to place something like this to your ActiveMQ configuration file</p>
 
-<transportConnectors>
-  <transportConnector name="websocket" uri="ws://0.0.0.0:61614" />
-</transportConnectors>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;transportConnectors&gt;</span>
+  <span class="nt">&lt;transportConnector</span> <span class="na">name=</span><span class="s">"websocket"</span> <span class="na">uri=</span><span class="s">"ws://0.0.0.0:61614"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/transportConnectors&gt;</span>
+</code></pre></div></div>
 
 <p>One thing worth noting is that web sockets (just as Ajax) implements the <em>same origin policy</em>, so you can access only brokers running on the same host as the web application running the client.</p>
 
@@ -118,15 +119,20 @@
 
 <p>Version 5.7.0 introduced <em>Secure Web Socket</em> transport. To configure it you need two things. First, you need to configure a new transport connector like this</p>
 
-<transportConnectors>
-  <transportConnector name="secure_websocket" uri="wss://0.0.0.0:61614" />
-</transportConnectors>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;transportConnectors&gt;</span>
+  <span class="nt">&lt;transportConnector</span> <span class="na">name=</span><span class="s">"secure_websocket"</span> <span class="na">uri=</span><span class="s">"wss://0.0.0.0:61614"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/transportConnectors&gt;</span>
+</code></pre></div></div>
 
 <p>Note that we use <em>wss</em> url prefix to denote a secured version of the protocol. Next you need to provide SSL context for this transport. You can do that by providing <em>sslContext</em> in your broker configuration in a similar fashion as you’d do for <em>ssl</em> or <em>https</em> transports.</p>
 
-<sslContext>
-    <sslContext keyStore="file:${activemq.conf}/broker.ks" keyStorePassword="password" trustStore="file:${activemq.conf}/broker.ts" trustStorePassword="password" />
-</sslContext>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;sslContext&gt;</span>
+    <span class="nt">&lt;sslContext</span> <span class="na">keyStore=</span><span class="s">"file:${activemq.conf}/broker.ks"</span>
+                <span class="na">keyStorePassword=</span><span class="s">"password"</span> <span class="na">trustStore=</span><span class="s">"file:${activemq.conf}/broker.ts"</span>
+                <span class="na">trustStorePassword=</span><span class="s">"password"</span>
+    <span class="nt">/&gt;</span>
+<span class="nt">&lt;/sslContext&gt;</span>
+</code></pre></div></div>
 
 <p>That’s it, your secure websocket transport is ready. Take a look at the next section to see how to use a demo to test it out.</p>
 
