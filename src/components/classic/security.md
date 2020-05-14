@@ -9,6 +9,7 @@ Details of security problems fixed in released versions of Apache ActiveMQ 5.x a
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2020-1941](../../security-advisories.data/CVE-2020-1941-announcement.txt) - XSS in WebConsole
 *   [CVE-2019-0222](../../security-advisories.data/CVE-2019-0222-announcement.txt) - Corrupt MQTT frame can cause broker shutdown
 *   [CVE-2018-8006](../../security-advisories.data/CVE-2018-8006-announcement.txt) - ActiveMQ Web Console - Cross-Site Scripting
 *   [CVE-2018-11775](../../security-advisories.data/CVE-2018-11775-announcement.txt) - Missing TLS Hostname Verification
