@@ -1216,7 +1216,7 @@ expired message</p>
 </li>
 </ul>
 <h2 id="configuring-expiry-delay">Configuring Expiry Delay</h2>
-<p>Default Expiry delay can be configured in the address-setting configuration:</p>
+<p>Default expiry delay can be configured in the address-setting configuration:</p>
 <pre><code class="lang-xml"><span class="hljs-comment">&lt;!-- expired messages in exampleQueue will be sent to the expiry address expiryQueue --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">address-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;exampleQueue&quot;</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">expiry-address</span>&gt;</span>expiryQueue<span class="hljs-tag">&lt;/<span class="hljs-name">expiry-address</span>&gt;</span>
@@ -1226,10 +1226,30 @@ expired message</p>
 <p><code>expiry-delay</code> defines the expiration time in milliseconds that will be used for messages 
 which are using the default expiration time (i.e. 0). </p>
 <p>For example, if <code>expiry-delay</code> is set to &quot;10&quot; and a message which is using the default 
-expiration time (i.e.10) arrives then its expiration time of &quot;0&quot; will be changed to &quot;10.&quot; 
+expiration time (i.e. 10) arrives then its expiration time of &quot;0&quot; will be changed to &quot;10.&quot;
 However, if a message which is using an expiration time of &quot;20&quot; arrives then its expiration
 time will remain unchanged. Setting <code>expiry-delay</code> to &quot;-1&quot; will disable this feature. </p>
-<p>The default is &quot;-1&quot;.</p>
+<p>The default is <code>-1</code>.</p>
+<p>If <code>expiry-delay</code> is <em>not set</em> then minimum and maximum expiry delay values can be configured
+in the address-setting configuration.</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">address-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;exampleQueue&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">min-expiry-delay</span>&gt;</span>10<span class="hljs-tag">&lt;/<span class="hljs-name">min-expiry-delay</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">max-expiry-delay</span>&gt;</span>100<span class="hljs-tag">&lt;/<span class="hljs-name">max-expiry-delay</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">address-setting</span>&gt;</span>
+</code></pre>
+<p>Semantics are as follows:</p>
+<ul>
+<li>Messages <em>without</em> an expiration will be set to <code>max-expiry-delay</code>. If <code>max-expiry-delay</code>
+is not defined then the message will be set to <code>min-expiry-delay</code>. If <code>min-expiry-delay</code>
+is not defined then the message will not be changed.</li>
+<li>Messages with an expiration <em>above</em> <code>max-expiry-delay</code> will be set to <code>max-expiry-delay</code></li>
+<li>Messages with an expiration <em>below</em> <code>min-expiry-delay</code> will be set to <code>min-expiry-delay</code></li>
+<li>Messages with an expiration <em>within</em> <code>min-expiry-delay</code> and <code>max-expiry-delay</code> range will
+not be changed</li>
+<li>Any value set for <code>expiry-delay</code> other than the default (i.e. <code>-1</code>) will override the
+aforementioned min/max settings.</li>
+</ul>
+<p>The default for both <code>min-expiry-delay</code> and <code>max-expiry-delay</code> is <code>-1</code> (i.e. disabled).</p>
 <h2 id="configuring-expiry-addresses">Configuring Expiry Addresses</h2>
 <p>Expiry address are defined in the address-setting configuration:</p>
 <pre><code class="lang-xml"><span class="hljs-comment">&lt;!-- expired messages in exampleQueue will be sent to the expiry address expiryQueue --&gt;</span>
@@ -1352,7 +1372,7 @@ shows how message expiry is configured and used with JMS.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Message Expiry","level":"1.35","depth":1,"next":{"title":"Large Messages","level":"1.36","depth":1,"path":"large-messages.md","ref":"large-messages.md","articles":[]},"previous":{"title":"Message Redelivery and Undelivered Messages","level":"1.34","depth":1,"path":"undelivered-messages.md","ref":"undelivered-messages.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"message-expiry.md","mtime":"2020-04-29T20:40:00.000Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-04-29T20:47:49.444Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Message Expiry","level":"1.35","depth":1,"next":{"title":"Large Messages","level":"1.36","depth":1,"path":"large-messages.md","ref":"large-messages.md","articles":[]},"previous":{"title":"Message Redelivery and Undelivered Messages","level":"1.34","depth":1,"path":"undelivered-messages.md","ref":"undelivered-messages.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"message-expiry.md","mtime":"2020-05-26T14:20:21.189Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-05-26T14:23:55.329Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

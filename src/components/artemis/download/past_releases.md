@@ -10,9 +10,17 @@ These are older releases. For current releases, please see the [download](./) pa
 The keys file for verifying the release can be obtained [here](https://www.apache.org/dist/activemq/KEYS)
 
 For any releases not shown here, check the [archive](https://archive.apache.org/dist/activemq/activemq-artemis/).
+<br/>
+#### ActiveMQ Artemis 2.12.0   (April 29, 2020)
+[Release Notes](release-notes-2.12.0) | [Git Report](commit-report-2.12.0) | [Documentation](../documentation/2.12.0)
 
+tar.gz:|[apache-artemis-2.12.0-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/2.12.0/apache-artemis-2.12.0-bin.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.12.0/apache-artemis-2.12.0-bin.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.12.0/apache-artemis-2.12.0-bin.tar.gz.asc)
+ZIP:|[apache-artemis-2.12.0-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/2.12.0/apache-artemis-2.12.0-bin.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.12.0/apache-artemis-2.12.0-bin.zip.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.12.0/apache-artemis-2.12.0-bin.zip.asc)
+Source Distribution:|[apache-artemis-2.12.0-source-release.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/2.12.0/apache-artemis-2.12.0-source-release.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.12.0/apache-artemis-2.12.0-source-release.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.12.0/apache-artemis-2.12.0-source-release.tar.gz.asc)|
+
+<br/>
 #### ActiveMQ Artemis 2.11.0   (January 15, 2020)
-[Release Notes](release-notes-2.11.0) | [Git Report](commit-report-2.11.0 | [Documentation](../documentation/2.11.0)
+[Release Notes](release-notes-2.11.0) | [Git Report](commit-report-2.11.0) | [Documentation](../documentation/2.11.0)
 
 tar.gz:|[apache-artemis-2.11.0-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/2.11.0/apache-artemis-2.11.0-bin.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.11.0/apache-artemis-2.11.0-bin.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.11.0/apache-artemis-2.11.0-bin.tar.gz.asc)
 ZIP:|[apache-artemis-2.11.0-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/2.11.0/apache-artemis-2.11.0-bin.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/2.11.0/apache-artemis-2.11.0-bin.zip.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/2.11.0/apache-artemis-2.11.0-bin.zip.asc)

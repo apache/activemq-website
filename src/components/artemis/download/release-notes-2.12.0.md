@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Artemis 2.12.0 Release Notes
+title: ActiveMQ Artemis 2.13.0 Release Notes
 title-class: page-title-artemis
 type: artemis
 ---
@@ -9,7 +9,6 @@ A complete list of JIRAs for the 2.12.0 release can be found [here](https://issu
 
 A list of commits can be found [here](commit-report-2.12.0).
 
-Release Notes - ActiveMQ Artemis - Version 2.12.0
 Release Notes - ActiveMQ Artemis - Version 2.12.0
 
 

@@ -1438,6 +1438,12 @@ security by encrypting TCP connections using the Secure Sockets Layer SSL</p>
 <p>Netty SSL uses all the same properties as Netty TCP but adds the following
 additional properties:</p>
 <ul>
+<li><code>sslContext</code></li>
+</ul>
+<p>A key that can be used in conjunction with <code>org.apache.activemq.artemis.core.remoting.impl.ssl.CachingSSLContextFactory</code>
+to cache created SSLContext and avoid recreating. Look <a href="#Configuring%20a%20SSLContextFactory">Configuring a SSLContextFactory</a>
+for more details.</p>
+<ul>
 <li><p><code>sslEnabled</code></p>
 <p>Must be <code>true</code> to enable SSL. Default is <code>false</code>.</p>
 </li>
@@ -1585,6 +1591,21 @@ trust manager (i.e. <code>trustAll</code>, <code>truststoreProvider</code>, <cod
 <a href="using-server.html#adding-runtime-dependencies">broker&apos;s classpath</a>.</p>
 </li>
 </ul>
+<h4 id="configuring-a-sslcontextfactory">Configuring a SSLContextFactory</h4>
+<p>If you have a <code>JDK</code> provider you can configure which SSLContextFactory to use.
+Currently we provide two implementations: </p>
+<ul>
+<li><code>org.apache.activemq.artemis.core.remoting.impl.ssl.DefaultSSLContextFactory</code></li>
+<li><code>org.apache.activemq.artemis.core.remoting.impl.ssl.CachingSSLContextFactory</code>
+but you can also add your own implementation of <code>org.apache.activemq.artemis.spi.core.remoting.ssl.SSLContextFactory</code>.</li>
+</ul>
+<p>The implementations are loaded by a ServiceLoader, thus you need to declare your implementation in
+a <code>META-INF/services/org.apache.activemq.artemis.spi.core.remoting.ssl.SSLContextFactory</code> file.
+If several implementations are available, the one with the highest <code>priority</code> will be selected.
+So for example, if you want to use <code>org.apache.activemq.artemis.core.remoting.impl.ssl.CachingSSLContextFactory</code>
+you need to add a <code>META-INF/services/org.apache.activemq.artemis.spi.core.remoting.ssl.SSLContextFactory</code> file
+to your classpath with the content <code>org.apache.activemq.artemis.core.remoting.impl.ssl.CachingSSLContextFactory</code>.</p>
+<p><strong>Note:</strong> This mechanism doesn&apos;t work if you have selected <code>OPENSSL</code> as provider.</p>
 <h3 id="configuring-netty-http">Configuring Netty HTTP</h3>
 <p>Netty HTTP tunnels packets over the HTTP protocol. It can be useful in
 scenarios where firewalls only allow HTTP traffic to pass.</p>
@@ -1656,7 +1677,7 @@ acceptor (not recommended)</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Configuring Transports","level":"1.25","depth":1,"next":{"title":"Configuration Reload","level":"1.26","depth":1,"path":"config-reload.md","ref":"config-reload.md","articles":[]},"previous":{"title":"Persistence","level":"1.24","depth":1,"path":"persistence.md","ref":"persistence.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"configuring-transports.md","mtime":"2020-04-27T19:30:24.000Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-04-29T20:47:49.444Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Configuring Transports","level":"1.25","depth":1,"next":{"title":"Configuration Reload","level":"1.26","depth":1,"path":"config-reload.md","ref":"config-reload.md","articles":[]},"previous":{"title":"Persistence","level":"1.24","depth":1,"path":"persistence.md","ref":"persistence.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"configuring-transports.md","mtime":"2020-05-26T14:20:21.187Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-05-26T14:23:55.329Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
