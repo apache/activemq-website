@@ -11,7 +11,7 @@ The keys file for verifying the release can be obtained [here](https://www.apach
 
 For any releases not shown here, check the [archive](https://archive.apache.org/dist/activemq/activemq-artemis/).
 
-#### ActiveMQ Artemis Native Layer 1.0.1  (June  22, 2020)
+#### ActiveMQ Artemis Native Layer 1.0.1  (Oct 24, 2019)
 
 [Release Notes](release-notes-native-1.0.1)
 
