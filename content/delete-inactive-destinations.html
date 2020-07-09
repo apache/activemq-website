@@ -98,12 +98,12 @@
 
 <p>An ‘inactive’ destination is one that has had no messages pending and no consumers connected for some configured period of time.</p>
 
-<p>By default the broker does <em>not</em> check for inactive destinations. This as governed by the default values for the following options: <code class="highlighter-rouge">schedulePeriodForDestinationPurge="0"</code> and <code class="highlighter-rouge">gcInactiveDestinations="false"</code>.</p>
+<p>By default the broker does <em>not</em> check for inactive destinations. This as governed by the default values for the following options: <code class="language-plaintext highlighter-rouge">schedulePeriodForDestinationPurge="0"</code> and <code class="language-plaintext highlighter-rouge">gcInactiveDestinations="false"</code>.</p>
 
-<p>However, the broker can be configured to purge inactive destinations. To do so requires using specially configured destination policy entries in combination with the broker attribute: <code class="highlighter-rouge">schedulePeriodForDestinationPurge &gt; 0</code>.</p>
+<p>However, the broker can be configured to purge inactive destinations. To do so requires using specially configured destination policy entries in combination with the broker attribute: <code class="language-plaintext highlighter-rouge">schedulePeriodForDestinationPurge &gt; 0</code>.</p>
 
 <p>Example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker xmlns="http://activemq.apache.org/schema/core" schedulePeriodForDestinationPurge="10000"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker xmlns="http://activemq.apache.org/schema/core" schedulePeriodForDestinationPurge="10000"&gt;
 
   &lt;destinationPolicy&gt;
      &lt;policyMap&gt;
@@ -115,10 +115,10 @@
       
 &lt;/broker&gt;
 </code></pre></div></div>
-<p>In this example the broker will check for inactive destinations every <code class="highlighter-rouge">10</code> seconds, as determined by <code class="highlighter-rouge">schedulePeriodForDestinationPurge="10000"</code>. When a destination purge is triggered the broker will delete any queue that has been empty for longer than <code class="highlighter-rouge">inactiveTimoutBeforeGC="30000"</code> milliseconds (default: <code class="highlighter-rouge">60000</code> milliseconds) and for which <code class="highlighter-rouge">gcInactiveDestinations="true"</code> is set on its corresponding destination policy entry.</p>
+<p>In this example the broker will check for inactive destinations every <code class="language-plaintext highlighter-rouge">10</code> seconds, as determined by <code class="language-plaintext highlighter-rouge">schedulePeriodForDestinationPurge="10000"</code>. When a destination purge is triggered the broker will delete any queue that has been empty for longer than <code class="language-plaintext highlighter-rouge">inactiveTimoutBeforeGC="30000"</code> milliseconds (default: <code class="language-plaintext highlighter-rouge">60000</code> milliseconds) and for which <code class="language-plaintext highlighter-rouge">gcInactiveDestinations="true"</code> is set on its corresponding destination policy entry.</p>
 
 <p>When a destination is removed the broker will log a message like:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO  Queue                          - TEST.QUEUE Inactive for longer than 30000 ms - removing ...
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO  Queue                          - TEST.QUEUE Inactive for longer than 30000 ms - removing ...
 </code></pre></div></div>
 
       </div>

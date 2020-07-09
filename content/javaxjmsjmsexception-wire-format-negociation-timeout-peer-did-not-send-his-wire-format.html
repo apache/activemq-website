@@ -95,7 +95,7 @@
         <p> <a href="faq">FAQ</a> &gt; <a href="errors">Errors</a> &gt; <a href="exceptions">Exceptions</a> &gt; <a href="javaxjmsjmsexception-wire-format-negociation-timeout-peer-did-not-send-his-wire-format">javax.jms.JMSException - Wire format negociation timeout - peer did not send his wire format.</a></p>
 
 <p>If you get exception like this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>javax.jms.JMSException: Wire format negociation timeout: peer did not send his wire format.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>javax.jms.JMSException: Wire format negociation timeout: peer did not send his wire format.
     at org.apache.activemq.util.JMSExceptionSupport.create(JMSExceptionSupport.java:58)
     at org.apache.activemq.ActiveMQConnection.syncSendPacket(ActiveMQConnection.java:1185)
     at org.apache.activemq.ActiveMQConnection.ensureConnectionInfoSent(ActiveMQConnection.java:1263)
@@ -109,7 +109,7 @@
   </li>
 </ol>
 
-<p>Make sure to check that you’re connecting to the appropriate <code class="highlighter-rouge">host:port</code></p>
+<p>Make sure to check that you’re connecting to the appropriate <code class="language-plaintext highlighter-rouge">host:port</code></p>
 
 <ol>
   <li>
@@ -125,8 +125,8 @@
   </li>
 </ol>
 
-<p>If you experience sporadic exceptions like this, the best solution is to use <a href="failover-transport-reference">failover transport</a>, so that your clients can try connecting again if the first attempt fails. If you’re getting these kind of exceptions more frequently you can also try extending wire format negotiation period (default 10 sec). You can do that by using <code class="highlighter-rouge">wireFormat.maxInactivityDurationInitalDelay</code> property on the connection URL in your client. For example</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tcp://localhost:61616?wireFormat.maxInactivityDurationInitalDelay=30000
+<p>If you experience sporadic exceptions like this, the best solution is to use <a href="failover-transport-reference">failover transport</a>, so that your clients can try connecting again if the first attempt fails. If you’re getting these kind of exceptions more frequently you can also try extending wire format negotiation period (default 10 sec). You can do that by using <code class="language-plaintext highlighter-rouge">wireFormat.maxInactivityDurationInitalDelay</code> property on the connection URL in your client. For example</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tcp://localhost:61616?wireFormat.maxInactivityDurationInitalDelay=30000
 </code></pre></div></div>
 <p>will use 30 sec timeout.</p>
 

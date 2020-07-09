@@ -98,7 +98,7 @@
 
 <ol>
   <li>Auto-acknowledgement</li>
-  <li>Explicit acknowledgement via <code class="highlighter-rouge">Message.acknowledge()</code></li>
+  <li>Explicit acknowledgement via <code class="language-plaintext highlighter-rouge">Message.acknowledge()</code></li>
   <li>JMS Transactions</li>
   <li>XA</li>
 </ol>
@@ -107,7 +107,7 @@
 
 <p>The main difference between 1 &amp; 2 and 3 &amp; 4 is the latter allow messages to be rolled back and redelivered if an error occurs whilst processing. There is no JMS ‘unacknowledge’. So for this reason JMS transactions should be preferred to message acknowledgements in most use cases.</p>
 
-<p>It’s a common misconception that transactions are inherently slow. In reality there’s little difference in performance, from the broker’s perspective, between the use of a JMS transaction and invoking <code class="highlighter-rouge">Message.acknowledge()</code>. However, a performance penalty is incurred when the delivery mode is set to  persistent. This causes the broker to block until the commit is synchronized to disk. This is similar to how <code class="highlighter-rouge">Message.acknowledge()</code> blocks when using a non-transactional JMS session.</p>
+<p>It’s a common misconception that transactions are inherently slow. In reality there’s little difference in performance, from the broker’s perspective, between the use of a JMS transaction and invoking <code class="language-plaintext highlighter-rouge">Message.acknowledge()</code>. However, a performance penalty is incurred when the delivery mode is set to  persistent. This causes the broker to block until the commit is synchronized to disk. This is similar to how <code class="language-plaintext highlighter-rouge">Message.acknowledge()</code> blocks when using a non-transactional JMS session.</p>
 
 <p>Transaction support is also available for non-persistent delivery mode.</p>
 

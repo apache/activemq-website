@@ -104,13 +104,13 @@
   <li>It’s often simpler and faster to just use Java code to create the broker via an XML configuration file using Spring etc.</li>
 </ul>
 
-<p>You can do all of this using the following Java code to create your JMS <code class="highlighter-rouge">ConnectionFactory</code> which will also automatically create an embedded broker</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
+<p>You can do all of this using the following Java code to create your JMS <code class="language-plaintext highlighter-rouge">ConnectionFactory</code> which will also automatically create an embedded broker</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
 </code></pre></div></div>
 <p>For more configuration options see the <a href="vm-transport-reference">VM Transport Reference</a> and the <a href="broker-configuration-uri">Broker Configuration URI</a></p>
 
 <p>Or if you really would rather be more explicit you can create the broker first using the following Java code</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService broker = new BrokerService();
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService broker = new BrokerService();
 broker.setPersistent(false);
 broker.start();
 </code></pre></div></div>
@@ -118,22 +118,22 @@ broker.start();
 
 <h3 id="using-jndi">Using JNDI</h3>
 
-<p>If your application code is using JNDI to lookup the JMS <code class="highlighter-rouge">ConnectionFactory</code> and <code class="highlighter-rouge">Destination</code>’s to use, then you could use the <a href="jndi-support">JNDI Support</a> in ActiveMQ.</p>
+<p>If your application code is using JNDI to lookup the JMS <code class="language-plaintext highlighter-rouge">ConnectionFactory</code> and <code class="language-plaintext highlighter-rouge">Destination</code>’s to use, then you could use the <a href="jndi-support">JNDI Support</a> in ActiveMQ.</p>
 
-<p>Add the following <code class="highlighter-rouge">jndi.properties</code> to your classpath, e.g., in <code class="highlighter-rouge">src/test/resources</code>, if you are using maven:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java.naming.factory.initial = org.apache.activemq.jndi.ActiveMQInitialContextFactory
+<p>Add the following <code class="language-plaintext highlighter-rouge">jndi.properties</code> to your classpath, e.g., in <code class="language-plaintext highlighter-rouge">src/test/resources</code>, if you are using maven:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java.naming.factory.initial = org.apache.activemq.jndi.ActiveMQInitialContextFactory
 java.naming.provider.url = vm://localhost?broker.persistent=false
 </code></pre></div></div>
 <p>You should then consider using <a href="jndi-Community/support">Dynamic destinations in JNDI</a> so that your code looks up destinations via</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>context.lookup("dynamicQueues/FOO.BAR");
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>context.lookup("dynamicQueues/FOO.BAR");
 </code></pre></div></div>
 
-<h3 id="using-theembeddedactivemqbroker-junit-rule-activemq-513">Using The <code class="highlighter-rouge">EmbeddedActiveMQBroker</code> JUnit Rule (ActiveMQ 5.13)</h3>
+<h3 id="using-theembeddedactivemqbroker-junit-rule-activemq-513">Using The <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code> JUnit Rule (ActiveMQ 5.13)</h3>
 
-<p>If your test code is using JUnit, then you could use the <code class="highlighter-rouge">EmbeddedActiveMQBroker</code> JUnit Rule provided in the <code class="highlighter-rouge">activemq-junit</code> library. Add the <code class="highlighter-rouge">activemq-junit</code> library along with the <code class="highlighter-rouge">activemq-broker</code> libraries for the version of ActiveMQ you want to test with.  The rule will use whatever version of ActiveMQ it finds in the classpath, so the ActiveMQ libraries need to be specified if they are not already there.</p>
+<p>If your test code is using JUnit, then you could use the <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code> JUnit Rule provided in the <code class="language-plaintext highlighter-rouge">activemq-junit</code> library. Add the <code class="language-plaintext highlighter-rouge">activemq-junit</code> library along with the <code class="language-plaintext highlighter-rouge">activemq-broker</code> libraries for the version of ActiveMQ you want to test with.  The rule will use whatever version of ActiveMQ it finds in the classpath, so the ActiveMQ libraries need to be specified if they are not already there.</p>
 
-<p>If you are using Maven, add the following to your <code class="highlighter-rouge">pom.xml</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+<p>If you are using Maven, add the following to your <code class="language-plaintext highlighter-rouge">pom.xml</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
     &lt;groupId&gt;org.apache.activemq.tooling&lt;/groupId&gt;
     &lt;artifactId&gt;activemq-junit&lt;/artifactId&gt;
     &lt;version&gt;${activemq-junit-version}&lt;/version&gt;
@@ -147,18 +147,18 @@ java.naming.provider.url = vm://localhost?broker.persistent=false
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;
 </code></pre></div></div>
-<p> Then add the <code class="highlighter-rouge">EmbeddedActiveMQBroker</code> JUnit Rule to your test, and JUnit will start the embedded broker at the beginning of each test and stop the broker at the end of the test.</p>
+<p> Then add the <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code> JUnit Rule to your test, and JUnit will start the embedded broker at the beginning of each test and stop the broker at the end of the test.</p>
 
 <p><strong>Use The ActiveMQ JUnit Rule</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@Rule
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@Rule
 public EmbeddedActiveMQBroker broker = new EmbeddedActiveMQBroker();
 </code></pre></div></div>
-<p>By default, the <code class="highlighter-rouge">EmbeddedActiveMQBroker</code> will configure the broker as non-persistent, and the only transport available will be the VM transport. To customize this configuration, either extend the <code class="highlighter-rouge">EmbeddedActiveMQBroker</code> class and override the <code class="highlighter-rouge">configure()</code> method, or use an XML configuration for the broker.  </p>
+<p>By default, the <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code> will configure the broker as non-persistent, and the only transport available will be the VM transport. To customize this configuration, either extend the <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code> class and override the <code class="language-plaintext highlighter-rouge">configure()</code> method, or use an XML configuration for the broker.  </p>
 
-<p><strong>Note</strong>: to configure an <code class="highlighter-rouge">EmbeddedActiveMQBroker</code> using XML configuration, you may need to add additional libraries to the classpath to support XBean configuration of ActiveMQ.</p>
+<p><strong>Note</strong>: to configure an <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code> using XML configuration, you may need to add additional libraries to the classpath to support XBean configuration of ActiveMQ.</p>
 
 <p><strong>Customizing An EmbeddedActiveMQBroker Using Java</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@Rule
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@Rule
 EmbeddedActiveMQBroker customizedBroker = new EmbeddedActiveMQBroker() {
     @Override
     protected void configure() {
@@ -168,13 +168,13 @@ EmbeddedActiveMQBroker customizedBroker = new EmbeddedActiveMQBroker() {
 </code></pre></div></div>
 
 <p><strong>Customizing An EmbeddedActiveMQBroker Using XML Configuration</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@Rule
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@Rule
 EmbeddedActiveMQBroker customizedBroker = new EmbeddedActiveMQBroker("bean:customize-activemq.xml");
 </code></pre></div></div>
-<p>Note that to use the XML configuration, you may need to add additional libraries on the classpath to support the XBean configuration of ActiveMQ.  The versions of the <code class="highlighter-rouge">spring-context</code> library should correspond with the version used by your selected version of ActiveMQ.</p>
+<p>Note that to use the XML configuration, you may need to add additional libraries on the classpath to support the XBean configuration of ActiveMQ.  The versions of the <code class="language-plaintext highlighter-rouge">spring-context</code> library should correspond with the version used by your selected version of ActiveMQ.</p>
 
 <p><strong>Maven Configuration For XBean Configuration</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
     &lt;groupId&gt;org.springframework&lt;/groupId&gt;
     &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
     &lt;version&gt;Appropriate version for activemq-version&lt;/version&gt;
@@ -187,10 +187,10 @@ EmbeddedActiveMQBroker customizedBroker = new EmbeddedActiveMQBroker("bean:custo
 &lt;/dependency&gt;
 </code></pre></div></div>
 <p>Then you can use the VM URI to connect with the broker</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://embedded-broker?create=false");
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://embedded-broker?create=false");
 </code></pre></div></div>
-<p>You can also get a connection factory from the <code class="highlighter-rouge">EmbeddedActiveMQBroker</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ConnectionFactory connectionFactory = embeddedBroker.createConnectionFactory();
+<p>You can also get a connection factory from the <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ConnectionFactory connectionFactory = embeddedBroker.createConnectionFactory();
 </code></pre></div></div>
 
       </div>

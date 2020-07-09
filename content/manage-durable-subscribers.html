@@ -103,7 +103,7 @@
 <h3 id="expiring-messages">Expiring messages</h3>
 
 <p>Some applications send message with specified time to live. If those messages are kept on the broker for the offline durable subscriber we need to remove them when they reach their expiry time. Just as we do with queues, now we check for those messages every 30 seconds by default, which can be tuned with the appropriate <a href="per-destination-policies">destination policy</a>. For example, the following entry</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;policyEntry topic="&gt;" expireMessagesPeriod="300000"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;policyEntry topic="&gt;" expireMessagesPeriod="300000"/&gt;
 </code></pre></div></div>
 <p>will configure the broker to check for expired messages every 5 minutes.</p>
 
@@ -134,7 +134,7 @@
 </table>
 
 <p>An example configuration could look like</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker name="localhost" offlineDurableSubscriberTimeout="86400000" offlineDurableSubscriberTaskSchedule="3600000"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker name="localhost" offlineDurableSubscriberTimeout="86400000" offlineDurableSubscriberTaskSchedule="3600000"&gt;
 </code></pre></div></div>
 <p>which means that we check every hour and remove subscriber that has been offline for a day.</p>
 

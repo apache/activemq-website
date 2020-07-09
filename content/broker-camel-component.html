@@ -100,10 +100,10 @@
 
 <p>Embedding Apache Camel inside the ActiveMQ broker provides great flexibility for extending the message broker with the integration power of Camel. Apache Camel routes also benefit in that you can avoid the serialization and network costs of connecting to ActiveMQ remotely - if you use the <a href="http://camel.apache.org/activemq.html">activemq component</a>.</p>
 
-<p>If however, you want to change the behavior of messages flowing through the ActiveMQ message broker itself you will be limited to the shipped set of ActiveMQ broker <a href="interceptors">Interceptors</a> - or develop your own <a href="developing-plugins">Broker plugin</a> and then introduce that as a jar on to the class path for the ActiveMQ broker. The <code class="highlighter-rouge">broker</code> Camel component makes this even easier. It intercepts messages as they move through the broker itself, allowing them to be modified and manipulated before they are persisted to the message store or delivered to end consumers.</p>
+<p>If however, you want to change the behavior of messages flowing through the ActiveMQ message broker itself you will be limited to the shipped set of ActiveMQ broker <a href="interceptors">Interceptors</a> - or develop your own <a href="developing-plugins">Broker plugin</a> and then introduce that as a jar on to the class path for the ActiveMQ broker. The <code class="language-plaintext highlighter-rouge">broker</code> Camel component makes this even easier. It intercepts messages as they move through the broker itself, allowing them to be modified and manipulated before they are persisted to the message store or delivered to end consumers.</p>
 
-<p>For example <a href="how-should-i-package-applications-using-camel-and-activemq">by defining a CamelContext to run inside the broker’s JVM</a> the <code class="highlighter-rouge">broker</code> component can intercept all messages published to a Topic, say, and publish them to a Queue instead, changing their priority along the way:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;route id="setPriority"&gt;
+<p>For example <a href="how-should-i-package-applications-using-camel-and-activemq">by defining a CamelContext to run inside the broker’s JVM</a> the <code class="language-plaintext highlighter-rouge">broker</code> component can intercept all messages published to a Topic, say, and publish them to a Queue instead, changing their priority along the way:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;route id="setPriority"&gt;
    &lt;from uri="broker:topic:test.broker.&gt;"/&gt;
       &lt;setHeader headerName="JMSPriority"&gt;
          &lt;constant&gt;9&lt;/constant&gt;
@@ -116,24 +116,24 @@
 <ul>
   <li>A broker component only adds an intercept into the broker if its started - so the broker component will not add any overhead to the running broker until its used - and then the overhead will be trivial.</li>
   <li>Messages are intercepted by the broker component when they have been received by the broker - but before they are processed (persisted or routed to a destination).</li>
-  <li>The <code class="highlighter-rouge">IN</code> message on the Exchange is a <code class="highlighter-rouge">CamelMessage</code>, but also a JMS Message (messages routed through ActiveMQ from STOMP/MQTT/AMQP etc. are always translated into JMS messages).</li>
+  <li>The <code class="language-plaintext highlighter-rouge">IN</code> message on the Exchange is a <code class="language-plaintext highlighter-rouge">CamelMessage</code>, but also a JMS Message (messages routed through ActiveMQ from STOMP/MQTT/AMQP etc. are always translated into JMS messages).</li>
   <li><a href="wildcards">Wildcards</a> can be used on a destination to intercept messages from destinations matching the wildcard.</li>
   <li>After the intercept, you have to explicitly send the message back to the broker component - this allows you to either drop select messages (by not sending) - or, like in the above case - re-route the message to a different destination.</li>
 </ul>
 
-<p>There is one deliberate caveat though, only intercepted messages can be sent to a <code class="highlighter-rouge">broker</code> component. For example, routing a Camel message from another Component e.g. <code class="highlighter-rouge">file</code>, will result in an error.</p>
+<p>There is one deliberate caveat though, only intercepted messages can be sent to a <code class="language-plaintext highlighter-rouge">broker</code> component. For example, routing a Camel message from another Component e.g. <code class="language-plaintext highlighter-rouge">file</code>, will result in an error.</p>
 
-<p>Extra classes that have been added to the <code class="highlighter-rouge">activemq-broker</code> package to support the <code class="highlighter-rouge">broker</code> component. They allow the state of the running broker to be interrogated without using JMX. These classes are:</p>
+<p>Extra classes that have been added to the <code class="language-plaintext highlighter-rouge">activemq-broker</code> package to support the <code class="language-plaintext highlighter-rouge">broker</code> component. They allow the state of the running broker to be interrogated without using JMX. These classes are:</p>
 
 <ul>
   <li><a href="http://activemq.apache.org/maven/5.9.0/apidocs/org/apache/activemq/broker/view/MessageBrokerView.html">org.apache.activemq.broker.view.MessageBrokerView</a> - provides methods to retrieve statistics on a the broker</li>
-  <li>From the <code class="highlighter-rouge">org.apache.activemq.broker.view.MessageBrokerView</code> - you can retrieve a <a href="http://activemq.apache.org/maven/5.9.0/apidocs/org/apache/activemq/broker/view/BrokerDestinationView.html">org.apache.activemq.broker.view.BrokerDestinationView</a> for a particular destination.</li>
+  <li>From the <code class="language-plaintext highlighter-rouge">org.apache.activemq.broker.view.MessageBrokerView</code> - you can retrieve a <a href="http://activemq.apache.org/maven/5.9.0/apidocs/org/apache/activemq/broker/view/BrokerDestinationView.html">org.apache.activemq.broker.view.BrokerDestinationView</a> for a particular destination.</li>
 </ul>
 
 <h3 id="example">Example</h3>
 
 <p>How to route messages when a destination’s queue depth has reached a certain limit:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;camelContext id="camel" trace="false" xmlns="http://camel.apache.org/schema/spring"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;camelContext id="camel" trace="false" xmlns="http://camel.apache.org/schema/spring"&gt;
   &lt;route id="routeAboveQueueLimitTest"&gt;
     &lt;from uri="broker:queue:test.broker.queue"/&gt;
     &lt;choice&gt;
@@ -156,7 +156,7 @@
   &lt;constructor-arg value="test.broker.component.route"/&gt;
 &lt;/bean&gt;
 </code></pre></div></div>
-<p>This is using the Camel Message Router pattern. Note the use of the Spring expression language <code class="highlighter-rouge">spel</code> in the <code class="highlighter-rouge">when</code> clause.</p>
+<p>This is using the Camel Message Router pattern. Note the use of the Spring expression language <code class="language-plaintext highlighter-rouge">spel</code> in the <code class="language-plaintext highlighter-rouge">when</code> clause.</p>
 
 
       </div>

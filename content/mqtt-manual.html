@@ -141,43 +141,43 @@
 
 <p>To start using the MQTT protocol, use a valid MQTT v3.1 client and connect to the port on which Apollo is listening. Apollo will do protocol detection and will automatically recognize the MQTT payloads and treat the connection as an MQTT connection. You don’t have to open a special port for MQTT (or STOMP, Openwire, AMQP, etc. they can all be auto-detected). To force specific protocols over a certain connector there are two ways you can do this. You can choose to not use protocol detection at all and set the connector to be specifically for mqtt:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613" protocol="mqtt"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613" protocol="mqtt"/&gt;
 </code></pre></div></div>
 
-<p>Alternatively, you can limit which protocols can be “detected” using the <code class="highlighter-rouge">&lt;detect&gt;</code> configuration element like this:</p>
+<p>Alternatively, you can limit which protocols can be “detected” using the <code class="language-plaintext highlighter-rouge">&lt;detect&gt;</code> configuration element like this:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
   &lt;detect protocols="mqtt openwire" /&gt;
 &lt;/connector&gt;
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">protocols</code> attribute in the <code class="highlighter-rouge">&lt;detect&gt;</code> element takes space delimited protoco values. The <code class="highlighter-rouge">protocol</code> attribtue of the <code class="highlighter-rouge">&lt;connector&gt;</code> element takes a single protocol, not space delimited. It defaults to <code class="highlighter-rouge">any</code></p>
+<p>The <code class="language-plaintext highlighter-rouge">protocols</code> attribute in the <code class="language-plaintext highlighter-rouge">&lt;detect&gt;</code> element takes space delimited protoco values. The <code class="language-plaintext highlighter-rouge">protocol</code> attribtue of the <code class="language-plaintext highlighter-rouge">&lt;connector&gt;</code> element takes a single protocol, not space delimited. It defaults to <code class="language-plaintext highlighter-rouge">any</code></p>
 
-<p>If you wish to tune the MQTT defaults, you can use the <code class="highlighter-rouge">mqtt</code> configuration element within the <code class="highlighter-rouge">connector</code> element in the <code class="highlighter-rouge">apollo.xml</code> configuration file :</p>
+<p>If you wish to tune the MQTT defaults, you can use the <code class="language-plaintext highlighter-rouge">mqtt</code> configuration element within the <code class="language-plaintext highlighter-rouge">connector</code> element in the <code class="language-plaintext highlighter-rouge">apollo.xml</code> configuration file :</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
   &lt;mqtt max_message_length="1000" /&gt;
 &lt;/connector&gt;
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">mqtt</code> element supports the following configuration attributes:</p>
+<p>The <code class="language-plaintext highlighter-rouge">mqtt</code> element supports the following configuration attributes:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">max_message_length</code> : The size (in bytes) of the largest message that can be sent to the broker. Defaults to 100MB</li>
-  <li><code class="highlighter-rouge">protocol_filters</code> : A filter which can filter frames being sent/received to and from a client. It can modify the frame or even drop it.</li>
-  <li><code class="highlighter-rouge">die_delay</code> : How long after a connection is deemed to be “dead” before the connection actually closes; default: 5000ms</li>
+  <li><code class="language-plaintext highlighter-rouge">max_message_length</code> : The size (in bytes) of the largest message that can be sent to the broker. Defaults to 100MB</li>
+  <li><code class="language-plaintext highlighter-rouge">protocol_filters</code> : A filter which can filter frames being sent/received to and from a client. It can modify the frame or even drop it.</li>
+  <li><code class="language-plaintext highlighter-rouge">die_delay</code> : How long after a connection is deemed to be “dead” before the connection actually closes; default: 5000ms</li>
 </ul>
 
 <p>The mqtt configuration element can also be used to control how the destination headers are parsed and interpreted. The supported attributes are:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">queue_prefix</code> : a tag used to identify destination types; default: null</li>
-  <li><code class="highlighter-rouge">path_separator</code> : used to separate segments in a destination name; default: <code class="highlighter-rouge">/</code></li>
-  <li><code class="highlighter-rouge">any_child_wildcard</code> : indicate all child-level destinations that match the wildcard; default: <code class="highlighter-rouge">+</code></li>
-  <li><code class="highlighter-rouge">any_descendant_wildcard</code> : indicate destinations that match the wildcard recursively; default: <code class="highlighter-rouge">#</code></li>
-  <li><code class="highlighter-rouge">regex_wildcard_start</code> : pattern used to identify the start of a regex</li>
-  <li><code class="highlighter-rouge">regex_wildcard_end</code> : pattern used to identify the end of a regex</li>
-  <li><code class="highlighter-rouge">part_pattern</code> : allows you to specify a regex that constrains the naming of topics. default: <code class="highlighter-rouge">[ a-zA-Z0-9\_-\%\~\:\(\)]+</code></li>
+  <li><code class="language-plaintext highlighter-rouge">queue_prefix</code> : a tag used to identify destination types; default: null</li>
+  <li><code class="language-plaintext highlighter-rouge">path_separator</code> : used to separate segments in a destination name; default: <code class="language-plaintext highlighter-rouge">/</code></li>
+  <li><code class="language-plaintext highlighter-rouge">any_child_wildcard</code> : indicate all child-level destinations that match the wildcard; default: <code class="language-plaintext highlighter-rouge">+</code></li>
+  <li><code class="language-plaintext highlighter-rouge">any_descendant_wildcard</code> : indicate destinations that match the wildcard recursively; default: <code class="language-plaintext highlighter-rouge">#</code></li>
+  <li><code class="language-plaintext highlighter-rouge">regex_wildcard_start</code> : pattern used to identify the start of a regex</li>
+  <li><code class="language-plaintext highlighter-rouge">regex_wildcard_end</code> : pattern used to identify the end of a regex</li>
+  <li><code class="language-plaintext highlighter-rouge">part_pattern</code> : allows you to specify a regex that constrains the naming of topics. default: <code class="language-plaintext highlighter-rouge">[ a-zA-Z0-9\_-\%\~\:\(\)]+</code></li>
 </ul>
 
 <h3 id="client-libraries">Client Libraries</h3>
@@ -199,23 +199,23 @@
 
 <p>To see an up-to-date listing of client libraries, please <a href="http://mqtt.org/software">the MQTT website for its software</a> listings</p>
 
-<p>The Apollo distribution ships with an <code class="highlighter-rouge">examples</code> directory where you can find some simple examples of how to use some of those clients to send and receive messages from a broker instance.</p>
+<p>The Apollo distribution ships with an <code class="language-plaintext highlighter-rouge">examples</code> directory where you can find some simple examples of how to use some of those clients to send and receive messages from a broker instance.</p>
 
 <h3 id="connecting">Connecting</h3>
 
-<p>The default broker configuration secures access to the broker so that only the <code class="highlighter-rouge">admin</code> user can connect. The default password for the <code class="highlighter-rouge">admin</code> user is <code class="highlighter-rouge">password</code>.</p>
+<p>The default broker configuration secures access to the broker so that only the <code class="language-plaintext highlighter-rouge">admin</code> user can connect. The default password for the <code class="language-plaintext highlighter-rouge">admin</code> user is <code class="language-plaintext highlighter-rouge">password</code>.</p>
 
 <p>MQTT clients cannot specify a Virtual Host (see <a href="user-manual.md#Virtual_Hosts">the section on Virtual Hosts in the user guide</a>) so the default virtual host will be used. This is usually the first Virtual Host defined in the Apollo.xml configuration file.</p>
 
 <h3 id="destination-types">Destination Types</h3>
 
-<p>The MQTT protocol is a publish/subscribe protocol. It does not permit true point-to-point messaging achieved using Queues. Therefore Apollo allows only the use of Topics for MQTT messaging. The concept of a subscription and durable subscription to Topics is similar to what you’d find in other protocols and is controlled by the MQTT CONNECT frame’s <code class="highlighter-rouge">clean session</code> attribute.</p>
+<p>The MQTT protocol is a publish/subscribe protocol. It does not permit true point-to-point messaging achieved using Queues. Therefore Apollo allows only the use of Topics for MQTT messaging. The concept of a subscription and durable subscription to Topics is similar to what you’d find in other protocols and is controlled by the MQTT CONNECT frame’s <code class="language-plaintext highlighter-rouge">clean session</code> attribute.</p>
 
 <h3 id="clean-sessions">Clean Sessions</h3>
 
-<p>When a client sends a connect frame with the <code class="highlighter-rouge">clean session</code> flag set to cleared (false), any previously used session with the same client_id will be re-used. This means while the client was away, that subscription could have received messages. This is the equivalent of a durable subscription in Apollo.</p>
+<p>When a client sends a connect frame with the <code class="language-plaintext highlighter-rouge">clean session</code> flag set to cleared (false), any previously used session with the same client_id will be re-used. This means while the client was away, that subscription could have received messages. This is the equivalent of a durable subscription in Apollo.</p>
 
-<p>If the <code class="highlighter-rouge">clean session</code> flag is set (true), then a new session will be started and any sessions tha may have been lingering would be removed. This is equivalent to a normal topic subscription in Apollo.</p>
+<p>If the <code class="language-plaintext highlighter-rouge">clean session</code> flag is set (true), then a new session will be started and any sessions tha may have been lingering would be removed. This is equivalent to a normal topic subscription in Apollo.</p>
 
 <h3 id="topic-retained-messages">Topic Retained Messages</h3>
 
@@ -225,7 +225,7 @@
 
 <h3 id="last-will-and-testament-message">Last Will and Testament Message</h3>
 
-<p>You can set a <code class="highlighter-rouge">will</code> message and assocaited QoS for the message when a client first connects to Apollo. The will message is basically a message that will only get sent if there is an unexpected error with the connection and it must be dropped. This can be useful in situations where you have devices that could drop but when they do, you want to know. So if a medical sensor client drops from the broker, a will message could be sent to an “alarm” Topic and handled by the system as a high-priority alert.</p>
+<p>You can set a <code class="language-plaintext highlighter-rouge">will</code> message and assocaited QoS for the message when a client first connects to Apollo. The will message is basically a message that will only get sent if there is an unexpected error with the connection and it must be dropped. This can be useful in situations where you have devices that could drop but when they do, you want to know. So if a medical sensor client drops from the broker, a will message could be sent to an “alarm” Topic and handled by the system as a high-priority alert.</p>
 
 <h3 id="reliable-messaging">Reliable Messaging</h3>
 
@@ -256,27 +256,27 @@
 <p>Wild cards can be used in destination names when subscribing as a consumer. This allows you to subscribe to multiple destinations or hierarchy of destinations.</p>
 
 <ul>
-  <li><code class="highlighter-rouge">/</code> is used to separate names in a path</li>
-  <li><code class="highlighter-rouge">+</code> is used to match any name in a path</li>
-  <li><code class="highlighter-rouge">#</code> is used to recursively match path names</li>
+  <li><code class="language-plaintext highlighter-rouge">/</code> is used to separate names in a path</li>
+  <li><code class="language-plaintext highlighter-rouge">+</code> is used to match any name in a path</li>
+  <li><code class="language-plaintext highlighter-rouge">#</code> is used to recursively match path names</li>
 </ul>
 
 <p>For example using the above, these subscriptions are possible</p>
 
 <ul>
-  <li><code class="highlighter-rouge">PRICE/#</code> : Any price for any product on any exchange</li>
-  <li><code class="highlighter-rouge">PRICE/STOCK/#</code> : Any price for a stock on any exchange</li>
-  <li><code class="highlighter-rouge">PRICE/STOCK/NASDAQ/+</code> : Any stock price on NASDAQ</li>
-  <li><code class="highlighter-rouge">PRICE/STOCK/+/IBM</code> : Any IBM stock price on any exchange</li>
+  <li><code class="language-plaintext highlighter-rouge">PRICE/#</code> : Any price for any product on any exchange</li>
+  <li><code class="language-plaintext highlighter-rouge">PRICE/STOCK/#</code> : Any price for a stock on any exchange</li>
+  <li><code class="language-plaintext highlighter-rouge">PRICE/STOCK/NASDAQ/+</code> : Any stock price on NASDAQ</li>
+  <li><code class="language-plaintext highlighter-rouge">PRICE/STOCK/+/IBM</code> : Any IBM stock price on any exchange</li>
 </ul>
 
 <h3 id="keep-alive">Keep Alive</h3>
 
-<p>Apollo will only set a keep-alive/heart-beat monitor if the client has specified a <code class="highlighter-rouge">keepAlive</code> value in the CONNECT frame. If one is specified, the actual value used by Apollo will be 1.5 * the keep alive value. This is in keeping with the MQTT spec.</p>
+<p>Apollo will only set a keep-alive/heart-beat monitor if the client has specified a <code class="language-plaintext highlighter-rouge">keepAlive</code> value in the CONNECT frame. If one is specified, the actual value used by Apollo will be 1.5 * the keep alive value. This is in keeping with the MQTT spec.</p>
 
 <h3 id="destination-name-restrictions">Destination Name Restrictions</h3>
 
-<p>Destination names are restricted to using the characters <code class="highlighter-rouge">a-z</code>, <code class="highlighter-rouge">A-Z</code>, <code class="highlighter-rouge">0-9</code>, <code class="highlighter-rouge">_</code>, <code class="highlighter-rouge">-</code> <code class="highlighter-rouge">%</code>, <code class="highlighter-rouge">~</code>, <code class="highlighter-rouge">:</code>, ‘ ‘, ‘(‘, ‘)’ or <code class="highlighter-rouge">.</code> in addition to composite separator <code class="highlighter-rouge">,</code> and the wild card <code class="highlighter-rouge">*</code>. Any other characters must be UTF-8 and then URL encoded if you wish to preserve their significance.</p>
+<p>Destination names are restricted to using the characters <code class="language-plaintext highlighter-rouge">a-z</code>, <code class="language-plaintext highlighter-rouge">A-Z</code>, <code class="language-plaintext highlighter-rouge">0-9</code>, <code class="language-plaintext highlighter-rouge">_</code>, <code class="language-plaintext highlighter-rouge">-</code> <code class="language-plaintext highlighter-rouge">%</code>, <code class="language-plaintext highlighter-rouge">~</code>, <code class="language-plaintext highlighter-rouge">:</code>, ‘ ‘, ‘(‘, ‘)’ or <code class="language-plaintext highlighter-rouge">.</code> in addition to composite separator <code class="language-plaintext highlighter-rouge">,</code> and the wild card <code class="language-plaintext highlighter-rouge">*</code>. Any other characters must be UTF-8 and then URL encoded if you wish to preserve their significance.</p>
 
       </div>
     </div>

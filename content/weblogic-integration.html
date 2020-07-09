@@ -114,9 +114,9 @@ An ActiveMQ broker may be run within WebLogic to provide JMS features while avoi
 
 <p><strong>Note:</strong> ActiveMQ cannot deliver messages to message-driven beans in this version of WebLogic. You will need to create JMS clients manually to send and receive JMS messages.</p>
 
-<p>To work with ActiveMQ from one of these releases of WebLogic, you should not include any <code class="highlighter-rouge">javax.jms</code> classes with your application, but should instead use the JMS 1.0.x classes distributed with WebLogic. This means you should not use a fully-aggregated ActiveMQ JAR such as <code class="highlighter-rouge">activemq-4.0.1/incubator-activemq-4.0.1.jar</code> but instead, individual ActiveMQ JARs such as <code class="highlighter-rouge">activemq-4.0.1/lib/activeio-core-3.0-beta3.jar</code> and <code class="highlighter-rouge">activemq-4.0.1/lib/activemq-core-4.0.1.jar</code>.</p>
+<p>To work with ActiveMQ from one of these releases of WebLogic, you should not include any <code class="language-plaintext highlighter-rouge">javax.jms</code> classes with your application, but should instead use the JMS 1.0.x classes distributed with WebLogic. This means you should not use a fully-aggregated ActiveMQ JAR such as <code class="language-plaintext highlighter-rouge">activemq-4.0.1/incubator-activemq-4.0.1.jar</code> but instead, individual ActiveMQ JARs such as <code class="language-plaintext highlighter-rouge">activemq-4.0.1/lib/activeio-core-3.0-beta3.jar</code> and <code class="language-plaintext highlighter-rouge">activemq-4.0.1/lib/activemq-core-4.0.1.jar</code>.</p>
 
-<p>Further, your code should use only JMS 1.0.x versions of the JMS interfaces (such as <code class="highlighter-rouge">javax.jms.Session</code>). Note that JMS 1.1 uses many of the same interfaces, but has added numerous methods to them, and if you use the new methods your code will not run in this version of WebLogic. Try to ensure you’re compiling your client code against the <code class="highlighter-rouge">weblogic.jar</code> from the correct version of WebLogic, or else a dedicated JMS 1.0.x JAR such as the one you can download from Sun. <em>Do not compile against a JAR like <code class="highlighter-rouge">activemq-4.0.1/incubator-activemq-4.0.1.jar</code> because that JAR includes JMS 1.1!</em></p>
+<p>Further, your code should use only JMS 1.0.x versions of the JMS interfaces (such as <code class="language-plaintext highlighter-rouge">javax.jms.Session</code>). Note that JMS 1.1 uses many of the same interfaces, but has added numerous methods to them, and if you use the new methods your code will not run in this version of WebLogic. Try to ensure you’re compiling your client code against the <code class="language-plaintext highlighter-rouge">weblogic.jar</code> from the correct version of WebLogic, or else a dedicated JMS 1.0.x JAR such as the one you can download from Sun. <em>Do not compile against a JAR like <code class="language-plaintext highlighter-rouge">activemq-4.0.1/incubator-activemq-4.0.1.jar</code> because that JAR includes JMS 1.1!</em></p>
 
 <p>Finally, you can connect to ActiveMQ using the normal ActiveMQ JNDI settings including a connect URL. Do not attempt to use WebLogic JNDI to connect to ActiveMQ, and do not use the WebLogic host name or listen port in the ActiveMQ connect URL – even if the ActiveMQ broker is run within WebLogic it will listen on a separate network port from the one that WebLogic uses.</p>
 
@@ -181,7 +181,7 @@ An ActiveMQ broker may be run within WebLogic to provide JMS features while avoi
 
 <h4 id="activemq-as-a-weblogic-application">ActiveMQ as a WebLogic Application</h4>
 
-<p>The easiest type of WebLogic application to configure with all the needed ActiveMQ libraries and configuration and not much else is a web application. The JARs go in <code class="highlighter-rouge">WEB-INF/lib/</code> and config files typically in <code class="highlighter-rouge">WEB-INF/</code>. The only necessary configuration for the web application itself is to install a listener that will start and stop ActiveMQ when the web application is started and stopped. There are also a couple optional classes that can be used to integrate ActiveMQ with WebLogic’s security system. Additionally, in this example, a simple web page included in the WAR will be available whenever ActiveMQ is running, so a simple HTTP request can determine whether the ActiveMQ module has been started.</p>
+<p>The easiest type of WebLogic application to configure with all the needed ActiveMQ libraries and configuration and not much else is a web application. The JARs go in <code class="language-plaintext highlighter-rouge">WEB-INF/lib/</code> and config files typically in <code class="language-plaintext highlighter-rouge">WEB-INF/</code>. The only necessary configuration for the web application itself is to install a listener that will start and stop ActiveMQ when the web application is started and stopped. There are also a couple optional classes that can be used to integrate ActiveMQ with WebLogic’s security system. Additionally, in this example, a simple web page included in the WAR will be available whenever ActiveMQ is running, so a simple HTTP request can determine whether the ActiveMQ module has been started.</p>
 
 <h4 id="management-options">Management Options</h4>
 
@@ -226,7 +226,7 @@ An ActiveMQ broker may be run within WebLogic to provide JMS features while avoi
   <li>ActiveMQ runs as a web application, which runs in the web container inside WebLogic Express</li>
   <li>ActiveMQ reads two configuration files from a directory on the WebLogic class path – one to configure ActiveMQ itself, and one to configure its logging output</li>
   <li>ActiveMQ uses two main resources from WebLogic Express – the JMX management server (MBeanServer) and the WebLogic security realm (in the form of a JAAS LoginModule).</li>
-  <li>In order to start ActiveMQ when the web application is deployed, the <code class="highlighter-rouge">web.xml</code> includes a context listener for Spring, and the Spring <code class="highlighter-rouge">applicationContext.xml</code> file loads the ActiveMQ broker and points it to the ActiveMQ configuration file (which as mentioned above, is stored in a directory on the class path).</li>
+  <li>In order to start ActiveMQ when the web application is deployed, the <code class="language-plaintext highlighter-rouge">web.xml</code> includes a context listener for Spring, and the Spring <code class="language-plaintext highlighter-rouge">applicationContext.xml</code> file loads the ActiveMQ broker and points it to the ActiveMQ configuration file (which as mentioned above, is stored in a directory on the class path).</li>
   <li>Within ActiveMQ:
     <ul>
       <li>A configuration block in the ActiveMQ configuration file causes ActiveMQ to register all its JMX MBeans with the WebLogic JMX MBeanServer</li>
@@ -269,29 +269,29 @@ An ActiveMQ broker may be run within WebLogic to provide JMS features while avoi
     <span class="nt">&lt;/bean&gt;</span>
 <span class="nt">&lt;/beans&gt;</span>
 </code></pre></div></div>
-<p>Again, the <code class="highlighter-rouge">web.xml</code> listener starts Spring and reads the Spring <code class="highlighter-rouge">META-INF/applicationContext.xml</code> file (the default location used by the <code class="highlighter-rouge">ContextLoaderListener</code>), and the <code class="highlighter-rouge">applicationContext.xml</code> indicates that the ActiveMQ configuration file should be read from the class path with the name <code class="highlighter-rouge">activemq-config.xml</code>. That file could be placed in <code class="highlighter-rouge">WEB-INF/classes</code> or in a directory on the file system that is added to the WebLogic class path (for ease of editing).</p>
+<p>Again, the <code class="language-plaintext highlighter-rouge">web.xml</code> listener starts Spring and reads the Spring <code class="language-plaintext highlighter-rouge">META-INF/applicationContext.xml</code> file (the default location used by the <code class="language-plaintext highlighter-rouge">ContextLoaderListener</code>), and the <code class="language-plaintext highlighter-rouge">applicationContext.xml</code> indicates that the ActiveMQ configuration file should be read from the class path with the name <code class="language-plaintext highlighter-rouge">activemq-config.xml</code>. That file could be placed in <code class="language-plaintext highlighter-rouge">WEB-INF/classes</code> or in a directory on the file system that is added to the WebLogic class path (for ease of editing).</p>
 
 <p>With this approach, the normal WebLogic deployment tools, admin console, etc. can be used to deploy, start, stop, and restart ActiveMQ (packaged into a web application WAR).</p>
 
 <h5 id="required-libraries">Required Libraries</h5>
 
-<p>ActiveMQ required a number of JARs which should be included in the web application <code class="highlighter-rouge">WEB-INF/lib</code> directory.</p>
+<p>ActiveMQ required a number of JARs which should be included in the web application <code class="language-plaintext highlighter-rouge">WEB-INF/lib</code> directory.</p>
 
 <p>This list was generated for ActiveMQ 4.0.1:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">activemq-core</code> (basic ActiveMQ code)</li>
-  <li><code class="highlighter-rouge">activemq-jaas</code> (ActiveMQ security code)</li>
-  <li><code class="highlighter-rouge">activeio-core</code> (ActiveMQ networking layer)</li>
-  <li><code class="highlighter-rouge">derby</code> (embedded DB for persistent messages)</li>
-  <li><code class="highlighter-rouge">commons-logging</code> (logging abstraction library)</li>
-  <li><code class="highlighter-rouge">log4j</code> (actual logging package used)</li>
-  <li><code class="highlighter-rouge">backport-util-concurrent</code> (concurrency utility library)</li>
-  <li><code class="highlighter-rouge">spring</code> (used to configure and start ActiveMQ)</li>
-  <li><code class="highlighter-rouge">xbean-spring</code> (used to configure ActiveMQ)</li>
+  <li><code class="language-plaintext highlighter-rouge">activemq-core</code> (basic ActiveMQ code)</li>
+  <li><code class="language-plaintext highlighter-rouge">activemq-jaas</code> (ActiveMQ security code)</li>
+  <li><code class="language-plaintext highlighter-rouge">activeio-core</code> (ActiveMQ networking layer)</li>
+  <li><code class="language-plaintext highlighter-rouge">derby</code> (embedded DB for persistent messages)</li>
+  <li><code class="language-plaintext highlighter-rouge">commons-logging</code> (logging abstraction library)</li>
+  <li><code class="language-plaintext highlighter-rouge">log4j</code> (actual logging package used)</li>
+  <li><code class="language-plaintext highlighter-rouge">backport-util-concurrent</code> (concurrency utility library)</li>
+  <li><code class="language-plaintext highlighter-rouge">spring</code> (used to configure and start ActiveMQ)</li>
+  <li><code class="language-plaintext highlighter-rouge">xbean-spring</code> (used to configure ActiveMQ)</li>
 </ul>
 
-<p>Additionally, to build the custom security plugins, the WebLogic <code class="highlighter-rouge">server/lib/weblogic.jar</code> is presently required at compile time.</p>
+<p>Additionally, to build the custom security plugins, the WebLogic <code class="language-plaintext highlighter-rouge">server/lib/weblogic.jar</code> is presently required at compile time.</p>
 
 <p>Of these, Derby could be omitted if ActiveMQ was configured to not use a database for persistence or to use a separate database (e.g. a WebLogic database pool) for persistence. The WebLogic JAR is needed only at build time (it’s provided by the server at runtime). Spring could be omitted if a different strategy was used to start and stop ActiveMQ when the web app was started or stopped (a little custom code could replace this dependency). The rest are probably unavoidable, unless ActiveMQ changes its dependencies in a future version.</p>
 
@@ -303,8 +303,8 @@ An ActiveMQ broker may be run within WebLogic to provide JMS features while avoi
 
 <p><strong>ActiveMQToWebLogicSecurity.java</strong></p>
 
-<p>This class is an ActiveMQ “plugin”, which installs two filters (authorization and authentication) which will be invoked on every request. This is similar to the default behavior provided by ActiveMQ’s <code class="highlighter-rouge">JaasAuthenticationPlugin</code> and <code class="highlighter-rouge">AuthorizationPlugin</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+<p>This class is an ActiveMQ “plugin”, which installs two filters (authorization and authentication) which will be invoked on every request. This is similar to the default behavior provided by ActiveMQ’s <code class="language-plaintext highlighter-rouge">JaasAuthenticationPlugin</code> and <code class="language-plaintext highlighter-rouge">AuthorizationPlugin</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
  * An ActiveMQ security plugin that installs two security filters
  * (authentication and authorization) that use WebLogic security realms to
  * handle the login and provide user and group principals.
@@ -345,7 +345,7 @@ public class ActiveMQToWebLogicSecurity implements BrokerPlugin {
 <p>The second class is the authentication filter used by the class above to authenticate all logins against the WebLogic default security realm.</p>
 
 <p><strong>ActiveMQWebLogicAuthenticationFilter.java</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
  * A broker filter that authenticates callers against WebLogic security.
  * This is similar to the ActiveMQ JaasAuthenticationBroker except for two
  * things:
@@ -456,7 +456,7 @@ public class ActiveMQWebLogicAuthenticationFilter extends BrokerFilter {
 
 <h5 id="sample-activemq-configuration-files">Sample ActiveMQ Configuration Files</h5>
 
-<p>This section shows three sample ActiveMQ configuration files – one for a single broker with the security and management plugins listed above, and one for a network of two brokers with the security and management plugins listed above. If you want to skip the security and management plugins, you can remove those attributes from the main <code class="highlighter-rouge">&lt;broker&gt;</code> element and remove the <code class="highlighter-rouge">&lt;bean&gt;</code> definitions for them below.</p>
+<p>This section shows three sample ActiveMQ configuration files – one for a single broker with the security and management plugins listed above, and one for a network of two brokers with the security and management plugins listed above. If you want to skip the security and management plugins, you can remove those attributes from the main <code class="language-plaintext highlighter-rouge">&lt;broker&gt;</code> element and remove the <code class="language-plaintext highlighter-rouge">&lt;bean&gt;</code> definitions for them below.</p>
 
 <p>It also shows a Log4J configuration file, which controls the ActiveMQ log output.</p>
 
@@ -637,8 +637,8 @@ public class ActiveMQWebLogicAuthenticationFilter extends BrokerFilter {
 <span class="nt">&lt;/beans&gt;</span>
 </code></pre></div></div>
 
-<p><strong>Log4J Configuration File (<code class="highlighter-rouge">log4j.properties</code>)</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Can change this to "INFO, out" or "INFO, out, stdout"
+<p><strong>Log4J Configuration File (<code class="language-plaintext highlighter-rouge">log4j.properties</code>)</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Can change this to "INFO, out" or "INFO, out, stdout"
 # to enable logging to the file defined down below
 log4j.rootLogger=INFO, stdout
 log4j.logger.org.apache.activemq.spring=WARN
@@ -666,7 +666,7 @@ log4j.appender.out.layout.ConversionPattern=%d \[%-15.15t\] %-5p %-30.30c{1} - %
 <p>This procedure makes the following assumptions:</p>
 
 <ul>
-  <li>The ActiveMQ configuration file and Log4J configuration file will be stored in a subdirectory of the WebLogic domain directory for ease of editing. They may be packaged into <code class="highlighter-rouge">WEB-INF/classes</code> in the WAR for ease of distribution instead.</li>
+  <li>The ActiveMQ configuration file and Log4J configuration file will be stored in a subdirectory of the WebLogic domain directory for ease of editing. They may be packaged into <code class="language-plaintext highlighter-rouge">WEB-INF/classes</code> in the WAR for ease of distribution instead.</li>
   <li>The ActiveMQ JMX management features will be exposed via the WebLogic runtime JMX MBeanServer. This is not required, but it should allow existing WebLogic management scripts to see the ActiveMQ MBeans. <em>NOTE: Additional configuration is required if the Sun JVM JMX server or JRockit management server will be used instead, or if the embedded ActiveMQ JMX server will be used instead and more than one ActiveMQ instance will be run on the same server.</em></li>
   <li>ActiveMQ will be installed on a single WebLogic instance or on two WebLogic instances in a Network-of-Brokers configuration.
     <ul>
@@ -681,31 +681,31 @@ log4j.appender.out.layout.ConversionPattern=%d \[%-15.15t\] %-5p %-30.30c{1} - %
 <ul>
   <li>WebLogic Express 9.2 has been installed</li>
   <li>A simple WebLogic domain has been created</li>
-  <li>If the JRockit VM will be used on Linux, the file handle limit of the user running WebLogic may be important (test with <code class="highlighter-rouge">ulimit -n</code>). A recommended value would be at least twice the expected maximum number of JMS clients.</li>
-  <li>The ActiveMQ web application WAR (<code class="highlighter-rouge">activemq-4.0.1-web.war</code>)</li>
-  <li>The ActiveMQ configuration file (<code class="highlighter-rouge">activemq-config.xml</code>)</li>
-  <li>The Log4J configuration file (<code class="highlighter-rouge">log4j.properties</code>)</li>
+  <li>If the JRockit VM will be used on Linux, the file handle limit of the user running WebLogic may be important (test with <code class="language-plaintext highlighter-rouge">ulimit -n</code>). A recommended value would be at least twice the expected maximum number of JMS clients.</li>
+  <li>The ActiveMQ web application WAR (<code class="language-plaintext highlighter-rouge">activemq-4.0.1-web.war</code>)</li>
+  <li>The ActiveMQ configuration file (<code class="language-plaintext highlighter-rouge">activemq-config.xml</code>)</li>
+  <li>The Log4J configuration file (<code class="language-plaintext highlighter-rouge">log4j.properties</code>)</li>
 </ul>
 
 <p>Installation Procedure</p>
 
 <ol>
-  <li>Create a subdirectory of the WebLogic domain directory to hold ActiveMQ config files (e.g. <code class="highlighter-rouge">domain-dir/activemq/config</code>)</li>
-  <li>Create a subdirectory of the WebLogic domain directory to hold ActiveMQ runtime data – persistent messages, etc. (e.g. <code class="highlighter-rouge">domain-dir/activemq/data</code>)</li>
-  <li>Edit the <code class="highlighter-rouge">activemq-config.xml</code> to point to the correct runtime data directory created in step 2 (look for the part of the file that reads <code class="highlighter-rouge">dataDirectory="..."</code>)</li>
-  <li>In <code class="highlighter-rouge">activemq-config.xml</code>, review the port for the current ActiveMQ server defined in the <code class="highlighter-rouge">&lt;transportConnector .../&gt;</code> line, if ActiveMQ clustering will be used, review the hostname and port for the other ActiveMQ server(s) in the cluster defined in the <code class="highlighter-rouge">&lt;networkConnector .../&gt;</code> line.</li>
-  <li>If ActiveMQ clustering and security are both enabled, in <code class="highlighter-rouge">activemq-config.xml</code>, find (or add) the <code class="highlighter-rouge">userName</code> and <code class="highlighter-rouge">password</code> settings on the <code class="highlighter-rouge">&lt;networkConnector .../&gt;</code> and change them to valid values. (When security is enabled, the ActiveMQ brokers in a cluster require valid logins to connect to each other to form the cluster.)</li>
-  <li>If security is enabled, in <code class="highlighter-rouge">activemq-config.xml</code>, find the <code class="highlighter-rouge">authorizedGroup</code> setting on the <code class="highlighter-rouge">WebLogicSecurity</code> bean and set that to the name of the WebLogic group whose members should be able to access ActiveMQ. Note that the account used by the network connectors in the previous step must be members of this group. (This entry in the config file is described in the previous section)</li>
-  <li>(Optional) Update the <code class="highlighter-rouge">log4j.properties</code> file to save ActiveMQ logs to a file rather than just emitting to the WebLogic server’s standard output (e.g. change the first line to <code class="highlighter-rouge">log4j.rootLogger=INFO, out, stdout</code> and change the destination file in the <code class="highlighter-rouge">log4j.appender.out.file=...</code> line)</li>
-  <li>Save the <code class="highlighter-rouge">activemq-config.xml</code> and <code class="highlighter-rouge">log4j.properties</code> files to the ActiveMQ configuration directory created in step 1</li>
-  <li>Edit the <code class="highlighter-rouge">startWebLogic.sh</code> file in the domain directory and add the following line to the top (immediately after the <code class="highlighter-rouge">DOMAIN_HOME=...</code> line), adjusting the line to use the directory created in step 1:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export EXT_POST_CLASSPATH=${DOMAIN_HOME}/activemq/config
+  <li>Create a subdirectory of the WebLogic domain directory to hold ActiveMQ config files (e.g. <code class="language-plaintext highlighter-rouge">domain-dir/activemq/config</code>)</li>
+  <li>Create a subdirectory of the WebLogic domain directory to hold ActiveMQ runtime data – persistent messages, etc. (e.g. <code class="language-plaintext highlighter-rouge">domain-dir/activemq/data</code>)</li>
+  <li>Edit the <code class="language-plaintext highlighter-rouge">activemq-config.xml</code> to point to the correct runtime data directory created in step 2 (look for the part of the file that reads <code class="language-plaintext highlighter-rouge">dataDirectory="..."</code>)</li>
+  <li>In <code class="language-plaintext highlighter-rouge">activemq-config.xml</code>, review the port for the current ActiveMQ server defined in the <code class="language-plaintext highlighter-rouge">&lt;transportConnector .../&gt;</code> line, if ActiveMQ clustering will be used, review the hostname and port for the other ActiveMQ server(s) in the cluster defined in the <code class="language-plaintext highlighter-rouge">&lt;networkConnector .../&gt;</code> line.</li>
+  <li>If ActiveMQ clustering and security are both enabled, in <code class="language-plaintext highlighter-rouge">activemq-config.xml</code>, find (or add) the <code class="language-plaintext highlighter-rouge">userName</code> and <code class="language-plaintext highlighter-rouge">password</code> settings on the <code class="language-plaintext highlighter-rouge">&lt;networkConnector .../&gt;</code> and change them to valid values. (When security is enabled, the ActiveMQ brokers in a cluster require valid logins to connect to each other to form the cluster.)</li>
+  <li>If security is enabled, in <code class="language-plaintext highlighter-rouge">activemq-config.xml</code>, find the <code class="language-plaintext highlighter-rouge">authorizedGroup</code> setting on the <code class="language-plaintext highlighter-rouge">WebLogicSecurity</code> bean and set that to the name of the WebLogic group whose members should be able to access ActiveMQ. Note that the account used by the network connectors in the previous step must be members of this group. (This entry in the config file is described in the previous section)</li>
+  <li>(Optional) Update the <code class="language-plaintext highlighter-rouge">log4j.properties</code> file to save ActiveMQ logs to a file rather than just emitting to the WebLogic server’s standard output (e.g. change the first line to <code class="language-plaintext highlighter-rouge">log4j.rootLogger=INFO, out, stdout</code> and change the destination file in the <code class="language-plaintext highlighter-rouge">log4j.appender.out.file=...</code> line)</li>
+  <li>Save the <code class="language-plaintext highlighter-rouge">activemq-config.xml</code> and <code class="language-plaintext highlighter-rouge">log4j.properties</code> files to the ActiveMQ configuration directory created in step 1</li>
+  <li>Edit the <code class="language-plaintext highlighter-rouge">startWebLogic.sh</code> file in the domain directory and add the following line to the top (immediately after the <code class="language-plaintext highlighter-rouge">DOMAIN_HOME=...</code> line), adjusting the line to use the directory created in step 1:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export EXT_POST_CLASSPATH=${DOMAIN_HOME}/activemq/config
 </code></pre></div>    </div>
   </li>
   <li>Start WebLogic</li>
-  <li>Deploy the <code class="highlighter-rouge">activemq-4.0.1-web.war</code> file, by copying it to the <code class="highlighter-rouge">domain-dir/autodeploy</code> directory or using the deployment tools in the WebLogic console.</li>
+  <li>Deploy the <code class="language-plaintext highlighter-rouge">activemq-4.0.1-web.war</code> file, by copying it to the <code class="language-plaintext highlighter-rouge">domain-dir/autodeploy</code> directory or using the deployment tools in the WebLogic console.</li>
   <li>Verify that the WebLogic server standard output (or the ActiveMQ log file configured in step 5) shows that ActiveMQ started, with output like this:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO  BrokerService                  - ActiveMQ 4.0.1 JMS Message Broker (localhost) is starting
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO  BrokerService                  - ActiveMQ 4.0.1 JMS Message Broker (localhost) is starting
 INFO  BrokerService                  - For help or more information please see:
                                        http://incubator.apache.org/activemq/
 INFO  JDBCPersistenceAdapter         - Database driver recognized: \[apache\_derby\_embedded\_jdbc\_driver\]
@@ -718,10 +718,10 @@ INFO  BrokerService                  - ActiveMQ JMS Message Broker
                                        (localhost, ID:remus-28763-1156532531109-1:0) started
 </code></pre></div>    </div>
   </li>
-  <li>Test a management connection by running the <code class="highlighter-rouge">jconsole</code> tool distributed with Java 5, using an advanced connection, entering the URL <code class="highlighter-rouge">service:jmx:rmi:///jndi/iiop://localhost:7001/weblogic.management.mbeanservers.runtime</code> (adjusting <code class="highlighter-rouge">localhost:7001</code> to the WebLogic server hostname and port) and the WebLogic administrator username and password. Once connected, on the MBeans tab, there should be entries under <code class="highlighter-rouge">org/activemq</code></li>
-  <li>Test a security if desired by running the example producer and consumer from an ActiveMQ 4.0.1 distribution. Note that the connect URL is in <code class="highlighter-rouge">examples/build.xml</code> while the connect username and password need to be added to <code class="highlighter-rouge">examples/src/ConsumerTool.java</code> and <code class="highlighter-rouge">examples/src/ProducerTool.java</code> to connect successfully to a secure instance.</li>
+  <li>Test a management connection by running the <code class="language-plaintext highlighter-rouge">jconsole</code> tool distributed with Java 5, using an advanced connection, entering the URL <code class="language-plaintext highlighter-rouge">service:jmx:rmi:///jndi/iiop://localhost:7001/weblogic.management.mbeanservers.runtime</code> (adjusting <code class="language-plaintext highlighter-rouge">localhost:7001</code> to the WebLogic server hostname and port) and the WebLogic administrator username and password. Once connected, on the MBeans tab, there should be entries under <code class="language-plaintext highlighter-rouge">org/activemq</code></li>
+  <li>Test a security if desired by running the example producer and consumer from an ActiveMQ 4.0.1 distribution. Note that the connect URL is in <code class="language-plaintext highlighter-rouge">examples/build.xml</code> while the connect username and password need to be added to <code class="language-plaintext highlighter-rouge">examples/src/ConsumerTool.java</code> and <code class="language-plaintext highlighter-rouge">examples/src/ProducerTool.java</code> to connect successfully to a secure instance.</li>
   <li>If ActiveMQ clustering will be used, repeat this process for the other WebLogic/ActiveMQ instance in the cluster. This should set up the two ActiveMQ servers to connect to each other. Confirm this by looking for output like this once both brokers are running:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO  DemandForwardingBridge         - Network connection between vm://FirstBroker#0 and
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO  DemandForwardingBridge         - Network connection between vm://FirstBroker#0 and
                                        tcp://localhost:63222(SecondBroker) has been established.
 </code></pre></div>    </div>
   </li>

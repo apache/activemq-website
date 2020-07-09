@@ -102,11 +102,11 @@
 
 <h3 id="example">Example</h3>
 
-<p>For example imagine we have a number of producers sending to queue <code class="highlighter-rouge">Foo.Bar</code> and consumers consuming from queue <code class="highlighter-rouge">Foo.Bar</code> and we want to monitor or view activity.</p>
+<p>For example imagine we have a number of producers sending to queue <code class="language-plaintext highlighter-rouge">Foo.Bar</code> and consumers consuming from queue <code class="language-plaintext highlighter-rouge">Foo.Bar</code> and we want to monitor or view activity.</p>
 
-<p>If you enable Mirrored Queues then by default you can subscribe to the topic <code class="highlighter-rouge">VirtualTopic.Mirror.Foo.Bar</code> and receive all the messages that are sent to the queue <code class="highlighter-rouge">Foo.Bar</code>. Since its a topic as many consumers can subscribe to this topic as are required.</p>
+<p>If you enable Mirrored Queues then by default you can subscribe to the topic <code class="language-plaintext highlighter-rouge">VirtualTopic.Mirror.Foo.Bar</code> and receive all the messages that are sent to the queue <code class="language-plaintext highlighter-rouge">Foo.Bar</code>. Since its a topic as many consumers can subscribe to this topic as are required.</p>
 
-<p>If you want you can use this feature with <a href="..Features/Destination Features/Features/Destination Features/virtual-destinations.md">Virtual Topics</a>; so that you can define a logical consumer; say called A. Then you can subscribe to the queue <code class="highlighter-rouge">Consumer.A.VirtualTopic.Mirror.Foo.Bar</code> to receive all the messages sent to queue <strong>Foo.Bar</strong> for the consumer A. You can then run multiple instances of this consumer who can then load balance among each other.</p>
+<p>If you want you can use this feature with <a href="..Features/Destination Features/Features/Destination Features/virtual-destinations.md">Virtual Topics</a>; so that you can define a logical consumer; say called A. Then you can subscribe to the queue <code class="language-plaintext highlighter-rouge">Consumer.A.VirtualTopic.Mirror.Foo.Bar</code> to receive all the messages sent to queue <strong>Foo.Bar</strong> for the consumer A. You can then run multiple instances of this consumer who can then load balance among each other.</p>
 
 <p>This combination of Mirrored Queues and <a href="..Features/Destination Features/Features/Destination Features/virtual-destinations.md">Virtual Destinations</a> can be extremely useful for monitoring transaction flows; for example with <a href="http://activemq.apache.org/camel/bam.html">Business Activity Monitoring (BAM)</a>.</p>
 
@@ -122,12 +122,12 @@
 
 <p>To enable Mirrored Queues, set the <strong>useMirroredQueues</strong> property on <a href="http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/broker/BrokerService.html">BrokerService</a> or add the following inside the <broker> element in the [Xml Configuration](../xml-Community/FAQ/configuration.md):</broker></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &lt;destinationInterceptors&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &lt;destinationInterceptors&gt;
         &lt;mirroredQueue copyMessage = "true" postfix=".qmirror" prefix=""/&gt;
     &lt;/destinationInterceptors&gt;
 </code></pre></div></div>
 
-<p>This would make a topic named <code class="highlighter-rouge">*.qmirror</code> for each queue on your Broker.</p>
+<p>This would make a topic named <code class="language-plaintext highlighter-rouge">*.qmirror</code> for each queue on your Broker.</p>
 
 
       </div>

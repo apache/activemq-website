@@ -101,14 +101,14 @@ without any down time.</p>
 <p>The addition of a new store could entail a new network connector and some new authorization policies, both of which can now be modified on the fly.</p>
 
 <p>The plugin is configured via the broker xml configuration as follows:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker xmlns="http://activemq.apache.org/schema/core" start="false" ... &gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker xmlns="http://activemq.apache.org/schema/core" start="false" ... &gt;
     &lt;plugins&gt;
       &lt;runtimeConfigurationPlugin checkPeriod="1000" /&gt;
     &lt;/plugins&gt;
     ...
 &lt;/broker&gt;
 </code></pre></div></div>
-<p>Note: the <code class="highlighter-rouge">start="false"</code> attribute. It ensures that xbean-spring does not auto start the broker when the application context is loading.<br />
+<p>Note: the <code class="language-plaintext highlighter-rouge">start="false"</code> attribute. It ensures that xbean-spring does not auto start the broker when the application context is loading.<br />
 This ensures that the plugins reference to the broker is fully initialized before it is used and the xml configuration location can be successfully resolved.</p>
 
 <p>The checkPeriod when &gt; 0 is the time in milliseconds between checks for changes to the lastupdate timestamp of the broker xml configuration url.<br />
@@ -117,10 +117,10 @@ If checkPeriod is 0 (default) there is no automatic check for changes but a manu
 <p>Configuration elements that support runtime modification</p>
 
 <ul>
-  <li><code class="highlighter-rouge">&lt;networkConnectors&gt;</code></li>
-  <li><code class="highlighter-rouge">&lt;destinationPolicy&gt;&lt;policyMap&gt;&lt;policyEntries&gt;</code></li>
-  <li><code class="highlighter-rouge">&lt;plugins&gt;&lt;authorizationPlugin&gt;&lt;map&gt;&lt;authorizationMap&gt;&lt;authorizationEntries&gt;</code></li>
-  <li><code class="highlighter-rouge">&lt;destinationInterceptors&gt;&lt;virtualDestinationInterceptor&gt;&lt;virtualDestinations&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">&lt;networkConnectors&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">&lt;destinationPolicy&gt;&lt;policyMap&gt;&lt;policyEntries&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">&lt;plugins&gt;&lt;authorizationPlugin&gt;&lt;map&gt;&lt;authorizationMap&gt;&lt;authorizationEntries&gt;</code></li>
+  <li><code class="language-plaintext highlighter-rouge">&lt;destinationInterceptors&gt;&lt;virtualDestinationInterceptor&gt;&lt;virtualDestinations&gt;</code></li>
 </ul>
 
 <p>Some more implementation detail and links to the tests can be found in <a href="https://issues.apache.org/jira/browse/AMQ-4682">AMQ-4682</a></p>

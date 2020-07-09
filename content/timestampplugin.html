@@ -96,7 +96,7 @@
 
 <p>The TimeStampPlugin is a Broker interceptor which updates a JMS Client’s time stamp on the message with a broker time stamp. This can be useful when the clocks on client machines are known to not be correct and you can only trust the time set on the broker machines.</p>
 
-<p>Enabling this plugin will break JMS compliance since the time stamp that the producer sees on the messages after as <code class="highlighter-rouge">send()</code> will be different from the time stamp the consumer will observe when he receives the message.</p>
+<p>Enabling this plugin will break JMS compliance since the time stamp that the producer sees on the messages after as <code class="language-plaintext highlighter-rouge">send()</code> will be different from the time stamp the consumer will observe when he receives the message.</p>
 
 <p>By default this plugin is <em>not</em> enabled in ActiveMQ.</p>
 
@@ -112,18 +112,18 @@
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">futureOnly</code></td>
-      <td><code class="highlighter-rouge">false</code></td>
-      <td>When <code class="highlighter-rouge">true</code> the plugin will <em>never</em> set a message’s time stamp and expiration time to a value lower than the original values. When <code class="highlighter-rouge">false</code> the plugin <em>always</em> update a message’s time stamp and expiration time.</td>
+      <td><code class="language-plaintext highlighter-rouge">futureOnly</code></td>
+      <td><code class="language-plaintext highlighter-rouge">false</code></td>
+      <td>When <code class="language-plaintext highlighter-rouge">true</code> the plugin will <em>never</em> set a message’s time stamp and expiration time to a value lower than the original values. When <code class="language-plaintext highlighter-rouge">false</code> the plugin <em>always</em> update a message’s time stamp and expiration time.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">ttlCeiling</code></td>
-      <td><code class="highlighter-rouge">0</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ttlCeiling</code></td>
+      <td><code class="language-plaintext highlighter-rouge">0</code></td>
       <td>When not zero, this value (in ms) limit the expiration time.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">zeroExpirationOverride</code></td>
-      <td><code class="highlighter-rouge">0</code></td>
+      <td><code class="language-plaintext highlighter-rouge">zeroExpirationOverride</code></td>
+      <td><code class="language-plaintext highlighter-rouge">0</code></td>
       <td>When not zero this value (in ms) will override the expiration time for messages that do not have an expiration already set.</td>
     </tr>
   </tbody>
@@ -132,7 +132,7 @@
 <p>To enable the TimeStampPlugin add the following to your ActiveMQ Broker configuration.</p>
 
 <p>Example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;plugins&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;plugins&gt;
   &lt;!-- 86,400,000 ms = 1 day --&gt;
   &lt;timeStampingBrokerPlugin ttlCeiling="86400000" zeroExpirationOverride="86400000"/&gt;
 &lt;/plugins&gt;
@@ -142,7 +142,7 @@
 
 <p>When the consumer’s local clock is running ahead of the broker’s local clock then messages might not be consumed by your consumer when this plug-in is loaded with default configuration as the consumer could perceive the messages as already expired.</p>
 
-<p>If the clock difference between broker and consumer is <em>greater than</em> the message expiration time <em>and</em> if the consumer’s clock is running ahead, then set <code class="highlighter-rouge">futureOnly="true"</code>.</p>
+<p>If the clock difference between broker and consumer is <em>greater than</em> the message expiration time <em>and</em> if the consumer’s clock is running ahead, then set <code class="language-plaintext highlighter-rouge">futureOnly="true"</code>.</p>
 
 <p>See the following <a href="http://tmielke.blogspot.com/2011/01/sync-your-machine-clocks.html">blog post</a> for more details.</p>
 

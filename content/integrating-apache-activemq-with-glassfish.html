@@ -105,17 +105,17 @@
     <ol>
       <li>Download the resource-adapter file suitable to your broker version: <a href="http://repo1.maven.org/maven2/org/apache/activemq/activemq-rar/">http://repo1.maven.org/maven2/org/apache/activemq/activemq-rar/</a></li>
       <li>Deploy the  resource adapter with the name “activemq-rar”
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/asadmin deploy --type rar --name activemq-rar /tmp/activemq-rar-5.11.1.rar
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/asadmin deploy --type rar --name activemq-rar /tmp/activemq-rar-5.11.1.rar
 </code></pre></div>        </div>
       </li>
       <li>Configure resource adapter (Failover Setup)
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/asadmin create-resource-adapter-config --property ServerUrl='failover:(tcp://broker-c1.foobar.local:61616,tcp://broker-c2.foobar.local:61616,tcp://broker-c3.foobar.local:61616)?initialReconnectDelay=2000&amp;jms.useCompression=true':UserName='admin':Password='admin' activemq-rar
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/asadmin create-resource-adapter-config --property ServerUrl='failover:(tcp://broker-c1.foobar.local:61616,tcp://broker-c2.foobar.local:61616,tcp://broker-c3.foobar.local:61616)?initialReconnectDelay=2000&amp;jms.useCompression=true':UserName='admin':Password='admin' activemq-rar
 </code></pre></div>        </div>
       </li>
     </ol>
   </li>
   <li>Create connector connection pool
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/asadmin create-connector-connection-pool \
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/asadmin create-connector-connection-pool \
   --raname activemq-rar \
   --connectiondefinition javax.jms.ConnectionFactory \
   --ping true --isconnectvalidatereq true \
@@ -123,13 +123,13 @@
 </code></pre></div>    </div>
   </li>
   <li>Create a connector resource (JNDI-Mapping for connection pool)
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/asadmin create-connector-resource \
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/asadmin create-connector-resource \
   --poolname jms/myConnectionPool \
   jms/myConnectionFactory
 </code></pre></div>    </div>
   </li>
   <li>Configure JNDI mapping for a queue
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/asadmin create-admin-object \
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/asadmin create-admin-object \
 	--raname activemq-rar \
   --restype javax.jms.Queue \
   --property PhysicalName=MY.MAGIC.OUT \

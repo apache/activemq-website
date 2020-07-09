@@ -96,8 +96,8 @@
 
 <p>ActiveMQ will work with any JNDI provider capable of storing Java objects. However it is common to require a JNDI initial context to be able to run many JMS example programs, like <a href="http://java.sun.com/products/jms/tutorial/1_3_1-fcs/doc/jms_tutorialTOC.html">Sun’s JMS tutorial.</a></p>
 
-<p>So we provide a simple JNDI <code class="highlighter-rouge">InitialContextFactory</code> which can be used to lookup JMS connection factory objects as well as Destination objects. For example if you place this <a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/jndi.properties">jndi.properties</a> file on your classpath, you can look inside the <code class="highlighter-rouge">InitialContext</code> and lookup <code class="highlighter-rouge">ConnectionFactory</code> objects and <code class="highlighter-rouge">Destinations</code> etc.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java.naming.factory.initial = org.apache.activemq.jndi.ActiveMQInitialContextFactory
+<p>So we provide a simple JNDI <code class="language-plaintext highlighter-rouge">InitialContextFactory</code> which can be used to lookup JMS connection factory objects as well as Destination objects. For example if you place this <a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/jndi.properties">jndi.properties</a> file on your classpath, you can look inside the <code class="language-plaintext highlighter-rouge">InitialContext</code> and lookup <code class="language-plaintext highlighter-rouge">ConnectionFactory</code> objects and <code class="language-plaintext highlighter-rouge">Destinations</code> etc.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java.naming.factory.initial = org.apache.activemq.jndi.ActiveMQInitialContextFactory
 
 # use the following property to configure the default connector
 java.naming.provider.url = vm://localhost
@@ -115,11 +115,11 @@ queue.MyQueue = example.MyQueue
 # topic.[jndiName] = [physicalName]
 topic.MyTopic = example.MyTopic
 </code></pre></div></div>
-<p>You can edit the <code class="highlighter-rouge">jndi.properties</code> file to configure the <code class="highlighter-rouge">ActiveMQConnectionFactory</code>’s properties such as <code class="highlighter-rouge">brokerURL</code> and whether or not there should be an embedded broker etc. See <a href="how-do-i-embed-a-broker-inside-a-connection">how to embed a broker in a connection</a> for more details.</p>
+<p>You can edit the <code class="language-plaintext highlighter-rouge">jndi.properties</code> file to configure the <code class="language-plaintext highlighter-rouge">ActiveMQConnectionFactory</code>’s properties such as <code class="language-plaintext highlighter-rouge">brokerURL</code> and whether or not there should be an embedded broker etc. See <a href="how-do-i-embed-a-broker-inside-a-connection">how to embed a broker in a connection</a> for more details.</p>
 
 <h3 id="activemq-jndi-tutorial">ActiveMQ JNDI Tutorial</h3>
 
-<p>This is a quick one page tutorial on how to setup and use JNDI to create a connection to ActiveMQ. The first thing is ActiveMQ does not provide a full JNDI server. This means JMS clients need to use properties files to create a JNDI <code class="highlighter-rouge">IntialContextFactory</code>. If you need an example properties file, you can look the source distribution <a href="https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/resources/jndi.properties">https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/resources/jndi.properties</a>. Before we proceed, here are the properties.</p>
+<p>This is a quick one page tutorial on how to setup and use JNDI to create a connection to ActiveMQ. The first thing is ActiveMQ does not provide a full JNDI server. This means JMS clients need to use properties files to create a JNDI <code class="language-plaintext highlighter-rouge">IntialContextFactory</code>. If you need an example properties file, you can look the source distribution <a href="https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/resources/jndi.properties">https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/resources/jndi.properties</a>. Before we proceed, here are the properties.</p>
 
 <table>
   <tbody>
@@ -128,25 +128,25 @@ topic.MyTopic = example.MyTopic
       <td>Value</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">java.naming.factory.initial</code></td>
-      <td><code class="highlighter-rouge">org.apache.activemq.jndi.ActiveMQInitialContextFactory</code></td>
+      <td><code class="language-plaintext highlighter-rouge">java.naming.factory.initial</code></td>
+      <td><code class="language-plaintext highlighter-rouge">org.apache.activemq.jndi.ActiveMQInitialContextFactory</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">java.naming.provider.url</code></td>
-      <td><code class="highlighter-rouge">tcp://hostname:61616</code></td>
+      <td><code class="language-plaintext highlighter-rouge">java.naming.provider.url</code></td>
+      <td><code class="language-plaintext highlighter-rouge">tcp://hostname:61616</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">topic.MyTopic</code></td>
-      <td><code class="highlighter-rouge">example.MyTopic</code></td>
+      <td><code class="language-plaintext highlighter-rouge">topic.MyTopic</code></td>
+      <td><code class="language-plaintext highlighter-rouge">example.MyTopic</code></td>
     </tr>
   </tbody>
 </table>
 
-<p>Make sure to add <code class="highlighter-rouge">activemq-_&lt;version&gt;_.jar</code> and <code class="highlighter-rouge">spring-1.x.jar</code> to your classpath. If the libraries are not in the classpath, you will get a <code class="highlighter-rouge">ClassNotFoundException</code> at runtime. If you get <code class="highlighter-rouge">ClassNotFoundException</code>, try printing out the classpath and check it is present. You can also run ActiveMQ with <code class="highlighter-rouge">-verbose</code> option to verify the jar was loaded correctly.</p>
+<p>Make sure to add <code class="language-plaintext highlighter-rouge">activemq-_&lt;version&gt;_.jar</code> and <code class="language-plaintext highlighter-rouge">spring-1.x.jar</code> to your classpath. If the libraries are not in the classpath, you will get a <code class="language-plaintext highlighter-rouge">ClassNotFoundException</code> at runtime. If you get <code class="language-plaintext highlighter-rouge">ClassNotFoundException</code>, try printing out the classpath and check it is present. You can also run ActiveMQ with <code class="language-plaintext highlighter-rouge">-verbose</code> option to verify the jar was loaded correctly.</p>
 
 <p><strong>Sample Code</strong></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create a new intial context, which loads from jndi.properties file: 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create a new intial context, which loads from jndi.properties file: 
 javax.naming.Context ctx = new javax.naming.InitialContext(); 
 // Lookup the connection factory: 
 javax.jms.TopicConnectionFactory factory = (javax.jms.TopicConnectionFactory)ctx.lookup("ConnectionFactory"); 
@@ -159,14 +159,14 @@ javax.jms.TopicSession session = conn.createTopicSession(false,TopicSession.AUTO
 // Create a new subscriber to receive messages: 
 javax.jms.TopicSubscriber subscriber = session.createSubscriber(mytopic);
 </code></pre></div></div>
-<p>Notice the name of the topic in the sample is <code class="highlighter-rouge">MyTopic</code>. ActiveMQ will read the <code class="highlighter-rouge">jndi.properties</code> files and creates the topics and queues in a lazy fashion. The prefix topic and queue is stripped, so the JNDI name begins after the prefix.</p>
+<p>Notice the name of the topic in the sample is <code class="language-plaintext highlighter-rouge">MyTopic</code>. ActiveMQ will read the <code class="language-plaintext highlighter-rouge">jndi.properties</code> files and creates the topics and queues in a lazy fashion. The prefix topic and queue is stripped, so the JNDI name begins after the prefix.</p>
 
-<p>Once you have the <code class="highlighter-rouge">jndi.properties</code> edited and ready, it needs to be accessible to your application. The easiest way is to add <code class="highlighter-rouge">jndi.properties</code> to a jar file. When <code class="highlighter-rouge">new InitialContext()</code> is called, it will scan the resources and find the file. If you get <code class="highlighter-rouge">javax.naming.NamingException</code>, it usually means the <code class="highlighter-rouge">jndi.properties</code> file is not accessible.</p>
+<p>Once you have the <code class="language-plaintext highlighter-rouge">jndi.properties</code> edited and ready, it needs to be accessible to your application. The easiest way is to add <code class="language-plaintext highlighter-rouge">jndi.properties</code> to a jar file. When <code class="language-plaintext highlighter-rouge">new InitialContext()</code> is called, it will scan the resources and find the file. If you get <code class="language-plaintext highlighter-rouge">javax.naming.NamingException</code>, it usually means the <code class="language-plaintext highlighter-rouge">jndi.properties</code> file is not accessible.</p>
 
 <p>You can also try to create a new initial context using either an instance of properties file or a map. For example, the approach recommended by JMS specification will work just fine.</p>
 
 <p>Example Recommended by Specification</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>javaProperties props = new Properties(); 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>javaProperties props = new Properties(); 
 props.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); 
 props.setProperty(Context.PROVIDER_URL, "tcp://hostname:61616"); 
 javax.naming.Context ctx = new InitialContext(props);
@@ -178,144 +178,144 @@ javax.naming.Context ctx = new InitialContext(props);
 <p>For the easiest possible configuration with JNDI based programs, there are two dynamic contexts, namely:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">dynamicQueues</code></li>
-  <li><code class="highlighter-rouge">dynamicTopics</code></li>
+  <li><code class="language-plaintext highlighter-rouge">dynamicQueues</code></li>
+  <li><code class="language-plaintext highlighter-rouge">dynamicTopics</code></li>
 </ul>
 
 <p>These allow you to lookup queues and topics using JNDI without any configuration.</p>
 
 <p>For example, if you use the following name to lookup into JNDI:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dynamicQueues/FOO.BAR
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dynamicQueues/FOO.BAR
 </code></pre></div></div>
-<p>you will get back an <code class="highlighter-rouge">ActiveMQQueue</code> of the name <code class="highlighter-rouge">FOO.BAR</code>. This can be very handy if you can easily reconfigure the JNDI name to use to lookup something in JNDI, but don’t want to have to double configure a <code class="highlighter-rouge">jndi.properties</code> to match.</p>
+<p>you will get back an <code class="language-plaintext highlighter-rouge">ActiveMQQueue</code> of the name <code class="language-plaintext highlighter-rouge">FOO.BAR</code>. This can be very handy if you can easily reconfigure the JNDI name to use to lookup something in JNDI, but don’t want to have to double configure a <code class="language-plaintext highlighter-rouge">jndi.properties</code> to match.</p>
 
 <h3 id="working-with-embedded-brokers">Working With Embedded Brokers</h3>
 
 <p>It is often useful to use an embedded broker in the same JVM as the JMS client. For this see <a href="how-do-i-embed-a-broker-inside-a-connection">How do I embed a Broker inside a Connection</a>.</p>
 
 <p>If you want to use an embedded broker with your JNDI provider you can just use the <a href="vm-transport-reference">VM Transport</a> to connect to the broker in your URL. e.g. to create a purely in JVM broker use this URI</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm://locahost
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm://locahost
 </code></pre></div></div>
 <p>If you want to customize the broker use something like this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm:broker:(tcp://localhost:61616)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm:broker:(tcp://localhost:61616)
 </code></pre></div></div>
 <p>More options are available in the <a href="vm-transport-reference">VM Transport Reference</a></p>
 
 <h3 id="example-java-code">Example Java Code</h3>
 
 <p>Once you have configured JNDI on the classpath you can run any normal JMS application such as the following <a href="http://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-unit-tests/src/test/java/org/apache/activemq/demo/SimpleProducer.java">example</a>. Notice that the Java code just uses pure JMS APIs and is not in any way ActiveMQ specific</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">/**</span>
- <span class="p">*</span> <span class="n">The</span> <span class="n">SimpleQueueSender</span> <span class="n">class</span> <span class="n">consists</span> <span class="n">only</span> <span class="k">of</span> <span class="n">a</span> <span class="n">main</span> <span class="n">method</span><span class="p">,</span>
- <span class="p">*</span> <span class="n">which</span> <span class="n">sends</span> <span class="n">several</span> <span class="n">messages</span> <span class="k">to</span> <span class="n">a</span> <span class="n">queue</span><span class="p">.</span> 
- <span class="p">*</span> 
- <span class="p">*</span> <span class="nf">Run</span> <span class="n">this</span> <span class="n">program</span> <span class="k">in</span> <span class="n">conjunction</span> <span class="k">with</span> <span class="n">SimpleQueueReceiver</span><span class="p">.</span> 
- <span class="p">*</span> <span class="n">Specify</span> <span class="n">a</span> <span class="n">queue</span> <span class="n">name</span> <span class="n">on</span> <span class="n">the</span> <span class="nf">command</span> <span class="n">line</span> <span class="n">when</span> <span class="n">you</span> <span class="nf">run</span> <span class="n">the</span> 
- <span class="p">*</span> <span class="n">program</span><span class="p">.</span> <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="n">the</span> <span class="n">program</span> <span class="n">sends</span> <span class="n">one</span> <span class="n">message</span><span class="p">.</span> <span class="n">Specify</span> 
- <span class="p">*</span> <span class="n">a</span> <span class="n">number</span> <span class="n">after</span> <span class="n">the</span> <span class="n">queue</span> <span class="n">name</span> <span class="k">to</span> <span class="nf">send</span> <span class="n">that</span> <span class="n">number</span> <span class="k">of</span> <span class="n">messages</span><span class="p">.</span> 
- <span class="p">*/</span> 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ * The SimpleQueueSender class consists only of a main method,
+ * which sends several messages to a queue. 
+ * 
+ * Run this program in conjunction with SimpleQueueReceiver. 
+ * Specify a queue name on the command line when you run the 
+ * program. By default, the program sends one message. Specify 
+ * a number after the queue name to send that number of messages. 
+ */ 
  
-<span class="k">package</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">activemq</span><span class="p">.</span><span class="n">demo</span><span class="p">;</span> 
+package org.apache.activemq.demo; 
 
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">jms</span><span class="p">.</span><span class="n">Connection</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">jms</span><span class="p">.</span><span class="n">ConnectionFactory</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">jms</span><span class="p">.</span><span class="n">Destination</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">jms</span><span class="p">.</span><span class="n">JMSException</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">jms</span><span class="p">.</span><span class="n">MessageProducer</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">jms</span><span class="p">.</span><span class="n">Session</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">jms</span><span class="p">.</span><span class="n">TextMessage</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">naming</span><span class="p">.</span><span class="n">Context</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">naming</span><span class="p">.</span><span class="n">InitialContext</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">javax</span><span class="p">.</span><span class="n">naming</span><span class="p">.</span><span class="n">NamingException</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">slf4j</span><span class="p">.</span><span class="n">Logger</span><span class="p">;</span> 
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">slf4j</span><span class="p">.</span><span class="n">LoggerFactory</span><span class="p">;</span> 
-<span class="p">/**</span>
- <span class="p">*</span> <span class="n">A</span> <span class="n">simple</span> <span class="n">polymorphic</span> <span class="n">JMS</span> <span class="n">producer</span> <span class="n">which</span> <span class="n">can</span> <span class="n">work</span> <span class="k">with</span> <span class="n">Queues</span> <span class="k">or</span> <span class="n">Topics</span> <span class="n">which</span> 
- <span class="p">*</span> <span class="k">uses</span> <span class="n">JNDI</span> <span class="k">to</span> <span class="n">lookup</span> <span class="n">the</span> <span class="n">JMS</span> <span class="n">connection</span> <span class="n">factory</span> <span class="k">and</span> <span class="n">destination</span><span class="p">.</span>
- <span class="p">*/</span> 
-<span class="k">public</span> <span class="n">final</span> <span class="n">class</span> <span class="n">SimpleProducer</span> <span class="p">{</span> 
-   <span class="n">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">Logger</span> <span class="n">LOG</span> <span class="p">=</span> <span class="n">LoggerFactory</span><span class="p">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">SimpleProducer</span><span class="p">.</span><span class="n">class</span><span class="p">);</span> 
-   <span class="n">private</span> <span class="n">SimpleProducer</span><span class="p">()</span> <span class="p">{}</span> <span class="err"> </span>
+import javax.jms.Connection; 
+import javax.jms.ConnectionFactory; 
+import javax.jms.Destination; 
+import javax.jms.JMSException; 
+import javax.jms.MessageProducer; 
+import javax.jms.Session; 
+import javax.jms.TextMessage; 
+import javax.naming.Context; 
+import javax.naming.InitialContext; 
+import javax.naming.NamingException; 
+import org.slf4j.Logger; 
+import org.slf4j.LoggerFactory; 
+/**
+ * A simple polymorphic JMS producer which can work with Queues or Topics which 
+ * uses JNDI to lookup the JMS connection factory and destination.
+ */ 
+public final class SimpleProducer { 
+   private static final Logger LOG = LoggerFactory.getLogger(SimpleProducer.class); 
+   private SimpleProducer() {}  
   
-   <span class="p">/**</span>
-    <span class="p">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">args</span> <span class="n">the</span> <span class="n">destination</span> <span class="n">name</span> <span class="k">to</span> <span class="nf">send</span> <span class="k">to</span> <span class="k">and</span> <span class="n">optionally</span><span class="p">,</span> <span class="n">the</span> <span class="n">number</span> <span class="k">of</span> 
-    <span class="p">*</span> <span class="n">messages</span> <span class="k">to</span> <span class="nf">send</span> 
-    <span class="p">*/</span> 
-   <span class="k">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="k">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span> 
-      <span class="n">Context</span> <span class="n">jndiContext</span><span class="p">;</span> 
-      <span class="n">ConnectionFactory</span> <span class="n">connectionFactory</span><span class="p">;</span> 
-      <span class="n">Connection</span> <span class="n">connection</span><span class="p">;</span> 
-      <span class="n">Session</span> <span class="n">session</span><span class="p">;</span> 
-      <span class="n">Destination</span> <span class="n">destination</span><span class="p">;</span> 
-      <span class="n">MessageProducer</span> <span class="n">producer</span><span class="p">;</span> 
-      <span class="k">String</span> <span class="n">destinationName</span><span class="p">;</span> 
-      <span class="n">final</span> <span class="n">int</span> <span class="n">numMsgs</span><span class="p">;</span> <span class="err"> </span>
+   /**
+    * @param args the destination name to send to and optionally, the number of 
+    * messages to send 
+    */ 
+   public static void main(String[] args) { 
+      Context jndiContext; 
+      ConnectionFactory connectionFactory; 
+      Connection connection; 
+      Session session; 
+      Destination destination; 
+      MessageProducer producer; 
+      String destinationName; 
+      final int numMsgs;  
       
-      <span class="k">if</span> <span class="p">((</span><span class="n">args</span><span class="p">.</span><span class="n">length</span> <span class="p">&lt;</span> <span class="m">1</span><span class="p">)</span> <span class="p">||</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">length</span> <span class="p">&gt;</span> <span class="m">2</span><span class="p">))</span> <span class="p">{</span> 
-         <span class="n">LOG</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Usage: java SimpleProducer &lt;destination-name&gt; [&lt;number-of-messages&gt;]"</span><span class="p">);</span> <span class="nf">System</span><span class="p">.</span><span class="k">exit</span><span class="p">(</span><span class="m">1</span><span class="p">);</span> 
-      <span class="p">}</span> <span class="err"> </span>
+      if ((args.length &lt; 1) || (args.length &gt; 2)) { 
+         LOG.info("Usage: java SimpleProducer &lt;destination-name&gt; [&lt;number-of-messages&gt;]"); System.exit(1); 
+      }  
       
-      <span class="n">destinationName</span> <span class="p">=</span> <span class="n">args</span><span class="p">[</span><span class="m">0</span><span class="p">];</span> 
-      <span class="n">LOG</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Destination name is "</span> <span class="p">+</span> <span class="n">destinationName</span><span class="p">);</span> 
+      destinationName = args[0]; 
+      LOG.info("Destination name is " + destinationName); 
       
-      <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">length</span> <span class="p">==</span> <span class="m">2</span><span class="p">)</span> <span class="p">{</span> 
-         <span class="n">numMsgs</span> <span class="p">=</span> <span class="p">(</span><span class="n">new</span> <span class="k">Integer</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="m">1</span><span class="p">])).</span><span class="n">intValue</span><span class="p">();</span> 
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> 
-         <span class="n">numMsgs</span> <span class="p">=</span> <span class="m">1</span><span class="p">;</span> 
-      <span class="p">}</span> 
+      if (args.length == 2) { 
+         numMsgs = (new Integer(args[1])).intValue(); 
+      } else { 
+         numMsgs = 1; 
+      } 
       
-      <span class="p">/*</span>
-       <span class="p">*</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">JNDI</span> <span class="n">API</span> <span class="n">InitialContext</span> <span class="n">object</span> 
-       <span class="p">*/</span>
-      <span class="n">try</span> <span class="p">{</span> 
-         <span class="n">jndiContext</span> <span class="p">=</span> <span class="n">new</span> <span class="n">InitialContext</span><span class="p">();</span> 
-      <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">NamingException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span> 
-         <span class="n">LOG</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Could not create JNDI API context: "</span> <span class="p">+</span> <span class="n">e</span><span class="p">.</span><span class="n">toString</span><span class="p">());</span> 
-         <span class="nf">System</span><span class="p">.</span><span class="k">exit</span><span class="p">(</span><span class="m">1</span><span class="p">);</span> 
-      <span class="p">}</span>
+      /*
+       * Create a JNDI API InitialContext object 
+       */
+      try { 
+         jndiContext = new InitialContext(); 
+      } catch (NamingException e) { 
+         LOG.info("Could not create JNDI API context: " + e.toString()); 
+         System.exit(1); 
+      }
       
-      <span class="p">/*</span> 
-       <span class="p">*</span> <span class="n">Look</span> <span class="n">up</span> <span class="n">connection</span> <span class="n">factory</span> <span class="k">and</span> <span class="n">destination</span><span class="p">.</span> 
-       <span class="p">*/</span>
-      <span class="n">try</span> <span class="p">{</span> 
-         <span class="n">connectionFactory</span> <span class="p">=</span> <span class="p">(</span><span class="n">ConnectionFactory</span><span class="p">)</span><span class="n">jndiContext</span><span class="p">.</span><span class="n">lookup</span><span class="p">(</span><span class="s2">"ConnectionFactory"</span><span class="p">);</span> 
-         <span class="n">destination</span> <span class="p">=</span> <span class="p">(</span><span class="n">Destination</span><span class="p">)</span><span class="n">jndiContext</span><span class="p">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">destinationName</span><span class="p">);</span> 
-      <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">NamingException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span> 
-         <span class="n">LOG</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"JNDI API lookup failed: "</span> <span class="p">+</span> <span class="n">e</span><span class="p">);</span> 
-         <span class="nf">System</span><span class="p">.</span><span class="k">exit</span><span class="p">(</span><span class="m">1</span><span class="p">);</span> 
-      <span class="p">}</span> <span class="err"> </span>
+      /* 
+       * Look up connection factory and destination. 
+       */
+      try { 
+         connectionFactory = (ConnectionFactory)jndiContext.lookup("ConnectionFactory"); 
+         destination = (Destination)jndiContext.lookup(destinationName); 
+      } catch (NamingException e) { 
+         LOG.info("JNDI API lookup failed: " + e); 
+         System.exit(1); 
+      }  
       
-      <span class="p">/*</span>
-       <span class="p">*</span> <span class="n">Create</span> <span class="n">connection</span><span class="p">.</span> <span class="n">Create</span> <span class="n">session</span> <span class="k">from</span> <span class="n">connection</span><span class="p">;</span> <span class="nb">false</span> <span class="n">means</span> 
-       <span class="p">*</span> <span class="n">session</span> <span class="n">is</span> <span class="k">not</span> <span class="n">transacted</span><span class="p">.</span> <span class="n">Create</span> <span class="n">sender</span> <span class="k">and</span> <span class="n">text</span> <span class="n">message</span><span class="p">.</span> <span class="nf">Send</span> 
-       <span class="p">*</span> <span class="n">messages</span><span class="p">,</span> <span class="n">varying</span> <span class="n">text</span> <span class="n">slightly</span><span class="p">.</span> <span class="nf">Send</span> <span class="k">end</span><span class="p">-</span><span class="k">of</span><span class="p">-</span><span class="n">messages</span> <span class="n">message</span><span class="p">.</span> 
-       <span class="p">*</span> <span class="n">Finally</span><span class="p">,</span> <span class="n">close</span> <span class="n">the</span> <span class="n">connection</span><span class="p">.</span> 
-       <span class="p">*/</span> 
-      <span class="n">try</span> <span class="p">{</span> 
-         <span class="n">connection</span> <span class="p">=</span> <span class="n">connectionFactory</span><span class="p">.</span><span class="n">createConnection</span><span class="p">();</span> 
-         <span class="n">session</span> <span class="p">=</span> <span class="n">connection</span><span class="p">.</span><span class="n">createSession</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span> <span class="n">Session</span><span class="p">.</span><span class="n">AUTO_ACKNOWLEDGE</span><span class="p">);</span> 
-         <span class="n">producer</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">createProducer</span><span class="p">(</span><span class="n">destination</span><span class="p">);</span> 
-         <span class="n">TextMessage</span> <span class="n">message</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">createTextMessage</span><span class="p">();</span> <span class="err"> </span>
-         <span class="n">for</span> <span class="p">(</span><span class="n">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">numMsgs</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span> 
-            <span class="n">message</span><span class="p">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"This is message "</span> <span class="p">+</span> <span class="p">(</span><span class="n">i</span> <span class="p">+</span> <span class="m">1</span><span class="p">));</span> 
-            <span class="n">LOG</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Sending message: "</span> <span class="p">+</span> <span class="n">message</span><span class="p">.</span><span class="n">getText</span><span class="p">());</span> <span class="n">producer</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">message</span><span class="p">);</span> 
-         <span class="p">}</span> <span class="err"> </span>
+      /*
+       * Create connection. Create session from connection; false means 
+       * session is not transacted. Create sender and text message. Send 
+       * messages, varying text slightly. Send end-of-messages message. 
+       * Finally, close the connection. 
+       */ 
+      try { 
+         connection = connectionFactory.createConnection(); 
+         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE); 
+         producer = session.createProducer(destination); 
+         TextMessage message = session.createTextMessage();  
+         for (int i = 0; i &lt; numMsgs; i++) { 
+            message.setText("This is message " + (i + 1)); 
+            LOG.info("Sending message: " + message.getText()); producer.send(message); 
+         }  
          
-         <span class="p">/*</span>
-          <span class="p">*</span> <span class="nf">Send</span> <span class="n">a</span> <span class="n">non</span><span class="p">-</span><span class="n">text</span> <span class="n">control</span> <span class="n">message</span> <span class="n">indicating</span> <span class="k">end</span> <span class="k">of</span> <span class="n">messages</span><span class="p">.</span> 
-          <span class="p">*/</span> 
-         <span class="n">producer</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">session</span><span class="p">.</span><span class="n">createMessage</span><span class="p">());</span> 
-      <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">JMSException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span> 
-         <span class="n">LOG</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Exception occurred: "</span> <span class="p">+</span> <span class="n">e</span><span class="p">);</span> 
-      <span class="p">}</span> <span class="n">finally</span> <span class="p">{</span> 
-         <span class="k">if</span> <span class="p">(</span><span class="n">connection</span> <span class="c1">!= null) { 
-</span>            <span class="n">try</span> <span class="p">{</span> 
-               <span class="n">connection</span><span class="p">.</span><span class="n">close</span><span class="p">();</span> 
-            <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">JMSException</span> <span class="n">ignored</span><span class="p">)</span> <span class="p">{</span>
-            <span class="p">}</span> 
-         <span class="p">}</span> 
-      <span class="p">}</span> 
-   <span class="p">}</span> 
-<span class="p">}</span>
+         /*
+          * Send a non-text control message indicating end of messages. 
+          */ 
+         producer.send(session.createMessage()); 
+      } catch (JMSException e) { 
+         LOG.info("Exception occurred: " + e); 
+      } finally { 
+         if (connection != null) { 
+            try { 
+               connection.close(); 
+            } catch (JMSException ignored) {
+            } 
+         } 
+      } 
+   } 
+}
 </code></pre></div></div>
 
       </div>

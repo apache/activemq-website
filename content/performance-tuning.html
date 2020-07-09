@@ -104,11 +104,11 @@
 
 <p>When an ActiveMQ message producer sends a non-persistent message, its dispatched asynchronously (fire and forget) - but for persistent messages, the publisher will block until it gets a notification that the message has been processed (saved to the store - queued to be dispatched to any active consumers etc) by the broker. messages are dispatched with delivery mode set to be persistent by default (which is required by the JMS spec). So if you are sending messages on a Topic, the publisher will block by default (even if there are no durable subscribers on the topic) until the broker has returned a notification.</p>
 
-<p>So if you looking for good performance with topic messages, either set the delivery mode on the publisher to be non-persistent, or set the <code class="highlighter-rouge">useAsyncSend</code> property on the ActiveMQ ConnectionFactory to be <strong>true</strong>.</p>
+<p>So if you looking for good performance with topic messages, either set the delivery mode on the publisher to be non-persistent, or set the <code class="language-plaintext highlighter-rouge">useAsyncSend</code> property on the ActiveMQ ConnectionFactory to be <strong>true</strong>.</p>
 
 <h2 id="pre-fetch-sizes-for-consumers">Pre-fetch Sizes for Consumers</h2>
 
-<p>ActiveMQ will push as many messages to the consumer as fast as possible, where they will be queued for processing by an ActiveMQ Session. The maximum number of messages that ActiveMQ will push to a Consumer without the Consumer processing a message is set by the pre-fetch size. You can improve throughput by running ActiveMQ with larger pre-fetch sizes. Pre-fetch sizes are determined by the <code class="highlighter-rouge">ActiveMQPrefetchPolicy</code> bean, which is set on the ActiveMQ <code class="highlighter-rouge">ConnectionFactory</code>.</p>
+<p>ActiveMQ will push as many messages to the consumer as fast as possible, where they will be queued for processing by an ActiveMQ Session. The maximum number of messages that ActiveMQ will push to a Consumer without the Consumer processing a message is set by the pre-fetch size. You can improve throughput by running ActiveMQ with larger pre-fetch sizes. Pre-fetch sizes are determined by the <code class="language-plaintext highlighter-rouge">ActiveMQPrefetchPolicy</code> bean, which is set on the ActiveMQ <code class="language-plaintext highlighter-rouge">ConnectionFactory</code>.</p>
 
 <p>Default values:</p>
 
@@ -122,30 +122,30 @@
   <tbody>
     <tr>
       <td>queue</td>
-      <td><code class="highlighter-rouge">1000</code></td>
+      <td><code class="language-plaintext highlighter-rouge">1000</code></td>
     </tr>
     <tr>
       <td>queue browser</td>
-      <td><code class="highlighter-rouge">500</code></td>
+      <td><code class="language-plaintext highlighter-rouge">500</code></td>
     </tr>
     <tr>
       <td>topic</td>
-      <td><code class="highlighter-rouge">32767</code></td>
+      <td><code class="language-plaintext highlighter-rouge">32767</code></td>
     </tr>
     <tr>
       <td>durable topic</td>
-      <td><code class="highlighter-rouge">1000</code></td>
+      <td><code class="language-plaintext highlighter-rouge">1000</code></td>
     </tr>
   </tbody>
 </table>
 
 <h2 id="optimized-acknowledge">Optimized Acknowledge</h2>
 
-<p>When consuming messages in auto acknowledge mode (set when creating the consumers’ session), ActiveMQ can acknowledge receipt of messages back to the broker in batches (to improve performance). The batch size is 65% of the prefetch limit for the Consumer. Also if message consumption is slow the batch will be sent every 300ms. You switch batch acknowledgment on by setting <code class="highlighter-rouge">optimizeAcknowledge=true</code> on the ActiveMQ <code class="highlighter-rouge">ConnectionFactory</code>.</p>
+<p>When consuming messages in auto acknowledge mode (set when creating the consumers’ session), ActiveMQ can acknowledge receipt of messages back to the broker in batches (to improve performance). The batch size is 65% of the prefetch limit for the Consumer. Also if message consumption is slow the batch will be sent every 300ms. You switch batch acknowledgment on by setting <code class="language-plaintext highlighter-rouge">optimizeAcknowledge=true</code> on the ActiveMQ <code class="language-plaintext highlighter-rouge">ConnectionFactory</code>.</p>
 
 <h2 id="straight-through-session-consumption">Straight through Session Consumption</h2>
 
-<p>By default, a Consumer’s session will dispatch messages to the consumer in a separate thread. If you are using Consumers with auto acknowledge, you can increase throughput by passing messages straight through the Session to the Consumer by setting <code class="highlighter-rouge">alwaysSessionAsync=false</code> on the ActiveMQ <code class="highlighter-rouge">ConnectionFactory</code>.</p>
+<p>By default, a Consumer’s session will dispatch messages to the consumer in a separate thread. If you are using Consumers with auto acknowledge, you can increase throughput by passing messages straight through the Session to the Consumer by setting <code class="language-plaintext highlighter-rouge">alwaysSessionAsync=false</code> on the ActiveMQ <code class="language-plaintext highlighter-rouge">ConnectionFactory</code>.</p>
 
 <h2 id="file-based-persistence">File based Persistence</h2>
 

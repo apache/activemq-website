@@ -115,7 +115,7 @@ based tools can be used in conjunction with this discovery agent.</p>
 <p>To configure discovery in a Broker you should use the <a href="xml-configuration">Xml Configuration</a>. Here is an <a href="http://svn.apache.org/viewvc/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/usecases/receiver-zeroconf.xml?view=co">example</a> of using discovery to create <a href="networks-of-brokers">Networks of Brokers</a>.</p>
 
 <p>If you have one or more brokers running with Zeroconf discovery enabled you can connect to a broker using the brokerURL</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zeroconf:_activemq_development.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zeroconf:_activemq_development.
 </code></pre></div></div>
 <p>This will use Zeroconf to find an available broker and one will be randomly chosen &amp; things will auto-failover on disconnect if there are several brokers running.</p>
 
@@ -128,19 +128,19 @@ based tools can be used in conjunction with this discovery agent.</p>
 <h2 id="trying-out-discovery">Trying out discovery</h2>
 
 <p>If you run the following commands in separate shells you’ll have 2 brokers auto-discovering themselves and 2 clients using fixed-URLs</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>maven -o server -Dconfig=src/test/org/activemq/usecases/receiver-zeroconf.xml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>maven -o server -Dconfig=src/test/org/activemq/usecases/receiver-zeroconf.xml
 maven -o server -Dconfig=src/test/org/activemq/usecases/sender-zeroconf.xml
 maven -o consumer -Durl=tcp://localhost:62002
 maven -o producer -Durl=tcp://localhost:62001
 </code></pre></div></div>
 <p>If you want the clients to use discovery to find brokers, run either of the two ‘server’ statements above (or both) then run the producer/consumer as follows</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>maven -o consumer -Durl=zeroconf:_activemq.broker.development.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>maven -o consumer -Durl=zeroconf:_activemq.broker.development.
 maven -o producer  -Durl=zeroconf:_activemq.broker.development.
 </code></pre></div></div>
 <p>The transport URL is of the format</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zeroconf:&lt;serviceName&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zeroconf:&lt;serviceName&gt;
 </code></pre></div></div>
-<p>where<code class="highlighter-rouge">&lt;serviceName&gt;</code> is the Zeroconf service name; which seems to start with an underscore (_) and must end with a dot (.). So we can use this service name to distinguish development, UAT &amp; production brokers - or group them into domains etc.</p>
+<p>where<code class="language-plaintext highlighter-rouge">&lt;serviceName&gt;</code> is the Zeroconf service name; which seems to start with an underscore (_) and must end with a dot (.). So we can use this service name to distinguish development, UAT &amp; production brokers - or group them into domains etc.</p>
 
 <h2 id="discovery-and-security">Discovery and Security</h2>
 

@@ -92,7 +92,7 @@
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 activemq5">
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    /\* &lt;![CDATA[ */ table.reference tr th { text-align:left; } tr.even { background-color: #eee; } table.reference tr td { text-align:left; padding: .4em; vertical-align:top; font-size:90%; } table.reference tr td p { margin: 0 0 .5em 0; } td.methods { font-weight:bold; } /* ]]&gt; */  
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    /\* &lt;![CDATA[ */ table.reference tr th { text-align:left; } tr.even { background-color: #eee; } table.reference tr td { text-align:left; padding: .4em; vertical-align:top; font-size:90%; } table.reference tr td p { margin: 0 0 .5em 0; } td.methods { font-weight:bold; } /* ]]&gt; */  
 </code></pre></div></div>
 
 <ul>
@@ -130,7 +130,7 @@
 
 <p>Apollo’s REST API runs on port 61680 or via SSL on port 61681. If your running an Apollo broker on your local machine, you could access the API at the following HTTP URLs:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:61680
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:61680
 https://localhost:61681
 </code></pre></div></div>
 
@@ -142,16 +142,16 @@ https://localhost:61681
 
 <p>The user credentials can be supplied using via HTTP basic authentication. Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -u "admin:password" http://localhost:61680/broker
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -u "admin:password" http://localhost:61680/broker
 </code></pre></div></div>
 
 <h3 id="json-representation">JSON Representation</h3>
 
 <p>The API routes are intended to be access programmatically as JSON services but they also provide an HTML representation so that the API services can easily be browsed using a standard web browser.</p>
 
-<p>You must either set the HTTP <code class="highlighter-rouge">Accept</code> header to <code class="highlighter-rouge">application/json</code> or append <code class="highlighter-rouge">.json</code> to the URL to get the JSON representation of the data. Example:</p>
+<p>You must either set the HTTP <code class="language-plaintext highlighter-rouge">Accept</code> header to <code class="language-plaintext highlighter-rouge">application/json</code> or append <code class="language-plaintext highlighter-rouge">.json</code> to the URL to get the JSON representation of the data. Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -H "Accept: application/json" -u "admin:password" \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -H "Accept: application/json" -u "admin:password" \
 http://localhost:61680/broker
 
 $ curl -u "admin:password" http://localhost:61680/broker.json
@@ -162,18 +162,18 @@ $ curl -u "admin:password" http://localhost:61680/broker.json
 <p>You can use the HTTP response code to determine if your request succeeded or failed. Expect the following:</p>
 
 <ul>
-  <li><em><code class="highlighter-rouge">200</code></em>: If a GET, PUT, or DELETE request succeeds.</li>
-  <li><em><code class="highlighter-rouge">303</code></em>: If a POST request succeeds.</li>
-  <li><em><code class="highlighter-rouge">304</code></em>: If the resource cannot be modified at the current time.</li>
-  <li><em><code class="highlighter-rouge">400</code></em>: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications.</li>
-  <li><em><code class="highlighter-rouge">404</code></em>: If the resource cannot be found.</li>
-  <li><em><code class="highlighter-rouge">401</code></em>: If the user does not have access to the resource.</li>
-  <li><em><code class="highlighter-rouge">50x</code></em>: If an internal server error occurs while processing the request.</li>
+  <li><em><code class="language-plaintext highlighter-rouge">200</code></em>: If a GET, PUT, or DELETE request succeeds.</li>
+  <li><em><code class="language-plaintext highlighter-rouge">303</code></em>: If a POST request succeeds.</li>
+  <li><em><code class="language-plaintext highlighter-rouge">304</code></em>: If the resource cannot be modified at the current time.</li>
+  <li><em><code class="language-plaintext highlighter-rouge">400</code></em>: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications.</li>
+  <li><em><code class="language-plaintext highlighter-rouge">404</code></em>: If the resource cannot be found.</li>
+  <li><em><code class="language-plaintext highlighter-rouge">401</code></em>: If the user does not have access to the resource.</li>
+  <li><em><code class="language-plaintext highlighter-rouge">50x</code></em>: If an internal server error occurs while processing the request.</li>
 </ul>
 
-<p>If your get a <em><code class="highlighter-rouge">40x</code></em> or <em><code class="highlighter-rouge">50x</code></em> response code, the response message will contain a document describing the failure. For example, if we try to use invalid query syntax you would get:</p>
+<p>If your get a <em><code class="language-plaintext highlighter-rouge">40x</code></em> or <em><code class="language-plaintext highlighter-rouge">50x</code></em> response code, the response message will contain a document describing the failure. For example, if we try to use invalid query syntax you would get:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -i -u "admin:password" `echo 'http://localhost:61680/broker/virtual-hosts/apollo-01/queues.json?f=id&amp;q=foo(id=="foo")'`
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -i -u "admin:password" `echo 'http://localhost:61680/broker/virtual-hosts/apollo-01/queues.json?f=id&amp;q=foo(id=="foo")'`
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 Transfer-Encoding: chunked
@@ -185,18 +185,18 @@ Transfer-Encoding: chunked
 
 <p>Many of the resource routes provided by the broker implement a selectable paged tabular interface. A good example of such a resource route is the connections list. It’s route is:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/broker/connections
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/broker/connections
 </code></pre></div></div>
 
 <p>Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -u "admin:password" \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -u "admin:password" \
 'http://localhost:61680/broker/connections.json'
 </code></pre></div></div>
 
 <p>Results in a <a href="./api/apollo-dto/org/apache/activemq/apollo/dto/DataPageDTO.html">Data Page</a> :</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "page":0,
   "page_size":100,
   "total_pages":1,
@@ -237,17 +237,17 @@ Transfer-Encoding: chunked
 }
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">*</code> header field means the record was selected. To narrow down the selected fields you can add multiple <code class="highlighter-rouge">f</code> query parameters to pick the fields you want to retrieve.</p>
+<p>The <code class="language-plaintext highlighter-rouge">*</code> header field means the record was selected. To narrow down the selected fields you can add multiple <code class="language-plaintext highlighter-rouge">f</code> query parameters to pick the fields you want to retrieve.</p>
 
 <p>Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -u "admin:password" \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -u "admin:password" \
 'http://localhost:61680/broker/connections.json?f=id&amp;f=read_counter'
 </code></pre></div></div>
 
 <p>Results in :</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "page":0,
   "page_size":100,
   "total_pages":1,
@@ -269,19 +269,19 @@ Transfer-Encoding: chunked
 }
 </code></pre></div></div>
 
-<p>If you want to narrow down the records which get selected, you can set a <code class="highlighter-rouge">q</code> query parameter to SQL 92 style where clause which uses the record’s fields to filter down the selected records.</p>
+<p>If you want to narrow down the records which get selected, you can set a <code class="language-plaintext highlighter-rouge">q</code> query parameter to SQL 92 style where clause which uses the record’s fields to filter down the selected records.</p>
 
-<p>For example to only view local connection, you would want to use a where clause like <code class="highlighter-rouge">remote_address LIKE "/127.0.0.01:%"</code> which to execute with <code class="highlighter-rouge">curl</code> you would run:</p>
+<p>For example to only view local connection, you would want to use a where clause like <code class="language-plaintext highlighter-rouge">remote_address LIKE "/127.0.0.01:%"</code> which to execute with <code class="language-plaintext highlighter-rouge">curl</code> you would run:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -u "admin:password" \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -u "admin:password" \
 'http://localhost:61680/broker/connections.json?q=remote_address%20LIKE%20"/127.0.0.1:%"'
 </code></pre></div></div>
 
-<p>The records are paged. The default page size is 100, so only the first 100 records will be displayed. If you want to view subsequent results, you must set the <code class="highlighter-rouge">p</code> query parameter to the page you wish to access. You can change the page size by setting the <code class="highlighter-rouge">ps</code> query parameter.</p>
+<p>The records are paged. The default page size is 100, so only the first 100 records will be displayed. If you want to view subsequent results, you must set the <code class="language-plaintext highlighter-rouge">p</code> query parameter to the page you wish to access. You can change the page size by setting the <code class="language-plaintext highlighter-rouge">ps</code> query parameter.</p>
 
-<p>The results are typically return in the order in which the records were original created. If you want to retrieve them in a different order, use the <code class="highlighter-rouge">o</code> query parameter to define the order in which they are returned. Example:</p>
+<p>The results are typically return in the order in which the records were original created. If you want to retrieve them in a different order, use the <code class="language-plaintext highlighter-rouge">o</code> query parameter to define the order in which they are returned. Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -u "admin:password" \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -u "admin:password" \
 'http://localhost:61680/broker/connections.json?o=write_counter%20DESC&amp;o=id'
 </code></pre></div></div>
 
@@ -293,25 +293,25 @@ Transfer-Encoding: chunked
 
 <p>On Success</p>
 
-<p><code class="highlighter-rouge">POST</code></p>
+<p><code class="language-plaintext highlighter-rouge">POST</code></p>
 
-<p><code class="highlighter-rouge">/broker/action/shutdown.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/action/shutdown.json</code></p>
 
-<p><code class="highlighter-rouge">303</code></p>
+<p><code class="language-plaintext highlighter-rouge">303</code></p>
 
 <p>Shuts down the JVM.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker.json</code></p>
 
-<p><code class="highlighter-rouge">200 [BrokerStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/BrokerStatusDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [BrokerStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/BrokerStatusDTO.html)</code></p>
 
 <p>General information about the broker, JVM, and OS status. Example:</p>
 
-<p><code class="highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker.json</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "id": "default",
   "state": "STARTED",
   "state_since": 1314573353753,
@@ -354,19 +354,19 @@ Transfer-Encoding: chunked
 }
 </code></pre></div></div>
 
-<p>You can the <code class="highlighter-rouge">?connections=true</code> query parameter to have a list of connections included n the result.</p>
+<p>You can the <code class="language-plaintext highlighter-rouge">?connections=true</code> query parameter to have a list of connections included n the result.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/queue-metrics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/queue-metrics.json</code></p>
 
-<p><code class="highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
 
 <p>Aggregates the messaging metrics for all the queue destinations. Example:</p>
 
-<p><code class="highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/queue-metrics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/queue-metrics.json</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "current_time": 1314573698381,
   "enqueue_item_counter": 57343,
   "enqueue_size_counter": 63128582,
@@ -399,27 +399,27 @@ Transfer-Encoding: chunked
 }
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/topic-metrics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/topic-metrics.json</code></p>
 
-<p><code class="highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
 
 <p>Aggregates the messaging metrics for all the topic destinations</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/dsub-metrics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/dsub-metrics.json</code></p>
 
-<p><code class="highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
 
 <p>Aggregates the messaging metrics for all the durable subscription destinations</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/dest-metrics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/dest-metrics.json</code></p>
 
-<p><code class="highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
 
 <p>Aggregates the messaging metrics for all the destinations</p>
 
@@ -429,9 +429,9 @@ Transfer-Encoding: chunked
 
 <p>On Success</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts.json</code></p>
 
 <p>`200 <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/DataPageDTO.html">DataPageDTO</a> paging <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/VirtualHostStatusDTO.html">VirtualHostStatusDTO</a></p>
 
@@ -439,17 +439,17 @@ Transfer-Encoding: chunked
 
 <p>Provides tabular access to all the virtual hosts.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}.json</code></p>
 
-<p><code class="highlighter-rouge">200 [VirtualHostStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/VirtualHostStatusDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [VirtualHostStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/VirtualHostStatusDTO.html)</code></p>
 
-<p>General details about the <code class="highlighter-rouge">{host}</code> virtual host. Example:</p>
+<p>General details about the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host. Example:</p>
 
-<p><code class="highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/virtual-hosts/default.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/virtual-hosts/default.json</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "id": "default",
   "state": "STARTED",
   "state_since": 1314573798989,
@@ -463,49 +463,49 @@ Transfer-Encoding: chunked
 }
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/queue-metrics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/queue-metrics.json</code></p>
 
-<p><code class="highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
 
-<p>Aggregates the messaging metrics for all the queue destinations on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Aggregates the messaging metrics for all the queue destinations on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/topic-metrics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/topic-metrics.json</code></p>
 
-<p><code class="highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
 
-<p>Aggregates the messaging metrics for all the topic destinations on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Aggregates the messaging metrics for all the topic destinations on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/dsub-metrics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/dsub-metrics.json</code></p>
 
-<p><code class="highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
 
-<p>Aggregates the messaging metrics for all the durable subscription destinations on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Aggregates the messaging metrics for all the durable subscription destinations on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/dest-metrics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/dest-metrics.json</code></p>
 
-<p><code class="highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [AggregateDestMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateDestMetricsDTO.html)</code></p>
 
-<p>Aggregates the messaging metrics for all the destinations on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Aggregates the messaging metrics for all the destinations on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/store.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/store.json</code></p>
 
-<p><code class="highlighter-rouge">200 [StoreStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/StoreStatusDTO.html) sub class (depends on the store implementation)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [StoreStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/StoreStatusDTO.html) sub class (depends on the store implementation)</code></p>
 
-<p>Gets metrics about the status of the message store used by the <code class="highlighter-rouge">{host}</code> virtual host. Example:</p>
+<p>Gets metrics about the status of the message store used by the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host. Example:</p>
 
-<p><code class="highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/virtual-hosts/default/store.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/virtual-hosts/default/store.json</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "@class": "bdb_store_status",
   "id": "bdb store at /Users/chirino/opt/default/data",
   "state": "STARTED",
@@ -536,29 +536,29 @@ Transfer-Encoding: chunked
 }
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/queues.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/queues.json</code></p>
 
 <p>`200 <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/DataPageDTO.html">DataPageDTO</a> paging <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/QueueStatusDTO.html">QueueStatusDTO</a></p>
 
 <p>`</p>
 
-<p>Provides tabular access to all queue destinations on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Provides tabular access to all queue destinations on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/queues/{dest}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/queues/{dest}.json</code></p>
 
-<p><code class="highlighter-rouge">200 [QueueStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/QueueStatusDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [QueueStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/QueueStatusDTO.html)</code></p>
 
-<p>Gets metrics and details about the <code class="highlighter-rouge">{dest}</code> queue on the <code class="highlighter-rouge">{host}</code> virtual host. Example:</p>
+<p>Gets metrics and details about the <code class="language-plaintext highlighter-rouge">{dest}</code> queue on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host. Example:</p>
 
-<p>You can the <code class="highlighter-rouge">?producers=true</code> query parameter to have a list of producers included n the result. You can the <code class="highlighter-rouge">?consumers=true</code> query parameter to have a list of consumers included n the result.</p>
+<p>You can the <code class="language-plaintext highlighter-rouge">?producers=true</code> query parameter to have a list of producers included n the result. You can the <code class="language-plaintext highlighter-rouge">?consumers=true</code> query parameter to have a list of consumers included n the result.</p>
 
-<p><code class="highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/virtual-hosts/default/queues/example-5.json?producers=true&amp;consumers=true</code></p>
+<p><code class="language-plaintext highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/virtual-hosts/default/queues/example-5.json?producers=true&amp;consumers=true</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "id": "example-5",
   "state": "STARTED",
   "state_since": 1314573814532,
@@ -647,45 +647,45 @@ Transfer-Encoding: chunked
 }
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">DELETE</code></p>
+<p><code class="language-plaintext highlighter-rouge">DELETE</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/queues/{dest}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/queues/{dest}.json</code></p>
 
-<p><code class="highlighter-rouge">200</code></p>
+<p><code class="language-plaintext highlighter-rouge">200</code></p>
 
-<p>Deletes the <code class="highlighter-rouge">{dest}</code> queue on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Deletes the <code class="language-plaintext highlighter-rouge">{dest}</code> queue on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">PUT</code></p>
+<p><code class="language-plaintext highlighter-rouge">PUT</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/queues/{dest}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/queues/{dest}.json</code></p>
 
-<p><code class="highlighter-rouge">200</code></p>
+<p><code class="language-plaintext highlighter-rouge">200</code></p>
 
-<p>Creates the <code class="highlighter-rouge">{dest}</code> queue on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Creates the <code class="language-plaintext highlighter-rouge">{dest}</code> queue on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/topics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/topics.json</code></p>
 
 <p>`200 <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/DataPageDTO.html">DataPageDTO</a> paging <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/TopicStatusDTO.html">TopicStatusDTO</a></p>
 
 <p>`</p>
 
-<p>Provides tabular access to all topic destinations on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Provides tabular access to all topic destinations on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/topics/{dest}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/topics/{dest}.json</code></p>
 
-<p><code class="highlighter-rouge">200 [TopicStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/TopicStatusDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [TopicStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/TopicStatusDTO.html)</code></p>
 
-<p>Gets metrics and details about the <code class="highlighter-rouge">{dest}</code> topic on the <code class="highlighter-rouge">{host}</code> virtual host. Example:</p>
+<p>Gets metrics and details about the <code class="language-plaintext highlighter-rouge">{dest}</code> topic on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host. Example:</p>
 
-<p>You can the <code class="highlighter-rouge">?producers=true</code> query parameter to have a list of producers included n the result. You can the <code class="highlighter-rouge">?consumers=true</code> query parameter to have a list of consumers included n the result.</p>
+<p>You can the <code class="language-plaintext highlighter-rouge">?producers=true</code> query parameter to have a list of producers included n the result. You can the <code class="language-plaintext highlighter-rouge">?consumers=true</code> query parameter to have a list of consumers included n the result.</p>
 
-<p><code class="highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/virtual-hosts/default/topics/example-2.json?producers=true&amp;consumers=true</code></p>
+<p><code class="language-plaintext highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/virtual-hosts/default/topics/example-2.json?producers=true&amp;consumers=true</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "id": "example-2",
   "state": "STARTED",
   "state_since": 1314574398831,
@@ -750,47 +750,47 @@ Transfer-Encoding: chunked
 }
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">DELETE</code></p>
+<p><code class="language-plaintext highlighter-rouge">DELETE</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/topics/{dest}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/topics/{dest}.json</code></p>
 
-<p><code class="highlighter-rouge">200</code></p>
+<p><code class="language-plaintext highlighter-rouge">200</code></p>
 
-<p>Deletes the <code class="highlighter-rouge">{dest}</code> topic on the <code class="highlighter-rouge">{host}</code> virtual host. Returns a 304 (Not Modified) if the topic is being used by any clients.</p>
+<p>Deletes the <code class="language-plaintext highlighter-rouge">{dest}</code> topic on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host. Returns a 304 (Not Modified) if the topic is being used by any clients.</p>
 
-<p><code class="highlighter-rouge">PUT</code></p>
+<p><code class="language-plaintext highlighter-rouge">PUT</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/topics/{dest}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/topics/{dest}.json</code></p>
 
-<p><code class="highlighter-rouge">200</code></p>
+<p><code class="language-plaintext highlighter-rouge">200</code></p>
 
-<p>Creates the <code class="highlighter-rouge">{dest}</code> topic on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Creates the <code class="language-plaintext highlighter-rouge">{dest}</code> topic on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/topic-queues/{dest}/{queue}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/topic-queues/{dest}/{queue}.json</code></p>
 
-<p><code class="highlighter-rouge">200 [QueueStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/QueueStatusDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [QueueStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/QueueStatusDTO.html)</code></p>
 
-<p>Gets metrics and details about <code class="highlighter-rouge">{queue}</code> consumer queue which is being used to spool messages being sent to the <code class="highlighter-rouge">{dest}</code> topic on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Gets metrics and details about <code class="language-plaintext highlighter-rouge">{queue}</code> consumer queue which is being used to spool messages being sent to the <code class="language-plaintext highlighter-rouge">{dest}</code> topic on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/dsubs.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/dsubs.json</code></p>
 
 <p>`200 <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/DataPageDTO.html">DataPageDTO</a> paging <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/QueueStatusDTO.html">QueueStatusDTO</a></p>
 
 <p>`</p>
 
-<p>Provides tabular access to all durable subscription destinations on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Provides tabular access to all durable subscription destinations on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/virtual-hosts/{host}/dsubs/{dest}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/virtual-hosts/{host}/dsubs/{dest}.json</code></p>
 
-<p><code class="highlighter-rouge">200 [QueueStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/QueueStatusDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [QueueStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/QueueStatusDTO.html)</code></p>
 
-<p>Gets metrics and details about the <code class="highlighter-rouge">{dest}</code> durable subscription on the <code class="highlighter-rouge">{host}</code> virtual host.</p>
+<p>Gets metrics and details about the <code class="language-plaintext highlighter-rouge">{dest}</code> durable subscription on the <code class="language-plaintext highlighter-rouge">{host}</code> virtual host.</p>
 
 <h3 id="connection-management">Connection Management</h3>
 
@@ -798,9 +798,9 @@ Transfer-Encoding: chunked
 
 <p>On Success</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/connectors.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/connectors.json</code></p>
 
 <p>`200 <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/DataPageDTO.html">DataPageDTO</a> paging <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/ServiceStatusDTO.html">ServiceStatusDTO</a></p>
 
@@ -808,17 +808,17 @@ Transfer-Encoding: chunked
 
 <p>Provides tabular access to all connectors on the broker.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/connectors/{connector}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/connectors/{connector}.json</code></p>
 
-<p><code class="highlighter-rouge">200 [ServiceStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/ServiceStatusDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [ServiceStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/ServiceStatusDTO.html)</code></p>
 
-<p>Gets details about the <code class="highlighter-rouge">{connector}</code>. Example:</p>
+<p>Gets details about the <code class="language-plaintext highlighter-rouge">{connector}</code>. Example:</p>
 
-<p><code class="highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/connectors/tcp.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/connectors/tcp.json</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "id": "tcp",
   "state": "STARTED",
   "state_since": 1314573798510,
@@ -829,35 +829,35 @@ Transfer-Encoding: chunked
 }
 </code></pre></div></div>
 
-<p>You can the <code class="highlighter-rouge">?connections=true</code> query parameter to have a list of connections included n the result.</p>
+<p>You can the <code class="language-plaintext highlighter-rouge">?connections=true</code> query parameter to have a list of connections included n the result.</p>
 
-<p><code class="highlighter-rouge">POST</code></p>
+<p><code class="language-plaintext highlighter-rouge">POST</code></p>
 
-<p><code class="highlighter-rouge">/broker/connectors/{connector}/action/stop.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/connectors/{connector}/action/stop.json</code></p>
 
-<p><code class="highlighter-rouge">303</code></p>
+<p><code class="language-plaintext highlighter-rouge">303</code></p>
 
-<p>Stops the <code class="highlighter-rouge">{connector}</code>.</p>
+<p>Stops the <code class="language-plaintext highlighter-rouge">{connector}</code>.</p>
 
-<p><code class="highlighter-rouge">POST</code></p>
+<p><code class="language-plaintext highlighter-rouge">POST</code></p>
 
-<p><code class="highlighter-rouge">/broker/connectors/{connector}/action/start.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/connectors/{connector}/action/start.json</code></p>
 
-<p><code class="highlighter-rouge">303</code></p>
+<p><code class="language-plaintext highlighter-rouge">303</code></p>
 
-<p>Starts the <code class="highlighter-rouge">{connector}</code>.</p>
+<p>Starts the <code class="language-plaintext highlighter-rouge">{connector}</code>.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/connection-metrics.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/connection-metrics.json</code></p>
 
-<p><code class="highlighter-rouge">200 [AggregateConnectionMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateConnectionMetricsDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [AggregateConnectionMetricsDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/AggregateConnectionMetricsDTO.html)</code></p>
 
 <p>Aggregates metrics about the connections.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/connections.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/connections.json</code></p>
 
 <p>`200 <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/DataPageDTO.html">DataPageDTO</a> paging <a href="http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/ConnectionStatusDTO.html">ConnectionStatusDTO</a></p>
 
@@ -865,17 +865,17 @@ Transfer-Encoding: chunked
 
 <p>Provides tabular access to all connections on the broker.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/connections/{connection}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/connections/{connection}.json</code></p>
 
-<p><code class="highlighter-rouge">200 [ConnectionStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/ConnectionStatusDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [ConnectionStatusDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/ConnectionStatusDTO.html)</code></p>
 
-<p>Gets details about the <code class="highlighter-rouge">{connection}</code>. Example:</p>
+<p>Gets details about the <code class="language-plaintext highlighter-rouge">{connection}</code>. Example:</p>
 
-<p><code class="highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/connections/108.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">curl -u "admin:password" http://localhost:61680/broker/connections/108.json</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "id": "108",
   "state": "STARTED",
   "state_since": 1314574636579,
@@ -894,21 +894,21 @@ Transfer-Encoding: chunked
 }
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">DELETE</code></p>
+<p><code class="language-plaintext highlighter-rouge">DELETE</code></p>
 
-<p><code class="highlighter-rouge">/broker/connections/{connection}.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/connections/{connection}.json</code></p>
 
-<p><code class="highlighter-rouge">200</code></p>
+<p><code class="language-plaintext highlighter-rouge">200</code></p>
 
-<p>Deletes the <code class="highlighter-rouge">{connection}</code>.</p>
+<p>Deletes the <code class="language-plaintext highlighter-rouge">{connection}</code>.</p>
 
-<p><code class="highlighter-rouge">POST</code></p>
+<p><code class="language-plaintext highlighter-rouge">POST</code></p>
 
-<p><code class="highlighter-rouge">/broker/connections/{connection}/action/delete.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/connections/{connection}/action/delete.json</code></p>
 
-<p><code class="highlighter-rouge">303</code></p>
+<p><code class="language-plaintext highlighter-rouge">303</code></p>
 
-<p>Deletes the <code class="highlighter-rouge">{connection}</code>.</p>
+<p>Deletes the <code class="language-plaintext highlighter-rouge">{connection}</code>.</p>
 
 <h3 id="broker-configuration-management">Broker Configuration Management</h3>
 
@@ -916,45 +916,45 @@ Transfer-Encoding: chunked
 
 <p>On Success</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/config/runtime.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/config/runtime.json</code></p>
 
-<p><code class="highlighter-rouge">200 [BrokerDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/BrokerDTO.html)</code></p>
-
-<p>The runtime configuration the broker using. This version of the configuration has all property placeholders resolved and then password fields are cleared.</p>
-
-<p><code class="highlighter-rouge">GET</code></p>
-
-<p><code class="highlighter-rouge">/config/runtime.json</code></p>
-
-<p><code class="highlighter-rouge">200 [BrokerDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/BrokerDTO.html)</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [BrokerDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/BrokerDTO.html)</code></p>
 
 <p>The runtime configuration the broker using. This version of the configuration has all property placeholders resolved and then password fields are cleared.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/config/files.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/config/runtime.json</code></p>
 
-<p><code class="highlighter-rouge">200 string array</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [BrokerDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/BrokerDTO.html)</code></p>
+
+<p>The runtime configuration the broker using. This version of the configuration has all property placeholders resolved and then password fields are cleared.</p>
+
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">/config/files.json</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">200 string array</code></p>
 
 <p>A listing of the configuration files.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/config/files/{file}</code></p>
+<p><code class="language-plaintext highlighter-rouge">/config/files/{file}</code></p>
 
-<p><code class="highlighter-rouge">200 bytes</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 bytes</code></p>
 
 <p>Downloads the contents of the config file.</p>
 
-<p><code class="highlighter-rouge">POST</code></p>
+<p><code class="language-plaintext highlighter-rouge">POST</code></p>
 
-<p><code class="highlighter-rouge">/config/files/{file}</code></p>
+<p><code class="language-plaintext highlighter-rouge">/config/files/{file}</code></p>
 
-<p><code class="highlighter-rouge">303</code></p>
+<p><code class="language-plaintext highlighter-rouge">303</code></p>
 
-<p>Updates the contents of the config file. You can either post the raw bytes, or post a url encoded form with a field <code class="highlighter-rouge">config</code> set to the contents of the file. In the latter case, the content type is expected to be <code class="highlighter-rouge">application/x-www-form-urlencoded</code></p>
+<p>Updates the contents of the config file. You can either post the raw bytes, or post a url encoded form with a field <code class="language-plaintext highlighter-rouge">config</code> set to the contents of the file. In the latter case, the content type is expected to be <code class="language-plaintext highlighter-rouge">application/x-www-form-urlencoded</code></p>
 
 <h3 id="session-management">Session Management</h3>
 
@@ -962,15 +962,15 @@ Transfer-Encoding: chunked
 
 <p>On Success</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/whoami.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/whoami.json</code></p>
 
-<p><code class="highlighter-rouge">200 [PrincipalDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/PrincipalDTO.html) array</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 [PrincipalDTO](http://activemq.apache.org/apollo/versions/1.7.1/website/documentation/api/apollo-dto/org/apache/activemq/apollo/dto/PrincipalDTO.html) array</code></p>
 
 <p>Lists the principals associated with your username. Example: curl -u “admin:password” http://localhost:61680/broker/whoami.json</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[{
   "name": "admin",
   "kind": "org.apache.activemq.jaas.UserPrincipal"
 }, {
@@ -979,27 +979,27 @@ Transfer-Encoding: chunked
 }]
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/signin.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/signin.json</code></p>
 
-<p><code class="highlighter-rouge">200 true</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 true</code></p>
 
-<p>Log you in using the <code class="highlighter-rouge">username</code> and <code class="highlighter-rouge">password</code> query parameters. creates a cookie based session.</p>
+<p>Log you in using the <code class="language-plaintext highlighter-rouge">username</code> and <code class="language-plaintext highlighter-rouge">password</code> query parameters. creates a cookie based session.</p>
 
-<p><code class="highlighter-rouge">POST</code></p>
+<p><code class="language-plaintext highlighter-rouge">POST</code></p>
 
-<p><code class="highlighter-rouge">/broker/signin.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/signin.json</code></p>
 
-<p><code class="highlighter-rouge">200 true</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 true</code></p>
 
-<p>Signs you in using the <code class="highlighter-rouge">username</code> and <code class="highlighter-rouge">password</code> form parameters. Creates a cookie based session.</p>
+<p>Signs you in using the <code class="language-plaintext highlighter-rouge">username</code> and <code class="language-plaintext highlighter-rouge">password</code> form parameters. Creates a cookie based session.</p>
 
-<p><code class="highlighter-rouge">GET</code></p>
+<p><code class="language-plaintext highlighter-rouge">GET</code></p>
 
-<p><code class="highlighter-rouge">/broker/signout.json</code></p>
+<p><code class="language-plaintext highlighter-rouge">/broker/signout.json</code></p>
 
-<p><code class="highlighter-rouge">200 true</code></p>
+<p><code class="language-plaintext highlighter-rouge">200 true</code></p>
 
 <p>Signs you off by invalidating your session.</p>
 

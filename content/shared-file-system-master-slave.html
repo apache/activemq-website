@@ -126,17 +126,17 @@ See this JIRA for more discussion: <a href="https://issues.apache.org/jira/brows
 <p>Basically you can run as many brokers as you wish from the same shared file system directory. The first broker to grab the exclusive lock on the file is the master broker. If that broker dies and releases the lock then another broker takes over. The slave brokers sit in a loop trying to grab the lock from the master broker.</p>
 
 <p>The following example shows how to configure a broker for Shared File System Master Slave where <strong>/sharedFileSystem</strong> is some directory on a shared file system. It is just a case of configuring a file based store to use a shared directory.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistenceAdapter&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistenceAdapter&gt;
   &lt;kahaDB directory="/sharedFileSystem/sharedBrokerData"/&gt;
 &lt;/persistenceAdapter&gt;
 </code></pre></div></div>
 <p>or:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistenceAdapter&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistenceAdapter&gt;
   &lt;levelDB directory="/sharedFileSystem/sharedBrokerData"/&gt;
 &lt;/persistenceAdapter&gt;
 </code></pre></div></div>
 <p>or:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistenceAdapter&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistenceAdapter&gt;
   &lt;amqPersistenceAdapter directory="/sharedFileSystem/sharedBrokerData"/&gt;
 &lt;/persistenceAdapter&gt;
 </code></pre></div></div>
@@ -147,7 +147,7 @@ See this JIRA for more discussion: <a href="https://issues.apache.org/jira/brows
 <p><img src="assets/img/Startup.png" alt="" /></p>
 
 <p>Clients should be using the <a href="failover-transport-reference">Failover Transport</a> to connect to the available brokers. e.g. using a URL something like the following</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failover:(tcp://broker1:61616,tcp://broker2:61616,tcp://broker3:61616)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failover:(tcp://broker1:61616,tcp://broker2:61616,tcp://broker3:61616)
 </code></pre></div></div>
 <p>Only the master broker starts up its transport connectors and so the clients can only connect to the master.</p>
 
@@ -169,8 +169,8 @@ See this JIRA for more discussion: <a href="https://issues.apache.org/jira/brows
 
 <h3 id="scheduler-support">Scheduler Support</h3>
 
-<p>ActiveMQ maintains information about schedules independent to the settings in the persistence adapter. With a shared file-system it is therefore important to tell ActiveMQ expressly where to store scheduler information. To do this, set the <code class="highlighter-rouge">dataDirectory</code> attribute on the <code class="highlighter-rouge">broker</code>, for example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker xmlns="http://activemq.apache.org/schema/core"
+<p>ActiveMQ maintains information about schedules independent to the settings in the persistence adapter. With a shared file-system it is therefore important to tell ActiveMQ expressly where to store scheduler information. To do this, set the <code class="language-plaintext highlighter-rouge">dataDirectory</code> attribute on the <code class="language-plaintext highlighter-rouge">broker</code>, for example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker xmlns="http://activemq.apache.org/schema/core"
 dataDirectory="/some/location"
 brokerName="mmuserb2" useJmx="true" advisorySupport="false"
 persistent="true" deleteAllMessagesOnStartup="false"

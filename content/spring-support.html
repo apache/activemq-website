@@ -102,14 +102,14 @@ There is a great <a href="https://medium.com/@bdarfler/efficient-lightweight-jms
 <p>To configure an ActiveMQ JMS client in Spring it is just a simple matter of configuring an instance of ActiveMQConnectionFactory within a standard Spring XML configuration file like any other bean. There are <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/java/org/apache/activemq/spring/">several examples and test cases</a> available and <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/xbean/spring.xml">this one</a> shows how to construct an ActiveMQConnectionFactory in Spring which is then passed into a Spring JmsTemplate for use by some POJOs.</p>
 
 <p>e.g. the following fragment of XML shows us creating a JMS connection factory for ActiveMQ connecting to a remote broker on a specific host name and port.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
   &lt;property name="brokerURL"&gt;
     &lt;value&gt;tcp://localhost:61616&lt;/value&gt;
   &lt;/property&gt;
 &lt;/bean&gt;
 </code></pre></div></div>
 <p>The following shows how to use Zeroconf to discover the available brokers to connect to.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
   &lt;property name="brokerURL"&gt;
     &lt;value&gt;zeroconf://_activemq.broker.development.&lt;/value&gt;
   &lt;/property&gt;
@@ -121,7 +121,7 @@ There is a great <a href="https://medium.com/@bdarfler/efficient-lightweight-jms
 
 <p>If you are using the new <a href="http://static.springframework.org/spring/docs/2.0.x/reference/xsd-config.html">XML Schema-based configuration</a> of Spring 2.0 you can embed the ActiveMQ broker XML inside any regular Spring.xml file without requiring the above factory bean. e.g. here is an example of a regular Spring XML file in Spring 2.0 which also configures a broker.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans 
   xmlns="http://www.springframework.org/schema/beans" 
   xmlns:amq="http://activemq.apache.org/schema/core"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -147,11 +147,11 @@ There is a great <a href="https://medium.com/@bdarfler/efficient-lightweight-jms
 
 <p>One thing to bear in mind with JmsTemplate is that by default it will create a new connection, session, producer for each message sent - then close them all down again. This is very inefficient! It is done like this to work in EJB containers which tend to use a special ConnectionFactory which does pooling.</p>
 
-<p>If you are not using a JCA container to manage your JMS connections, we recommend you use our pooling JMS connection provider, (org.apache.activemq.pool.PooledConnectionFactory) from the <code class="highlighter-rouge">activemq-pool</code> library, which will pool the JMS resources to work efficiently with Spring’s JmsTemplate or with EJBs.</p>
+<p>If you are not using a JCA container to manage your JMS connections, we recommend you use our pooling JMS connection provider, (org.apache.activemq.pool.PooledConnectionFactory) from the <code class="language-plaintext highlighter-rouge">activemq-pool</code> library, which will pool the JMS resources to work efficiently with Spring’s JmsTemplate or with EJBs.</p>
 
 <p>e.g.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- a pooling based JMS provider --&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- a pooling based JMS provider --&gt;
 &lt;bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop"&gt;
   &lt;property name="connectionFactory"&gt;
     &lt;bean class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
@@ -169,9 +169,9 @@ There is a great <a href="https://medium.com/@bdarfler/efficient-lightweight-jms
   &lt;/property&gt;
 &lt;/bean&gt;
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">PooledConnectionFactory</code> supports the pooling of Connection, Session and MessageProducer instances so it can be used with tools like <a href="http://camel.apache.org/activemq.html">Camel</a> and Spring’s <a href="spring-support">JmsTemplate and MessagListenerContainer</a> . Connections, sessions and producers are returned to a pool after use so that they can be reused later without having to undergo the cost of creating them again.</p>
+<p>The <code class="language-plaintext highlighter-rouge">PooledConnectionFactory</code> supports the pooling of Connection, Session and MessageProducer instances so it can be used with tools like <a href="http://camel.apache.org/activemq.html">Camel</a> and Spring’s <a href="spring-support">JmsTemplate and MessagListenerContainer</a> . Connections, sessions and producers are returned to a pool after use so that they can be reused later without having to undergo the cost of creating them again.</p>
 
-<p>Note: while the <code class="highlighter-rouge">PooledConnectionFactory</code> does allow the creation of a collection of active consumers, it does not ‘pool’ consumers. Pooling makes sense for connections, sessions and producers, which can be seldom-used resources, are expensive to create and can remain idle a minimal cost. Consumers, on the other hand, are usually just created at startup and left going, handling incoming messages as they come. When a consumer is complete, it’s preferred to shut down it down rather than leave it idle and return it to a pool for later reuse: this is because, even if the consumer is idle, ActiveMQ will keep delivering messages to the consumer’s prefetch buffer, where they’ll get held up until the consumer is active again.</p>
+<p>Note: while the <code class="language-plaintext highlighter-rouge">PooledConnectionFactory</code> does allow the creation of a collection of active consumers, it does not ‘pool’ consumers. Pooling makes sense for connections, sessions and producers, which can be seldom-used resources, are expensive to create and can remain idle a minimal cost. Consumers, on the other hand, are usually just created at startup and left going, handling incoming messages as they come. When a consumer is complete, it’s preferred to shut down it down rather than leave it idle and return it to a pool for later reuse: this is because, even if the consumer is idle, ActiveMQ will keep delivering messages to the consumer’s prefetch buffer, where they’ll get held up until the consumer is active again.</p>
 
 <p>If you are creating a collection of consumers (for example, for multi-threaded message consumption), you should consider keeping a low prefetch value (e.g. 10 or 20), to ensure that all messages don’t end up going to just one of the consumers.</p>
 
@@ -181,7 +181,7 @@ There is a great <a href="https://medium.com/@bdarfler/efficient-lightweight-jms
 
 <p>Spring’s <a href="http://static.springsource.org/spring/docs/2.5.x/reference/FAQ/jms.md#jms.mdp">MessagListenerContainer</a> should be used for message consumption. This provides all the power of MDBs - efficient JMS consumption and pooling of the message listeners - but without requiring a full EJB container.</p>
 
-<p>You can use the <code class="highlighter-rouge">activemq-pool</code> <code class="highlighter-rouge">org.apache.activemq.pool.PooledConnectionFactory</code> for efficient pooling of the connections and sessions for your collection of consumers, or you can use the Spring JMS <code class="highlighter-rouge">org.springframework.jms.connection.CachingConnectionFactory</code> to achieve the same effect.</p>
+<p>You can use the <code class="language-plaintext highlighter-rouge">activemq-pool</code> <code class="language-plaintext highlighter-rouge">org.apache.activemq.pool.PooledConnectionFactory</code> for efficient pooling of the connections and sessions for your collection of consumers, or you can use the Spring JMS <code class="language-plaintext highlighter-rouge">org.springframework.jms.connection.CachingConnectionFactory</code> to achieve the same effect.</p>
 
 <h2 id="more-information">More Information</h2>
 

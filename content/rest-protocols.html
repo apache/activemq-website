@@ -99,37 +99,37 @@
 <h2 id="crappy-non-rest">Crappy non-REST</h2>
 
 <p>Send via</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /queue/Destination
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /queue/Destination
 </code></pre></div></div>
 <p>Consume</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /queue/Destination
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /queue/Destination
 </code></pre></div></div>
 <p>This is bad as the GET is not idempotent. We can add a user ID or use a cookie</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /queue/Destination?jsessionId=....
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /queue/Destination?jsessionId=....
 </code></pre></div></div>
 <p>though a caching proxy may keep returning the same message</p>
 
 <h2 id="simple-rest-using-1-at-a-time-delivery">Simple REST using 1 at a time delivery</h2>
 
 <p>Subscribe via</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /subscribe/consumerId/Destination  
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /subscribe/consumerId/Destination  
 POST /unsubscribe/consumerId/Destination
 </code></pre></div></div>
 <p>Then get messges via</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /nextMessageForMe/consumerId
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /nextMessageForMe/consumerId
 </code></pre></div></div>
 <p>If you want to acknowledge messages you then</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /ack/consumerId/messageId
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /ack/consumerId/messageId
 </code></pre></div></div>
 <p>Batch message REST
 ——————</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST lockNextMessage/consumerId?max=10 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST lockNextMessage/consumerId?max=10 
 </code></pre></div></div>
 <p>-&gt; give back up to 10 message URLs</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET message/consumerId/messageId
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET message/consumerId/messageId
 </code></pre></div></div>
 <p>acknowledge them via</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DELETE /consumerId/messages/messageId
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DELETE /consumerId/messages/messageId
 </code></pre></div></div>
 <h3 id="further-options">Further options…</h3>
 

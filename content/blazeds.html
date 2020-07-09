@@ -99,47 +99,47 @@
 <p>You may also want to check out the <a href="http://mmartinsoftware.blogspot.com/2008/05/simplified-blazeds-and-/FAQ/jms">Simplified BlazeDS and JMS article</a> by <a href="http://mmartinsoftware.blogspot.com/">Michael Martin</a>.</p>
 
 <p>Using the dynamicQueues feature of the <a href="jndi-support">JNDI Support</a> Ryan Gardner created thisworking BlazeDS messaging-config.xml file:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;service</span> <span class="na">id=</span><span class="s">"message-service"</span> <span class="na">class=</span><span class="s">"flex.messaging.services.MessageService"</span><span class="nt">&gt;</span>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;service id="message-service" class="flex.messaging.services.MessageService"&gt;
 
-   <span class="nt">&lt;adapters&gt;</span>
-       <span class="nt">&lt;adapter-definition</span> <span class="na">id=</span><span class="s">"actionscript"</span> <span class="na">class=</span><span class="s">"flex.messaging.services.messaging.adapters.ActionScriptAdapter"</span> <span class="na">default=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
-       <span class="nt">&lt;adapter-definition</span> <span class="na">id=</span><span class="s">"jms"</span> <span class="na">class=</span><span class="s">"flex.messaging.services.messaging.adapters.JMSAdapter"</span><span class="nt">/&gt;</span>
-   <span class="nt">&lt;/adapters&gt;</span>
+   &lt;adapters&gt;
+       &lt;adapter-definition id="actionscript" class="flex.messaging.services.messaging.adapters.ActionScriptAdapter" default="true" /&gt;
+       &lt;adapter-definition id="jms" class="flex.messaging.services.messaging.adapters.JMSAdapter"/&gt;
+   &lt;/adapters&gt;
 
-   <span class="nt">&lt;default-channels&gt;</span>
-               <span class="nt">&lt;channel</span> <span class="na">ref=</span><span class="s">"my-streaming-amf"</span><span class="nt">/&gt;</span>
-               <span class="nt">&lt;channel</span> <span class="na">ref=</span><span class="s">"my-polling-amf"</span><span class="nt">/&gt;</span>
-   <span class="nt">&lt;/default-channels&gt;</span>
+   &lt;default-channels&gt;
+               &lt;channel ref="my-streaming-amf"/&gt;
+               &lt;channel ref="my-polling-amf"/&gt;
+   &lt;/default-channels&gt;
 
-  <span class="nt">&lt;destination</span> <span class="na">id=</span><span class="s">"inbound-sms-destination"</span><span class="nt">&gt;</span>
+  &lt;destination id="inbound-sms-destination"&gt;
 
-   <span class="nt">&lt;properties&gt;</span>
-   <span class="nt">&lt;jms&gt;</span>
-     <span class="nt">&lt;destination-type&gt;</span>Topic<span class="nt">&lt;/destination-type&gt;</span>
-     <span class="nt">&lt;message-type&gt;</span>javax.jms.TextMessage<span class="nt">&lt;/message-type&gt;</span>
-     <span class="nt">&lt;connection-factory&gt;</span>topicConnectionFactory<span class="nt">&lt;/connection-factory&gt;</span>
-     <span class="nt">&lt;destination-jndi-name&gt;</span>dynamicTopics/SMSReturnMessages<span class="nt">&lt;/destination-jndi-name&gt;</span>
+   &lt;properties&gt;
+   &lt;jms&gt;
+     &lt;destination-type&gt;Topic&lt;/destination-type&gt;
+     &lt;message-type&gt;javax.jms.TextMessage&lt;/message-type&gt;
+     &lt;connection-factory&gt;topicConnectionFactory&lt;/connection-factory&gt;
+     &lt;destination-jndi-name&gt;dynamicTopics/SMSReturnMessages&lt;/destination-jndi-name&gt;
 
-     <span class="nt">&lt;delivery-mode&gt;</span>NON_PERSISTENT<span class="nt">&lt;/delivery-mode&gt;</span>
-     <span class="nt">&lt;message-priority&gt;</span>DEFAULT_PRIORITY<span class="nt">&lt;/message-priority&gt;</span>
-     <span class="nt">&lt;acknowledge-mode&gt;</span>AUTO_ACKNOWLEDGE<span class="nt">&lt;/acknowledge-mode&gt;</span>
-     <span class="nt">&lt;initial-context-environment&gt;</span>
-       <span class="nt">&lt;property&gt;</span>
-         <span class="nt">&lt;name&gt;</span>Context.INITIAL\_CONTEXT\_FACTORY<span class="nt">&lt;/name&gt;</span>
-         <span class="nt">&lt;value&gt;</span>org.apache.activemq.jndi.ActiveMQInitialContextFactory<span class="nt">&lt;/value&gt;</span>
-       <span class="nt">&lt;/property&gt;</span>
-       <span class="nt">&lt;property&gt;</span>
-         <span class="nt">&lt;name&gt;</span>Context.PROVIDER_URL<span class="nt">&lt;/name&gt;</span>
-         <span class="nt">&lt;value&gt;</span>vm://localhost<span class="nt">&lt;/value&gt;</span>
+     &lt;delivery-mode&gt;NON_PERSISTENT&lt;/delivery-mode&gt;
+     &lt;message-priority&gt;DEFAULT_PRIORITY&lt;/message-priority&gt;
+     &lt;acknowledge-mode&gt;AUTO_ACKNOWLEDGE&lt;/acknowledge-mode&gt;
+     &lt;initial-context-environment&gt;
+       &lt;property&gt;
+         &lt;name&gt;Context.INITIAL\_CONTEXT\_FACTORY&lt;/name&gt;
+         &lt;value&gt;org.apache.activemq.jndi.ActiveMQInitialContextFactory&lt;/value&gt;
+       &lt;/property&gt;
+       &lt;property&gt;
+         &lt;name&gt;Context.PROVIDER_URL&lt;/name&gt;
+         &lt;value&gt;vm://localhost&lt;/value&gt;
 
-       <span class="nt">&lt;/property&gt;</span>
-     <span class="nt">&lt;/initial-context-environment&gt;</span>
-   <span class="nt">&lt;/jms&gt;</span>
-   <span class="nt">&lt;/properties&gt;</span>
-   <span class="nt">&lt;adapter</span> <span class="na">ref=</span><span class="s">"jms"</span><span class="nt">/&gt;</span>
-   <span class="nt">&lt;/destination&gt;</span>
-<span class="nt">&lt;/service&gt;</span>
+       &lt;/property&gt;
+     &lt;/initial-context-environment&gt;
+   &lt;/jms&gt;
+   &lt;/properties&gt;
+   &lt;adapter ref="jms"/&gt;
+   &lt;/destination&gt;
+&lt;/service&gt;
 </code></pre></div></div>
 
       </div>

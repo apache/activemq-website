@@ -105,11 +105,11 @@
 <h3 id="sending-blobmessages">Sending BlobMessages</h3>
 
 <p>You can send a URL around the JMS network, such as a file or URL which exists on some shared file system or web server using the following code</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BlobMessage message = session.createBlobMessage(new URL("http://some.shared.site.com");
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BlobMessage message = session.createBlobMessage(new URL("http://some.shared.site.com");
 producer.send(message);
 </code></pre></div></div>
 <p>Or if you are creating files or streams dynamically on the client you may want to upload the file to the broker or some server (Jetty, FTP, WebDav or whatever). In which case you’d use one of the following methods</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// lets use a local file
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// lets use a local file
 BlobMessage message = session.createBlobMessage(new File("/foo/bar");
 producer.send(message);
 
@@ -122,7 +122,7 @@ producer.send(message);
 <h3 id="receiving-blobmessages">Receiving BlobMessages</h3>
 
 <p>A <a href="http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/BlobMessage.html">BlobMessage</a> is a regular JMS message so it can be received just like any other message…</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class MyListener implements MessageListener {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class MyListener implements MessageListener {
   public void onMessage(Message message) {
     if (message instanceof BlobMessage) {
       BlobMessage blobMessage = (BlobMessage) message;
@@ -141,7 +141,7 @@ producer.send(message);
 <p>You can use the <a href="connection-configuration-uri">Connection Configuration URI</a> to configure these things via a URI.</p>
 
 <p>For example you can connect to a broker also specifying the uploadUrl to use via</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tcp://localhost:61616?jms.blobTransferPolicy.uploadUrl=http://foo.com
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tcp://localhost:61616?jms.blobTransferPolicy.uploadUrl=http://foo.com
 </code></pre></div></div>
 
       </div>

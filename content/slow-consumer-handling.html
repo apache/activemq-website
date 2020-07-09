@@ -100,15 +100,15 @@
 
 <h2 id="pending-message-limit-strategy">Pending Message Limit Strategy</h2>
 
-<p>You can configure the <code class="highlighter-rouge">PendingMessageLimitStrategy</code> implementation class on the destination map so that different regions of your topic namespace can have different strategies for dealing with slow consumers. For example you may want to use this strategy for prices which are very high volume but for orders and trades which are lower volume you might not wish to discard old messages.</p>
+<p>You can configure the <code class="language-plaintext highlighter-rouge">PendingMessageLimitStrategy</code> implementation class on the destination map so that different regions of your topic namespace can have different strategies for dealing with slow consumers. For example you may want to use this strategy for prices which are very high volume but for orders and trades which are lower volume you might not wish to discard old messages.</p>
 
-<p>The strategy calculates the maximum number of pending messages to be kept in RAM for a consumer (above its prefetch size). A value of zero means keep no messages around other than the prefetch amount. A value greater than zero will keep up to that amount of messages around, discarding the older messages as new messages come in. A value of <code class="highlighter-rouge">-1</code> disables the discarding of messages.</p>
+<p>The strategy calculates the maximum number of pending messages to be kept in RAM for a consumer (above its prefetch size). A value of zero means keep no messages around other than the prefetch amount. A value greater than zero will keep up to that amount of messages around, discarding the older messages as new messages come in. A value of <code class="language-plaintext highlighter-rouge">-1</code> disables the discarding of messages.</p>
 
 <p>There are currently two different implementations of the strategy:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">ConstantPendingMessageLimitStrategy</code></li>
-  <li><code class="highlighter-rouge">PrefetchRatePendingMessageLimitStrategy</code></li>
+  <li><code class="language-plaintext highlighter-rouge">ConstantPendingMessageLimitStrategy</code></li>
+  <li><code class="language-plaintext highlighter-rouge">PrefetchRatePendingMessageLimitStrategy</code></li>
 </ul>
 
 <h3 id="constantpendingmessagelimitstrategy">ConstantPendingMessageLimitStrategy</h3>
@@ -117,46 +117,46 @@
 
 <p>Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;constantPendingMessageLimitStrategy limit="50"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;constantPendingMessageLimitStrategy limit="50"/&gt;
 </code></pre></div></div>
 
 <h3 id="prefetchratependingmessagelimitstrategy">PrefetchRatePendingMessageLimitStrategy</h3>
 
 <p>This strategy calculates the maximum number of pending messages using a multiplier of the consumers prefetch size. So you could for example keep around 2.5 times the prefetch count for each consumer.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;prefetchRatePendingMessageLimitStrategy multiplier="2.5"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;prefetchRatePendingMessageLimitStrategy multiplier="2.5"/&gt;
 </code></pre></div></div>
 
 <h3 id="using-the-prefetch-policy-to-configure-the-limit">Using the Prefetch Policy to Configure the Limit</h3>
 
-<p>The JMS Client has a <a href="what-is-the-prefetch-limit-for">prefetch policy</a> you can use to configure the various prefetch limits for persistent and non persistent queues and topics. The prefetch policy also allows you to specify the <code class="highlighter-rouge">maximumPendingMessageLimit</code> on a per connection/consumer basis. One minor difference with configuring this value; to simplify operation with non-JMS clients such as with <a href="openwire">OpenWire</a> the value of zero is ignored; so the lowest value you can configure is <code class="highlighter-rouge">1</code>.</p>
+<p>The JMS Client has a <a href="what-is-the-prefetch-limit-for">prefetch policy</a> you can use to configure the various prefetch limits for persistent and non persistent queues and topics. The prefetch policy also allows you to specify the <code class="language-plaintext highlighter-rouge">maximumPendingMessageLimit</code> on a per connection/consumer basis. One minor difference with configuring this value; to simplify operation with non-JMS clients such as with <a href="openwire">OpenWire</a> the value of zero is ignored; so the lowest value you can configure is <code class="language-plaintext highlighter-rouge">1</code>.</p>
 
 <h3 id="configuring-the-eviction-policy">Configuring the Eviction Policy</h3>
 
-<p>We have a <code class="highlighter-rouge">MessageEvictionStrategy</code> which is used to decide which message should be evicted on a slow consumer. The default implementation is:</p>
+<p>We have a <code class="language-plaintext highlighter-rouge">MessageEvictionStrategy</code> which is used to decide which message should be evicted on a slow consumer. The default implementation is:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;oldestMessageEvictionStrategy/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;oldestMessageEvictionStrategy/&gt;
 </code></pre></div></div>
 
 <p>However, you can write your own to use some application specific way of choosing messages for eviction. For example, if you are sending market data price updates you may wish to find an older price value, which might not be the oldest message.</p>
 
 <p>Example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;uniquePropertyMessageEvictionStrategy propertyName="STOCK"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;uniquePropertyMessageEvictionStrategy propertyName="STOCK"/&gt;
 
 </code></pre></div></div>
-<p>where <code class="highlighter-rouge">propertyName</code> is the JMS message property that specifies the price.</p>
+<p>where <code class="language-plaintext highlighter-rouge">propertyName</code> is the JMS message property that specifies the price.</p>
 
 <p>Another option could be to use the oldest message with the lowest priority message. Therefore if you have some high priority messages, evict the lower priority messages first even if they are newer.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;oldestMessageWithLowestPriorityEvictionStrategy/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;oldestMessageWithLowestPriorityEvictionStrategy/&gt;
 </code></pre></div></div>
 
 <h2 id="example">Example</h2>
 
-<p>The following example shows an ActiveMQ broker configuration file. Notice that for topics in the <code class="highlighter-rouge">PRICES.&gt;</code> wildcard range the <code class="highlighter-rouge">pendingMessageLimitStrategy</code> property is set to only keep around <code class="highlighter-rouge">10</code> messages for each consumer above their prefetch buffer size.</p>
+<p>The following example shows an ActiveMQ broker configuration file. Notice that for topics in the <code class="language-plaintext highlighter-rouge">PRICES.&gt;</code> wildcard range the <code class="language-plaintext highlighter-rouge">pendingMessageLimitStrategy</code> property is set to only keep around <code class="language-plaintext highlighter-rouge">10</code> messages for each consumer above their prefetch buffer size.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans" 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans" 
        xmlns:amq="http://activemq.apache.org/schema/core" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
@@ -213,7 +213,7 @@
 
 <h3 id="monitoring-the-status-of-slow-consumers">Monitoring the Status of Slow Consumers</h3>
 
-<p>You can also use a <a href="jmx">JMX</a> Console to view the statistics of the active subscriptions. This allows you to view the following statistics on a <code class="highlighter-rouge">TopicSubscriptionViewMBean</code>:</p>
+<p>You can also use a <a href="jmx">JMX</a> Console to view the statistics of the active subscriptions. This allows you to view the following statistics on a <code class="language-plaintext highlighter-rouge">TopicSubscriptionViewMBean</code>:</p>
 
 <table>
   <thead>
@@ -224,11 +224,11 @@
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">discarded</code></td>
+      <td><code class="language-plaintext highlighter-rouge">discarded</code></td>
       <td>The count of how many messages have been discarded during the lifetime of the subscription due to it being a slow consumer</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">matched</code></td>
+      <td><code class="language-plaintext highlighter-rouge">matched</code></td>
       <td>The current number of messages matched and to be dispatched to the subscription as soon as some capacity is available in the prefetch buffer. So a non-zero value implies that the prefetch buffer is full for this subscription</td>
     </tr>
   </tbody>

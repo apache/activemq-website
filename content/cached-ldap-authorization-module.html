@@ -106,31 +106,31 @@
 
 <p>The other one is for <a href="http://www.openldap.org/">OpenLDAP</a> (<a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-openldap.ldif">ldif</a>)</p>
 
-<p>The provided ldif and examples assume <code class="highlighter-rouge">dc=activemq,dc=apache,dc=org</code> suffix to be used for entries, so the configuration similar to the one shown in the following snippet</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>suffix          "dc=activemq,dc=apache,dc=org"
+<p>The provided ldif and examples assume <code class="language-plaintext highlighter-rouge">dc=activemq,dc=apache,dc=org</code> suffix to be used for entries, so the configuration similar to the one shown in the following snippet</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>suffix          "dc=activemq,dc=apache,dc=org"
 rootdn          "cn=admin,dc=activemq,dc=apache,dc=org"
 # Cleartext passwords, especially for the rootdn, should
 # be avoid.  See slappasswd(8) and slapd.conf(5) for details.
 # Use of strong authentication encouraged.
 rootpw          {SSHA}lfAYn54xCFghgQv5B2Kqn3d3eLojqxtS
 </code></pre></div></div>
-<p>should be put into your <code class="highlighter-rouge">slapd.conf</code></p>
+<p>should be put into your <code class="language-plaintext highlighter-rouge">slapd.conf</code></p>
 
 <p>To initialize your (properly configured) OpenLDAP do something like</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ldapadd -x -D "cn=admin,dc=activemq,dc=apache,dc=org" -w sunflower -f activemq-openldap.ldif
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ldapadd -x -D "cn=admin,dc=activemq,dc=apache,dc=org" -w sunflower -f activemq-openldap.ldif
 </code></pre></div></div>
 
 <h2 id="configuring">Configuring</h2>
 
 <p>Once entries are in LDAP, you can configure the module to load entries from there. A default values are adapted for embedded Apache DS server, so all you have to do in that case is add your plugin to the broker xml conf</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;authorizationPlugin&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;authorizationPlugin&gt;
     &lt;map&gt;
         &lt;cachedLDAPAuthorizationMap/&gt;
     &lt;/map&gt;
 &lt;/authorizationPlugin&gt;
 </code></pre></div></div>
 <p>For the OpenLDAP case, you should define more parameters</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;authorizationPlugin&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;authorizationPlugin&gt;
     &lt;map&gt;
         &lt;cachedLDAPAuthorizationMap
             connectionURL="ldap://localhost:389"
@@ -147,7 +147,7 @@ rootpw          {SSHA}lfAYn54xCFghgQv5B2Kqn3d3eLojqxtS
 </code></pre></div></div>
 <p>Full examples of configurations for <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-apacheds.xml">Apache DS</a> and <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-openldap.xml">OpenLDAP</a></p>
 
-<p>The list of all properties for <code class="highlighter-rouge">cachedLDAPAuthorizationMap</code></p>
+<p>The list of all properties for <code class="language-plaintext highlighter-rouge">cachedLDAPAuthorizationMap</code></p>
 
 <table>
   <thead>
@@ -226,7 +226,7 @@ rootpw          {SSHA}lfAYn54xCFghgQv5B2Kqn3d3eLojqxtS
 
 <p>Many LDAP servers supports so called “persistent search” feature which allows applications to receive changes in LDAP in a “push” manner. By default this plugin assumes that LDAP server supports this feature and will “register” to get live updates.</p>
 
-<p>For servers that doesn’t support this yet (like OpenLDAP), we provide “pull” updates. In this case you need to set <code class="highlighter-rouge">refreshInterval</code> property, which will define the update period for the plugin (so in this case, updates will not be immediately applied)</p>
+<p>For servers that doesn’t support this yet (like OpenLDAP), we provide “pull” updates. In this case you need to set <code class="language-plaintext highlighter-rouge">refreshInterval</code> property, which will define the update period for the plugin (so in this case, updates will not be immediately applied)</p>
 
 
       </div>

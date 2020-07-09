@@ -122,7 +122,7 @@ in a clients transaction will not complete until the master and the slave have p
     </ol>
   </li>
   <li>clients should use a failover transport for connecting to the master broker first and then the slave. e.g. using a URL such as
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failover://(tcp://masterhost:61616,tcp://slavehost:61616)?randomize=false
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failover://(tcp://masterhost:61616,tcp://slavehost:61616)?randomize=false
 </code></pre></div>    </div>
     <p>The <strong>randomize</strong> property just disables randomness so that the transport will always try the master first, then the slave if it can’t connect to that. Note that the slave does not accept connections until it becomes the master</p>
   </li>
@@ -152,7 +152,7 @@ in a clients transaction will not complete until the master and the slave have p
 
 <p>A master broker doesn’t need any special configuration - it’s a normal broker until a slave broker attaches itself.<br />
 To identify a broker as a slave - there is just one property to set (see below) as this <a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-core/src/test/resources/org/apache/activemq/broker/ft/slave2.xml">example shows</a> - so configuration is nice and easy:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker masterConnectorURI="tcp://masterhost:62001" shutdownOnMasterFailure="false"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker masterConnectorURI="tcp://masterhost:62001" shutdownOnMasterFailure="false"&gt;
   &lt;persistenceAdapter&gt;
       &lt;journaledJDBC journalLogFiles="5" dataDirectory="${activemq.base}/data/broker2" /&gt;
     &lt;/persistenceAdapter&gt;
@@ -164,15 +164,15 @@ To identify a broker as a slave - there is just one property to set (see below) 
 </code></pre></div></div>
 <p>Broker Property|default|Description
 —|—|—
-masterConnectorURI|null|URI to the master broker e.g. <code class="highlighter-rouge">tcp://masterhost:62001</code>
+masterConnectorURI|null|URI to the master broker e.g. <code class="language-plaintext highlighter-rouge">tcp://masterhost:62001</code>
 shutdownOnMasterFailure|false|if true, the slave will shut down if the master fails otherwise the slave will take over as being the new master. The slave ensures that there is a separate copy of each message and acknowledgement on another machine which can protect against catastrophic hardware failure. If the master fails you might want the slave to shut down as well as you may always want to duplicate messages to 2 physical locations to prevent message loss on catastrophic data centre or hardware failure. If you would rather the system keep on running after a master failure then leave this flag as false.
 waitForSlave|false|version 5.2+, if true, a master will wait till a slave has attached before completing its startup sequence
 shutdownOnSlaveFailure|false|version 5.2+, if true, a master will shutdown if the slave connection is lost, ensuring that the master will not become out of sync with the slave.</p>
 
 <h3 id="configuring-the-authentication-of-the-slave">Configuring the authentication of the Slave</h3>
 
-<p>In ActiveMQ 4.1 or later you can use a <code class="highlighter-rouge">&lt;masterConnector/&gt;</code> element as an alternative XML configuration mechanism as shown in the following <a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-core/src/test/resources/org/apache/activemq/broker/ft/slave2.xml">example</a> to configure the user and password that the slave will use to connect to the master</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker brokerName="slave" useJmx="false"  deleteAllMessagesOnStartup="true"  xmlns="http://activemq.apache.org/schema/core"&gt;
+<p>In ActiveMQ 4.1 or later you can use a <code class="language-plaintext highlighter-rouge">&lt;masterConnector/&gt;</code> element as an alternative XML configuration mechanism as shown in the following <a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-core/src/test/resources/org/apache/activemq/broker/ft/slave2.xml">example</a> to configure the user and password that the slave will use to connect to the master</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker brokerName="slave" useJmx="false"  deleteAllMessagesOnStartup="true"  xmlns="http://activemq.apache.org/schema/core"&gt;
   &lt;services&gt;
     &lt;masterConnector remoteURI= "tcp://localhost:62001" userName="James" password="Cheese"/&gt;
   &lt;/services&gt;

@@ -118,7 +118,7 @@
 <h2 id="install-the-j2se-15">Install the J2SE 1.5</h2>
 
 <p>The first step in this process is to install Java 1.5 and verify that it runs correctly. Using the link above, find, download and install the correct version of Java for your platform. Once Java is installed and in the PATH, test it to see that it runs correctly using the following command:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ java -version
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ java -version
 java version "1.5.0_06"
 Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_06-112)
 Java HotSpot(TM) Client VM (build 1.5.0_06-64, mixed mode, sharing)
@@ -127,8 +127,8 @@ Java HotSpot(TM) Client VM (build 1.5.0_06-64, mixed mode, sharing)
 
 <h2 id="install-apache-ant">Install Apache Ant</h2>
 
-<p>The second step is to install Apache Ant. Simply download it using the link above, expand somewhere on your hard drive and place the <code class="highlighter-rouge">bin</code> directory in the PATH. This will allow you to test it quickly using the commands below:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ant -version
+<p>The second step is to install Apache Ant. Simply download it using the link above, expand somewhere on your hard drive and place the <code class="language-plaintext highlighter-rouge">bin</code> directory in the PATH. This will allow you to test it quickly using the commands below:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ant -version
 Apache Ant version 1.6.2 compiled on July 16 2004
 </code></pre></div></div>
 <p>As long as you see the version output above, Ant should be usable. If you did not see the version output or received an error, consult the Ant documentation or mailing list archives to work out the issue. Please note that Ant is not used until the end of this whole exercise to test the integration.</p>
@@ -136,7 +136,7 @@ Apache Ant version 1.6.2 compiled on July 16 2004
 <h2 id="install-the-jboss-application-server">Install the JBoss Application Server</h2>
 
 <p>The third step in this process is to install JBoss and make sure it runs correctly before installing and configuring ActiveMQ. Upon downloading JBoss-4.0.4, expand it in a place where it can create a directory. Next, run the server using the following commands:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd jboss-4.0.4.GA
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd jboss-4.0.4.GA
 $ ./bin/run.sh -c default
 =========================================================================
 
@@ -177,7 +177,7 @@ Started in 22s:238ms
 <h2 id="prepare-for-integrating-apache-activemq-with-the-jboss-application-server">Prepare for Integrating Apache ActiveMQ with the JBoss Application Server</h2>
 
 <p>The fourth step is to prepare your environment for integrating ActiveMQ with JBoss. If you haven’t done so already, download Apache ActiveMQ using the link above. As of the writing of this article, the latest released version is 4.0.2-RC4. Upon downloading this archive, expand it in a place where it can create a directory, preferably in the same location where JBoss was expanded. Verify that the ActiveMQ RAR file is included using the following commands:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ./incubator-activemq-4.0.2.tar.gz
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ./incubator-activemq-4.0.2.tar.gz
 $ jar tvf /opt/incubator-activemq-4.0.2/lib/optional/activemq-ra-4.0.2.rar
      0 Mon Sep 25 19:00:50 MDT 2006 META-INF/
    399 Mon Sep 25 19:00:48 MDT 2006 META-INF/MANIFEST.MF
@@ -201,7 +201,7 @@ $ jar tvf /opt/incubator-activemq-4.0.2/lib/optional/activemq-ra-4.0.2.rar
 <p>This is simply a table of contents of the RAR file. There should only be one reason that this will fail - an incomplete download of the ActiveMQ tarball or zip file. Beyond that, depending on the version you download, some of the library versions may be slightly different.</p>
 
 <p>Now go back to the JBoss installation and create a directory for ActiveMQ in the JBoss deploy directory for the default JBoss context. Below are the commands to achieve this task:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir /opt/jboss-4.0.4.GA/server/default/deploy/activemq-ra.rar
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir /opt/jboss-4.0.4.GA/server/default/deploy/activemq-ra.rar
 $ cd /opt/jboss-4.0.4.GA/server/default/deploy/activemq-ra.rar
 $ pwd
 /opt/jboss-4.0.4.GA/server/default/deploy/activemq-ra.rar
@@ -209,7 +209,7 @@ $ pwd
 <p>`<em>NOTE:</em>** The creation of a directory is not required but is the easiest way to set up the ActiveMQ RAR when you’re just getting started. This is due to the flexibility it affords during the development phase for the configuration to be changed very easily. The alternative is to JAR up the directory as a RAR file once the configuration is solid enough that it no longer needs to be changed. But leaving everything in a directory during development is the easiest path.</p>
 
 <p>Now expand the activemq-ra-4.0.2.rar into the current working directory:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jar xvf /opt/incubator-activemq-4.0.2/lib/optional/activemq-ra-4.0.2.rar
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jar xvf /opt/incubator-activemq-4.0.2/lib/optional/activemq-ra-4.0.2.rar
   created: META-INF/
  inflated: META-INF/MANIFEST.MF
  inflated: META-INF/DISCLAIMER.txt
@@ -230,7 +230,7 @@ $ pwd
  inflated: META-INF/LICENSE.txt
 </code></pre></div></div>
 <p>Below is a quick listing of the contents of that directory:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -l
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -l
 total 12848
 drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 -rw-r--r--   1 bsnyder  bsnyder   232107 Oct 16 16:27 activeio-core-3.0-beta4.jar
@@ -250,9 +250,9 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 <h2 id="configuring-apache-activemq">Configuring Apache ActiveMQ</h2>
 
 <p>The fifth step is to actually configure ActiveMQ for integration with JBoss. Remember that you should be sitting in the following directory:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/jboss-4.0.4.GA/server/default/deploy/activemq-ra.rar
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/jboss-4.0.4.GA/server/default/deploy/activemq-ra.rar
 </code></pre></div></div>
-<p>You may or may not have installed JBoss in <code class="highlighter-rouge">/opt</code>, that doesn’t particularly matter. What does matter is that you’re sitting in the directory that was created above to hold the contents of the expanded ActiveMQ RAR file.</p>
+<p>You may or may not have installed JBoss in <code class="language-plaintext highlighter-rouge">/opt</code>, that doesn’t particularly matter. What does matter is that you’re sitting in the directory that was created above to hold the contents of the expanded ActiveMQ RAR file.</p>
 
 <p>`<em>NOTE:</em>** A RAR file is a Resource adapter ARchive (RAR). Resource adapters are a concept from the <a href="http://java.sun.com/j2ee/connector/">J2EE Connector Architecture (JCA)</a> and are used to interface with Enterprise Information Systems (EIS), i.e., systems external to the application server (e.g., relational databases, mainframes, MOMs, accounting systems, etc.). Resource adapters are often referred to as J2EE connectors and are very similar to the concept of a device driver for, say, a printer in that they contain information specific to connecting to a particular system. The difference with JCA is that that connection has been formalized in specification for Java. So the overall concepts of JCA is for connection to any EIS, but what does that mean? JCA 1.5 provides connectivity and more via the following contracts:</p>
 
@@ -281,7 +281,7 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 
 <p>For more information about JCA, please consult the <a href="http://java.sun.com/j2ee/connector/index.jsp">J2EE Connector Architecture documentation</a>.</p>
 
-<p>Open the <code class="highlighter-rouge">META-INF/ra.xml</code> file and look for the following section:</p>
+<p>Open the <code class="language-plaintext highlighter-rouge">META-INF/ra.xml</code> file and look for the following section:</p>
 
 <p>`META-INF/ra.xml**</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
@@ -295,7 +295,7 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 <span class="c">&lt;!-- &lt;config-property-value&gt;vm://localhost&lt;/config-property-value&gt; --&gt;</span>
   <span class="nt">&lt;/config-property&gt;</span>
 </code></pre></div></div>
-<p>The section above is used to tell the ActiveMQ RAR where ActiveMQ is located. By default, the in-VM protocol is commented out in favor of the tcp protocol. This will find ActiveMQ running on any interface on the localhost on port 61616. It’s ok to just leave this alone if you don’t mind the inefficiency of communicating within the JVM via TCP. However, it is recommended that <code class="highlighter-rouge">vm://</code> transport be used for an embedded broker, so comment out the <code class="highlighter-rouge">tcp://</code> transport and uncomment the <code class="highlighter-rouge">vm://</code> transport. Below is an example of this:</p>
+<p>The section above is used to tell the ActiveMQ RAR where ActiveMQ is located. By default, the in-VM protocol is commented out in favor of the tcp protocol. This will find ActiveMQ running on any interface on the localhost on port 61616. It’s ok to just leave this alone if you don’t mind the inefficiency of communicating within the JVM via TCP. However, it is recommended that <code class="language-plaintext highlighter-rouge">vm://</code> transport be used for an embedded broker, so comment out the <code class="language-plaintext highlighter-rouge">tcp://</code> transport and uncomment the <code class="language-plaintext highlighter-rouge">vm://</code> transport. Below is an example of this:</p>
 
 <p>`META-INF/ra.xml**</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
@@ -309,9 +309,9 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
     <span class="nt">&lt;config-property-value&gt;</span>vm://localhost<span class="nt">&lt;/config-property-value&gt;</span>
   <span class="nt">&lt;/config-property&gt;</span>
 </code></pre></div></div>
-<p>Because we’re embedding ActiveMQ inside of JBoss, it is more efficient to use the <code class="highlighter-rouge">vm://</code> transport, rather than to perform messaging over the <code class="highlighter-rouge">tcp://</code> transport.</p>
+<p>Because we’re embedding ActiveMQ inside of JBoss, it is more efficient to use the <code class="language-plaintext highlighter-rouge">vm://</code> transport, rather than to perform messaging over the <code class="language-plaintext highlighter-rouge">tcp://</code> transport.</p>
 
-<p>Now look further down the <code class="highlighter-rouge">META-INF/ra.xml</code> file and locate the following section:</p>
+<p>Now look further down the <code class="language-plaintext highlighter-rouge">META-INF/ra.xml</code> file and locate the following section:</p>
 
 <p>`META-INF/ra.xml**</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
@@ -350,9 +350,9 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
     <span class="nt">&lt;config-property-value&gt;</span>xbean:broker-config.xml<span class="nt">&lt;/config-property-value&gt;</span>
   <span class="nt">&lt;/config-property&gt;</span>
 </code></pre></div></div>
-<p>This change tells the ActiveMQ RAR to read a configuration file named <code class="highlighter-rouge">broker-config.xml</code> (the <code class="highlighter-rouge">xbean:</code> that proceeds the filename is simply a hint to class doing the reading of the configuration file) which is located on the CLASSPATH. In this case, the <code class="highlighter-rouge">broker-config.xml</code> file is located in the <code class="highlighter-rouge">activemq-ra.rar</code> directory. Save the changes to that file and then open the <code class="highlighter-rouge">broker-config.xml</code> file.</p>
+<p>This change tells the ActiveMQ RAR to read a configuration file named <code class="language-plaintext highlighter-rouge">broker-config.xml</code> (the <code class="language-plaintext highlighter-rouge">xbean:</code> that proceeds the filename is simply a hint to class doing the reading of the configuration file) which is located on the CLASSPATH. In this case, the <code class="language-plaintext highlighter-rouge">broker-config.xml</code> file is located in the <code class="language-plaintext highlighter-rouge">activemq-ra.rar</code> directory. Save the changes to that file and then open the <code class="language-plaintext highlighter-rouge">broker-config.xml</code> file.</p>
 
-<p>The <code class="highlighter-rouge">broker-config.xml</code> file <em>is</em> the ActiveMQ configuration file. This is the file used to configure ActiveMQ. The default contents of this file are usable, but should be customized to suit your environment. There are several items of note about this configuration. The most prominent sections to note in this file are the <code class="highlighter-rouge">&lt;persistenceAdapter&gt;</code> element and the <code class="highlighter-rouge">&lt;transportConnectors&gt;</code> and <code class="highlighter-rouge">&lt;networkConnectors&gt;</code> elements as seen below:</p>
+<p>The <code class="language-plaintext highlighter-rouge">broker-config.xml</code> file <em>is</em> the ActiveMQ configuration file. This is the file used to configure ActiveMQ. The default contents of this file are usable, but should be customized to suit your environment. There are several items of note about this configuration. The most prominent sections to note in this file are the <code class="language-plaintext highlighter-rouge">&lt;persistenceAdapter&gt;</code> element and the <code class="language-plaintext highlighter-rouge">&lt;transportConnectors&gt;</code> and <code class="language-plaintext highlighter-rouge">&lt;networkConnectors&gt;</code> elements as seen below:</p>
 
 <p>`broker-config.xml**</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://activemq.org/config/1.0"</span><span class="nt">&gt;</span>
@@ -387,7 +387,7 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 <p>The first change to this file is to add the brokerName attribute to the broker element and provide a name:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;broker</span> <span class="na">useJmx=</span><span class="s">"true"</span> <span class="na">brokerName=</span><span class="s">"bruce.broker1"</span><span class="nt">&gt;</span>
 </code></pre></div></div>
-<p>In addition, this same name is used further down the configuration to provide a name for the <code class="highlighter-rouge">&lt;transportConnector&gt;</code> element:</p>
+<p>In addition, this same name is used further down the configuration to provide a name for the <code class="language-plaintext highlighter-rouge">&lt;transportConnector&gt;</code> element:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;transportConnector</span> <span class="na">name=</span><span class="s">"bruce.broker1"</span> <span class="na">uri=</span><span class="s">"tcp://localhost:61616"</span> <span class="na">discoveryUri=</span><span class="s">"multicast://default"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 <p>Now we’ll tell ActiveMQ not to initialize JMX because we’ll use the existing one that JBoss has:</p>
@@ -396,18 +396,18 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
   <span class="nt">&lt;managementContext</span> <span class="na">createConnector=</span><span class="s">"false"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/managementContext&gt;</span>
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">&lt;persistenceAdapter&gt;</code> element should be reconfigured to store its data in an appropriate place. On JBoss, that’s most likely within the “data” directory of the server configuration you’re using. We’re going to set this dynamically using an XBean and Spring feature that allows us to inject system properties values into the configuration. First this needs to be enabled:</p>
+<p>The <code class="language-plaintext highlighter-rouge">&lt;persistenceAdapter&gt;</code> element should be reconfigured to store its data in an appropriate place. On JBoss, that’s most likely within the “data” directory of the server configuration you’re using. We’re going to set this dynamically using an XBean and Spring feature that allows us to inject system properties values into the configuration. First this needs to be enabled:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- put the following as the first child of the beans element --&gt;</span>
 <span class="nt">&lt;bean</span> <span class="na">xmlns=</span><span class="s">""</span> <span class="na">class=</span><span class="s">"org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
-<p>Now, modify the <code class="highlighter-rouge">dataDirectory</code> attribute of the <code class="highlighter-rouge">journaledJDBC</code> element to be the following: <code class="highlighter-rouge">${jboss.server.data.dir}/activemq</code>.</p>
+<p>Now, modify the <code class="language-plaintext highlighter-rouge">dataDirectory</code> attribute of the <code class="language-plaintext highlighter-rouge">journaledJDBC</code> element to be the following: <code class="language-plaintext highlighter-rouge">${jboss.server.data.dir}/activemq</code>.</p>
 
-<p>The <code class="highlighter-rouge">&lt;transportConnectors&gt;</code> element is used to advertise the ActiveMQ broker for client-to-broker communications and the <code class="highlighter-rouge">&lt;networkConnectors&gt;</code> element advertises the ActiveMQ broker for broker-to-broker communications. The default configuration is to use the ActiveMQ <a href="http://www.activemq.org/siteUsing ActiveMQ/Configuring Transports/ActiveMQ Connection URIs/multicast-transport-reference">multicast transport</a> for both. This is simply an easy configuration under which to get ActiveMQ up and running, so we’ll just leave it at that for the time being.</p>
+<p>The <code class="language-plaintext highlighter-rouge">&lt;transportConnectors&gt;</code> element is used to advertise the ActiveMQ broker for client-to-broker communications and the <code class="language-plaintext highlighter-rouge">&lt;networkConnectors&gt;</code> element advertises the ActiveMQ broker for broker-to-broker communications. The default configuration is to use the ActiveMQ <a href="http://www.activemq.org/siteUsing ActiveMQ/Configuring Transports/ActiveMQ Connection URIs/multicast-transport-reference">multicast transport</a> for both. This is simply an easy configuration under which to get ActiveMQ up and running, so we’ll just leave it at that for the time being.</p>
 
 <p>`<em>NOTE:</em>** There are far more configuration options available for ActiveMQ than are noted here. The configuration above is only enough to just get ActiveMQ up and running, nothing more. For more information on the ActiveMQ configuration, see the <a href="http://www.activemq.org/siteUsing ActiveMQ/Xml ReferenceUsing ActiveMQ/Xml Reference/Using ActiveMQ/Xml Reference/xbean-xml-reference-41">ActiveMQ 4.1 XML Reference</a>.</p>
 
 <p>Now we just need to start up JBoss to assure that it comes up correctly without error using the same commands we used previously to start JBoss:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd jboss-4.0.4.GA
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd jboss-4.0.4.GA
 $ ./bin/run.sh -c default
 =========================================================================
 
@@ -505,9 +505,9 @@ Started in 28s:576ms
 <span class="nt">&lt;/connection-factories&gt;</span>
 </code></pre></div></div>
 
-<p>This XML instance configures a JMS <code class="highlighter-rouge">QueueConnectionFactory</code> and a JMS <code class="highlighter-rouge">TopicConnectionFactory</code> and makes them available via JNDI. Also defined in this file are some s which are used to specify a topic and a queue. This file should be dropped into the JBoss deploy directory. Its name (*-ds.xml) will cause it to be picked up by the JBoss deployer upon startup. Speaking of which, once this file is in place, a quick smoke test can be performed by simply starting up the JBoss server. Below is an example of the output that should be seen:</p>
+<p>This XML instance configures a JMS <code class="language-plaintext highlighter-rouge">QueueConnectionFactory</code> and a JMS <code class="language-plaintext highlighter-rouge">TopicConnectionFactory</code> and makes them available via JNDI. Also defined in this file are some s which are used to specify a topic and a queue. This file should be dropped into the JBoss deploy directory. Its name (*-ds.xml) will cause it to be picked up by the JBoss deployer upon startup. Speaking of which, once this file is in place, a quick smoke test can be performed by simply starting up the JBoss server. Below is an example of the output that should be seen:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>=========================================================================
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>=========================================================================
 
   JBoss Bootstrap Environment
 
@@ -642,7 +642,7 @@ at 'activemq/topic/inbound'
 Started in 26s:398ms
 </code></pre></div></div>
 
-<p>Note the startup messages from both ActiveMQ and from the <code class="highlighter-rouge">AdminObjects</code> creating an <code class="highlighter-rouge">ActiveMQQueue</code> and an <code class="highlighter-rouge">ActiveMQTopic</code>. These are good indications that the configuration is correct, but needs to be verified a bit further. This is covered in the next section.</p>
+<p>Note the startup messages from both ActiveMQ and from the <code class="language-plaintext highlighter-rouge">AdminObjects</code> creating an <code class="language-plaintext highlighter-rouge">ActiveMQQueue</code> and an <code class="language-plaintext highlighter-rouge">ActiveMQTopic</code>. These are good indications that the configuration is correct, but needs to be verified a bit further. This is covered in the next section.</p>
 
 <h2 id="testing-the-integration">Testing the Integration</h2>
 
@@ -651,7 +651,7 @@ Started in 26s:398ms
 <ol>
   <li>In the first terminal, start up JBoss. The same startup script can be used here as was used above.</li>
   <li>In the second terminal, use the commands below to run the ActiveMQ consumer:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd /opt/incubator-activemq-4.0.2/examples    #note in activemq v5 the directory is just "example" not "examples"
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd /opt/incubator-activemq-4.0.2/examples    #note in activemq v5 the directory is just "example" not "examples"
 $ ant consumer
 Buildfile: build.xml
     
@@ -671,7 +671,7 @@ consumer:
 </code></pre></div>    </div>
   </li>
   <li>In the third terminal, use the commands below to run the ActiveMQ producer:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd /opt/incubator-activemq-4.0.2/examples
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd /opt/incubator-activemq-4.0.2/examples
 $ ant producer
 Buildfile: build.xml
     

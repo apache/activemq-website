@@ -100,7 +100,7 @@
 
 <p>Before you deploy anything to the maven repository using Maven 2, you should configure your ~/.m2/settings.xml file<br />
 so that the file permissions of the deployed artifacts are group writeable. If you do not do this, other developers will not able to overwrite your SNAPSHOT releases with newer versions.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;settings&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;settings&gt;
   ...
   &lt;servers&gt;
 
@@ -141,7 +141,7 @@ so that the file permissions of the deployed artifacts are group writeable. If y
 <h3 id="additional-local-configuration-for-using-release-and-staging-plugins">Additional local configuration for using release and staging plugins.</h3>
 
 <p>To effectively use the release and staging plugins you need some information about where the staging will happen and signing information for gpg. Your ~/.m2/settings.xml should contain a profile like this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;settings&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;settings&gt;
     &lt;profiles&gt;
         &lt;profile&gt;
           &lt;id&gt;apache-release&lt;/id&gt;
@@ -160,34 +160,34 @@ so that the file permissions of the deployed artifacts are group writeable. If y
 
 <ol>
   <li>Verify the to-be-released version identifier exists in the <a href="https://git-wip-us.apache.org/repos/asf?p=activemq.git;a=blob;f=activemq-spring/src/main/resources/META-INF/spring.schemas;hb=HEAD">META-INF/spring.schemas</a> mappings file AND <a href="https://git-wip-us.apache.org/repos/asf?p=activemq.git;a=blob;f=activemq-osgi/src/main/resources/META-INF/spring.schemas;hb=HEAD">activemq-osgi/src/main/resources/META-INF/spring.schemas</a> file, if not add it and commit. It should contain:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://activemq.apache.org/schema/core/activemq-core-${pom.version}.xsd=activemq.xsd
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://activemq.apache.org/schema/core/activemq-core-${pom.version}.xsd=activemq.xsd
 </code></pre></div>    </div>
   </li>
   <li>Verify headers with <a href="http://incubator.apache.org/rat/apache-rat-plugin/usage.html">rat</a>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn -e apache-rat:check
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn -e apache-rat:check
 grep -e ' !?????' target/rat.txt -- will show any files without licenses
 </code></pre></div>    </div>
   </li>
   <li>Do a release dry run to check for problems
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn release:prepare -DdryRun=true
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn release:prepare -DdryRun=true
 </code></pre></div>    </div>
     <p>Check that you are happy with the results. The poms for the proposed tags will be in pom.xml.tag. When you like the results, clean up:</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn release:clean
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn release:clean
 </code></pre></div>    </div>
   </li>
   <li>Prepare the release
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn release:prepare
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn release:prepare
 </code></pre></div>    </div>
     <p>This will create the tag in git and leave various stuff around locally to direct the perform phase.</p>
   </li>
   <li>Make a local copy of the release configuration in case something goes wrong
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ..
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ..
 cp -r activemq-release activemq-release-prepared
 cd activemq-release
 </code></pre></div>    </div>
   </li>
   <li>Perform the release to the staging repo
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn release:perform
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn release:perform
 </code></pre></div>    </div>
     <p>This uses both the activemq release profile which directs building source jars, javadoc jars, and signing everything, and also the settings release profile that says where to<br />
 put stuff and how to sign it.</p>
@@ -213,12 +213,12 @@ Note the repository URL, you will need this in your vote email.</p>
   </li>
   <li>Build the site from the tag that release:perform checked out into target/checkout in the previous step.<br />
 Note that the -Prelease profile is needed to specify the profile in settings.xml that configures the staging location.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd target/checkout
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd target/checkout
 mvn site -Prelease
 </code></pre></div>    </div>
   </li>
   <li>Populate the Javadocs site in svn
-    <code class="highlighter-rouge">
+    <code class="language-plaintext highlighter-rouge">
     svn co https://svn.apache.org/repos/infra/websites/production/activemq/content
     cd content/maven
     mkdir &lt;version&gt;
@@ -231,7 +231,7 @@ mvn site -Prelease
    </code></li>
   <li>
     <p>Stage the official release artifacts in the SVN dist dev area for folks to test and vote on, using the helper script already in the repo:
-    <code class="highlighter-rouge">
+    <code class="language-plaintext highlighter-rouge">
     svn co https://dist.apache.org/repos/dist/dev/activemq/activemq/
     cd activemq
     ./prepare-release.sh &lt;nexus-staging-repo-url&gt; &lt;version&gt;
@@ -248,12 +248,12 @@ mvn site -Prelease
 <ol>
   <li>Promote the release (i.e. release the staging repository): login to<a href="https://repository.apache.org/">https://repository.apache.org</a>, navigate to the staging repository and click the “release” button. </li>
   <li>Copy the staged release files from the SVN dist dev folder to the SVN dist release folder: <a href="https://dist.apache.org/repos/dist/release/activemq/">https://dist.apache.org/repos/dist/release/activemq/</a>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>svn cp -m "add files for activemq-&lt;version&gt;" https://dist.apache.org/repos/dist/dev/activemq/activemq/&lt;version&gt; https://dist.apache.org/repos/dist/release/activemq/&lt;version&gt;
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>svn cp -m "add files for activemq-&lt;version&gt;" https://dist.apache.org/repos/dist/dev/activemq/activemq/&lt;version&gt; https://dist.apache.org/repos/dist/release/activemq/&lt;version&gt;
 # Example: svn cp -m "add files for activemq-5.15.1" https://dist.apache.org/repos/dist/dev/activemq/activemq/5.15.1 https://dist.apache.org/repos/dist/release/activemq/5.15.1
 </code></pre></div>    </div>
   </li>
   <li>Populate the schema site in svn
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>svn co https://svn.apache.org/repos/infra/websites/production/activemq/content
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>svn co https://svn.apache.org/repos/infra/websites/production/activemq/content
 cd content/schema/core
 curl --remote-name-all https://repository.apache.org/content/repositories/releases/org/apache/activemq/activemq-spring/&lt;version&gt;/activemq-spring-&lt;version&gt;{-schema.html,.xsd}{.asc,.asc.md5,.asc.sha1,.sha1,.md5,}
 for i in activemq-spring-5.9.0*; do mv -- "$i" "${i//spring/core}"; done;

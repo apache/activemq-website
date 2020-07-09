@@ -97,8 +97,8 @@
 <p>For example imagine you are sending price messages from a stock exchange feed. You might use some kind of destination such as</p>
 
 <ul>
-  <li><code class="highlighter-rouge">PRICE.STOCK.NASDAQ.ORCL</code> to publish Oracle Corporation’s price on NASDAQ and</li>
-  <li><code class="highlighter-rouge">PRICE.STOCK.NYSE.IBM</code> to publish IBM’s price on the New York Stock Exchange</li>
+  <li><code class="language-plaintext highlighter-rouge">PRICE.STOCK.NASDAQ.ORCL</code> to publish Oracle Corporation’s price on NASDAQ and</li>
+  <li><code class="language-plaintext highlighter-rouge">PRICE.STOCK.NYSE.IBM</code> to publish IBM’s price on the New York Stock Exchange</li>
 </ul>
 
 <p>A subscriber could then use exact destinations to subscribe to exactly the prices it requires. Or it could use wildcards to define hierarchical pattern matches to the destinations to subscribe from.</p>
@@ -108,9 +108,9 @@
 <p>We support the following wildcards which are fairly standard practice; wildcards are not part of the JMS specification so are custom enhancements.</p>
 
 <ul>
-  <li><code class="highlighter-rouge">.</code> is used to separate names in a path</li>
-  <li><code class="highlighter-rouge">*</code> is used to match any name in a path</li>
-  <li><code class="highlighter-rouge">&gt;</code> is used to recursively match any destination starting from this name</li>
+  <li><code class="language-plaintext highlighter-rouge">.</code> is used to separate names in a path</li>
+  <li><code class="language-plaintext highlighter-rouge">*</code> is used to match any name in a path</li>
+  <li><code class="language-plaintext highlighter-rouge">&gt;</code> is used to recursively match any destination starting from this name</li>
 </ul>
 
 <p>For example using the example above, these subscriptions are possible</p>
@@ -124,39 +124,39 @@
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">PRICE.&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">PRICE.&gt;</code></td>
       <td>Any price for any product on any exchange</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">PRICE.STOCK.&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">PRICE.STOCK.&gt;</code></td>
       <td>Any price for a stock on any exchange</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">PRICE.STOCK.NASDAQ.*</code></td>
+      <td><code class="language-plaintext highlighter-rouge">PRICE.STOCK.NASDAQ.*</code></td>
       <td>Any stock price on NASDAQ</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">PRICE.STOCK.*.IBM</code></td>
+      <td><code class="language-plaintext highlighter-rouge">PRICE.STOCK.*.IBM</code></td>
       <td>Any IBM stock price on any exchange</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>Note:</strong> Don’t specify any string after <code class="highlighter-rouge">&gt;</code> on your wildcard expression, it will be ignored. E.g. using a wildcard <code class="highlighter-rouge">PRICE.&gt;.IBM</code> will also match <code class="highlighter-rouge">PRICE.STOCK.NASDAQ.FB.</code> Using ‘&gt;’ really matches everything till the end of the destination name.</p>
+<p><strong>Note:</strong> Don’t specify any string after <code class="language-plaintext highlighter-rouge">&gt;</code> on your wildcard expression, it will be ignored. E.g. using a wildcard <code class="language-plaintext highlighter-rouge">PRICE.&gt;.IBM</code> will also match <code class="language-plaintext highlighter-rouge">PRICE.STOCK.NASDAQ.FB.</code> Using ‘&gt;’ really matches everything till the end of the destination name.</p>
 
 <h3 id="custom-path-separator">Custom path separator</h3>
 
 <p>As of version 5.5.0 we support <a href="http://activemq.apache.orgFeatures/interceptors.md">plugin</a> that allows clients to use customer path separator. So instead of</p>
 
-<p><code class="highlighter-rouge">FOO.BAR.*</code></p>
+<p><code class="language-plaintext highlighter-rouge">FOO.BAR.*</code></p>
 
 <p>you can use</p>
 
-<p><code class="highlighter-rouge">FOO/BAR/*</code></p>
+<p><code class="language-plaintext highlighter-rouge">FOO/BAR/*</code></p>
 
 <p>To</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &lt;plugins&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &lt;plugins&gt;
        .....
        &lt;destinationPathSeparatorPlugin/&gt;
     &lt;/plugins&gt;
@@ -164,7 +164,7 @@
 
 <p>Please note that you should add this plugin as last if you want it to work properly with other plugins (such as <a href="http://activemq.apache.orgFeaturesFeatures/Features/security.md">security</a> for example).</p>
 
-<p>A default path separator this plugin will use is <code class="highlighter-rouge">/</code>. You can customize it further using <code class="highlighter-rouge">pathSeparator</code> property.</p>
+<p>A default path separator this plugin will use is <code class="language-plaintext highlighter-rouge">/</code>. You can customize it further using <code class="language-plaintext highlighter-rouge">pathSeparator</code> property.</p>
 
       </div>
     </div>

@@ -344,10 +344,10 @@
 <h2 id="using-the-xsds-in-configuration-files">Using the XSDs in configuration files</h2>
 
 <p>If you are using XBean to parse the XML configurations, the XML validation is optional so you do not need to specify the XML Schema Locations. However if you are using <a href="#">Spring</a>’s 2.0 XML handling to parse the XML then you need to refer to the XSD locations in your XML document because Spring uses schema namespace or schema location to resolve namespace handlers. Without correct namespace definition you will get messages like below:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Unable to locate NamespaceHandler for namespace [http://activemq.org/config/1.0]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Unable to locate NamespaceHandler for namespace [http://activemq.org/config/1.0]
 </code></pre></div></div>
 <p>You can refer to a specific version of the XSD in your XML as follows</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:amq="http://activemq.org/config/1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
@@ -355,7 +355,7 @@
         http://activemq.org/config/1.0 http://activemq.apache.org/schema/core/activemq-core-4.1.2.xsd"&gt;
 </code></pre></div></div>
 <p>or if you prefer you can use a generic XSD without the version number</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:amq="http://activemq.org/config/1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
@@ -369,7 +369,7 @@
 <p>If you use ActiveMQ 5.0 or earlier you XML namespace definition should point to <a href="http://activemq.org/config/1.0">http://activemq.org/config/1.0</a>. If you use ActiveMQ 5.1 or later the namespace should point to <a href="http://activemq.apache.org/schema/core">http://activemq.apache.org/schema/core</a>.</p>
 
 <p>`ActiveMQ 5.2 example**</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:amq="http://activemq.apache.org/schema/core"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
@@ -382,7 +382,7 @@
 </code></pre></div></div>
 
 <p>`ActiveMQ 5.0 example**</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:amq="http://activemq.org/config/1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
@@ -407,129 +407,129 @@
 <p>XMLSchema:sequence is replaced with an XMLSchema:all</p>
 
 <p>Note: from version 5.4.2, you can disable validation from the command line by appending a query parameter to the xbean url. This will allow you to reuse your existing xml configuration ‘as is’ if needed.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq console xbean:conf/activemq.xml?validate=false
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq console xbean:conf/activemq.xml?validate=false
 </code></pre></div></div>
-<p>Beginning in ActiveMQ 5.4, the XML elements inside the <code class="highlighter-rouge">&lt;broker&gt;</code> element must be ordered alphabetically. If you look at the XSD, this has always been the case with ActiveMQ. The difference in 5.4 is that the XML configuration is actually being validated against the XML schema.</p>
+<p>Beginning in ActiveMQ 5.4, the XML elements inside the <code class="language-plaintext highlighter-rouge">&lt;broker&gt;</code> element must be ordered alphabetically. If you look at the XSD, this has always been the case with ActiveMQ. The difference in 5.4 is that the XML configuration is actually being validated against the XML schema.</p>
 
 <p>For example, the following XML configuration did not present a problem in ActiveMQ 5.3.x:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
-<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span> 
-<span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd   
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd   
 http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd      
-http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd"</span><span class="nt">&gt;</span>
+http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd"&gt;
   
-  <span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema/core"</span> <span class="na">brokerName=</span><span class="s">"brokerB1"</span> <span class="na">destroyApplicationContextOnStop=</span><span class="s">"true"</span><span class="nt">&gt;</span>
+  &lt;broker xmlns="http://activemq.apache.org/schema/core" brokerName="brokerB1" destroyApplicationContextOnStop="true"&gt;
     
-    <span class="nt">&lt;plugins&gt;</span>
-      <span class="nt">&lt;loggingBrokerPlugin/&gt;</span>
-    <span class="nt">&lt;/plugins&gt;</span>
+    &lt;plugins&gt;
+      &lt;loggingBrokerPlugin/&gt;
+    &lt;/plugins&gt;
     
-    <span class="nt">&lt;persistenceAdapter&gt;</span>
-      <span class="nt">&lt;kahaDB</span> <span class="na">directory=</span><span class="s">"${activemq.base}/data/kahadb"</span> <span class="na">enableJournalDiskSyncs=</span><span class="s">"false"</span> <span class="na">indexWriteBatchSize=</span><span class="s">"10000"</span> <span class="na">indexCacheSize=</span><span class="s">"1000"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;/persistenceAdapter&gt;</span>
+    &lt;persistenceAdapter&gt;
+      &lt;kahaDB directory="${activemq.base}/data/kahadb" enableJournalDiskSyncs="false" indexWriteBatchSize="10000" indexCacheSize="1000"/&gt;
+    &lt;/persistenceAdapter&gt;
     
-    <span class="nt">&lt;destinationPolicy&gt;</span>
-      <span class="nt">&lt;policyMap&gt;</span>
-        <span class="nt">&lt;policyEntries&gt;</span>
-          <span class="nt">&lt;policyEntry</span> <span class="na">queue=</span><span class="s">"&gt;"</span> <span class="na">producerFlowControl=</span><span class="s">"true"</span> <span class="na">memoryLimit=</span><span class="s">"5mb"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;deadLetterStrategy&gt;</span>
-              <span class="nt">&lt;individualDeadLetterStrategy</span> <span class="na">queuePrefix=</span><span class="s">"DLQ."</span> <span class="na">useQueueForQueueMessages=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
-            <span class="nt">&lt;/deadLetterStrategy&gt;</span>
-          <span class="nt">&lt;/policyEntry&gt;</span>
-        <span class="nt">&lt;/policyEntries&gt;</span>
-      <span class="nt">&lt;/policyMap&gt;</span>
-    <span class="nt">&lt;/destinationPolicy&gt;</span>
+    &lt;destinationPolicy&gt;
+      &lt;policyMap&gt;
+        &lt;policyEntries&gt;
+          &lt;policyEntry queue="&gt;" producerFlowControl="true" memoryLimit="5mb"&gt;
+            &lt;deadLetterStrategy&gt;
+              &lt;individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true"/&gt;
+            &lt;/deadLetterStrategy&gt;
+          &lt;/policyEntry&gt;
+        &lt;/policyEntries&gt;
+      &lt;/policyMap&gt;
+    &lt;/destinationPolicy&gt;
     
-    <span class="nt">&lt;managementContext&gt;</span>
-      <span class="nt">&lt;managementContext</span> <span class="na">createConnector=</span><span class="s">"false"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;/managementContext&gt;</span>
+    &lt;managementContext&gt;
+      &lt;managementContext createConnector="false"/&gt;
+    &lt;/managementContext&gt;
     
-    <span class="nt">&lt;systemUsage&gt;</span>
-      <span class="nt">&lt;systemUsage&gt;</span>
-        <span class="nt">&lt;memoryUsage&gt;</span>
-          <span class="nt">&lt;memoryUsage</span> <span class="na">limit=</span><span class="s">"420 mb"</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/memoryUsage&gt;</span>
-        <span class="nt">&lt;storeUsage&gt;</span>
-          <span class="nt">&lt;storeUsage</span> <span class="na">limit=</span><span class="s">"1 gb"</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/storeUsage&gt;</span>
-        <span class="nt">&lt;tempUsage&gt;</span>
-          <span class="nt">&lt;tempUsage</span> <span class="na">limit=</span><span class="s">"250 mb"</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/tempUsage&gt;</span>
-      <span class="nt">&lt;/systemUsage&gt;</span>
-    <span class="nt">&lt;/systemUsage&gt;</span>
+    &lt;systemUsage&gt;
+      &lt;systemUsage&gt;
+        &lt;memoryUsage&gt;
+          &lt;memoryUsage limit="420 mb"/&gt;
+        &lt;/memoryUsage&gt;
+        &lt;storeUsage&gt;
+          &lt;storeUsage limit="1 gb"/&gt;
+        &lt;/storeUsage&gt;
+        &lt;tempUsage&gt;
+          &lt;tempUsage limit="250 mb"/&gt;
+        &lt;/tempUsage&gt;
+      &lt;/systemUsage&gt;
+    &lt;/systemUsage&gt;
     
-    <span class="nt">&lt;transportConnectors&gt;</span>
-      <span class="nt">&lt;transportConnector</span> <span class="na">name=</span><span class="s">"tcp"</span> <span class="na">uri=</span><span class="s">"tcp://0.0.0.0:61616"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;/transportConnectors&gt;</span>
+    &lt;transportConnectors&gt;
+      &lt;transportConnector name="tcp" uri="tcp://0.0.0.0:61616"/&gt;
+    &lt;/transportConnectors&gt;
     
-  <span class="nt">&lt;/broker&gt;</span>
+  &lt;/broker&gt;
   
-<span class="nt">&lt;/beans&gt;</span>
+&lt;/beans&gt;
 </code></pre></div></div>
 
 <p>However, in ActiveMQ 5.4, the XML configuration above would cause an exception similar to the following:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Caused by: org.xml.sax.SAXParseException: cvc-complex-type.2.4.a: Invalid content was found starting with element 'persistenceAdapter'. One of '{"http://activemq.apache.org/schema/core":producerSystemUsage, "http://activemq.apache.org/schema/core":proxyConnectors, "http://activemq.apache.org/schema/core":regionBroker, "http://activemq.apache.org/schema/core":services, "http://activemq.apache.org/schema/core":shutdownHooks, "http://activemq.apache.org/schema/core":sslContext, "http://activemq.apache.org/schema/core":systemUsage, "http://activemq.apache.org/schema/core":taskRunnerFactory, "http://activemq.apache.org/schema/core":tempDataStore, "http://activemq.apache.org/schema/core":transportConnectorURIs, "http://activemq.apache.org/schema/core":transportConnectors, WC["http://activemq.apache.org/schema/core"](#)}' is expected.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Caused by: org.xml.sax.SAXParseException: cvc-complex-type.2.4.a: Invalid content was found starting with element 'persistenceAdapter'. One of '{"http://activemq.apache.org/schema/core":producerSystemUsage, "http://activemq.apache.org/schema/core":proxyConnectors, "http://activemq.apache.org/schema/core":regionBroker, "http://activemq.apache.org/schema/core":services, "http://activemq.apache.org/schema/core":shutdownHooks, "http://activemq.apache.org/schema/core":sslContext, "http://activemq.apache.org/schema/core":systemUsage, "http://activemq.apache.org/schema/core":taskRunnerFactory, "http://activemq.apache.org/schema/core":tempDataStore, "http://activemq.apache.org/schema/core":transportConnectorURIs, "http://activemq.apache.org/schema/core":transportConnectors, WC["http://activemq.apache.org/schema/core"](#)}' is expected.
 </code></pre></div></div>
 <p>To avoid this XML validation error in ActiveMQ 5.4, simply change the ordering of the XML elements so that they are in alphabetical order. Below is an example of the same XML configuration but in alphabetical order:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
-<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span> 
-<span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd   
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd   
 http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd      
-http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd"</span><span class="nt">&gt;</span>
+http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd"&gt;
   
-  <span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema/core"</span> <span class="na">brokerName=</span><span class="s">"brokerB1"</span> <span class="na">destroyApplicationContextOnStop=</span><span class="s">"true"</span><span class="nt">&gt;</span>
+  &lt;broker xmlns="http://activemq.apache.org/schema/core" brokerName="brokerB1" destroyApplicationContextOnStop="true"&gt;
     
-    <span class="nt">&lt;destinationPolicy&gt;</span>
-      <span class="nt">&lt;policyMap&gt;</span>
-        <span class="nt">&lt;policyEntries&gt;</span>
-          <span class="nt">&lt;policyEntry</span> <span class="na">queue=</span><span class="s">"&gt;"</span> <span class="na">producerFlowControl=</span><span class="s">"true"</span> <span class="na">memoryLimit=</span><span class="s">"5mb"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;deadLetterStrategy&gt;</span>
-              <span class="nt">&lt;individualDeadLetterStrategy</span> <span class="na">queuePrefix=</span><span class="s">"DLQ."</span> <span class="na">useQueueForQueueMessages=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
-            <span class="nt">&lt;/deadLetterStrategy&gt;</span>
-          <span class="nt">&lt;/policyEntry&gt;</span>
-        <span class="nt">&lt;/policyEntries&gt;</span>
-      <span class="nt">&lt;/policyMap&gt;</span>
-    <span class="nt">&lt;/destinationPolicy&gt;</span>
+    &lt;destinationPolicy&gt;
+      &lt;policyMap&gt;
+        &lt;policyEntries&gt;
+          &lt;policyEntry queue="&gt;" producerFlowControl="true" memoryLimit="5mb"&gt;
+            &lt;deadLetterStrategy&gt;
+              &lt;individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true"/&gt;
+            &lt;/deadLetterStrategy&gt;
+          &lt;/policyEntry&gt;
+        &lt;/policyEntries&gt;
+      &lt;/policyMap&gt;
+    &lt;/destinationPolicy&gt;
     
-    <span class="nt">&lt;managementContext&gt;</span>
-      <span class="nt">&lt;managementContext</span> <span class="na">createConnector=</span><span class="s">"false"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;/managementContext&gt;</span>
+    &lt;managementContext&gt;
+      &lt;managementContext createConnector="false"/&gt;
+    &lt;/managementContext&gt;
 
-    <span class="nt">&lt;persistenceAdapter&gt;</span>
-      <span class="nt">&lt;kahaDB</span> <span class="na">directory=</span><span class="s">"${activemq.base}/data/kahadb"</span> <span class="na">enableJournalDiskSyncs=</span><span class="s">"false"</span> <span class="na">indexWriteBatchSize=</span><span class="s">"10000"</span> <span class="na">indexCacheSize=</span><span class="s">"1000"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;/persistenceAdapter&gt;</span>
+    &lt;persistenceAdapter&gt;
+      &lt;kahaDB directory="${activemq.base}/data/kahadb" enableJournalDiskSyncs="false" indexWriteBatchSize="10000" indexCacheSize="1000"/&gt;
+    &lt;/persistenceAdapter&gt;
 
-    <span class="nt">&lt;plugins&gt;</span>
-      <span class="nt">&lt;loggingBrokerPlugin/&gt;</span>
-    <span class="nt">&lt;/plugins&gt;</span>
+    &lt;plugins&gt;
+      &lt;loggingBrokerPlugin/&gt;
+    &lt;/plugins&gt;
     
-    <span class="nt">&lt;systemUsage&gt;</span>
-      <span class="nt">&lt;systemUsage&gt;</span>
-        <span class="nt">&lt;memoryUsage&gt;</span>
-          <span class="nt">&lt;memoryUsage</span> <span class="na">limit=</span><span class="s">"420 mb"</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/memoryUsage&gt;</span>
-        <span class="nt">&lt;storeUsage&gt;</span>
-          <span class="nt">&lt;storeUsage</span> <span class="na">limit=</span><span class="s">"1 gb"</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/storeUsage&gt;</span>
-        <span class="nt">&lt;tempUsage&gt;</span>
-          <span class="nt">&lt;tempUsage</span> <span class="na">limit=</span><span class="s">"250 mb"</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/tempUsage&gt;</span>
-      <span class="nt">&lt;/systemUsage&gt;</span>
-    <span class="nt">&lt;/systemUsage&gt;</span>
+    &lt;systemUsage&gt;
+      &lt;systemUsage&gt;
+        &lt;memoryUsage&gt;
+          &lt;memoryUsage limit="420 mb"/&gt;
+        &lt;/memoryUsage&gt;
+        &lt;storeUsage&gt;
+          &lt;storeUsage limit="1 gb"/&gt;
+        &lt;/storeUsage&gt;
+        &lt;tempUsage&gt;
+          &lt;tempUsage limit="250 mb"/&gt;
+        &lt;/tempUsage&gt;
+      &lt;/systemUsage&gt;
+    &lt;/systemUsage&gt;
     
-    <span class="nt">&lt;transportConnectors&gt;</span>
-      <span class="nt">&lt;transportConnector</span> <span class="na">name=</span><span class="s">"tcp"</span> <span class="na">uri=</span><span class="s">"tcp://0.0.0.0:61616"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;/transportConnectors&gt;</span>
+    &lt;transportConnectors&gt;
+      &lt;transportConnector name="tcp" uri="tcp://0.0.0.0:61616"/&gt;
+    &lt;/transportConnectors&gt;
     
-  <span class="nt">&lt;/broker&gt;</span>
+  &lt;/broker&gt;
   
-<span class="nt">&lt;/beans&gt;</span>
+&lt;/beans&gt;
 </code></pre></div></div>
 
 <p>Configurations can be easily tested against ActiveMQ 5.4 using the ActiveMQ startup script. Below is an example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd $ACTIVEMQ_HOME  
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd $ACTIVEMQ_HOME  
 $ ./bin/activemq console xbean:file:/Users/bsnyder/SpringSource/clients/Finra/activemq-example-unordered.xml  
 INFO: Using default configuration  
 (you can configure options in one of these file: /etc/default/activemq /Users/bsnyder/.activemqrc)

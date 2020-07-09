@@ -129,20 +129,20 @@ The <a href="amq-message-store">AMQ Message Store</a> which although faster than
 
 <p>When running the broker from the command line, we look for the activemq.xml on the classpath unless you specify one to use. e.g.<br />
 <strong>AMQ 4.x</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq xbean:file:myconfig.xml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq xbean:file:myconfig.xml
 </code></pre></div></div>
 <p><strong>AMQ 3.x</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq myconfig.xml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq myconfig.xml
 </code></pre></div></div>
 <p>or just<br />
 <strong>AMQ3.x/AMQ4.x</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq
 </code></pre></div></div>
 <p>Here is a sample XML configuration which shows how to configure the journal and the JDBC persistence.</p>
 
 <p>AMQ 5.x</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans" 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans" 
        xmlns:amq="http://activemq.apache.org/schema/core" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
@@ -182,24 +182,24 @@ The <a href="amq-message-store">AMQ Message Store</a> which although faster than
 
 <p>To enable JDBC persistence of JMS messages without journaling, we need to change the message broker’s default persistence configuration from<br />
 <strong>AMQ 4.x</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistenceAdapter&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistenceAdapter&gt;
   &lt;journaledJDBC journalLogFiles="5" dataDirectory="../activemq-data"/&gt; 
 &lt;/persistenceAdapter&gt;
 </code></pre></div></div>
 <p>to</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistenceAdapter&gt; 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistenceAdapter&gt; 
   &lt;jdbcPersistenceAdapter dataSource="#my-ds"/&gt; 
 &lt;/persistenceAdapter&gt;
 </code></pre></div></div>
 <p><strong>For AMQ 3.x</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistence&gt; 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistence&gt; 
   &lt;journalPersistence directory="../var/journal"&gt; 
     &lt;jdbcPersistence dataSourceRef="derby-ds"/&gt; 
   &lt;/journalPersistence&gt; 
 &lt;/persistence&gt;
 </code></pre></div></div>
 <p>to</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistence&gt; 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;persistence&gt; 
   &lt;jdbcPersistence dataSourceRef="derby-ds"/&gt; 
 &lt;/persistence&gt;
 </code></pre></div></div>
@@ -214,7 +214,7 @@ The <a href="amq-message-store">AMQ Message Store</a> which although faster than
 <h2 id="disabling-persistence">Disabling Persistence</h2>
 
 <p>If you don’t want persistence at all you can disable it easily via the <a href="xml-configuration">Xml Configuration</a>. e.g.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker persistent="false"&gt; &lt;/broker&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker persistent="false"&gt; &lt;/broker&gt;
 </code></pre></div></div>
 <p>This will make the broker use the [<memoryPersistenceAdapter>](http://activemq.apache.org/maven/apidocs/org/apache/activemq/store/memory/MemoryPersistenceAdapter.html)  
 For an example of using a configuration URI see [How To Unit Test JMS Code](how-to-unit-test-jms-code)</memoryPersistenceAdapter></p>

@@ -105,14 +105,14 @@
 <p>OpenWire is used to marshal objects to byte arrays and back. We will refer to the marshaled objects as commands.</p>
 
 <p>A TCP network connection would see multiple commands back to back on the stream. Commands are not delimited in anyway and are variable sized.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+---------+  +---------+      +---------+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+---------+  +---------+      +---------+
 | command |  | command | .... | command |
 +---------+  +---------+      +---------+
 </code></pre></div></div>
 <p>All data primitive types used in the encoded commands are encoded in big-endian/network byte order.</p>
 
 <p>primitive types and encoding:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             |               |               |               |               |               |               
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             |               |               |               |               |               |               
 +----------+ | +-----------+ | +-----------+ | +-----------+ | +-----------+ | +-----------+ | +-----------+ 
 | byte     | | | char      | | | short     | | | int       | | | long      | | | float     | | | double    | 
 +----------+ | +-----------+ | +-----------+ | +-----------+ | +-----------+ | +-----------+ | +-----------+ 
@@ -124,7 +124,7 @@
 <h2 id="wire-format-negotiation">Wire Format Negotiation</h2>
 
 <p>OpenWire is an extensible in that it supports adding new encoding options while still being backward compatible with previous versions of the protocol. Every OpenWire protocol session initially starts with all encoding options turned off and at version 1 of command marshalers. An initial WIREFORMAT_INFO command is exchanged between the two nodes so that additional encoding features can be enabled. If both sides request an encoding feature to be enabled then it will be enabled. The command marshalers used will be the highest version that they both support.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+-------------------------+ +---------+  +---------+      +---------+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+-------------------------+ +---------+  +---------+      +---------+
 | WIREFORMAT_INFO command | | command |  | command | .... | command |
 +-------------------------+ +---------+  +---------+      +---------+
 </code></pre></div></div>
@@ -134,7 +134,7 @@
 <p>Every command is encoded as follows:</p>
 
 <p>command encoding:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[=If SizePrefixDisabled =] 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[=If SizePrefixDisabled =] 
 [ option is not enabled. ]
 [ +------+               ] +------+-------------------------+
 [ | size |               ] | type | command-specific-fields |
@@ -458,7 +458,7 @@
 <p>Strings fields may be null. If it is null then it encodes to a single “0” byte.</p>
 
 <p>string encoding:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             [=If not-null is 1===========]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             [=If not-null is 1===========]
 +----------+ [ +-------+----------------+ ]
 | not-null | [ | size  | encoded-string | ]
 +----------+ [ +-------+----------------+ ]
@@ -495,7 +495,7 @@
 <p>Byte array fields may be null. If it is null then it encodes to a single “0” byte.</p>
 
 <p>byte-array encoding:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             [=If not-null is 1========]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             [=If not-null is 1========]
 +----------+ [ +------+--------------+ ]
 | not-null | [ | size | data         | ]
 +----------+ [ +------+--------------+ ]
@@ -514,7 +514,7 @@ data|The data of the byte array</p>
 <p>Fixed Size Byte array fields may NOT be null and their length must be N length. Used for byte arrays that are always a fixed size.</p>
 
 <p>N-sized-byte-array encoding:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+-----------+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+-----------+
 | data      |
 +-----------+
 | N octects |
@@ -529,7 +529,7 @@ data|The data of the byte array</p>
 <p>Throwable fields may be null. If it is null then it encodes to a single “0” byte.</p>
 
 <p>throwable encoding:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             [=If not-null is 1===========================================================================]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             [=If not-null is 1===========================================================================]
              [                               [=If StackTraceEnabled option is enabled.==================] ]
              [                               [             [=Repeated size times======================] ] ]
 +----------+ [ +----------------+---------+  [ +-------+ [ +--------+--------+--------+-------------+ ] ] ]
@@ -592,7 +592,7 @@ data|The data of the byte array</p>
 <p>Nested command fields may be null. If it is null then it encodes to a single “0” byte.</p>
 
 <p>nested-object encoding:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             [=If not-null is 1===================]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             [=If not-null is 1===================]
 +----------+ [ +------+-------------------------+ ]
 | not-null | [ | type | command-specific-fields | ]
 +----------+ [ +------+-------------------------+ ]
@@ -629,7 +629,7 @@ data|The data of the byte array</p>
 <p>Nested Command types can be cached so that subsequent marshaling operations of the same object result in a smaller on the wire size. By default the CacheEnabled option is not enabled and therefore standard nested-object encoding is used.</p>
 
 <p>cached-object-encoding:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[=If CacheEnabled option is enabled=====================]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[=If CacheEnabled option is enabled=====================]
 [                       [=If new-value is 1===========] ]
 [ +-----------+-------+ [ +-------------------------+ ] ]
 [ | new-value | key   | [ | command-specific-fields | ] ]
@@ -639,7 +639,7 @@ data|The data of the byte array</p>
 [                       [=============================] ]
 [=====================================================] ]
 </code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[=If CacheEnabled option is disabled =]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[=If CacheEnabled option is disabled =]
 [ +-------------------------+         ]
 [ | command-specific-fields |         ]
 [ +-------------------------+         ]

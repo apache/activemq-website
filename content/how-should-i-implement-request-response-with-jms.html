@@ -119,7 +119,7 @@
 <h3 id="client-side">Client side</h3>
 
 <p>So the client side creates a consumer on a temporary queue as follows…</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// client side
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// client side
 Destination tempDest = session.createTemporaryQueue();
 MessageConsumer responseConsumer = session.createConsumer(tempDest);
 ...
@@ -132,7 +132,7 @@ producer.send(message);
 </code></pre></div></div>
 
 <h3 id="server-side">Server side</h3>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public void onMessage(Message request) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public void onMessage(Message request) {
 
   Message response = session.createMessage();
   response.setJMSCorrelationID(request.getJMSCorrelationID())
@@ -144,7 +144,7 @@ producer.send(message);
 <h2 id="full-examples">Full Examples</h2>
 
 <h3 id="server-side-1">Server Side</h3>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import org.apache.activemq.broker.BrokerService;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
@@ -234,7 +234,7 @@ public class Server implements MessageListener {
 </code></pre></div></div>
 
 <h3 id="client-side-1">Client Side</h3>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import org.apache.activemq.ActiveMQConnectionFactory;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
 import java.util.Random;
@@ -322,7 +322,7 @@ public class Client implements MessageListener {
 <h3 id="protocol-class">Protocol Class</h3>
 
 <p>This class is needed to run the client/server example above. Delegating the handling of messages to a seperate class is solely a personal preference.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class MessageProtocol {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class MessageProtocol {
     public String handleProtocolMessage(String messageText) {
         String responseText;
         if ("MyProtocolMessage".equalsIgnoreCase(messageText)) {

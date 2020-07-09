@@ -99,7 +99,7 @@
 <p>Stomp transactions are often mistakenly considered to be a solution for this use case. But that’s not the case, since transactions are only related to sending messages and acknowledgments. If you start a transaction, send a message ack in a transaction and finally abort it, the message will not be redelivered again. It just means that broker will not send any more messages to the client if the prefetch limit is reached.</p>
 
 <p>Take a look at the following example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>StompConnection connection = new StompConnection();
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>StompConnection connection = new StompConnection();
 connection.open("localhost", 61613);
 		
 connection.connect("system", "manager");
@@ -132,11 +132,11 @@ connection.ack(frame, "tx3");
 connection.commit("tx3");
 </code></pre></div></div>
 <p>This simple application will print</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>message 1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>message 1
 message 2
 message 3
 </code></pre></div></div>
-<p>Since the transaction <code class="highlighter-rouge">tx1</code> has been aborted, we needed to acknowledge that message again in <code class="highlighter-rouge">tx2</code> in order to be able to receive the next message (since the prefetch size used is 1).</p>
+<p>Since the transaction <code class="language-plaintext highlighter-rouge">tx1</code> has been aborted, we needed to acknowledge that message again in <code class="language-plaintext highlighter-rouge">tx2</code> in order to be able to receive the next message (since the prefetch size used is 1).</p>
 
 <p>Also take a look at these pages for more info:</p>
 

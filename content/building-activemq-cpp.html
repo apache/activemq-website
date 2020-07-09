@@ -142,10 +142,10 @@
 <h2 id="building-on-nix-linuxos-xcygwin">Building on *nix (Linux/OS X/Cygwin)</h2>
 
 <p>This assumes you have all of the project dependencies installed. We’re now ready to create the configure script. To do this, run:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./autogen.sh
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./autogen.sh
 </code></pre></div></div>
 <p>You may see the following warnings when running this command:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>src/test-integration/Makefile.am:44: `CXXFLAGS' is a user variable, you should not override it;  
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>src/test-integration/Makefile.am:44: `CXXFLAGS' is a user variable, you should not override it;  
 src/test-integration/Makefile.am:44: use `AM_CXXFLAGS' instead.  
 src/test/Makefile.am:104: `CXXFLAGS' is a user variable, you should not override it;  
 src/test/Makefile.am:104: use `AM_CXXFLAGS' instead.
@@ -163,23 +163,23 @@ src/test/Makefile.am:104: use `AM_CXXFLAGS' instead.
 </blockquote>
 
 <p>The configure script will customize the way the software is built and installed into your system along with detecting the available libraries that have been installed. To use the default configuration just run:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure
 </code></pre></div></div>
 <p>For more help on how to customize the build configuration, run:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure --help
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure --help
 </code></pre></div></div>
 <p>Once the configure script has run successfully, you are ready to build. Run:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make
 </code></pre></div></div>
 <p>This will build all of the core ActiveMQ CPP source code. To build and install the code into the system directories, run:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make install
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make install
 </code></pre></div></div>
 <p>You will have to become the superuser in order to be able to install the files.</p>
 
 <h2 id="doxygen">Doxygen</h2>
 
 <p>To generate the doxygen documentation for the project, just run:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make doxygen-run
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make doxygen-run
 </code></pre></div></div>
 
 <h2 id="running-tests">Running Tests</h2>
@@ -187,7 +187,7 @@ src/test/Makefile.am:104: use `AM_CXXFLAGS' instead.
 <h3 id="unit-tests">Unit Tests</h3>
 
 <p>In order to build and run the suite of unit tests, run:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make check
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make check
 </code></pre></div></div>
 <p>This will verify that the library is functioning correctly on the target platform. In addition, it will generate the integration tests binary.</p>
 
@@ -196,7 +196,7 @@ src/test/Makefile.am:104: use `AM_CXXFLAGS' instead.
 <p>The library also contains a set of tests that are run against a real AMQ broker. These allow you to validate this distribution of ActiveMQ CPP against your broker. Running these without a broker will result in failed tests. The tests currently hard-code the broker url to be tcp://localhost:61613 for stomp and tcp://localhost:61616 for openwire.</p>
 
 <p>The integration tests are built via “make check”. To run them, first start a broker and then</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd src/test-integration
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd src/test-integration
 ./activemq-test-integration
 </code></pre></div></div>
 <p>This will take quite some time to complete, so be patient.</p>
@@ -204,7 +204,7 @@ src/test/Makefile.am:104: use `AM_CXXFLAGS' instead.
 <h2 id="example">Example</h2>
 
 <p>There is an example application that ships with the distribution in src/examples. The example is compiled by default with the “make” command, but can easily be compiled manually using the command:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>g++ -o main -pthread -I ../main main.cpp out/libactivemq-cpp-0\_0\_2.a -luuid
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>g++ -o main -pthread -I ../main main.cpp out/libactivemq-cpp-0\_0\_2.a -luuid
 </code></pre></div></div>
 
 <h2 id="notes-for-windows-users">Notes for Windows users</h2>
@@ -217,11 +217,11 @@ src/test/Makefile.am:104: use `AM_CXXFLAGS' instead.
   <li>You need to download and install the Platform SDK if you don’t have it installed already.</li>
   <li>Ensure that the path to you MSVC install is set in the PATH env variable. You can test this by typing cl.exe at the command line, if you get an error complaining that its not found, then you’ll need to fix your PATH.</li>
   <li>Set the INCLUDE env variable to include the path to your MSVC includes, and the platform SDK includes. For example:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INCLUDE = D:\Program Files\Microsoft Visual Studio 8\VC\include;D:\Program Files\Microsoft Platform SDK\Include\*
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INCLUDE = D:\Program Files\Microsoft Visual Studio 8\VC\include;D:\Program Files\Microsoft Platform SDK\Include\*
 </code></pre></div>    </div>
   </li>
   <li>Set the LIB env variable to include the path to your MSVC libs, and the Platform SDK libs. For example:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LIB = D:\Program Files\Microsoft Visual Studio 8\VC\lib;D:\Program Files\Microsoft Platform SDK\Lib
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LIB = D:\Program Files\Microsoft Visual Studio 8\VC\lib;D:\Program Files\Microsoft Platform SDK\Lib
 </code></pre></div>    </div>
   </li>
   <li>The Project files reference the CPPUnit libraries for the Integration and Unit tests builds.  In order for these to build correctly you must either place the CPPUnit libraries in a directory listed in the project settings, or add a new location for your install of CPPUnit. </li>

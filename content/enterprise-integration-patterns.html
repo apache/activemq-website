@@ -104,22 +104,22 @@
 
 <h3 id="using-eip-in-the-activemq-broker">Using EIP in the ActiveMQ Broker</h3>
 
-<p>The broker’s <code class="highlighter-rouge">activemq.xml</code> file comes already configured to support Camel; you just need to customize the routing rules.</p>
+<p>The broker’s <code class="language-plaintext highlighter-rouge">activemq.xml</code> file comes already configured to support Camel; you just need to customize the routing rules.</p>
 
 <h4 id="writing-eip-rules-using-java-code">Writing EIP rules using Java code</h4>
 
 <p>To use <a href="http://activemq.apache.org/camel/dsl.html">Java code to write EIP routing rules</a>, just put your classes on the classpath (such as in activemq/lib/myroutes/foo.jar). Then to get Camel to find your routes you need to edit the activemq.xml so that the <strong>packages</strong> attribute points to the package name (or a parent package name) to look for.</p>
 
-<p>For example if all your routes are in the package <code class="highlighter-rouge">org.acme.cheese</code> such as <code class="highlighter-rouge">org.acme.cheese.whatnot.MyRouter</code> then you could edit the XML to be…</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;camelContext xmlns="http://activemq.apache.org/camel/schema/spring"&gt;
+<p>For example if all your routes are in the package <code class="language-plaintext highlighter-rouge">org.acme.cheese</code> such as <code class="language-plaintext highlighter-rouge">org.acme.cheese.whatnot.MyRouter</code> then you could edit the XML to be…</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;camelContext xmlns="http://activemq.apache.org/camel/schema/spring"&gt;
  &lt;package&gt;org.acme.cheese&lt;/package&gt;
 &lt;/camelContext&gt;
 </code></pre></div></div>
 
 <h4 id="writing-eip-rules-using-xml">Writing EIP rules using XML</h4>
 
-<p>To use XML its even easier, as you can just embed whatever routing rules inside the <code class="highlighter-rouge">&lt;camelContext&gt;</code> element using Camel’s <a href="http://activemq.apache.org/camel/xml-configuration">Spring XML format</a>. Note that the XML is way more verbose than the <a href="http://activemq.apache.org/camel/dsl.html">Java DSL</a> but it is a bit simpler to deploy. e.g. for a trivial route…</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;camelContext xmlns="http://activemq.apache.org/camel/schema/spring"&gt;
+<p>To use XML its even easier, as you can just embed whatever routing rules inside the <code class="language-plaintext highlighter-rouge">&lt;camelContext&gt;</code> element using Camel’s <a href="http://activemq.apache.org/camel/xml-configuration">Spring XML format</a>. Note that the XML is way more verbose than the <a href="http://activemq.apache.org/camel/dsl.html">Java DSL</a> but it is a bit simpler to deploy. e.g. for a trivial route…</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;camelContext xmlns="http://activemq.apache.org/camel/schema/spring"&gt;
   &lt;route&gt;
     &lt;from uri="activemq:com.acme.MyQueue"/&gt;
     &lt;to uri="activemq:com.acme.SomeOtherQueue"/&gt;

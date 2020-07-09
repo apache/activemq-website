@@ -107,7 +107,7 @@
 <p>And hey presto, you should now have the Web Console running.</p>
 
 <p>In the event that you are running a standalone broker and the Web Console is not reachable, check that the following lines are included in your ActiveMQ config xml:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"&gt;
 &lt;property name="locations"&gt;
 &lt;value&gt;file:${activemq.base}/conf/credentials.properties&lt;/value&gt;
 &lt;/property&gt;
@@ -118,7 +118,7 @@
 &lt;import resource="${activemq.base}/conf/jetty.xml" /&gt;
 </code></pre></div></div>
 <p>The import will start up an embedded Jetty container. To verify that the config is working, the following should appear in your ActiveMQ console/logs on next startup:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO | jetty-7.1.6.v20100715
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO | jetty-7.1.6.v20100715
 INFO | ActiveMQ WebConsole initialized.
 </code></pre></div></div>
 
@@ -128,16 +128,16 @@ INFO | ActiveMQ WebConsole initialized.
 
 <h3 id="securing-web-console">Securing Web Console</h3>
 
-<p>Starting with ActiveMQ 5.4.0, Web Console comes pre-configured with basic access authentication setup. It’s turned off by default, so you need to turn it on explicitly, but it’s really simple. Go to the <code class="highlighter-rouge">${ACTIVEMQ_HOME}/conf/jetty.xml</code> and find the following line</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;property name="authenticate" value="false" /&gt;
+<p>Starting with ActiveMQ 5.4.0, Web Console comes pre-configured with basic access authentication setup. It’s turned off by default, so you need to turn it on explicitly, but it’s really simple. Go to the <code class="language-plaintext highlighter-rouge">${ACTIVEMQ_HOME}/conf/jetty.xml</code> and find the following line</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;property name="authenticate" value="false" /&gt;
 </code></pre></div></div>
 <p>and change it to</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;property name="authenticate" value="true" /&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;property name="authenticate" value="true" /&gt;
 </code></pre></div></div>
-<p>That’s it. From that point on, web server will look at <code class="highlighter-rouge">${ACTIVEMQ_HOME}/conf/jetty-realm.properties</code> file trying to match provided credentials with those listed in the file. By default, you can access the web console with <code class="highlighter-rouge">admin/admin</code> credentials. That can be changed (and more users can be added) in the <code class="highlighter-rouge">jetty-realm.properties</code> file.</p>
+<p>That’s it. From that point on, web server will look at <code class="language-plaintext highlighter-rouge">${ACTIVEMQ_HOME}/conf/jetty-realm.properties</code> file trying to match provided credentials with those listed in the file. By default, you can access the web console with <code class="language-plaintext highlighter-rouge">admin/admin</code> credentials. That can be changed (and more users can be added) in the <code class="language-plaintext highlighter-rouge">jetty-realm.properties</code> file.</p>
 
-<p>You may also wish to enable <strong>ssl connector</strong> to further secure access to the web console and other web resources of the broker. To do that, go to the <code class="highlighter-rouge">${ACTIVEMQ_HOME}/conf/jetty.xml</code> and make sure you have the secure connector enabled. In versions 5.7 and newer just uncomment a predefined config. In any case make sure your connectors settings looks similar to this.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;property name="connectors"&gt;
+<p>You may also wish to enable <strong>ssl connector</strong> to further secure access to the web console and other web resources of the broker. To do that, go to the <code class="language-plaintext highlighter-rouge">${ACTIVEMQ_HOME}/conf/jetty.xml</code> and make sure you have the secure connector enabled. In versions 5.7 and newer just uncomment a predefined config. In any case make sure your connectors settings looks similar to this.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;property name="connectors"&gt;
     &lt;list&gt;
         &lt;bean id="Connector" class="org.eclipse.jetty.server.nio.SelectChannelConnector"&gt;
             &lt;property name="port" value="8161" /&gt;

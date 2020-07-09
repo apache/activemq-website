@@ -109,78 +109,78 @@ Adapters to your Geronimo server.<br />
 The following deployment descriptor can be used to deploy two topics and a<br />
 ConnectionFactory: weatherTopic and weatherRequestsTopic</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;connector</span> <span class="na">xmlns=</span><span class="s">"http://geronimo.apache.org/xml/ns/j2ee/connector"</span>
-    <span class="na">version=</span><span class="s">"1.5"</span>
-    <span class="na">configId=</span><span class="s">"weather/Topics"</span>
-    <span class="na">parentId=</span><span class="s">"org/apache/geronimo/SystemJMS"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;resourceadapter&gt;</span>
-        <span class="nt">&lt;resourceadapter-instance&gt;</span>
-            <span class="nt">&lt;resourceadapter-name&gt;</span>ActiveMQ RA<span class="nt">&lt;/resourceadapter-name&gt;</span>
-            <span class="nt">&lt;config-property-setting</span> <span class="na">name=</span><span class="s">"ServerUrl"</span><span class="nt">&gt;</span>tcp://localhost:61616<span class="nt">&lt;/config-property-setting&gt;</span>
-            <span class="nt">&lt;config-property-setting</span> <span class="na">name=</span><span class="s">"UserName"</span><span class="nt">&gt;</span>geronimo<span class="nt">&lt;/config-property-setting&gt;</span>
-            <span class="nt">&lt;config-property-setting</span> <span class="na">name=</span><span class="s">"Password"</span><span class="nt">&gt;</span>geronimo<span class="nt">&lt;/config-property-setting&gt;</span>
-            <span class="nt">&lt;workmanager&gt;</span>
-                <span class="nt">&lt;gbean-link&gt;</span>DefaultWorkManager<span class="nt">&lt;/gbean-link&gt;</span>
-            <span class="nt">&lt;/workmanager&gt;</span>
-        <span class="nt">&lt;/resourceadapter-instance&gt;</span>
-        <span class="nt">&lt;outbound-resourceadapter&gt;</span>
-            <span class="nt">&lt;connection-definition&gt;</span>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;connector xmlns="http://geronimo.apache.org/xml/ns/j2ee/connector"
+    version="1.5"
+    configId="weather/Topics"
+    parentId="org/apache/geronimo/SystemJMS"&gt;
+    &lt;resourceadapter&gt;
+        &lt;resourceadapter-instance&gt;
+            &lt;resourceadapter-name&gt;ActiveMQ RA&lt;/resourceadapter-name&gt;
+            &lt;config-property-setting name="ServerUrl"&gt;tcp://localhost:61616&lt;/config-property-setting&gt;
+            &lt;config-property-setting name="UserName"&gt;geronimo&lt;/config-property-setting&gt;
+            &lt;config-property-setting name="Password"&gt;geronimo&lt;/config-property-setting&gt;
+            &lt;workmanager&gt;
+                &lt;gbean-link&gt;DefaultWorkManager&lt;/gbean-link&gt;
+            &lt;/workmanager&gt;
+        &lt;/resourceadapter-instance&gt;
+        &lt;outbound-resourceadapter&gt;
+            &lt;connection-definition&gt;
 
-<span class="nt">&lt;connectionfactory-interface&gt;</span>javax.jms.ConnectionFactory<span class="nt">&lt;/connectionfactory-interface&gt;</span>
-                <span class="nt">&lt;connectiondefinition-instance&gt;</span>
-                    <span class="nt">&lt;name&gt;</span>ConnectionFactory<span class="nt">&lt;/name&gt;</span>
+&lt;connectionfactory-interface&gt;javax.jms.ConnectionFactory&lt;/connectionfactory-interface&gt;
+                &lt;connectiondefinition-instance&gt;
+                    &lt;name&gt;ConnectionFactory&lt;/name&gt;
 
-<span class="nt">&lt;implemented-interface&gt;</span>javax.jms.QueueConnectionFactory<span class="nt">&lt;/implemented-interface&gt;</span>
+&lt;implemented-interface&gt;javax.jms.QueueConnectionFactory&lt;/implemented-interface&gt;
 
-<span class="nt">&lt;implemented-interface&gt;</span>javax.jms.TopicConnectionFactory<span class="nt">&lt;/implemented-interface&gt;</span>
-                    <span class="nt">&lt;connectionmanager&gt;</span>
-                        <span class="nt">&lt;xa-transaction&gt;</span>
-                            <span class="nt">&lt;transaction-caching/&gt;</span>
-                        <span class="nt">&lt;/xa-transaction&gt;</span>
-                        <span class="nt">&lt;single-pool&gt;</span>
-                            <span class="nt">&lt;max-size&gt;</span>10<span class="nt">&lt;/max-size&gt;</span>
+&lt;implemented-interface&gt;javax.jms.TopicConnectionFactory&lt;/implemented-interface&gt;
+                    &lt;connectionmanager&gt;
+                        &lt;xa-transaction&gt;
+                            &lt;transaction-caching/&gt;
+                        &lt;/xa-transaction&gt;
+                        &lt;single-pool&gt;
+                            &lt;max-size&gt;10&lt;/max-size&gt;
 
-<span class="nt">&lt;blocking-timeout-milliseconds&gt;</span>5000<span class="nt">&lt;/blocking-timeout-milliseconds&gt;</span>
-                            <span class="nt">&lt;match-one/&gt;</span>
-                        <span class="nt">&lt;/single-pool&gt;</span>
-                    <span class="nt">&lt;/connectionmanager&gt;</span>
-                    <span class="nt">&lt;global-jndi-name&gt;</span>ConnectionFactory<span class="nt">&lt;/global-jndi-name&gt;</span>
-                    <span class="c">&lt;!--
+&lt;blocking-timeout-milliseconds&gt;5000&lt;/blocking-timeout-milliseconds&gt;
+                            &lt;match-one/&gt;
+                        &lt;/single-pool&gt;
+                    &lt;/connectionmanager&gt;
+                    &lt;global-jndi-name&gt;ConnectionFactory&lt;/global-jndi-name&gt;
+                    &lt;!--
 &lt;credential-interface&gt;javax.resource.spi.security.PasswordCredential&lt;/credential-interface&gt;
---&gt;</span>
-                <span class="nt">&lt;/connectiondefinition-instance&gt;</span>
-            <span class="nt">&lt;/connection-definition&gt;</span>
-        <span class="nt">&lt;/outbound-resourceadapter&gt;</span>
-    <span class="nt">&lt;/resourceadapter&gt;</span>
-    <span class="nt">&lt;adminobject&gt;</span>
-        <span class="nt">&lt;adminobject-interface&gt;</span>javax.jms.Topic<span class="nt">&lt;/adminobject-interface&gt;</span>
+--&gt;
+                &lt;/connectiondefinition-instance&gt;
+            &lt;/connection-definition&gt;
+        &lt;/outbound-resourceadapter&gt;
+    &lt;/resourceadapter&gt;
+    &lt;adminobject&gt;
+        &lt;adminobject-interface&gt;javax.jms.Topic&lt;/adminobject-interface&gt;
 
-<span class="nt">&lt;adminobject-class&gt;</span>org.codehaus.activemq.message.ActiveMQTopic<span class="nt">&lt;/adminobject-class&gt;</span>
-        <span class="nt">&lt;adminobject-instance&gt;</span>
-            <span class="nt">&lt;message-destination-name&gt;</span>weatherTopic<span class="nt">&lt;/message-destination-name&gt;</span>
-            <span class="nt">&lt;config-property-setting</span>
-<span class="na">name=</span><span class="s">"PhysicalName"</span><span class="nt">&gt;</span>weatherTopic<span class="nt">&lt;/config-property-setting&gt;</span>
-        <span class="nt">&lt;/adminobject-instance&gt;</span>
-    <span class="nt">&lt;/adminobject&gt;</span>
-    <span class="nt">&lt;adminobject&gt;</span>
-        <span class="nt">&lt;adminobject-interface&gt;</span>javax.jms.Topic<span class="nt">&lt;/adminobject-interface&gt;</span>
+&lt;adminobject-class&gt;org.codehaus.activemq.message.ActiveMQTopic&lt;/adminobject-class&gt;
+        &lt;adminobject-instance&gt;
+            &lt;message-destination-name&gt;weatherTopic&lt;/message-destination-name&gt;
+            &lt;config-property-setting
+name="PhysicalName"&gt;weatherTopic&lt;/config-property-setting&gt;
+        &lt;/adminobject-instance&gt;
+    &lt;/adminobject&gt;
+    &lt;adminobject&gt;
+        &lt;adminobject-interface&gt;javax.jms.Topic&lt;/adminobject-interface&gt;
 
-<span class="nt">&lt;adminobject-class&gt;</span>org.codehaus.activemq.message.ActiveMQTopic<span class="nt">&lt;/adminobject-class&gt;</span>
-        <span class="nt">&lt;adminobject-instance&gt;</span>
+&lt;adminobject-class&gt;org.codehaus.activemq.message.ActiveMQTopic&lt;/adminobject-class&gt;
+        &lt;adminobject-instance&gt;
 
-<span class="nt">&lt;message-destination-name&gt;</span>weatherRequestsTopic<span class="nt">&lt;/message-destination-name&gt;</span>
-            <span class="nt">&lt;config-property-setting</span>
-<span class="na">name=</span><span class="s">"PhysicalName"</span><span class="nt">&gt;</span>weatherRequestsTopic<span class="nt">&lt;/config-property-setting&gt;</span>
-        <span class="nt">&lt;/adminobject-instance&gt;</span>
-    <span class="nt">&lt;/adminobject&gt;</span>
+&lt;message-destination-name&gt;weatherRequestsTopic&lt;/message-destination-name&gt;
+            &lt;config-property-setting
+name="PhysicalName"&gt;weatherRequestsTopic&lt;/config-property-setting&gt;
+        &lt;/adminobject-instance&gt;
+    &lt;/adminobject&gt;
 
-<span class="nt">&lt;/connector&gt;</span>
+&lt;/connector&gt;
 </code></pre></div></div>
 
 <p>Then deploy it using Geronimo’s deploy tool :</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>D:\\geronimo&gt;java -jar bin\\deployer.jar deploy d:\\projects\\weather\\src\\resources\
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>D:\\geronimo&gt;java -jar bin\\deployer.jar deploy d:\\projects\\weather\\src\\resources\
 geronimo-activemq.xml repository\\activemq\\rars\\activemq-ra-3.1-SNAPSHOT.rar
 Username: system
 Password: manager
@@ -216,7 +216,7 @@ things :</p>
 
 <ul>
   <li>Create a bootstrap.properties file that’s available in your classpath
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jms.connectionFactoryName=ConnectionFactory  
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jms.connectionFactoryName=ConnectionFactory  
 jms.jndiProviderUrl=tcp://localhost:61616  
 jms.jndiContextFactory=org.activemq.jndi.ActiveMQInitialContextFactory
     
@@ -227,7 +227,7 @@ jms.weatherRequestsTopic=weatherRequestsTopic
   <li>
     <p>Now, in your Spring description file, declare the bean that will read the properties from the bootstrap.properties file</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="placeholderConfig" 
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="placeholderConfig" 
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"&gt;
     &lt;property name="location"&gt;&lt;value&gt;classpath:/bootstrap.properties&lt;/value&gt;&lt;/property&gt;
 &lt;/bean&gt;
@@ -250,13 +250,13 @@ jms.weatherRequestsTopic=weatherRequestsTopic
 			</props>
         </property>
     </bean>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
 </code></pre></div>    </div>
   </li>
   <li>
     <p>Retrieve the ConnectionFactory from the JNDI context</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="internalJmsQueueConnectionFactory"
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="internalJmsQueueConnectionFactory"
     class="org.springframework.jndi.JndiObjectFactoryBean"&gt;
     &lt;property name="jndiTemplate"&gt;
         &lt;ref bean="jndiTemplate"/&gt;
@@ -271,7 +271,7 @@ work. (In a scenario where the JNDI context actually contacts a naming server,<b
 it should match the name of the deployed ConnectionFactory)</p>
   </li>
   <li>Get the Topics instances from the JNDI Context
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="weatherTopic"
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="weatherTopic"
     class="org.springframework.jndi.JndiObjectFactoryBean"
     singleton="true"&gt;
     &lt;property name="jndiTemplate"&gt;

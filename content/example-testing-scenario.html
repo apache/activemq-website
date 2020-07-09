@@ -146,7 +146,7 @@
 <p>In the above example - each build has to kinda wait for other things to start up to some time period. e.g. the producer and consumer wanna keep around for say 5 minutes trying to connect to the broker as they can be started in any order.</p>
 
 <p>Ideally we might wanna run this as 3 maven commands as follows…</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn activemq:broker
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn activemq:broker
 mvn activemq:perf-producer -Dmessage-count=5000 -Dqueue=true -Ddestination=org.foo.bar -Durl=tcp://$hostA:61616
 mvn activemq:perf-consumer -Dmessage-count=5000 -Dqueue=true -Ddestination=org.foo.bar -Durl=tcp://$hostA:61616
 </code></pre></div></div>
@@ -209,7 +209,7 @@ mvn activemq:perf-consumer -Dmessage-count=5000 -Dqueue=true -Ddestination=org.f
 <p>So we might want to run a single JUnit test case which fires off different remote builds/processes.</p>
 
 <p>e.g.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class PerformanceTestSuite {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class PerformanceTestSuite {
    public void testSmallMessages() {
    	  buildQueue.start("broker", "");
    	  buildQueue.start("consumer", "--messageCount=1000");

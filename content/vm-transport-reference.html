@@ -103,7 +103,7 @@
 <h4 id="simple-broker-configuration-syntax">Simple Broker Configuration Syntax</h4>
 
 <p>This is the normal syntax for a VM connection. It’s simple, but provides only a limited amount of configuration of the embedded broker.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm://brokerName?transportOptions
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm://brokerName?transportOptions
 </code></pre></div></div>
 <p>If you want to connect to an already instantiated, embedded broker (e.g. as in case the case of Apache ServiceMix), make sure the brokerName used in the <strong>vm://brokerName</strong> url matches the brokerName of the already running broker.</p>
 
@@ -152,14 +152,14 @@
 </table>
 
 <h5 id="example-uri">Example URI</h5>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm://broker1?marshal=false&amp;broker.persistent=false
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm://broker1?marshal=false&amp;broker.persistent=false
 </code></pre></div></div>
 <p>Be careful with embedded brokers</p>
 
 <p>If you are using the VM transport and wish to explicitly configure an <a href="how-do-i-embed-a-broker-inside-a-connection">Embedded Broker</a> there is a chance that you could create the JMS connections first before the broker starts up. Currently ActiveMQ will auto-create a broker if you use the VM transport and there is not one already configured. (In 5.2 it is possible to use the waitForStart and create=false options for the connection uri)</p>
 
 <p>So to work around this if you are using Spring you may wish to use the <strong>depends-on</strong> attribute so that your JMS ConnectionFactory depends on the embedded broker to avoid this happening. e.g.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean"&gt;
     &lt;property name="config" value="classpath:org/apache/activemq/xbean/activemq.xml" /&gt;
     &lt;property name="start" value="true" /&gt;
   &lt;/bean&gt;
@@ -172,10 +172,10 @@
 <h4 id="advanced-broker-configuration-syntax">Advanced Broker Configuration Syntax</h4>
 
 <p>This is the advanced syntax for a VM connection. It’s allows you configure the broker more extensively using a <a href="broker-configuration-uri">Broker Configuration URI</a>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm:(broker:(tcp://localhost)?brokerOptions)?transportOptions
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm:(broker:(tcp://localhost)?brokerOptions)?transportOptions
 </code></pre></div></div>
 <p>or</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm:broker:(tcp://localhost)?brokerOptions
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm:broker:(tcp://localhost)?brokerOptions
 </code></pre></div></div>
 
 <h5 id="transport-options-1">Transport Options</h5>
@@ -210,13 +210,13 @@
 <p>There are <a href="how-should-i-use-the-vm-transport">more options</a> on optimising the use of the VM transport.</p>
 
 <h5 id="example-uri-1">Example URI</h5>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm:(broker:(tcp://localhost:6000)?persistent=false)?marshal=false
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm:(broker:(tcp://localhost:6000)?persistent=false)?marshal=false
 </code></pre></div></div>
 
 <h4 id="configuring-an-embedded-broker-using-an-external-config-file">Configuring an Embedded Broker Using an External Config File</h4>
 
 <p> To start an embedded broker using the vm transport and configure it using an external configuration file (i.e. activemq.xml), use the following URI:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm://localhost?brokerConfig=xbean:activemq.xml 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vm://localhost?brokerConfig=xbean:activemq.xml 
 </code></pre></div></div>
 
       </div>

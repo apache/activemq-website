@@ -36,6 +36,17 @@ Note that these helper scripts perform incremental builds. If for some reason yo
 
     rm -rf src/.jekyll-metadata .sass-cache/
 
+
+Jekyll version
+--------------
+
+Before you build anything, make sure you are using the latest version of jekyll:
+
+```
+gem update jekyll
+gem update
+```
+
 Contributing to the site
 ------------------------
 If you would like to make a change to the ActiveMQ site:

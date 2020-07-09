@@ -99,10 +99,10 @@
 <p>The Fanout transport layers reconnect and replication logic on top of any of the other transports. It utilizes the <a href="discovery-transport-reference">Discovery</a> transport to discover brokers and replicates commands to those brokers.</p>
 
 <h4 id="configuration-syntax">Configuration Syntax</h4>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:(discoveryURI)?transportOptions
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:(discoveryURI)?transportOptions
 </code></pre></div></div>
 <p>or</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:discoveryURI
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:discoveryURI
 </code></pre></div></div>
 
 <h5 id="transport-options">Transport Options</h5>
@@ -119,13 +119,13 @@ minAckCount|2|The minimum number of brokers to which connections must be establi
 <p>The ‘fanOutQueues’ option is specific to the fanout transport. By default, the fanout does not replicate commands to queues; only topics. Therefore, if you’d like to fanout a message send command to multiple queues on multiple brokers, you’ll have to set this option to ‘true’.</p>
 
 <p>By default, a client’s fanout transport waits for connections to be established to 2 brokers, or the number of static TCP URIs configured (if more than 2). Until this number of connections is established, the client’s call to Connection.createSession() does not return. For example, a producer that uses the fanout connector listed below will wait until 2 brokers are running, and connections are established to those two brokers.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:(multicast://default)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:(multicast://default)
 </code></pre></div></div>
 <p>Another example would be a producer using the following fanout connector.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:(static:(tcp://localhost:61629,tcp://localhost:61639,tcp://localhost:61649))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:(static:(tcp://localhost:61629,tcp://localhost:61639,tcp://localhost:61649))
 </code></pre></div></div>
 <p>In this case, three broker connections are needed. However, this required number of connections can be overridden by using the minAckCount transport option. For example, this fanout connector allows the producer to run after connecting to just one broker.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:(multicast://default)?minAckCount=1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:(multicast://default)?minAckCount=1
 </code></pre></div></div>
 
 <blockquote>
@@ -135,7 +135,7 @@ minAckCount|2|The minimum number of brokers to which connections must be establi
 </blockquote>
 
 <h5 id="example-uri">Example URI</h5>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:(static:(tcp://localhost:61616,tcp://remotehost:61616))?initialReconnectDelay=100
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fanout:(static:(tcp://localhost:61616,tcp://remotehost:61616))?initialReconnectDelay=100
 </code></pre></div></div>
 <p>Applying parameters to discovered transports</p>
 

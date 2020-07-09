@@ -100,27 +100,27 @@
 
 <p>This makes more sense since you want to do asynchronous message delivery to slower consumers, but synchronous message delivery for faster consumers (to avoid the synchronization and context switching costs of adding another SEDA queue). The downside to using synchronous message delivery is that the producer is more likely to block if there is a slow consumer that he is dispatching messages to.</p>
 
-<p>The default setting is <code class="highlighter-rouge">dispatchAsync=true</code> which is the best setting for high performance. If you want to deal better with slow consumers you will want to enable this setting. If you want better throughput and the chances of having a slow consumer are low, you may want to change this to <code class="highlighter-rouge">dispatchAsync=false</code>.</p>
+<p>The default setting is <code class="language-plaintext highlighter-rouge">dispatchAsync=true</code> which is the best setting for high performance. If you want to deal better with slow consumers you will want to enable this setting. If you want better throughput and the chances of having a slow consumer are low, you may want to change this to <code class="language-plaintext highlighter-rouge">dispatchAsync=false</code>.</p>
 
 <h3 id="configuring-async-dispatch-at-the-connectionfactory-level">Configuring Async Dispatch at the ConnectionFactory Level</h3>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>((ActiveMQConnectionFactory)connectionFactory).setDispatchAsync(false);
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>((ActiveMQConnectionFactory)connectionFactory).setDispatchAsync(false);
 </code></pre></div></div>
 
 <h3 id="configuring-dispatch-async-at-the-connection-level">Configuring Dispatch Async at the Connection Level</h3>
 
-<p>Configuring the <code class="highlighter-rouge">dispatchAsync</code> setting at this level overrides the settings at the connection factory level.</p>
+<p>Configuring the <code class="language-plaintext highlighter-rouge">dispatchAsync</code> setting at this level overrides the settings at the connection factory level.</p>
 
 <h3 id="configuring-dispatch-async-at-the-consumer-level-using-the-destination-uri">Configuring Dispatch Async at the Consumer Level using the Destination URI</h3>
 
-<p>Configuring the <code class="highlighter-rouge">dispatchAsync</code> using <a href="destination-options">Destination Options</a> overrides the settings at the connection and connection factory level.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>queue = new ActiveMQQueue("TEST.QUEUE?consumer.dispatchAsync=false");
+<p>Configuring the <code class="language-plaintext highlighter-rouge">dispatchAsync</code> using <a href="destination-options">Destination Options</a> overrides the settings at the connection and connection factory level.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>queue = new ActiveMQQueue("TEST.QUEUE?consumer.dispatchAsync=false");
 consumer = session.createConsumer(queue);
 </code></pre></div></div>
 
 <h3 id="disabling-async-dispatch-on-brokers-transport-connector">Disabling Async Dispatch on Broker’s Transport Connector</h3>
 
-<p>It is possible to disable async dispatch on a specific transport connector via the <code class="highlighter-rouge">disableAsyncDispatch</code> property. Once disabled for this transport, it cannot be enabled by individual clients.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="openwire" uri="tcp://0.0.0.0:61616" disableAsyncDispatch="true"/&gt;
+<p>It is possible to disable async dispatch on a specific transport connector via the <code class="language-plaintext highlighter-rouge">disableAsyncDispatch</code> property. Once disabled for this transport, it cannot be enabled by individual clients.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="openwire" uri="tcp://0.0.0.0:61616" disableAsyncDispatch="true"/&gt;
 </code></pre></div></div>
 
       </div>

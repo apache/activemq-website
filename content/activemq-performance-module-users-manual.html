@@ -101,7 +101,7 @@
 <h3 id="prerequisites">Prerequisites</h3>
 
 <p>Starting with ActiveMQ 5.5 and above the plugin can be obtained from maven or if you download the src from SVN you can build it yourself. Start with a complete build of Apache ActiveMQ and then do</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd activemq-tooling
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd activemq-tooling
 mvn clean install
 </code></pre></div></div>
 <p>To run the following Maven goals make sure you are inside a Maven2 project directory where its POM is enabled with the Maven2 plugin.</p>
@@ -109,21 +109,21 @@ mvn clean install
 <h3 id="getting-started">Getting started</h3>
 
 <p>To get started, switch to the <a href="http://svn.apache.org/repos/asf/activemq/sandbox/activemq-perftest/">activemq-perftest directory from the sandbox repo,</a> or to a directory containing your own Maven POM with the following plugin defined:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;plugin&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.apache.activemq.tooling&lt;/groupId&gt;
   &lt;artifactId&gt;activemq-perf-maven-plugin&lt;/artifactId&gt;
   &lt;version&gt;${activemq-version}&lt;/version&gt;
 &lt;/plugin&gt;
 </code></pre></div></div>
-<p>In ActiveMQ versions prior to 5.8, the artifactId was <code class="highlighter-rouge">maven-activemq-perf-plugin</code>.</p>
+<p>In ActiveMQ versions prior to 5.8, the artifactId was <code class="language-plaintext highlighter-rouge">maven-activemq-perf-plugin</code>.</p>
 
 <p>Type the following commands into separate shells (the broker line here is optional if you have a preconfigured one running):</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn activemq-perf:broker -Durl=broker:tcp://localhost:61616
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn activemq-perf:broker -Durl=broker:tcp://localhost:61616
 mvn activemq-perf:consumer
 mvn activemq-perf:producer
 </code></pre></div></div>
 <p>If you run the broker on a different machine then change the producer and consumer commands to</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn activemq-perf:consumer -Dfactory.brokerURL=tcp://host:port
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn activemq-perf:consumer -Dfactory.brokerURL=tcp://host:port
 mvn activemq-perf:producer -Dfactory.brokerURL=tcp://host:port
 </code></pre></div></div>
 <p>where you switch host:port with the actual values.</p>
@@ -142,7 +142,7 @@ mvn activemq-perf:producer -Dfactory.brokerURL=tcp://host:port
   <tbody>
     <tr>
       <td>activemq-perf:broker</td>
-      <td>Starts broker using the activemq configuration file located in “src\main\resources\broker-conf” where the default config is activemq.xml.  Parameters:  <code class="highlighter-rouge">-DconfigType</code> - specifies the type of configuration to use. Its value must be one of the filename in the “..\broker-config” directory (e.g. -DconfigType=kaha).  <code class="highlighter-rouge">-DconfigFile</code> - path to config file other than those in “src\..\broker-config”.e.g -DconfigFile=c:\dir\activemq.xml)</td>
+      <td>Starts broker using the activemq configuration file located in “src\main\resources\broker-conf” where the default config is activemq.xml.  Parameters:  <code class="language-plaintext highlighter-rouge">-DconfigType</code> - specifies the type of configuration to use. Its value must be one of the filename in the “..\broker-config” directory (e.g. -DconfigType=kaha).  <code class="language-plaintext highlighter-rouge">-DconfigFile</code> - path to config file other than those in “src\..\broker-config”.e.g -DconfigFile=c:\dir\activemq.xml)</td>
     </tr>
     <tr>
       <td>activemq-perf:consumer</td>
@@ -490,25 +490,25 @@ mvn activemq-perf:producer -Dfactory.brokerURL=tcp://host:port
   </tbody>
 </table>
 
-<h3 id="configuration-for-spi-connection-factory-orgapacheactivemqtoolspiactivemqclassloaderspi">Configuration for SPI Connection Factory: <code class="highlighter-rouge">org.apache.activemq.tool.spi.ActiveMQClassLoaderSPI</code></h3>
+<h3 id="configuration-for-spi-connection-factory-orgapacheactivemqtoolspiactivemqclassloaderspi">Configuration for SPI Connection Factory: <code class="language-plaintext highlighter-rouge">org.apache.activemq.tool.spi.ActiveMQClassLoaderSPI</code></h3>
 
-<p><strong>Description:</strong> This provides details in configuring the JMS Connection Factory created by <code class="highlighter-rouge">ActiveMQClassLoaderSPI</code>. Default values are based from the default values of the service provider org.apache.activemq.ActiveMQConnectionFactory.</p>
+<p><strong>Description:</strong> This provides details in configuring the JMS Connection Factory created by <code class="language-plaintext highlighter-rouge">ActiveMQClassLoaderSPI</code>. Default values are based from the default values of the service provider org.apache.activemq.ActiveMQConnectionFactory.</p>
 
-<p>ActiveMQClassLoaderSPI loads from the classpath <code class="highlighter-rouge">org.apache.activemq.ActiveMQConnectionFactory</code> and configures it using reflection. Configuration is generally based on the API of the class loaded. General format is <code class="highlighter-rouge">factory.YYY</code> or <code class="highlighter-rouge">factory.XXX.YYY</code>, where the last variable (<code class="highlighter-rouge">YYY</code>) is the property to set and everything in between is the getter of the class to use to set (<code class="highlighter-rouge">YYY</code>). For example:</p>
+<p>ActiveMQClassLoaderSPI loads from the classpath <code class="language-plaintext highlighter-rouge">org.apache.activemq.ActiveMQConnectionFactory</code> and configures it using reflection. Configuration is generally based on the API of the class loaded. General format is <code class="language-plaintext highlighter-rouge">factory.YYY</code> or <code class="language-plaintext highlighter-rouge">factory.XXX.YYY</code>, where the last variable (<code class="language-plaintext highlighter-rouge">YYY</code>) is the property to set and everything in between is the getter of the class to use to set (<code class="language-plaintext highlighter-rouge">YYY</code>). For example:</p>
 
 <ol>
   <li>To set the value for asyncSend in ActiveMQConnectionFactory, use:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>factory.useAsyncSend=true
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>factory.useAsyncSend=true
 </code></pre></div>    </div>
     <p>which is equivalent to calling</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>factory.setUseAsyncSend(true)
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>factory.setUseAsyncSend(true)
 </code></pre></div>    </div>
   </li>
   <li>To set the queue prefetch for ActiveMQConnectionFactory, use:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>factory.prefetchPolicy.queuePrefetch=1
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>factory.prefetchPolicy.queuePrefetch=1
 </code></pre></div>    </div>
     <p>which is equivalent to calling</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>factory.getPrefetchPolicy().setQueuePrefetch(1)
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>factory.getPrefetchPolicy().setQueuePrefetch(1)
 </code></pre></div>    </div>
   </li>
 </ol>
@@ -654,9 +654,9 @@ mvn activemq-perf:producer -Dfactory.brokerURL=tcp://host:port
 </table>
 
 <p>For example, it is possible to configure the two samplers differently for a single test run, using the prefixes above as follows:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn activemq-perf:producer -DtpSampler.duration=10000 -DcpuSampler.duration=15000
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn activemq-perf:producer -DtpSampler.duration=10000 -DcpuSampler.duration=15000
 </code></pre></div></div>
-<p>By default, both samplers are used within a test run. This however, can be overridden through the use of the <code class="highlighter-rouge">sysTest.samplers</code> property.</p>
+<p>By default, both samplers are used within a test run. This however, can be overridden through the use of the <code class="language-plaintext highlighter-rouge">sysTest.samplers</code> property.</p>
 
 <h4 id="before-activemq-511">Before ActiveMQ 5.11</h4>
 
@@ -696,7 +696,7 @@ mvn activemq-perf:producer -Dfactory.brokerURL=tcp://host:port
 
 <h4 id="from-activemq-511">From ActiveMQ 5.11</h4>
 
-<p>Sampler run duration is tied directly to the behavior of the client (producer/consumer). Due to the non-deterministic nature of count-based tests (where consumer.recvType or producer.sendType are set to <code class="highlighter-rouge">count</code>), duration, ramp up and ramp down times are ignored; the samplers are shut down when the client completes.</p>
+<p>Sampler run duration is tied directly to the behavior of the client (producer/consumer). Due to the non-deterministic nature of count-based tests (where consumer.recvType or producer.sendType are set to <code class="language-plaintext highlighter-rouge">count</code>), duration, ramp up and ramp down times are ignored; the samplers are shut down when the client completes.</p>
 
 <table>
   <thead>

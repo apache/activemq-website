@@ -100,16 +100,16 @@
 
 <h4 id="configuration-syntax">Configuration Syntax</h4>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>discovery:(discoveryAgentURI)?transportOptions
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>discovery:(discoveryAgentURI)?transportOptions
 </code></pre></div></div>
 <p>or</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>discovery:discoveryAgentURI
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>discovery:discoveryAgentURI
 </code></pre></div></div>
 
 <p>Note that to be able to use <a href="discovery">Discovery</a> to find brokers, the brokers need to have the multicast discovery agent enabled on the broker.</p>
 
 <p>To configure discovery in a Broker you should use the <a href="xml-configuration">Xml Configuration</a>. Here is an <a href="http://svn.apache.org/viewvc/activemq/trunk/activemq-core/src/test/resources/org/apache/activemq/usecases/receiver-discovery.xml?view=co">example</a> of using discovery. Its basically something like the following (see the <strong>discoveryUri</strong>)</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker name="foo"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker name="foo"&gt;
   &lt;transportConnectors&gt;
     &lt;transportConnector uri="tcp://localhost:0" discoveryUri="multicast://default"/&gt;
   &lt;/transportConnectors&gt;
@@ -130,11 +130,11 @@ maxReconnectAttempts|0|If not 0, then this is the maximum number of reconnect at
 group|default|an identifier for the group to partition multi cast traffic among collaborating peers; the group forms part of the shared identity of a discovery datagram (since 5.2)</p>
 
 <h5 id="example-uri">Example URI</h5>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>discovery:(multicast://default)?initialReconnectDelay=100
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>discovery:(multicast://default)?initialReconnectDelay=100
 </code></pre></div></div>
 <p>Applying parameters to discovered transports</p>
 
-<p>From 5.4, transport parameters in the URI will also be applied to discovered transports if they are prefixed with <code class="highlighter-rouge">discovered.</code>; For example, adding the <code class="highlighter-rouge">discovered.connectionTimeout</code> parameter to the URI will apply the parameter to every discovered <a href="tcp-transport-reference">TCP</a> transport, even though this parameter is not a Discovery transport option.</p>
+<p>From 5.4, transport parameters in the URI will also be applied to discovered transports if they are prefixed with <code class="language-plaintext highlighter-rouge">discovered.</code>; For example, adding the <code class="language-plaintext highlighter-rouge">discovered.connectionTimeout</code> parameter to the URI will apply the parameter to every discovered <a href="tcp-transport-reference">TCP</a> transport, even though this parameter is not a Discovery transport option.</p>
 
 
       </div>

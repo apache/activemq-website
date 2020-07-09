@@ -100,8 +100,8 @@
 
 <h2 id="quickstart">Quickstart</h2>
 
-<p>The fastest/simplest way to enable the ShiroPlugin is to define it as a Spring bean in the <code class="highlighter-rouge">broker</code> <code class="highlighter-rouge">plugins</code> section and embed <a href="http://shiro.apache.orgCommunity/FAQ/configuration">Shiro ini configuration</a>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
+<p>The fastest/simplest way to enable the ShiroPlugin is to define it as a Spring bean in the <code class="language-plaintext highlighter-rouge">broker</code> <code class="language-plaintext highlighter-rouge">plugins</code> section and embed <a href="http://shiro.apache.orgCommunity/FAQ/configuration">Shiro ini configuration</a>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:amq="http://activemq.apache.org/schema/core"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
@@ -173,7 +173,7 @@
 <h4 id="encrypted-passwords">Encrypted Passwords</h4>
 
 <p>The above example uses plaintext passwords, which is simple to set up and easy to use for testing, but not really secure. Most production deployments will likely want to use encrypted passwords. For example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="shiroPlugin" class="org.apache.activemq.shiro.ShiroPlugin" xmlns="http://www.springframework.org/schema/beans"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="shiroPlugin" class="org.apache.activemq.shiro.ShiroPlugin" xmlns="http://www.springframework.org/schema/beans"&gt;
     &lt;!-- enabled by default.  To disable, uncomment:
     &lt;property name="iniConfig"&gt;&lt;value&gt;
 
@@ -195,23 +195,23 @@
 <p>As you can see, two things are different than the simpler/default configuration:</p>
 
 <ol>
-  <li>The <code class="highlighter-rouge">[main]</code> section configured a <code class="highlighter-rouge">PasswordMatcher</code> on the implicit <code class="highlighter-rouge">iniRealm</code>. This indicates that all <code class="highlighter-rouge">.ini</code>-configured users are expected to have proper hashed/secure passwords.</li>
-  <li>The <code class="highlighter-rouge">[users]</code> lines now have hash values in the <code class="highlighter-rouge">password</code> location instead of plaintext values.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">[main]</code> section configured a <code class="language-plaintext highlighter-rouge">PasswordMatcher</code> on the implicit <code class="language-plaintext highlighter-rouge">iniRealm</code>. This indicates that all <code class="language-plaintext highlighter-rouge">.ini</code>-configured users are expected to have proper hashed/secure passwords.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">[users]</code> lines now have hash values in the <code class="language-plaintext highlighter-rouge">password</code> location instead of plaintext values.</li>
 </ol>
 
-<p>To get the hashed password text values, you will want to <a href="http://search.maven.org/remotecontent?filepath=org/apache/shiro/tools/shiro-tools-hasher/1.2.2/shiro-tools-hasher-1.2.2-cli.jar">Download Shiro’s Command Line Hasher</a> from Maven Central. Once downloaded, you can use it to create secure password hashes that you can safely copy-and-paste in to the <code class="highlighter-rouge">[users]</code> section:</p>
+<p>To get the hashed password text values, you will want to <a href="http://search.maven.org/remotecontent?filepath=org/apache/shiro/tools/shiro-tools-hasher/1.2.2/shiro-tools-hasher-1.2.2-cli.jar">Download Shiro’s Command Line Hasher</a> from Maven Central. Once downloaded, you can use it to create secure password hashes that you can safely copy-and-paste in to the <code class="language-plaintext highlighter-rouge">[users]</code> section:</p>
 
 <p>$ java -jar shiro-tools-hasher-X.X.X-cli.jar -p</p>
 
 <p>It will then ask you to enter the password and then confirm it:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Password to hash:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Password to hash:
 Password to hash (confirm):
 </code></pre></div></div>
 <p>When this command executes, it will print out the securely-salted-iterated-and-hashed password. For example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$shiro1$SHA-256$500000$eWpVX2tGX7WCP2J+jMCNqw==$it/NRclMOHrfOvhAEFZ0mxIZRdbcfqIBdwdwdDXW2dM=
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$shiro1$SHA-256$500000$eWpVX2tGX7WCP2J+jMCNqw==$it/NRclMOHrfOvhAEFZ0mxIZRdbcfqIBdwdwdDXW2dM=
 </code></pre></div></div>
-<p>Take this value and place it as the password in the user definition line (followed by any desired roles, such as the <code class="highlighter-rouge">advisory</code> role). For example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[users]
+<p>Take this value and place it as the password in the user definition line (followed by any desired roles, such as the <code class="language-plaintext highlighter-rouge">advisory</code> role). For example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[users]
 scott = $shiro1$SHA-256$500000$eWpVX2tGX7WCP2J+jMCNqw==$it/NRclMOHrfOvhAEFZ0mxIZRdbcfqIBdwdwdDXW2dM=, advisory
 system = $shiro1$SHA-256$500000$eUyGwMGr9GYzB/gg/MoNgw==$WGc0yWFWv8+hLqjzVLgW7Hat2FQTywDXBl5izpqaLSY=, system
 </code></pre></div></div>
@@ -219,7 +219,7 @@ system = $shiro1$SHA-256$500000$eUyGwMGr9GYzB/gg/MoNgw==$WGc0yWFWv8+hLqjzVLgW7Ha
 <h2 id="configuration">Configuration</h2>
 
 <p>The ActiveMQ Shiro plugin can be configured in a number of ways. For example, with Java:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService brokerService = new BrokerService();
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService brokerService = new BrokerService();
 
 ShiroPlugin shiroPlugin = new ShiroPlugin();
 //configure shiroPlugin via getters/setters here
@@ -227,8 +227,8 @@ ShiroPlugin shiroPlugin = new ShiroPlugin();
 broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 //continue configuring the brokerService as necessary ...
 </code></pre></div></div>
-<p>Or, if using traditional ActiveMQ xml, as a Spring bean in the <code class="highlighter-rouge">broker</code> <code class="highlighter-rouge">plugins</code> section. For example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
+<p>Or, if using traditional ActiveMQ xml, as a Spring bean in the <code class="language-plaintext highlighter-rouge">broker</code> <code class="language-plaintext highlighter-rouge">plugins</code> section. For example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:amq="http://activemq.apache.org/schema/core"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
@@ -253,13 +253,13 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 <h3 id="enablingdisabling">Enabling/Disabling</h3>
 
 <p>You can enable or disable the ShiroPlugin entirely without having to remove it from your configuration. This is convenient when testing, or when you want to enable or disable it based on a configuration parameter at startup.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="shiroPlugin" class="org.apache.activemq.shiro.ShiroPlugin" xmlns="http://www.springframework.org/schema/beans"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="shiroPlugin" class="org.apache.activemq.shiro.ShiroPlugin" xmlns="http://www.springframework.org/schema/beans"&gt;
     &lt;!-- enabled by default.  To disable, uncomment:
     &lt;property name="enabled" value="false"/&gt; --&gt;
 &lt;/bean&gt;
 </code></pre></div></div>
-<p>A nice technique is to use Spring’s <a href="http://static.springsource.org/spring/docs/3.2.x/javadoc-api/org/springframework/context/support/PropertySourcesPlaceholderConfigurer.html">PropertySourcesPlaceholderConfigurer</a> and placeholder tokens (set <code class="highlighter-rouge">shiro.enabled = true</code> in one of your placeholder property files):</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans ...&gt;
+<p>A nice technique is to use Spring’s <a href="http://static.springsource.org/spring/docs/3.2.x/javadoc-api/org/springframework/context/support/PropertySourcesPlaceholderConfigurer.html">PropertySourcesPlaceholderConfigurer</a> and placeholder tokens (set <code class="language-plaintext highlighter-rouge">shiro.enabled = true</code> in one of your placeholder property files):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans ...&gt;
 
     &lt;bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"&gt;
        ...
@@ -276,21 +276,21 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
     &lt;/broker&gt;
 &lt;/beans&gt;
 </code></pre></div></div>
-<p>This allows you to enable or disable the Shiro plugin by simply setting a property in a <code class="highlighter-rouge">.properties</code> file without having to change your XML config.</p>
+<p>This allows you to enable or disable the Shiro plugin by simply setting a property in a <code class="language-plaintext highlighter-rouge">.properties</code> file without having to change your XML config.</p>
 
 <h3 id="shiro-environment">Shiro Environment</h3>
 
-<p>The <code class="highlighter-rouge">shiroPlugin</code> requires a Shiro <a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/env/Environment.html">Environment</a> to function. You must either configure the plugin with:</p>
+<p>The <code class="language-plaintext highlighter-rouge">shiroPlugin</code> requires a Shiro <a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/env/Environment.html">Environment</a> to function. You must either configure the plugin with:</p>
 
 <ul>
-  <li>an <code class="highlighter-rouge">Environment</code> instance (or a Shiro <code class="highlighter-rouge">SecurityManager</code> instance) that you instantiate and configure elsewhere - e.g. in Java code or elsewhere in the Spring XML config, or</li>
-  <li>specify some Shiro <a href="http://shiro.apache.orgCommunity/FAQ/configuration">.ini configuration</a>, either as a direct String, an <a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/config/Ini.html">Ini</a> instance, or a <a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/io/ResourceUtils.html#getInputStreamForPath(java.lang.String)">resource path</a> where your <code class="highlighter-rouge">shiro.ini</code> file is located. The plugin will load the ini config and create an <code class="highlighter-rouge">Environment</code> automatically.</li>
+  <li>an <code class="language-plaintext highlighter-rouge">Environment</code> instance (or a Shiro <code class="language-plaintext highlighter-rouge">SecurityManager</code> instance) that you instantiate and configure elsewhere - e.g. in Java code or elsewhere in the Spring XML config, or</li>
+  <li>specify some Shiro <a href="http://shiro.apache.orgCommunity/FAQ/configuration">.ini configuration</a>, either as a direct String, an <a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/config/Ini.html">Ini</a> instance, or a <a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/io/ResourceUtils.html#getInputStreamForPath(java.lang.String)">resource path</a> where your <code class="language-plaintext highlighter-rouge">shiro.ini</code> file is located. The plugin will load the ini config and create an <code class="language-plaintext highlighter-rouge">Environment</code> automatically.</li>
 </ul>
 
 <h4 id="custom-environment">Custom Environment</h4>
 
-<p>A Shiro <code class="highlighter-rouge">Environment</code> object contains everything that Shiro needs to operate, and this encapsulates the Shiro <code class="highlighter-rouge">SecurityManager</code> as well. If you want to construct and configure an Environment instance yourself:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans ...&gt;
+<p>A Shiro <code class="language-plaintext highlighter-rouge">Environment</code> object contains everything that Shiro needs to operate, and this encapsulates the Shiro <code class="language-plaintext highlighter-rouge">SecurityManager</code> as well. If you want to construct and configure an Environment instance yourself:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans ...&gt;
     &lt;broker ...&gt;
         &lt;plugins&gt;
         
@@ -311,8 +311,8 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 
 <h4 id="custom-securitymanager">Custom SecurityManager</h4>
 
-<p>Instead of configuring an <code class="highlighter-rouge">Environment</code> instance, you can construct a <code class="highlighter-rouge">SecurityManager</code> instead:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans ...&gt;
+<p>Instead of configuring an <code class="language-plaintext highlighter-rouge">Environment</code> instance, you can construct a <code class="language-plaintext highlighter-rouge">SecurityManager</code> instead:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans ...&gt;
     &lt;broker ...&gt;
         &lt;plugins&gt;
         
@@ -337,12 +337,12 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 
 &lt;/beans&gt;
 </code></pre></div></div>
-<p>If specifying a <code class="highlighter-rouge">SecurityManager</code> instead of the <code class="highlighter-rouge">Environment</code> property, an <code class="highlighter-rouge">Environment</code> will be created automatically that wraps the configured <code class="highlighter-rouge">SecurityManager</code>.</p>
+<p>If specifying a <code class="language-plaintext highlighter-rouge">SecurityManager</code> instead of the <code class="language-plaintext highlighter-rouge">Environment</code> property, an <code class="language-plaintext highlighter-rouge">Environment</code> will be created automatically that wraps the configured <code class="language-plaintext highlighter-rouge">SecurityManager</code>.</p>
 
 <h4 id="shiroini-file">shiro.ini File</h4>
 
-<p>If you don’t want to construct a <code class="highlighter-rouge">SecurityManager</code> or <code class="highlighter-rouge">Environment</code> in code or xml, you can easily specify a <a href="http://shiro.apache.orgCommunity/FAQ/configuration">shiro.ini</a> file instead and an Environment/SecurityManager will automatically be created based on that:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans ...&gt;
+<p>If you don’t want to construct a <code class="language-plaintext highlighter-rouge">SecurityManager</code> or <code class="language-plaintext highlighter-rouge">Environment</code> in code or xml, you can easily specify a <a href="http://shiro.apache.orgCommunity/FAQ/configuration">shiro.ini</a> file instead and an Environment/SecurityManager will automatically be created based on that:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans ...&gt;
     &lt;broker ...&gt;
         &lt;plugins&gt;
 
@@ -359,7 +359,7 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 <h4 id="shiroini-embedded">shiro.ini Embedded</h4>
 
 <p>If you want to use ini configuration and you would prefer to have all configuration in one place, you can embed the ini config instead:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans ...&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans ...&gt;
     &lt;broker ...&gt;
         &lt;plugins ...&gt;
         
@@ -387,30 +387,30 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 
 <h2 id="design">Design</h2>
 
-<p>The Shiro plugin is a <a href="http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/BrokerPlugin.html">BrokerPlugin</a> that inserts 3 <a href="http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/BrokerFilter.html">BrokerFilter</a>s in the broker filter chain: the <code class="highlighter-rouge">SubjectFilter</code>, the <code class="highlighter-rouge">AuthenticationFilter</code> and the <code class="highlighter-rouge">AuthorizationFilter</code></p>
+<p>The Shiro plugin is a <a href="http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/BrokerPlugin.html">BrokerPlugin</a> that inserts 3 <a href="http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/BrokerFilter.html">BrokerFilter</a>s in the broker filter chain: the <code class="language-plaintext highlighter-rouge">SubjectFilter</code>, the <code class="language-plaintext highlighter-rouge">AuthenticationFilter</code> and the <code class="language-plaintext highlighter-rouge">AuthorizationFilter</code></p>
 
 <p><strong>SubjectFilter</strong></p>
 
-<p>The <code class="highlighter-rouge">SubjectFilter</code> exists before all other Shiro-related broker filters in the broker filter chain. It constructs a Shiro <a href="http://shiro.apache.org/subject.html">Subject</a> instance reflecting the broker client and ensures the <code class="highlighter-rouge">Subject</code> instance is available for all downstream broker filters that may need to use the <code class="highlighter-rouge">Subject</code> to perform security operations.</p>
+<p>The <code class="language-plaintext highlighter-rouge">SubjectFilter</code> exists before all other Shiro-related broker filters in the broker filter chain. It constructs a Shiro <a href="http://shiro.apache.org/subject.html">Subject</a> instance reflecting the broker client and ensures the <code class="language-plaintext highlighter-rouge">Subject</code> instance is available for all downstream broker filters that may need to use the <code class="language-plaintext highlighter-rouge">Subject</code> to perform security operations.</p>
 
 <p><strong>AuthenticationFilter</strong></p>
 
-<p>The <code class="highlighter-rouge">AuthenticationFilter</code> exists immediately after the <code class="highlighter-rouge">SubjectFilter</code> in the broker filter chain. It ensures that the broker client <code class="highlighter-rouge">Subject</code> is authenticated if necessary before allowing the chain to continue. If authentication is required and the <code class="highlighter-rouge">Subject</code> is not authenticated, the broker filter chain will not be executed, ensuring only verified identities may perform further behavior.</p>
+<p>The <code class="language-plaintext highlighter-rouge">AuthenticationFilter</code> exists immediately after the <code class="language-plaintext highlighter-rouge">SubjectFilter</code> in the broker filter chain. It ensures that the broker client <code class="language-plaintext highlighter-rouge">Subject</code> is authenticated if necessary before allowing the chain to continue. If authentication is required and the <code class="language-plaintext highlighter-rouge">Subject</code> is not authenticated, the broker filter chain will not be executed, ensuring only verified identities may perform further behavior.</p>
 
 <p><strong>AuthorizationFilter</strong></p>
 
-<p>The <code class="highlighter-rouge">AuthorizationFilter</code> exists immediately after the <code class="highlighter-rouge">AuthenticationFilter</code> in the broker filter chain. It ensures that the <code class="highlighter-rouge">Subject</code> associated with the filter chain is authorized (permitted) to perform the action being attempted before allowing the action to execute.</p>
+<p>The <code class="language-plaintext highlighter-rouge">AuthorizationFilter</code> exists immediately after the <code class="language-plaintext highlighter-rouge">AuthenticationFilter</code> in the broker filter chain. It ensures that the <code class="language-plaintext highlighter-rouge">Subject</code> associated with the filter chain is authorized (permitted) to perform the action being attempted before allowing the action to execute.</p>
 
-<p>For example, it would ensure that the <code class="highlighter-rouge">Subject</code> is allowed to send a message to a particular topic before allowing the send operation to execute. If authorization is enabled and the <code class="highlighter-rouge">Subject</code> is not authorized to perform the desired action, the broker filter chain will not be executed.</p>
+<p>For example, it would ensure that the <code class="language-plaintext highlighter-rouge">Subject</code> is allowed to send a message to a particular topic before allowing the send operation to execute. If authorization is enabled and the <code class="language-plaintext highlighter-rouge">Subject</code> is not authorized to perform the desired action, the broker filter chain will not be executed.</p>
 
 <h2 id="subjectfilter">SubjectFilter</h2>
 
-<p>The ShiroPlugin installs and executes the <code class="highlighter-rouge">SubjectFilter</code> before all other Shiro-related broker filters in the broker filter chain. The <code class="highlighter-rouge">SubjectFilter</code> constructs a Shiro <a href="http://shiro.apache.org/subject.html">Subject</a> instance reflecting the broker client and ensures the <code class="highlighter-rouge">Subject</code> instance is available for all downstream broker filters that may need to use the <code class="highlighter-rouge">Subject</code> to perform security operations.</p>
+<p>The ShiroPlugin installs and executes the <code class="language-plaintext highlighter-rouge">SubjectFilter</code> before all other Shiro-related broker filters in the broker filter chain. The <code class="language-plaintext highlighter-rouge">SubjectFilter</code> constructs a Shiro <a href="http://shiro.apache.org/subject.html">Subject</a> instance reflecting the broker client and ensures the <code class="language-plaintext highlighter-rouge">Subject</code> instance is available for all downstream broker filters that may need to use the <code class="language-plaintext highlighter-rouge">Subject</code> to perform security operations.</p>
 
-<p>The <code class="highlighter-rouge">SubjectFilter</code> is mostly a ‘behind the scenes’ component of the SubjectFilter, but it does offer some customization for advanced use cases:</p>
+<p>The <code class="language-plaintext highlighter-rouge">SubjectFilter</code> is mostly a ‘behind the scenes’ component of the SubjectFilter, but it does offer some customization for advanced use cases:</p>
 
 <ul>
-  <li>the ability to customize exactly how broker clients’ <code class="highlighter-rouge">Subject</code> instances are created via a <code class="highlighter-rouge">ConnectionSubjectFactory</code> and</li>
+  <li>the ability to customize exactly how broker clients’ <code class="language-plaintext highlighter-rouge">Subject</code> instances are created via a <code class="language-plaintext highlighter-rouge">ConnectionSubjectFactory</code> and</li>
   <li>the ability to customize how the ActiveMQ ConnectionContext’s <a href="http://activemq.apache.org/maven/apidocs/org/apache/activemq/security/SecurityContext.html">SecurityContext</a> is constructed.</li>
 </ul>
 
@@ -418,12 +418,12 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 
 <h3 id="connectionsubjectfactory">ConnectionSubjectFactory</h3>
 
-<p>A <code class="highlighter-rouge">ConnectionSubjectFactory</code> creates a <code class="highlighter-rouge">Subject</code> instance that represents the broker client’s identity. The <code class="highlighter-rouge">SubjectFilter</code>’s default instance is a <code class="highlighter-rouge">DefaultConnectionSubjectFactory</code></p>
+<p>A <code class="language-plaintext highlighter-rouge">ConnectionSubjectFactory</code> creates a <code class="language-plaintext highlighter-rouge">Subject</code> instance that represents the broker client’s identity. The <code class="language-plaintext highlighter-rouge">SubjectFilter</code>’s default instance is a <code class="language-plaintext highlighter-rouge">DefaultConnectionSubjectFactory</code></p>
 
-<p>Most <code class="highlighter-rouge">ConnectionSubjectFactory</code> implementations will simply use Shiro’s <code class="highlighter-rouge">Subject.Builder</code> to create an anonymous Subject instance and let the downstream <code class="highlighter-rouge">AuthenticationFilter</code> authenticate the Subject based on any credentials associated with the connection. After authentication, the Subject will have an identity, and this is the expected flow for most connection clients.</p>
+<p>Most <code class="language-plaintext highlighter-rouge">ConnectionSubjectFactory</code> implementations will simply use Shiro’s <code class="language-plaintext highlighter-rouge">Subject.Builder</code> to create an anonymous Subject instance and let the downstream <code class="language-plaintext highlighter-rouge">AuthenticationFilter</code> authenticate the Subject based on any credentials associated with the connection. After authentication, the Subject will have an identity, and this is the expected flow for most connection clients.</p>
 
-<p>However, if there is some other data associated with the connection that can be inspected to create a Subject instance beyond what the <code class="highlighter-rouge">DefaultConnectionSubjectFactory</code>, you can implement the <code class="highlighter-rouge">ConnectionSubjectFactory</code> interface and plug it in to the <code class="highlighter-rouge">SubjectFilter</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="shiroPlugin" class="org.apache.activemq.shiro.ShiroPlugin" xmlns="http://www.springframework.org/schema/beans"&gt;
+<p>However, if there is some other data associated with the connection that can be inspected to create a Subject instance beyond what the <code class="language-plaintext highlighter-rouge">DefaultConnectionSubjectFactory</code>, you can implement the <code class="language-plaintext highlighter-rouge">ConnectionSubjectFactory</code> interface and plug it in to the <code class="language-plaintext highlighter-rouge">SubjectFilter</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="shiroPlugin" class="org.apache.activemq.shiro.ShiroPlugin" xmlns="http://www.springframework.org/schema/beans"&gt;
     &lt;property name="subjectFilter.connectionSubjectFactory"&gt;
         &lt;bean class="com.my.ConnectionSubjectFactory" .../&gt;
     &lt;/property&gt;
@@ -432,20 +432,20 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 
 <h3 id="securitycontextfactory">SecurityContextFactory</h3>
 
-<p>The ActiveMQ <code class="highlighter-rouge">ConnectionContext</code> associated with broker client connections utilizes a <code class="highlighter-rouge">SecurityContext</code> object. When the <code class="highlighter-rouge">SubjectFilter</code> executes, it needs to create a Shiro-specific <code class="highlighter-rouge">SecurityContext</code> and associate it with the <code class="highlighter-rouge">ConnectionContext</code> so the Subject may be accessed downstream for all subsequent security operations.</p>
+<p>The ActiveMQ <code class="language-plaintext highlighter-rouge">ConnectionContext</code> associated with broker client connections utilizes a <code class="language-plaintext highlighter-rouge">SecurityContext</code> object. When the <code class="language-plaintext highlighter-rouge">SubjectFilter</code> executes, it needs to create a Shiro-specific <code class="language-plaintext highlighter-rouge">SecurityContext</code> and associate it with the <code class="language-plaintext highlighter-rouge">ConnectionContext</code> so the Subject may be accessed downstream for all subsequent security operations.</p>
 
-<p>The <code class="highlighter-rouge">SubjectFilter</code> delegates <code class="highlighter-rouge">SecurityContext</code> creation to a <code class="highlighter-rouge">SecurityContextFactory</code> instance. The <code class="highlighter-rouge">DefaultSecurityContextFactory</code> implementation returns <code class="highlighter-rouge">SubjectSecurityContext</code> instances based on the connection’s associated <code class="highlighter-rouge">Subject</code>. It should be an extremely rare thing to change, but if you must configure a custom <code class="highlighter-rouge">SecurityContextFactory</code>, you can do as follows:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="shiroPlugin" class="org.apache.activemq.shiro.ShiroPlugin" xmlns="http://www.springframework.org/schema/beans"&gt;
+<p>The <code class="language-plaintext highlighter-rouge">SubjectFilter</code> delegates <code class="language-plaintext highlighter-rouge">SecurityContext</code> creation to a <code class="language-plaintext highlighter-rouge">SecurityContextFactory</code> instance. The <code class="language-plaintext highlighter-rouge">DefaultSecurityContextFactory</code> implementation returns <code class="language-plaintext highlighter-rouge">SubjectSecurityContext</code> instances based on the connection’s associated <code class="language-plaintext highlighter-rouge">Subject</code>. It should be an extremely rare thing to change, but if you must configure a custom <code class="language-plaintext highlighter-rouge">SecurityContextFactory</code>, you can do as follows:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="shiroPlugin" class="org.apache.activemq.shiro.ShiroPlugin" xmlns="http://www.springframework.org/schema/beans"&gt;
     &lt;property name="subjectFilter.securityContextFactory"&gt;
         &lt;bean class="com.my.SecurityContextFactory" .../&gt;
     &lt;/property&gt;
 &lt;/bean&gt;
 </code></pre></div></div>
-<p>Note however that much of the plugin’s functionality and downstream filters expect created <code class="highlighter-rouge">SecurityContext</code> instances to be <code class="highlighter-rouge">SubjectSecurityContext</code> instances.</p>
+<p>Note however that much of the plugin’s functionality and downstream filters expect created <code class="language-plaintext highlighter-rouge">SecurityContext</code> instances to be <code class="language-plaintext highlighter-rouge">SubjectSecurityContext</code> instances.</p>
 
 <h2 id="authentication">Authentication</h2>
 
-<p>The ShiroPlugin installs the <code class="highlighter-rouge">AuthenticationFilter</code> immediately after the <code class="highlighter-rouge">SubjectFilter</code> in the broker filter chain. The <code class="highlighter-rouge">AuthenticationFilter</code> ensures that the broker client <code class="highlighter-rouge">Subject</code> is authenticated if necessary before allowing the chain to continue. If authentication is required and the <code class="highlighter-rouge">Subject</code> is not authenticated, the broker filter chain will not be executed, ensuring only verified identities may perform further behavior.</p>
+<p>The ShiroPlugin installs the <code class="language-plaintext highlighter-rouge">AuthenticationFilter</code> immediately after the <code class="language-plaintext highlighter-rouge">SubjectFilter</code> in the broker filter chain. The <code class="language-plaintext highlighter-rouge">AuthenticationFilter</code> ensures that the broker client <code class="language-plaintext highlighter-rouge">Subject</code> is authenticated if necessary before allowing the chain to continue. If authentication is required and the <code class="language-plaintext highlighter-rouge">Subject</code> is not authenticated, the broker filter chain will not be executed, ensuring only verified identities may perform further behavior.</p>
 
 <p>WORK IN PROGRESS - STILL AUTHORING</p>
 

@@ -98,7 +98,7 @@ An ActiveMQ client can take advantage of a delayed delivery by using the followi
 <blockquote>
   <p><strong>Check your Message Properties</strong></p>
 
-  <p>The message property <code class="highlighter-rouge">scheduledJobId </code>is reserved for use by the Job Scheduler. If this property is set before sending, the message will be sent immediately and not scheduled. Also, after a scheduled message is received, the property <code class="highlighter-rouge">scheduledJobId</code> will be set on the received message so keep this in mind if using something like a Camel Route which might automatically copy properties over when re-sending a message.</p>
+  <p>The message property <code class="language-plaintext highlighter-rouge">scheduledJobId </code>is reserved for use by the Job Scheduler. If this property is set before sending, the message will be sent immediately and not scheduled. Also, after a scheduled message is received, the property <code class="language-plaintext highlighter-rouge">scheduledJobId</code> will be set on the received message so keep this in mind if using something like a Camel Route which might automatically copy properties over when re-sending a message.</p>
 </blockquote>
 
 <table>
@@ -153,7 +153,7 @@ An ActiveMQ client can take advantage of a delayed delivery by using the followi
 <span class="n">message</span><span class="o">.</span><span class="na">setIntProperty</span><span class="o">(</span><span class="nc">ScheduledMessage</span><span class="o">.</span><span class="na">AMQ_SCHEDULED_REPEAT</span><span class="o">,</span> <span class="n">repeat</span><span class="o">);</span>
 <span class="n">producer</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
 </code></pre></div></div>
-<p>You can also use <a href="http://en.wikipedia.org/wiki/Cron">CRON</a> to schedule a message, for example, if you want a message scheduled to be delivered every hour, you would need to set the CRON entry to be - <code class="highlighter-rouge">0 * * * *</code> - e.g.</p>
+<p>You can also use <a href="http://en.wikipedia.org/wiki/Cron">CRON</a> to schedule a message, for example, if you want a message scheduled to be delivered every hour, you would need to set the CRON entry to be - <code class="language-plaintext highlighter-rouge">0 * * * *</code> - e.g.</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">MessageProducer</span> <span class="n">producer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createProducer</span><span class="o">(</span><span class="n">destination</span><span class="o">);</span>
 <span class="nc">TextMessage</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTextMessage</span><span class="o">(</span><span class="s">"test msg"</span><span class="o">);</span>
 <span class="n">message</span><span class="o">.</span><span class="na">setStringProperty</span><span class="o">(</span><span class="nc">ScheduledMessage</span><span class="o">.</span><span class="na">AMQ_SCHEDULED_CRON</span><span class="o">,</span> <span class="s">"0 * * * *"</span><span class="o">);</span>

@@ -117,7 +117,7 @@
 </ul>
 
 <p>In order to use genericra you need to first create a resource adapter config using asadmin (Command line tools of SJSAS).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin create-resource-adapter-config
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin create-resource-adapter-config
   --property
       SupportsXA=false
       :RMPolicy=OnePerPhysicalConnection
@@ -136,13 +136,13 @@
   myapp#genericra
 </code></pre></div></div>
 <p>You should note that, the above command should executed as one single line and no space around ‘:’. Just like:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin create-resource-adapter-config --property SupportsXA=false:ConnectionFactoryProperties=brokerURL=tcp://127.0.0.1:61616 myapp#genericra
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin create-resource-adapter-config --property SupportsXA=false:ConnectionFactoryProperties=brokerURL=tcp://127.0.0.1:61616 myapp#genericra
 </code></pre></div></div>
 <p>Under DOS prompt, you should use ONLY ONE ‘/’ to do espcape, like this.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin create-resource-adapter-config --property SupportsXA=false:ConnectionFactoryProperties=brokerURL=tcp://127.0.0.1:61616 myapp#genericra
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin create-resource-adapter-config --property SupportsXA=false:ConnectionFactoryProperties=brokerURL=tcp://127.0.0.1:61616 myapp#genericra
 </code></pre></div></div>
 <p>Package your application, genericra.rar and activemq dependencies in one single EAR. The structure of the EAR should like this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lib/activemq-core-4.1.1.jar
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lib/activemq-core-4.1.1.jar
 lib/log4j-1.2.13.jar
 lib/commons-logging-1.1.jar
 lib/backport-util-concurrent-2.1.jar
@@ -198,17 +198,17 @@ mymodules.jar
 <span class="nt">&lt;/application&gt;</span>
 </code></pre></div></div>
 <p>Deploy the genericra:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin deploy --name myapp myapp.ear
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin deploy --name myapp myapp.ear
 </code></pre></div></div>
 <p>Create connection pool. Run the following command in one single line:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin create-connector-connection-pool
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin create-connector-connection-pool
   --raname myapp#genericra
   --connectiondefinition javax.jms.QueueConnectionFactory
   --transactionsupport LocalTransaction
   ActiveMQQueueConnectionFactoryPool
 </code></pre></div></div>
 <p>Create connection factory admin object. Run the following command in one single line, note that, “jms/SimpleQueueConnectionFactory” need to match in your sun-ejb-jar.xml:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin create-connector-resource
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>asadmin create-connector-resource
   --poolname ActiveMQQueueConnectionFactoryPool
   jms/SimpleQueueConnectionFactory
 </code></pre></div></div>

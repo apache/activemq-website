@@ -105,16 +105,16 @@
 <h1 id="activemq">ActiveMQ</h1>
 
 <p>ActiveMQ comes as a feature in ServiceMix (Karaf). So instead of installing all necessary bundles one by one, you can simply install it using a single command. But first of all, you need to setup ServiceMix features url.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; features/addUrl mvn:org.apache.servicemix/apache-servicemix/4.0.0/xml/features
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; features/addUrl mvn:org.apache.servicemix/apache-servicemix/4.0.0/xml/features
 </code></pre></div></div>
 <p>Now you can install ActiveMQ like this</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; features/install activemq
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; features/install activemq
 </code></pre></div></div>
 <p>This command will install all necessary ActiveMQ bundles and if you type</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/list
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/list
 </code></pre></div></div>
 <p>you should see something like this</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[  50] [Active     ] [       ] [   60] geronimo-jta\_1.1\_spec (1.1.1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[  50] [Active     ] [       ] [   60] geronimo-jta\_1.1\_spec (1.1.1)
 [  51] [Active     ] [       ] [   60] geronimo-j2ee-connector\_1.5\_spec (2.0.0)
 [  52] [Active     ] [       ] [   60] Apache ServiceMix Bundles: howl-1.0.1-1 (1.0.1.1_1)
 [  53] [Active     ] [       ] [   60] Geronimo TxManager :: Transaction (2.2.0.r634076)
@@ -136,13 +136,13 @@
 
 <p>This feature comes pre-installed with the ServiceMix ESB so previous steps are not necessary.</p>
 
-<p>The following example shows how to create and destroy the broker using the <code class="highlighter-rouge">create-broker</code> and <code class="highlighter-rouge">destroy-broker</code> commands.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; activemq/create-broker
+<p>The following example shows how to create and destroy the broker using the <code class="language-plaintext highlighter-rouge">create-broker</code> and <code class="language-plaintext highlighter-rouge">destroy-broker</code> commands.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; activemq/create-broker
 Creating file: /Users/dejanb/workspace/apache-servicemix-kernel-1.1.0/deploy/localhost-broker.xml
 </code></pre></div></div>
 <p>Default ActiveMQ Broker (localhost) configuration file created at: /Users/dejanb/workspace/apache-servicemix-kernel-1.1.0/deploy/localhost-broker.xml
 Please review the configuration and modify to suite your needs.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; activemq/destroy-broker
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; activemq/destroy-broker
 </code></pre></div></div>
 <p>Default ActiveMQ Broker (localhost) configuration file created at: /Users/dejanb/workspace/apache-servicemix-kernel-1.1.0/deploy/localhost-broker.xml removed.</p>
 
@@ -150,14 +150,14 @@ Please review the configuration and modify to suite your needs.</p>
 
 <h1 id="web-console">Web console</h1>
 
-<p><a href="web-console">Web console</a> is included in ActiveMQ distribution and you’ll probably want to have it to monitor your broker. First of all you’ll have to install the <code class="highlighter-rouge">web</code> feature, so that you have a web container ready to deploy our web application. To do that you should first add the ServiceMix features url, like we did above (if you didn’t already). Now, you can just run</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; features/install web
+<p><a href="web-console">Web console</a> is included in ActiveMQ distribution and you’ll probably want to have it to monitor your broker. First of all you’ll have to install the <code class="language-plaintext highlighter-rouge">web</code> feature, so that you have a web container ready to deploy our web application. To do that you should first add the ServiceMix features url, like we did above (if you didn’t already). Now, you can just run</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; features/install web
 </code></pre></div></div>
 <p>to grab all necessary bundles. If you type</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/list
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/list
 </code></pre></div></div>
 <p>you’ll see all installed bundles (such as)</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[  43] [Active     ] [       ] [   60] Apache ServiceMix Bundles: jetty-6.1.14 (6.1.14.1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[  43] [Active     ] [       ] [   60] Apache ServiceMix Bundles: jetty-6.1.14 (6.1.14.1)
 [  44] [Active     ] [       ] [   60] OPS4J Pax Web - Jsp Support (0.5.2)
 [  45] [Active     ] [       ] [   60] OPS4J Pax Web - Web Container (0.5.2)
 [  46] [Active     ] [       ] [   60] OPS4J Pax Web Extender - WAR (0.5.0)
@@ -177,54 +177,54 @@ Please review the configuration and modify to suite your needs.</p>
 </ul>
 
 <p>So if you have older bundles, like it is the case in our example, you’ll need to unistall them and install new ones. To uninstall old bundles, simply look at their id and execute</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/uninstall [id]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/uninstall [id]
 </code></pre></div></div>
 <p>In this example it would be</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/uninstall 44
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/uninstall 44
 smx@root:/&gt; osgi/uninstall 45
 smx@root:/&gt; osgi/uninstall 46
 smx@root:/&gt; osgi/uninstall 47
 </code></pre></div></div>
 <p>Now install new ones</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/install mvn:org.ops4j.pax.web/pax-web-bundle/0.6.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/install mvn:org.ops4j.pax.web/pax-web-bundle/0.6.0
 smx@root:/&gt; osgi/install mvn:org.ops4j.pax.web/pax-web-jsp/0.6.0
 smx@root:/&gt; osgi/install mvn:org.ops4j.pax.web-extender/pax-web-ex-war/0.5.1
 smx@root:/&gt; osgi/install mvn:org.ops4j.pax.web-extender/pax-web-ex-whiteboard/0.5.1
 </code></pre></div></div>
 <p>After successful installation, you should start your newly added bundles. You can do that by executing</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/start [id]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/start [id]
 </code></pre></div></div>
-<p>It’s best to restart your container at this point and afterwards we’re finally ready to deploy our war. To do that we’ll use the Pax Web War Extender. The following example will use the latest <code class="highlighter-rouge">5.3-SNAPSHOT</code> build and deploy it in the OSGi runtime</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/install war:mvn:org.apache.activemq/activemq-web-console/5.3-SNAPSHOT/war?Webapp-Context=activemqweb
+<p>It’s best to restart your container at this point and afterwards we’re finally ready to deploy our war. To do that we’ll use the Pax Web War Extender. The following example will use the latest <code class="language-plaintext highlighter-rouge">5.3-SNAPSHOT</code> build and deploy it in the OSGi runtime</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/install war:mvn:org.apache.activemq/activemq-web-console/5.3-SNAPSHOT/war?Webapp-Context=activemqweb
 </code></pre></div></div>
 <p>You have to use the latest 5.3-SNAPSHOT web console, since this doesn’t work right with previous versions.</p>
 
 <p>Also, if you have problems installing the war with the previous method, download it manually from <a href="https://repository.apache.org/content/repositories/snapshots/org/apache/activemq/activemq-web-console/5.3-SNAPSHOT/">https://repository.apache.org/content/repositories/snapshots/org/apache/activemq/activemq-web-console/5.3-SNAPSHOT/</a> and install using</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/install war:file:///path\_to\_the_war/activemq-web-console-5.3-SNAPSHOT.war?Webapp-Context=activemqweb
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/install war:file:///path\_to\_the_war/activemq-web-console-5.3-SNAPSHOT.war?Webapp-Context=activemqweb
 </code></pre></div></div>
 <p>Unfortunately the command</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>osgi/install \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>osgi/install \
 war:mvn:https://repository.apache.org/content/repositories/snapshots@snapshots!org.apache.activemq/activemq-web-console/5.3-SNAPSHOT/war?Webapp-Context=activemqweb
 </code></pre></div></div>
 <p>does not work with pax web war extender 0.5.1, but you try it if you’re using the newer one.</p>
 
 <p>If you execute</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/list
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/list
 </code></pre></div></div>
 <p>you’ll see the newly added bundle here.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[  84] [Resolved   ] [       ] [   60] mvn\_org.apache.activemq\_activemq-web-console\_5.3-SNAPSHOT\_war (0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[  84] [Resolved   ] [       ] [   60] mvn\_org.apache.activemq\_activemq-web-console\_5.3-SNAPSHOT\_war (0)
 </code></pre></div></div>
 <p>It’s time t start it now</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/start 84
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>smx@root:/&gt; osgi/start 84
 </code></pre></div></div>
 <p>Use the id of your bundle</p>
 
 <p>The important thing to note here is that by default, web console will start an embedded broker and monitor it. So if you have a broker already running it will fail to start.</p>
 
-<p>Note that we have used <code class="highlighter-rouge">activemqweb</code> as a <code class="highlighter-rouge">WebApp-Context</code> while deploying the war, so the console will be available at <a href="http://localhost:8080/activemqweb">http://localhost:8080/activemqweb</a>. Visit this URL and administer your embedded broker.</p>
+<p>Note that we have used <code class="language-plaintext highlighter-rouge">activemqweb</code> as a <code class="language-plaintext highlighter-rouge">WebApp-Context</code> while deploying the war, so the console will be available at <a href="http://localhost:8080/activemqweb">http://localhost:8080/activemqweb</a>. Visit this URL and administer your embedded broker.</p>
 
-<p>There a big chance that you don’t want to monitor an embedded broker, but the broker you have started separately (in the OSGi runtime or elsewhere). To configure your web console to do that, you have to do the following. First, exit your OSGi runtime. Now you can edit the <code class="highlighter-rouge">etc/system.properties</code> file and add some configuration details. The following configuration snippet</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>webconsole.type=properties
+<p>There a big chance that you don’t want to monitor an embedded broker, but the broker you have started separately (in the OSGi runtime or elsewhere). To configure your web console to do that, you have to do the following. First, exit your OSGi runtime. Now you can edit the <code class="language-plaintext highlighter-rouge">etc/system.properties</code> file and add some configuration details. The following configuration snippet</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>webconsole.type=properties
 webconsole.jms.url=tcp://localhost:61616
 webconsole.jmx.url=service:jmx:rmi:///jndi/rmi://localhost:1099/karaf-root
 webconsole.jmx.user=karaf

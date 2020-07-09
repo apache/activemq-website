@@ -106,7 +106,7 @@
 
 <p>The AMQ AjaxServlet needs to be installed in your webapplications to support JMS over Ajax:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;servlet&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;servlet&gt;
   &lt;servlet-name&gt;AjaxServlet&lt;/servlet-name&gt;
   &lt;servlet-class&gt;org.apache.activemq.web.AjaxServlet&lt;/servlet-class&gt;
 &lt;/servlet&gt;
@@ -121,7 +121,7 @@
 <h1 id="javascript-api">Javascript API</h1>
 
 <p>The ajax featues of amq are provided on the client side by the <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-web-demo/src/main/webapp/js/amq.js">amq.js</a> script. Beginning with ActiveMQ 5.4, this script utilizes one of three different adapters to support ajax communication with the server. Current <a href="http://jquery.org">jQuery</a>, <a href="http://prototypejs.org">Prototype</a>, and <a href="http://www.dojotoolkit.org">Dojo</a> are supported, and recent versions of all three libraries are shipped with ActiveMQ.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;script type="text/javascript" src="js/jquery-1.4.2.min.js"&gt;&lt;/script&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;script type="text/javascript" src="js/jquery-1.4.2.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="js/amq\_jquery\_adapter.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="js/amq.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
@@ -133,19 +133,19 @@
   });
 &lt;/script&gt;
 </code></pre></div></div>
-<p>Including these scripts results in the creation of a javascript object called <code class="highlighter-rouge">amq</code>, which provides the API to send messages and to subscribe to channels and topics.</p>
+<p>Including these scripts results in the creation of a javascript object called <code class="language-plaintext highlighter-rouge">amq</code>, which provides the API to send messages and to subscribe to channels and topics.</p>
 
 <h2 id="sending-a-message">Sending a message</h2>
 
 <p>All that is required to send a JMS message from the javascript client, is to call the method:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>amq.sendMessage(myDestination,myMessage);
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>amq.sendMessage(myDestination,myMessage);
 </code></pre></div></div>
-<p>where <code class="highlighter-rouge">myDestination</code> is the URL string address of the destination (e.g. <code class="highlighter-rouge">topic://MY.NAME</code> or <code class="highlighter-rouge">channel://MY.NAME</code>) and <code class="highlighter-rouge">myMessage</code> is any well formed XML or plain text encoded as XML content.</p>
+<p>where <code class="language-plaintext highlighter-rouge">myDestination</code> is the URL string address of the destination (e.g. <code class="language-plaintext highlighter-rouge">topic://MY.NAME</code> or <code class="language-plaintext highlighter-rouge">channel://MY.NAME</code>) and <code class="language-plaintext highlighter-rouge">myMessage</code> is any well formed XML or plain text encoded as XML content.</p>
 
 <h2 id="receiving-messages">Receiving messages</h2>
 
 <p>To receive messages, the client must define a message handling function and register it with the <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-web-demo/src/main/webapp/js/amq.js">amq</a> object. For example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var myHandler =
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var myHandler =
 {
   rcvMessage: function(message)
   {
@@ -155,52 +155,52 @@
 
 amq.addListener(myId,myDestination,myHandler.rcvMessage);
 </code></pre></div></div>
-<p>where <code class="highlighter-rouge">myId</code> is a string identifier that can be used for a later call to <code class="highlighter-rouge">amq.removeHandler(myId)</code> and <code class="highlighter-rouge">myDestination</code> is a URL string address of the destination (e.g. <code class="highlighter-rouge">topic://MY.NAME</code> or <code class="highlighter-rouge">channel://MY.NAME</code>). When a message is received, a call back to the <code class="highlighter-rouge">myHandler.rcvMessage</code> function passes the message to your handling code.<br />
-The “message” is actually a text of the Text message or a String representation (<code class="highlighter-rouge">toString()</code>) in case of Object messages.</p>
+<p>where <code class="language-plaintext highlighter-rouge">myId</code> is a string identifier that can be used for a later call to <code class="language-plaintext highlighter-rouge">amq.removeHandler(myId)</code> and <code class="language-plaintext highlighter-rouge">myDestination</code> is a URL string address of the destination (e.g. <code class="language-plaintext highlighter-rouge">topic://MY.NAME</code> or <code class="language-plaintext highlighter-rouge">channel://MY.NAME</code>). When a message is received, a call back to the <code class="language-plaintext highlighter-rouge">myHandler.rcvMessage</code> function passes the message to your handling code.<br />
+The “message” is actually a text of the Text message or a String representation (<code class="language-plaintext highlighter-rouge">toString()</code>) in case of Object messages.</p>
 
-<p>Be aware that, by default, messages published via <a href="stomp">Stomp</a> which include a <code class="highlighter-rouge">content-length</code> header will be converted by ActiveMQ to binary messages, and will not be visible to your web clients. Beginning with ActiveMQ 5.4.0, you can resolve this problem by always setting the <a href="https://issues.apache.org/jira/browse/AMQ-2833"><code class="highlighter-rouge">amq-msg-type</code> header</a> to <code class="highlighter-rouge">text</code> in messages which will may be consumed by web clients.</p>
+<p>Be aware that, by default, messages published via <a href="stomp">Stomp</a> which include a <code class="language-plaintext highlighter-rouge">content-length</code> header will be converted by ActiveMQ to binary messages, and will not be visible to your web clients. Beginning with ActiveMQ 5.4.0, you can resolve this problem by always setting the <a href="https://issues.apache.org/jira/browse/AMQ-2833"><code class="language-plaintext highlighter-rouge">amq-msg-type</code> header</a> to <code class="language-plaintext highlighter-rouge">text</code> in messages which will may be consumed by web clients.</p>
 
 <h3 id="selector-support">Selector support</h3>
 
-<p>By default, an ajax client will receive all messages on a topic or queue it is subscribed to. In <a href="http://activemq.apache.orgOverview/Download/activemq-541-release">ActiveMQ 5.4.1</a> amq.js supports <a href="http://activemq.apache.orgFeatures/Consumer Features/selectors">JMS selectors</a> since it is frequently useful to receive only a subset of these messages. Selectors are supplied to an <code class="highlighter-rouge">amq.addListener</code> call by way of an optional 4th parameter.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>amq.addListener( myId, myDestination, myHandler.rcvMessage, { selector:"identifier='TEST'" } );
+<p>By default, an ajax client will receive all messages on a topic or queue it is subscribed to. In <a href="http://activemq.apache.orgOverview/Download/activemq-541-release">ActiveMQ 5.4.1</a> amq.js supports <a href="http://activemq.apache.orgFeatures/Consumer Features/selectors">JMS selectors</a> since it is frequently useful to receive only a subset of these messages. Selectors are supplied to an <code class="language-plaintext highlighter-rouge">amq.addListener</code> call by way of an optional 4th parameter.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>amq.addListener( myId, myDestination, myHandler.rcvMessage, { selector:"identifier='TEST'" } );
 </code></pre></div></div>
-<p>When used in this way, the Javascript client will receive only messages containing an <code class="highlighter-rouge">identifier</code> header set to the value <code class="highlighter-rouge">TEST</code>.</p>
+<p>When used in this way, the Javascript client will receive only messages containing an <code class="language-plaintext highlighter-rouge">identifier</code> header set to the value <code class="language-plaintext highlighter-rouge">TEST</code>.</p>
 
 <h2 id="using-amq-ajax-in-multiple-browser-windows">Using AMQ Ajax in Multiple Browser Windows</h2>
 
-<p>All windows or tabs in a single browser share the same <code class="highlighter-rouge">JSESSIONID</code> on the ActiveMQ server. Unless the server can distinguish listeners from multiple windows, messages which were intended for 1 window will be delivered to another one instead. Effectively, this means that amq.js could be active in only a single browser window at any given time. Beginning in <a href="http://activemq.apache.orgOverview/DownloadOverview/Download/Overview/Download/activemq-542-release">ActiveMQ 5.4.2</a>, this is resolved by allowing each call to <code class="highlighter-rouge">amq.init</code> to specify a unique <code class="highlighter-rouge">clientId</code>. When this is done, multiple windows in the same browser can happily co-exist. Each can have a separate set of message subscriptions on the broker with no interactions between them.</p>
+<p>All windows or tabs in a single browser share the same <code class="language-plaintext highlighter-rouge">JSESSIONID</code> on the ActiveMQ server. Unless the server can distinguish listeners from multiple windows, messages which were intended for 1 window will be delivered to another one instead. Effectively, this means that amq.js could be active in only a single browser window at any given time. Beginning in <a href="http://activemq.apache.orgOverview/DownloadOverview/Download/Overview/Download/activemq-542-release">ActiveMQ 5.4.2</a>, this is resolved by allowing each call to <code class="language-plaintext highlighter-rouge">amq.init</code> to specify a unique <code class="language-plaintext highlighter-rouge">clientId</code>. When this is done, multiple windows in the same browser can happily co-exist. Each can have a separate set of message subscriptions on the broker with no interactions between them.</p>
 
-<p>In this example, we use the current time (at the time the web page is loaded) as a unique identifier. This is effective as long as two browser windows are not opened within the same millisecond, and is the approach used by the example <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-web-demo/src/main/webappchat">chat.md</a> included with ActiveMQ. Other schemes to ensure the uniqueness of <code class="highlighter-rouge">clientId</code> can easily be devised. Note that this <code class="highlighter-rouge">clientId</code> need only be unique within a single session. (Browser windows opened in the same millisecond in separate browsers will not interact, since they are in different sessions.)</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>org.activemq.Amq.init({
+<p>In this example, we use the current time (at the time the web page is loaded) as a unique identifier. This is effective as long as two browser windows are not opened within the same millisecond, and is the approach used by the example <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-web-demo/src/main/webappchat">chat.md</a> included with ActiveMQ. Other schemes to ensure the uniqueness of <code class="language-plaintext highlighter-rouge">clientId</code> can easily be devised. Note that this <code class="language-plaintext highlighter-rouge">clientId</code> need only be unique within a single session. (Browser windows opened in the same millisecond in separate browsers will not interact, since they are in different sessions.)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>org.activemq.Amq.init({
   uri: 'amq', 
   logging: true, 
   timeout: 45, 
   clientId:(new Date()).getTime().toString() 
 });
 </code></pre></div></div>
-<p>Note that this <code class="highlighter-rouge">clientId</code> is common to all message subscriptions in a single tab or window, and is entirely different from the <code class="highlighter-rouge">clientId</code> which is supplied as a first argument in <code class="highlighter-rouge">amq.addListener</code> calls.</p>
+<p>Note that this <code class="language-plaintext highlighter-rouge">clientId</code> is common to all message subscriptions in a single tab or window, and is entirely different from the <code class="language-plaintext highlighter-rouge">clientId</code> which is supplied as a first argument in <code class="language-plaintext highlighter-rouge">amq.addListener</code> calls.</p>
 
 <ul>
-  <li>In <code class="highlighter-rouge">amq.init</code>, <code class="highlighter-rouge">clientId</code> serves to distinguish different web clients sharing the same <code class="highlighter-rouge">JSESSIONID</code>. All windows in a single browser need a unique <code class="highlighter-rouge">clientId</code> when they call <code class="highlighter-rouge">amq.init</code>.</li>
-  <li>In <code class="highlighter-rouge">amq.addListener</code>, <code class="highlighter-rouge">clientId</code> is used to associate a message subscription with the callback function which should be invoked when a message is received for that subscription. These <code class="highlighter-rouge">clientId</code> values are internal to each web page, and do not need to be unique across multiple windows or tabs.</li>
+  <li>In <code class="language-plaintext highlighter-rouge">amq.init</code>, <code class="language-plaintext highlighter-rouge">clientId</code> serves to distinguish different web clients sharing the same <code class="language-plaintext highlighter-rouge">JSESSIONID</code>. All windows in a single browser need a unique <code class="language-plaintext highlighter-rouge">clientId</code> when they call <code class="language-plaintext highlighter-rouge">amq.init</code>.</li>
+  <li>In <code class="language-plaintext highlighter-rouge">amq.addListener</code>, <code class="language-plaintext highlighter-rouge">clientId</code> is used to associate a message subscription with the callback function which should be invoked when a message is received for that subscription. These <code class="language-plaintext highlighter-rouge">clientId</code> values are internal to each web page, and do not need to be unique across multiple windows or tabs.</li>
 </ul>
 
 <h1 id="how-it-works">How it works</h1>
 
 <h2 id="ajaxservlet-and-messagelistenerservlet">AjaxServlet and MessageListenerServlet</h2>
 
-<p>The ajax featues of amq are handled on the server side by the <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-web/src/main/java/org/apache/activemq/web/AjaxServlet.java">AjaxServlet</a> which extends the <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-web/src/main/java/org/apache/activemq/web/MessageListenerServlet.java">MessageListenerServlet</a>. This servlet is responsible for tracking the existing clients (using a HttpSesssion) and lazily creating the AMQ and javax.jms objects required by the client to send and receive messages (eg. Destination, MessageConsumer, MessageAVailableListener). This servlet should be mapped to <code class="highlighter-rouge">/amq/*</code> in the web application context serving the Ajax client (this can be changed, but the client javascript <code class="highlighter-rouge">amq.uri</code> field needs to be updated to match.)</p>
+<p>The ajax featues of amq are handled on the server side by the <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-web/src/main/java/org/apache/activemq/web/AjaxServlet.java">AjaxServlet</a> which extends the <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-web/src/main/java/org/apache/activemq/web/MessageListenerServlet.java">MessageListenerServlet</a>. This servlet is responsible for tracking the existing clients (using a HttpSesssion) and lazily creating the AMQ and javax.jms objects required by the client to send and receive messages (eg. Destination, MessageConsumer, MessageAVailableListener). This servlet should be mapped to <code class="language-plaintext highlighter-rouge">/amq/*</code> in the web application context serving the Ajax client (this can be changed, but the client javascript <code class="language-plaintext highlighter-rouge">amq.uri</code> field needs to be updated to match.)</p>
 
 <h2 id="client-sending-messages">Client Sending messages</h2>
 
 <p>When a message is sent from the client it is encoded as the content of a POST request, using the API of one of the supported connection adapters (jQuery, Prototype, or Dojo) for <a href="http://jibbering.com/2002/4/httprequest.html">XmlHttpRequest</a>. The <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-web-demo/src/main/webapp/js/amq.js">amq</a> object may combine several sendMessage calls into a single POST if it can do so without adding additional delays (see polling below).</p>
 
-<p>When the MessageListenerServlet receives a POST, the messages are decoded as <code class="highlighter-rouge">application/x-www-form-urlencoded</code> parameters with their type (in this case <code class="highlighter-rouge">send</code> as opposed to <code class="highlighter-rouge">listen</code> or <code class="highlighter-rouge">unlisten</code> see below) and destination. If a destination channel or topic do not exist, it is created. The message is sent to the destination as a TextMessage.</p>
+<p>When the MessageListenerServlet receives a POST, the messages are decoded as <code class="language-plaintext highlighter-rouge">application/x-www-form-urlencoded</code> parameters with their type (in this case <code class="language-plaintext highlighter-rouge">send</code> as opposed to <code class="language-plaintext highlighter-rouge">listen</code> or <code class="language-plaintext highlighter-rouge">unlisten</code> see below) and destination. If a destination channel or topic do not exist, it is created. The message is sent to the destination as a TextMessage.</p>
 
 <h2 id="listening-for-messages">Listening for messages</h2>
 
-<p>When a client registers a listener, a message subscription request is sent from the client to the server in a POST in the same way as a message, but with a type of <code class="highlighter-rouge">listen</code>. When the MessageListenerServlet receives a <code class="highlighter-rouge">listen</code> message, it lazily creates a MessageAvailableConsumer and registers a Listener on it.</p>
+<p>When a client registers a listener, a message subscription request is sent from the client to the server in a POST in the same way as a message, but with a type of <code class="language-plaintext highlighter-rouge">listen</code>. When the MessageListenerServlet receives a <code class="language-plaintext highlighter-rouge">listen</code> message, it lazily creates a MessageAvailableConsumer and registers a Listener on it.</p>
 
 <h2 id="waiting-poll-for-messages">Waiting Poll for messages</h2>
 
@@ -209,14 +209,14 @@ The “message” is actually a text of the Text message or a String representat
 <p>To avoid the load vs latency tradeoff, AMQ uses a waiting poll mechanism. As soon as the amq.js script is loaded, the client begins polling the server for available messages. A poll request can be sent as a GET request or as a POST if there are other messages ready to be delivered from the client to the server. When the MessageListenerServlet receives a poll it:</p>
 
 <ol>
-  <li>if the poll request is a POST, all <code class="highlighter-rouge">send</code>, <code class="highlighter-rouge">listen</code> and <code class="highlighter-rouge">unlisten</code> messages are processed</li>
+  <li>if the poll request is a POST, all <code class="language-plaintext highlighter-rouge">send</code>, <code class="language-plaintext highlighter-rouge">listen</code> and <code class="language-plaintext highlighter-rouge">unlisten</code> messages are processed</li>
   <li>if there are no messages available for the client on any of the subscribed channels or topic, the servlet suspends the request handling until:
     <ul>
       <li>A MessageAvailableConsumer Listener is called to indicate that a message is now available; or</li>
       <li>A timeout expires (normally around 30 seconds, which is less than all common TCP/IP, proxy and browser timeouts).</li>
     </ul>
   </li>
-  <li>A HTTP response is returned to the client containing all available messages encapsulated as <code class="highlighter-rouge">text/xml</code>.</li>
+  <li>A HTTP response is returned to the client containing all available messages encapsulated as <code class="language-plaintext highlighter-rouge">text/xml</code>.</li>
 </ol>
 
 <p>When the amq.js javascipt receives the response to the poll, it processes all the messages by passing them to the registered handler functions. Once it has processed all the messages, it immediately sends another poll to the server.</p>

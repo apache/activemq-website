@@ -136,24 +136,24 @@
     </blockquote>
   </li>
   <li>Call a vote on the release of the distribution. This email typically has
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[VOTE]
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[VOTE]
 </code></pre></div>    </div>
     <p>in the subject line and should provide a link to the download page and the pre-release distribution.</p>
   </li>
   <li>Wait 3 days. If there &gt;= 3 +1’s and no -1’s, you can proceed with the release.</li>
   <li>Create all of the distributions of the source (*.zip, *.tar.gz). Make sure that you remove the .svn directories from the directory before you create the archives. On *nix, this can be done with the command:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rm -rf \`find . -type d -name .svn\`
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rm -rf \`find . -type d -name .svn\`
 </code></pre></div>    </div>
   </li>
   <li>Sign your distribution files, creating an asc file for both the tar and zip files, see this page <a href="http://www.apache.org/dev/release-signing.html">http://www.apache.org/dev/release-signing.html</a> for more information on release signing.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg --armor --output foo.tar.gz.asc --detach-sig foo.tar.gz
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg --armor --output foo.tar.gz.asc --detach-sig foo.tar.gz
 gpg --armor --output foo.zip.asc --detach-sig foo.zip
 </code></pre></div>    </div>
   </li>
   <li>Copy the distribution files to <strong>/www/www.apache.org/dist/activemq/activemq-cpp/source</strong> on minotaur.</li>
   <li>Wait 24 hours for the mirrors to be updated with the distribution.</li>
   <li>Update the links on the download page to reference your distribution through the CGI script. This simply means that you precede the file names with the path <a href="http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/source/">http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/source/</a>.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i.e. http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/source/activemq-cpp-1.1-src.zip
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i.e. http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/source/activemq-cpp-1.1-src.zip
 </code></pre></div>    </div>
   </li>
   <li>Generate the Doxygen API and place it under /www/activemq.apache.org/cms/api_docs.</li>

@@ -108,12 +108,12 @@
 
 <ul>
   <li>Unpack GCC into an arbitrary directory, for example /opt/gccbuild, and then create a separate output directory. Your directory structure should look similar to this;
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/gccbuild/gcc-4.0.2
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/gccbuild/gcc-4.0.2
 /opt/gccbuild/output
 </code></pre></div>    </div>
   </li>
   <li>Go to the output directory and run configure.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /opt/gccbuild/output
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /opt/gccbuild/output
 ../gcc-4.0.2/configure --prefix=/opt/gcc402
                        --enable-shared
                        --enable-threads=posix
@@ -121,12 +121,12 @@
 </code></pre></div>    </div>
   </li>
   <li>Run make.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make bootstrap
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make bootstrap
 make install
 </code></pre></div>    </div>
   </li>
   <li>Download ActiveMQ and copy the JARs to a new empty directory /opt/app, including
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activeio-1.1.jar
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activeio-1.1.jar
 activemq-core-3.2.jar
 commons-logging-1.0.3.jar
 concurrent-1.3.4.jar
@@ -146,7 +146,7 @@ log4j-1.2.8.jar
 <p>An CNI example using a Java object starting the MQ.</p>
 
 <h5 id="bootstrapcpp">Bootstrap.cpp</h5>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;gcj/cni.h&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;gcj/cni.h&gt;
 #include &lt;iostream&gt;
 #include &lt;java/lang/System.h&gt;
 #include &lt;java/lang/Throwable.h&gt;
@@ -189,7 +189,7 @@ int main(int argc, char* argv\[\])
 </code></pre></div></div>
 
 <h5 id="mqadapterjava">MQAdapter.java</h5>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import org.activemq.*;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import org.activemq.*;
 import java.util.Hashtable ;
 import javax.jms.*;
 import javax.naming.*;
@@ -285,7 +285,7 @@ public class MQAdapter
   <p>Using -Bsymbolic does not seem to work, use -symbolic instead.</p>
 </blockquote>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>compile.sh:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>compile.sh:
 
 #!/bin/sh
 
@@ -302,33 +302,33 @@ done
 
 <ul>
   <li>Run the above script and set environment property GCJ_PROPERTIES.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./compile.sh
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./compile.sh
 export GCJ_PROPERTIES="gnu.gcj.precompiled.db.path=/opt/app/classmap.db"
 </code></pre></div>    </div>
   </li>
   <li>Java compile MQAdapter.java
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcj --classpath=./geronimo-spec-jms-1.1-rc4.jar:./activemq-core-3.2.jar -C MQAdapter.java
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcj --classpath=./geronimo-spec-jms-1.1-rc4.jar:./activemq-core-3.2.jar -C MQAdapter.java
 </code></pre></div>    </div>
   </li>
   <li>Generate CNI header for MQAdapter.class
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcjh MQAdapter
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcjh MQAdapter
 </code></pre></div>    </div>
   </li>
   <li>JAR the Java glue code
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fastjar cf MQAdapter.jar MQAdapter.class
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fastjar cf MQAdapter.jar MQAdapter.class
 </code></pre></div>    </div>
   </li>
   <li>Native compile the Java JAR into a shared library, add output directory to LD_LIBRARY_PATH.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcj -shared -findirect-dispatch -fjni -fPIC -Wl,-symbolic -o MQAdapter.so MQAdapter.jar
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcj -shared -findirect-dispatch -fjni -fPIC -Wl,-symbolic -o MQAdapter.so MQAdapter.jar
 export LD\_LIBRARY\_PATH=$LD\_LIBRARY\_PATH:/opt/app
 </code></pre></div>    </div>
   </li>
   <li>Compile the C++ code
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>g++ -c Bootstrap.cpp
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>g++ -c Bootstrap.cpp
 </code></pre></div>    </div>
   </li>
   <li>Link Bootstrap with the Java code
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcj -o Bootstrap Bootstrap.o -L /opt/app -lgcj -lstdc++ activeio-1.1.jar.so activemq-core-3.2.jar.so
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcj -o Bootstrap Bootstrap.o -L /opt/app -lgcj -lstdc++ activeio-1.1.jar.so activemq-core-3.2.jar.so
     commons-logging-1.0.3.jar.so concurrent-1.3.4.jar.so geronimo-spec-jms-1.1-rc4.jar.so
     geronimo-spec-j2ee-management-1.0-rc4.jar.so geronimo-spec-j2ee-jacc-1.0-rc4.jar.so
     geronimo-spec-jta-1.0.1B-rc4.jar.so log4j-1.2.8.jar.so MQAdapter.so
@@ -336,7 +336,7 @@ export LD\_LIBRARY\_PATH=$LD\_LIBRARY\_PATH:/opt/app
   </li>
 </ul>
 
-<p>Now, if everything went ok you should be able to run the app. with <code class="highlighter-rouge">./Bootstrap</code>.</p>
+<p>Now, if everything went ok you should be able to run the app. with <code class="language-plaintext highlighter-rouge">./Bootstrap</code>.</p>
 
 <h4 id="references">References</h4>
 

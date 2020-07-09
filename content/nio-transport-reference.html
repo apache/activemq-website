@@ -97,12 +97,12 @@
 <p>NIO Transport is very similar to the regular <a href="tcp-transport-reference">TCP transport</a>. The difference is that it is implemented using NIO API which can help with performance and scalability. NIO is a server side transport option only. Trying to use it on the client side will instantiate the regular TCP transport.</p>
 
 <h4 id="configuration-syntax">Configuration Syntax</h4>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nio://hostname:port?key=value
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nio://hostname:port?key=value
 </code></pre></div></div>
 <p>Configuration options are the same as for the <a href="tcp-transport-reference">TCP transport</a>.</p>
 
 <p>Note that the original NIO transport is a replacement for the tcp transport that uses OpenWire protocol. Other network protocols, such AMQP, MQTT, Stomp, etc also have their own NIO transport implementations. It configured usually, by adding “+nio” suffix to the protocol prefix, like</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mqtt+nio://localhost:1883
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mqtt+nio://localhost:1883
 </code></pre></div></div>
 <p>All protocol specific configuration should be applicable to the NIO version of the transport as well.</p>
 
@@ -145,9 +145,9 @@
 </table>
 
 <p>If you want to scale your broker to support thousands of connections to it, you need to first find the limits of number of threads JVM process is allowed to create. Then you can set these properties to some value below that (broker need more threads to operate normally). For more information on thread usage by destinations and how to limit those, please take a look at <a href="Horizontal Scaling/scaling-queues">Scaling Queues</a> or <a href="http://svn.apache.org/repos/asf/activemq/trunk/assembly/src/sample-conf/activemq-scalability.xml">this configuration file</a>. For example you can add the following</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ACTIVEMQ_OPTS="$ACTIVEMQ_OPTS -Dorg.apache.activemq.transport.nio.SelectorManager.corePoolSize=2000 -Dorg.apache.activemq.transport.nio.SelectorManager.maximumPoolSize=2000 -Dorg.apache.activemq.transport.nio.SelectorManager.workQueueCapacity=1024"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ACTIVEMQ_OPTS="$ACTIVEMQ_OPTS -Dorg.apache.activemq.transport.nio.SelectorManager.corePoolSize=2000 -Dorg.apache.activemq.transport.nio.SelectorManager.maximumPoolSize=2000 -Dorg.apache.activemq.transport.nio.SelectorManager.workQueueCapacity=1024"
 </code></pre></div></div>
-<p>to the startup script (<code class="highlighter-rouge">${ACTIVEMQ_HOME}/bin/env</code> for example) to have a constant pool of 2000 threads handling connections. With the setting like this, the broker should be able to accept the number of connections up to the system limits. Of course, accepting connections is just one part of the story, so there are other limits to vertically scaling the broker.</p>
+<p>to the startup script (<code class="language-plaintext highlighter-rouge">${ACTIVEMQ_HOME}/bin/env</code> for example) to have a constant pool of 2000 threads handling connections. With the setting like this, the broker should be able to accept the number of connections up to the system limits. Of course, accepting connections is just one part of the story, so there are other limits to vertically scaling the broker.</p>
 
 
       </div>

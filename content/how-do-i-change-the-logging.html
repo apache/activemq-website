@@ -99,19 +99,19 @@
 <p>We use slf4j to log information in the broker client and the broker itself so you can fully configure which logging levels are used and whether to log to files or the console etc. For more information see the <a href="http://logging.apache.org/log4j/docs/manual.html">log4j manual</a>.</p>
 
 <p>You can disable the ActiveMQ logging by editing the <strong>conf/log4j.properties</strong> file to disable all INFO level logging for activemq by adding this line</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.logger.org.apache.activemq=WARN
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.logger.org.apache.activemq=WARN
 </code></pre></div></div>
 <p>or to disable stdout logging all together change this line</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.rootLogger=INFO, stdout, out
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.rootLogger=INFO, stdout, out
 </code></pre></div></div>
 <p>to</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.rootLogger=INFO, out
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.rootLogger=INFO, out
 </code></pre></div></div>
 
 <h2 id="how-do-i-change-the-logging-at-runtime">How Do I Change the Logging at Runtime?</h2>
 
 <p>The default logging level in ActiveMQ is INFO. This can be seen by starting up the default ActiveMQ binary in a terminal. In doing so, you will see the output shown below:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./bin/activemq
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./bin/activemq
 ACTIVEMQ_HOME: /Users/bsnyder/amq/apache-activemq-5.1.0
 ACTIVEMQ_BASE: /Users/bsnyder/amq/apache-activemq-5.1.0
 Loading message broker from: xbean:activemq.xml
@@ -148,8 +148,8 @@ INFO  FailoverTransport              - Successfully connected to tcp://localhost
 
 <p><img src="assets/img/reloadLog4jProperties1.png" alt="" /></p>
 
-<p>To enable debug level logging in ActiveMQ, edit the <code class="highlighter-rouge">conf/log4j.properties</code> file that is part of the ActiveMQ binary distribution to disable INFO level logging and enable DEBUG level logging from this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.rootLogger=INFO, stdout, out
+<p>To enable debug level logging in ActiveMQ, edit the <code class="language-plaintext highlighter-rouge">conf/log4j.properties</code> file that is part of the ActiveMQ binary distribution to disable INFO level logging and enable DEBUG level logging from this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.rootLogger=INFO, stdout, out
 log4j.logger.org.apache.activemq.spring=WARN
 log4j.logger.org.springframework=WARN
 log4j.logger.org.apache.xbean.spring=WARN
@@ -160,7 +160,7 @@ log4j.logger.org.apache.xbean.spring=WARN
 #log4j.rootLogger=DEBUG, out, stdout
 </code></pre></div></div>
 <p>to this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#log4j.rootLogger=INFO, stdout, out
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#log4j.rootLogger=INFO, stdout, out
 log4j.logger.org.apache.activemq.spring=WARN
 log4j.logger.org.springframework=WARN
 log4j.logger.org.apache.xbean.spring=WARN
@@ -170,12 +170,12 @@ log4j.logger.org.apache.xbean.spring=WARN
 
 log4j.rootLogger=DEBUG, out, stdout
 </code></pre></div></div>
-<p>Notice that the line <code class="highlighter-rouge">log4j.rootLogger=INFO, stdout, out</code> has been commented out and the line <code class="highlighter-rouge">log4j.rootLogger=DEBUG, out, stdout</code> has been uncommented. Save this change and then, in jconsole, click the button named <strong>reloadLog4jProperties</strong> as shown below:</p>
+<p>Notice that the line <code class="language-plaintext highlighter-rouge">log4j.rootLogger=INFO, stdout, out</code> has been commented out and the line <code class="language-plaintext highlighter-rouge">log4j.rootLogger=DEBUG, out, stdout</code> has been uncommented. Save this change and then, in jconsole, click the button named <strong>reloadLog4jProperties</strong> as shown below:</p>
 
 <p><img src="assets/img/reloadLog4jProperties2.png" alt="" /></p>
 
-<p>After clicking the <strong>reloadLog4jProperties</strong> button, the dialog pops up stating, ‘Method successfully invoked’. This just lets you know that the <code class="highlighter-rouge">reloadLog4jProperties</code> method was invoked to reload the <code class="highlighter-rouge">conf/log4j.properties</code> file. Now notice in the terminal where ActiveMQ is running that the logging that is being output is now DEBUG:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO  WebConsoleStarter              - ActiveMQ WebConsole initialized.
+<p>After clicking the <strong>reloadLog4jProperties</strong> button, the dialog pops up stating, ‘Method successfully invoked’. This just lets you know that the <code class="language-plaintext highlighter-rouge">reloadLog4jProperties</code> method was invoked to reload the <code class="language-plaintext highlighter-rouge">conf/log4j.properties</code> file. Now notice in the terminal where ActiveMQ is running that the logging that is being output is now DEBUG:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO  WebConsoleStarter              - ActiveMQ WebConsole initialized.
 INFO  /admin                         - Initializing Spring FrameworkServlet 'dispatcher'
 INFO  log                            - ActiveMQ Console at http://0.0.0.0:8161/admin
 INFO  log                            - ActiveMQ Web Demos at http://0.0.0.0:8161/demo
@@ -199,7 +199,7 @@ DEBUG InactivityMonitor              - 9999 ms elapsed since last write check.
 DEBUG InactivityMonitor              - 10000 ms elapsed since last write check.
 DEBUG InactivityMonitor              - 29999 ms elapsed since last read check.
 </code></pre></div></div>
-<p>Disabling <code class="highlighter-rouge">DEBUG</code> level logging and enabling <code class="highlighter-rouge">INFO</code> level logging is done by editing the <code class="highlighter-rouge">log4j.properties</code> file and clicking the <strong>reloadLog4jProperties</strong> button again.</p>
+<p>Disabling <code class="language-plaintext highlighter-rouge">DEBUG</code> level logging and enabling <code class="language-plaintext highlighter-rouge">INFO</code> level logging is done by editing the <code class="language-plaintext highlighter-rouge">log4j.properties</code> file and clicking the <strong>reloadLog4jProperties</strong> button again.</p>
 
 
       </div>

@@ -98,15 +98,15 @@
 
 <p>From version 5.4.0 onwards, ActiveMQ comes with a enhanced shell script for starting, stopping and managing the broker in Unix environment. For basic <a href="activemq-command-line-tools-reference">activemq</a> and <a href="activemq-command-line-tools-reference">activemq-admin</a> scripts functionality take a look at <a href="activemq-command-line-tools-reference">ActiveMQ Command Line Tools Reference</a>.</p>
 
-<p>This <code class="highlighter-rouge">activemq</code> script incorporate these two scripts into one and adds some new functionalities. On top of regular <code class="highlighter-rouge">activemq</code> and <code class="highlighter-rouge">activemq-admin</code> scripts, it adds the following features:</p>
+<p>This <code class="language-plaintext highlighter-rouge">activemq</code> script incorporate these two scripts into one and adds some new functionalities. On top of regular <code class="language-plaintext highlighter-rouge">activemq</code> and <code class="language-plaintext highlighter-rouge">activemq-admin</code> scripts, it adds the following features:</p>
 
 <ul>
-  <li><strong>start</strong> - starts the broker in background. It saves process id in the <code class="highlighter-rouge">${ACTIVEMQ_DATA_DIR}/activemq.pid</code> for future reference. It accepts the same command line arguments like the original <code class="highlighter-rouge">activemq</code> script, so you can do something like
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq start xbean:conf/activemq-stomp.xml
+  <li><strong>start</strong> - starts the broker in background. It saves process id in the <code class="language-plaintext highlighter-rouge">${ACTIVEMQ_DATA_DIR}/activemq.pid</code> for future reference. It accepts the same command line arguments like the original <code class="language-plaintext highlighter-rouge">activemq</code> script, so you can do something like
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq start xbean:conf/activemq-stomp.xml
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>console</strong> - starts the broker in foreground. It is basically the replacement for the old <code class="highlighter-rouge">activemq</code> script<br />
+    <p><strong>console</strong> - starts the broker in foreground. It is basically the replacement for the old <code class="language-plaintext highlighter-rouge">activemq</code> script<br />
 (you can interrupt the )</p>
   </li>
   <li>
@@ -118,12 +118,12 @@
   <li>
     <p><strong>status</strong> - checks if activemq process is running (exitcode: 1 = broker is down, 0 = broker is up)</p>
   </li>
-  <li><strong>create</strong> - create an ACTIVEMQ_BASE directory that separates a broker instance from its binaries, i.e., it creates copies of the ActiveMQ configuration files into the command-line specified directory and points to the binaries. You can start the broker with the <code class="highlighter-rouge">/bin</code> scripts in the newly created instance.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq create /path/to/brokers/mybroker 
+  <li><strong>create</strong> - create an ACTIVEMQ_BASE directory that separates a broker instance from its binaries, i.e., it creates copies of the ActiveMQ configuration files into the command-line specified directory and points to the binaries. You can start the broker with the <code class="language-plaintext highlighter-rouge">/bin</code> scripts in the newly created instance.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq create /path/to/brokers/mybroker 
 </code></pre></div>    </div>
   </li>
   <li><strong>browse</strong> - Display selected messages in a specified destination
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq browse FOO.BAR # use broker connection from configuration
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq browse FOO.BAR # use broker connection from configuration
 bin/activemq browse --amqurl tcp://localhost:61616 FOO.BAR
 </code></pre></div>    </div>
   </li>
@@ -134,27 +134,27 @@ bin/activemq browse --amqurl tcp://localhost:61616 FOO.BAR
     <p><strong>dstat</strong> - Performs a predefined query that displays useful tabular statistics regarding the specified destination type</p>
   </li>
   <li><strong>decrypt</strong> - Decrypts given text
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq decrypt --input 'BkiT42A0CZfL1SanJIgxvQ==' --password asdasdasdasd
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq decrypt --input 'BkiT42A0CZfL1SanJIgxvQ==' --password asdasdasdasd
 </code></pre></div>    </div>
   </li>
   <li><strong>encrypt</strong> - Encrypts given text
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq encrypt --password TESTPASSWORD --input FOOBAR
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq encrypt --password TESTPASSWORD --input FOOBAR
 </code></pre></div>    </div>
   </li>
   <li><strong>export</strong> - Exports a stopped brokers data files to an archive file for importing to another brokers like ActiveMQ Artemis
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bin/activemq export --file=archivefile
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bin/activemq export --file=archivefile
 </code></pre></div>    </div>
   </li>
   <li>
     <p><strong>list</strong> - Lists all available brokers in the specified JMX context</p>
   </li>
   <li><strong>purge</strong> - Delete selected destination’s messages that matches the message selector
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq purge FOO.BAR # use jmx access data from configuration
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq purge FOO.BAR # use jmx access data from configuration
 bin/activemq purge --jmxurl service:jmx:rmi:///jndi/rmi://127.0.0.1:11098/jmxrmi --jmxuser controlRole --jmxpassword abcd1234 FOO.BAR
 </code></pre></div>    </div>
   </li>
   <li><strong>query</strong> - Display selected broker component’s attributes and statistics
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq query # use jmx access data from configuration
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bin/activemq query # use jmx access data from configuration
 bin/activemq query --jmxurl service:jmx:rmi:///jndi/rmi://127.0.0.1:11098/jmxrmi --jmxuser controlRole --jmxpassword abcd1234
 </code></pre></div>    </div>
   </li>
@@ -168,7 +168,7 @@ bin/activemq query --jmxurl service:jmx:rmi:///jndi/rmi://127.0.0.1:11098/jmxrmi
 
 <h3 id="configuration-file-of-the-init-script">Configuration file of the init-script</h3>
 
-<p>Since version 5.11.0, all default configuration variables are moved to the new <code class="highlighter-rouge">env</code> script file, so that they can be easily inspected and configured in a easy way.<br />
+<p>Since version 5.11.0, all default configuration variables are moved to the new <code class="language-plaintext highlighter-rouge">env</code> script file, so that they can be easily inspected and configured in a easy way.<br />
 There are also other configuration locations</p>
 
 <p>The script scans the following locations for configurations in the following order:</p>
@@ -184,28 +184,28 @@ Undefined values are discovered in a automated way.</p>
 
 <h3 id="versions-prior-5110">Versions prior 5.11.0</h3>
 
-<p>These parameters were configurable in <code class="highlighter-rouge">activemq</code> script itself.</p>
+<p>These parameters were configurable in <code class="language-plaintext highlighter-rouge">activemq</code> script itself.</p>
 
-<p>You could use <code class="highlighter-rouge">setup</code> command to create additional system wide defaults file to configure the broker.<br />
+<p>You could use <code class="language-plaintext highlighter-rouge">setup</code> command to create additional system wide defaults file to configure the broker.<br />
 (modify the settings in this file if neccessary - the default entries look a bit garbled due to an accidentally applied bugfix in this release)</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./activemq setup /etc/default/activemq
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./activemq setup /etc/default/activemq
 </code></pre></div></div>
-<p>The configuration of the script can be placed at <code class="highlighter-rouge">/etc/default/activemq</code> or <code class="highlighter-rouge">$HOME/.activemqrc</code>. Note, this is the configuration for the <em>script</em> not for configuring ActiveMQ.</p>
+<p>The configuration of the script can be placed at <code class="language-plaintext highlighter-rouge">/etc/default/activemq</code> or <code class="language-plaintext highlighter-rouge">$HOME/.activemqrc</code>. Note, this is the configuration for the <em>script</em> not for configuring ActiveMQ.</p>
 
-<p>To use addtional configurations for running multiple instances on the same operating system rename or symlink script to a name matching to <code class="highlighter-rouge">activemq-instance-&lt;INSTANCENAME&gt;</code>. This changes the configuration location to <code class="highlighter-rouge">/etc/default/activemq-instance-&lt;INSTANCENAME&gt;</code> and <code class="highlighter-rouge">$HOME/.activemqrc-instance-&lt;INSTANCENAME&gt;</code>. Configuration files in /etc have higher precedence.</p>
+<p>To use addtional configurations for running multiple instances on the same operating system rename or symlink script to a name matching to <code class="language-plaintext highlighter-rouge">activemq-instance-&lt;INSTANCENAME&gt;</code>. This changes the configuration location to <code class="language-plaintext highlighter-rouge">/etc/default/activemq-instance-&lt;INSTANCENAME&gt;</code> and <code class="language-plaintext highlighter-rouge">$HOME/.activemqrc-instance-&lt;INSTANCENAME&gt;</code>. Configuration files in /etc have higher precedence.</p>
 
 <h2 id="running-activemq-as-a-unix-daemon">Running activemq as a unix daemon</h2>
 
 <ul>
   <li>Install activemq broker as “root” to be run as “activemq”
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>useradd -m activemq -d /srv/activemq
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>useradd -m activemq -d /srv/activemq
 cd /srv/activemq
 tar zxvf apache-activemq-&lt;version&gt;-bin.tar.gz$ ln -snf apache-activemq-&lt;version&gt; current
 chown -R activemq:users apache-activemq-&lt;version&gt;
 </code></pre></div>    </div>
   </li>
   <li>Create a global default configuration and edit the configuration
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cp apache-activemq-&lt;version&gt;/bin/env /etc/default/activemq
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cp apache-activemq-&lt;version&gt;/bin/env /etc/default/activemq
 sed -i '~s/^ACTIVEMQ\_USER=""/ACTIVEMQ\_USER="activemq"/' /etc/default/activemq
 vim /etc/default/activemq
 chmod 644 /etc/default/activemq
@@ -216,12 +216,12 @@ chmod 644 /etc/default/activemq
     </ul>
   </li>
   <li>Install the init script
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln -snf  /srv/activemq/current/bin/activemq /etc/init.d/activemq
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln -snf  /srv/activemq/current/bin/activemq /etc/init.d/activemq
 </code></pre></div>    </div>
   </li>
   <li>Activate the init script at system startup<br />
 (TODO: uncomplete)
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># RHEL
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># RHEL
 chkconfig --add activemq
 chkconfig activemq on
     
@@ -233,26 +233,26 @@ update-rc.d defaults activemq
 
 <h2 id="running-multiple-instances">Running multiple instances</h2>
 
-<p>To use additional configurations for running multiple instances on the same operating system rename or symlink script to a name matching to <code class="highlighter-rouge">activemq-instance-&lt;INSTANCENAME&gt;</code>.<br />
-This changes the configuration location to <code class="highlighter-rouge">/etc/default/activemq-instance-&lt;INSTANCENAME&gt;</code> and <code class="highlighter-rouge">$HOME/.activemqrc-instance-&lt;INSTANCENAME&gt;</code>. Configuration files in /etc have higher precedence.</p>
+<p>To use additional configurations for running multiple instances on the same operating system rename or symlink script to a name matching to <code class="language-plaintext highlighter-rouge">activemq-instance-&lt;INSTANCENAME&gt;</code>.<br />
+This changes the configuration location to <code class="language-plaintext highlighter-rouge">/etc/default/activemq-instance-&lt;INSTANCENAME&gt;</code> and <code class="language-plaintext highlighter-rouge">$HOME/.activemqrc-instance-&lt;INSTANCENAME&gt;</code>. Configuration files in /etc have higher precedence.</p>
 
 <p>Example procedure suitable to the procedure “Running activemq as a unix daemon”</p>
 
 <p>`Example**</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir /srv/activemq/instance1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir /srv/activemq/instance1
 cp -av /srv/activemq/current/conf/ /srv/activemq/instance1/
 mkdir /srv/activemq/instance1/{data,tmp}
 ln -snf  /srv/activemq/current/bin/activemq /etc/init.d/activemq-instance-test1
 cp /srv/activemq/install/bin/env /etc/default/activemq-instance-instance-test1
 </code></pre></div></div>
 <p>Modify the configuration variables in /etc/default/activemq-instance-instance-test1</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ACTIVEMQ_HOME="/srv/activemq/current/"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ACTIVEMQ_HOME="/srv/activemq/current/"
 ACTIVEMQ_CONF="/srv/activemq/instance1/conf"
 ACTIVEMQ_DATA="/srv/activemq/instance1/data"
 ACTIVEMQ_TMP="/srv/activemq/instance1/tmp"
 </code></pre></div></div>
 <p>Control the instance</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/etc/init.d/activemq-instance1 start|stop|restart|console|....
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/etc/init.d/activemq-instance1 start|stop|restart|console|....
 </code></pre></div></div>
 <blockquote>
   <p><strong>Hint</strong></p>
@@ -266,19 +266,19 @@ ACTIVEMQ_TMP="/srv/activemq/instance1/tmp"
 
 <ul>
   <li>Download the testsuite<br />
-Alternatively clone the sourcecode repo (<a href="source">Source</a>) and pick the file <code class="highlighter-rouge">assembly/src/test/scripts/init-script-testsuite</code>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /tmp
+Alternatively clone the sourcecode repo (<a href="source">Source</a>) and pick the file <code class="language-plaintext highlighter-rouge">assembly/src/test/scripts/init-script-testsuite</code>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /tmp
 wget -c "https://git-wip-us.apache.org/repos/asf?p=activemq.git;a=blob_plain;f=assembly/src/test/scripts/init-script-testsuite;hb=HEAD"
 </code></pre></div>    </div>
   </li>
   <li>Execute the testsuite
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd &lt;Installation Dir of the ActiveMQ Script&gt;
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd &lt;Installation Dir of the ActiveMQ Script&gt;
 ./activemq stop
 /tmp/init-script-testsuite 2&gt;&amp;1| tee /tmp/test-suite.log
 </code></pre></div>    </div>
   </li>
   <li>Detailed debug information can be provided by the following procedure
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PS4=' ${BASH_SOURCE}:${LINENO}(${FUNCNAME\[0\]}) '
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PS4=' ${BASH_SOURCE}:${LINENO}(${FUNCNAME\[0\]}) '
 bash -x ./activemq &lt;argument&gt; 2&gt;&amp;1 |tee /tmp/detailed-debugging.log
 </code></pre></div>    </div>
   </li>

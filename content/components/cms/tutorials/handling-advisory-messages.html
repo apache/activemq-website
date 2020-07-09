@@ -159,12 +159,12 @@
 
 <p>If we had a Topic named TOPIC.FOO and we wanted to know when a producer subscribed to that Topic we would need to create a Topic object whose name is <strong>ActiveMQ.Advisory.Producer.Topic.TOPIC.FOO</strong> in order to receive the advisory message we are interested in. We know this because we can look at the above table and see that the <strong>ActiveMQ.Advisory.Producer.Topic</strong> is informed whenever a Producer starts or stops publishing messages on a Topic and we also know that our Topic is named TOPIC.FOO, so adding them together gets us the name of our Advisory Topic, we also know this because we peaked at the AdvisorySupport.java class, and no, that’s not cheating. Below is a code snippet showing the creation of the Topic using a CMS Session:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::Topic&gt; advisories( session-&gt;createTopic(
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::Topic&gt; advisories( session-&gt;createTopic(
     "ActiveMQ.Advisory.Producer.Topic.TOPIC.FOO" ) );
 </code></pre></div></div>
 <p>Once we create the Topic for the advisory messages we want to listen for we just need to create a consumer to listen for them, the code snippet below demonstrates this:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::MessageConsumer&gt; consumer;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::MessageConsumer&gt; consumer;
 consumer.reset( session-&gt;createConsumer( advisories.get() ) );
 consumer-&gt;setMessageListener( this );
 </code></pre></div></div>
@@ -176,7 +176,7 @@ consumer-&gt;setMessageListener( this );
 
 <p>Many of the advisory messages store meaningful data in the Message properties, for instance the Consumer Start / Stop advisory message contains an element with the key <strong>consumerCount</strong> which is populated with the current number of active consumers on the Topic or Queue in question. Lets take a look at a code snippet now that checks the messages received in an onMessage callback to see if its an advisory message and acts on it if it is:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void AdvisoryProducer::onMessage( const cms::Message* message ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void AdvisoryProducer::onMessage( const cms::Message* message ) {
 
    if( message-&gt;getCMSType() == "Advisory" ) {
 
@@ -199,7 +199,7 @@ consumer-&gt;setMessageListener( this );
 
 <p>Now that you’ve seen the basics of advisory message processing its time to show you a complete example that demonstrates what you can do with advisory messages. The following code shows a class header and source file that implements a basic CMS Producer that will send heart beat message to a Topic called <strong>HEART-BEAT-CHANNEL</strong> only when there are active consumers, otherwise it sits idle.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#ifndef _ACTIVEMQCPP_EXAMPLES_ADVISORIES_ADVISORYPRODUCER_H_
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#ifndef _ACTIVEMQCPP_EXAMPLES_ADVISORIES_ADVISORYPRODUCER_H_
 #define _ACTIVEMQCPP_EXAMPLES_ADVISORIES_ADVISORYPRODUCER_H_
 
 #include &lt;string&gt;
@@ -264,7 +264,7 @@ namespace advisories {
 #endif /* _ACTIVEMQCPP_EXAMPLES_ADVISORIES_ADVISORYPRODUCER_H_ */
 </code></pre></div></div>
 <p><strong>AdvisoryProducer Source file</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include "AdvisoryProducer.h"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include "AdvisoryProducer.h"
 
 #include &lt;cms/Topic.h&gt;
 #include &lt;cms/Message.h&gt;
@@ -359,7 +359,7 @@ void AdvisoryProducer::onMessage( const cms::Message* message ) {
 <p>To demonstrate how we can access the command objects lets try and create a client application that listens to the Broker for advisories that indicate that Temporary Destinations have either been created or destroyed. The Broker will publish advisory messages to the “ActiveMQ.Advisory.TempTopic” and “ActiveMQ.Advisory.TempQueue” Topics whenever the corresponding Temporary Destination is created or destroyed and the command object will be of type DestinationInfo. The DestinationInfo object contains a Destination object describing the Destination in question and an Operation Type value telling whether the command is a create or destroy command. First lets look at how we subscribe to this Advisory Topic:</p>
 
 <p><strong>Subscribing to a Composite Advisory Topic</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::Topic&gt; advisories( session-&gt;createTopic(
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::Topic&gt; advisories( session-&gt;createTopic(
     "ActiveMQ.Advisory.TempTopic,ActiveMQ.Advisory.TempQueue" ) );
 
 std::auto_ptr&lt;cms::MessageConsumer&gt; consumer;
@@ -369,7 +369,7 @@ consumer-&gt;setMessageListener( this );
 <p>As you can see in the above code snippet we just create a new Topic object whose name is a composite of the two Topics we want to subscribe on, this will allow our single <strong>MessageConsumer</strong> instance to receive both Temporary Topic and Temporary Queue advisories. As before we also create a <strong>MessageConsumer</strong> and register our class’ instance as the asynchronous listener. Now all that’s left is to implement the <strong>onMessage</strong> method of the <strong>MessageListener</strong> interface, lets take a look at that code now:</p>
 
 <p><strong>Processing an Advisory message with an embedded command object</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>////////////////////////////////////////////////////////////////////////////////
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>////////////////////////////////////////////////////////////////////////////////
 void TempDestinationAdvisoryConsumer::onMessage( const cms::Message* message ) {
 
     if( message-&gt;getCMSType() == "Advisory" ) {
@@ -419,7 +419,7 @@ void TempDestinationAdvisoryConsumer::onMessage( const cms::Message* message ) {
 <p>Fortunately for use the code above looks more complicated than it really is, lets walk through it a bit more slowly now to understand what is going on:</p>
 
 <p><strong>Getting to the ActiveMQMessage object</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if( message-&gt;getCMSType() == "Advisory" ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if( message-&gt;getCMSType() == "Advisory" ) {
 
     std::cout &lt;&lt; "Received an Advisory Message!" &lt;&lt; std::endl;
 
@@ -435,13 +435,13 @@ else {
 <p>The first thing we need to do is check that we received an advisory message, ActiveMQ encodes the Message Type as “Advisory” so that’s easy enough. We don’t technically need to do this here since our consumer only listens on an advisory Topic but its not a bad idea to check. Once we know its an advisory message we know that the message pointer should be of type ActiveMQMessage under that generic cms::Message disguise its wearing so we use a <strong>dynamic_cast</strong> to convert it. Now that we’ve converted to an ActiveMQMessage what’s next, well lets take a look:</p>
 
 <p><strong>Checking for an embedded command object</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if( amqMessage != NULL &amp;&amp; amqMessage-&gt;getDataStructure() != NULL ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if( amqMessage != NULL &amp;&amp; amqMessage-&gt;getDataStructure() != NULL ) {
     std::cout &lt;&lt; "Advisory Message contains a Command Object!" &lt;&lt; std::endl;
 </code></pre></div></div>
 <p>Every ActiveMQMessage derived object has a method called <strong>getDataStructure</strong> which can be used for all sorts of useful things, here we are trying to see if there is a command object contained in this message, and you guessed it, the getDataStructure method will tell us if there is one. If there is then we can move onto checking for a DestinationInfo object:</p>
 
 <p><strong>Getting to the DestinationInfo object</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>try {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>try {
 
     Pointer&lt;DestinationInfo&gt; info =
         amqMessage-&gt;getDataStructure().dynamicCast&lt;DestinationInfo&gt;();
@@ -476,7 +476,7 @@ else {
 <p>The complete code of our client application is shown below, you can also find this code as well as a simple client that creates both a Temporary Topic and a Temporary Queue in the examples folder in the source distribution.</p>
 
 <p><strong>TempDestinationAdvisoryConsumer Header File</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#ifndef _ACTIVEMQCPP_EXAMPLES_ADVISORIES_TEMPDESTINATIONADVISORYCONSUMER_H_
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#ifndef _ACTIVEMQCPP_EXAMPLES_ADVISORIES_TEMPDESTINATIONADVISORYCONSUMER_H_
 #define _ACTIVEMQCPP_EXAMPLES_ADVISORIES_TEMPDESTINATIONADVISORYCONSUMER_H_
 
 #include &lt;string&gt;
@@ -521,7 +521,7 @@ namespace advisories {
 #endif /* _ACTIVEMQCPP_EXAMPLES_ADVISORIES_TEMPDESTINATIONADVISORYCONSUMER_H_ */
 </code></pre></div></div>
 <p><strong>TempDestinationAdvisoryConsumer Source File</strong></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include "TempDestinationAdvisoryConsumer.h"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include "TempDestinationAdvisoryConsumer.h"
 
 #include &lt;cms/Topic.h&gt;
 #include &lt;cms/Message.h&gt;

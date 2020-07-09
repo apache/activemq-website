@@ -109,23 +109,23 @@
 </blockquote>
 
 <p>In your Maven2 project, or using a minimal pom.xml like the following:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;project&gt;</span>
-  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
-  <span class="nt">&lt;groupId&gt;</span>com.acme<span class="nt">&lt;/groupId&gt;</span>
-  <span class="nt">&lt;artifactId&gt;</span>run-amq<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/project&gt;</span>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;com.acme&lt;/groupId&gt;
+  &lt;artifactId&gt;run-amq&lt;/artifactId&gt;
+  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+&lt;/project&gt;
 </code></pre></div></div>
 <p>just type:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn org.apache.activemq.tooling:maven-activemq-plugin:5.1:run
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvn org.apache.activemq.tooling:maven-activemq-plugin:5.1:run
 </code></pre></div></div>
-<p>This will download the 5.7.0 version of the plugin, and spin up a broker using a simple configuration url of the form <code class="highlighter-rouge">broker:(tcp://localhost:61616)?useJmx=false&amp;persistent=false</code>. The necessary ActiveMQ jars will automatically be downloaded by Maven.</p>
+<p>This will download the 5.7.0 version of the plugin, and spin up a broker using a simple configuration url of the form <code class="language-plaintext highlighter-rouge">broker:(tcp://localhost:61616)?useJmx=false&amp;persistent=false</code>. The necessary ActiveMQ jars will automatically be downloaded by Maven.</p>
 
-<p>To configure log4j, provide the <code class="highlighter-rouge">-Dlog4j.configuration=[file:///](file:///)&lt;full path to log4j.properties&gt;</code> system property on the mvn command line.</p>
+<p>To configure log4j, provide the <code class="language-plaintext highlighter-rouge">-Dlog4j.configuration=[file:///](file:///)&lt;full path to log4j.properties&gt;</code> system property on the mvn command line.</p>
 
-<p>If you require a more advanced configuration with spring support, the jetty webconsole or with embedded camel you can add the plugin in your pom.xml and provide the required optional dependencies. For the default <code class="highlighter-rouge">conf/activemq.xml</code>, the following dependencies are required :</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;build&gt;    
+<p>If you require a more advanced configuration with spring support, the jetty webconsole or with embedded camel you can add the plugin in your pom.xml and provide the required optional dependencies. For the default <code class="language-plaintext highlighter-rouge">conf/activemq.xml</code>, the following dependencies are required :</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;build&gt;    
     &lt;plugins&gt;
       &lt;plugin&gt;
         &lt;groupId&gt;org.apache.activemq.tooling&lt;/groupId&gt;

@@ -105,7 +105,7 @@
 <p>With ActiveMQ you can use regular Spring.xml syntax to configure things. However to produce neater XML that is easier to read and edit we use <a href="http://geronimo.apache.org/xbean/">XBean</a> to autogenerate support for <a href="http://geronimo.apache.org/xbean/custom-xml.html">Custom XML</a>.</p>
 
 <p>If you wish your POJO to have its own custom XML you may wish to follow the following source examples for working nicely with XBean. Basically you add an XBean annotation in the javadoc comments to tell XBean how to map the POJO to custom XML. This should look something like</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
  * @org.apache.xbean.XBean element="foo"
  */
 public class MyExtension {
@@ -120,8 +120,8 @@ public class MyExtension {
 
 <h3 id="configuring-plugins-without-custom-xml">Configuring plugins without custom XML</h3>
 
-<p>If you want to configure plugins that does not implement custom XML, you can define plugins as “regular” Spring beans and reference them in broker’s <code class="highlighter-rouge">plugins</code> attribute. For example,</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker useJmx="true" xmlns="http://activemq.apache.org/schema/core" plugins="#loggingPlugin"&gt;
+<p>If you want to configure plugins that does not implement custom XML, you can define plugins as “regular” Spring beans and reference them in broker’s <code class="language-plaintext highlighter-rouge">plugins</code> attribute. For example,</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker useJmx="true" xmlns="http://activemq.apache.org/schema/core" plugins="#loggingPlugin"&gt;
  ...
 &lt;/broker&gt;
 
@@ -129,8 +129,8 @@ public class MyExtension {
       class="org.apache.activemq.broker.util.LoggingBrokerPlugin"
 /&gt;
 </code></pre></div></div>
-<p>Not that this mechanism will not work in case that you have some XBean plugins configured inside the <code class="highlighter-rouge">&lt;plugins/&gt;</code> tag. In that case you must define the plugin inside that tag as well (with the appropriate schema definition). For example,</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;plugins&gt;
+<p>Not that this mechanism will not work in case that you have some XBean plugins configured inside the <code class="language-plaintext highlighter-rouge">&lt;plugins/&gt;</code> tag. In that case you must define the plugin inside that tag as well (with the appropriate schema definition). For example,</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;plugins&gt;
     &lt;simpleAuthenticationPlugin&gt;
       &lt;users&gt;
         &lt;authenticationUser username="system" password="manager"

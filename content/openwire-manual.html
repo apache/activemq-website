@@ -136,31 +136,31 @@
 
 <h3 id="openwire-protocol-options">OpenWire Protocol Options</h3>
 
-<p>You can use the <code class="highlighter-rouge">openwire</code> configuration element within the <code class="highlighter-rouge">connector</code> element in the <code class="highlighter-rouge">apollo.xml</code> configuration file to change the default settings used in the OpenWire protocol implementation.</p>
+<p>You can use the <code class="language-plaintext highlighter-rouge">openwire</code> configuration element within the <code class="language-plaintext highlighter-rouge">connector</code> element in the <code class="language-plaintext highlighter-rouge">apollo.xml</code> configuration file to change the default settings used in the OpenWire protocol implementation.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
   &lt;openwire attribute="value"/&gt;
 &lt;/connector&gt;
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">openwire</code> element supports the following configuration attributes:</p>
+<p>The <code class="language-plaintext highlighter-rouge">openwire</code> element supports the following configuration attributes:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">buffer_size</code> : How much each producer or subscription will buffer between the client and the broker. Defaults to <code class="highlighter-rouge">640k</code>.</li>
-  <li><code class="highlighter-rouge">stack_trace</code> : If there is an exception on the broker, it will be sent back to the client. Default is <code class="highlighter-rouge">true</code></li>
-  <li><code class="highlighter-rouge">cache</code> : Used to reduce marshalling efforts within the broker. Cache data structures such as openwire commands, destination objects, subscription info, etc. Default is <code class="highlighter-rouge">true</code></li>
-  <li><code class="highlighter-rouge">cache_size</code> : Number of internal data structures to cache. Default is <code class="highlighter-rouge">1024</code></li>
-  <li><code class="highlighter-rouge">tight_endcoding</code> : Optimize the encoding to be effecient over the wire at the expense of greater CPU usage to marshal/unmarshal. Default is <code class="highlighter-rouge">true</code></li>
-  <li><code class="highlighter-rouge">tcp_no_delay</code> : Decide whether to use <a href="http://en.wikipedia.org/wiki/Nagle's_algorithm">Nagle’s Algorithm</a> which improves TCP/IP effeciency for small packets. Set to true to disable this algorithm. Default is <code class="highlighter-rouge">false</code> (which means nodelay is off, and it uses Nagle’s algorithm)</li>
-  <li><code class="highlighter-rouge">max_inactivity_duration</code> : Max inactivity period, in milliseconds, at which point the socket would be considered dead. Used by the heartbeat functionality. If there is a period of inactivity greater than this period, the socket will be closed. Default is <code class="highlighter-rouge">30000</code></li>
-  <li><code class="highlighter-rouge">max_inactivity_duration_initial_delay</code> : Amount of time to delay between determining the socket should be closed and actually closing it. Default is <code class="highlighter-rouge">30000</code></li>
-  <li><code class="highlighter-rouge">max_frame_size</code> : Size in bytes of the largest frame that can be sent to the broker. Default is <code class="highlighter-rouge">100MB</code></li>
-  <li><code class="highlighter-rouge">add_jmsxuserid</code> : If set to <code class="highlighter-rouge">false</code>, disables setting the JMSXUserID header on received messages. Default is <code class="highlighter-rouge">true</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">buffer_size</code> : How much each producer or subscription will buffer between the client and the broker. Defaults to <code class="language-plaintext highlighter-rouge">640k</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">stack_trace</code> : If there is an exception on the broker, it will be sent back to the client. Default is <code class="language-plaintext highlighter-rouge">true</code></li>
+  <li><code class="language-plaintext highlighter-rouge">cache</code> : Used to reduce marshalling efforts within the broker. Cache data structures such as openwire commands, destination objects, subscription info, etc. Default is <code class="language-plaintext highlighter-rouge">true</code></li>
+  <li><code class="language-plaintext highlighter-rouge">cache_size</code> : Number of internal data structures to cache. Default is <code class="language-plaintext highlighter-rouge">1024</code></li>
+  <li><code class="language-plaintext highlighter-rouge">tight_endcoding</code> : Optimize the encoding to be effecient over the wire at the expense of greater CPU usage to marshal/unmarshal. Default is <code class="language-plaintext highlighter-rouge">true</code></li>
+  <li><code class="language-plaintext highlighter-rouge">tcp_no_delay</code> : Decide whether to use <a href="http://en.wikipedia.org/wiki/Nagle's_algorithm">Nagle’s Algorithm</a> which improves TCP/IP effeciency for small packets. Set to true to disable this algorithm. Default is <code class="language-plaintext highlighter-rouge">false</code> (which means nodelay is off, and it uses Nagle’s algorithm)</li>
+  <li><code class="language-plaintext highlighter-rouge">max_inactivity_duration</code> : Max inactivity period, in milliseconds, at which point the socket would be considered dead. Used by the heartbeat functionality. If there is a period of inactivity greater than this period, the socket will be closed. Default is <code class="language-plaintext highlighter-rouge">30000</code></li>
+  <li><code class="language-plaintext highlighter-rouge">max_inactivity_duration_initial_delay</code> : Amount of time to delay between determining the socket should be closed and actually closing it. Default is <code class="language-plaintext highlighter-rouge">30000</code></li>
+  <li><code class="language-plaintext highlighter-rouge">max_frame_size</code> : Size in bytes of the largest frame that can be sent to the broker. Default is <code class="language-plaintext highlighter-rouge">100MB</code></li>
+  <li><code class="language-plaintext highlighter-rouge">add_jmsxuserid</code> : If set to <code class="language-plaintext highlighter-rouge">false</code>, disables setting the JMSXUserID header on received messages. Default is <code class="language-plaintext highlighter-rouge">true</code>.</li>
 </ul>
 
 <p>An example of configuring the OpenWire protocol</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
   &lt;openwire tight_encoding="false" tcp_no_delay="true"/&gt;
 &lt;/connector&gt;
 </code></pre></div></div>
@@ -169,12 +169,12 @@
 
 <p>Apollo was designed to be inherently multi-protocol. Although STOMP was the first protocol to be implemented in Apollo, the core of the broker was not built around STOMP or any other specific protocol. Apollo, in fact by default, has the ability to detect the protocol being used on the wire without further configuration. This makes the configuration easier on the broker, and means you only need to open one connector that can handle multiple different types of wire protocols. If you would like to specify a certain connector for OpenWire and another connector for a different protocol, you can explicitly configure the connector to be an OpenWire connector:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector protocol="openwire" ... /&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector protocol="openwire" ... /&gt;
 </code></pre></div></div>
 
 <p>You can also support a limited subset of protocols:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector bind="..."&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector bind="..."&gt;
     &lt;detect protocols="openwire stomp" /&gt;
 &lt;/connector&gt;
 </code></pre></div></div>
@@ -216,9 +216,9 @@
 <p>Wild cards can be used in destination names when subscribing as a consumer. This allows you to subscribe to multiple destinations or hierarchy of destinations.</p>
 
 <ul>
-  <li><code class="highlighter-rouge">.</code> is used to separate names in a path</li>
-  <li><code class="highlighter-rouge">*</code> is used to match any name in a path</li>
-  <li><code class="highlighter-rouge">&gt;</code> is used to recursively match path names</li>
+  <li><code class="language-plaintext highlighter-rouge">.</code> is used to separate names in a path</li>
+  <li><code class="language-plaintext highlighter-rouge">*</code> is used to match any name in a path</li>
+  <li><code class="language-plaintext highlighter-rouge">&gt;</code> is used to recursively match path names</li>
 </ul>
 
 <p>Unlike some of the other protocols Apollo supports, for the OpenWire implementation, regex wildcards are not supported. Also note that for other protocols, the wildcard for recursive destinations is indeed “&gt;” and not “**”.</p>
@@ -227,15 +227,15 @@
 
 <p>You can send to multiple destinations with one single operation. When you create a destination to which your producer will be sending, you can specify multiple destinations with the “,” (comma) destination separator. For example, if you want to send a single message to two queues:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Destination destination = session.createQueue("test-queue,test-queue-foo")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Destination destination = session.createQueue("test-queue,test-queue-foo")
 MessageProducer producer = session.createProducer(destination);
 TextMessage message = session.createTextMessage("Message #" + i);
 producer.send(message);
 </code></pre></div></div>
 
-<p>Note both destinations named will be considered queues. However, you can also include a topic destination in your list. You’ll want to use the <code class="highlighter-rouge">topic://</code> prefix if mixing destination types (or <code class="highlighter-rouge">queue://</code> for queues):</p>
+<p>Note both destinations named will be considered queues. However, you can also include a topic destination in your list. You’ll want to use the <code class="language-plaintext highlighter-rouge">topic://</code> prefix if mixing destination types (or <code class="language-plaintext highlighter-rouge">queue://</code> for queues):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Destination destination = session.createQueue("test-queue,test-queue-foo,topic://test-topic-foo")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Destination destination = session.createQueue("test-queue,test-queue-foo,topic://test-topic-foo")
 </code></pre></div></div>
 
 <p>Similarly you can consume from multiple destinations as well. When you set up your consumer’s destination, just follow the same rules as above.</p>
@@ -244,7 +244,7 @@ producer.send(message);
 
 <p>To do exclusive consumer on a queue, you will specify the settings on the queue itself:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"QUEUE.NAME?consumer.exclusive=true"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"QUEUE.NAME?consumer.exclusive=true"
 </code></pre></div></div>
 
 <p>The first consumer to subscribe to the queue will be the exclusive consumer. Any other consumers that subscribe to the queue will not receive messages as long as the exclusive consumer is alive and consuming. If the exclusive consumer goes away, the next in line to subscribe will be selected as the exclusive consumer. In general, the order that’s calculcated for who should be the next exclusive consumer is based on when they subscribe. The first to subscribe wins and the others fall in line based on when they subscribed.</p>
@@ -255,17 +255,17 @@ producer.send(message);
 
 <p>Create a temporary destination</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Destination replyDest = session.createTemporaryQueue();
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Destination replyDest = session.createTemporaryQueue();
 </code></pre></div></div>
 
 <p>Create a consumer for that destination</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MessageConsumer replyConsumer = session.createConsumer(replyDest);
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MessageConsumer replyConsumer = session.createConsumer(replyDest);
 </code></pre></div></div>
 
 <p>Create a message to send as a request and set the JMSReplyTo header to the temp destination</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>message.setJMSReplyTo(replyDest);
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>message.setJMSReplyTo(replyDest);
 </code></pre></div></div>
 
 <p>Send the message. If the receiver of the message is aware that it’s participating in a request-reply scenario, it should place the response into the destination specified in the JMSReplyTo header.</p>
@@ -276,14 +276,14 @@ producer.send(message);
 
 <p>For example, to define a consumer on a destination that is only interested in messages that have a property named “intended” and a value of “me”, pass a selector as the second argument to the <a href="http://docs.oracle.com/javaee/6/api/javax/jms/Session.html">session.createConsumer()</a> method:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>session.createConsumer(destination, "intended = 'me'");
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>session.createConsumer(destination, "intended = 'me'");
 </code></pre></div></div>
 
 <p>Now messages produced with a property/value combination specified in the selector will be delivered to the consumer.</p>
 
 <p>Here’s an example of producing the message:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MessageProducer producer = session.createProducer(destination);
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MessageProducer producer = session.createProducer(destination);
 
 for (int i = 0; i &lt; NUM_MESSAGES_TO_SEND; i++) {
     TextMessage message = session.createTextMessage("Message #" + i);
@@ -299,12 +299,12 @@ for (int i = 0; i &lt; NUM_MESSAGES_TO_SEND; i++) {
 
 <p>To establish a browsing subscription to a queue, use the JMS API:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>QueueBrowser browser = session.createBrowser((Queue) destination);
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>QueueBrowser browser = session.createBrowser((Queue) destination);
 </code></pre></div></div>
 
 <p>Then you can enumerate the messages and examine them with the following idiom:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Enumeration enumeration = browser.getEnumeration();
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Enumeration enumeration = browser.getEnumeration();
 
 while (enumeration.hasMoreElements()) {
     TextMessage message = (TextMessage) enumeration.nextElement();
@@ -318,12 +318,12 @@ while (enumeration.hasMoreElements()) {
 
 <h4 id="transactions">Transactions</h4>
 
-<p>Transactions can be done on both the consumer and the producer for any destination. When you create a session, pass <code class="highlighter-rouge">true</code> to the first parameter:</p>
+<p>Transactions can be done on both the consumer and the producer for any destination. When you create a session, pass <code class="language-plaintext highlighter-rouge">true</code> to the first parameter:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
 </code></pre></div></div>
 
-<p>You can <code class="highlighter-rouge">commit</code> or <code class="highlighter-rouge">rollback</code> a transaction by calling <code class="highlighter-rouge">session.commit()</code> or <code class="highlighter-rouge">session.rollback()</code> respectively. On the broker side, each command that you take before calling <code class="highlighter-rouge">session.commit()</code> (like sending a message) gets batched up in a TransactionContext. When commit is made, all of the commands are executed and a Response is sent to the client (i.e., calling commit is a synchronous call. Before calling commit, all other commands are asyc).</p>
+<p>You can <code class="language-plaintext highlighter-rouge">commit</code> or <code class="language-plaintext highlighter-rouge">rollback</code> a transaction by calling <code class="language-plaintext highlighter-rouge">session.commit()</code> or <code class="language-plaintext highlighter-rouge">session.rollback()</code> respectively. On the broker side, each command that you take before calling <code class="language-plaintext highlighter-rouge">session.commit()</code> (like sending a message) gets batched up in a TransactionContext. When commit is made, all of the commands are executed and a Response is sent to the client (i.e., calling commit is a synchronous call. Before calling commit, all other commands are asyc).</p>
 
 <h3 id="openwire-protocol-details">OpenWire protocol details</h3>
 

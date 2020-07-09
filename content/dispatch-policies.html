@@ -106,8 +106,8 @@
 
 <p>For queues, you can define whether the dispatch will occur in a round-robin fashion (default behaviour) or if one consumer’s prefetch buffer will be exhausted before the dispatch process selects the next consumer along (strictOrderDispatch).</p>
 
-<p>The latter behaviour is enabled by setting the <code class="highlighter-rouge">strictOrderDispatch</code> attribute on the <code class="highlighter-rouge">&lt;policyEntry /&gt;</code> element. E.g.:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;policyEntry queue="&gt;" strictOrderDispatch="false" /&gt;
+<p>The latter behaviour is enabled by setting the <code class="language-plaintext highlighter-rouge">strictOrderDispatch</code> attribute on the <code class="language-plaintext highlighter-rouge">&lt;policyEntry /&gt;</code> element. E.g.:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;policyEntry queue="&gt;" strictOrderDispatch="false" /&gt;
 </code></pre></div></div>
 <p>Consumer priorities are observed, so if you have several consumers with different <a href="consumer-priority">priorities</a>, the one with the highest priority will be flooded first until it can take no more, then the next one along, etc.</p>
 
@@ -117,11 +117,11 @@
 
 <p>There are more options for topics because the dispatch policy is plug-able. Any implementation of org.apache.activemq.broker.region.policy.DispatchPolicy will work.</p>
 
-<p>The default <code class="highlighter-rouge">org.apache.activemq.broker.region.policy.SimpleDispatchPolicy</code> does what one would expect and delivers messages to all subscribers. An example of a more advanced implementation is the <code class="highlighter-rouge">org.apache.activemq.broker.region.policy.PriorityNetworkDispatchPolicy</code> which will only dispatch to the highest priority network consumer. This is useful in a loop network topology where there is more than route to a consumer.</p>
+<p>The default <code class="language-plaintext highlighter-rouge">org.apache.activemq.broker.region.policy.SimpleDispatchPolicy</code> does what one would expect and delivers messages to all subscribers. An example of a more advanced implementation is the <code class="language-plaintext highlighter-rouge">org.apache.activemq.broker.region.policy.PriorityNetworkDispatchPolicy</code> which will only dispatch to the highest priority network consumer. This is useful in a loop network topology where there is more than route to a consumer.</p>
 
 <p>Here is an <a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/xbean/activemq-policy.xml">example of destination policy configuration</a>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;destinationPolicy&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;destinationPolicy&gt;
    &lt;policyMap&gt;
       &lt;policyEntries&gt;
          &lt;policyEntry topic="FOO.&gt;"&gt;

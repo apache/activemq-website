@@ -106,20 +106,20 @@
 
 <ol>
   <li>Using keytool, create a certificate for the broker:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -genkey -alias broker -keyalg RSA -keystore broker.ks
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -genkey -alias broker -keyalg RSA -keystore broker.ks
 </code></pre></div>    </div>
   </li>
   <li>Export the broker’s certificate so it can be shared with clients:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -export -alias broker -keystore broker.ks -file broker_cert
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -export -alias broker -keystore broker.ks -file broker_cert
 </code></pre></div>    </div>
   </li>
   <li>Create a certificate/keystore for the client:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -genkey -alias client -keyalg RSA -keystore client.ks
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -genkey -alias client -keyalg RSA -keystore client.ks
 </code></pre></div>    </div>
   </li>
   <li>Create a truststore for the client, and import the broker’s
 certificate. This establishes that the client “trusts” the broker:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -import -alias broker -keystore client.ts -file broker_cert
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -import -alias broker -keystore client.ts -file broker_cert
 </code></pre></div>    </div>
   </li>
 </ol>
@@ -130,7 +130,7 @@ certificate. This establishes that the client “trusts” the broker:
 
 <p>Before starting the broker’s VM set the ACTIVEMQ_SSL_OPTS environment variable so that it knows to use the broker keystore. (note that in previous versions of ActiveMQ this property was called SSL_OPTS in some scripts. As of v5.12.0 all scripts use ACTIVEMQ_SSL_OPTS)</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export ACTIVEMQ_SSL_OPTS = -Djavax.net.ssl.keyStore=/path/to/broker.ks -Djavax.net.ssl.keyStorePassword=password
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export ACTIVEMQ_SSL_OPTS = -Djavax.net.ssl.keyStore=/path/to/broker.ks -Djavax.net.ssl.keyStorePassword=password
 </code></pre></div></div>
 
 <h4 id="using-spring-to-configure-ssl-for-a-broker-instance">Using Spring to configure SSL for a Broker instance</h4>
@@ -144,12 +144,12 @@ certificate. This establishes that the client “trusts” the broker:
 <h3 id="starting-the-client">Starting the Client</h3>
 
 <p>When starting the client’s VM, specify the following system properties:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>javax.net.ssl.keyStore=/path/to/client.ks
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>javax.net.ssl.keyStore=/path/to/client.ks
 javax.net.ssl.keyStorePassword=password
 javax.net.ssl.trustStore=/path/to/client.ts
 </code></pre></div></div>
 
-<p>In Linux, do not use absolute path to keystore. By default, keytool uses <code class="highlighter-rouge">~/.keystore</code>, but in some setups passing <code class="highlighter-rouge">-Djavax.net.ssl.keyStore=/home/account/.keystore</code> to Java VM does not work. This is not ActiveMQ specific but good to keep in mind anyway.</p>
+<p>In Linux, do not use absolute path to keystore. By default, keytool uses <code class="language-plaintext highlighter-rouge">~/.keystore</code>, but in some setups passing <code class="language-plaintext highlighter-rouge">-Djavax.net.ssl.keyStore=/home/account/.keystore</code> to Java VM does not work. This is not ActiveMQ specific but good to keep in mind anyway.</p>
 
 <h3 id="client-certificates">Client certificates</h3>
 
@@ -158,17 +158,17 @@ steps:</p>
 
 <ol>
   <li>Export the client’s certificate so it can be shared with broker:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -export -alias client -keystore client.ks -file client_cert
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -export -alias client -keystore client.ks -file client_cert
 </code></pre></div>    </div>
   </li>
   <li>Create a truststore for the broker, and import the client’s certificate. This establishes that the broker “trusts” the client:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -import -alias client -keystore broker.ts -file client_cert
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keytool -import -alias client -keystore broker.ts -file client_cert
 </code></pre></div>    </div>
   </li>
   <li>Add
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-Djavax.net.ssl.trustStore=/path/to/broker.ts
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-Djavax.net.ssl.trustStore=/path/to/broker.ts
 </code></pre></div>    </div>
-    <p>to <code class="highlighter-rouge">ACTIVEMQ_SSL_OPTS</code></p>
+    <p>to <code class="language-plaintext highlighter-rouge">ACTIVEMQ_SSL_OPTS</code></p>
   </li>
   <li>Instruct ActiveMQ to require client authentication by setting the following in activemq.xml:</li>
 </ol>
@@ -177,7 +177,7 @@ steps:</p>
 
 <p>Starting with version <strong>5.12</strong>, you can define certificate revocation list (CRL) path on ssl context, so that invalid certificates can revoked</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;sslContext&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;sslContext&gt;
     &lt;sslContext keyStore="org/apache/activemq/security/broker1.ks"
                 keyStorePassword="password"
                 trustStore="org/apache/activemq/security/activemq-revoke.jks"
@@ -188,13 +188,13 @@ steps:</p>
 
 <p>This list is static and loaded on broker startup.</p>
 
-<p>Starting with version <strong>5.14.0</strong>, you can also enable more advanced Online Certificate Status Protocol (OCSP) protocol. For that you need to configure a location for the <code class="highlighter-rouge">java.security</code> configuration extension by setting appropriate system properties (in <code class="highlighter-rouge">${ACTIVEMQ_HOME}/bin/env</code>) like</p>
+<p>Starting with version <strong>5.14.0</strong>, you can also enable more advanced Online Certificate Status Protocol (OCSP) protocol. For that you need to configure a location for the <code class="language-plaintext highlighter-rouge">java.security</code> configuration extension by setting appropriate system properties (in <code class="language-plaintext highlighter-rouge">${ACTIVEMQ_HOME}/bin/env</code>) like</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ACTIVEMQ_SSL_OPTS="-Djava.security.properties=$ACTIVEMQ_CONF/java.security"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ACTIVEMQ_SSL_OPTS="-Djava.security.properties=$ACTIVEMQ_CONF/java.security"
 </code></pre></div></div>
 
-<p>Then you need to configure OCSP responder properties in <code class="highlighter-rouge">java.security</code> file like</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocsp.enable=true ocsp.responderURL=&lt;http://ocsp.example.net:80&gt;
+<p>Then you need to configure OCSP responder properties in <code class="language-plaintext highlighter-rouge">java.security</code> file like</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocsp.enable=true ocsp.responderURL=&lt;http://ocsp.example.net:80&gt;
 </code></pre></div></div>
 
 <p>A demo of the broker configuration working with OCSP responder can be found at <a href="https://github.com/dejanb/sslib">https://github.com/dejanb/sslib</a></p>

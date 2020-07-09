@@ -102,7 +102,7 @@
 
 <h5 id="jvm-memory">JVM Memory</h5>
 
-<p>Try running the broker in a standalone JVM using <code class="highlighter-rouge">bin/activemq</code>. Note the default JVM heap size option that is passed to the Java executable by the script (the exact options may depend upon the JVM that you are using, the examples are for the Sun JVM).</p>
+<p>Try running the broker in a standalone JVM using <code class="language-plaintext highlighter-rouge">bin/activemq</code>. Note the default JVM heap size option that is passed to the Java executable by the script (the exact options may depend upon the JVM that you are using, the examples are for the Sun JVM).</p>
 
 <ul>
   <li>-Xmx: If your OS has more available memory, consider increasing the total heap memory available to the broker JVM. Note that the JVM will require more memory than the -Xmx value. Thread stacks and the JMVs internal classes will consume additional memory.</li>
@@ -145,7 +145,7 @@ The Broker (using <a href="message-cursors">Message Cursors</a>) will spool non-
 <h5 id="leaking-jms-resources">Leaking JMS resources</h5>
 
 <p>This is the most obvious one for Consumers or Producers; repeatedly obtaining a Session or MessageProducer or MessageConsumer and not closing it. With a java.lang.OutOfMemory, verifying (again) that all not in use JMS resources are released, is worth the time. If you have multiple threads in your application, consider using the <a href="http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/pool/PooledConnectionFactory.html">PooledConnectionFactory</a> as this will allow JMS resource to be safely shared among threads that follow the pattern:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>obtainJmsResource(); 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>obtainJmsResource(); 
 
 try 
 { 

@@ -119,15 +119,15 @@
 </ul>
 
 <p><strong>Note:</strong> Until version 5.11.1, these property files got reloaded on every authentication request by default. So updates to users, password and groups were loaded immediately. From 5.12 onward they only get reloaded if reload=true is set in your LoginModule configuration, e.g.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq { org.apache.activemq.jaas.PropertiesLoginModule required org.apache.activemq.jaas.properties.user="users.properties" org.apache.activemq.jaas.properties.group="groups.properties" reload=true; };
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq { org.apache.activemq.jaas.PropertiesLoginModule required org.apache.activemq.jaas.properties.user="users.properties" org.apache.activemq.jaas.properties.group="groups.properties" reload=true; };
 </code></pre></div></div>
-<p>If <code class="highlighter-rouge">reload=true</code> is not set, these property files get loaded on broker startup only!! See AMQ-5876 for details.</p>
+<p>If <code class="language-plaintext highlighter-rouge">reload=true</code> is not set, these property files get loaded on broker startup only!! See AMQ-5876 for details.</p>
 
 <h4 id="simple-authentication-plugin">Simple Authentication Plugin</h4>
 
 <p>If you have modest authentication requirements (or just want to quickly set up your testing environment) you can use SimpleAuthenticationPlugin. With this plugin you can define users and groups directly in the broker’s XML configuration. Take a look at the following snippet for example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;simpleAuthenticationPlugin&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;simpleAuthenticationPlugin&gt;
   &lt;users&gt;
     &lt;authenticationUser username="system" password="manager" groups="users,admins"/&gt;
     &lt;authenticationUser username="user" password="password" groups="users"/&gt;
@@ -142,10 +142,10 @@
 
 <p>From version 5.4.0 onwards, you can configure simple authentication plugin to allow anonymous access to the broker.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;simpleAuthenticationPlugin anonymousAccessAllowed="true"&gt; &lt;users&gt; &lt;authenticationUser username="system" password="manager" groups="users,admins"/&gt; &lt;authenticationUser username="user" password="password" groups="users"/&gt; &lt;authenticationUser username="guest" password="password" groups="guests"/&gt; &lt;/users&gt; &lt;/simpleAuthenticationPlugin&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;simpleAuthenticationPlugin anonymousAccessAllowed="true"&gt; &lt;users&gt; &lt;authenticationUser username="system" password="manager" groups="users,admins"/&gt; &lt;authenticationUser username="user" password="password" groups="users"/&gt; &lt;authenticationUser username="guest" password="password" groups="guests"/&gt; &lt;/users&gt; &lt;/simpleAuthenticationPlugin&gt;
 </code></pre></div></div>
 
-<p>To allow anonymous access to the broker, use <code class="highlighter-rouge">anonymousAccessAllowed</code> attribute and set it to <code class="highlighter-rouge">true</code> as shown above. Now, when the client connects without username and password provided, a default username (<code class="highlighter-rouge">anonymous</code>) and group (<code class="highlighter-rouge">anonymous</code>) will be assigned to its security context. You can use this username and password to authorize client’s access to appropriate broker resources (see the next section). You can also change username and group that will be assigned to <em>anonymous</em> users by using <code class="highlighter-rouge">anonymousUser</code> and <code class="highlighter-rouge">anonymousGroup</code> attributes.</p>
+<p>To allow anonymous access to the broker, use <code class="language-plaintext highlighter-rouge">anonymousAccessAllowed</code> attribute and set it to <code class="language-plaintext highlighter-rouge">true</code> as shown above. Now, when the client connects without username and password provided, a default username (<code class="language-plaintext highlighter-rouge">anonymous</code>) and group (<code class="language-plaintext highlighter-rouge">anonymous</code>) will be assigned to its security context. You can use this username and password to authorize client’s access to appropriate broker resources (see the next section). You can also change username and group that will be assigned to <em>anonymous</em> users by using <code class="language-plaintext highlighter-rouge">anonymousUser</code> and <code class="language-plaintext highlighter-rouge">anonymousGroup</code> attributes.</p>
 
 <h3 id="authorization">Authorization</h3>
 
@@ -187,27 +187,27 @@ If necessary, the use of advisories in this manner can be disabled via the <em>w
 
 <ul>
   <li>The network of brokers comprises two brokers (BrokerA and BrokerB)</li>
-  <li>Authentication for BrokerA has been enabled via the example <code class="highlighter-rouge">&lt;simpleAuthenticationPlugin&gt;</code> element.</li>
+  <li>Authentication for BrokerA has been enabled via the example <code class="language-plaintext highlighter-rouge">&lt;simpleAuthenticationPlugin&gt;</code> element.</li>
   <li>Authentication for BrokerB has not been enabled.</li>
-  <li>BrokerA only listens for connections. In other words, BrokerA has a <code class="highlighter-rouge">&lt;transportConnector&gt;</code> element, but no <code class="highlighter-rouge">&lt;networkConnector&gt;</code> elements.</li>
+  <li>BrokerA only listens for connections. In other words, BrokerA has a <code class="language-plaintext highlighter-rouge">&lt;transportConnector&gt;</code> element, but no <code class="language-plaintext highlighter-rouge">&lt;networkConnector&gt;</code> elements.</li>
 </ul>
 
 <p>In order for BrokerB to connect to BrokerA, the corresponding <networkConnector> element in BrokerB's XML configuration file must be set up as follows.</networkConnector></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnectors&gt; 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnectors&gt; 
   &lt;networkConnector name="brokerAbridge" userName="user" password="password" uri="static://(tcp://brokerA:61616)"/&gt; 
 &lt;/networkConnectors&gt;
 </code></pre></div></div>
 
-<p>Note how BrokerB’s <code class="highlighter-rouge">&lt;networkConnector&gt;</code> element must provide the proper credentials in order to connect to BrokerA. If authorization has been enabled on BrokerA, then the userName assigned to the <code class="highlighter-rouge">&lt;networkConnector&gt;</code> element must also have the proper authorization credentials. Messages cannot be forwarded from BrokerB to BrokerA if BrokerA has authorization enabled and BrokerB’s corresponding <code class="highlighter-rouge">&lt;networkConnector&gt;</code> element’s userName has not been given the proper authorization credentials.</p>
+<p>Note how BrokerB’s <code class="language-plaintext highlighter-rouge">&lt;networkConnector&gt;</code> element must provide the proper credentials in order to connect to BrokerA. If authorization has been enabled on BrokerA, then the userName assigned to the <code class="language-plaintext highlighter-rouge">&lt;networkConnector&gt;</code> element must also have the proper authorization credentials. Messages cannot be forwarded from BrokerB to BrokerA if BrokerA has authorization enabled and BrokerB’s corresponding <code class="language-plaintext highlighter-rouge">&lt;networkConnector&gt;</code> element’s userName has not been given the proper authorization credentials.</p>
 
-<p>Also, if BrokerA is given a <code class="highlighter-rouge">&lt;networkConnector&gt;</code> element so that it can initiate a connection to BrokerB, then that <code class="highlighter-rouge">&lt;networkConnector&gt;</code> must be given a userName/password combination that is defined in the <code class="highlighter-rouge">&lt;simpleAuthenticationPlugin&gt;</code> element; this is required even though BrokerB does not have authentication services enabled.</p>
+<p>Also, if BrokerA is given a <code class="language-plaintext highlighter-rouge">&lt;networkConnector&gt;</code> element so that it can initiate a connection to BrokerB, then that <code class="language-plaintext highlighter-rouge">&lt;networkConnector&gt;</code> must be given a userName/password combination that is defined in the <code class="language-plaintext highlighter-rouge">&lt;simpleAuthenticationPlugin&gt;</code> element; this is required even though BrokerB does not have authentication services enabled.</p>
 
 <h3 id="controlling-access-to-temporary-destinations">Controlling Access To Temporary Destinations</h3>
 
-<p>To control access to temporary destinations, you will need to add a <code class="highlighter-rouge">&lt;tempDestinationAuthorizationEntry&gt;</code> element to the <code class="highlighter-rouge">authorizationMap</code>. Through this element, you control access to all temporary destinations. If this element is not present, read, write, and admin privileges for temporary destinations will be granted to all. In the example below, read, write, and admin privileges for temporary destinations are only granted to those clients that have been assigned to the ‘admin’ group.</p>
+<p>To control access to temporary destinations, you will need to add a <code class="language-plaintext highlighter-rouge">&lt;tempDestinationAuthorizationEntry&gt;</code> element to the <code class="language-plaintext highlighter-rouge">authorizationMap</code>. Through this element, you control access to all temporary destinations. If this element is not present, read, write, and admin privileges for temporary destinations will be granted to all. In the example below, read, write, and admin privileges for temporary destinations are only granted to those clients that have been assigned to the ‘admin’ group.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt; 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt; 
   .. 
     &lt;plugins&gt; 
       .. 
@@ -240,7 +240,7 @@ If necessary, the use of advisories in this manner can be disabled via the <em>w
   <li>
     <p>Configure the JAAS LDAPLoginModule and the LDAPAuthorizationMap in activemq.xml:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;plugins&gt; 
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;plugins&gt; 
    &lt;!-- use JAAS to authenticate using the login.config file on the classpath to configure JAAS --&gt; 
    &lt;jaasAuthenticationPlugin configuration="LdapConfiguration" /&gt; 
    &lt;!-- lets configure a destination based role/group authorization mechanism --&gt; 
@@ -273,7 +273,7 @@ If necessary, the use of advisories in this manner can be disabled via the <em>w
 </code></pre></div>    </div>
   </li>
   <li>Configure the JAAS login.config (I haven’t de-duplicated the config yet):
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> LdapConfiguration { 
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> LdapConfiguration { 
     org.apache.activemq.jaas.LDAPLoginModule required 
     debug=true 
     initialContextFactory=com.sun.jndi.ldap.LdapCtxFactory 
@@ -294,7 +294,7 @@ If necessary, the use of advisories in this manner can be disabled via the <em>w
 </code></pre></div>    </div>
   </li>
   <li>Import the following LDIF file into the LDAP server:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> version: 1 
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> version: 1 
  # 
  # Sample LDIF for ActiveMQ LDAP authentication and authorisation 
  # Passwords are defaulted to "password" - it is your responsibility to change them! 
@@ -460,7 +460,7 @@ If necessary, the use of advisories in this manner can be disabled via the <em>w
 
 <p>You may have the following Camel context defined in your broker’s XML configuration file.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- ** Lets deploy some Enterprise Integration Patterns inside the ActiveMQ Message Broker ** For more details see ** ** http://activemq.apache.orgFeatures/enterprise-integration-patterns.md --&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- ** Lets deploy some Enterprise Integration Patterns inside the ActiveMQ Message Broker ** For more details see ** ** http://activemq.apache.orgFeatures/enterprise-integration-patterns.md --&gt;
 &lt;camelContext id="camel" xmlns="http://activemq.apache.org/camel/schema/spring"&gt;
   &lt;package&gt;org.foo.bar&lt;/package&gt;
   &lt;route&gt; 
@@ -474,14 +474,14 @@ If necessary, the use of advisories in this manner can be disabled via the <em>w
 
 <p>If the application is running in an OSGi container, add the following line before the CamelContext definition:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;osgi:reference id="activemq" interface="org.apache.camel.Component" /&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;osgi:reference id="activemq" interface="org.apache.camel.Component" /&gt;
 </code></pre></div></div>
 
 <p>This allows any pre-configured instance of the ActiveMQComponent deployed in the container to take precedence on the default ActiveMQComponent.</p>
 
 <p>That is, with the above configuration, Camel will establish a connection with ActiveMQ, but will not provide a username and password. Therefore, when ActiveMQ security is enabled, the above configuration results in a security exception. The exception will be thrown multiple times, because Camel will continue to retry the connection. If you’re not using Camel, comment out the above XML code. If you are using Camel, add the following bean definition to your broker’s XML configuration:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- configure the camel activemq component to use the current broker --&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- configure the camel activemq component to use the current broker --&gt;
 &lt;bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent" &gt;
   &lt;property name="connectionFactory"&gt; 
     &lt;bean class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
@@ -497,14 +497,14 @@ If necessary, the use of advisories in this manner can be disabled via the <em>w
 
 <p>If the broker is running in an OSGi container, add the following line after the ActiveMQComponent bean definition:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;service ref="activemq" interface="org.apache.camel.Component"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;service ref="activemq" interface="org.apache.camel.Component"/&gt;
 </code></pre></div></div>
 
 <h4 id="web-console">Web Console</h4>
 
-<p>If you want to use the Web Console with a secured broker, you have to change <code class="highlighter-rouge">connectionFactory</code> bean in your <code class="highlighter-rouge">webapps/admin/WEB-INF/webconsole-embeded.xml</code> to something like this:</p>
+<p>If you want to use the Web Console with a secured broker, you have to change <code class="language-plaintext highlighter-rouge">connectionFactory</code> bean in your <code class="language-plaintext highlighter-rouge">webapps/admin/WEB-INF/webconsole-embeded.xml</code> to something like this:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
   &lt;property name="brokerURL" value="vm://localhost"/&gt;
   &lt;property name="userName" value="system"/&gt;
   &lt;property name="password" value="manager"/&gt;
@@ -513,8 +513,8 @@ If necessary, the use of advisories in this manner can be disabled via the <em>w
 
 <h4 id="default-credentials">Default Credentials</h4>
 
-<p>Starting with version 5.3, all of the above configuration details are included in the default ActiveMQ configuration. Also, there is a central place where you can set credentials that these components will use to connect to the broker. Just set your desired username and password in the <code class="highlighter-rouge">conf/credentials.properties</code> file, which by default looks like this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq.username=system activemq.password=manager
+<p>Starting with version 5.3, all of the above configuration details are included in the default ActiveMQ configuration. Also, there is a central place where you can set credentials that these components will use to connect to the broker. Just set your desired username and password in the <code class="language-plaintext highlighter-rouge">conf/credentials.properties</code> file, which by default looks like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq.username=system activemq.password=manager
 </code></pre></div></div>
 
 <h4 id="encrypted-passwords">Encrypted Passwords</h4>
@@ -525,11 +525,11 @@ If necessary, the use of advisories in this manner can be disabled via the <em>w
 
 <p>It’s also possible to authorize each single message using some content based authorization policy of your choosing. In comparison to the other security options described before, Message level Authorization requires a bit more than just some configuration. You have to start with creating a new maven project and add the <a href="https://mvnrepository.com/artifact/org.apache.activemq/activemq-all">activemq-all</a> maven dependency (in the same version as your activemq installation) to the pom.xml of your new project.<br />
 In the next step you have to create a new Java class and let it implement the org.apache.activemq.security.MessageAuthorizationPolicy interface. After that, simply add a method with signature:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public boolean isAllowedToConsume(ConnectionContext context, Message message){...}
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public boolean isAllowedToConsume(ConnectionContext context, Message message){...}
 </code></pre></div></div>
 <p>to the new Java class. For usage of your own Message level Authorization policy, the Java class has to be packaged as jar and added to the /lib folder of ActiveMQ to make it available for ActiveMQ. In the last step, it has to be configured on the broker directly by using the * messageAuthorizationPolicy* property or add it to the XML as follows</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt;
   ..
   &lt;messageAuthorizationPolicy&gt;
     &lt;bean class="com.acme.MyMessageAuthorizationPolicy" xmlns=""/&gt;

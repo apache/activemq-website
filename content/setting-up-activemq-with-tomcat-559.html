@@ -95,7 +95,7 @@
         <p><a href="connectivity">Connectivity</a> &gt; <a href="containers">Containers</a> &gt; <a href="tomcat">Tomcat</a> &gt; <a href="setting-up-activemq-with-tomcat-559">Setting up ActiveMQ with Tomcat 5.5.9</a></p>
 
 <p>Create the file <webapp-root>/META-INF/context.xml. Here is an example:</webapp-root></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;Context antiJARLocking="true"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;Context antiJARLocking="true"&gt;
     &lt;Resource
         name="jms/ConnectionFactory"
         auth="Container"
@@ -121,7 +121,7 @@
 <p>This will setup the JNDI for the ConectionFactory and Topic to work within Tomcat.</p>
 
 <p>Here is some example code that will publish a test message to the MY.TEST.FOO Topic:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>try {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>try {
     InitialContext initCtx = new InitialContext();
     Context envContext = (Context) initCtx.lookup("java:comp/env");
     ConnectionFactory connectionFactory = (ConnectionFactory) envContext.lookup("jms/ConnectionFactory");

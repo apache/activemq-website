@@ -104,15 +104,15 @@
 
 <h3 id="enabling-the-activemq-broker-for-stomp">Enabling the ActiveMQ Broker for Stomp</h3>
 
-<p>To enable STOMP protocol support in the broker add a transport connector definition whose URI scheme is <code class="highlighter-rouge">stomp</code>.</p>
+<p>To enable STOMP protocol support in the broker add a transport connector definition whose URI scheme is <code class="language-plaintext highlighter-rouge">stomp</code>.</p>
 
 <p>Example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnectors&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnectors&gt;
    &lt;transportConnector name="stomp" uri="stomp://localhost:61613"/&gt;
 &lt;/transportConnectors&gt;
 </code></pre></div></div>
-<p>To see a full example, try <a href="http://svn.apache.org/repos/asf/activemq/trunk/assembly/src/release/example/conf/activemq.xml">this XML</a>. If you save that XML as <code class="highlighter-rouge">foo.xml</code> then you can run stomp via the command line as</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq xbean:foo.xml
+<p>To see a full example, try <a href="http://svn.apache.org/repos/asf/activemq/trunk/assembly/src/release/example/conf/activemq.xml">this XML</a>. If you save that XML as <code class="language-plaintext highlighter-rouge">foo.xml</code> then you can run stomp via the command line as</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq xbean:foo.xml
 </code></pre></div></div>
 <p>For more help see <a href="run-broker">Run Broker</a>.</p>
 
@@ -130,31 +130,31 @@
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">maxDataLength</code></td>
-      <td><code class="highlighter-rouge">104857600</code></td>
+      <td><code class="language-plaintext highlighter-rouge">maxDataLength</code></td>
+      <td><code class="language-plaintext highlighter-rouge">104857600</code></td>
       <td>Maximum size of the message body (content) that can be sent.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">maxFrameSize</code></td>
-      <td><code class="highlighter-rouge">MAX_LONG</code></td>
+      <td><code class="language-plaintext highlighter-rouge">maxFrameSize</code></td>
+      <td><code class="language-plaintext highlighter-rouge">MAX_LONG</code></td>
       <td><strong>From ActiveMQ 5.12.0</strong>: maximum frame size that can be sent. A Stomp frame includes a command, optional headers, and an optional body. Can help help prevent OOM DOS attacks</td>
     </tr>
   </tbody>
 </table>
 
 <p>Example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="stomp+ssl" uri="stomp+ssl://localhost:61612?wireFormat.maxFrameSize=1000000"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="stomp+ssl" uri="stomp+ssl://localhost:61612?wireFormat.maxFrameSize=1000000"/&gt;
 </code></pre></div></div>
 
 <blockquote>
   <p><strong>Use the Correct Prefix!</strong></p>
 
-  <p>Wire format options must have the prefix <code class="highlighter-rouge">wireFormat.</code> to take effect, e.g., <code class="highlighter-rouge">wireFormat.`maxDataLength`=100000</code>. Options missing this prefix will be ignored.</p>
+  <p>Wire format options must have the prefix <code class="language-plaintext highlighter-rouge">wireFormat.</code> to take effect, e.g., <code class="language-plaintext highlighter-rouge">wireFormat.`maxDataLength`=100000</code>. Options missing this prefix will be ignored.</p>
 </blockquote>
 
 <h3 id="security">Security</h3>
 
-<p><strong>From ActiveMQ 5.1</strong>: Stomp fully supports <a href="security">ActiveMQ’s security</a> mechanism. This means that the <code class="highlighter-rouge">CONNECT</code> command will return an <code class="highlighter-rouge">ERROR</code> STOMP frame on unsuccessful authentication. Also, the authorization policies will be applied when you try to access (read/write) certain destinations. If you use synchronous operations (by using <a href="http://stomp.github.com/stomp-specification-1.1.html#RECEIPT">receipts</a>), you can expect an <code class="highlighter-rouge">ERROR</code> frame in case of unauthorized access attempt. In other case, operations will be discarded but the client will not be informed of errors. This applies to all errors that can occur broker-side.</p>
+<p><strong>From ActiveMQ 5.1</strong>: Stomp fully supports <a href="security">ActiveMQ’s security</a> mechanism. This means that the <code class="language-plaintext highlighter-rouge">CONNECT</code> command will return an <code class="language-plaintext highlighter-rouge">ERROR</code> STOMP frame on unsuccessful authentication. Also, the authorization policies will be applied when you try to access (read/write) certain destinations. If you use synchronous operations (by using <a href="http://stomp.github.com/stomp-specification-1.1.html#RECEIPT">receipts</a>), you can expect an <code class="language-plaintext highlighter-rouge">ERROR</code> frame in case of unauthorized access attempt. In other case, operations will be discarded but the client will not be informed of errors. This applies to all errors that can occur broker-side.</p>
 
 <blockquote>
   <p><strong>SSL</strong></p>
@@ -164,18 +164,18 @@
 
 <h3 id="enabling-stomp-over-nio">Enabling Stomp over NIO</h3>
 
-<p><strong>From ActiveMQ 5.3</strong>: for better scalability and performance the Stomp protocol can be configured to be run over the NIO transport. The <a href="http://activemq.apache.orgUsing ActiveMQ/configuring-transports.md#ConfiguringTransports-TheNIOTransport">NIO transport</a> will use far fewer threads than the corresponding TCP connector. This can help when support for a <a href="how-do-i-configure-10s-of-1000s-of-queues-in-a-single-broker">large number of queues</a> is required. To use NIO change the URI scheme of the transport connector to <code class="highlighter-rouge">stomp+nio</code>.</p>
+<p><strong>From ActiveMQ 5.3</strong>: for better scalability and performance the Stomp protocol can be configured to be run over the NIO transport. The <a href="http://activemq.apache.orgUsing ActiveMQ/configuring-transports.md#ConfiguringTransports-TheNIOTransport">NIO transport</a> will use far fewer threads than the corresponding TCP connector. This can help when support for a <a href="how-do-i-configure-10s-of-1000s-of-queues-in-a-single-broker">large number of queues</a> is required. To use NIO change the URI scheme of the transport connector to <code class="language-plaintext highlighter-rouge">stomp+nio</code>.</p>
 
 <p>Example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="stomp+nio" uri="stomp+nio://localhost:61612"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="stomp+nio" uri="stomp+nio://localhost:61612"/&gt;
 </code></pre></div></div>
 
 <h3 id="enabling-stomp-over-ssl">Enabling Stomp over SSL</h3>
 
-<p>To configure ActiveMQ to use Stomp over an SSL connection change the URI scheme to <code class="highlighter-rouge">stomp+ssl</code>.</p>
+<p>To configure ActiveMQ to use Stomp over an SSL connection change the URI scheme to <code class="language-plaintext highlighter-rouge">stomp+ssl</code>.</p>
 
 <p>Example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="stomp+ssl" uri="stomp+ssl://localhost:61612"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="stomp+ssl" uri="stomp+ssl://localhost:61612"/&gt;
 </code></pre></div></div>
 <p>For more details on using SSL with ActiveMQ see the following article (<a href="http://activemq.apache.org/how-do-i-use-ssl">How do I use SSL</a>). An example of using Stomp over SSL on the client side can be found in the <a href="http://stomp.fusesource.org/documentation/php/book.html#SSL">PHP Stomp client example</a>.</p>
 
@@ -185,15 +185,15 @@
 
 <p><strong>Before ActiveMQ 5.9.0</strong>: enforcement of the ‘read’ heart-beat timeout (that is, a heart-beat sent from the client to the broker) was strict. In other words, the broker was intolerant of late arriving read heart-beats from the client. This resulted in the broker concluding that the client was no longer present causing it to close its side of the client’s connection when the client failed to honor it’s configured heart-beat settings.</p>
 
-<p><strong>From ActiveMQ 5.9.0</strong>: the timeout enforcement for read heart-beats is now configurable via a new transport option <code class="highlighter-rouge">transport.hbGracePeriodMultiplier</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnectors&gt;
+<p><strong>From ActiveMQ 5.9.0</strong>: the timeout enforcement for read heart-beats is now configurable via a new transport option <code class="language-plaintext highlighter-rouge">transport.hbGracePeriodMultiplier</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnectors&gt;
    &lt;transportConnector name="stomp" uri="stomp://localhost:61613?transport.hbGracePeriodMultiplier=1.5"/&gt;
 &lt;/transportConnectors&gt;
 </code></pre></div></div>
-<p>This multiplier is used to calculate the effective read heart-beat timeout the broker will enforce for each client’s connection. The multiplier is applied to the read-timeout interval the client specifies in its <code class="highlighter-rouge">CONNECT</code> frame:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;client specified read heart-beat interval&gt; * &lt;grace periodmultiplier&gt; == &lt;broker enforced read heart-beat timeout interval&gt;
+<p>This multiplier is used to calculate the effective read heart-beat timeout the broker will enforce for each client’s connection. The multiplier is applied to the read-timeout interval the client specifies in its <code class="language-plaintext highlighter-rouge">CONNECT</code> frame:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;client specified read heart-beat interval&gt; * &lt;grace periodmultiplier&gt; == &lt;broker enforced read heart-beat timeout interval&gt;
 </code></pre></div></div>
-<p>For backward compatibility, if the grace period multiplier is not configured the default enforcement mode remains strict, e.g., <code class="highlighter-rouge">transport.hbGracePeriodMultiplier=1.0</code>. Attempts to configure the grace period multiplier to a value less than, or equal to <code class="highlighter-rouge">1.0</code> will be silently ignored.</p>
+<p>For backward compatibility, if the grace period multiplier is not configured the default enforcement mode remains strict, e.g., <code class="language-plaintext highlighter-rouge">transport.hbGracePeriodMultiplier=1.0</code>. Attempts to configure the grace period multiplier to a value less than, or equal to <code class="language-plaintext highlighter-rouge">1.0</code> will be silently ignored.</p>
 
 <p>STOMP clients that wish to be tolerant of late arriving heart-beats from the broker must implement their own solution for doing so.</p>
 
@@ -208,23 +208,23 @@
 
 <h3 id="working-with-destinations-with-stomp">Working with Destinations with Stomp</h3>
 
-<p>Note that the prefix in stomp <code class="highlighter-rouge">/queue/</code> or <code class="highlighter-rouge">/topic/</code> is removed from the string before passing it to ActiveMQ as a JMS destination. Also note that the default separator in MOM systems is <code class="highlighter-rouge">.</code> (dot). Whilst <code class="highlighter-rouge">FOO.BAR</code> is the normal syntax to identify a queue type destination the Stomp equivalent is <code class="highlighter-rouge">/queue/FOO.BAR</code></p>
+<p>Note that the prefix in stomp <code class="language-plaintext highlighter-rouge">/queue/</code> or <code class="language-plaintext highlighter-rouge">/topic/</code> is removed from the string before passing it to ActiveMQ as a JMS destination. Also note that the default separator in MOM systems is <code class="language-plaintext highlighter-rouge">.</code> (dot). Whilst <code class="language-plaintext highlighter-rouge">FOO.BAR</code> is the normal syntax to identify a queue type destination the Stomp equivalent is <code class="language-plaintext highlighter-rouge">/queue/FOO.BAR</code></p>
 
 <blockquote>
-  <p><strong>Be careful about starting destinations with <code class="highlighter-rouge">/</code></strong></p>
+  <p><strong>Be careful about starting destinations with <code class="language-plaintext highlighter-rouge">/</code></strong></p>
 
-  <p>If in Stomp world you use <code class="highlighter-rouge">/queue/foo/bar</code> then in a JMS world the queue would be called <code class="highlighter-rouge">foo/bar</code> not <code class="highlighter-rouge">/foo/bar</code>.</p>
+  <p>If in Stomp world you use <code class="language-plaintext highlighter-rouge">/queue/foo/bar</code> then in a JMS world the queue would be called <code class="language-plaintext highlighter-rouge">foo/bar</code> not <code class="language-plaintext highlighter-rouge">/foo/bar</code>.</p>
 </blockquote>
 
 <blockquote>
   <p><strong>Persistent Messaging in STOMP</strong></p>
 
-  <p>STOMP messages are non-persistent by default. To use persistent messaging add the following STOMP header to all <code class="highlighter-rouge">SEND</code> requests: <code class="highlighter-rouge">persistent:true</code>. This default is the opposite of that for JMS messages.</p>
+  <p>STOMP messages are non-persistent by default. To use persistent messaging add the following STOMP header to all <code class="language-plaintext highlighter-rouge">SEND</code> requests: <code class="language-plaintext highlighter-rouge">persistent:true</code>. This default is the opposite of that for JMS messages.</p>
 </blockquote>
 
 <h3 id="working-with-jms-textbytes-messages-and-stomp">Working with JMS Text/Bytes Messages and Stomp</h3>
 
-<p>Stomp is a very simple protocol - that’s part of the beauty of it! As such, it does not have knowledge of JMS messages such as <code class="highlighter-rouge">TextMessage</code>’s or <code class="highlighter-rouge">BytesMessage</code>’s. The protocol does however support a <code class="highlighter-rouge">content-length</code> header. To provide more robust interaction between STOMP and JMS clients, ActiveMQ keys off of the inclusion of this header to determine what message type to create when sending from Stomp to JMS. The logic is simple:</p>
+<p>Stomp is a very simple protocol - that’s part of the beauty of it! As such, it does not have knowledge of JMS messages such as <code class="language-plaintext highlighter-rouge">TextMessage</code>’s or <code class="language-plaintext highlighter-rouge">BytesMessage</code>’s. The protocol does however support a <code class="language-plaintext highlighter-rouge">content-length</code> header. To provide more robust interaction between STOMP and JMS clients, ActiveMQ keys off of the inclusion of this header to determine what message type to create when sending from Stomp to JMS. The logic is simple:</p>
 
 <table>
   <thead>
@@ -236,23 +236,23 @@
   <tbody>
     <tr>
       <td>yes</td>
-      <td><code class="highlighter-rouge">BytesMessage</code></td>
+      <td><code class="language-plaintext highlighter-rouge">BytesMessage</code></td>
     </tr>
     <tr>
       <td>no</td>
-      <td><code class="highlighter-rouge">TextMessage</code></td>
+      <td><code class="language-plaintext highlighter-rouge">TextMessage</code></td>
     </tr>
   </tbody>
 </table>
 
-<p>This same logic can be followed when going from JMS to Stomp, as well. A Stomp client could be written to key off of the inclusion of the <code class="highlighter-rouge">content-length</code> header to determine what type of message structure to provide to the user.</p>
+<p>This same logic can be followed when going from JMS to Stomp, as well. A Stomp client could be written to key off of the inclusion of the <code class="language-plaintext highlighter-rouge">content-length</code> header to determine what type of message structure to provide to the user.</p>
 
 <h3 id="message-transformations">Message Transformations</h3>
 
-<p>The <code class="highlighter-rouge">transformation</code> message header on <code class="highlighter-rouge">SEND</code> and <code class="highlighter-rouge">SUBSCRIBE</code> messages could be used to instruct ActiveMQ to transform messages from text to the format of your desire. Currently, ActiveMQ comes with a transformer that can transform XML/JSON text to Java objects, but you can add your own transformers as well.</p>
+<p>The <code class="language-plaintext highlighter-rouge">transformation</code> message header on <code class="language-plaintext highlighter-rouge">SEND</code> and <code class="language-plaintext highlighter-rouge">SUBSCRIBE</code> messages could be used to instruct ActiveMQ to transform messages from text to the format of your desire. Currently, ActiveMQ comes with a transformer that can transform XML/JSON text to Java objects, but you can add your own transformers as well.</p>
 
 <p>Here’s a quick example of how to use built-in transformer (taken from test cases)</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>private String xmlObject = "&lt;pojo&gt;\n" 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>private String xmlObject = "&lt;pojo&gt;\n" 
         + "  &lt;name&gt;Dejan&lt;/name&gt;\n"
         + "  &lt;city&gt;Belgrade&lt;/city&gt;\n" 
         + "&lt;/pojo&gt;";
@@ -284,7 +284,7 @@ public void testTransformationReceiveXMLObject() throws Exception {
 <blockquote>
   <p><strong>Dependencies</strong></p>
 
-  <p>ActiveMQ uses <a href="http://xstream.codehaus.org">XStream</a> for its transformation needs. Since it’s the optional dependency you have to add it to broker’s classpath by putting the appropriate JAR into the <code class="highlighter-rouge">lib/</code> folder. Additionally, if you plan to use JSON transformations you have to add <a href="http://jettison.codehaus.org/">Jettison</a> JSON parser to the classpath.</p>
+  <p>ActiveMQ uses <a href="http://xstream.codehaus.org">XStream</a> for its transformation needs. Since it’s the optional dependency you have to add it to broker’s classpath by putting the appropriate JAR into the <code class="language-plaintext highlighter-rouge">lib/</code> folder. Additionally, if you plan to use JSON transformations you have to add <a href="http://jettison.codehaus.org/">Jettison</a> JSON parser to the classpath.</p>
 </blockquote>
 
 <p>In order to create your own transformer, you have to do the following:</p>
@@ -294,29 +294,29 @@ public void testTransformationReceiveXMLObject() throws Exception {
     <p>Build your transformer by implementing a <a href="http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/transport/stomp/FrameTranslator.html">FrameTranslator</a> interface</p>
   </li>
   <li>
-    <p>Associate it with the appropriate header value by creating a file named as a value you want to use in the <code class="highlighter-rouge">META-INF/services/org/apache/activemq/transport/frametranslator/</code> folder of your JAR which will contain the value <code class="highlighter-rouge">class=_fully qualified classname of your transformer_</code></p>
+    <p>Associate it with the appropriate header value by creating a file named as a value you want to use in the <code class="language-plaintext highlighter-rouge">META-INF/services/org/apache/activemq/transport/frametranslator/</code> folder of your JAR which will contain the value <code class="language-plaintext highlighter-rouge">class=_fully qualified classname of your transformer_</code></p>
   </li>
 </ol>
 
 <p>For example the built-in transformer contains the following value:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class=org.apache.activemq.transport.stomp.XStreamFrameTranslator
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class=org.apache.activemq.transport.stomp.XStreamFrameTranslator
 </code></pre></div></div>
-<p>in the <code class="highlighter-rouge">META-INF/services/org/apache/activemq/transport/frametranslator/jms-xml</code> file.</p>
+<p>in the <code class="language-plaintext highlighter-rouge">META-INF/services/org/apache/activemq/transport/frametranslator/jms-xml</code> file.</p>
 
 <h3 id="debugging">Debugging</h3>
 
-<p>In case you want to debug Stomp communication between broker and clients you should configure the Stomp connector with the <code class="highlighter-rouge">trace</code> parameter, like this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnectors&gt;
+<p>In case you want to debug Stomp communication between broker and clients you should configure the Stomp connector with the <code class="language-plaintext highlighter-rouge">trace</code> parameter, like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnectors&gt;
    &lt;transportConnector name="stomp" uri="stomp://localhost:61613?trace=true"/&gt;
 &lt;/transportConnectors&gt;
 </code></pre></div></div>
 <p>This will instruct the broker to trace all packets it sends and receives.</p>
 
-<p>Furthermore, you have to enable tracing for the appropriate log. You can achieve that by adding the following to your <code class="highlighter-rouge">conf/log4j.properties</code></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.logger.org.apache.activemq.transport.stomp=TRACE
+<p>Furthermore, you have to enable tracing for the appropriate log. You can achieve that by adding the following to your <code class="language-plaintext highlighter-rouge">conf/log4j.properties</code></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.logger.org.apache.activemq.transport.stomp=TRACE
 </code></pre></div></div>
 <p>Finally, you will probably want to keep these messages in the separate file instead of polluting the standard broker’s log. You can achieve that with the following log4j configuration:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.appender.stomp=org.apache.log4j.RollingFileAppender
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log4j.appender.stomp=org.apache.log4j.RollingFileAppender
 log4j.appender.stomp.file=${activemq.base}/data/stomp.log
 log4j.appender.stomp.maxFileSize=1024KB
 log4j.appender.stomp.maxBackupIndex=5
@@ -331,12 +331,12 @@ log4j.additivity.org.apache.activemq.transport.stomp=false
 #log4j.logger.org.apache.activemq.transport.stomp.StompIO=TRACE, stomp
 #log4j.additivity.org.apache.activemq.transport.stomp.StompIO=false
 </code></pre></div></div>
-<p>After this, all your Stomp packets will be logged to the <code class="highlighter-rouge">data/stomp.log</code></p>
+<p>After this, all your Stomp packets will be logged to the <code class="language-plaintext highlighter-rouge">data/stomp.log</code></p>
 
 <h3 id="java-api">Java API</h3>
 
 <p><strong>From ActiveMQ 5.2</strong>: there is a simple Java Stomp API distributed with ActiveMQ. Note that this API is provided purely for testing purposes and you should always consider using standard JMS API from Java instead of this one. The following code snippet provides a simple example of using this API:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>StompConnection connection = new StompConnection();
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>StompConnection connection = new StompConnection();
 connection.open("localhost", 61613);
 		
 connection.connect("system", "manager");
@@ -367,15 +367,15 @@ connection.commit("tx2");
 		
 connection.disconnect();
 </code></pre></div></div>
-<p>This example is part of the standard ActiveMQ distribution. You can run it from the <code class="highlighter-rouge">./example</code> folder with:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ant stomp
+<p>This example is part of the standard ActiveMQ distribution. You can run it from the <code class="language-plaintext highlighter-rouge">./example</code> folder with:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ant stomp
 </code></pre></div></div>
 
 <h3 id="stomp-extensions-for-jms-message-semantics">Stomp Extensions for JMS Message Semantics</h3>
 
 <p>Note that STOMP is designed to be as simple as possible - so any scripting language/platform can message any other with minimal effort. STOMP allows pluggable headers on each request such as sending &amp; receiving messages. ActiveMQ has several extensions to the Stomp protocol, so that JMS semantics can be supported by Stomp clients. An OpenWire JMS producer can send messages to a Stomp consumer, and a Stomp producer can send messages to an OpenWire JMS consumer. And Stomp to Stomp configurations, can use the richer JMS message control.</p>
 
-<p>STOMP supports the following standard JMS properties on <code class="highlighter-rouge">SENT</code> messages:</p>
+<p>STOMP supports the following standard JMS properties on <code class="language-plaintext highlighter-rouge">SENT</code> messages:</p>
 
 <table>
   <thead>
@@ -387,43 +387,43 @@ connection.disconnect();
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">correlation-id</code></td>
-      <td><code class="highlighter-rouge">JMSCorrelationID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">correlation-id</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSCorrelationID</code></td>
       <td>Good consumers will add this header to any responses they send.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">expires</code></td>
-      <td><code class="highlighter-rouge">JMSExpiration</code></td>
+      <td><code class="language-plaintext highlighter-rouge">expires</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSExpiration</code></td>
       <td>Expiration time of the message.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">JMSXGroupID</code></td>
-      <td><code class="highlighter-rouge">JMSXGroupID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSXGroupID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSXGroupID</code></td>
       <td>Specifies the <a href="message-groups">Message Groups.</a></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">JMSXGroupSeq</code></td>
-      <td><code class="highlighter-rouge">JMSXGroupSeq</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSXGroupSeq</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSXGroupSeq</code></td>
       <td>Optional header that specifies the sequence number in the <a href="message-groups">Message Groups.</a></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">persistent</code></td>
-      <td><code class="highlighter-rouge">JMSDeliveryMode</code></td>
+      <td><code class="language-plaintext highlighter-rouge">persistent</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSDeliveryMode</code></td>
       <td>Whether or not the message is persistent.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">priority</code></td>
-      <td><code class="highlighter-rouge">JMSPriority</code></td>
+      <td><code class="language-plaintext highlighter-rouge">priority</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSPriority</code></td>
       <td>Priority on the message.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">reply-to</code></td>
-      <td><code class="highlighter-rouge">JMSReplyTo</code></td>
+      <td><code class="language-plaintext highlighter-rouge">reply-to</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSReplyTo</code></td>
       <td>Destination you should send replies to.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">type</code></td>
-      <td><code class="highlighter-rouge">JMSType</code></td>
+      <td><code class="language-plaintext highlighter-rouge">type</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSType</code></td>
       <td>Type of the message.</td>
     </tr>
   </tbody>
@@ -444,63 +444,63 @@ connection.disconnect();
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">CONNECT</code></td>
-      <td><code class="highlighter-rouge">client-id</code></td>
-      <td><code class="highlighter-rouge">string</code></td>
-      <td>Specifies the JMS clientID which is used in combination with the <code class="highlighter-rouge">activemq.subcriptionName</code> to denote a durable subscriber.</td>
+      <td><code class="language-plaintext highlighter-rouge">CONNECT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">client-id</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Specifies the JMS clientID which is used in combination with the <code class="language-plaintext highlighter-rouge">activemq.subcriptionName</code> to denote a durable subscriber.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">SUBSCRIBE</code></td>
-      <td><code class="highlighter-rouge">activemq.dispatchAsync</code></td>
-      <td><code class="highlighter-rouge">boolean</code></td>
-      <td>Should messages be dispatched synchronously or asynchronously from the producer thread for non-durable topics in the broker? For fast consumers set this to <code class="highlighter-rouge">false</code>. For slow consumers set it to <code class="highlighter-rouge">true</code> so that dispatching will not block fast consumers.</td>
+      <td><code class="language-plaintext highlighter-rouge">SUBSCRIBE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">activemq.dispatchAsync</code></td>
+      <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
+      <td>Should messages be dispatched synchronously or asynchronously from the producer thread for non-durable topics in the broker? For fast consumers set this to <code class="language-plaintext highlighter-rouge">false</code>. For slow consumers set it to <code class="language-plaintext highlighter-rouge">true</code> so that dispatching will not block fast consumers.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">SUBSCRIBE</code></td>
-      <td><code class="highlighter-rouge">activemq.exclusive</code></td>
-      <td><code class="highlighter-rouge">boolean</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SUBSCRIBE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">activemq.exclusive</code></td>
+      <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
       <td>I would like to be an <a href="exclusive-consumer">Exclusive Consumer</a> on the queue.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">SUBSCRIBE</code></td>
-      <td><code class="highlighter-rouge">activemq.maximumPendingMessageLimit</code></td>
-      <td><code class="highlighter-rouge">int</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SUBSCRIBE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">activemq.maximumPendingMessageLimit</code></td>
+      <td><code class="language-plaintext highlighter-rouge">int</code></td>
       <td>For <a href="slow-consumer-handling">Slow Consumer Handling</a> on non-durable topics by dropping old messages - we can set a maximum-pending limit, such that once a slow consumer backs up to this high water mark we begin to discard old messages.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">SUBSCRIBE</code></td>
-      <td><code class="highlighter-rouge">activemq.noLocal</code></td>
-      <td><code class="highlighter-rouge">boolean</code></td>
-      <td>Specifies whether or not locally sent messages should be ignored for subscriptions. Set to <code class="highlighter-rouge">true</code> to filter out locally sent messages.</td>
+      <td><code class="language-plaintext highlighter-rouge">SUBSCRIBE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">activemq.noLocal</code></td>
+      <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
+      <td>Specifies whether or not locally sent messages should be ignored for subscriptions. Set to <code class="language-plaintext highlighter-rouge">true</code> to filter out locally sent messages.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">SUBSCRIBE</code></td>
-      <td><code class="highlighter-rouge">activemq.prefetchSize</code></td>
-      <td><code class="highlighter-rouge">int</code></td>
-      <td>Specifies the maximum number of pending messages that will be dispatched to the client. Once this maximum is reached no more messages are dispatched until the client acknowledges a message. Set to a low value &gt; <strong>1</strong> for fair distribution of messages across consumers when processing messages can be slow. <strong>Note</strong>: if your STOMP client is implemented using a dynamic scripting language like Ruby, say, then this parameter <strong><em>must</em></strong> be set to <code class="highlighter-rouge">1</code> as there is no notion of a client-side message size to be sized. STOMP does not support a value of <code class="highlighter-rouge">0</code>.</td>
+      <td><code class="language-plaintext highlighter-rouge">SUBSCRIBE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">activemq.prefetchSize</code></td>
+      <td><code class="language-plaintext highlighter-rouge">int</code></td>
+      <td>Specifies the maximum number of pending messages that will be dispatched to the client. Once this maximum is reached no more messages are dispatched until the client acknowledges a message. Set to a low value &gt; <strong>1</strong> for fair distribution of messages across consumers when processing messages can be slow. <strong>Note</strong>: if your STOMP client is implemented using a dynamic scripting language like Ruby, say, then this parameter <strong><em>must</em></strong> be set to <code class="language-plaintext highlighter-rouge">1</code> as there is no notion of a client-side message size to be sized. STOMP does not support a value of <code class="language-plaintext highlighter-rouge">0</code>.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">SUBSCRIBE</code></td>
-      <td><code class="highlighter-rouge">activemq.priority</code></td>
-      <td><code class="highlighter-rouge">byte</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SUBSCRIBE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">activemq.priority</code></td>
+      <td><code class="language-plaintext highlighter-rouge">byte</code></td>
       <td>Sets the priority of the consumer so that dispatching can be weighted in priority order.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">SUBSCRIBE</code></td>
-      <td><code class="highlighter-rouge">activemq.retroactive</code></td>
-      <td><code class="highlighter-rouge">boolean</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SUBSCRIBE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">activemq.retroactive</code></td>
+      <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
       <td>For non-durable topics make this subscription <a href="retroactive-consumer">retroactive</a>.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">SUBSCRIBE</code></td>
-      <td><code class="highlighter-rouge">activemq.subscriptionName</code></td>
-      <td><code class="highlighter-rouge">string</code></td>
-      <td>For durable topic subscriptions you must specify the same <code class="highlighter-rouge">activemq.client-id</code> on the connection and <code class="highlighter-rouge">activemq.subcriptionName</code> on the subscribe prior to v5.7.0. <strong>Note</strong>: the spelling <code class="highlighter-rouge">subcriptionName</code> NOT <code class="highlighter-rouge">subscriptionName</code>. This is not intuitive, but it is how it is implemented in ActiveMQ 4.x. For the 5.0 release of ActiveMQ, both <code class="highlighter-rouge">subcriptionName</code> and <code class="highlighter-rouge">subscriptionName</code> will be supported (<code class="highlighter-rouge">subcriptionName</code> was removed as of v5.6.0).</td>
+      <td><code class="language-plaintext highlighter-rouge">SUBSCRIBE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">activemq.subscriptionName</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>For durable topic subscriptions you must specify the same <code class="language-plaintext highlighter-rouge">activemq.client-id</code> on the connection and <code class="language-plaintext highlighter-rouge">activemq.subcriptionName</code> on the subscribe prior to v5.7.0. <strong>Note</strong>: the spelling <code class="language-plaintext highlighter-rouge">subcriptionName</code> NOT <code class="language-plaintext highlighter-rouge">subscriptionName</code>. This is not intuitive, but it is how it is implemented in ActiveMQ 4.x. For the 5.0 release of ActiveMQ, both <code class="language-plaintext highlighter-rouge">subcriptionName</code> and <code class="language-plaintext highlighter-rouge">subscriptionName</code> will be supported (<code class="language-plaintext highlighter-rouge">subcriptionName</code> was removed as of v5.6.0).</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">SUBSCRIBE</code></td>
-      <td><code class="highlighter-rouge">selector</code></td>
-      <td><code class="highlighter-rouge">string</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SUBSCRIBE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">selector</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
       <td>Specifies a JMS Selector using SQL 92 syntax as specified in the JMS 1.1 specification. This allows a filter to be applied to each message as part of the subscription.</td>
     </tr>
   </tbody>

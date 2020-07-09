@@ -96,7 +96,7 @@
 
 <p>Sometimes it can be useful to ensure that every topic consumer sees messages arriving on the topic in exactly the same order. Normally the broker will guarantee the order of all messages sent by the same producer. However, owing to the broker’s use of multiple threads and asynchronous processing, messages from different producers could arrive in different consumers in different orders.</p>
 
-<p>For example, if we have producers <strong><code class="highlighter-rouge">P</code></strong> and <strong><code class="highlighter-rouge">Q</code></strong> sending messages such that at about the same time <strong><code class="highlighter-rouge">P</code></strong> sends <strong><code class="highlighter-rouge">P1</code>, <code class="highlighter-rouge">P2</code></strong>, <strong><code class="highlighter-rouge">P3</code></strong> and <strong><code class="highlighter-rouge">Q</code></strong> sends <strong><code class="highlighter-rouge">Q1</code>, <code class="highlighter-rouge">Q2</code></strong>. Therefore, two different consumers <em>could</em> see messages arrive in the following order:</p>
+<p>For example, if we have producers <strong><code class="language-plaintext highlighter-rouge">P</code></strong> and <strong><code class="language-plaintext highlighter-rouge">Q</code></strong> sending messages such that at about the same time <strong><code class="language-plaintext highlighter-rouge">P</code></strong> sends <strong><code class="language-plaintext highlighter-rouge">P1</code>, <code class="language-plaintext highlighter-rouge">P2</code></strong>, <strong><code class="language-plaintext highlighter-rouge">P3</code></strong> and <strong><code class="language-plaintext highlighter-rouge">Q</code></strong> sends <strong><code class="language-plaintext highlighter-rouge">Q1</code>, <code class="language-plaintext highlighter-rouge">Q2</code></strong>. Therefore, two different consumers <em>could</em> see messages arrive in the following order:</p>
 
 <p>consumer1: P1 P2 Q1 P3 Q2
 consumer2: P1 Q1 Q2 P2 P3</p>
@@ -110,7 +110,7 @@ consumer2: P1 P2 Q1 P3 Q2</p>
 
 <h2 id="configuring-total-ordering">Configuring Total Ordering</h2>
 
-<p>Enable the <strong><code class="highlighter-rouge">&lt;strictOrderDispatchPolicy/&gt;</code></strong> on the <a href="per-destination-policies">Per Destination Policies</a>. Here’s an example</p>
+<p>Enable the <strong><code class="language-plaintext highlighter-rouge">&lt;strictOrderDispatchPolicy/&gt;</code></strong> on the <a href="per-destination-policies">Per Destination Policies</a>. Here’s an example</p>
 
 <destinationPolicy>
   <policyMap>

@@ -105,25 +105,25 @@
 <h1 id="installation">Installation</h1>
 
 <p>ActiveMQ provides Karaf features which will help you integrate and use the broker in OSGi environment. For starters you need to add the features URL to Karaf. For version 5.9.0 you can do it like this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>karaf@root&gt; features:chooseurl activemq 5.9.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>karaf@root&gt; features:chooseurl activemq 5.9.0
 </code></pre></div></div>
 <p>After that you should see newly added features</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>karaf@root&gt; features:list
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>karaf@root&gt; features:list
 State         Version         Name                 Repository
 \[uninstalled\] \[5.9.0         \] activemq-broker               activemq-5.9.0        
 \[uninstalled\] \[5.9.0         \] activemq-http                 activemq-5.9.0        
 \[uninstalled\] \[5.9.0         \] activemq-camel                activemq-5.9.0        
 \[uninstalled\] \[5.9.0         \] activemq-web-console          activemq-5.9.0
 </code></pre></div></div>
-<p>Installing and running the broker is as simple as installing <code class="highlighter-rouge">activemq-broker</code> feature, like</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>karaf@root&gt; features:install activemq-broker
+<p>Installing and running the broker is as simple as installing <code class="language-plaintext highlighter-rouge">activemq-broker</code> feature, like</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>karaf@root&gt; features:install activemq-broker
 </code></pre></div></div>
 <p>This will install and start the full broker (including the web console), just as if you started the standalone distribution.</p>
 
 <h1 id="broker-configuration">Broker Configuration</h1>
 
-<p>Broker is configured using OSGi Config Admin mechanism and could be easily managed in <a href="http://karaf.apache.org/manual/latest-2.3.x/users-guideCommunity/FAQ/configuration">Karaf</a>. Configuration can be done by modifying <code class="highlighter-rouge">${KARAF_BASE}/etc/org.apache.activemq.server-default.cfg</code> file or respective config admin property. An example of the file looks like</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>broker-name=amq-broker
+<p>Broker is configured using OSGi Config Admin mechanism and could be easily managed in <a href="http://karaf.apache.org/manual/latest-2.3.x/users-guideCommunity/FAQ/configuration">Karaf</a>. Configuration can be done by modifying <code class="language-plaintext highlighter-rouge">${KARAF_BASE}/etc/org.apache.activemq.server-default.cfg</code> file or respective config admin property. An example of the file looks like</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>broker-name=amq-broker
 data=${karaf.data}/${broker-name}
 config=${karaf.base}/etc/activemq.xml
 </code></pre></div></div>
@@ -148,29 +148,29 @@ config=${karaf.base}/etc/activemq.xml
   </tbody>
 </table>
 
-<p>You can also use this file to set other properties which will replace placeholders in XML configuration file, as the <code class="highlighter-rouge">${data</code>} property is used in this example.</p>
+<p>You can also use this file to set other properties which will replace placeholders in XML configuration file, as the <code class="language-plaintext highlighter-rouge">${data</code>} property is used in this example.</p>
 
-<p>Default XML configuration file is located in the <code class="highlighter-rouge">${KARAF_BASE}/etc/activemq.xml</code> by default.</p>
+<p>Default XML configuration file is located in the <code class="language-plaintext highlighter-rouge">${KARAF_BASE}/etc/activemq.xml</code> by default.</p>
 
 <h1 id="web-console">Web Console</h1>
 
 <p>Web Console is installed by default and can be reached at <a href="http://localhost:8181/activemqweb/">http://localhost:8181/activemqweb/</a></p>
 
-<p>The configuration for the console is done in a similar fashion to the broker itself. Configuration is located in <code class="highlighter-rouge">${KARAF_BASE}/etc/org.apache.activemq.webconsole.cfg</code> and by default looks like</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>webconsole.jms.url=tcp://localhost:61616
+<p>The configuration for the console is done in a similar fashion to the broker itself. Configuration is located in <code class="language-plaintext highlighter-rouge">${KARAF_BASE}/etc/org.apache.activemq.webconsole.cfg</code> and by default looks like</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>webconsole.jms.url=tcp://localhost:61616
 webconsole.jmx.url=service:jmx:rmi:///jndi/rmi://localhost:1099/karaf-root
 webconsole.jmx.user=karaf
 webconsole.jmx.password=karaf
 </code></pre></div></div>
 <p><strong>Optional:</strong> In order to use the ActiveMQ console with a broker configured with authentication, it is necessary to configure the username/password for JMS connection as well.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>webconsole.jms.user=system
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>webconsole.jms.user=system
 webconsole.jms.password=manager
 </code></pre></div></div>
 
 <h1 id="commands">Commands</h1>
 
 <p>After these simple steps you have all necessary libraries installed in the container. Also, now you have specific commands on your disposal that you can use to manage your broker:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>browse                Display selected messages in a specified destination
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>browse                Display selected messages in a specified destination
 bstat                 Displays useful broker statistics
 list                  Lists all available brokers in the specified JMX context
 purge                 Delete selected destination's messages that matches the message selector
@@ -183,24 +183,24 @@ dstat                 Performs a predefined query that displays useful tabular s
 
   <p>To obtain some detailed help on a given command, you can run:</p>
 
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq:[command] --help 
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq:[command] --help 
 </code></pre></div>  </div>
 </blockquote>
 
 <h2 id="broker-querying">Broker querying</h2>
 
-<p>Several commands are available to query the broker. To address local brokers, you need to use the <code class="highlighter-rouge">--jmxlocal</code> parameter.</p>
+<p>Several commands are available to query the broker. To address local brokers, you need to use the <code class="language-plaintext highlighter-rouge">--jmxlocal</code> parameter.</p>
 
 <p>The following command displays available brokers:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>karaf@root&gt; activemq:list --jmxlocal
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>karaf@root&gt; activemq:list --jmxlocal
 BrokerName = mybroker
 </code></pre></div></div>
 <p>To have more detailed informations, run:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>karaf@root&gt; activemq:query --jmxlocal
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>karaf@root&gt; activemq:query --jmxlocal
 </code></pre></div></div>
 <p>It will display informations about the connectors, list of queues, etc…</p>
 
-<p>You can also browse or purge queues using the <code class="highlighter-rouge">activemq:browse</code> and <code class="highlighter-rouge">activemq:purge</code> commands.</p>
+<p>You can also browse or purge queues using the <code class="language-plaintext highlighter-rouge">activemq:browse</code> and <code class="language-plaintext highlighter-rouge">activemq:purge</code> commands.</p>
 
 
       </div>

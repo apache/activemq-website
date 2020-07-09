@@ -108,7 +108,7 @@
 
 <p>The simplest way to obtain an instance of a CMS ConnectionFactory is to use the static method <strong>createCMSConnectionFactory</strong> that all CMS Provider libraries are required to implement. The code snippet below demonstrates how to obtain a new ConnectionFactory:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
     cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
 </code></pre></div></div>
 
@@ -116,7 +116,7 @@
 
 <p>Once you’ve created a ConnectionFactory the next thing to do is to create a CMS Connection using the ConnectionFactory. A Connection is the Object that manages the client’s connection to the Provider. The next section covers the use of a CMS Connection, the code to create a Connection is shown below:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
 </code></pre></div></div>
 
 <p>Upon creation the Connection object attempts to connect to the CMS Provider, if the connection fails then an CMSException is thrown with a description of the error that occurred stored in its Message property.</p>
@@ -125,12 +125,12 @@
 
 <p>There are a couple versions of the <strong>createConnection</strong> method that allow you to specify login parameters for the newly created Connection. The one you would use most often takes a user-name and password pair that is transmitted to the Broker for authentication. Should the credentials be invalid a CMSException would be thrown. The sample code below shows how to pass a user-name and password in when creating your Connection object.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection( "&lt;USERNAME&gt;", "&lt;PASSWORD&gt;") );
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection( "&lt;USERNAME&gt;", "&lt;PASSWORD&gt;") );
 </code></pre></div></div>
 
 <p>If you don’t want to hard code values into your source code or write code to read the login data from somewhere else there is another option for passing in the user-name and password, the URI that you pass to <strong>createConnectionFactory</strong> can be encoded so that the connectionFactory will read the values from the system environment when it parses the URI. The example below shows how to create a connection factory with the login data set in the URI.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
     cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616?username=${USERNAME}&amp;password=${PASSWORD}" ) );
 </code></pre></div></div>
 
@@ -154,7 +154,7 @@
 
 <p>After creating the Connection the client must create a CMS Session in order to create message producers and consumers. The code snippet below puts together what we’ve seen so far and then shows how to create a CMS Session object from our Connection instance, the section that follows will discuss the CMS Session in more detail.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory( 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory( 
     cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
 
 std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
@@ -217,7 +217,7 @@ std::auto_ptr&lt;cms::Session&gt; session( connection-&gt;createSession() );
 
 <p>In the previous section we showed you how to create a session, lets take a look at that example again here:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory( 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory( 
     cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
 
 std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
@@ -227,7 +227,7 @@ std::auto_ptr&lt;cms::Session&gt; session( connection-&gt;createSession() );
 
 <p>In this code snippet the Session is created using the createSession with no arguments, this creates a Session that is in the AUTO_ACKNOWLEDGE mode. To create a Session with one of the modes listed above there is a second create method in the CMS Session interface that takes a single argument specifying the mode, lets take a look at an example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory( 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory( 
     cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
 
 std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
@@ -282,7 +282,7 @@ std::auto_ptr&lt;cms::Session&gt; session( connection-&gt;createSession( cms::Se
 
 <p>As you may have already guessed, Messages are created using the CMS Session instance we created previously. The Session supplies methods for creating each of the four Message types we covered above. The Session is the Factory that create the providers implementation of the Message interfaces defined in CMS, it knows how to configure the internal data structures and prevents the client from being tied to the provider implementation directly, this is why we have to use the Session to create a Message object instead of creating them directly. Lets take a look at a code snippet that create a TextMessage instance and sets some properties on that Message.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
 std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
     cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
 
@@ -336,7 +336,7 @@ textMessage-&gt;setIntProperty( "USER_CODE", 42 );
 
 <p>Now that we’ve seen what the destination types are, lets look at a code snippet showing how to create a Destination object. The example below shows how to create a Topic instance using what should now be a pretty familiar pattern.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
 std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
     cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
 
@@ -356,7 +356,7 @@ std::auto_ptr&lt;cms::Topic&gt; myTopic( session-&gt;createTopic( "EXAMPLE-TOPIC
 
 <p>Now that we’ve covered how to create messages and destinations we will look at creating a CMS MessageConsumer. The MessageConsumer allows the client application to receive messages sent by other clients to topics or queues. Before we talk about receiving Messages with the consumer lets first look at how one is created.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
 std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
     cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
 
@@ -377,7 +377,7 @@ std::auto_ptr&lt;cms::MessageConsumer&gt; myConsumer( session-&gt;createConsumer
 
 <p>The synchronous method of receiving Messages involves a call the to the consumers receive method. A call to receive will block until a Message is received on the Destination in question if no time-out is given, or will return NULL if the time-out given elapses and no new Messages arrive. Lets take a look at a simple example of a synchronous message polling loop using CMS.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>while( !done ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>while( !done ) {
 
    std::auto_ptr&lt;Message&gt; message( myConsumer-&gt;receive() );
 
@@ -397,13 +397,13 @@ std::auto_ptr&lt;cms::MessageConsumer&gt; myConsumer( session-&gt;createConsumer
 
 <p>…Perform other application logic before checking for another message…
 }</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 The asynchronous method involves implementing the CMS MessageListener interface and passing an instance of your implementation to the MessageConsumer's **setMessageListener** method. When a new message arrives your listener's **onMessage** method will be called by the consumer in the context of another thread to allow you to process the Message received. Below is a code snippet that demonstrates implementing the MessageListener interface.
 
 </code></pre></div></div>
 <p>class SimpleListener : public cms::MessageListener {</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>virtual void onMessage( const Message* message ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>virtual void onMessage( const Message* message ) {
 
     const TextMessage* textMessage =
         dynamic_cast&lt; const TextMessage* &gt;( message );
@@ -424,7 +424,7 @@ The asynchronous method involves implementing the CMS MessageListener interface 
 
 <p>Now that we have a MessageListener implementation to work with its time to see how to setup asynchronous consumption using the MessageConsumer we created previously.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SimpleListener listener;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SimpleListener listener;
 
 myConsumer-&gt;setMessageListener( &amp;listener );
 </code></pre></div></div>
@@ -435,7 +435,7 @@ myConsumer-&gt;setMessageListener( &amp;listener );
 
 <p>We’ve seen how to consume Messages now how do we produce them in the first place? The answer is the CMS MessageProducer which is used to send messages to the broker for distribution to the various clients listening for Messages on the topic or queue. Creating a MessageProducer is much the same as creating a MessageConsumer, you first create your Connection, Session, and Destination objects then use the Session to create a MessageProducer. The code snippet below demonstrates how to create a MessageProducer.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
 std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
     cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
 
@@ -464,7 +464,7 @@ std::auto_ptr&lt;cms::MessageProducer&gt; myProducer( session-&gt;createProducer
 
 <p>After the <em>runConsumer</em> method returns the main method waits for user input to exit, all messages received while the application is running will be dispatched to the onMessage method of SimpleAsyncConsumer and if the message is a TextMessage its contents will be printed onscreen.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/*
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -727,7 +727,7 @@ int main(int argc AMQCPP_UNUSED, char* argv[] AMQCPP_UNUSED) {
 
 <p>A Simple Message Producer Example</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/*
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.

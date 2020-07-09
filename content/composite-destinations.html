@@ -99,15 +99,15 @@
 <p>For example you can use composite destinations to send a message to 12 physical queues in one operation. Or send a message to one topic and one queue in one operation.</p>
 
 <p>We do this using a simple separator of “,” allowing a number of destinations to be specified when creating a destintation, or registering destinations in JNDI. e.g. the destination</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FOO.A,FOO.B,FOO.C
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FOO.A,FOO.B,FOO.C
 </code></pre></div></div>
 <p>Represents 3 different destinations. This could be used with a queue or topic to represent a set of 3 destinations. e.g.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// send to 3 queues as one logical operation
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// send to 3 queues as one logical operation
 Queue queue = new ActiveMQQueue("FOO.A,FOO.B,FOO.C");
 producer.send(queue, someMessage);
 </code></pre></div></div>
-<p>If you wish to mix and match the types of destination, you can use a prefix of <code class="highlighter-rouge">queue://</code> or <code class="highlighter-rouge">topic://</code> to differentiate the type of destination. e.g. to publish on a queue but also make a notification on a topic as well you could use</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// send to queues and topic one logical operation
+<p>If you wish to mix and match the types of destination, you can use a prefix of <code class="language-plaintext highlighter-rouge">queue://</code> or <code class="language-plaintext highlighter-rouge">topic://</code> to differentiate the type of destination. e.g. to publish on a queue but also make a notification on a topic as well you could use</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// send to queues and topic one logical operation
 Queue queue = new ActiveMQQueue("FOO.A,topic://NOTIFY.FOO.A");
 producer.send(queue, someMessage);
 </code></pre></div></div>

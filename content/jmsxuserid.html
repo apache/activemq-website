@@ -97,12 +97,12 @@
 <h2 id="jmsxuserid-support">JMSXUserID support</h2>
 
 <p>It is sometimes useful to know the authenticated username of the sender of a message. This is not added by default but you can enable it by setting the <strong>populateJMSXUserID</strong> property on the broker via Java code</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService broker = new BrokerService();
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService broker = new BrokerService();
 broker.setPopulateJMSXUserID(true);
 broker.start();
 </code></pre></div></div>
 <p>Or via the <a href="xml-configuration">Xml Configuration</a></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker xmlns="http://activemq.org/config/1.0" populateJMSXUserID="true"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker xmlns="http://activemq.org/config/1.0" populateJMSXUserID="true"&gt;
    ...
 &lt;/broker&gt;
 </code></pre></div></div>
@@ -111,9 +111,9 @@ broker.start();
 <p>Once enabled this feature adds the JMS property <strong>JMSXUserID</strong> to each JMS message so that a consumer can know exactly who the sender was using the broker’s authentication policy. i.e. it is not possibile for a producer to spoof this value if this feature is enabled since the broker attaches the property to the message after the senders connection is authenticated.</p>
 
 <p>If you allow anonymous access, you MUST also add the</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>useAuthenticatedPrincipalForJMSXUserID="true"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>useAuthenticatedPrincipalForJMSXUserID="true"
 </code></pre></div></div>
-<p>property of the broker element. Otherwise, anonymous clients can spoof identities by setting the JMSXUserID property on from the client. This property is available in version 5.5 or 5.5-SNAPSHOT &gt; March 12th. Note, though, that for SSL certificate based authentication, e.g., when using <code class="highlighter-rouge">TextFileCertificateLoginModule</code> JAAS module, this will change the semantics of the broker-provided JMSXUserID. Instead of returning the DN of the certificate, it will provide the name the DN is mapped to by the JAAS module.</p>
+<p>property of the broker element. Otherwise, anonymous clients can spoof identities by setting the JMSXUserID property on from the client. This property is available in version 5.5 or 5.5-SNAPSHOT &gt; March 12th. Note, though, that for SSL certificate based authentication, e.g., when using <code class="language-plaintext highlighter-rouge">TextFileCertificateLoginModule</code> JAAS module, this will change the semantics of the broker-provided JMSXUserID. Instead of returning the DN of the certificate, it will provide the name the DN is mapped to by the JAAS module.</p>
 
 
       </div>

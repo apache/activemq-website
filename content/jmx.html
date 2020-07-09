@@ -107,13 +107,13 @@
     <p><a href="run-broker">Run a broker</a> setting the broker property useJmx to true (enabled by default) i.e.</p>
 
     <p>For xbean configuration</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;broker useJmx="true" brokerName="BROKER1"&gt;
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;broker useJmx="true" brokerName="BROKER1"&gt;
  ...
  &lt;/broker&gt;
 </code></pre></div>    </div>
   </li>
   <li>Run a JMX console
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ jconsole 
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ jconsole 
 </code></pre></div>    </div>
   </li>
   <li>The ActiveMQ broker should appear in the list of local connections, if you are running JConsole on the same host as ActiveMQ.</li>
@@ -197,7 +197,7 @@
 
 <ol>
   <li>Make sure JMX is enabled, but tell ActiveMQ <strong>not</strong> create its own connector so that it will use the default JVM JMX connector.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;broker xmlns="http://activemq.org/config/1.0" brokerName="localhost"useJmx="true"&gt;
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;broker xmlns="http://activemq.org/config/1.0" brokerName="localhost"useJmx="true"&gt;
     
    ...
     
@@ -214,13 +214,13 @@
     <p>Create access and password files</p>
 
     <p>conf/jmx.access:</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> # The "monitorRole" role has readonly access.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> # The "monitorRole" role has readonly access.
  # The "controlRole" role has readwrite access.
  monitorRole readonly
  controlRole readwrite
 </code></pre></div>    </div>
     <p>conf/jmx.password:</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> # The "monitorRole" role has password "abc123".
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> # The "monitorRole" role has password "abc123".
  # The "controlRole" role has password "abcd1234".
  monitorRole abc123
  controlRole abcd1234
@@ -236,13 +236,13 @@
 
     <ol>
       <li>Windows
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   ACTIVEMQ_SUNJMX_START=-Dcom.sun.management.jmxremote.port=1616 -Dcom.sun.management.jmxremote.ssl=false \
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   ACTIVEMQ_SUNJMX_START=-Dcom.sun.management.jmxremote.port=1616 -Dcom.sun.management.jmxremote.ssl=false \
  -Dcom.sun.management.jmxremote.password.file=%ACTIVEMQ_BASE%/conf/jmx.password \
  -Dcom.sun.management.jmxremote.access.file=%ACTIVEMQ_BASE%/conf/jmx.access
 </code></pre></div>        </div>
       </li>
       <li>Unix
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   ACTIVEMQ_SUNJMX_START="-Dcom.sun.management.jmxremote.port=1616 -Dcom.sun.management.jmxremote.ssl=false \
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   ACTIVEMQ_SUNJMX_START="-Dcom.sun.management.jmxremote.port=1616 -Dcom.sun.management.jmxremote.ssl=false \
  -Dcom.sun.management.jmxremote.password.file=${ACTIVEMQ_BASE}/conf/jmx.password \
  -Dcom.sun.management.jmxremote.access.file=${ACTIVEMQ_BASE}/conf/jmx.access"
 </code></pre></div>        </div>
@@ -253,7 +253,7 @@
 
     <ol>
       <li>Windows
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   ACTIVEMQ_HOME=DRIVE_LETTER:/where/ActiveMQ/is/installed
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   ACTIVEMQ_HOME=DRIVE_LETTER:/where/ActiveMQ/is/installed
    ACTIVEMQ_BASE=%ACTIVEMQ_HOME%
    ACTIVEMQ_SUNJMX_START=-Dcom.sun.management.jmxremote.port=1616 -Dcom.sun.management.jmxremote.ssl=false \
    -Dcom.sun.management.jmxremote.password.file=%ACTIVEMQ_BASE%/conf/jmx.password \
@@ -261,7 +261,7 @@
 </code></pre></div>        </div>
       </li>
       <li>Unix
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   ACTIVEMQ_HOME=DRIVE_LETTER:/where/ActiveMQ/is/installed
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   ACTIVEMQ_HOME=DRIVE_LETTER:/where/ActiveMQ/is/installed
    ACTIVEMQ_BASE=${ACTIVEMQ_HOME}
    ACTIVEMQ_SUNJMX_START="-Dcom.sun.management.jmxremote.port=1616 -Dcom.sun.management.jmxremote.ssl=false \
    -Dcom.sun.management.jmxremote.password.file=${ACTIVEMQ_BASE}/conf/jmx.password \
@@ -274,7 +274,7 @@
 </ol>
 
 <p>You should be able to connect to JMX on the JMX URL</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service:jmx:rmi:///jndi/rmi://&lt;your hostname&gt;:1616/jmxrmi
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service:jmx:rmi:///jndi/rmi://&lt;your hostname&gt;:1616/jmxrmi
 </code></pre></div></div>
 <p>And you will be forced to login.</p>
 
@@ -283,7 +283,7 @@
 <p>In situations where you need to scale your broker to large number of connections, destinations and consumers it can become very expensive to keep JMX MBeans for all those objects. Instead of turning off JMX completely, starting with 5.12.0, you can selectively suppress registration of some types of MBeans and thus help your broker scale, while still having a basic view of the broker state.</p>
 
 <p>For example, the following configuration will exclude all dynamic producers, consumers, connections and advisory topics from registering their MBeans</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;managementContext&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;managementContext&gt;
   &lt;managementContext suppressMBean="endpoint=dynamicProducer,endpoint=Consumer,connectionName=*,destinationName=ActiveMQ.Advisory.*"/&gt;
 &lt;/managementContext&gt;
 </code></pre></div></div>

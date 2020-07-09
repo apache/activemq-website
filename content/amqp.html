@@ -102,8 +102,8 @@
 
 <h3 id="enabling-the-activemq-broker-for-amqp">Enabling the ActiveMQ Broker for AMQP</h3>
 
-<p>To enable AMQP protocol support on the broker add the following transport connector configuration referencing the <code class="highlighter-rouge">amqp</code> scheme in its URI:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnectors&gt;
+<p>To enable AMQP protocol support on the broker add the following transport connector configuration referencing the <code class="language-plaintext highlighter-rouge">amqp</code> scheme in its URI:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnectors&gt;
    &lt;transportConnector name="amqp" uri="amqp://0.0.0.0:5672"/&gt;
 &lt;/transportConnectors&gt;
 </code></pre></div></div>
@@ -121,37 +121,37 @@
 
 <h3 id="enabling-amqp-over-nio">Enabling AMQP over NIO</h3>
 
-<p>For better scalability (and performance) the AMQP protocol should be configured to use NIO, rather than the default of TCP. To use NIO use the transport scheme <code class="highlighter-rouge">amqp+nio</code> instead of <code class="highlighter-rouge">amqp</code>.</p>
+<p>For better scalability (and performance) the AMQP protocol should be configured to use NIO, rather than the default of TCP. To use NIO use the transport scheme <code class="language-plaintext highlighter-rouge">amqp+nio</code> instead of <code class="language-plaintext highlighter-rouge">amqp</code>.</p>
 
 <p>Example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="amqp+nio" uri="amqp+nio://localhost:5672"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="amqp+nio" uri="amqp+nio://localhost:5672"/&gt;
 </code></pre></div></div>
 <p>This transport uses the <a href="configuring-transports#TheNIOTransport">NIO transport</a> underneath and will generally use much less threads than the standard connector. This connector can help if you want to use <a href="how-do-i-configure-10s-of-1000s-of-queues-in-a-single-broker">large number of queues</a></p>
 
 <h3 id="enabling-amqp-over-ssl">Enabling AMQP over SSL</h3>
 
-<p>It’s easy to configure ActiveMQ to use AMQP over a SSL connection. To use SSL use the transport scheme <code class="highlighter-rouge">amqp+ssl</code> instead of <code class="highlighter-rouge">amqp</code>.</p>
+<p>It’s easy to configure ActiveMQ to use AMQP over a SSL connection. To use SSL use the transport scheme <code class="language-plaintext highlighter-rouge">amqp+ssl</code> instead of <code class="language-plaintext highlighter-rouge">amqp</code>.</p>
 
 <p>Example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="amqp+ssl" uri="amqp+ssl://localhost:5671"/&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="amqp+ssl" uri="amqp+ssl://localhost:5671"/&gt;
 </code></pre></div></div>
 <p>For more details on using SSL with ActiveMQ, see the following article (<a href="how-do-i-use-ssl">How do I use SSL</a>).</p>
 
 <h3 id="working-with-destinations-with-amqp">Working with Destinations with AMQP</h3>
 
-<p>You should prefix destination address with <code class="highlighter-rouge">queue://</code> to use queue based destinations or <code class="highlighter-rouge">topic://</code> to use topic based destinations. The destination type defaults to queue when the destination prefix is omitted.</p>
+<p>You should prefix destination address with <code class="language-plaintext highlighter-rouge">queue://</code> to use queue based destinations or <code class="language-plaintext highlighter-rouge">topic://</code> to use topic based destinations. The destination type defaults to queue when the destination prefix is omitted.</p>
 
 <h3 id="prefetch-size-and-credit">Prefetch Size and Credit</h3>
 
-<p>When AMQP receiver connects to the broker it’s mapped to the JMS consumer. This JMS consumer has to have appropriate <a href="what-is-the-prefetch-limit-for">prefetch size</a> set. The broker will honor the credit set by the client or use the default value of <code class="highlighter-rouge">1000</code> if client doesn’t set it.</p>
+<p>When AMQP receiver connects to the broker it’s mapped to the JMS consumer. This JMS consumer has to have appropriate <a href="what-is-the-prefetch-limit-for">prefetch size</a> set. The broker will honor the credit set by the client or use the default value of <code class="language-plaintext highlighter-rouge">1000</code> if client doesn’t set it.</p>
 
-<p>Example: tuning the default <code class="highlighter-rouge">prefetch</code> size:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="amqp" uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&amp;amp;transport.prefetch=10"/&gt;
+<p>Example: tuning the default <code class="language-plaintext highlighter-rouge">prefetch</code> size:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="amqp" uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&amp;amp;transport.prefetch=10"/&gt;
 </code></pre></div></div>
 <p>In this case, client preference will be ignored and the configured value will be used.</p>
 
-<p>You can also tune broker-side <code class="highlighter-rouge">amqp</code> receiver link that handles incoming messages. It will use credit of <code class="highlighter-rouge">1000</code> messages by default, but you can override this by using <code class="highlighter-rouge">producerCredit</code> property, like </p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="amqp" uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&amp;amp;transport.producerCredit=10000"/&gt;
+<p>You can also tune broker-side <code class="language-plaintext highlighter-rouge">amqp</code> receiver link that handles incoming messages. It will use credit of <code class="language-plaintext highlighter-rouge">1000</code> messages by default, but you can override this by using <code class="language-plaintext highlighter-rouge">producerCredit</code> property, like </p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="amqp" uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&amp;amp;transport.producerCredit=10000"/&gt;
 </code></pre></div></div>
 
 <h3 id="mapping-to-jms">Mapping to JMS</h3>
@@ -167,22 +167,22 @@
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">native</code></td>
-      <td>(<strong>Default</strong>) Wraps the bytes of the AMQP message into a JMS <code class="highlighter-rouge">BytesMessage</code> and maps the headers of the AMQP message to headers on the JMS message.</td>
+      <td><code class="language-plaintext highlighter-rouge">native</code></td>
+      <td>(<strong>Default</strong>) Wraps the bytes of the AMQP message into a JMS <code class="language-plaintext highlighter-rouge">BytesMessage</code> and maps the headers of the AMQP message to headers on the JMS message.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">raw</code></td>
-      <td>Wraps the bytes of the AMQP message into a JMS <code class="highlighter-rouge">BytesMessage</code>.</td>
+      <td><code class="language-plaintext highlighter-rouge">raw</code></td>
+      <td>Wraps the bytes of the AMQP message into a JMS <code class="language-plaintext highlighter-rouge">BytesMessage</code>.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">jms</code></td>
+      <td><code class="language-plaintext highlighter-rouge">jms</code></td>
       <td>Maps headers of the AMQP message to JMS message headers and the body of the AMQP message to the JMS body.</td>
     </tr>
   </tbody>
 </table>
 
-<p>Set the <strong>transformer</strong> transport option on the <code class="highlighter-rouge">transportConnector</code> to the desired mapping strategy. For example, to inter-operate with JMS at the payload level, set the <code class="highlighter-rouge">transformer</code> option to <code class="highlighter-rouge">jms</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="amqp" uri="amqp://localhost:5672?transport.transformer=jms"/&gt;
+<p>Set the <strong>transformer</strong> transport option on the <code class="language-plaintext highlighter-rouge">transportConnector</code> to the desired mapping strategy. For example, to inter-operate with JMS at the payload level, set the <code class="language-plaintext highlighter-rouge">transformer</code> option to <code class="language-plaintext highlighter-rouge">jms</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="amqp" uri="amqp://localhost:5672?transport.transformer=jms"/&gt;
 </code></pre></div></div>
 
 <h4 id="how-amqp-message-headers-are-mapped-to-jms-headers">How AMQP Message Headers are Mapped to JMS Headers</h4>
@@ -200,18 +200,18 @@
   <tbody>
     <tr>
       <td> </td>
-      <td><code class="highlighter-rouge">JMS_AMQP_NATIVE</code></td>
-      <td>Will be set to <code class="highlighter-rouge">true</code> if the transformer is <code class="highlighter-rouge">native</code> or <code class="highlighter-rouge">raw</code>, <code class="highlighter-rouge">false</code> otherwise.</td>
+      <td><code class="language-plaintext highlighter-rouge">JMS_AMQP_NATIVE</code></td>
+      <td>Will be set to <code class="language-plaintext highlighter-rouge">true</code> if the transformer is <code class="language-plaintext highlighter-rouge">native</code> or <code class="language-plaintext highlighter-rouge">raw</code>, <code class="language-plaintext highlighter-rouge">false</code> otherwise.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">message-format</code></td>
-      <td><code class="highlighter-rouge">JMS_AMQP_MESSAGE_FORMAT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">message-format</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMS_AMQP_MESSAGE_FORMAT</code></td>
       <td> </td>
     </tr>
   </tbody>
 </table>
 
-<p>The following header mappings apply when the transformer is either <code class="highlighter-rouge">native</code> or <code class="highlighter-rouge">jms</code>:</p>
+<p>The following header mappings apply when the transformer is either <code class="language-plaintext highlighter-rouge">native</code> or <code class="language-plaintext highlighter-rouge">jms</code>:</p>
 
 <table>
   <thead>
@@ -223,134 +223,134 @@
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">application-properties.JMSXGroupID</code></td>
-      <td><code class="highlighter-rouge">JMSXGroupID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">application-properties.JMSXGroupID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSXGroupID</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">application-properties.JMSXGroupSequence</code></td>
-      <td><code class="highlighter-rouge">JMSXGroupSequence</code></td>
+      <td><code class="language-plaintext highlighter-rouge">application-properties.JMSXGroupSequence</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSXGroupSequence</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">application-properties.JMSXUserID</code></td>
-      <td><code class="highlighter-rouge">JMSXUserID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">application-properties.JMSXUserID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSXUserID</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">application-properties.**name</code></td>
-      <td><code class="highlighter-rouge">name</code></td>
+      <td><code class="language-plaintext highlighter-rouge">application-properties.**name</code></td>
+      <td><code class="language-plaintext highlighter-rouge">name</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">delivery-annotations.**name</code></td>
-      <td><code class="highlighter-rouge">JMS_AMQP_DA_**name</code></td>
+      <td><code class="language-plaintext highlighter-rouge">delivery-annotations.**name</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMS_AMQP_DA_**name</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">footer.**name</code></td>
-      <td><code class="highlighter-rouge">JMS_AMQP_FT_**name</code></td>
+      <td><code class="language-plaintext highlighter-rouge">footer.**name</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMS_AMQP_FT_**name</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">header.deliveryCount</code></td>
-      <td><code class="highlighter-rouge">JMSXDeliveryCount</code></td>
+      <td><code class="language-plaintext highlighter-rouge">header.deliveryCount</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSXDeliveryCount</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">header.durable</code></td>
-      <td><code class="highlighter-rouge">JMSDeliveryMode</code></td>
-      <td><code class="highlighter-rouge">javax.jms.Message.DEFAULT_DELIVERY_MODE</code> if not set.</td>
+      <td><code class="language-plaintext highlighter-rouge">header.durable</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSDeliveryMode</code></td>
+      <td><code class="language-plaintext highlighter-rouge">javax.jms.Message.DEFAULT_DELIVERY_MODE</code> if not set.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">header.first-acquirer</code></td>
-      <td><code class="highlighter-rouge">JMS_AMQP_FirstAcquirer</code></td>
+      <td><code class="language-plaintext highlighter-rouge">header.first-acquirer</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMS_AMQP_FirstAcquirer</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">header.priority</code></td>
-      <td><code class="highlighter-rouge">JMSPriority</code></td>
-      <td><code class="highlighter-rouge">javax.jms.Message.DEFAULT_PRIORITY</code> if not set.</td>
+      <td><code class="language-plaintext highlighter-rouge">header.priority</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSPriority</code></td>
+      <td><code class="language-plaintext highlighter-rouge">javax.jms.Message.DEFAULT_PRIORITY</code> if not set.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">header.ttl</code></td>
-      <td><code class="highlighter-rouge">JMSExpiration</code></td>
-      <td><code class="highlighter-rouge">javax.jms.Message.DEFAULT_TIME_TO_LIVE</code> if not set.</td>
+      <td><code class="language-plaintext highlighter-rouge">header.ttl</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSExpiration</code></td>
+      <td><code class="language-plaintext highlighter-rouge">javax.jms.Message.DEFAULT_TIME_TO_LIVE</code> if not set.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">message-annotations.**name</code></td>
-      <td><code class="highlighter-rouge">JMS_AMQP_MA_**name</code></td>
+      <td><code class="language-plaintext highlighter-rouge">message-annotations.**name</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMS_AMQP_MA_**name</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">message-annotations.x-opt-jms-type</code></td>
-      <td><code class="highlighter-rouge">JMSType</code></td>
+      <td><code class="language-plaintext highlighter-rouge">message-annotations.x-opt-jms-type</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSType</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">message-annotations.x-opt-reply-type</code></td>
-      <td>Type of the <code class="highlighter-rouge">JMSReplyTo</code></td>
-      <td>Comma separated list of <code class="highlighter-rouge">queue</code>, <code class="highlighter-rouge">topic</code>, or <code class="highlighter-rouge">temporary</code>. Defaults to <code class="highlighter-rouge">queue</code> if not set.</td>
+      <td><code class="language-plaintext highlighter-rouge">message-annotations.x-opt-reply-type</code></td>
+      <td>Type of the <code class="language-plaintext highlighter-rouge">JMSReplyTo</code></td>
+      <td>Comma separated list of <code class="language-plaintext highlighter-rouge">queue</code>, <code class="language-plaintext highlighter-rouge">topic</code>, or <code class="language-plaintext highlighter-rouge">temporary</code>. Defaults to <code class="language-plaintext highlighter-rouge">queue</code> if not set.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">message-annotations.x-opt-to-type</code></td>
-      <td>Type of the <code class="highlighter-rouge">JMSDestination</code></td>
-      <td>Comma separated list of <code class="highlighter-rouge">queue</code>, <code class="highlighter-rouge">topic</code>, or <code class="highlighter-rouge">temporary</code>. Defaults to <code class="highlighter-rouge">queue</code> if not set.</td>
+      <td><code class="language-plaintext highlighter-rouge">message-annotations.x-opt-to-type</code></td>
+      <td>Type of the <code class="language-plaintext highlighter-rouge">JMSDestination</code></td>
+      <td>Comma separated list of <code class="language-plaintext highlighter-rouge">queue</code>, <code class="language-plaintext highlighter-rouge">topic</code>, or <code class="language-plaintext highlighter-rouge">temporary</code>. Defaults to <code class="language-plaintext highlighter-rouge">queue</code> if not set.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.content-encoding</code></td>
-      <td><code class="highlighter-rouge">JMS_AMQP_ContentEncoding</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.content-encoding</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMS_AMQP_ContentEncoding</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.content-type</code></td>
-      <td><code class="highlighter-rouge">JMS_AMQP_ContentType</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.content-type</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMS_AMQP_ContentType</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.correlation-id</code></td>
-      <td><code class="highlighter-rouge">JMSCorrelationID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.correlation-id</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSCorrelationID</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.creation-time</code></td>
-      <td><code class="highlighter-rouge">JMSTimestamp</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.creation-time</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSTimestamp</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.group-sequence</code></td>
-      <td><code class="highlighter-rouge">JMSXGroupSequence</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.group-sequence</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSXGroupSequence</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.message-id</code></td>
-      <td><code class="highlighter-rouge">JMSMessageID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.message-id</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSMessageID</code></td>
       <td>Auto generated if not set.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.reply-to</code></td>
-      <td><code class="highlighter-rouge">JMSReplyTo</code></td>
-      <td>The name of the <code class="highlighter-rouge">JMSReplyTo</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.reply-to</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSReplyTo</code></td>
+      <td>The name of the <code class="language-plaintext highlighter-rouge">JMSReplyTo</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.reply-to-group-id</code></td>
-      <td><code class="highlighter-rouge">JMS_AMQP_ReplyToGroupID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.reply-to-group-id</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMS_AMQP_ReplyToGroupID</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.subject</code></td>
-      <td><code class="highlighter-rouge">JMS_AMQP_Subject</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.subject</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMS_AMQP_Subject</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.to</code></td>
-      <td><code class="highlighter-rouge">JMSDestination</code></td>
-      <td>The name of the <code class="highlighter-rouge">JMSDestination</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.to</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSDestination</code></td>
+      <td>The name of the <code class="language-plaintext highlighter-rouge">JMSDestination</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">properties.user-id</code></td>
-      <td><code class="highlighter-rouge">JMSXUserID</code></td>
-      <td><code class="highlighter-rouge">properties.user-id</code> is decoded as a UTF-8 String.</td>
+      <td><code class="language-plaintext highlighter-rouge">properties.user-id</code></td>
+      <td><code class="language-plaintext highlighter-rouge">JMSXUserID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">properties.user-id</code> is decoded as a UTF-8 String.</td>
     </tr>
   </tbody>
 </table>
@@ -367,76 +367,76 @@
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">binary</code></td>
-      <td><code class="highlighter-rouge">String</code></td>
+      <td><code class="language-plaintext highlighter-rouge">binary</code></td>
+      <td><code class="language-plaintext highlighter-rouge">String</code></td>
       <td>Hex encoding of the binary value</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">bool</code></td>
-      <td><code class="highlighter-rouge">Boolean</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Boolean</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">byte</code></td>
-      <td><code class="highlighter-rouge">Byte</code></td>
+      <td><code class="language-plaintext highlighter-rouge">byte</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Byte</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">double</code></td>
-      <td><code class="highlighter-rouge">Double</code></td>
+      <td><code class="language-plaintext highlighter-rouge">double</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Double</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">float</code></td>
-      <td><code class="highlighter-rouge">Float</code></td>
+      <td><code class="language-plaintext highlighter-rouge">float</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Float</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">int</code></td>
-      <td><code class="highlighter-rouge">Integer</code></td>
+      <td><code class="language-plaintext highlighter-rouge">int</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Integer</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">long</code></td>
-      <td><code class="highlighter-rouge">Long</code></td>
+      <td><code class="language-plaintext highlighter-rouge">long</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Long</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">short</code></td>
-      <td><code class="highlighter-rouge">Short</code></td>
+      <td><code class="language-plaintext highlighter-rouge">short</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Short</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">symbol</code></td>
-      <td><code class="highlighter-rouge">String</code></td>
+      <td><code class="language-plaintext highlighter-rouge">symbol</code></td>
+      <td><code class="language-plaintext highlighter-rouge">String</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">ubyte</code></td>
-      <td><code class="highlighter-rouge">Byte</code> or <code class="highlighter-rouge">Short</code></td>
-      <td><code class="highlighter-rouge">Short</code> is used if: <code class="highlighter-rouge">value &gt;</code> <code class="highlighter-rouge">Byte.MAX_VALUE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ubyte</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Byte</code> or <code class="language-plaintext highlighter-rouge">Short</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Short</code> is used if: <code class="language-plaintext highlighter-rouge">value &gt;</code> <code class="language-plaintext highlighter-rouge">Byte.MAX_VALUE</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">uint</code></td>
-      <td><code class="highlighter-rouge">Integer</code> or <code class="highlighter-rouge">Long</code></td>
-      <td><code class="highlighter-rouge">Long</code> is used if: <code class="highlighter-rouge">value &gt;</code> <code class="highlighter-rouge">Integer.MAX_VALUE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">uint</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Integer</code> or <code class="language-plaintext highlighter-rouge">Long</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Long</code> is used if: <code class="language-plaintext highlighter-rouge">value &gt;</code> <code class="language-plaintext highlighter-rouge">Integer.MAX_VALUE</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">ulong</code></td>
-      <td><code class="highlighter-rouge">Long</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ulong</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Long</code></td>
       <td> </td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">ushort</code></td>
-      <td><code class="highlighter-rouge">Short</code> or <code class="highlighter-rouge">Integer</code></td>
-      <td><code class="highlighter-rouge">Integer</code> is used if: <code class="highlighter-rouge">value &gt;</code> <code class="highlighter-rouge">Short.MAX_VALUE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ushort</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Short</code> or <code class="language-plaintext highlighter-rouge">Integer</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Integer</code> is used if: <code class="language-plaintext highlighter-rouge">value &gt;</code> <code class="language-plaintext highlighter-rouge">Short.MAX_VALUE</code></td>
     </tr>
   </tbody>
 </table>
 
 <h4 id="how-a-amqp-messages-body-is-mapped-to-a-jms-message">How a AMQP Messages Body is Mapped to a JMS Message</h4>
 
-<p>If the transformer is set to <code class="highlighter-rouge">jms</code> then the JMS message type will depend on the body type of the AMQP message.</p>
+<p>If the transformer is set to <code class="language-plaintext highlighter-rouge">jms</code> then the JMS message type will depend on the body type of the AMQP message.</p>
 
 <table>
   <thead>
@@ -447,36 +447,36 @@
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">AmqpSequence</code></td>
-      <td><code class="highlighter-rouge">StreamMessage</code></td>
+      <td><code class="language-plaintext highlighter-rouge">AmqpSequence</code></td>
+      <td><code class="language-plaintext highlighter-rouge">StreamMessage</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">AmqpValue</code></td>
-      <td><code class="highlighter-rouge">ObjectMessage</code></td>
+      <td><code class="language-plaintext highlighter-rouge">AmqpValue</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ObjectMessage</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">AmqpValue</code> holding a <code class="highlighter-rouge">null</code></td>
-      <td><code class="highlighter-rouge">Message</code></td>
+      <td><code class="language-plaintext highlighter-rouge">AmqpValue</code> holding a <code class="language-plaintext highlighter-rouge">null</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Message</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">AmqpValue</code> holding a <code class="highlighter-rouge">String</code></td>
-      <td><code class="highlighter-rouge">TextMessage</code></td>
+      <td><code class="language-plaintext highlighter-rouge">AmqpValue</code> holding a <code class="language-plaintext highlighter-rouge">String</code></td>
+      <td><code class="language-plaintext highlighter-rouge">TextMessage</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">AmqpValue</code> holding a <code class="highlighter-rouge">binary</code></td>
-      <td><code class="highlighter-rouge">BytesMessage</code></td>
+      <td><code class="language-plaintext highlighter-rouge">AmqpValue</code> holding a <code class="language-plaintext highlighter-rouge">binary</code></td>
+      <td><code class="language-plaintext highlighter-rouge">BytesMessage</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">AmqpValue</code> holding a <code class="highlighter-rouge">list</code></td>
-      <td><code class="highlighter-rouge">StreamMessage</code></td>
+      <td><code class="language-plaintext highlighter-rouge">AmqpValue</code> holding a <code class="language-plaintext highlighter-rouge">list</code></td>
+      <td><code class="language-plaintext highlighter-rouge">StreamMessage</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">Data</code></td>
-      <td><code class="highlighter-rouge">BytesMessage</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Data</code></td>
+      <td><code class="language-plaintext highlighter-rouge">BytesMessage</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">null</code></td>
-      <td><code class="highlighter-rouge">Message</code></td>
+      <td><code class="language-plaintext highlighter-rouge">null</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Message</code></td>
     </tr>
   </tbody>
 </table>
