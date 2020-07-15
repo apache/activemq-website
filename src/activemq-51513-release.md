@@ -79,6 +79,6 @@ Source Release|[activemq-parent-5.15.13-source-release.zip](http://www.apache.or
 Change Log
 ----------
 
-For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12345958)
+For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12347002)
 
-Also see the previous [ActiveMQ 5.15.10 Release](activemq-51510-release)
+Also see the previous [ActiveMQ 5.15.12 Release](activemq-51512-release)
