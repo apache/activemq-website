@@ -2,12 +2,12 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Message Redelivery and Undelivered Messages · ActiveMQ Artemis Documentation</title>
         <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Message Redelivery and Undelivered Messages · ActiveMQ Artemis Documentation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.1.1">
+        <meta name="generator" content="GitBook 3.2.3">
         
         
         
@@ -1316,18 +1316,7 @@ address setting to allow infinite redeliveries only for this address.</p>
 <p>Address wildcards can be used to configure dead letter settings for a
 set of addresses (see <a href="wildcard-syntax.html">Understanding the Wildcard Syntax</a>).</p>
 <h3 id="dead-letter-properties">Dead Letter Properties</h3>
-<p>Dead letter messages which are consumed from a dead letter address have
-the following properties:</p>
-<ul>
-<li><p><code>_AMQ_ORIG_ADDRESS</code></p>
-<p>a String property containing the <em>original address</em> of the dead
-letter message</p>
-</li>
-<li><p><code>_AMQ_ORIG_QUEUE</code></p>
-<p>a String property containing the <em>original queue</em> of the dead letter
-message</p>
-</li>
-</ul>
+<p>Dead letter messages get <a href="copied-message-properties.md">special properties</a>.</p>
 <h3 id="automatically-creating-dead-letter-resources">Automatically Creating Dead Letter Resources</h3>
 <p>It&apos;s common to segregate undelivered messages by their original address.
 For example, a message sent to the <code>stocks</code> address that couldn&apos;t be
@@ -1341,16 +1330,15 @@ administrators in those environments don&apos;t want to manually create
 an <code>address-setting</code> to configure the <code>dead-letter-address</code> much less
 the actual <code>address</code> and <code>queue</code> to hold the undelivered messages.</p>
 <p>The solution to this problem is to set the <code>auto-create-dead-letter-resources</code>
-<code>address-setting</code> to <code>true</code> (it&apos;s <code>false</code> by default) so that the
-broker will create the <code>address</code> and <code>queue</code> to deal with the
-undelivered messages automatically. The <code>address</code> created will be the
-one defined by the <code>dead-letter-address</code>. A <code>MULTICAST</code> <code>queue</code> will be
-created on that <code>address</code>. It will be named by the <code>address</code> to which
-the message was originally sent, and it will have a filter defined using
-the aforementioned <code>_AMQ_ORIG_ADDRESS</code> property so that it will only
-receive messages sent to the relevant <code>address</code>. The <code>queue</code> name can be
-configured with a prefix and suffix. See the relevant settings in the
-table below:</p>
+<code>address-setting</code> to <code>true</code> (it&apos;s <code>false</code> by default) so that the broker will
+create the <code>address</code> and <code>queue</code> to deal with the undelivered messages
+automatically. The <code>address</code> created will be the one defined by the
+<code>dead-letter-address</code>. A <code>MULTICAST</code> <code>queue</code> will be created on that <code>address</code>.
+It will be named by the <code>address</code> to which the message was previously sent, and
+it will have a filter defined using the property <code>_AMQ_ORIG_ADDRESS</code> so that it
+ will only receive messages sent to the relevant <code>address</code>. The <code>queue</code> name
+ can be configured with a prefix and suffix. See the relevant settings in the
+ table below:</p>
 <table>
 <thead>
 <tr>
@@ -1365,7 +1353,7 @@ table below:</p>
 </tr>
 <tr>
 <td><code>dead-letter-queue-suffix</code></td>
-<td>`` (empty string)</td>
+<td>(empty string)</td>
 </tr>
 </tbody>
 </table>
@@ -1453,7 +1441,7 @@ due to performance implications.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Message Redelivery and Undelivered Messages","level":"1.34","depth":1,"next":{"title":"Message Expiry","level":"1.35","depth":1,"path":"message-expiry.md","ref":"message-expiry.md","articles":[]},"previous":{"title":"Guarantees of sends and commits","level":"1.33","depth":1,"path":"send-guarantees.md","ref":"send-guarantees.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"undelivered-messages.md","mtime":"2020-05-20T15:18:31.000Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-05-26T14:23:55.329Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Message Redelivery and Undelivered Messages","level":"1.34","depth":1,"next":{"title":"Message Expiry","level":"1.35","depth":1,"path":"message-expiry.md","ref":"message-expiry.md","articles":[]},"previous":{"title":"Guarantees of sends and commits","level":"1.33","depth":1,"path":"send-guarantees.md","ref":"send-guarantees.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"undelivered-messages.md","mtime":"2020-07-08T19:06:56.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-20T14:05:25.043Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

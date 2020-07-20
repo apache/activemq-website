@@ -2,12 +2,12 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Management · ActiveMQ Artemis Documentation</title>
         <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Management · ActiveMQ Artemis Documentation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.1.1">
+        <meta name="generator" content="GitBook 3.2.3">
         
         
         
@@ -1274,6 +1274,7 @@ retrieve the server&apos;s version, etc.)</p>
 <p>Core bridges (resp. diverts) can be created or destroyed using the management
 operations <code>createBridge()</code> and <code>destroyBridge()</code> (resp.  <code>createDivert()</code> and
 <code>destroyDivert()</code>).</p>
+<p>Diverts can be updated using the management operation <code>updateDivert()</code>.</p>
 </li>
 <li><p>It is possible to stop the server and force failover to occur with any
 currently attached clients.</p>
@@ -1357,6 +1358,13 @@ message counters can also be reset for a single queue using the
 <p>The <code>QueueControl</code> can pause and resume the underlying queue. When a queue is
 paused, it will receive messages but will not deliver them.  When it&apos;s resumed,
 it&apos;ll begin delivering the queued messages, if any.</p>
+</li>
+<li><p>Disabling and Enabling Queues</p>
+<p>The <code>QueueControl</code> can disable and enable the underlying queue. When a queue is
+disabled, it will not longer have messages routed to it.  When it&apos;s enabled,
+it&apos;ll begin having messages routed to it again. </p>
+<p>This is useful where you may need to disable message routing to a queue but wish to keep consumers active
+to investigate issues, without causing further message build up in the queue.</p>
 </li>
 </ul>
 <h4 id="other-resources-management">Other Resources Management</h4>
@@ -1988,7 +1996,7 @@ to use message counters to retrieve information on a queue.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Management","level":"1.46","depth":1,"next":{"title":"Management Console","level":"1.47","depth":1,"path":"management-console.md","ref":"management-console.md","articles":[]},"previous":{"title":"Extra Acknowledge Modes","level":"1.45","depth":1,"path":"pre-acknowledge.md","ref":"pre-acknowledge.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"management.md","mtime":"2020-05-20T15:18:31.000Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-05-26T14:23:55.329Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Management","level":"1.46","depth":1,"next":{"title":"Management Console","level":"1.47","depth":1,"path":"management-console.md","ref":"management-console.md","articles":[]},"previous":{"title":"Extra Acknowledge Modes","level":"1.45","depth":1,"path":"pre-acknowledge.md","ref":"pre-acknowledge.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"management.md","mtime":"2020-07-08T19:06:56.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-20T14:05:25.043Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

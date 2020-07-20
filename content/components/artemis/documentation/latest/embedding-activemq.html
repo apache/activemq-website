@@ -2,12 +2,12 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Embedding the Broker · ActiveMQ Artemis Documentation</title>
         <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Embedding the Broker · ActiveMQ Artemis Documentation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.1.1">
+        <meta name="generator" content="GitBook 3.2.3">
         
         
         
@@ -1182,71 +1182,69 @@
                                 
                                 <h1 id="embedding-apache-activemq-artemis">Embedding Apache ActiveMQ Artemis</h1>
 <p>Apache ActiveMQ Artemis is designed as set of simple Plain Old Java Objects
-(POJOs).  This means Apache ActiveMQ Artemis can be instantiated and run in any
+(POJOs). This means Apache ActiveMQ Artemis can be instantiated and run in any
 dependency injection framework such as Spring or Google Guice. It also means
 that if you have an application that could use messaging functionality
-internally, then it can <em>directly instantiate</em> Apache ActiveMQ Artemis clients
+internally then it can <em>directly instantiate</em> Apache ActiveMQ Artemis clients
 and servers in its own application code to perform that functionality. We call
 this <em>embedding</em> Apache ActiveMQ Artemis.</p>
 <p>Examples of applications that might want to do this include any application
 that needs very high performance, transactional, persistent messaging but
 doesn&apos;t want the hassle of writing it all from scratch.</p>
-<p>Embedding Apache ActiveMQ Artemis can be done in very few easy steps.
-Instantiate the configuration object, instantiate the server, start it, and you
-have a Apache ActiveMQ Artemis running in your virtual machine. It&apos;s as simple
-and easy as that.</p>
-<h2 id="simple-config-file-embedding">Simple Config File Embedding</h2>
+<p>Embedding Apache ActiveMQ Artemis can be done in very few easy steps -
+supply a <code>broker.xml</code> on the classpath or instantiate the configuration object,
+instantiate the server, start it, and you have a Apache ActiveMQ Artemis running
+in your JVM. It&apos;s as simple and easy as that.</p>
+<h2 id="embedding-with-xml-configuration">Embedding with XML configuration</h2>
 <p>The simplest way to embed Apache ActiveMQ Artemis is to use the embedded
-wrapper classes and configure Apache ActiveMQ Artemis through its configuration
-files. There are two different helper classes for this depending on whether
-your using the Apache ActiveMQ Artemis Core API or JMS.</p>
-<h2 id="embedding-an-apache-activemq-artemis-broker">Embedding an Apache ActiveMQ Artemis Broker</h2>
-<p>For instantiating a core Apache ActiveMQ Artemis Server, the steps are pretty
-simple. The example requires that you have defined a configuration file
-<code>broker.xml</code> in your classpath:</p>
+wrapper class and configure Apache ActiveMQ Artemis through <code>broker.xml</code>.</p>
+<p>Here&apos;s a simple example <code>broker.xml</code>:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span> <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;urn:activemq&quot;</span> <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;urn:activemq /schema/artemis-server.xsd&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">core</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;urn:activemq:core&quot;</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">persistence-enabled</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">persistence-enabled</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">security-enabled</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">security-enabled</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-name">acceptors</span>&gt;</span>
+         <span class="hljs-tag">&lt;<span class="hljs-name">acceptor</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;in-vm&quot;</span>&gt;</span>vm://0<span class="hljs-tag">&lt;/<span class="hljs-name">acceptor</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">acceptors</span>&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">core</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+</code></pre>
 <pre><code class="lang-java"><span class="hljs-keyword">import</span> org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ;
 
 ...
 
 EmbeddedActiveMQ embedded = <span class="hljs-keyword">new</span> EmbeddedActiveMQ();
-
 embedded.start();
 
 ServerLocator serverLocator =  ActiveMQClient.createServerLocator(<span class="hljs-string">&quot;vm://0&quot;</span>);
-
 ClientSessionFactory factory =  serverLocator.createSessionFactory();
-
 ClientSession session = factory.createSession();
 
-session.createQueue(<span class="hljs-string">&quot;example&quot;</span>, <span class="hljs-string">&quot;example&quot;</span>, <span class="hljs-keyword">true</span>);
+session.createQueue(<span class="hljs-keyword">new</span> QueueConfiguration(<span class="hljs-string">&quot;example&quot;</span>));
 
 ClientProducer producer = session.createProducer(<span class="hljs-string">&quot;example&quot;</span>);
-
 ClientMessage message = session.createMessage(<span class="hljs-keyword">true</span>);
-
 message.getBody().writeString(<span class="hljs-string">&quot;Hello&quot;</span>);
-
 producer.send(message);
 
 session.start();
-
 ClientConsumer consumer = session.createConsumer(<span class="hljs-string">&quot;example&quot;</span>);
-
 ClientMessage msgReceived = consumer.receive();
-
 System.out.println(<span class="hljs-string">&quot;message = &quot;</span> + msgReceived.getBody().readString());
-
 session.close();
 </code></pre>
 <p>The <code>EmbeddedActiveMQ</code> class has a few additional setter methods that allow you
 to specify a different config file name as well as other properties. See the
 javadocs for this class for more details.</p>
-<h2 id="pojo-instantiation---embedding-programmatically">POJO instantiation - Embedding Programmatically</h2>
-<p>You can follow this step-by-step guide to programmatically embed the core,
-non-JMS Apache ActiveMQ Artemis Server instance:</p>
-<p>Create the configuration object - this contains configuration information for
+<h2 id="embedding-with-programmatic-configuration">Embedding with programmatic configuration</h2>
+<p>You can follow this step-by-step guide to programmatically embed a broker
+instance.</p>
+<p>Create the <code>Configuration</code> object. This contains configuration information for
 an Apache ActiveMQ Artemis instance. The setter methods of this class allow you
-to programmatically set configuration options as describe in the <a href="configuration-index.html">Server
+to programmatically set configuration options as described in the <a href="configuration-index.html">Server
 Configuration</a> section.</p>
 <p>The acceptors are configured through <code>Configuration</code>. Just add the acceptor URL
 the same way you would through the main configuration file.</p>
@@ -1326,7 +1324,7 @@ Spring and Apache ActiveMQ Artemis.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Embedding the Broker","level":"1.68","depth":1,"next":{"title":"Apache Karaf","level":"1.69","depth":1,"path":"karaf.md","ref":"karaf.md","articles":[]},"previous":{"title":"REST Interface","level":"1.67","depth":1,"path":"rest.md","ref":"rest.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"embedding-activemq.md","mtime":"2020-05-19T14:31:47.000Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-05-26T14:23:55.329Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Embedding the Broker","level":"1.68","depth":1,"next":{"title":"Apache Karaf","level":"1.69","depth":1,"path":"karaf.md","ref":"karaf.md","articles":[]},"previous":{"title":"REST Interface","level":"1.67","depth":1,"path":"rest.md","ref":"rest.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"embedding-activemq.md","mtime":"2020-07-08T19:06:56.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-20T14:05:25.043Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

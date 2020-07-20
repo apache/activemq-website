@@ -2,12 +2,12 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Configuration Reload · ActiveMQ Artemis Documentation</title>
         <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Configuration Reload · ActiveMQ Artemis Documentation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.1.1">
+        <meta name="generator" content="GitBook 3.2.3">
         
         
         
@@ -1542,10 +1542,7 @@ done or can&#x2019;t be done.</p>
 and several sub-elements that defines the properties of a divert.</p>
 <blockquote>
 <p><strong>Note:</strong></p>
-<p>Reloading <code>&lt;diverts&gt;</code> only resulting in deploying new diverts. Existing diverts
-won&#x2019;t get undeployed even if you delete a <code>&lt;divert&gt;</code> element. Nor an existing
-divert will be updated if its element is updated after reloading.  To make
-this happen you need a restart of the broker.</p>
+<p>Existing diverts get undeployed if you delete their <code>&lt;divert&gt;</code> element.</p>
 </blockquote>
 <p>Below lists the effects of adding, deleting and updating of an
 element/attribute within the diverts element, whether a change can be done or
@@ -1563,13 +1560,13 @@ can&#x2019;t be done.</p>
 <tr>
 <td><code>&lt;diverts&gt;</code></td>
 <td>X (no more than one can be present)</td>
-<td>Deleting it means delete  (undeploy) all diverts in running broker.</td>
+<td>Deleting it means delete (undeploy) all diverts in running broker.</td>
 <td>N/A</td>
 </tr>
 <tr>
 <td><code>&lt;divert&gt;</code></td>
 <td>Adding a new divert. It will be deployed after reloading</td>
-<td>No effect on the deployed divert.(unless restarting broker, in which case the divert will no longer be deployed)</td>
+<td>Deleting it means the divert will be undeployed after reloading</td>
 <td>No effect on the deployed divert (unless restarting broker, in which case the divert will be redeployed)</td>
 </tr>
 <tr>
@@ -1757,15 +1754,15 @@ done or can&#x2019;t be done.</p>
 </tr>
 <tr>
 <td>attribute <code>filter</code></td>
-<td>N/A</td>
-<td>No effect unless starting broker</td>
-<td>No effect unless starting broker</td>
+<td>The filter will be added after reloading</td>
+<td>The filter will be removed after reloading</td>
+<td>The filter will be updated after reloading</td>
 </tr>
 <tr>
 <td>attribute <code>durable</code></td>
-<td>N/A</td>
-<td>No effect unless starting broker</td>
-<td>No effect unless starting broker</td>
+<td>The queue durability will be set to the given value after reloading</td>
+<td>The queue durability will be set to the default <code>true</code> after reloading</td>
+<td>The queue durability will be set to the new value after reloading</td>
 </tr>
 </tbody>
 </table>
@@ -1891,7 +1888,7 @@ existing topics won&#x2019;t get re-deployed &#x2013; they remain unchanged.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Configuration Reload","level":"1.26","depth":1,"next":{"title":"Detecting Dead Connections","level":"1.27","depth":1,"path":"connection-ttl.md","ref":"connection-ttl.md","articles":[]},"previous":{"title":"Configuring Transports","level":"1.25","depth":1,"path":"configuring-transports.md","ref":"configuring-transports.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"config-reload.md","mtime":"2020-05-19T14:31:47.000Z","type":"markdown"},"gitbook":{"version":"3.1.1","time":"2020-05-26T14:23:55.329Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Configuration Reload","level":"1.26","depth":1,"next":{"title":"Detecting Dead Connections","level":"1.27","depth":1,"path":"connection-ttl.md","ref":"connection-ttl.md","articles":[]},"previous":{"title":"Configuring Transports","level":"1.25","depth":1,"path":"configuring-transports.md","ref":"configuring-transports.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"config-reload.md","mtime":"2020-07-08T19:06:56.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-20T14:05:25.043Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
