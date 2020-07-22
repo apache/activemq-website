@@ -1,4 +1,4 @@
 set -e
-jekyll serve --incremental -s ./src -d content/
+jekyll serve --incremental
 set +e
 
