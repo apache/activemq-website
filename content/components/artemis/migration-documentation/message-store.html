@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Authentication · ActiveMQ Artemis Documentation</title>
+        <title>Message Store · ActiveMQ Artemis Documentation</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="authorization.html" />
+    <link rel="next" href="notice.html" />
     
     
-    <link rel="prev" href="VirtualTopics.html" />
+    <link rel="prev" href="ssl.html" />
     
 
     </head>
@@ -180,7 +180,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.8" data-path="authentication.html">
+        <li class="chapter " data-level="1.8" data-path="authentication.html">
             
                 <a href="authentication.html">
             
@@ -219,7 +219,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.11" data-path="message-store.html">
+        <li class="chapter active" data-level="1.11" data-path="message-store.html">
             
                 <a href="message-store.html">
             
@@ -275,7 +275,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Authentication</a>
+        <a href="." >Message Store</a>
     </h1>
 </div>
 
@@ -290,20 +290,12 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="authentication">Authentication</h1>
-<p>Now that we have our acceptors and addresses ready, it&apos;s time to deal with broker security. Artemis inherited most of the security concepts from ActiveMQ. One of the most notable differences is that ActiveMQ <em>groups</em> are now called <em>roles</em> in Artemis. Besides that things should be pretty familiar to existing ActiveMQ users. Let&apos;s start by looking into the authentication mechanisms and defining users and roles (groups).</p>
-<p> Both ActiveMQ and Artemis use JAAS to define authentication credentials. In ActiveMQ, that&apos;s configured through the appropriate broker plugin in <code>conf/activemq.xml</code></p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">jaasAuthenticationPlugin</span> <span class="hljs-attr">configuration</span>=<span class="hljs-string">&quot;activemq&quot;</span> /&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
-</code></pre>
-<p>The name of the JAAS domain is specified as a configuration parameter.    </p>
-<p>In Artemis, the same thing is achieved by defining <code>&lt;jaas-security&gt;</code> configuration in <code>etc/bootstrap.xml</code></p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">jaas-security</span> <span class="hljs-attr">domain</span>=<span class="hljs-string">&quot;activemq&quot;</span>/&gt;</span>
-</code></pre>
-<p>From this point on, you can go and define your users and their roles in appropriate files, like <code>conf/users.properties</code> and <code>conf/groups.properties</code> in ActiveMQ. Similarly, <code>etc/artemis-users.properties</code> and <code>etc/artemis-roles.properties</code> files are used in Artemis. These files are interchangeable, so you should be able to just copy your existing configuration over to the new broker. </p>
-<p>If your deployment is more complicated that this and requires some advanced JAAS configuration, you&apos;ll need go and change the <code>etc/login.config</code> file. It&apos;s important to say that all custom JAAS modules and configuration you were using in ActiveMQ should be compatible with Artemis.</p>
-<p>Finally, in case you&apos;re still using ActiveMQ&apos;s <em>Simple Authentication Plugin</em>, which defines users and groups directly in the broker&apos;s xml configuration file, you&apos;ll need to migrate to JAAS as Artemis doesn&apos;t support the similar concept.</p>
+                                <h1 id="message-store-migration">Message Store Migration</h1>
+<h2 id="activemq-5-kahadb-or-mkahadb">ActiveMQ 5 KahaDB or mKahaDB</h2>
+<p>ActiveMQ Artemis supports an XML format for message store exchange. An existing store may be exported from a broker using the command line tools and subsequently imported to another broker.</p>
+<p>The <a href="https://github.com/apache/activemq-cli-tools" target="_blank">Apache ActiveMQ Command Line Tools</a> project provides an command line export tool for ActiveMQ 5.x that will export a KahaDB (or mKahaDB) message store into the ActiveMQ Artemis XML format, for subsequent import by ActiveMQ Artemis.</p>
+<p>The export tool supports selective export using filters, useful if only some of your data needs to be migrated. From version 0.2.0, the export tool has support for virtual topic consumer queue mapping, which will allow existing Openwire virtual topic consumers to resume on an ActiveMQ Artemis broker with no message loss. Note the OpenWire acceptor <code>virtualTopicConsumerWildcards</code> option from <a href="VirtualTopics.html">virtual topics migration</a>.</p>
+<p>Full details of tool can be found on the project website: <a href="https://github.com/apache/activemq-cli-tools" target="_blank">https://github.com/apache/activemq-cli-tools</a></p>
 
                                 
                                 </section>
@@ -331,12 +323,12 @@
 
             
                 
-                <a href="VirtualTopics.html" class="navigation navigation-prev " aria-label="Previous page: Virtual Topics">
+                <a href="ssl.html" class="navigation navigation-prev " aria-label="Previous page: SSL">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="authorization.html" class="navigation navigation-next " aria-label="Next page: Authorization">
+                <a href="notice.html" class="navigation navigation-next " aria-label="Next page: Legal Notice">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -347,7 +339,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Authentication","level":"1.8","depth":1,"next":{"title":"Authorization","level":"1.9","depth":1,"path":"authorization.md","ref":"authorization.md","articles":[]},"previous":{"title":"Virtual Topics","level":"1.7","depth":1,"path":"VirtualTopics.md","ref":"VirtualTopics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis Migration Guide"},"file":{"path":"authentication.md","mtime":"2020-07-23T10:04:56.708Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-23T12:49:12.033Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Message Store","level":"1.11","depth":1,"next":{"title":"Legal Notice","level":"1.12","depth":1,"path":"notice.md","ref":"notice.md","articles":[]},"previous":{"title":"SSL","level":"1.10","depth":1,"path":"ssl.md","ref":"ssl.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis Migration Guide"},"file":{"path":"message-store.md","mtime":"2020-07-23T12:42:57.748Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-23T12:49:12.033Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

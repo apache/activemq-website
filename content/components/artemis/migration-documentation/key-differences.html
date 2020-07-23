@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Authentication · ActiveMQ Artemis Documentation</title>
+        <title>Key Differences · ActiveMQ Artemis Documentation</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="authorization.html" />
+    <link rel="next" href="configuration.html" />
     
     
-    <link rel="prev" href="VirtualTopics.html" />
+    <link rel="prev" href="preface.html" />
     
 
     </head>
@@ -115,7 +115,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3" data-path="key-differences.html">
+        <li class="chapter active" data-level="1.3" data-path="key-differences.html">
             
                 <a href="key-differences.html">
             
@@ -180,7 +180,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.8" data-path="authentication.html">
+        <li class="chapter " data-level="1.8" data-path="authentication.html">
             
                 <a href="authentication.html">
             
@@ -275,7 +275,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Authentication</a>
+        <a href="." >Key Differences</a>
     </h1>
 </div>
 
@@ -290,20 +290,18 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="authentication">Authentication</h1>
-<p>Now that we have our acceptors and addresses ready, it&apos;s time to deal with broker security. Artemis inherited most of the security concepts from ActiveMQ. One of the most notable differences is that ActiveMQ <em>groups</em> are now called <em>roles</em> in Artemis. Besides that things should be pretty familiar to existing ActiveMQ users. Let&apos;s start by looking into the authentication mechanisms and defining users and roles (groups).</p>
-<p> Both ActiveMQ and Artemis use JAAS to define authentication credentials. In ActiveMQ, that&apos;s configured through the appropriate broker plugin in <code>conf/activemq.xml</code></p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">jaasAuthenticationPlugin</span> <span class="hljs-attr">configuration</span>=<span class="hljs-string">&quot;activemq&quot;</span> /&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
-</code></pre>
-<p>The name of the JAAS domain is specified as a configuration parameter.    </p>
-<p>In Artemis, the same thing is achieved by defining <code>&lt;jaas-security&gt;</code> configuration in <code>etc/bootstrap.xml</code></p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">jaas-security</span> <span class="hljs-attr">domain</span>=<span class="hljs-string">&quot;activemq&quot;</span>/&gt;</span>
-</code></pre>
-<p>From this point on, you can go and define your users and their roles in appropriate files, like <code>conf/users.properties</code> and <code>conf/groups.properties</code> in ActiveMQ. Similarly, <code>etc/artemis-users.properties</code> and <code>etc/artemis-roles.properties</code> files are used in Artemis. These files are interchangeable, so you should be able to just copy your existing configuration over to the new broker. </p>
-<p>If your deployment is more complicated that this and requires some advanced JAAS configuration, you&apos;ll need go and change the <code>etc/login.config</code> file. It&apos;s important to say that all custom JAAS modules and configuration you were using in ActiveMQ should be compatible with Artemis.</p>
-<p>Finally, in case you&apos;re still using ActiveMQ&apos;s <em>Simple Authentication Plugin</em>, which defines users and groups directly in the broker&apos;s xml configuration file, you&apos;ll need to migrate to JAAS as Artemis doesn&apos;t support the similar concept.</p>
+                                <h1 id="differences-from-activemq-5">Differences From ActiveMQ 5</h1>
+<h2 id="architectural-differences">Architectural differences</h2>
+<p>Although they are designed to do the same job, things are done differently internally. Here are some of the most notable architectural differences you need to be aware of when you&apos;re planning the migration.</p>
+<p>In ActiveMQ, we have a few different implementations of the IO connectivity layer, like tcp (synchronous one) and nio (non-blocking one). In Artemis, the IO layer is implemented using Netty, which is a nio framework. This means that there&apos;s no more need to choose between different implementations as the non-blocking one is used by default.</p>
+<p>The other important part of every broker is a message store. Most of the ActiveMQ users are familiar with KahaDB. It consists of a message journal for fast sequential storing of messages (and other command packets) and an index for retrieving messages when needed.</p>
+<p>Artemis has its own message store. It consists only of the append-only message journal. Because of the differences in how paging is done, there&apos;s no need for the message index. We&apos;ll talk more about that in a minute. It&apos;s important to say at this point that these two stores are not interchangeable, and data migration if needed must be carefully planed.</p>
+<p>What do we mean by paging differences? Paging is the process that happens when broker can&apos;t hold all incoming messages in its memory. The strategy of how to deal with this situation differs between two brokers. ActiveMQ have <em>cursors</em>, which are basically a cache of messages ready to be dispatched to the consumer. It will try to keep all incoming messages in there. When we run out of the the available memory, messages are added to the store, but the caching stops. When the space become available again, the broker will fill the cache again by pulling messages from the store in batches. Because of this, we need to read the journal from time to time during a broker runtime. In order to do that, we need to maintain a journal index, so that messages&apos; position can be tracked inside the journal.</p>
+<p>In Artemis, things work differently in this regard. The whole message journal is kept in memory and messages are dispatched directly from it. When we run out of memory, messages are paged <em>on the producer side</em> (before they hit the broker). Theay are stored in sequential page files in the same order as they arrived. Once the memory is freed, messages are moved from these page files into the journal. With paging working like this, messages are read from the file journal only when the broker starts up, in order to recreate this in-memory version of the journal. In this case, the journal is only read sequentially, meaning that there&apos;s no need to keep an index of messages in the journal.</p>
+<p>This is one of the main differences between ActiveMQ 5.x and Artemis. It&apos;s important to understand it early on as it affects a lot of destination policy settings and how we configure brokers in order to support these scenarios properly. </p>
+<h2 id="addressing-differences">Addressing differences</h2>
+<p>Another big difference that&apos;s good to cover early on is the difference is how message addressing and routing is done. ActiveMQ started as an open source JMS implementation, so at its core all JMS concepts like queues, topics and durable subscriptions are implemented as the first-class citizens. It&apos;s all based on OpenWire protocol developed within the project and even KahaDB message store is OpenWire centric. This means that all other supported protocols, like MQTT and AMQP are translated internally into OpenWire.</p>
+<p>Artemis took a different approach. It implements only queues internally and all other messaging concepts are achieved by routing messages to appropriate queue(s) using addresses. Messaging concepts like publish-subscribe (topics) and point-to-point (queues) are implemented using different type of routing mechanisms on addresses. <em>Multicast</em> routing is used to implement <em>publish-subscribe</em> semantics, where all subscribers to a certain address will get their own internal queue and messages will be routed to all of them. <em>Anycast</em> routing is used implement <em>point-to-point</em> semantics, where there&apos;ll be only one queue for the address and all consumers will subscribe to it. The addressing and routing scheme is used across all protocols. So for example, you can view the JMS topic just as a multicast address. We&apos;ll cover this topic in more details in the later articles.</p>
 
                                 
                                 </section>
@@ -331,12 +329,12 @@
 
             
                 
-                <a href="VirtualTopics.html" class="navigation navigation-prev " aria-label="Previous page: Virtual Topics">
+                <a href="preface.html" class="navigation navigation-prev " aria-label="Previous page: Preface">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="authorization.html" class="navigation navigation-next " aria-label="Next page: Authorization">
+                <a href="configuration.html" class="navigation navigation-next " aria-label="Next page: Configuration">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -347,7 +345,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Authentication","level":"1.8","depth":1,"next":{"title":"Authorization","level":"1.9","depth":1,"path":"authorization.md","ref":"authorization.md","articles":[]},"previous":{"title":"Virtual Topics","level":"1.7","depth":1,"path":"VirtualTopics.md","ref":"VirtualTopics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis Migration Guide"},"file":{"path":"authentication.md","mtime":"2020-07-23T10:04:56.708Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-23T12:49:12.033Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Key Differences","level":"1.3","depth":1,"next":{"title":"Configuration","level":"1.4","depth":1,"path":"configuration.md","ref":"configuration.md","articles":[]},"previous":{"title":"Preface","level":"1.2","depth":1,"path":"preface.md","ref":"preface.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis Migration Guide"},"file":{"path":"key-differences.md","mtime":"2020-07-23T12:17:55.013Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-23T12:49:12.033Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
