@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-cms">
+    <div class="container">
+      <h1>CMS API Overview</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 cms">
+        <h1 id="what-is-cms">What is CMS?</h1>
+
+<p>The CMS API is a C++ corollary to the JMS API in Java which is used to send and receive messages from clients spread out across a network or located on the same machine.  In CMS we’ve made every attempt to maintain as much parity with the JMS api as possible, diverging only when a JMS feature depended strongly on features in the Java programming language itself.  Even though there are some differences most are quite minor and for the most part CMS adheres to the JMS spec, so having a firm grasp on how JMS works should make using CMS that much easier.</p>
+
+<p>One of the first places to start if you are already familiar with JMS is to take a look at the CMS <a href="documentation#api">API documentation</a></p>
+
+<h1 id="getting-started-with-cms">Getting Started with CMS</h1>
+
+<p>This section covers the basics of using the CMS API. In order to aid in the discussion we assume here that you are using ActiveMQ-CPP to connect to an ActiveMQ Broker, of course with CMS you could also link to another implementation of the CMS API in your C++ application and connect to some other Message service.</p>
+
+<h2 id="the-cms-connectionfactory">The CMS ConnectionFactory</h2>
+
+<p>The first interface you will generally use in the CMS API is the ConnectionFactory. A ConnectionFactory allows you to create CMS Connection objects which maintain a connection the some Messaging service, e.g. an ActiveMQ broker.</p>
+
+<p>The simplest way to obtain an instance of a CMS ConnectionFactory is to use the static method <strong>createCMSConnectionFactory</strong> that all CMS Provider libraries are required to implement. The code snippet below demonstrates how to obtain a new ConnectionFactory:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
+    cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
+</code></pre></div></div>
+
+<p>As you can see the <strong>createCMSConnectionFactory</strong> takes a single string parameter which is in the form of a URI that defines where the Connection that is created is to connect to as well as the protocol that should be used, TCP/IP in the case of the above example. Additionally configuration information can be encoded in the URI. Refer to the <a href="configuring">Configuration</a> page for more information on the configuration parameters that can be passed to ActiveMQ-CPP via the URI.</p>
+
+<p>Once you’ve created a ConnectionFactory the next thing to do is to create a CMS Connection using the ConnectionFactory. A Connection is the Object that manages the client’s connection to the Provider. The next section covers the use of a CMS Connection, the code to create a Connection is shown below:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
+</code></pre></div></div>
+
+<p>Upon creation the Connection object attempts to connect to the CMS Provider, if the connection fails then an CMSException is thrown with a description of the error that occurred stored in its Message property.</p>
+
+<h3 id="connections-and-authentication">Connections and Authentication</h3>
+
+<p>There are a couple versions of the <strong>createConnection</strong> method that allow you to specify login parameters for the newly created Connection. The one you would use most often takes a user-name and password pair that is transmitted to the Broker for authentication. Should the credentials be invalid a CMSException would be thrown. The sample code below shows how to pass a user-name and password in when creating your Connection object.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection( "&lt;USERNAME&gt;", "&lt;PASSWORD&gt;") );
+</code></pre></div></div>
+
+<p>If you don’t want to hard code values into your source code or write code to read the login data from somewhere else there is another option for passing in the user-name and password, the URI that you pass to <strong>createConnectionFactory</strong> can be encoded so that the connectionFactory will read the values from the system environment when it parses the URI. The example below shows how to create a connection factory with the login data set in the URI.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
+    cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616?username=${USERNAME}&amp;password=${PASSWORD}" ) );
+</code></pre></div></div>
+
+<p>As you can see it is pretty simple to have values on the URI come from the system environment. This method will work for any parameter that you can specify in the URI.</p>
+
+<h2 id="cms-connection">CMS Connection</h2>
+
+<p>The CMS Connection interface defines an object that is the client’s active connection to the CMS provider. In most cases the client will only create one connection object since it is considered a heavyweight object.</p>
+
+<p>A connection serves several purposes:</p>
+
+<ul>
+  <li>It encapsulates an open connection with a JMS provider. It typically represents an open TCP/IP socket between a client and a provider service daemon.</li>
+  <li>Its creation is where client authentication takes place.</li>
+  <li>It can specify a unique client identifier.</li>
+  <li>It provides a ConnectionMetaData object.</li>
+  <li>It supports an optional ExceptionListener object.</li>
+</ul>
+
+<p>A CMS Connection is created from a CMS ConnectionFactory as we saw previously. If the ConnectionFactory create call is successful then the Connection object returned is connected to the CMS Provider. The Connection object is created in a stopped state, no messages will be delivered to Message consumers that a client creates until the Connection is started. Its normal to leave a Connection in the stopped state until the client has created the initial set of Sessions, Message Producers, and Message Consumers that it intends to use. Once the setup phase of the client completes it should call the Connection’s start method to begin receiving messages from the Provider. Failing to call the <strong>start</strong> method is a very common error among new users of CMS and JMS clients, if you find you aren’t receiving any messages the first thing to check is that you called <strong>start</strong>.</p>
+
+<p>After creating the Connection the client must create a CMS Session in order to create message producers and consumers. The code snippet below puts together what we’ve seen so far and then shows how to create a CMS Session object from our Connection instance, the section that follows will discuss the CMS Session in more detail.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory( 
+    cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
+
+std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
+
+std::auto_ptr&lt;cms::Session&gt; session( connection-&gt;createSession() );
+</code></pre></div></div>
+
+<h2 id="cms-session">CMS Session</h2>
+
+<p>Once you’ve successfully created a CMS Connection the next thing you would normall do is create one or more CMS Session objects using your new Connectio instance.  A Session is defined as a Single Threaded context for producing and consuming messages.</p>
+
+<p>A session serves several purposes:</p>
+
+<ul>
+  <li>It is a factory for its message producers and consumers.</li>
+  <li>It supplies provider-optimized message factories.</li>
+  <li>It is a factory for TemporaryTopics and TemporaryQueues.</li>
+  <li>It provides a way to create Queue or Topic objects for those clients that need to dynamically manipulate provider-specific destination names.</li>
+  <li>It supports a single series of transactions that combine work spanning its producers and consumers into atomic units.</li>
+  <li>It defines a serial order for the messages it consumes and the messages it produces.</li>
+  <li>It retains messages it consumes until they have been acknowledged.</li>
+  <li>It serializes execution of message listeners registered with its message consumers.</li>
+  <li>It is a factory for QueueBrowsers <em>(Not yet Implemented)</em>.</li>
+</ul>
+
+<p>A session can create and service multiple message producers and consumers.</p>
+
+<p>When a client creates a CMS session it must specify the mode in which the Session will acknowledge the messages that it receives and dispatches.  The modes supported are summarized in the table below.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Acknowledge Mode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AUTO_ACKNOWLEDGE</td>
+      <td>With this acknowledgement mode, the session automatically acknowledges a client’s receipt of a message either when the session has successfully returned from a call to receive or when the message listener the session has called to process the message successfully returns.</td>
+    </tr>
+    <tr>
+      <td>CLIENT_ACKNOWLEDGE</td>
+      <td>With this acknowledgement mode, the client acknowledges a consumed message by calling the message’s acknowledge method. Acknowledging a consumed message acknowledges all messages that the session has consumed. When client acknowledgement mode is used, a client may build up a large number of unacknowledged messages while attempting to process them. A CMS provider should provide administrators with a way to limit client overrun so that clients are not driven to resource exhaustion and ensuing failure when some resource they are using is temporarily blocked.</td>
+    </tr>
+    <tr>
+      <td>DUPS_OK_ACKNOWLEDGE</td>
+      <td>This acknowledgement mode instructs the session to lazily acknowledge the delivery of messages. This is likely to result in the delivery of some duplicate messages if the JMS provider fails, so it should only be used by consumers that can tolerate duplicate messages. Use of this mode can reduce session overhead by minimizing the work the session does to prevent duplicates.</td>
+    </tr>
+    <tr>
+      <td>SESSION_TRANSACTED</td>
+      <td>Session is Transacted and the acknowledge of messages is handled internally.</td>
+    </tr>
+    <tr>
+      <td>INDIVIDUAL_ACKNOWLEDGE</td>
+      <td>Acknowledges are applied to a single message only.  Unlike CLIENT_ACKNOWLEDGE where the acknowledgement applies to all messages received up to that point for the entire session, this mode applied only to a single message allowing the client to be more selective about which messages are acknowledged.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>In the previous section we showed you how to create a session, lets take a look at that example again here:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory( 
+    cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
+
+std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
+
+std::auto_ptr&lt;cms::Session&gt; session( connection-&gt;createSession() );
+</code></pre></div></div>
+
+<p>In this code snippet the Session is created using the createSession with no arguments, this creates a Session that is in the AUTO_ACKNOWLEDGE mode. To create a Session with one of the modes listed above there is a second create method in the CMS Session interface that takes a single argument specifying the mode, lets take a look at an example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory( 
+    cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
+
+std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
+
+std::auto_ptr&lt;cms::Session&gt; session( connection-&gt;createSession( cms::Session::CLIENT_ACKNOWLEDGE ) );
+</code></pre></div></div>
+
+<p>As you can see there’s not much difference here, just specify the mode you want for acknowledgement and you are ready to create your Session resources, in the next few section we will walk through the types of objects that you can create from a Session and show you the basics of using them.</p>
+
+<h2 id="objects-created-from-cms-session">Objects created from CMS Session</h2>
+
+<p>In this section we cover the types of objects that are created from an instance of a CMS Session object.</p>
+
+<h3 id="cms-messages">CMS Messages</h3>
+
+<p>As its name implies CMS exists to send and receive messages, so it makes sense to start by covering the message that you can send and receive using CMS. There are four main Message types supported by CMS at the the time of this writing, others may follow but we will stick to the ones that are fully supported right now. The table below shows the message type along with a brief description of the Message’s use, for complete details on the interface and usage of a particular message type, see the <a href="api.html">CMS API Documentation</a>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Message Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Message</td>
+      <td>The Message interface defines the simplest CMS Message. Unlike the rest of the CMS Messages the Message type has no body or payload, it can however contains properties set via a collection of property setters that encompass the basic types in C++. The Message interface is the root of all the Message types in CMS.</td>
+    </tr>
+    <tr>
+      <td>TextMessage</td>
+      <td>The TextMessage class carries a payload consisting of a C++ string. The TextMessage interface extends the Message interface adding methods for setting and getting the payload text and retains the support for setting Message properties. Since Java Objects can’t be sent to a CMS client from a JMS client directly the Text message is an ideal way to serialize the object to XML and send it to a JMS client.</td>
+    </tr>
+    <tr>
+      <td>BytesMessage</td>
+      <td>The BytesMessage payload consists of a series of uninterrupted bytes which the receiver is responsible for interpreting. The BytesMessage adds methods for getting and setting byte array to the standard set of Message interface methods.</td>
+    </tr>
+    <tr>
+      <td>MapMessage</td>
+      <td>The Map message payload is a set of Name / Value pairs. The Name is a C++ string type and the value is a C++ primitive type or string.</td>
+    </tr>
+    <tr>
+      <td>StreamMessage</td>
+      <td>The Stream Message body consists of a list of self describing primitive types.  The StreamMessage interface provides accessor methods that can read and write the primitive types to/from the message.  The read methods allow primitive type conversion when the conversion would result in no loss of data.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Now that we’ve seen the types of Message’s we can create lets see how to actually create them and explore some of the operations that are available in the Message classes.</p>
+
+<h3 id="creating-a-message">Creating a Message</h3>
+
+<p>As you may have already guessed, Messages are created using the CMS Session instance we created previously. The Session supplies methods for creating each of the four Message types we covered above. The Session is the Factory that create the providers implementation of the Message interfaces defined in CMS, it knows how to configure the internal data structures and prevents the client from being tied to the provider implementation directly, this is why we have to use the Session to create a Message object instead of creating them directly. Lets take a look at a code snippet that create a TextMessage instance and sets some properties on that Message.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
+std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
+    cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
+
+// Create a Connection
+std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
+
+// Create a new Session from our Connection
+std::auto_ptr&lt;cms::Session&gt; session( connection-&gt;createSession();
+
+// Now create a TextMessage
+std::auto_ptr&lt;cms::TextMessage&gt; textMessage( session-&gt;createTextMessage() );
+
+// Set the payload
+textMessage-&gt;setText( "Payload Text" );
+
+// Set some Properties
+textMessage-&gt;setStringProperty( "USER_NAME", "Steve" );
+textMessage-&gt;setIntProperty( "USER_CODE", 42 );
+</code></pre></div></div>
+
+<p>As you can see from the code above creating a TextMessage is much like creating a Session or Connection instance, you just call the <strong>createTextMessage</strong> in your instance of a CMS Session and you get back a new TextMessage pointer that you can then populate with text and properties.</p>
+
+<h3 id="cms-destinations">CMS Destinations</h3>
+
+<p>As its name implies the CMS Destination interface defines an object that represents an endpoint that the Messages are routed to by the Messaging broker. Clients create Destinations and send messages to them or wait for messages to be received on a destination they have subscribed to. There are two basic types of Destinations in CMS, the Topic and the Queue, there are two subtypes of these the Temporary Topic and Temporary Queue. The table below summarizes the four different Destination types.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Destination Type</td>
+      <td>Description</td>
+    </tr>
+    <tr>
+      <td>Topic</td>
+      <td>In CMS a Topic implements publish and subscribe semantics. When you publish a message it goes to all the subscribers who are interested - so zero to many subscribers will receive a copy of the message. Only subscribers who had an active subscription at the time the broker receives the message will get a copy of the message.</td>
+    </tr>
+    <tr>
+      <td>Queue</td>
+      <td>A CMS Queue implements load balancer semantics. A single message will be received by exactly one consumer. If there are no consumers available at the time the message is sent it will be kept until a consumer is available that can process the message. If a consumer receives a message and does not acknowledge it before closing then the message will be redelivered to another consumer. A queue can have many consumers with messages load balanced across the available consumers.</td>
+    </tr>
+    <tr>
+      <td>TemporaryTopic</td>
+      <td>A TemporaryTopic object is a unique Topic object created for the duration of a Connection. It is a system-defined topic that can be consumed only by the Connection that created it.</td>
+    </tr>
+    <tr>
+      <td>TemporaryQueue</td>
+      <td>A TemporaryQueue object is a unique Queue object created for the duration of a Connection. It is a system-defined queue that can be consumed only by the Connection that created it.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Now that we’ve seen what the destination types are, lets look at a code snippet showing how to create a Destination object. The example below shows how to create a Topic instance using what should now be a pretty familiar pattern.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
+std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
+    cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
+
+// Create a Connection
+std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
+
+// Create a new Session from our Connection
+std::auto_ptr&lt;cms::Session&gt; session( connection-&gt;createSession();
+
+// Now create a Topic
+std::auto_ptr&lt;cms::Topic&gt; myTopic( session-&gt;createTopic( "EXAMPLE-TOPIC" ) );
+</code></pre></div></div>
+
+<p>Creating a Topic or Queue requires passing a name for the Destination, the name is similar to an address, messages sent the the “EXAMPLE-TOPIC” destination are received by clients that have subscribed to that same Destination.</p>
+
+<h3 id="cms-messageconsumer">CMS MessageConsumer</h3>
+
+<p>Now that we’ve covered how to create messages and destinations we will look at creating a CMS MessageConsumer. The MessageConsumer allows the client application to receive messages sent by other clients to topics or queues. Before we talk about receiving Messages with the consumer lets first look at how one is created.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
+std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
+    cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
+
+// Create a Connection
+std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
+
+// Create a new Session from our Connection
+std::auto_ptr&lt;cms::Session&gt; session( connection-&gt;createSession();
+
+// Now create a Topic
+std::auto_ptr&lt;cms::Topic&gt; myTopic( session-&gt;createTopic( "EXAMPLE-TOPIC" ) );
+
+// Now create the Consumer
+std::auto_ptr&lt;cms::MessageConsumer&gt; myConsumer( session-&gt;createConsumer( myTopic ) );
+</code></pre></div></div>
+
+<p>As you can see the MessageConsumer is created by calling <strong>createConsumer</strong> from an instance of a CMS Session object. The MessageConsumer is given a Destination to listen for Messages on at the time you create it. Once you create a MessageConsumer its time to start using it to receive messages, the MessageConsumer two methods for receiving messages, one is synchronous and the other is asynchronous.</p>
+
+<p>The synchronous method of receiving Messages involves a call the to the consumers receive method. A call to receive will block until a Message is received on the Destination in question if no time-out is given, or will return NULL if the time-out given elapses and no new Messages arrive. Lets take a look at a simple example of a synchronous message polling loop using CMS.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>while( !done ) {
+
+   std::auto_ptr&lt;Message&gt; message( myConsumer-&gt;receive() );
+
+   ...Do Something with the message...
+}
+</code></pre></div></div>
+
+<p>As you can see in the code above we called the MessageConsumer’s <strong>receive</strong> method expecting that it will return a new Message object at some point. The code here will block until a new message is received. This sort of approach assumes that your program has nothing else that it needs to do until a message arrives, however there is an alternative should your application need to perform other processing. The code sample below shows a polling loop that uses the MessageConsumer’s <strong>receiveNoWait</strong> method to poll and return immediately to allow for other processing to occur.</p>
+
+<p>```while( !done ) {</p>
+
+<p>std::auto_ptr<Message> message( myConsumer-&gt;receiveNoWait() );</Message></p>
+
+<p>if( message.get() != NULL ) {
+      …Do Something with the message…
+   }</p>
+
+<p>…Perform other application logic before checking for another message…
+}</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+The asynchronous method involves implementing the CMS MessageListener interface and passing an instance of your implementation to the MessageConsumer's **setMessageListener** method. When a new message arrives your listener's **onMessage** method will be called by the consumer in the context of another thread to allow you to process the Message received. Below is a code snippet that demonstrates implementing the MessageListener interface.
+
+</code></pre></div></div>
+<p>class SimpleListener : public cms::MessageListener {</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>virtual void onMessage( const Message* message ) {
+
+    const TextMessage* textMessage =
+        dynamic_cast&lt; const TextMessage* &gt;( message );
+    string text = "";
+
+    if( textMessage != NULL ) {
+        text = textMessage-&gt;getText();
+    } else {
+        text = "NOT A TEXTMESSAGE!";
+    }
+
+    printf( "Message Received: %s\n", text.c_str() );
+
+} }; ```
+</code></pre></div></div>
+
+<p>In the sample above we create a new class called SimpleListener that prints the contents of a TextMessage when received, or print an message indicating that it did not receive a TextMessage as it had expected to. Notice that the <strong>onMessage</strong> method receives a pointer to the base Message interface and we then attempt to dynamic cast to the type we think we should have received. This allows your code to process multiple message types in one method. The pointer passed is owned by the caller or onMessage so you shouldn’t store it or delete it, if you need to keep a copy of the Message around you must create a copy by calling Message’s <strong>clone</strong> method.</p>
+
+<p>Now that we have a MessageListener implementation to work with its time to see how to setup asynchronous consumption using the MessageConsumer we created previously.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SimpleListener listener;
+
+myConsumer-&gt;setMessageListener( &amp;listener );
+</code></pre></div></div>
+
+<p>That’s it, we will now receive the messages sent to the Destination we created in the onMessage method of our SimpleListener instance.</p>
+
+<h3 id="cms-messageproducer">CMS MessageProducer</h3>
+
+<p>We’ve seen how to consume Messages now how do we produce them in the first place? The answer is the CMS MessageProducer which is used to send messages to the broker for distribution to the various clients listening for Messages on the topic or queue. Creating a MessageProducer is much the same as creating a MessageConsumer, you first create your Connection, Session, and Destination objects then use the Session to create a MessageProducer. The code snippet below demonstrates how to create a MessageProducer.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Create the ConnectionFactory
+std::auto_ptr&lt;cms::ConnectionFactory&gt; connectionFactory(
+    cms::ConnectionFactory::createCMSConnectionFactory( "tcp://127.0.0.1:61616" ) );
+
+// Create a Connection
+std::auto_ptr&lt;cms::Connection&gt; connection( connectionFactory-&gt;createConnection() );
+
+// Create a new Session from our Connection
+std::auto_ptr&lt;cms::Session&gt; session( connection-&gt;createSession();
+
+// Now create a Topic
+std::auto_ptr&lt;cms::Topic&gt; myTopic( session-&gt;createTopic( "EXAMPLE-TOPIC" ) );
+
+// Now create the Consumer
+std::auto_ptr&lt;cms::MessageProducer&gt; myProducer( session-&gt;createProducer( myTopic ) );
+</code></pre></div></div>
+
+<h2 id="complete-examples">Complete Examples</h2>
+
+<p>Now that we’ve covered most of the basics of the CMS API its time to take a look at some complete examples that demonstrate how you might use the CMS API in your own application. The first example will show how to create a simple Asynchronous consumer that can receive TextMessage objects from an ActiveMQ broker, then in the second example we will look at a simple producer that publishes TextMessage objects to the destination that our consumer is listening on.</p>
+
+<h3 id="simple-asynchronous-consumer">Simple Asynchronous Consumer</h3>
+
+<p>In the Simple Asnychronous Consumer example we wrap the CMS API usage in a class called SimpleAsyncConsumer. This class exposes a single constructor that allows the user to create an instance of the class that connects to a particular broker and destination and whether the destination is a Queue or Topic. The user can also specify the Acknowledgement Mode shoukd be <strong>CLIENT_ACKNOWLEDGE</strong> instaned of the default <strong>AUTO_ACKNOWLEDGE</strong> mode.</p>
+
+<p>Once an instance of this class is created the user calls the <em>runConsumer</em> method to start listening on the specified destination. The <em>runConsumer</em> method creates a Connection to the broker and start a new Session configured with the configured Acknowledgement mode. Once a Session is created a new Consumer can then be created and attached to the configued Destination. Since we want to listen asynchronously for new messages the SimpleAsyncConsumer inherits from cms::MessageListener so that it can register itself as a Message Listener with the MessageConsumer created in <em>runConsumer</em>.</p>
+
+<p>After the <em>runConsumer</em> method returns the main method waits for user input to exit, all messages received while the application is running will be dispatched to the onMessage method of SimpleAsyncConsumer and if the message is a TextMessage its contents will be printed onscreen.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include &lt;decaf/lang/Thread.h&gt;
+#include &lt;decaf/lang/Runnable.h&gt;
+#include &lt;decaf/util/concurrent/CountDownLatch.h&gt;
+#include &lt;activemq/core/ActiveMQConnectionFactory.h&gt;
+#include &lt;activemq/core/ActiveMQConnection.h&gt;
+#include &lt;activemq/transport/DefaultTransportListener.h&gt;
+#include &lt;activemq/library/ActiveMQCPP.h&gt;
+#include &lt;decaf/lang/Integer.h&gt;
+#include &lt;activemq/util/Config.h&gt;
+#include &lt;decaf/util/Date.h&gt;
+#include &lt;cms/Connection.h&gt;
+#include &lt;cms/Session.h&gt;
+#include &lt;cms/TextMessage.h&gt;
+#include &lt;cms/BytesMessage.h&gt;
+#include &lt;cms/MapMessage.h&gt;
+#include &lt;cms/ExceptionListener.h&gt;
+#include &lt;cms/MessageListener.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;iostream&gt;
+
+using namespace activemq;
+using namespace activemq::core;
+using namespace activemq::transport;
+using namespace decaf::lang;
+using namespace decaf::util;
+using namespace decaf::util::concurrent;
+using namespace cms;
+using namespace std;
+
+////////////////////////////////////////////////////////////////////////////////
+class SimpleAsyncConsumer : public ExceptionListener,
+                            public MessageListener,
+                            public DefaultTransportListener {
+private:
+
+    Connection* connection;
+    Session* session;
+    Destination* destination;
+    MessageConsumer* consumer;
+    bool useTopic;
+    std::string brokerURI;
+    std::string destURI;
+    bool clientAck;
+
+private:
+
+    SimpleAsyncConsumer( const SimpleAsyncConsumer&amp; );
+    SimpleAsyncConsumer&amp; operator= ( const SimpleAsyncConsumer&amp; );
+
+public:
+
+    SimpleAsyncConsumer( const std::string&amp; brokerURI,
+                         const std::string&amp; destURI,
+                         bool useTopic = false,
+                         bool clientAck = false ) :
+        connection(NULL),
+        session(NULL),
+        destination(NULL),
+        consumer(NULL),
+        useTopic(useTopic),
+        brokerURI(brokerURI),
+        destURI(destURI),
+        clientAck(clientAck) {
+    }
+
+    virtual ~SimpleAsyncConsumer() {
+        this-&gt;cleanup();
+    }
+
+    void close() {
+        this-&gt;cleanup();
+    }
+
+    void runConsumer() {
+
+        try {
+
+            // Create a ConnectionFactory
+            ActiveMQConnectionFactory* connectionFactory =
+                new ActiveMQConnectionFactory( brokerURI );
+
+            // Create a Connection
+            connection = connectionFactory-&gt;createConnection();
+            delete connectionFactory;
+
+            ActiveMQConnection* amqConnection = dynamic_cast&lt;ActiveMQConnection*&gt;( connection );
+            if( amqConnection != NULL ) {
+                amqConnection-&gt;addTransportListener( this );
+            }
+
+            connection-&gt;start();
+
+            connection-&gt;setExceptionListener(this);
+
+            // Create a Session
+            if( clientAck ) {
+                session = connection-&gt;createSession( Session::CLIENT_ACKNOWLEDGE );
+            } else {
+                session = connection-&gt;createSession( Session::AUTO_ACKNOWLEDGE );
+            }
+
+            // Create the destination (Topic or Queue)
+            if( useTopic ) {
+                destination = session-&gt;createTopic( destURI );
+            } else {
+                destination = session-&gt;createQueue( destURI );
+            }
+
+            // Create a MessageConsumer from the Session to the Topic or Queue
+            consumer = session-&gt;createConsumer( destination );
+            consumer-&gt;setMessageListener( this );
+
+        } catch (CMSException&amp; e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Called from the consumer since this class is a registered MessageListener.
+    virtual void onMessage( const Message* message ) {
+
+        static int count = 0;
+
+        try
+        {
+            count++;
+            const TextMessage* textMessage =
+                dynamic_cast&lt; const TextMessage* &gt;( message );
+            string text = "";
+
+            if( textMessage != NULL ) {
+                text = textMessage-&gt;getText();
+            } else {
+                text = "NOT A TEXTMESSAGE!";
+            }
+
+            if( clientAck ) {
+                message-&gt;acknowledge();
+            }
+
+            printf( "Message #%d Received: %s\n", count, text.c_str() );
+        } catch (CMSException&amp; e) {
+            e.printStackTrace();
+        }
+    }
+
+    // If something bad happens you see it here as this class is also been
+    // registered as an ExceptionListener with the connection.
+    virtual void onException( const CMSException&amp; ex AMQCPP_UNUSED ) {
+        printf("CMS Exception occurred.  Shutting down client.\n");
+        exit(1);
+    }
+
+    virtual void transportInterrupted() {
+        std::cout &lt;&lt; "The Connection's Transport has been Interrupted." &lt;&lt; std::endl;
+    }
+
+    virtual void transportResumed() {
+        std::cout &lt;&lt; "The Connection's Transport has been Restored." &lt;&lt; std::endl;
+    }
+
+private:
+
+    void cleanup(){
+
+        try {
+            if( connection != NULL ) {
+                connection-&gt;close();
+            }
+        } catch ( CMSException&amp; e ) { 
+            e.printStackTrace(); 
+        }
+
+        delete destination;
+        delete consumer;
+        delete session;
+        delete connection;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+int main(int argc AMQCPP_UNUSED, char* argv[] AMQCPP_UNUSED) {
+
+    activemq::library::ActiveMQCPP::initializeLibrary();
+
+    std::cout &lt;&lt; "=====================================================\n";
+    std::cout &lt;&lt; "Starting the example:" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "-----------------------------------------------------\n";
+
+    // Set the URI to point to the IPAddress of your broker.
+    // add any optional params to the url to enable things like
+    // tightMarshalling or tcp logging etc.  See the CMS web site for
+    // a full list of configuration options.
+    //
+    //  http://activemq.apache.org/cms/
+    //
+    std::string brokerURI =
+        "failover:(tcp://127.0.0.1:61616)";
+
+    //============================================================
+    // This is the Destination Name and URI options.  Use this to
+    // customize where the consumer listens, to have the consumer
+    // use a topic or queue set the 'useTopics' flag.
+    //============================================================
+    std::string destURI = "TEST.FOO"; //?consumer.prefetchSize=1";
+
+    //============================================================
+    // set to true to use topics instead of queues
+    // Note in the code above that this causes createTopic or
+    // createQueue to be used in the consumer.
+    //============================================================
+    bool useTopics = false;
+
+    //============================================================
+    // set to true if you want the consumer to use client ack mode
+    // instead of the default auto ack mode.
+    //============================================================
+    bool clientAck = false;
+
+    // Create the consumer
+    SimpleAsyncConsumer consumer( brokerURI, destURI, useTopics, clientAck );
+
+    // Start it up and it will listen forever.
+    consumer.runConsumer();
+
+    // Wait to exit.
+    std::cout &lt;&lt; "Press 'q' to quit" &lt;&lt; std::endl;
+    while( std::cin.get() != 'q') {}
+
+    // All CMS resources should be closed before the library is shutdown.
+    consumer.close();
+
+    std::cout &lt;&lt; "-----------------------------------------------------\n";
+    std::cout &lt;&lt; "Finished with the example." &lt;&lt; std::endl;
+    std::cout &lt;&lt; "=====================================================\n";
+
+    activemq::library::ActiveMQCPP::shutdownLibrary();
+}
+</code></pre></div></div>
+
+<h3 id="simple-producer">Simple Producer</h3>
+
+<p>Much like the Simple Asynchronous Consumer example the Simple Producer example wraps up the CMS API detials needed to create a producer into a class called <strong>SimpleProducer</strong>. This class exposes a simillar interface to the consumer example, there is one constructor that allows an instance to be created with configuration options for the broker and destination as well as the number of messages to send to the configured destination. Once created the client code simply calls the SimpleProducer’s <em>run</em> method to publish the specified number of messages. Once the <em>run</em> method completes the client is free to close the SimpleProducer which cleans up the allocated CMS resources, once closed the application exits.</p>
+
+<p>A Simple Message Producer Example</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include &lt;decaf/lang/Thread.h&gt;
+#include &lt;decaf/lang/Runnable.h&gt;
+#include &lt;decaf/util/concurrent/CountDownLatch.h&gt;
+#include &lt;decaf/lang/Long.h&gt;
+#include &lt;decaf/util/Date.h&gt;
+#include &lt;activemq/core/ActiveMQConnectionFactory.h&gt;
+#include &lt;activemq/util/Config.h&gt;
+#include &lt;activemq/library/ActiveMQCPP.h&gt;
+#include &lt;cms/Connection.h&gt;
+#include &lt;cms/Session.h&gt;
+#include &lt;cms/TextMessage.h&gt;
+#include &lt;cms/BytesMessage.h&gt;
+#include &lt;cms/MapMessage.h&gt;
+#include &lt;cms/ExceptionListener.h&gt;
+#include &lt;cms/MessageListener.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+
+using namespace activemq;
+using namespace activemq::core;
+using namespace decaf;
+using namespace decaf::lang;
+using namespace decaf::util;
+using namespace decaf::util::concurrent;
+using namespace cms;
+using namespace std;
+
+////////////////////////////////////////////////////////////////////////////////
+class SimpleProducer : public Runnable {
+private:
+
+    Connection* connection;
+    Session* session;
+    Destination* destination;
+    MessageProducer* producer;
+    bool useTopic;
+    bool clientAck;
+    unsigned int numMessages;
+    std::string brokerURI;
+    std::string destURI;
+
+private:
+
+    SimpleProducer( const SimpleProducer&amp; );
+    SimpleProducer&amp; operator= ( const SimpleProducer&amp; );
+
+public:
+
+    SimpleProducer( const std::string&amp; brokerURI, unsigned int numMessages,
+                    const std::string&amp; destURI, bool useTopic = false, bool clientAck = false ) :
+        connection(NULL),
+        session(NULL),
+        destination(NULL),
+        producer(NULL),
+        useTopic(useTopic),
+        clientAck(clientAck),
+        numMessages(numMessages),
+        brokerURI(brokerURI),
+        destURI(destURI) {
+    }
+
+    virtual ~SimpleProducer(){
+        cleanup();
+    }
+
+    void close() {
+        this-&gt;cleanup();
+    }
+
+    virtual void run() {
+        try {
+
+            // Create a ConnectionFactory
+            auto_ptr&lt;ActiveMQConnectionFactory&gt; connectionFactory(
+                new ActiveMQConnectionFactory( brokerURI ) );
+
+            // Create a Connection
+            try{
+                connection = connectionFactory-&gt;createConnection();
+                connection-&gt;start();
+            } catch( CMSException&amp; e ) {
+                e.printStackTrace();
+                throw e;
+            }
+
+            // Create a Session
+            if( clientAck ) {
+                session = connection-&gt;createSession( Session::CLIENT_ACKNOWLEDGE );
+            } else {
+                session = connection-&gt;createSession( Session::AUTO_ACKNOWLEDGE );
+            }
+
+            // Create the destination (Topic or Queue)
+            if( useTopic ) {
+                destination = session-&gt;createTopic( destURI );
+            } else {
+                destination = session-&gt;createQueue( destURI );
+            }
+
+            // Create a MessageProducer from the Session to the Topic or Queue
+            producer = session-&gt;createProducer( destination );
+            producer-&gt;setDeliveryMode( DeliveryMode::NON_PERSISTENT );
+
+            // Create the Thread Id String
+            string threadIdStr = Long::toString( Thread::currentThread()-&gt;getId() );
+
+            // Create a messages
+            string text = (string)"Hello world! from thread " + threadIdStr;
+
+            for( unsigned int ix=0; ix&lt;numMessages; ++ix ){
+                TextMessage* message = session-&gt;createTextMessage( text );
+
+                message-&gt;setIntProperty( "Integer", ix );
+
+                // Tell the producer to send the message
+                printf( "Sent message #%d from thread %s\n", ix+1, threadIdStr.c_str() );
+                producer-&gt;send( message );
+
+                delete message;
+            }
+
+        }catch ( CMSException&amp; e ) {
+            e.printStackTrace();
+        }
+    }
+
+private:
+
+    void cleanup(){
+
+        try {
+            if( connection != NULL ) {
+                connection-&gt;close();
+            }
+        } catch ( CMSException&amp; e ) { 
+            e.printStackTrace(); 
+        }
+
+        delete destination;
+        delete producer;
+        delete session;
+        delete connection;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+int main(int argc AMQCPP_UNUSED, char* argv[] AMQCPP_UNUSED) {
+
+    activemq::library::ActiveMQCPP::initializeLibrary();
+
+    std::cout &lt;&lt; "=====================================================\n";
+    std::cout &lt;&lt; "Starting the example:" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "-----------------------------------------------------\n";
+
+    // Set the URI to point to the IPAddress of your broker.
+    // add any optional params to the url to enable things like
+    // tightMarshalling or tcp logging etc.  See the CMS web site for
+    // a full list of configuration options.
+    //
+    //  http://activemq.apache.org/cms/
+    //
+    std::string brokerURI =
+        "failover://(tcp://127.0.0.1:61616)";
+
+    //============================================================
+    // Total number of messages for this producer to send.
+    //============================================================
+    unsigned int numMessages = 2000;
+
+    //============================================================
+    // This is the Destination Name and URI options.  Use this to
+    // customize where the Producer produces, to have the producer
+    // use a topic or queue set the 'useTopics' flag.
+    //============================================================
+    std::string destURI = "TEST.FOO";
+
+    //============================================================
+    // set to true to use topics instead of queues
+    // Note in the code above that this causes createTopic or
+    // createQueue to be used in the producer.
+    //============================================================
+    bool useTopics = false;
+
+    // Create the producer and run it.
+    SimpleProducer producer( brokerURI, numMessages, destURI, useTopics );
+
+    // Publish the given number of Messages
+    producer.run();
+
+    // Before exiting we ensure that all CMS resources are closed.
+    producer.close();
+
+    std::cout &lt;&lt; "-----------------------------------------------------\n";
+    std::cout &lt;&lt; "Finished with the example." &lt;&lt; std::endl;
+    std::cout &lt;&lt; "=====================================================\n";
+
+    activemq::library::ActiveMQCPP::shutdownLibrary();
+}
+</code></pre></div></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

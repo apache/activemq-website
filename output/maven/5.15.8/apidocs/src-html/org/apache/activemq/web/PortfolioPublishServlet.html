@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>package org.apache.activemq.web;<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.io.IOException;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.io.PrintWriter;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.util.Hashtable;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.util.Map;<a name="line.22"></a>
+<span class="sourceLineNo">023</span><a name="line.23"></a>
+<span class="sourceLineNo">024</span>import javax.jms.Destination;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import javax.jms.JMSException;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import javax.jms.Message;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import javax.jms.Session;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import javax.servlet.ServletException;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import javax.servlet.http.HttpServletRequest;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import javax.servlet.http.HttpServletResponse;<a name="line.30"></a>
+<span class="sourceLineNo">031</span><a name="line.31"></a>
+<span class="sourceLineNo">032</span>/**<a name="line.32"></a>
+<span class="sourceLineNo">033</span> * A servlet which will publish dummy market data prices<a name="line.33"></a>
+<span class="sourceLineNo">034</span> * <a name="line.34"></a>
+<span class="sourceLineNo">035</span> * <a name="line.35"></a>
+<span class="sourceLineNo">036</span> */<a name="line.36"></a>
+<span class="sourceLineNo">037</span>public class PortfolioPublishServlet extends MessageServletSupport {<a name="line.37"></a>
+<span class="sourceLineNo">038</span><a name="line.38"></a>
+<span class="sourceLineNo">039</span>    private static final int MAX_DELTA_PERCENT = 1;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    private static final Map&lt;String, Double&gt; LAST_PRICES = new Hashtable&lt;String, Double&gt;();<a name="line.40"></a>
+<span class="sourceLineNo">041</span><a name="line.41"></a>
+<span class="sourceLineNo">042</span>    public void init() throws ServletException {<a name="line.42"></a>
+<span class="sourceLineNo">043</span>        super.init();<a name="line.43"></a>
+<span class="sourceLineNo">044</span>    }<a name="line.44"></a>
+<span class="sourceLineNo">045</span><a name="line.45"></a>
+<span class="sourceLineNo">046</span>    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        PrintWriter out = response.getWriter();<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        String[] stocks = request.getParameterValues("stocks");<a name="line.48"></a>
+<span class="sourceLineNo">049</span>        if (stocks == null || stocks.length == 0) {<a name="line.49"></a>
+<span class="sourceLineNo">050</span>            out.println("&lt;html&gt;&lt;body&gt;No &lt;b&gt;stocks&lt;/b&gt; query parameter specified. Cannot publish market data&lt;/body&gt;&lt;/html&gt;");<a name="line.50"></a>
+<span class="sourceLineNo">051</span>        } else {<a name="line.51"></a>
+<span class="sourceLineNo">052</span>            Integer total = (Integer)request.getSession(true).getAttribute("total");<a name="line.52"></a>
+<span class="sourceLineNo">053</span>            if (total == null) {<a name="line.53"></a>
+<span class="sourceLineNo">054</span>                total = Integer.valueOf(0);<a name="line.54"></a>
+<span class="sourceLineNo">055</span>            }<a name="line.55"></a>
+<span class="sourceLineNo">056</span><a name="line.56"></a>
+<span class="sourceLineNo">057</span>            int count = getNumberOfMessages(request);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>            total = Integer.valueOf(total.intValue() + count);<a name="line.58"></a>
+<span class="sourceLineNo">059</span>            request.getSession().setAttribute("total", total);<a name="line.59"></a>
+<span class="sourceLineNo">060</span><a name="line.60"></a>
+<span class="sourceLineNo">061</span>            try {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>                WebClient client = WebClient.getWebClient(request);<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                for (int i = 0; i &lt; count; i++) {<a name="line.63"></a>
+<span class="sourceLineNo">064</span>                    sendMessage(client, stocks);<a name="line.64"></a>
+<span class="sourceLineNo">065</span>                }<a name="line.65"></a>
+<span class="sourceLineNo">066</span>                out.print("&lt;html&gt;&lt;head&gt;&lt;meta http-equiv='refresh' content='");<a name="line.66"></a>
+<span class="sourceLineNo">067</span>                String refreshRate = request.getParameter("refresh");<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                if (refreshRate == null || refreshRate.length() == 0) {<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                    refreshRate = "1";<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                }<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                out.print(escape(refreshRate));<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                out.println("'/&gt;&lt;/head&gt;");<a name="line.72"></a>
+<span class="sourceLineNo">073</span>                out.println("&lt;body&gt;Published &lt;b&gt;" + escape(Integer.toString(count)) + "&lt;/b&gt; of " + escape(Integer.toString(total))<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                        + " price messages.  Refresh = " + escape(refreshRate) + "s");<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                out.println("&lt;/body&gt;&lt;/html&gt;");<a name="line.75"></a>
+<span class="sourceLineNo">076</span><a name="line.76"></a>
+<span class="sourceLineNo">077</span>            } catch (JMSException e) {<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                out.println("&lt;html&gt;&lt;body&gt;Failed sending price messages due to &lt;b&gt;" + e + "&lt;/b&gt;&lt;/body&gt;&lt;/html&gt;");<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                log("Failed to send message: " + e, e);<a name="line.79"></a>
+<span class="sourceLineNo">080</span>            }<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        }<a name="line.81"></a>
+<span class="sourceLineNo">082</span>    }<a name="line.82"></a>
+<span class="sourceLineNo">083</span><a name="line.83"></a>
+<span class="sourceLineNo">084</span>    protected void sendMessage(WebClient client, String[] stocks) throws JMSException {<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        Session session = client.getSession();<a name="line.85"></a>
+<span class="sourceLineNo">086</span><a name="line.86"></a>
+<span class="sourceLineNo">087</span>        int idx = 0;<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        while (true) {<a name="line.88"></a>
+<span class="sourceLineNo">089</span>            idx = (int)Math.round(stocks.length * Math.random());<a name="line.89"></a>
+<span class="sourceLineNo">090</span>            if (idx &lt; stocks.length) {<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                break;<a name="line.91"></a>
+<span class="sourceLineNo">092</span>            }<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        }<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        String stock = stocks[idx];<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        Destination destination = session.createTopic("STOCKS." + stock);<a name="line.95"></a>
+<span class="sourceLineNo">096</span>        String stockText = createStockText(stock);<a name="line.96"></a>
+<span class="sourceLineNo">097</span>        log("Sending: " + stockText + " on destination: " + destination);<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        Message message = session.createTextMessage(stockText);<a name="line.98"></a>
+<span class="sourceLineNo">099</span>        client.send(destination, message);<a name="line.99"></a>
+<span class="sourceLineNo">100</span>    }<a name="line.100"></a>
+<span class="sourceLineNo">101</span><a name="line.101"></a>
+<span class="sourceLineNo">102</span>    protected String createStockText(String stock) {<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        Double value = LAST_PRICES.get(stock);<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        if (value == null) {<a name="line.104"></a>
+<span class="sourceLineNo">105</span>            value = new Double(Math.random() * 100);<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        }<a name="line.106"></a>
+<span class="sourceLineNo">107</span><a name="line.107"></a>
+<span class="sourceLineNo">108</span>        // lets mutate the value by some percentage<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        double oldPrice = value.doubleValue();<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        value = new Double(mutatePrice(oldPrice));<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        LAST_PRICES.put(stock, value);<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        double price = value.doubleValue();<a name="line.112"></a>
+<span class="sourceLineNo">113</span><a name="line.113"></a>
+<span class="sourceLineNo">114</span>        double offer = price * 1.001;<a name="line.114"></a>
+<span class="sourceLineNo">115</span><a name="line.115"></a>
+<span class="sourceLineNo">116</span>        String movement = (price &gt; oldPrice) ? "up" : "down";<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        return "&lt;price stock='" + stock + "' bid='" + price + "' offer='" + offer + "' movement='" + movement + "'/&gt;";<a name="line.117"></a>
+<span class="sourceLineNo">118</span>    }<a name="line.118"></a>
+<span class="sourceLineNo">119</span><a name="line.119"></a>
+<span class="sourceLineNo">120</span>    protected double mutatePrice(double price) {<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        double percentChange = (2 * Math.random() * MAX_DELTA_PERCENT) - MAX_DELTA_PERCENT;<a name="line.121"></a>
+<span class="sourceLineNo">122</span><a name="line.122"></a>
+<span class="sourceLineNo">123</span>        return price * (100 + percentChange) / 100;<a name="line.123"></a>
+<span class="sourceLineNo">124</span>    }<a name="line.124"></a>
+<span class="sourceLineNo">125</span><a name="line.125"></a>
+<span class="sourceLineNo">126</span>    protected int getNumberOfMessages(HttpServletRequest request) {<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        String name = request.getParameter("count");<a name="line.127"></a>
+<span class="sourceLineNo">128</span>        if (name != null) {<a name="line.128"></a>
+<span class="sourceLineNo">129</span>            return Integer.parseInt(name);<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        }<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        return 1;<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    }<a name="line.132"></a>
+<span class="sourceLineNo">133</span><a name="line.133"></a>
+<span class="sourceLineNo">134</span>    protected String escape(String text) throws IOException {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>        return java.net.URLEncoder.encode(text, "UTF-8");<a name="line.135"></a>
+<span class="sourceLineNo">136</span>    }<a name="line.136"></a>
+<span class="sourceLineNo">137</span>}<a name="line.137"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Message Redelivery and DLQ Handling</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p><a href="developers">Developers</a> &gt; <a href="developer-guide">Developer Guide</a> &gt; <a href="design-documents">Design Documents</a> &gt; <a href="message-redelivery-and-dlq-handling">Message Redelivery and DLQ Handling</a></p>
+
+<h3 id="overview">Overview</h3>
+
+<p>Messages are redelivered to a client when <strong>any</strong> of the following occurs:</p>
+
+<ol>
+  <li>A transacted session is used and <code class="language-plaintext highlighter-rouge">rollback()</code> is called.</li>
+  <li>A transacted session is closed before <code class="language-plaintext highlighter-rouge">commit()</code> is called.</li>
+  <li>A session is using <code class="language-plaintext highlighter-rouge">CLIENT_ACKNOWLEDGE</code> and <code class="language-plaintext highlighter-rouge">Session.recover()</code> is called.</li>
+  <li>A client connection times out (perhaps the code being executed takes longer than the configured time-out period).</li>
+</ol>
+
+<p>The broker transmits the default delivery policy that he prefers to a client connection in his <code class="language-plaintext highlighter-rouge">BrokerInfo</code> command packet. But the client can override the policy settings by using the <code class="language-plaintext highlighter-rouge">ActiveMQConnection.getRedeliveryPolicy()</code> method:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RedeliveryPolicy policy = connection.getRedeliveryPolicy();
+policy.setInitialRedeliveryDelay(500);
+policy.setBackOffMultiplier(2);
+policy.setUseExponentialBackOff(true);
+policy.setMaximumRedeliveries(2);
+</code></pre></div></div>
+<p>Once a message’s redelivery attempts exceeds the <code class="language-plaintext highlighter-rouge">maximumRedeliveries</code> configured for the <a href="redelivery-policy">Redelivery Policy</a>, a “Poison ACK” is sent back to the broker letting him know that the message was considered a poison pill. The Broker then takes the message and sends it to a Dead Letter Queue so that it can be analyzed later on.</p>
+
+<p>The default Dead Letter Queue in ActiveMQ is called <code class="language-plaintext highlighter-rouge">ActiveMQ.DLQ</code>; all un-deliverable messages will get sent to this queue and this can be difficult to manage. So, you can set an <code class="language-plaintext highlighter-rouge">individualDeadLetterStrategy</code> in the destination policy map of the <code class="language-plaintext highlighter-rouge">activemq.xml</code> configuration file, which allows you to specify a specific dead letter queue prefix for a given queue or topic. You can apply this strategy using wild card if you like so that all queues get their own dead-letter queue, as is shown in the example below.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt;
+  
+  &lt;destinationPolicy&gt;
+    &lt;policyMap&gt;
+      &lt;policyEntries&gt;
+        &lt;!-- Set the following policy on all queues using the '&gt;' wildcard --&gt;
+        &lt;policyEntry queue="&gt;"&gt;
+          &lt;deadLetterStrategy&gt;
+            &lt;!--
+              Use the prefix 'DLQ.' for the destination name, and make
+              the DLQ a queue rather than a topic
+            --&gt;
+            &lt;individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true"/&gt;
+          &lt;/deadLetterStrategy&gt;
+        &lt;/policyEntry&gt;
+      &lt;/policyEntries&gt;
+    &lt;/policyMap&gt;
+  &lt;/destinationPolicy&gt;
+  
+&lt;/broker&gt;
+</code></pre></div></div>
+<p>See the <a href="redelivery-policy">Redelivery Policy</a> section for some more detail on the policy options.</p>
+
+<h3 id="automatically-discard-expired-messages">Automatically Discard Expired Messages</h3>
+
+<p>Some folks simply need expired messages to be discarded instead of sent to the DLQ i.e., skip the DLQ entirely. This simplifies the management of the DLQ so that you’re not sifting through loads of expired messages to find messages with real problems. To tell ActiveMQ to just discard expired messages, configure the <code class="language-plaintext highlighter-rouge">processExpired</code> property to false on a dead letter strategy:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt;
+  
+  &lt;destinationPolicy&gt;
+   &lt;policyMap&gt;
+     &lt;policyEntries&gt;
+       &lt;!-- Set the following policy on all queues using the '&gt;' wildcard --&gt;
+       &lt;policyEntry queue="&gt;"&gt;
+         &lt;!-- 
+           Tell the dead letter strategy not to process expired messages
+           so that they will just be discarded instead of being sent to
+           the DLQ 
+         --&gt;
+         &lt;deadLetterStrategy&gt;
+           &lt;sharedDeadLetterStrategy processExpired="false" /&gt;
+         &lt;/deadLetterStrategy&gt;
+       &lt;/policyEntry&gt;
+     &lt;/policyEntries&gt;
+   &lt;/policyMap&gt;
+  &lt;/destinationPolicy&gt;
+  
+&lt;/broker&gt;
+</code></pre></div></div>
+
+<h3 id="place-non-persistent-messages-onto-the-dead-letter-queue">Place Non-Persistent Messages Onto The Dead-Letter Queue</h3>
+
+<p>By default, ActiveMQ will not place undeliverable <em>non-persistent</em> messages on the dead-letter queue. The rationale for this behavior is that if the application doesn’t care enough to make the message persistent, then there is little or no value in recording that the message was undeliverable. If you do want to place non-persistent messages on the dead-letter queue, then you should set <code class="language-plaintext highlighter-rouge">processNonPersistent="true"</code> on the dead-letter strategy.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt;
+  
+  &lt;destinationPolicy&gt;
+   &lt;policyMap&gt;
+     &lt;policyEntries&gt;
+       &lt;!-- Set the following policy on all queues using the '&gt;' wildcard --&gt;
+       &lt;policyEntry queue="&gt;"&gt;
+         &lt;!-- 
+           Tell the dead letter strategy to also place non-persisted messages 
+           onto the dead-letter queue if they can't be delivered.
+         --&gt;
+         &lt;deadLetterStrategy&gt;
+           &lt;sharedDeadLetterStrategy processNonPersistent="true" /&gt;
+         &lt;/deadLetterStrategy&gt;
+       &lt;/policyEntry&gt;
+     &lt;/policyEntries&gt;
+   &lt;/policyMap&gt;
+  &lt;/destinationPolicy&gt;
+  
+&lt;/broker&gt;
+</code></pre></div></div>
+
+<h3 id="setting-expiration-on-messages-in-the-dlq">Setting Expiration on Messages in the DLQ</h3>
+
+<p>By default, ActiveMQ will <strong><em>never</em></strong> expire messages sent to the DLQ. However, from ActiveMQ 5.12 the <code class="language-plaintext highlighter-rouge">deadLetterStrategy</code> supports an <code class="language-plaintext highlighter-rouge">expiration</code> attribute whose value is given in milliseconds.</p>
+
+<blockquote>
+  <p>Be selective in how this is applied. In particular do not apply expiration to your DLQ destinations by setting expiration on a default or inclusive wildcard policy entry.</p>
+
+  <p>If a DLQ entry expires and forwards to the same or another DLQ with expiry, you will introduce a loop that can be problematic if the strategy audit is disabled or it’s sliding window is exceeded.</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt;
+  
+  &lt;destinationPolicy&gt;
+   &lt;policyMap&gt;
+     &lt;policyEntries&gt;
+       &lt;policyEntry queue="QueueWhereItIsOkToExpireDLQEntries"&gt;
+         &lt;deadLetterStrategy&gt;
+           &lt;.... expiration="300000"/&gt;
+         &lt;/deadLetterStrategy&gt;
+       &lt;/policyEntry&gt;
+     &lt;/policyEntries&gt;
+   &lt;/policyMap&gt;
+  &lt;/destinationPolicy&gt;
+  
+&lt;/broker&gt;
+</code></pre></div></div>
+
+<h3 id="message-audit">Message audit</h3>
+
+<p>The dead letter strategy has an message audit that is enabled by default. This prevents duplicate messages from being added to the configured DLQ. From 5.15.0, the limits of the audit can configured via the</p>
+
+<p><code class="language-plaintext highlighter-rouge">maxProducersToAudit</code> and <code class="language-plaintext highlighter-rouge">maxAuditDepth</code> attributes. The audit can be disabled using <code class="language-plaintext highlighter-rouge">enableAudit="false"</code></p>
+
+<h3 id="the-discarding-dlq-plugin">The Discarding DLQ Plugin</h3>
+
+<blockquote>
+  <p>From ActiveMQ 5.9 - a destination <code class="language-plaintext highlighter-rouge">policyEntry</code> supports a <code class="language-plaintext highlighter-rouge">deadLetterStrategy</code> of discarding:</p>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;deadLetterStrategy&gt;
+  &lt;discarding/&gt;
+&lt;/deadLetterStrategy&gt;
+</code></pre></div>  </div>
+  <p>This does the same thing as the plugin but on a per destination basis. The matching based on regular expressions of the plugin is a bit more powerful than destination matching so the plugin may still be useful in some cases.</p>
+</blockquote>
+
+<p>A very simple yet very useful plugin to the broker. This plugin allows the configuration of queues and topics, all or matched based on <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html">Java SE regular expressions</a>, to drop messages that have been sent to the DLQ. This is extremely useful when using <a href="slow-consumer-handling">constant pending message limit strategy</a> or the other eviction rules, but you don’t want to incur the overhead of yet another consumer to clear the DLQ.</p>
+
+<p>Below is an example of a basic configuration to drop everything:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans&gt; 
+  &lt;broker&gt;
+    &lt;plugins&gt;
+      &lt;discardingDLQBrokerPlugin dropAll="true" dropTemporaryTopics="true" dropTemporaryQueues="true"/&gt;
+    &lt;/plugins&gt;
+  &lt;/broker&gt;
+&lt;/beans&gt;
+</code></pre></div></div>
+<p>Below is a slightly more complex example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans&gt; 
+  &lt;broker&gt;
+    &lt;plugins&gt;
+      &lt;discardingDLQBrokerPlugin dropOnly="MY.EXAMPLE.TOPIC.29 MY.EXAMPLE.QUEUE.87" reportInterval="1000"/&gt;
+    &lt;/plugins&gt;
+  &lt;/broker&gt;
+&lt;/beans&gt;
+</code></pre></div></div>
+<ul>
+  <li>Notice that destination names are space delimited.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">reportInterval</code> property is used to denote how frequently do we output how many messages we have dropped - use <code class="language-plaintext highlighter-rouge">0</code> to disable.</li>
+</ul>
+
+<p>Below is an even more complex example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans&gt; 
+  &lt;broker&gt;
+    &lt;plugins&gt;
+      &lt;discardingDLQBrokerPlugin dropOnly="MY.EXAMPLE.TOPIC.[0-9]{3} MY.EXAMPLE.QUEUE.[0-9]{3}" reportInterval="3000"/&gt;
+    &lt;/plugins&gt;
+  &lt;/broker&gt;
+&lt;/beans&gt;
+</code></pre></div></div>
+<ul>
+  <li>Notice that the destination names use regular expressions. These match the number <code class="language-plaintext highlighter-rouge">000..999</code> at the end of each destination name.</li>
+</ul>
+
+<p>For more information, see the source code for the <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-broker/src/main/java/org/apache/activemq/plugin/DiscardingDLQBrokerPlugin.java">DiscardingDLQBrokerPlugin</a> and the <a href="https://svn.apache.org/repos/asf/activemq/trunk/activemq-broker/src/main/java/org/apache/activemq/plugin/DiscardingDLQBroker.java">DiscardingDLQBroker</a></p>
+
+<h3 id="broker-redelivery-v57">Broker Redelivery (v5.7)</h3>
+
+<p>Typically a consumer handles redelivery so that it can maintain message order while a message appears as inflight on the broker. This means that redelivery is limited to a single consumer unless that consumer terminates. In this way the broker is unaware of redelivery. With broker redelivery, it is possible to have the broker redeliver a message after a delay using a resend. This is implemented by a broker plugin that handles dead letter processing by redelivery via the scheduler. This is useful when total message order is not important and where through put and load distribution among consumers is. With broker redelivery, messages that fail delivery to a given consumer can get immediately re-dispatched.</p>
+
+<p>The feature is enabled via XML configuration as follows:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker schedulerSupport="true"&gt;
+        
+        &lt;plugins&gt;
+            &lt;redeliveryPlugin fallbackToDeadLetter="true" 
+                              sendToDlqIfMaxRetriesExceeded="true"&gt;
+                &lt;redeliveryPolicyMap&gt;
+                    &lt;redeliveryPolicyMap&gt;
+                        &lt;redeliveryPolicyEntries&gt;
+                            &lt;!-- a destination specific policy --&gt;
+                            &lt;redeliveryPolicy queue="SpecialQueue" 
+                                              maximumRedeliveries="4" 
+                                              redeliveryDelay="10000"/&gt;
+                        &lt;/redeliveryPolicyEntries&gt;
+                        
+                        &lt;defaultEntry&gt;
+                            &lt;!-- the fallback policy for all other destinations --&gt;
+                            &lt;redeliveryPolicy maximumRedeliveries="4" 
+                                              initialRedeliveryDelay="5000"
+                                              redeliveryDelay="10000"/&gt;
+                        &lt;/defaultEntry&gt;
+                    &lt;/redeliveryPolicyMap&gt;
+                &lt;/redeliveryPolicyMap&gt;
+            &lt;/redeliveryPlugin&gt;
+        &lt;/plugins&gt;
+        
+&lt;/broker&gt; 
+</code></pre></div></div>
+<p>The familiar <a href="redelivery-policy">Redelivery Policy</a> has been extended to take a matching destination. <code class="language-plaintext highlighter-rouge">fallbackToDeadLetter</code>controls the action when there is no matching redeliver policy for a destination. Defaults to <code class="language-plaintext highlighter-rouge">true</code> so regular DLQ processing ensues. <code class="language-plaintext highlighter-rouge">sendToDlqIfMaxRetriesExceeded</code> controls the action when the retry limit is exceeded. Defaults to true so regular DLQ processing ensues. When <code class="language-plaintext highlighter-rouge">false</code>, the message is dropped.</p>
+
+<blockquote>
+  <p>ActiveMQ’s <code class="language-plaintext highlighter-rouge">schedulerSupport</code> must be enabled for this feature to work.</p>
+</blockquote>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Apollo 1.7.1 OpenWire Protocol Manual</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <ul>
+  <li><a href="index.html">Apollo 1.7.1</a></li>
+  <li><a href="communitydevelopers">Developers</a></li>
+  <li><a href="community/index.html">Community</a></li>
+  <li><a href="..OverviewOverview/Overview/download">Download</a></li>
+</ul>
+
+<h1 id="apollo-171-openwire-protocol-manual">Apollo 1.7.1 OpenWire Protocol Manual</h1>
+
+<ul>
+  <li><a href="#Using_the_OpenWire_Protocol">Using the OpenWire Protocol</a></li>
+  <li>
+    <ul>
+      <li><a href="#OpenWire_Protocol_Options">OpenWire Protocol Options</a></li>
+      <li><a href="#Protocol_Detection__different_that_open-wire_vesion_detection_">Protocol Detection (different that open-wire vesion detection)</a></li>
+      <li><a href="#Client_Libraries">Client Libraries</a></li>
+      <li><a href="#Broker_features_available_using_the_OpenWire_protocol">Broker features available using the OpenWire protocol</a></li>
+      <li>
+        <ul>
+          <li><a href="#Destination_Types">Destination Types</a></li>
+          <li><a href="#Wildcard_Subscriptions">Wildcard Subscriptions</a></li>
+          <li><a href="#Composite_Destinations">Composite Destinations</a></li>
+          <li><a href="#Exclusive_Consumer">Exclusive Consumer</a></li>
+          <li><a href="#Temporary_Destinations">Temporary Destinations</a></li>
+          <li><a href="#Message_Selectors">Message Selectors</a></li>
+          <li><a href="#Browing_Subscription">Browing Subscription</a></li>
+          <li><a href="#Transactions">Transactions</a></li>
+        </ul>
+      </li>
+      <li><a href="#OpenWire_protocol_details">OpenWire protocol details</a></li>
+      <li><a href="#OpenWire_features_to_be_documented">OpenWire features to be documented</a></li>
+      <li><a href="#Unsupported_OpenWire_features:">Unsupported OpenWire features:</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="using-the-openwire-protocol">Using the OpenWire Protocol</h2>
+
+<p>Clients can connect to Apollo using the <a href="http://activemq.apache.orgConnectivity/Protocols/openwire">OpenWire</a> protocol. OpenWire is a binary, on-the-wire protocol used natively by <a href="http://activemq.apache.org/">ActiveMQ</a>. It was designed to be a fast, full-featured, and JMS-compliant protocol for message brokers. Currently there are native client libraries for Java, C, C#, and C++. Further OpenWire support can be built by implementing language-specific code generators, however, for most cross-langauge needs, the <a href="http://stomp.github.com">STOMP</a> protocol is best.</p>
+
+<p>OpenWire was designed to be extended but yet backward compatible with older versions. When a client connects to the broker, the protocol version that’s used is negotiated based on what each can support.</p>
+
+<h3 id="openwire-protocol-options">OpenWire Protocol Options</h3>
+
+<p>You can use the <code class="language-plaintext highlighter-rouge">openwire</code> configuration element within the <code class="language-plaintext highlighter-rouge">connector</code> element in the <code class="language-plaintext highlighter-rouge">apollo.xml</code> configuration file to change the default settings used in the OpenWire protocol implementation.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
+  &lt;openwire attribute="value"/&gt;
+&lt;/connector&gt;
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">openwire</code> element supports the following configuration attributes:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">buffer_size</code> : How much each producer or subscription will buffer between the client and the broker. Defaults to <code class="language-plaintext highlighter-rouge">640k</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">stack_trace</code> : If there is an exception on the broker, it will be sent back to the client. Default is <code class="language-plaintext highlighter-rouge">true</code></li>
+  <li><code class="language-plaintext highlighter-rouge">cache</code> : Used to reduce marshalling efforts within the broker. Cache data structures such as openwire commands, destination objects, subscription info, etc. Default is <code class="language-plaintext highlighter-rouge">true</code></li>
+  <li><code class="language-plaintext highlighter-rouge">cache_size</code> : Number of internal data structures to cache. Default is <code class="language-plaintext highlighter-rouge">1024</code></li>
+  <li><code class="language-plaintext highlighter-rouge">tight_endcoding</code> : Optimize the encoding to be effecient over the wire at the expense of greater CPU usage to marshal/unmarshal. Default is <code class="language-plaintext highlighter-rouge">true</code></li>
+  <li><code class="language-plaintext highlighter-rouge">tcp_no_delay</code> : Decide whether to use <a href="http://en.wikipedia.org/wiki/Nagle's_algorithm">Nagle’s Algorithm</a> which improves TCP/IP effeciency for small packets. Set to true to disable this algorithm. Default is <code class="language-plaintext highlighter-rouge">false</code> (which means nodelay is off, and it uses Nagle’s algorithm)</li>
+  <li><code class="language-plaintext highlighter-rouge">max_inactivity_duration</code> : Max inactivity period, in milliseconds, at which point the socket would be considered dead. Used by the heartbeat functionality. If there is a period of inactivity greater than this period, the socket will be closed. Default is <code class="language-plaintext highlighter-rouge">30000</code></li>
+  <li><code class="language-plaintext highlighter-rouge">max_inactivity_duration_initial_delay</code> : Amount of time to delay between determining the socket should be closed and actually closing it. Default is <code class="language-plaintext highlighter-rouge">30000</code></li>
+  <li><code class="language-plaintext highlighter-rouge">max_frame_size</code> : Size in bytes of the largest frame that can be sent to the broker. Default is <code class="language-plaintext highlighter-rouge">100MB</code></li>
+  <li><code class="language-plaintext highlighter-rouge">add_jmsxuserid</code> : If set to <code class="language-plaintext highlighter-rouge">false</code>, disables setting the JMSXUserID header on received messages. Default is <code class="language-plaintext highlighter-rouge">true</code>.</li>
+</ul>
+
+<p>An example of configuring the OpenWire protocol</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector id="tcp" bind="tcp://0.0.0.0:61613"&gt;
+  &lt;openwire tight_encoding="false" tcp_no_delay="true"/&gt;
+&lt;/connector&gt;
+</code></pre></div></div>
+
+<h3 id="protocol-detection-different-that-open-wire-vesion-detection">Protocol Detection (different that open-wire vesion detection)</h3>
+
+<p>Apollo was designed to be inherently multi-protocol. Although STOMP was the first protocol to be implemented in Apollo, the core of the broker was not built around STOMP or any other specific protocol. Apollo, in fact by default, has the ability to detect the protocol being used on the wire without further configuration. This makes the configuration easier on the broker, and means you only need to open one connector that can handle multiple different types of wire protocols. If you would like to specify a certain connector for OpenWire and another connector for a different protocol, you can explicitly configure the connector to be an OpenWire connector:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector protocol="openwire" ... /&gt;
+</code></pre></div></div>
+
+<p>You can also support a limited subset of protocols:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;connector bind="..."&gt;
+    &lt;detect protocols="openwire stomp" /&gt;
+&lt;/connector&gt;
+</code></pre></div></div>
+
+<p>Or you can leave it open to any of the supported protocols (default), and the correct protocol will be used depending on what the client is using. You do this by not specifying any protocol settings.</p>
+
+<p>Note, this type of on-the-wire protocol detection is different that the OpenWire version detection briefly mentioned above. After the broker determines a client is using an OpenWire protocol, the version is negotiated separately from how the broker determines a protocol.</p>
+
+<h3 id="client-libraries">Client Libraries</h3>
+
+<p>To connect to Apollo using the OpenWire protocol, we recommend you use the latest <a href="http://activemq.apache.org/">ActiveMQ</a> 5.x client libraries.</p>
+
+<ul>
+  <li><a href="http://activemq.apache.orgConnectivity/Cross Language ClientsConnectivity/Cross Language Clients/Connectivity/Cross Language Clients/c-integration">C</a></li>
+  <li><a href="http://activemq.apache.orgConnectivity/Cross Language ClientsConnectivity/Cross Language Clients/Connectivity/Cross Language Clients/activemq-c-clients">C++</a></li>
+  <li><a href="http://activemq.apache.org/nms/">C# and .NET</a></li>
+</ul>
+
+<p>To configure specific behaviors for your connection, see the <a href="http://activemq.apache.orgUsing ActiveMQ/Configuring Transports/ActiveMQ Connection URIs/connection-configuration-uri">Connection reference</a> for ActiveMQ 5.x</p>
+
+<h3 id="broker-features-available-using-the-openwire-protocol">Broker features available using the OpenWire protocol</h3>
+
+<h4 id="destination-types">Destination Types</h4>
+
+<ul>
+  <li>
+    <p>Queues (for point-to-point messaging) - A JMS Queue implements load balancer semantics. A single message will be received by exactly one consumer. If there are no consumers available at the time the message is sent it will be kept until a consumer is available that can process the message. If a consumer receives a message and does not acknowledge it before closing then the message will be redelivered to another consumer. A queue can have many consumers with messages load balanced across the available consumers.</p>
+  </li>
+  <li>
+    <p>Topics (publish-subscribe) - In JMS a Topic implements publish and subscribe semantics. When you publish a message it goes to all the subscribers who are interested - so zero to many subscribers will receive a copy of the message. Only subscribers who had an active subscription at the time the broker receives the message will get a copy of the message.</p>
+  </li>
+  <li>
+    <p>Durable Subscriptions (persistent publish-subscribe) - Durable subscriptions allow you to achieve semantics similar to a queue using topics. Specifically, this allows a subscription to subscribe and disconnect without worrying about losing messages. If the client disconnects, the messages that arrive at the topic while the subscription is inactive will be queued up for consumption when the subscription becomes reactivated.</p>
+  </li>
+</ul>
+
+<h4 id="wildcard-subscriptions">Wildcard Subscriptions</h4>
+
+<p>Wild cards can be used in destination names when subscribing as a consumer. This allows you to subscribe to multiple destinations or hierarchy of destinations.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">.</code> is used to separate names in a path</li>
+  <li><code class="language-plaintext highlighter-rouge">*</code> is used to match any name in a path</li>
+  <li><code class="language-plaintext highlighter-rouge">&gt;</code> is used to recursively match path names</li>
+</ul>
+
+<p>Unlike some of the other protocols Apollo supports, for the OpenWire implementation, regex wildcards are not supported. Also note that for other protocols, the wildcard for recursive destinations is indeed “&gt;” and not “**”.</p>
+
+<h4 id="composite-destinations">Composite Destinations</h4>
+
+<p>You can send to multiple destinations with one single operation. When you create a destination to which your producer will be sending, you can specify multiple destinations with the “,” (comma) destination separator. For example, if you want to send a single message to two queues:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Destination destination = session.createQueue("test-queue,test-queue-foo")
+MessageProducer producer = session.createProducer(destination);
+TextMessage message = session.createTextMessage("Message #" + i);
+producer.send(message);
+</code></pre></div></div>
+
+<p>Note both destinations named will be considered queues. However, you can also include a topic destination in your list. You’ll want to use the <code class="language-plaintext highlighter-rouge">topic://</code> prefix if mixing destination types (or <code class="language-plaintext highlighter-rouge">queue://</code> for queues):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Destination destination = session.createQueue("test-queue,test-queue-foo,topic://test-topic-foo")
+</code></pre></div></div>
+
+<p>Similarly you can consume from multiple destinations as well. When you set up your consumer’s destination, just follow the same rules as above.</p>
+
+<h4 id="exclusive-consumer">Exclusive Consumer</h4>
+
+<p>To do exclusive consumer on a queue, you will specify the settings on the queue itself:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"QUEUE.NAME?consumer.exclusive=true"
+</code></pre></div></div>
+
+<p>The first consumer to subscribe to the queue will be the exclusive consumer. Any other consumers that subscribe to the queue will not receive messages as long as the exclusive consumer is alive and consuming. If the exclusive consumer goes away, the next in line to subscribe will be selected as the exclusive consumer. In general, the order that’s calculcated for who should be the next exclusive consumer is based on when they subscribe. The first to subscribe wins and the others fall in line based on when they subscribed.</p>
+
+<h4 id="temporary-destinations">Temporary Destinations</h4>
+
+<p>Temporary destinations are bound to the connection that created them; therefore, when the connection goes away, the temporary destination will also go away. Using temporary is one way to implement a request-reply messaging pattern with Apollo. The steps for using temporary queues or topics for request-reply are as follows:</p>
+
+<p>Create a temporary destination</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Destination replyDest = session.createTemporaryQueue();
+</code></pre></div></div>
+
+<p>Create a consumer for that destination</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MessageConsumer replyConsumer = session.createConsumer(replyDest);
+</code></pre></div></div>
+
+<p>Create a message to send as a request and set the JMSReplyTo header to the temp destination</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>message.setJMSReplyTo(replyDest);
+</code></pre></div></div>
+
+<p>Send the message. If the receiver of the message is aware that it’s participating in a request-reply scenario, it should place the response into the destination specified in the JMSReplyTo header.</p>
+
+<h4 id="message-selectors">Message Selectors</h4>
+
+<p>You can use message selectors to create subscriptions to destinations that are filtered based on some headers or properties in the message. You define a selector as a String that is similar to the SQL92 syntax.</p>
+
+<p>For example, to define a consumer on a destination that is only interested in messages that have a property named “intended” and a value of “me”, pass a selector as the second argument to the <a href="http://docs.oracle.com/javaee/6/api/javax/jms/Session.html">session.createConsumer()</a> method:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>session.createConsumer(destination, "intended = 'me'");
+</code></pre></div></div>
+
+<p>Now messages produced with a property/value combination specified in the selector will be delivered to the consumer.</p>
+
+<p>Here’s an example of producing the message:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MessageProducer producer = session.createProducer(destination);
+
+for (int i = 0; i &lt; NUM_MESSAGES_TO_SEND; i++) {
+    TextMessage message = session.createTextMessage("Message #" + i);
+    LOG.info("Sending message #" + i);
+    producer.send(message);
+    Thread.sleep(DELAY);
+}
+</code></pre></div></div>
+
+<h4 id="browing-subscription">Browing Subscription</h4>
+
+<p>With a <a href="http://activemq.apache.org/maven/5.6.0/activemq-core/apidocs/org/apache/activemq/ActiveMQQueueBrowser.html">QueueBrowser</a>, you can browse a queue’s messages without actually consuming them. This can be useful for debugging, adding a user-interface layer, or audit or logging.</p>
+
+<p>To establish a browsing subscription to a queue, use the JMS API:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>QueueBrowser browser = session.createBrowser((Queue) destination);
+</code></pre></div></div>
+
+<p>Then you can enumerate the messages and examine them with the following idiom:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Enumeration enumeration = browser.getEnumeration();
+
+while (enumeration.hasMoreElements()) {
+    TextMessage message = (TextMessage) enumeration.nextElement();
+    System.out.println("Browsing: " + message);
+}
+</code></pre></div></div>
+
+<p>When you browse a queue, only a snapshot of the queue will be available. If more messages are enqueued, the browsing session will not automatically see those.</p>
+
+<p>Note, you cannot establish browsing sessions to a durable topic with OpenWire/JMS.</p>
+
+<h4 id="transactions">Transactions</h4>
+
+<p>Transactions can be done on both the consumer and the producer for any destination. When you create a session, pass <code class="language-plaintext highlighter-rouge">true</code> to the first parameter:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+</code></pre></div></div>
+
+<p>You can <code class="language-plaintext highlighter-rouge">commit</code> or <code class="language-plaintext highlighter-rouge">rollback</code> a transaction by calling <code class="language-plaintext highlighter-rouge">session.commit()</code> or <code class="language-plaintext highlighter-rouge">session.rollback()</code> respectively. On the broker side, each command that you take before calling <code class="language-plaintext highlighter-rouge">session.commit()</code> (like sending a message) gets batched up in a TransactionContext. When commit is made, all of the commands are executed and a Response is sent to the client (i.e., calling commit is a synchronous call. Before calling commit, all other commands are asyc).</p>
+
+<h3 id="openwire-protocol-details">OpenWire protocol details</h3>
+
+<p>This section explains a little more about what’s happening on the wire. The STOMP protocol, as it was designed, is easy to understand and monitor since it’s a text-based protocol. OpenWire, however, is binary, and understanding the interactions that happen isn’t as easy. Some clues might be helpful.</p>
+
+<p>All OpenWire commands are implemented as “command” objects following the Gang of Four <a href="http://en.wikipedia.org/wiki/Command_pattern">Command Pattern</a>. The structure of the objects are described <a href="http://activemq.apache.orgConnectivity/Protocols/OpenWireConnectivity/Protocols/OpenWire/Connectivity/Protocols/OpenWire/openwire-version-2-specification">at the ActiveMQ website</a>, but what about the interactions?</p>
+
+<p>Establishing a connection to the broker: A connection is established between the client and the broker with the client creating a new ActiveMQConnection (most likely using a connection factory of some sort). When a new “connection” is created, the underlying transport mechanisms send a WireFormatInfo command to the broker. This command describes what version and configurations of the OpenWire protocol the client wishes to use. For example, some of the configuration options are the ones listed above that can also be configured on the broker.</p>
+
+<p>When the TCP connection is handled on the broker side, it sends a WireFormatInfo to the client. The purpose of exchanging these WireFormatInfo commands is to be able to negotiate what settings to use as each the client and the server has their own preferred settings. The lowest protocol version between the two is used. When the broker receives the client’s WireFormatInfo command, it negotiates the differences on its side and then sends a BrokerInfo command. Conversely on the client, when it receives the broker’s WireFormatInfo, it negotiates it and sends a ConnectionInfo command. When the broker receives a ConnectionInfo command, it will either ack it with a Response command, or use security settings established globally for the broker or for a given virtual host to determine whether connections are allowed. If a connection is not allowed to the broker or to to virtual host, the broker will kill the connection.</p>
+
+<h3 id="openwire-features-to-be-documented">OpenWire features to be documented</h3>
+
+<ul>
+  <li>Flow Control</li>
+  <li>Persistent Messaging</li>
+  <li>Message Expiration</li>
+</ul>
+
+<h3 id="unsupported-openwire-features">Unsupported OpenWire features:</h3>
+
+<p>You will get bad/undefined behaviour if you try to use any of the following OpenWire features:</p>
+
+<ul>
+  <li>XA transactions</li>
+  <li><a href="http://activemq.apache.org/Features/Consumer Features/message-groups">Message Groups using JMSXGroupID</a></li>
+  <li><a href="http://activemq.apache.org/Features/Consumer Features/retroactive-consumer">Subscription recovery/retroactive consumer</a></li>
+  <li><a href="http://activemq.apache.orgFeatures/Consumer Features/exclusive-consumer">Exclusive Consumer with Priority</a></li>
+  <li><a href="http://activemq.apache.orgFeatures/Destination Features/Features/Destination Features/virtual-destinations">Virtual Destinations</a></li>
+</ul>
+
+<p>You can use Durable Subscriptions and/or <a href="user-manual.md#Mirrored_Queues">Mirrored Queues</a> to get the same/similar behaviour that <a href="http://activemq.apache.orgFeatures/Destination Features/Features/Destination Features/virtual-destinations">Virtual Destinations</a> provide.</p>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

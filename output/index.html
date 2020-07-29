@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="content">
+      <div class="row">
+  <div class="col-12 slider slider-main slider-sm parent d-none d-lg-block">
+    <div class="row child" style="width: 100%">
+      <div class="col-4 align-middle"></div>
+      <div class="col-4 slider-text align-middle">
+        <div class="child">
+          Flexible &amp; Powerful Open Source<br/> Multi-Protocol Messaging
+        </div>
+      </div>
+      <div class="col-4 align-middle" >
+        <img src="/assets/img/activemq_logo_white_vertical.png" style="height: 250px"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row d-none d-lg-block">
+    <div class="col-sm-12 narative">
+      <div class="card">
+        <div class="card-body narative">
+          <span>
+            <p>Apache ActiveMQ&trade; is the most popular open source, multi-protocol, Java-based messaging server. It supports industry standard protocols so users get the benefits of client choices across a broad range of languages and platforms. Connectivity from C, C++, Python, .Net, and more is available. Integrate your multi-platform applications using the ubiquitous <strong>AMQP</strong> protocol. Exchange messages between your web applications using <strong>STOMP</strong> over websockets. Manage your IoT devices using <strong>MQTT</strong>. Support your existing <strong>JMS</strong> infrastructure and beyond. ActiveMQ offers the power and flexibility to support any messaging use-case.</p>
+            <p>There are currently two "flavors" of ActiveMQ available - the "classic" 5.x broker and the "next generation" Artemis broker. Once Artemis reaches a sufficient level of feature parity with the 5.x code-base it will become ActiveMQ 6. Initial <a href="/components/artemis/migration">migration documentation</a> is available.</p>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Components -->
+  <div class="row align-middle">
+    <div class="col-lg-6 col-md-auto">
+      <div class="card card-pink">
+        <div class="card-body">
+          <h4 class="card-title text-pink">ActiveMQ 5 "Classic"</h4>
+          <p>Long established, endlessly pluggable architecture serving many generations of applications.</p>
+          <ul>
+            <li>JMS 1.1 with full client implementation including JNDI</li>
+            <li>High availability using shared storage</li>
+            <li>Familiar JMS-based addressing model</li>
+            <li>"Network of brokers" for distributing load</li>
+            <li>KahaDB & JDBC options for persistence</li>
+          </ul>
+          <a style="margin-top: 10px" href="/components/classic" class="btn btn-secondary">Find out more<i class="fa-info-circle fa btn-icon"></i></a>
+          <a style="margin-top: 10px" href="/components/classic/download" class="btn btn-secondary">Download Latest<i class="fa-download fa btn-icon"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-auto">
+      <div class="card card-purple">
+        <div class="card-body">
+          <h4 class="card-title text-purple">ActiveMQ Artemis</h4>
+          <p>High-performance, non-blocking architecture for the next generation of event-driven messaging applications.</p>
+          <ul>
+            <li>JMS 1.1 & 2.0 with full client implementation including JNDI</li>
+            <li>High availability using shared storage or network replication</li>
+            <li>Simple & powerful protocol agnostic addressing model</li>
+            <li>Flexible clustering for distributing load</li>
+            <li>Advanced journal implementations for low-latency persistence as well as JDBC</li>
+            <li>High feature parity with ActiveMQ 5 to ease migration</li>
+          </ul>
+          <a style="margin-top: 10px" href="/components/artemis" class="btn btn-warning">Find out more<i class="fa-info-circle fa btn-icon"></i></a>
+          <a style="margin-top: 10px" href="/components/artemis/download" class="btn btn-warning">Download Latest<i class="fa-download fa btn-icon"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row narative-alt">
+  <div class="col-12">
+    <div class="container">
+      <!-- Narative 2 -->
+      <div class="row">
+        <div class="col-sm-12 narative-alt">
+          <div class="card">
+            <div class="card-body narative-alt">
+              <div class="card-body narative-alt">
+                <span>Enjoy the benefits of open source by <a href="contact#contributing">contributing to the code-base</a>, asking a question on our <a href="contact#mailing">mailing list</a>, or <a href="contact#issues">reporting a bug or requesting a feature</a>. When you particpate, we all win. That's the power of community. That's the power of open source.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Features -->
+
+<!-- Feature 1 -->
+<div class="row features">
+  <div class="col-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 col-md-4">
+          <div style="padding: 10px;" class="card card-white">
+            <h5 style="margin-left: 10px" class="card-title card-title-purple text-purple">
+              Protect your data & Balance your Load
+            </h5>
+            <!--h6>
+              Subtitle.
+            </h6-->
+            <div class="card-body">
+              <div class="row">
+                <!--div class="col-sm-12 col-lg-12 feature-img">
+                  <img  src="/assets/img/example-diagram.png"></img>
+                </div-->
+                <div class="col-sm-12 col-lg-12 feature-narative">
+                  <p>ActiveMQ provides many advanced features including message load-balancing and high-availability for your data. Multiple connected "master" brokers can dynamically respond to consumer demand by moving messages between the nodes in the background. Brokers can also be paired together in a master-slave configuration so that if a master fails then the slave takes over ensuring clients can get to their important data and eliminating costly downtime.</p>
+                </div>
+                <!--div class="row">
+                  <div class="col-sm-12">
+                    <button style="margin-top: 10px" href="#" class="btn btn-warning">Find out more<i class="fa-info-circle fa btn-icon"></i></button>
+                  </div>
+                </div-->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+          <div style="padding: 10px;" class="card card-white">
+            <h5 style="margin-left: 10px" class="card-title card-title-pink text-pink">
+              Easy Enterprise Integration Patterns
+            </h5>
+            <!--h6>
+              Subtitle
+            </h6-->
+            <div class="card-body">
+              <div class="row">
+                <!--div class="col-sm-12 col-lg-12 feature-img">
+                  <img  src="/assets/img/example-diagram.png"></img>
+                </div-->
+                <div class="col-sm-12 col-lg-12 feature-narative">
+                  <p>Enterprise Integration Patterns describe the various ways in which multiple applications generally interact and integrate with each other. Aysnchronous messaging is at the heart of this integration, and ActiveMQ makes it easy to leverage these patterns via Apache Camel routes deployed directly on the broker.</p>
+                </div>
+                <!--div class="row">
+                  <div class="col-sm-12">
+                    <button style="margin-top: 10px" href="#" class="btn btn-secondary">Find out more<i class="fa-info-circle fa btn-icon"></i></button>
+                  </div>
+                </div-->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+          <div style="padding: 10px;" class="card card-white">
+            <h5 style="margin-left: 10px" class="card-title card-title-orange text-orange">
+              Flexible Deployment
+            </h5>
+            <!--h6>
+              Subtitle.
+            </h6-->
+            <div class="card-body">
+              <div class="row">
+                <!--div class="col-sm-12 col-lg-12 feature-img">
+                  <img  src="/assets/img/example-diagram.png"></img>
+                </div-->
+                <div class="col-sm-12 col-lg-12 feature-narative">
+                  <p>ActiveMQ is most commonly deployed as a standalone process. This option isolates ActiveMQ from any particular application and provides maximum flexibility for resource allocation and management. However, ActiveMQ can be configured to have a very small footprint which makes it viable to <em>embed</em> it within your application. This option can provide an application with simple, powerful messaging semantics and also allow easy message exchange with other applications.</p>
+                </div>
+                <!--div class="row">
+                  <div class="col-sm-12">
+                    <button style="margin-top: 10px" href="#" class="btn btn-danger">Find out more<i class="fa-info-circle fa btn-icon"></i></button>
+                  </div>
+                </div-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--div class="users row">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h2 style="margin-bottom: 20px; color: white">USED BY</h2>
+        </div>
+        <div class="row">
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+          <div class="user-logo col-6 col-md-3">
+            <img src="/assets/img/customers/company-logo.png"  />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div-->
+
+
+    </div>
+    <div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

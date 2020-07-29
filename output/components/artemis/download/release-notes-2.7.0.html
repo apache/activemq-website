@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-artemis">
+    <div class="container">
+      <h1>ActiveMQ Artemis 2.7.0 Release Notes</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 artemis">
+        <p>A complete list of JIRAs for the 2.7.0 release can be found <a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12342977">here</a>.</p>
+
+<p>A list of commits can be found <a href="commit-report-2.7.0">here</a>.</p>
+
+<h4 id="bug">Bug</h4>
+
+<ul>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1018">ARTEMIS-1018</a>] - Duplicate error ids on different error messages</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1058">ARTEMIS-1058</a>] - Jars in web tmp dir locked on Windows</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1536">ARTEMIS-1536</a>] - Incorrect Journal filesize calculation where specified size is lest that the block size when using AIO</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1604">ARTEMIS-1604</a>] - Artemis deadlock using MQTT Protocol</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1710">ARTEMIS-1710</a>] - Allow for management messages to exceed global-max-size limit</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1795">ARTEMIS-1795</a>] - The documentation regarding STOMP and message IDs is not correct</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1825">ARTEMIS-1825</a>] - Live-backup topology not correctly displayed on console</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1858">ARTEMIS-1858</a>] - Expired messages are not traversing bridge with AMQP</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1870">ARTEMIS-1870</a>] - Document Bug: Missing documentation for new parameter “jdbc-journal-sync-period” added for JDBC Persistence</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1872">ARTEMIS-1872</a>] - Correctly check for queue exists before creating shared queue</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1873">ARTEMIS-1873</a>] - AMQ222068: STOMP heartbeat handler is not stopped after StompConnection.destroy()</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1874">ARTEMIS-1874</a>] - NPE in ActiveMQMessage.setObjectProperty</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1875">ARTEMIS-1875</a>] - Redistribution of messages sometimes does not occur if original message sent using link routing via AMQP</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1876">ARTEMIS-1876</a>] - InVMNodeManager shouldn’t be used if no JDBC HA is configured</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1885">ARTEMIS-1885</a>] - max-consumers attribute in queue definition does not work for AMQP client.</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1887">ARTEMIS-1887</a>] - Setting default-max-consumers in addressing setting has no effect on the max-consumers property on matching address queues</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1890">ARTEMIS-1890</a>] - # any-word wildcard doesn’t match zero words if not used at the end of a wildcard expression</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1891">ARTEMIS-1891</a>] - Sending synchronization finished packet starves when thread pool is full</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1893">ARTEMIS-1893</a>] - subscription queues for non-durable subscriptions are not deleted when AMQP links are detached</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1896">ARTEMIS-1896</a>] - Centralize logging of authentication failures</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1900">ARTEMIS-1900</a>] - Race condition in STOMP auto-create causing errors (AMQ339016+AMQ119017)</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1902">ARTEMIS-1902</a>] - Message redistribution is not stopped when consumers count on remote node reaches 0 (AMQP)</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1915">ARTEMIS-1915</a>] - Expire Processing is holding a lock on the queue while scan is taking place</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1919">ARTEMIS-1919</a>] - artemis-core-client TLS SNI and verifyHost operation are not independent</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1920">ARTEMIS-1920</a>] - AMQP throws NPE if connection happens after a cluster restart</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1922">ARTEMIS-1922</a>] - Configuration reload does not work with include files</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1923">ARTEMIS-1923</a>] - Wrongly constructing binding journalimpl</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1924">ARTEMIS-1924</a>] - Adding the ability to configure the AMQP IdleTimeout</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1927">ARTEMIS-1927</a>] - Server is not disconnecting clients on connection reset by peer</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1928">ARTEMIS-1928</a>] - Message conversion on certain body types will cause NPE</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1929">ARTEMIS-1929</a>] - Race condition in STOMP with multiple, identical durable subcribers</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1930">ARTEMIS-1930</a>] - Durable subscription deleted even without durable-subscription-name (STOMP)</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1934">ARTEMIS-1934</a>] - the broker sends duplicate AMQP connection data in certain conditions</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1935">ARTEMIS-1935</a>] - Openwire connection logs failures on close for open sessions</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1936">ARTEMIS-1936</a>] - getQueueNames(String routingType) method should be mark as Operation instead of Attribute</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1939">ARTEMIS-1939</a>] - Remove space from parameter annotations name in ActiveMQServerControl</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1940">ARTEMIS-1940</a>] - premature release of pooled buffers during send can cause AMQP connection failures</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1941">ARTEMIS-1941</a>] - broker changes AMQP body section type during ‘Large’ message handling</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1942">ARTEMIS-1942</a>] - LDAP Configuration is missing</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1943">ARTEMIS-1943</a>] - Removing core specific attributes from broker</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1944">ARTEMIS-1944</a>] - Typo mistake in broker.xml at journal-buffer-timeout explanation</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1945">ARTEMIS-1945</a>] - InVMNodeManager shared state should be volatile</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1949">ARTEMIS-1949</a>] - fix IllegalMonitorStateException during shutdown</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1951">ARTEMIS-1951</a>] - Queue’s user can’t be updated</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1952">ARTEMIS-1952</a>] - NPE logged at warn if MQTT subscriber disconnects abruptly</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1958">ARTEMIS-1958</a>] - Artemis may not be able to delete pages when there are some empty page files</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1959">ARTEMIS-1959</a>] - server startup failure caused by ‘./artemis data print’</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1966">ARTEMIS-1966</a>] - Replication channel closed but not connection if flow controlled during replication</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1970">ARTEMIS-1970</a>] - Clean up LDAP connection in JAAS login module</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1978">ARTEMIS-1978</a>] - AMQP sequencing errors can occur when multi-frame deliveries are multiplexed on a session</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1979">ARTEMIS-1979</a>] - Table names with DB2 should be upper-cases</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1996">ARTEMIS-1996</a>] - MappedSequentialFileFactory may cause DirectByteBuffer memory leaks</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2000">ARTEMIS-2000</a>] - scaleDown/scaledownconnector call does not take routing type into account when creating queues on addresses</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2010">ARTEMIS-2010</a>] - LDAPLoginModule should actively detect unauthenticated Bind requests</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2014">ARTEMIS-2014</a>] - Treat inability to create directory for paging as critial</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2017">ARTEMIS-2017</a>] - Eliminate LRUCache from SelectorParser</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2019">ARTEMIS-2019</a>] - Refactor Artemis ServerPlugin to Seperate concerns</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2020">ARTEMIS-2020</a>] - Use prefixes when useJNDI=false in RA</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2023">ARTEMIS-2023</a>] - Support 1x prefixes for JMS destinations instantiated using session</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2027">ARTEMIS-2027</a>] - handle arriving AMQP deliveries being aborted</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2032">ARTEMIS-2032</a>] - Artemis RA connections disconnected after failover</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2033">ARTEMIS-2033</a>] - Add Spring Boot Integration Example</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2050">ARTEMIS-2050</a>] - It is possible to get AMQ224000: Failure in initialisation: java.lang.NullPointerException during shutdown of backup server with shared store</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2052">ARTEMIS-2052</a>] - DefaultConsumerWindowSize is not properly being applied</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2060">ARTEMIS-2060</a>] - OpenSSL integration broken after Netty upgrade</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2065">ARTEMIS-2065</a>] - Can’t change queue routing-type between restarts</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2066">ARTEMIS-2066</a>] - LegacyJMSConfiguration parser may deploy non-jms queues</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2072">ARTEMIS-2072</a>] - Significant performance degradation introduced after 2.4 when using auto create queues</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2074">ARTEMIS-2074</a>] - ActiveMQConnectionFactory URI is not changing Properties on ServerLocator</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2076">ARTEMIS-2076</a>] - Can’t change queue filter between restarts</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2078">ARTEMIS-2078</a>] - AMQP large messages aren’t consumed between cluster nodes with persistence disabled</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2081">ARTEMIS-2081</a>] - When config reload occurs with deletion policy enabled, queues not created by broker xml are removed</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2084">ARTEMIS-2084</a>] - Failover won’t happen when net cable is disconnected unless Netty Timeout is specified</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2088">ARTEMIS-2088</a>] - Page.write() should throw exception if file is closed</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2089">ARTEMIS-2089</a>] - DB2 sending larger message (1MB) crashes the whole server</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2092">ARTEMIS-2092</a>] - First page messages lost on server crash</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2093">ARTEMIS-2093</a>] - NPE thrown by NettyConnector::createConnection</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2094">ARTEMIS-2094</a>] - Configuration change loss after failover to slave</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2095">ARTEMIS-2095</a>] - TypedProperties thread safety</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2096">ARTEMIS-2096</a>] - AMQP: Refactoring AMQPMessage abstraction for better consistency and performance</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2098">ARTEMIS-2098</a>] - Potential NPE when decoding protocol</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2099">ARTEMIS-2099</a>] - Avoid possible double instantiation of properties</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2100">ARTEMIS-2100</a>] - address routing-type overridden on attaching AMQP sender</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2102">ARTEMIS-2102</a>] - delete paging directory or table if address is removed</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2103">ARTEMIS-2103</a>] - VirtualTopic doesn’t work correctly with multiple consumers</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2105">ARTEMIS-2105</a>] - Discovery group connectors can delay broker shutdown</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2106">ARTEMIS-2106</a>] - Failures during broker start are not clearly logged</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2107">ARTEMIS-2107</a>] - Clarify identity for authn failures in notification</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2108">ARTEMIS-2108</a>] - Potential StackOverflowError when load balancing disabled</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2110">ARTEMIS-2110</a>] - JDBC LeaseLocker repeated renew or renew after aquire can fail in error</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2111">ARTEMIS-2111</a>] - ManagementContext can leak</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2112">ARTEMIS-2112</a>] - Remove JMX properties from start scripts</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2114">ARTEMIS-2114</a>] - hawtio destination delete and purge buttons overlap when pane is resized</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2117">ARTEMIS-2117</a>] - Support custom last-value queue key &amp; non-destructive queues</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2118">ARTEMIS-2118</a>] - Enhanced Message Groups Support</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2123">ARTEMIS-2123</a>] - Paging not stopped if there are no messages on one subscription</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2126">ARTEMIS-2126</a>] - Web server can leak</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2130">ARTEMIS-2130</a>] - Web console display blank ClientID for the core client.</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2131">ARTEMIS-2131</a>] - Error compacting journal</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2133">ARTEMIS-2133</a>] - Artemis tab not showing on IE browser</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2136">ARTEMIS-2136</a>] - Lack of synchronization on CoreMessage.copy may cause issues</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2137">ARTEMIS-2137</a>] - Console retry message is broken</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2139">ARTEMIS-2139</a>] - Message sent to JMSReplyTo from old client does not find correct bindings</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2140">ARTEMIS-2140</a>] - AMQP Shared Subscriptions fail because of RaceCondition</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2144">ARTEMIS-2144</a>] - tx begin failure in ra doesn’t get cleaned up</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2146">ARTEMIS-2146</a>] - Broker throws exception and becomes unresponsive during AMQP messaging</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2149">ARTEMIS-2149</a>] - CoreMessage may have issues encoding if messageChanged is called for any reason.</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2151">ARTEMIS-2151</a>] - JMS Selectors broken in some cases</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2155">ARTEMIS-2155</a>] - Failure to handle packet should force consumer to disconnect</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2156">ARTEMIS-2156</a>] - Message Duplication when using exclusive divert and clustering</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2158">ARTEMIS-2158</a>] - don’t get pagedMessage if it’s nontransactional</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2159">ARTEMIS-2159</a>] - OpenWire will allow one extra message to be sent after address is full</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2160">ARTEMIS-2160</a>] - Cluster connection non-default configuration elements ignored</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2162">ARTEMIS-2162</a>] - Remove -XX:+AggressiveOpts to improve JDK 11 compatibility</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2166">ARTEMIS-2166</a>] - Unable to delete queue with single quote using web console</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2174">ARTEMIS-2174</a>] - Broker reconnect to another with scale down policy cause OOM</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2175">ARTEMIS-2175</a>] - Duplicate messages when JMS bridge is stopped and restarted</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2183">ARTEMIS-2183</a>] - RefsOperation::getDeliveringMessages is broken</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2186">ARTEMIS-2186</a>] - Large message incomplete when server is crashed</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2187">ARTEMIS-2187</a>] - PageCursorInfo put into consumedPages when page is deleting</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2188">ARTEMIS-2188</a>] - Paged large message results in pagingStore sizeInBytes leak when the page is evicted</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2189">ARTEMIS-2189</a>] - Allow deleting temporary destination when originating session is closed</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2190">ARTEMIS-2190</a>] - Core JMS client leaks temporary destination names</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2192">ARTEMIS-2192</a>] - LegacyLDAPSecuritySettingPlugin uses hard-coded RDN types</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2194">ARTEMIS-2194</a>] - Typo in word “update” in class MessageCounterInfo</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2200">ARTEMIS-2200</a>] - NPE while dropping/failing large messages on paging</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2202">ARTEMIS-2202</a>] - Improve MSSQL support for JDBC storage</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2206">ARTEMIS-2206</a>] - The MQTT consumer reconnection caused the queue to not be cleared and throw a NullPointerException exception</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2207">ARTEMIS-2207</a>] - Page Cursor logging warn for previously acked messages</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2210">ARTEMIS-2210</a>] - Fix PagingStore creation synchronization issue</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2214">ARTEMIS-2214</a>] - ARTEMIS-2214 Cache durable&amp;deliveryTime in PagedReference</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2215">ARTEMIS-2215</a>] - largemessage have been consumed but not deleted from the disk during backup and live sync</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2217">ARTEMIS-2217</a>] - ‘MQTTSessionState’ in the ‘SESSIONS ConcurrentHashMap’ never be removed</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2226">ARTEMIS-2226</a>] - (MQTT)In the cluster,the last consumer connection should close the previous consumer connection</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2227">ARTEMIS-2227</a>] - Missing Implementation-Version attribute in MANIFEST.MF</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2228">ARTEMIS-2228</a>] - Check message size sent over management API</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2230">ARTEMIS-2230</a>] - Exception closing advisory consumers when supportAdvisory=false</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2234">ARTEMIS-2234</a>] - Incorrect warning from LoggingConfigurationFileReloader</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2236">ARTEMIS-2236</a>] - Address Latency Impact caused by ARTEMIS-1451</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2238">ARTEMIS-2238</a>] - JMS Producer queueQuery does not work when addressName != queueName</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2242">ARTEMIS-2242</a>] - Enforce Address type broken by ARTEMIS-2229</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2244">ARTEMIS-2244</a>] - checkDepage method placed outside CRITICAL_DELIVER avoid critical analyzer timeout</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2246">ARTEMIS-2246</a>] - Documentation for configuration max-disk-usage is inaccurate.</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2247">ARTEMIS-2247</a>] - Value argument in artermis-service.xml is incorrect</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2248">ARTEMIS-2248</a>] - Don’t create sslEngine with sniHost in NettyConnector</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2251">ARTEMIS-2251</a>] - Large messages might not be deleted when server crashed</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2254">ARTEMIS-2254</a>] - Support UseTopologyForLoadBalancing on JMS ConnectionFactoryConfiguration</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2256">ARTEMIS-2256</a>] - Wrong Topology After Bridge Reconnected</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2257">ARTEMIS-2257</a>] - Synchronize SharedEventLoopGroup shutdownGracefully to prevent race conditions</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2259">ARTEMIS-2259</a>] - Client session not exist if reattach on new connection timeout</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2264">ARTEMIS-2264</a>] - PurgeOnNoConsumers prevent removal of messages with replication</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2274">ARTEMIS-2274</a>] - sending a close to JournalBufferSize message cause Critical IO Error</li>
+</ul>
+
+<h2 id="new-feature">New Feature</h2>
+
+<ul>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-856">ARTEMIS-856</a>] - Support advanced destination options</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1545">ARTEMIS-1545</a>] - JMS MessageProducer fails to expose exception on send when message is sent non-persistent, but not authorised</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1856">ARTEMIS-1856</a>] - Add support for delays before deleting addresses and queues</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1892">ARTEMIS-1892</a>] - Allow whitespace in <acceptor></acceptor></li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1917">ARTEMIS-1917</a>] - Support logging HTTP access</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2008">ARTEMIS-2008</a>] - Add a CLI command to purge queue</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2022">ARTEMIS-2022</a>] - Create count messages “group by” this property filter</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2028">ARTEMIS-2028</a>] - Add OpenTracing support</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2116">ARTEMIS-2116</a>] - Set text message content on producer CLI command</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2121">ARTEMIS-2121</a>] - Reload logging configuration at runtime</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2141">ARTEMIS-2141</a>] - Display “Filter” column in Consumers View of AdminUI</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2150">ARTEMIS-2150</a>] - Counts the number of delivering messages in this queue</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2241">ARTEMIS-2241</a>] - Support direct deliver for InVMAcceptors</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2243">ARTEMIS-2243</a>] - Support user and role manipulation for PropertiesLoginModule via management interfaces</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2245">ARTEMIS-2245</a>] - Implement Docker images</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2258">ARTEMIS-2258</a>] - The FileLockNodeManager directory should be configurable</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2262">ARTEMIS-2262</a>] - Correlate management response messages with request message.</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2263">ARTEMIS-2263</a>] - Add support to configure auto-delete-queue at the queue level</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2273">ARTEMIS-2273</a>] - Adding Audit Log</li>
+</ul>
+
+<h2 id="improvement">Improvement</h2>
+
+<ul>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-196">ARTEMIS-196</a>] - Implementing Consumer Priority</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1778">ARTEMIS-1778</a>] - let artemis test suite be used against an external security enabled broker</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1866">ARTEMIS-1866</a>] - Make wait time for reply configurable once vote goes out to acquire a quorum.</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1867">ARTEMIS-1867</a>] - Support FQQN for producers</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1888">ARTEMIS-1888</a>] - Add forceSSLParameters flag to core client to prefer local SSL properties over System properties</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1895">ARTEMIS-1895</a>] - Add duplicate metadata failure callback to ActiveMQServerPlugin</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1897">ARTEMIS-1897</a>] - STOMP should use core session for authentication</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1903">ARTEMIS-1903</a>] - Log STOMP ERROR frames at WARN on the broker</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1947">ARTEMIS-1947</a>] - Return meta-data in JSON session management ops</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1961">ARTEMIS-1961</a>] - Track routed and unrouted messages sent to an address</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1971">ARTEMIS-1971</a>] - Support connection pooling in LDAPLoginModule</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1977">ARTEMIS-1977</a>] - ASYNCIO can reduce sys-calls to retrieve I/O events</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1980">ARTEMIS-1980</a>] - Warn on failed check of table existence should be info</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1981">ARTEMIS-1981</a>] - JDBCJournalImpl constructor isn’t using tableName parameter</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1987">ARTEMIS-1987</a>] - Support configuring a default consumer window size via Address Settings</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2003">ARTEMIS-2003</a>] - Add support for Bridge metrics</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2018">ARTEMIS-2018</a>] - Artemis ServerPlugin support for Bridging events</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2044">ARTEMIS-2044</a>] - Add broker plugin methods to handle errors during “send”/”route” operations</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2045">ARTEMIS-2045</a>] - [AMQP] Add support for setting delivery annotations on outgoing messages</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2051">ARTEMIS-2051</a>] - Add trace logging for JDBC</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2058">ARTEMIS-2058</a>] - Allow setting of any value (not just bytes) in AMQPMessage.extraProperties</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2062">ARTEMIS-2062</a>] - AMQP: Reduce lock contention and allocations on message processing</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2063">ARTEMIS-2063</a>] - Improve logging around address &amp; queue deployment</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2064">ARTEMIS-2064</a>] - Make address &amp; queue deployment more robust</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2067">ARTEMIS-2067</a>] - AMQP: Cleanup some proton event handling code</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2068">ARTEMIS-2068</a>] - broker should avoid reading any file to get AMQP large msg size</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2075">ARTEMIS-2075</a>] - Extra backups only try to replicate once</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2085">ARTEMIS-2085</a>] - Improve validation of MDB activation config properties values</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2087">ARTEMIS-2087</a>] - Support masked passwords in management.xml</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2125">ARTEMIS-2125</a>] - Queue preference changes to display columns not persistent through page refresh</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2127">ARTEMIS-2127</a>] - Add auth details to consumer created notification</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2142">ARTEMIS-2142</a>] - Support JMSXGroupSeq -1 to close/reset Groups</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2157">ARTEMIS-2157</a>] - Add Information on Paths for CriticalAnalyzer</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2163">ARTEMIS-2163</a>] - Classloading issue if artemis-commons is not in ther same classloader as artemis-client-* or artemis-server</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2169">ARTEMIS-2169</a>] - Allow configuration of RMI registry port</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2170">ARTEMIS-2170</a>] - Optimized CoreMessage’s checkProperties and cleanupInternalProperties methods</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2178">ARTEMIS-2178</a>] - Support routing-type configuration on core bridge</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2179">ARTEMIS-2179</a>] - Add management method to get cluster-connection names</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2196">ARTEMIS-2196</a>] - Avoid creating RandomAccessFile when FileChannel is needed</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2198">ARTEMIS-2198</a>] - Reduce GC pressure on TransactionImpl and OperationContextImpl</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2205">ARTEMIS-2205</a>] - Make AMQP Processing Single Threaded and other AMQP perf improvements</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2208">ARTEMIS-2208</a>] - Unit Tests POM file contains version value and not parameter</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2211">ARTEMIS-2211</a>] - Refactor ByteBuffer pooling, alignment and zeroing</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2212">ARTEMIS-2212</a>] - Avoid using CLQ on ServerConsumerImpl</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2216">ARTEMIS-2216</a>] - Use a specific executor for pageSyncTimer</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2220">ARTEMIS-2220</a>] - Fix PageCursorStressTest::testSimpleCursorWithFilter NPE</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2221">ARTEMIS-2221</a>] - Avoid unnecessary Bindings instance creation</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2222">ARTEMIS-2222</a>] - why the position remains unchanged if ignored is set to true</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2224">ARTEMIS-2224</a>] - Reduce contention on LivePageCacheImpl</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2235">ARTEMIS-2235</a>] - Username and password logged in browser log</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2239">ARTEMIS-2239</a>] - Zero-copy NIO/MAPPED TimedBuffer</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2240">ARTEMIS-2240</a>] - ActiveMQThreadPoolExecutor should use LinkedTransferQueue</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2249">ARTEMIS-2249</a>] - Update proton cpp example to use correct latest client libs</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2260">ARTEMIS-2260</a>] - Move artemis-native as its own project, as activemq-artemis-native</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2265">ARTEMIS-2265</a>] - Support Federated Queues and Addresses</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2269">ARTEMIS-2269</a>] - Karaf config should use predefined etc-dir instead of hard-coded etc</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2271">ARTEMIS-2271</a>] - Upgrade to Netty Libs to Latest</li>
+</ul>
+
+<h2 id="test">Test</h2>
+
+<ul>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1853">ARTEMIS-1853</a>] - Adding Netty OpenSSL provider test</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1868">ARTEMIS-1868</a>] - Openwire doesn’t add delivery count in client ack mode</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1894">ARTEMIS-1894</a>] - NetworkHeathTest hits apache.org (or fails to) as a side effect</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2104">ARTEMIS-2104</a>] - Implement tests for Import/Export (replay) of messages</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2201">ARTEMIS-2201</a>] - Create tests on DEFAULT_JOURNAL_FILE_OPEN_TIMEOUT value</li>
+</ul>
+
+<h2 id="task">Task</h2>
+
+<ul>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1882">ARTEMIS-1882</a>] - Verify PKCS12 keystores work</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1912">ARTEMIS-1912</a>] - Review Documentation</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1913">ARTEMIS-1913</a>] - Dependency to tcpnative should be optional</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1914">ARTEMIS-1914</a>] - NPE on ConfigurationImpl if maskPassword=null</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1918">ARTEMIS-1918</a>] - RemotingConnectionImpl contains unused private clientID field used by toString()</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1926">ARTEMIS-1926</a>] - Refactor SSLSupport</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1931">ARTEMIS-1931</a>] - Create a Camel example</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1938">ARTEMIS-1938</a>] - AMQP: Update Qpid JMS (and Netty) and Proton-J to latest</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1948">ARTEMIS-1948</a>] - AMQPLite example with a High Performant Producer and Consumer</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1950">ARTEMIS-1950</a>] - Clarify STOMP durable subscription header names</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1954">ARTEMIS-1954</a>] - Eliminate all possible usage of JMSServerManager</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1956">ARTEMIS-1956</a>] - Move MessageCounterInfo from server module to core-client module</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1957">ARTEMIS-1957</a>] - Update management notification documentation</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1974">ARTEMIS-1974</a>] - Document LDAP role expansion functionality</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-1991">ARTEMIS-1991</a>] - Document Advanced Destination Options</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2036">ARTEMIS-2036</a>] - Recompile libaio on an older kernel version for compatibility with older boxes.</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2086">ARTEMIS-2086</a>] - Remove HDRHistogram dependency</li>
+  <li>[<a href="https://issues.apache.org/jira/browse/ARTEMIS-2148">ARTEMIS-2148</a>] - getDoubleProperty changes the message</li>
+</ul>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

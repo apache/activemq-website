@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Networks of Brokers</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p><a href="features">Features</a> &gt; <a href="clustering">Clustering</a> &gt; <a href="networks-of-brokers">Networks of Brokers</a></p>
+
+<p>To provide massive scalability of a large messaging fabric you typically want to allow many brokers to be connected together into a network so that you can have as many clients as you wish all logically connected together - and running as many message brokers as you need based on your number of clients and network topology.</p>
+
+<p>If you are using <a href="topologies">client/server or hub/spoke style topology</a> then the broker you connect to becomes a single point of failure which is another reason for wanting a network (or cluster) of brokers so that you can survive failure of any particular broker, machine or subnet.</p>
+
+<p>From 1.1 onwards of ActiveMQ supports <em>networks of brokers</em> which allows us to support <a href="how-do-distributed-queues-work">distributed queues and topics</a> across a network of brokers.</p>
+
+<p>This allows a client to connect to any broker in the network - and fail over to another broker if there is a failure - providing from the clients perspective a <a href="ha">HA</a> cluster of brokers.</p>
+
+<p><strong>N.B.</strong> By default a network connection is one way only - the broker that establishes the connection <em>passes messages to</em> the broker(s) its connected to. From version 5.x of ActiveMQ, a network connection can be optionally enabled to be duplex, which can be useful for hub and spoke architectures, where the hub is behind a firewall etc.</p>
+
+<h2 id="configuring-a-network-of-brokers">Configuring a network of brokers</h2>
+
+<p>The easiest way to configure a network of brokers is via the <a href="xml-configuration">Xml Configuration</a>. There are two main ways to create a network of brokers</p>
+
+<ul>
+  <li>
+    <p>use a hard coded list of networkConnector elements.</p>
+  </li>
+  <li>
+    <p>use Discovery to detect brokers (multicast or rendezvous).</p>
+  </li>
+</ul>
+
+<h3 id="example-with-a-fixed-list-of-uris">Example with a fixed list of URIs</h3>
+
+<p>Here is an example of using the fixed list of URIs</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;beans xmlns="http://activemq.org/config/1.0"&gt;
+
+  &lt;broker brokerName="receiver" persistent="false" useJmx="false"&gt;  
+    &lt;networkConnectors&gt;
+      &lt;networkConnector uri="static:(tcp://localhost:62001)"/&gt;
+    &lt;/networkConnectors&gt;
+
+    &lt;persistenceAdapter&gt;
+      &lt;memoryPersistenceAdapter/&gt;
+    &lt;/persistenceAdapter&gt;
+
+   &lt;transportConnectors&gt;
+      &lt;transportConnector uri="tcp://localhost:62002"/&gt;
+    &lt;/transportConnectors&gt;
+  &lt;/broker&gt;
+
+&lt;/beans&gt;
+</code></pre></div></div>
+<p>ActiveMQ also supports other transports than tcp to be used for the network connector such as http.</p>
+
+<h3 id="example-using-multicast-discovery">Example using multicast discovery</h3>
+
+<p>This example uses multicast <a href="http://activemq.apache.orgFeatures/discovery">discovery</a></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;beans xmlns="http://activemq.org/config/1.0"&gt;
+
+  &lt;broker name="sender" persistent="false" useJmx="false"&gt;  
+    &lt;networkConnectors&gt;
+      &lt;networkConnector uri="multicast://default"/&gt;
+    &lt;/networkConnectors&gt;
+
+    &lt;persistenceAdapter&gt;
+      &lt;memoryPersistenceAdapter/&gt;
+    &lt;/persistenceAdapter&gt;
+
+  &lt;transportConnectors&gt;
+      &lt;transportConnector uri="tcp://localhost:0" discoveryUri="multicast://default"/&gt;
+    &lt;/transportConnectors&gt;
+  &lt;/broker&gt;
+
+&lt;/beans&gt;
+</code></pre></div></div>
+
+<h2 id="starting-network-connectors">Starting network connectors</h2>
+
+<p>By default, network connectors are initiated serially as part of the broker start up sequence. When some networks are slow, they prevent other networks from starting in a timely manner. Version 5.5 supports the broker attribute networkConnectorStartAsync=”true” which will cause the broker to use an executor to start network connectors in parallel, asynchronous to a broker start.</p>
+
+<h2 id="static-discovery">Static discovery</h2>
+
+<p>With <code class="language-plaintext highlighter-rouge">static:</code> discovery you can hard code the list of broker URLs. A network connector will be created for each one.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnectors&gt;
+  &lt;networkConnector uri="static:(tcp://host1:61616,tcp://host2:61616,tcp://..)"/&gt;
+&lt;/networkConnectors&gt;
+</code></pre></div></div>
+<p>There are some useful properties you can set on a static network connector for retries:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>property</th>
+      <th>default</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>initialReconnectDelay</td>
+      <td>1000</td>
+      <td>time(ms) to wait before attempting a reconnect (if useExponentialBackOff is false)</td>
+    </tr>
+    <tr>
+      <td>maxReconnectDelay</td>
+      <td>30000</td>
+      <td>time(ms) to wait before attempting to re-connect</td>
+    </tr>
+    <tr>
+      <td>useExponentialBackOff</td>
+      <td>true</td>
+      <td>increases time between reconnect for every failure in a reconnect sequence</td>
+    </tr>
+    <tr>
+      <td>backOffMultiplier</td>
+      <td>2</td>
+      <td>multipler used to increase the wait time if using exponential back off</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>e.g.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uri="static:(tcp://host1:61616,tcp://host2:61616)?maxReconnectDelay=5000&amp;useExponentialBackOff=false"
+</code></pre></div></div>
+
+<h2 id="masterslave-discovery">MasterSlave Discovery</h2>
+
+<p>A common configuration option for a network of brokers is to establish a network bridge between a broker and an n+1 broker pair (master/slave). Typical configurations involve using the <code class="language-plaintext highlighter-rouge">failover:</code> transport, but there are a some other non-intuitive options that must be configured for it to work as desired. For this reason, ActiveMQ v5.6+ has a convenience discovery agent that can be specified with the <code class="language-plaintext highlighter-rouge">masterslave:</code> transport prefix:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnectors&gt;
+  &lt;networkConnector uri="masterslave:(tcp://host1:61616,tcp://host2:61616,tcp://..)"/&gt;
+&lt;/networkConnectors&gt;
+</code></pre></div></div>
+<p>The URIs are listed in order for: MASTER,SLAVE1,SLAVE2…SLAVE<img src="https://cwiki.apache.org/confluence/s/en_GB/5997/6f42626d00e36f53fe51440403446ca61552e2a2.1/_/images/icons/emoticons/thumbs_down.png" alt="(thumbs down)" /></p>
+
+<p>The same configuration options for <code class="language-plaintext highlighter-rouge">static:</code> are available for <code class="language-plaintext highlighter-rouge">masterslave:</code></p>
+
+<h2 id="networkconnector-properties">NetworkConnector Properties</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>property</th>
+      <th>default</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>name</td>
+      <td>bridge</td>
+      <td>name of the network - for more than one network connector between the same two brokers - use different names</td>
+    </tr>
+    <tr>
+      <td>dynamicOnly</td>
+      <td>false</td>
+      <td>if true, only activate a networked durable subscription when a corresponding durable subscription reactivates, by default they are activated on startup.</td>
+    </tr>
+    <tr>
+      <td>decreaseNetworkConsumerPriority</td>
+      <td>false</td>
+      <td>if true, starting at priority -5, decrease the priority for dispatching to a network Queue consumer the further away it is (in network hops) from the producer. When false all network consumers use same default priority(0) as local consumers</td>
+    </tr>
+    <tr>
+      <td>networkTTL</td>
+      <td>1</td>
+      <td>the number of brokers in the network that messages and subscriptions can pass through (sets both message&amp;consumer -TTL)</td>
+    </tr>
+    <tr>
+      <td>messageTTL</td>
+      <td>1</td>
+      <td>(version 5.9) the number of brokers in the network that messages can pass through</td>
+    </tr>
+    <tr>
+      <td>consumerTTL</td>
+      <td>1</td>
+      <td>(version 5.9) the number of brokers in the network that subscriptions can pass through (keep to 1 in a mesh)</td>
+    </tr>
+    <tr>
+      <td>conduitSubscriptions</td>
+      <td>true</td>
+      <td>multiple consumers subscribing to the same destination are treated as one consumer by the network</td>
+    </tr>
+    <tr>
+      <td>excludedDestinations</td>
+      <td>empty</td>
+      <td>destinations matching this list won’t be forwarded across the network (this only applies to dynamicallyIncludedDestinations)</td>
+    </tr>
+    <tr>
+      <td>dynamicallyIncludedDestinations</td>
+      <td>empty</td>
+      <td>destinations that match this list <strong>will</strong> be forwarded across the network <strong>n.b.</strong> an empty list means all destinations not in the exluded list will be forwarded</td>
+    </tr>
+    <tr>
+      <td>useVirtualDestSubs</td>
+      <td>false</td>
+      <td>if true, the network connection will listen to advisory messages for virtual destination consumers</td>
+    </tr>
+    <tr>
+      <td>staticallyIncludedDestinations</td>
+      <td>empty</td>
+      <td>destinations that match will always be passed across the network - even if no consumers have ever registered an interest</td>
+    </tr>
+    <tr>
+      <td>duplex</td>
+      <td>false</td>
+      <td>if true, a network connection will be used to both produce <strong><em>AND</em></strong> Consume messages. This is useful for hub and spoke scenarios when the hub is behind a firewall etc.</td>
+    </tr>
+    <tr>
+      <td>prefetchSize</td>
+      <td>1000</td>
+      <td>Sets the <a href="what-is-the-prefetch-limit-for">prefetch size</a> on the network connector’s consumer. It must be &gt; 0 because network consumers do not poll for messages</td>
+    </tr>
+    <tr>
+      <td>suppressDuplicateQueueSubscriptions</td>
+      <td>false</td>
+      <td>(from 5.3) if true, duplicate subscriptions in the network that arise from network intermediaries will be suppressed. For example, given brokers A,B and C, networked via multicast discovery. A consumer on A will give rise to a networked consumer on B and C. In addition, C will network to B (based on the network consumer from A) and B will network to C. When true, the network bridges between C and B (being duplicates of their existing network subscriptions to A) will be suppressed. Reducing the routing choices in this way provides determinism when producers or consumers migrate across the network as the potential for dead routes (stuck messages) are eliminated. networkTTL needs to match or exceed the broker count to require this intervention.</td>
+    </tr>
+    <tr>
+      <td>bridgeTempDestinations</td>
+      <td>true</td>
+      <td>Whether to broadcast advisory messages for created temp destinations in the network of brokers or not. Temp destinations are typically created for request-reply messages. Broadcasting the information about temp destinations is turned on by default so that consumers of a request-reply message can be connected to another broker in the network and still send back the reply on the temporary destination specified in the JMSReplyTo header. In an application scenario where most/all messages use request-reply pattern, this will generate additional traffic on the broker network as every message typically sets a unique JMSReplyTo address (which causes a new temp destination to be created and broadcasted via an advisory message in the network of brokers). When disabling this feature such network traffic can be reduced but then producer and consumers of a request-reply message need to be connected to the same broker. Remote consumers (i.e. connected via another broker in your network) won’t be able to send the reply message but instead raise a “temp destination does not exist” exception.</td>
+    </tr>
+    <tr>
+      <td>alwaysSyncSend</td>
+      <td>false</td>
+      <td>(version 5.6) When true, non persistent messages are sent to the remote broker using request/reply in place of a oneway. This setting treats both persistent and non-persistent messages the same.</td>
+    </tr>
+    <tr>
+      <td>staticBridge</td>
+      <td>false</td>
+      <td>(version 5.6) If set to true, broker will not dynamically respond to new consumers. It will only use <code class="language-plaintext highlighter-rouge">staticallyIncludedDestinations</code> to create demand subscriptions</td>
+    </tr>
+    <tr>
+      <td>userName</td>
+      <td>null</td>
+      <td>The username to authenticate against the remote broker</td>
+    </tr>
+    <tr>
+      <td>password</td>
+      <td>null</td>
+      <td>The password for the username to authenticate against the remote broker</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="reliability">Reliability</h4>
+
+<p>Networks of brokers do reliable store and forward of messages. If the source is durable, persistent messages on a queue or a durable topic subscription, a network will retain the durability guarantee.<br />
+However networks cannot add durability when the source is non durable. Non durable topic subscriptions and temporary destinations (both queues and topics) are non durable by definition. When non durable<br />
+sources are networked, in the event of a failure, inflight messages can be lost.</p>
+
+<h4 id="ordering">Ordering</h4>
+
+<p>Total message ordering is not preserved with networks of brokers. Total ordering <a href="how-do-i-preserve-order-of-messages">works with a single consumer</a> but a networkBridge introduces a second consumer. In addition, network bridge consumers forward messages via producer.send(..), so they go from the head of the queue on the forwarding broker to the tail of the queue on the target. If single consumer moves between networked brokers, total order may be preserved if all messages always follow the consumer but this can be difficult to guarantee with large message backlogs.</p>
+
+<h4 id="when-to-use-and-not-use-conduit-subscriptions">When to use and not use Conduit subscriptions</h4>
+
+<p>ActiveMQ relies on information about active consumers (subscriptions) to pass messages around the network. A broker interprets a subscription from a remote (networked) broker in the same way as it would a subscription from a local client connection and routes a copy of any relevant message to each subscription. With Topic subscriptions and with more than one remote subscription, a remote broker would interpret each message copy as valid, so when it in turns routes the messages to its own local connections, duplicates would occur. Hence default conduit behavior consolidates all matching subscription information to prevent duplicates flowing around the network. With this default behaviour, N subscriptions on a remote broker look like a single subscription to the networked broker.</p>
+
+<p>However - duplicate subscriptions is a useful feature to exploit if you are only using Queues. As the load balancing algorithm will attempt to share message load evenly, consumers across a network will equally share the message load only if the flag <code class="language-plaintext highlighter-rouge">conduitSubscriptions=false</code>. Here’s an example. Suppose you have two brokers, A and B, that are connected to one another via a forwarding bridge. Connected to broker A, you have a consumer that subscribes to a queue called <code class="language-plaintext highlighter-rouge">Q.TEST</code>. Connected to broker B, you have two consumers that also subscribe to <code class="language-plaintext highlighter-rouge">Q.TEST</code>. All consumers have equal priority. Then you start a producer on broker A that writes 30 messages to <code class="language-plaintext highlighter-rouge">Q.TEST</code>. By default, (<code class="language-plaintext highlighter-rouge">conduitSubscriptions=true</code>), 15 messages will be sent to the consumer on broker A and the resulting 15 messages will be sent to the two consumers on broker B. The message load has not been equally spread across all three consumers because, by default, broker A views the two subscriptions on broker B as one. If you had set <code class="language-plaintext highlighter-rouge">conduitSubscriptions</code> to <code class="language-plaintext highlighter-rouge">false</code>, then each of the three consumers would have been given 10 messages.</p>
+
+<h4 id="duplex-network-connectors">Duplex network connectors</h4>
+
+<p>By default a network bridge forwards messages on demand in one direction over a single connection. When <code class="language-plaintext highlighter-rouge">duplex=true</code>, the same connection is used for a network bridge in the opposite directions, resulting in a bi-directional bridge. The network bridge configuration is propagated to the other broker so the duplex bridge is an exact replica or the original.</p>
+
+<p>Given two brokers, broker A and broker B, a duplex bridge on A to B is the same as a default bridge on A to B and a default bridge on B to A.</p>
+
+<p>Note, if you want to configure more than one duplex network bridge between two brokers, to increase throughput or to partition topics and queues, you must provide unique names for each:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnectors&gt;
+        &lt;networkConnector name="SYSTEM1" duplex="true" uri="static:(tcp://10.x.x.x:61616)"&gt;
+                &lt;dynamicallyIncludedDestinations&gt;
+                        &lt;topic physicalName="outgoing.System1" /&gt;
+                &lt;/dynamicallyIncludedDestinations&gt;
+        &lt;/networkConnector&gt;
+        &lt;networkConnector name="SYSTEM2" duplex="true" uri="static:(tcp://10.x.x.x:61616)"&gt;
+                &lt;dynamicallyIncludedDestinations&gt;
+                        &lt;topic physicalName="outgoing.System2"/&gt;
+                &lt;/dynamicallyIncludedDestinations&gt;
+        &lt;/networkConnector&gt;
+  &lt;/networkConnectors&gt;
+</code></pre></div></div>
+
+<h4 id="conduit-subscriptions-and-consumer-selectors">Conduit subscriptions and consumer selectors</h4>
+
+<p>Conduit subscriptions ignore consumer selectors on the local broker and send all messages to the remote one. Selectors are then parsed on the remote brokers before messages are dispatched to consumers. This concept could create some problems with consuming on queues using selectors in a multi-broker network. Imagine a situation when you have a producing broker forwarding messages to two receiving brokers and each of these two brokers have a consumer with different selector. Since no selectors are evaluated on the producer broker side, you can end up with all messages going to only one of the brokers, so messages with certain property will not be consumed. If you need to support this use case, please turn off <code class="language-plaintext highlighter-rouge">conduitSubscription</code> feature.</p>
+
+<h4 id="configuration-pitfalls">Configuration Pitfalls</h4>
+
+<blockquote>
+  <p>Networks do not work as expected (they cannot dynamically respond to new consumers) if the <code class="language-plaintext highlighter-rouge">advisorySupport</code> broker property is disabled. A fully statically configured network is the only option if <code class="language-plaintext highlighter-rouge">advisorySupport</code> is disabled. Read more about it in the following section.</p>
+</blockquote>
+
+<h3 id="networks-of-brokers-and-advisories">Networks of brokers and advisories</h3>
+
+<p>Network of brokers relies heavily on advisory messages, as they are used under the hood to express interest in new consumers on the remote end. By default, when network connector starts it defines one consumer on the following topic <code class="language-plaintext highlighter-rouge">ActiveMQ.Advisory.Consumer.&gt;</code> (let’s ignore temporary destination for the moment). In this way, when consumer connects (or disconnects) to the remote broker, the local broker will get notified and will treat it as one more consumer it had to deal with.</p>
+
+<p>This is all fine and well in small networks and environments whit small number of destinations and consumers. But as things starts to grow a default model (listen to everything, share everything) won’t scale well. That’s why there are many ways you can use to filter destinations that will be shared between brokers.</p>
+
+<h4 id="dynamic-networks">Dynamic networks</h4>
+
+<p>Let’s start with dynamically configured networks. This means that we only want to send messages to the remote broker when there’s a consumer there. If we want to limit this behavior only on certain destinations we will use <code class="language-plaintext highlighter-rouge">dynamicallyIncludedDestinations</code>, like</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnector uri="static:(tcp://host)"&gt;
+  &lt;dynamicallyIncludedDestinations&gt;
+    &lt;queue physicalName="include.test.foo"/&gt;
+    &lt;topic physicalName="include.test.bar"/&gt;
+  &lt;/dynamicallyIncludedDestinations&gt;
+&lt;/networkConnector&gt;
+</code></pre></div></div>
+<p>In versions of ActiveMQ prior to 5.6, the broker would still use the same advisory filter and express interest in all consumers on the remote broker. The actual filtering will be done during message dispatch. This is suboptimal solution in huge networks as it creates a lot of “advisory” traffic and load on the brokers. Starting with version 5.6, the broker will automatically create an appropriate advisory filter and express interest only in dynamically included destinations. For our example it will be “<code class="language-plaintext highlighter-rouge">ActiveMQ.Advisory.Consumer.Queue.include.test.foo,ActiveMQ.Advisory.Consumer.Topic.include.test.bar</code>”. This can dramatically improve behavior of the network in complex and high-load environments.</p>
+
+<p>In older broker versions we can achieve the same thing with a slightly more complicated configuration. The actual advisory filter that controls in which consumers we are interested is defined with the <code class="language-plaintext highlighter-rouge">destinationFilter</code> connector property. Its default value is “&gt;”, which is concatenated to the <code class="language-plaintext highlighter-rouge">"ActiveMQ.Advisory.Consumer."</code> prefix. So to achieve the same thing, we would need to do the following:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnector uri="static:(tcp://host)" destinationFilter="Queue.include.test.foo,ActiveMQ.Advisory.Consumer.Topic.include.test.bar"&gt;
+  &lt;dynamicallyIncludedDestinations&gt;
+    &lt;queue physicalName="include.test.foo"/&gt;
+    &lt;topic physicalName="include.test.bar"/&gt;
+  &lt;/dynamicallyIncludedDestinations&gt;
+&lt;/networkConnector&gt;
+</code></pre></div></div>
+<p>Note that first destination does not have the prefix because it’s already implied. It’s a bit more complicated to set and maintain, but it will work. And if you’re using 5.6 or newer version of the broker just including desired destinations with <code class="language-plaintext highlighter-rouge">dynamicallyIncludedDestinations</code> should suffice.</p>
+
+<p>This also explains why dynamic networks do not work if you turn off advisory support on the brokers. The brokers in this case cannot dynamically respond to new consumers.</p>
+
+<h4 id="pure-static-networks">Pure static networks</h4>
+
+<p>If you wish to completely protect the broker from any influence of consumers on the remote broker, or if you wish to use the brokers as a simple proxy and forward all messages to the remote side no matter if there are consumers there or not, static networks are something you should consider.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnector uri="static:(tcp://host)" staticBridge="true"&gt;
+        &lt;staticallyIncludedDestinations&gt;
+      		&lt;queue physicalName="always.include.queue"/&gt;
+        &lt;/staticallyIncludedDestinations&gt;
+&lt;/networkConnector&gt;
+</code></pre></div></div>
+<p>The <code class="language-plaintext highlighter-rouge">staticBridge</code> parameter is available since version 5.6 and it means that the local broker will not subscribe to any advisory topics on the remote broker, meaning it is not interested in whether there are any consumers there. Additionally, you need to add a list of destinations to <code class="language-plaintext highlighter-rouge">staticallyIncludedDestinations</code>. This will have the same effect as having an additional consumer on the destinations so messages will be forwarded to the remote broker as well. As there is no <code class="language-plaintext highlighter-rouge">staticBridge</code> parameter in the earlier versions of ActiveMQ, you can trick the broker by setting <code class="language-plaintext highlighter-rouge">destinationFilter</code> to listen to an unused advisory topic, like</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnector uri="static:(tcp://host)" destinationFilter="NO_DESTINATION"&gt;
+        &lt;staticallyIncludedDestinations&gt;
+      		&lt;queue physicalName="always.include.queue"/&gt;
+        &lt;/staticallyIncludedDestinations&gt;
+&lt;/networkConnector&gt;
+</code></pre></div></div>
+<p>If configured like this, broker will try to listen for new consumers on <code class="language-plaintext highlighter-rouge">ActiveMQ.Advisory.Consumer.NO_DESTINATION</code>, which will never have messages so it will be protected from information on remote broker consumers.</p>
+
+<h3 id="dynamic-networks-and-virtual-destinations-new-for-5130">Dynamic networks and Virtual Destinations (New for 5.13.0)</h3>
+
+<p>As described above, a network of brokers can be configured to only send messages to a remote broker when there’s a consumer on an included destination.  However, let’s consider some cases of how dynamic flow occurs when <a href="virtual-destinations">Virtual Destinations</a> are in use.</p>
+
+<h4 id="virtual-destination-consumers-and-composite-destinations">Virtual Destination consumers and Composite Destinations</h4>
+
+<p>Here is an example of two brokers networked together.  The Local Broker contains the network connector configured with a <code class="language-plaintext highlighter-rouge">dynamicallyIncludedDestination</code> and the Remote Broker is configured with a CompositeTopic:</p>
+
+<p><strong>Local Broker</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnector uri="static:(tcp://host)"&gt;
+	&lt;dynamicallyIncludedDestinations&gt;
+    	&lt;topic physicalName="include.bar"/&gt;
+	&lt;/dynamicallyIncludedDestinations&gt;
+&lt;/networkConnector&gt;
+</code></pre></div></div>
+
+<p><strong>Remote Broker</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;compositeTopic name="include.bar" forwardOnly="false"&gt;
+    &lt;forwardTo&gt;
+        &lt;queue physicalName="include.bar.forward" /&gt;
+    &lt;/forwardTo&gt;
+&lt;/compositeTopic &gt;
+</code></pre></div></div>
+<p>In this example, let’s consider a single consumer on the Remote Broker on the queue <code class="language-plaintext highlighter-rouge">include.bar.forward</code>.  If a message is sent directly to the Remote Broker on the topic <code class="language-plaintext highlighter-rouge">include.bar</code>, it will be forwarded to the queue <code class="language-plaintext highlighter-rouge">include.bar.forward</code> and the consumer will receive it.  However, if a message is published to the same topic on the Local Broker, this message will not be forwarded to the Remote Broker.</p>
+
+<p>The message is not forwarded because a consumer on the <code class="language-plaintext highlighter-rouge">queue include.bar.forward</code> would not be detected as part of the <code class="language-plaintext highlighter-rouge">dynamicallyIncludedDestinations</code> list in the Local Broker.  Messages would not be forwarded to the Remote Broker unless there was a consumer on the original topic as well (in this case <code class="language-plaintext highlighter-rouge">include.bar</code>).  This can be fixed by configuring the Local Broker to listen for Virtual Destination Subscriptions.  </p>
+
+<p>First, we need to configure the Remote Broker to send advisory messages when consumers subscribe to a destination that matches a Virtual Destination.  In this case, internally a match is determined through the use of a Destination Filter that determines whether one destination forwards to another destination.  To enable this, set the property <code class="language-plaintext highlighter-rouge">useVirtualDestSubs</code> on the Remote Broker to <code class="language-plaintext highlighter-rouge">true</code>:</p>
+
+<p><strong>Remote Broker</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;beans xmlns="http://activemq.org/config/1.0"&gt;
+
+  &lt;broker name="remoteBroker" useVirtualDestSubs="true"&gt;  
+     .....
+  &lt;/broker&gt;
+
+&lt;/beans&gt;
+</code></pre></div></div>
+
+<p>Next, the network connector on the Local Broker needs to be configured to listen for the new advisory messages by setting the <code class="language-plaintext highlighter-rouge">useVirtualDestSubs</code> property to <code class="language-plaintext highlighter-rouge">true</code>:</p>
+
+<p><strong>Local Broker</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnector uri="static:(tcp://host)" useVirtualDestSubs="true"&gt;
+  &lt;dynamicallyIncludedDestinations&gt;
+    &lt;topic physicalName="include.bar"/&gt;
+  &lt;/dynamicallyIncludedDestinations&gt;
+&lt;/networkConnector&gt;
+</code></pre></div></div>
+<p>Now, if a consumer comes subscribes to the queue <code class="language-plaintext highlighter-rouge">include.bar.forward</code> on the Remote Broker, the Local Broker will forward messages that are sent to the topic <code class="language-plaintext highlighter-rouge">include.bar.</code></p>
+
+<h4 id="virtual-destination-consumers-on-destination-creation">Virtual Destination Consumers on Destination Creation</h4>
+
+<p>Now let’s consider the use case above where there is the same composite topic but no consumers on the queue.<br />
+ 
+<strong>Remote Broker</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;compositeTopic name="include.bar" forwardOnly="false"&gt;
+    &lt;forwardTo&gt;
+        &lt;queue physicalName="include.bar.forward" /&gt;
+    &lt;/forwardTo&gt;
+&lt;/compositeTopic &gt;
+</code></pre></div></div>
+<p>There is a Composite Topic configured on the Remote Broker, and the Local Broker is networked to it.  </p>
+
+<p>Even though we have enabled <code class="language-plaintext highlighter-rouge">useVirtualDestSubs</code>, messages will not be forwarded to the Remote Broker unless a consumer subscribes to the forwarded queue.  Without a consumer, messages would be dropped as they are sent to a topic on the Local Broker (<code class="language-plaintext highlighter-rouge">include.bar</code>).  In this situation it is desirable to have messages forwarded based on the existence of a virtual destination that forwards to:</p>
+
+<ul>
+  <li>one or more queues; or</li>
+  <li>topics that have durable subscriptions.</li>
+</ul>
+
+<p>Both of these conditions are considered as emitting demand for messages to the Local Broker, despite there being no active consumers on those destinations.</p>
+
+<p><strong>Remote Broker</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;beans xmlns="http://activemq.org/config/1.0"&gt;
+
+  &lt;broker name="remoteBroker" useVirtualDestSubs="true" useVirtualDestSubsOnCreation="true"&gt;  
+     .....
+  &lt;/broker&gt;
+
+&lt;/beans&gt;
+</code></pre></div></div>
+<p>With this configuration, when the queue <code class="language-plaintext highlighter-rouge">include.bar.forward</code> is created, a Virtual Destination consumer advisory will be sent to the Local Broker so that it knows to forward messages based on the existence of the Composite Topic that forwards to a queue.</p>
+
+<h4 id="composite-destination-consumers-and-virtual-topics">Composite Destination consumers and Virtual Topics </h4>
+
+<p>The above examples show how to configure a Composite Destination but a Virtual Topic will also work.  In the example below, a consumer on a queue for a Virtual Topic on the Remote Broker will now cause demand and messages will be sent across a network from the Local Broker.</p>
+
+<p><strong>Local Broker</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnector uri="static:(tcp://host)"&gt;
+  &lt;dynamicallyIncludedDestinations&gt;
+    &lt;topic physicalName="VirtualTopic.&gt;"/&gt;
+  &lt;/dynamicallyIncludedDestinations&gt;
+&lt;/networkConnector&gt;
+</code></pre></div></div>
+
+<p><strong>Remote Broker</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;beans xmlns="http://activemq.org/config/1.0"&gt;
+
+  &lt;broker name="remoteBroker" useVirtualDestSubs="true" &gt;  
+     .....
+  &lt;/broker&gt;
+
+&lt;/beans&gt;
+</code></pre></div></div>
+
+<h3 id="example-configuration-using-networkconnector-properties">Example Configuration using NetworkConnector properties</h3>
+
+<p>This part of an example configuration for a Broker</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnectors&gt;
+      &lt;networkConnector uri="static:(tcp://localhost:61617)"
+         name="bridge"
+         conduitSubscriptions="true"
+         decreaseNetworkConsumerPriority="false"&gt;
+      	&lt;dynamicallyIncludedDestinations&gt;
+      		&lt;queue physicalName="include.test.foo"/&gt;
+      		&lt;topic physicalName="include.test.bar"/&gt;
+      	&lt;/dynamicallyIncludedDestinations&gt;
+      	&lt;excludedDestinations&gt;
+      		&lt;queue physicalName="exclude.test.foo"/&gt;
+      		&lt;topic physicalName="exclude.test.bar"/&gt;
+      	&lt;/excludedDestinations&gt;
+        &lt;staticallyIncludedDestinations&gt;
+      		&lt;queue physicalName="always.include.queue"/&gt;
+      		&lt;topic physicalName="always.include.topic"/&gt;
+      	&lt;/staticallyIncludedDestinations&gt;
+      &lt;/networkConnector&gt;
+    &lt;/networkConnectors&gt;
+</code></pre></div></div>
+<p>Note that at the moment <code class="language-plaintext highlighter-rouge">excludedDestinations</code> property doesn’t affect <code class="language-plaintext highlighter-rouge">staticallyIncludedDestinations</code>.</p>
+
+<p>It is possible to have more than one network connector between two brokers. Each network connector uses one underlying transport connection, so you may wish to do this to increase throughput, or have a more flexible configuration.</p>
+
+<p>For example, if using distributed queues, you may wish to have equivalent weighting to queue receivers across the network, but only when the receivers are active - e.g.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnectors&gt;
+      &lt;networkConnector uri="static:(tcp://localhost:61617)"
+         name="queues_only"
+         conduitSubscriptions="false"
+         decreaseNetworkConsumerPriority="false"&gt;
+      	&lt;excludedDestinations&gt;
+      		&lt;topic physicalName="&gt;"/&gt;
+      	&lt;/excludedDestinations&gt;
+      &lt;/networkConnector&gt;
+    &lt;/networkConnectors&gt;
+</code></pre></div></div>
+
+<p><strong>N.B.</strong> You can only use <a href="wildcards">wildcards</a> in the <code class="language-plaintext highlighter-rouge">excludedDestinations</code> and <code class="language-plaintext highlighter-rouge">dynamicallyIncludedDestinations</code> properties.<br />
+<strong>N.B.</strong> <strong>Do not</strong> change the name of the bridge or the name of the Broker if you are using durable topic subscribers across the network. Internally ActiveMQ uses the network name and broker name to build a unique but repeatable durable subscriber name for the network.</p>
+
+<h3 id="stuck-messages">Stuck Messages</h3>
+
+<p>There might have multiples cause for Stuck Message, sections below aim to give advice setting that may help to fix this issue.</p>
+
+<h4 id="disable-replaywhennoconsumers-version-56">Disable replayWhenNoConsumers (version 5.6)</h4>
+<p>There is a destination policy that allows this behavior for queues by configuring a <code class="language-plaintext highlighter-rouge">conditionalNetworkBridgeFilterFactory</code> with <code class="language-plaintext highlighter-rouge">replayWhenNoConsumers=true</code>. The <code class="language-plaintext highlighter-rouge">conditionalNetworkBridgeFilterFactory</code> provides an optional <code class="language-plaintext highlighter-rouge">replayDelay</code> based on the broker-in time.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    &lt;destinationPolicy&gt;
+      &lt;policyMap&gt;
+        &lt;policyEntries&gt;
+          &lt;policyEntry queue="TEST.&gt;" enableAudit="false"&gt;
+            &lt;networkBridgeFilterFactory&gt;
+              &lt;conditionalNetworkBridgeFilterFactory replayWhenNoConsumers="true"/&gt;
+            &lt;/networkBridgeFilterFactory&gt;
+          &lt;/policyEntry&gt;
+        &lt;/policyEntries&gt;
+      &lt;/policyMap&gt;
+    &lt;/destinationPolicy&gt;
+</code></pre></div></div>
+
+<p><strong>N.B.:</strong> When using <code class="language-plaintext highlighter-rouge">replayWhenNoConsumers=true</code> for versions &lt; 5.9, it is necessary to also disable the cursors duplicate detection using <code class="language-plaintext highlighter-rouge">enableAudit=false</code> as the cursor could mark the replayed messages as duplicates (depending on the time window between playing and replaying these messages over the network bridge). The problem is fully explained in this <a href="http://tmielke.blogspot.de/2012/03/i-have-messages-on-queue-but-they-dont.html">blog post</a>.</p>
+
+<h4 id="activate-decreasenetworkconsumerpriority">Activate decreaseNetworkConsumerPriority</h4>
+
+<p>Set decreaseNetworkConsumerPriority=”true” in the networkConnector to limit the number of advisory and prefer local consumers. (more information on <a href="https://issues.apache.org/jira/browse/AMQ-7316">AMQ-7316</a></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnectors&gt;
+  &lt;networkConnector uri="static:(tcp://mybroker:61616)" decreaseNetworkConsumerPriority="true" /&gt;
+&lt;/networkConnectors&gt;
+</code></pre></div></div>
+
+<h4 id="increase-prefetchsize-if-youre-using-message-group-and-consumer-pool">Increase prefetchsize if you’re using Message Group and Consumer Pool</h4>
+
+<p>If message group is enabled, one group might block the replication of a queue (if the size of message in this group is higher than the configured prefetchsize), providing a prefetchSize sufficient to ensure that all comsumers threads can consume their attributed group.</p>
+
+<h4 id="increase-ttl">Increase TTL</h4>
+
+<p>TTL setting (networkTTL, messageTTL and consumerTTL) for the Network of Brokers should be high enough to allow messages exchange between the brokers several times in case the consumer
+fails back and forth several times.</p>
+
+<h3 id="throttling-a-network-consumer">Throttling a network consumer</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">conditionalNetworkBridgeFilterFactory</code> factory allows a rate limit to be specified for a destination, such that network consumer can be throttled. Prefetch for a network consumer is largely negated by the fact that a network consumer relays a message typically acks very quickly so even with a low prefetch and decreased priority a network consumer can starve a modestly quick local consumer. Throttling provides a remedy for this.</p>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

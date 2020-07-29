@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Activation Spec Properties</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p><a href="connectivity">Connectivity</a> &gt; <a href="containers">Containers</a> &gt; <a href="resource-adapter">Resource Adapter</a> &gt; <a href="activation-spec-properties">Activation Spec Properties</a></p>
+
+<p>An Activation Spec is used to configure the message delivery to an MDB. The ejb-jar.xml deployment descriptor needs to include a <activation-config> element inside the <message-driven> element like:</message-driven></activation-config></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;activation-config&gt;
+    &lt;activation-config-property&gt;
+       &lt;activation-config-property-name&gt;destination&lt;/activation-config-property-name&gt;
+       &lt;activation-config-property-value&gt;queue.testQueue&lt;/activation-config-property-value&gt;
+    &lt;/activation-config-property&gt;
+    &lt;activation-config-property&gt;
+       &lt;activation-config-property-name&gt;destinationType&lt;/activation-config-property-name&gt;
+       &lt;activation-config-property-value&gt;javax.jms.Queue&lt;/activation-config-property-value&gt;
+    &lt;/activation-config-property&gt;
+&lt;/activation-config&gt;
+</code></pre></div></div>
+<p>Here, the value for destination is the physical name of the desired destination. The value for destinationType is the class name that defines the type of destination. It should be javax.jms.Queue or javax.jms.Topic.<br />
+ 
+The Activation Spec properties that can be configured are:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property Name</th>
+      <th>Required</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>acknowledgeMode</td>
+      <td>no</td>
+      <td>Auto-acknowledge</td>
+      <td>The JMS Acknowledgement mode to use. Valid values are: Auto-acknowledge or Dups-ok-acknowledge</td>
+    </tr>
+    <tr>
+      <td>clientId</td>
+      <td>no</td>
+      <td>set in resource adapter</td>
+      <td>The JMS Client ID to use (only really required for durable topics)</td>
+    </tr>
+    <tr>
+      <td>destinationType</td>
+      <td>yes</td>
+      <td>null</td>
+      <td>The type of destination; a queue or topic</td>
+    </tr>
+    <tr>
+      <td>destination</td>
+      <td>yes</td>
+      <td>null</td>
+      <td>The destination name (queue or topic name)</td>
+    </tr>
+    <tr>
+      <td>enableBatch</td>
+      <td>no</td>
+      <td>false</td>
+      <td>Used to enable transaction batching for increased performance</td>
+    </tr>
+    <tr>
+      <td>maxMessagesPerBatch</td>
+      <td>no</td>
+      <td>10</td>
+      <td>The number of messages per transaction batch</td>
+    </tr>
+    <tr>
+      <td>maxMessagesPerSessions</td>
+      <td>no</td>
+      <td>10</td>
+      <td>This is actually the prefetch size for the subscription. (Yes, badly named).</td>
+    </tr>
+    <tr>
+      <td>maxSessions</td>
+      <td>no</td>
+      <td>10</td>
+      <td>The maximum number of concurrent sessions to use</td>
+    </tr>
+    <tr>
+      <td>messageSelector</td>
+      <td>no</td>
+      <td>null</td>
+      <td>The JMS <a href="selectors">Message Selector</a> to use on the subscription to perform content based routing filtering the messages</td>
+    </tr>
+    <tr>
+      <td>noLocal</td>
+      <td>no</td>
+      <td>false</td>
+      <td>Only required for topic subscriptions; indicates if locally published messages should be included in the subscription or not</td>
+    </tr>
+    <tr>
+      <td>password</td>
+      <td>no</td>
+      <td>set in resource adapter</td>
+      <td>The password for the JMS connection</td>
+    </tr>
+    <tr>
+      <td>subscriptionDurability</td>
+      <td>no</td>
+      <td>NonDurable</td>
+      <td>Whether or not a durable (topic) subscription is required. Valid values are: Durable or NonDurable</td>
+    </tr>
+    <tr>
+      <td>subscriptionName</td>
+      <td>no</td>
+      <td>null</td>
+      <td>The name of the durable subscriber. Only used for durable topics and combined with the clientID to uniquely identify the durable topic subscription</td>
+    </tr>
+    <tr>
+      <td>userName</td>
+      <td>no</td>
+      <td>set in resource adapter</td>
+      <td>The user for the JMS connection</td>
+    </tr>
+    <tr>
+      <td>useRAManagedTransaction</td>
+      <td>no</td>
+      <td>false</td>
+      <td>Typically, a resource adapter delivers messages to an endpoint which is managed by a container. Normally, this container likes to be the one that wants to control the transaction that the inbound message is being delivered on. But sometimes, you want to deliver to a simpler container system that will not be controlling the inbound transaction. In these cases, if you set useRAManagedTransaction to true, the resource adapter will commit the transaction if no exception was generated from the MessageListener and rollback if an exception is thrown.</td>
+    </tr>
+    <tr>
+      <td>initialRedeliveryDelay</td>
+      <td>no</td>
+      <td>1000</td>
+      <td>The delay before redeliveries start. Also configurable on the ResourceAdapter</td>
+    </tr>
+    <tr>
+      <td>maximumRedeliveries</td>
+      <td>no</td>
+      <td>5</td>
+      <td>The maximum number of redeliveries or -1 for no maximum. Also configurable on the ResourceAdapter</td>
+    </tr>
+    <tr>
+      <td>redeliveryBackOffMultiplier</td>
+      <td>no</td>
+      <td>5</td>
+      <td>The multiplier to use if exponential back off is enabled. Also configurable on the ResourceAdapter</td>
+    </tr>
+    <tr>
+      <td>redeliveryUseExponentialBackOff</td>
+      <td>no</td>
+      <td>false</td>
+      <td>To enable exponential backoff. Also configurable on the ResourceAdapter</td>
+    </tr>
+    <tr>
+      <td>useJndi</td>
+      <td>no</td>
+      <td>false</td>
+      <td>when true, use destination as a jndi name</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="maximising-throughput-of-mdbs">Maximising Throughput of MDBs</h5>
+
+<p>If you want to maximise throughput of MDBs you should really set the <strong>maxSessions</strong> to something fairly large to increase the concurrency. Then set <strong>maxMessagesPerSessions</strong> to something big (say) 1000.</p>
+
+<p>This assumes you have large numbers of messages available (say more than <strong>maxSessions</strong> * <strong>maxMessagesPerSession</strong>). Otherwise the <a href="what-is-the-prefetch-limit-for">prefetch</a> will end up <a href="i-do-not-receive-messages-in-my-second-consumer">starving other consumers</a>.</p>
+
+<p>So if you don’t have that many messages available, but maybe they take a while to process then you might want to set a lower value of <strong>maxMessagesPerSessions</strong></p>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

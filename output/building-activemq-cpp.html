@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>Building ActiveMQ CPP</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p><a href="connectivity">Connectivity</a> &gt; <a href="cross-language-clients">Cross Language Clients</a> &gt; <a href="activemq-c-clients">ActiveMQ C++ Clients</a> &gt; <a href="building-activemq-cpp">Building ActiveMQ CPP</a></p>
+
+<h2 id="dependencies">Dependencies</h2>
+
+<h3 id="libuuid">libuuid</h3>
+
+<p>The build requires the <strong>libuuid</strong> library that is part of the e2fsprogs package and is available from <a href="http://e2fsprogs.sourceforge.net/">http://e2fsprogs.sourceforge.net/</a> which is not always installed by default.</p>
+
+<h3 id="cppunit">cppunit</h3>
+
+<p>The package contains a complete set of cppunit tests. In order for you to build an run the tests, you will need to download and install the cppunit suite. See <a href="http://cppunit.sourceforge.net/cppunit-wiki">http://cppunit.sourceforge.net/cppunit-wiki</a></p>
+
+<p>or on Fedora type the following:</p>
+
+<p>sudo yum install cppunit</p>
+
+<p>Make sure that the paths to the installed cppunit library and includes are visible in your current shell before you try building the tests.</p>
+
+<p>Windows users will need to build the cppunit library using the CPPUnit MSVC project files.  A discussion of the build process can be found on the CPPUnit wiki under <a href="http://cppunit.sourceforge.net/cppunit-wiki/BuildingCppUnit1">CPPUnit Platform build instructions</a> this covers both MSVC along with many other platforms and tool suites.</p>
+
+<h3 id="gnu-build-system-for-building-on-nix">GNU Build System (for building on *nix)</h3>
+
+<p>To Generate the ./configure script use to create the Makefiles, you need the following software installed:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Recommended Version</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>autoconf</td>
+      <td>&gt;= 2.59</td>
+    </tr>
+    <tr>
+      <td>automake</td>
+      <td>&gt;= 1.9.6</td>
+    </tr>
+    <tr>
+      <td>libtool</td>
+      <td>&gt;= 1.5.22</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="building-on-nix-linuxos-xcygwin">Building on *nix (Linux/OS X/Cygwin)</h2>
+
+<p>This assumes you have all of the project dependencies installed. We’re now ready to create the configure script. To do this, run:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./autogen.sh
+</code></pre></div></div>
+<p>You may see the following warnings when running this command:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>src/test-integration/Makefile.am:44: `CXXFLAGS' is a user variable, you should not override it;  
+src/test-integration/Makefile.am:44: use `AM_CXXFLAGS' instead.  
+src/test/Makefile.am:104: `CXXFLAGS' is a user variable, you should not override it;  
+src/test/Makefile.am:104: use `AM_CXXFLAGS' instead.
+</code></pre></div></div>
+<p>These can be ignored. We override CXXFLAGS in the makefiles for the unit and integration tests in order to suppress compiler warnings.</p>
+
+<p>This should be run the first time and anytime you change configure.ac or any of the Makefile.am files.</p>
+
+<blockquote>
+  <p>Solaris 10 Note</p>
+
+  <p>CPP_UNIT might not build until you correct the file libstdc++.la to contain the correct data, see this discussion.</p>
+
+  <p><a href="http://forum.sun.com/jive/thread.jspa?threadID=73150">http://forum.sun.com/jive/thread.jspa?threadID=73150</a></p>
+</blockquote>
+
+<p>The configure script will customize the way the software is built and installed into your system along with detecting the available libraries that have been installed. To use the default configuration just run:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure
+</code></pre></div></div>
+<p>For more help on how to customize the build configuration, run:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure --help
+</code></pre></div></div>
+<p>Once the configure script has run successfully, you are ready to build. Run:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make
+</code></pre></div></div>
+<p>This will build all of the core ActiveMQ CPP source code. To build and install the code into the system directories, run:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make install
+</code></pre></div></div>
+<p>You will have to become the superuser in order to be able to install the files.</p>
+
+<h2 id="doxygen">Doxygen</h2>
+
+<p>To generate the doxygen documentation for the project, just run:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make doxygen-run
+</code></pre></div></div>
+
+<h2 id="running-tests">Running Tests</h2>
+
+<h3 id="unit-tests">Unit Tests</h3>
+
+<p>In order to build and run the suite of unit tests, run:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make check
+</code></pre></div></div>
+<p>This will verify that the library is functioning correctly on the target platform. In addition, it will generate the integration tests binary.</p>
+
+<h3 id="integration-tests">Integration Tests</h3>
+
+<p>The library also contains a set of tests that are run against a real AMQ broker. These allow you to validate this distribution of ActiveMQ CPP against your broker. Running these without a broker will result in failed tests. The tests currently hard-code the broker url to be tcp://localhost:61613 for stomp and tcp://localhost:61616 for openwire.</p>
+
+<p>The integration tests are built via “make check”. To run them, first start a broker and then</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd src/test-integration
+./activemq-test-integration
+</code></pre></div></div>
+<p>This will take quite some time to complete, so be patient.</p>
+
+<h2 id="example">Example</h2>
+
+<p>There is an example application that ships with the distribution in src/examples. The example is compiled by default with the “make” command, but can easily be compiled manually using the command:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>g++ -o main -pthread -I ../main main.cpp out/libactivemq-cpp-0\_0\_2.a -luuid
+</code></pre></div></div>
+
+<h2 id="notes-for-windows-users">Notes for Windows users</h2>
+
+<p>We support using the GNU compiler on Windows, using the Cygwin package. However we also support using the MSVC compiler on Windows.</p>
+
+<p>There are a couple or things that you will need to setup to ensure that the MSVC compile succeeds.</p>
+
+<ul>
+  <li>You need to download and install the Platform SDK if you don’t have it installed already.</li>
+  <li>Ensure that the path to you MSVC install is set in the PATH env variable. You can test this by typing cl.exe at the command line, if you get an error complaining that its not found, then you’ll need to fix your PATH.</li>
+  <li>Set the INCLUDE env variable to include the path to your MSVC includes, and the platform SDK includes. For example:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INCLUDE = D:\Program Files\Microsoft Visual Studio 8\VC\include;D:\Program Files\Microsoft Platform SDK\Include\*
+</code></pre></div>    </div>
+  </li>
+  <li>Set the LIB env variable to include the path to your MSVC libs, and the Platform SDK libs. For example:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LIB = D:\Program Files\Microsoft Visual Studio 8\VC\lib;D:\Program Files\Microsoft Platform SDK\Lib
+</code></pre></div>    </div>
+  </li>
+  <li>The Project files reference the CPPUnit libraries for the Integration and Unit tests builds.  In order for these to build correctly you must either place the CPPUnit libraries in a directory listed in the project settings, or add a new location for your install of CPPUnit. </li>
+</ul>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

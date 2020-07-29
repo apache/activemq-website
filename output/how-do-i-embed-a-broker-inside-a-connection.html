@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>How do I embed a Broker inside a Connection</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p> <a href="faq">FAQ</a> &gt; <a href="using-apache-activemq">Using Apache ActiveMQ</a> &gt; <a href="how-do-i-embed-a-broker-inside-a-connection">How do I embed a Broker inside a Connection</a></p>
+
+<p>In many messaging topologies there are JMS Brokers (server side) and a JMS client side. Often it makes sense to deploy a broker within your JVM. This allows you to optimise away a network hop; making the networking of JMS as efficient as pure RMI, but with all the usual JMS features of location independence, reliability, load balancing etc.</p>
+
+<p>There are various ways to embed a broker in ActiveMQ depending on if you are using Java, Spring, XBean or using the ActiveMQConnectionFactory .</p>
+
+<h3 id="using-explicit-java-code">Using explicit Java code</h3>
+
+<p>The following Java code will create an embedded broker</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService broker = new BrokerService();
+
+// configure the broker
+broker.addConnector("tcp://localhost:61616");
+
+broker.start();
+</code></pre></div></div>
+<p>If you want to lazily bind the transport connector as part of start(), useful when start() will block pending a store lock (as in a slave start), you can use the following code</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService broker = new BrokerService();
+
+TransportConnector connector = new TransportConnector();
+connector.setUri(new URI("tcp://localhost:61616"));
+broker.addConnector(connector);
+broker.start();
+</code></pre></div></div>
+<p>In the same JVM clients can then use the <a href="vm-transport-reference">vm:// transport</a> to connect to the embedded broker - whilst external clients can use the <a href="tcp-transport-reference">tcp:// protocol</a></p>
+
+<p>If you have more than one embedded broker, ensure that you give them a unique name and - e.g.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService broker = new BrokerService();
+// configure the broker
+broker.setBrokerName("fred");
+broker.addConnector("tcp://localhost:61616");
+broker.start();
+</code></pre></div></div>
+<p>Then if you want to connect to the broker named ‘fred’ from within the same JVM, you can by using the uri <strong>vm://fred</strong></p>
+
+<p>It is possible to fully configure a broker through application code e.g.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService broker = new BrokerService();
+broker.setBrokerName("fred");
+broker.setUseShutdownHook(false);
+//Add plugin
+broker.setPlugins(new BrokerPlugin[]{new JaasAuthenticationPlugin()});
+//Add a network connection
+NetworkConnector connector = answer.addNetworkConnector("static://"+"tcp://somehost:61616");
+connector.setDuplex(true);
+broker.addConnector("tcp://localhost:61616");
+broker.start();
+</code></pre></div></div>
+<p>Please note that you should add plugins before connectors or they will not be initialized</p>
+
+<p>For more details on the available properties you can specify, see the <a href="http://activemq.apache.org/maven/5.11.0/apidocs/org/apache/activemq/broker/BrokerService.html">BrokerService javadoc</a></p>
+
+<h3 id="using-the-brokerfactory">Using the BrokerFactory</h3>
+
+<p>There is a helper class called <a href="http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/broker/BrokerFactory.html">BrokerFactory</a> which can be used to create a broker via URI for configuration.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService broker = BrokerFactory.createBroker(new URI(someURI));
+</code></pre></div></div>
+<p>The available values of the URI are:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>URI scheme</th>
+      <th>Example</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>xbean:</td>
+      <td>bean:activemq.xml</td>
+      <td>Searches the classpath (and file system) for an XML document with the given URI (activemq.xml in this case) which will then be used as the <a href="xml-configuration">Xml Configuration</a></td>
+    </tr>
+    <tr>
+      <td>broker:</td>
+      <td>broker:tcp://localhost:61616</td>
+      <td>Uses the <a href="broker-configuration-uri">Broker Configuration URI</a> to confgure the broker</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="using-spring">Using Spring</h3>
+
+<p>There is a factory bean that can refer to an external ActiveMQ XML configuration file</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean"&gt;
+  &lt;property name="config" value="classpath:org/apache/activemq/xbean/activemq.xml" /&gt;
+  &lt;property name="start" value="true" /&gt;
+&lt;/bean&gt;
+</code></pre></div></div>
+<p>In this case the usual Spring <code class="language-plaintext highlighter-rouge">classpath:org/apache/activemq/xbean/activemq.xml</code> resource mechanism is being used so that the activemq.xml file would be found on the classpath by looking inside all the directories on the classpath then looking for <code class="language-plaintext highlighter-rouge">org/apache/activemq/xbean/activemq.xml</code>. You can of course change this to any value you like. e.g. use <code class="language-plaintext highlighter-rouge">classpath:activemq.xml</code> if you just want to drop it in a directory that is in the classpath; like <code class="language-plaintext highlighter-rouge">WEB-INF/classes</code> in a web application.</p>
+
+<p>If you wish you can use a URL instead using the <strong>file:* or *http:</strong> prefixes. For more details see how <a href="http://static.springframework.org/spring/docs/1.2.x/reference/beans.html#context-functionality-resources">Spring deals with resources</a></p>
+
+<h3 id="using-xbean">Using XBean</h3>
+
+<p>If you are already using <a href="http://geronimo.apache.org/xbean/">XBean</a> then you can just mix and match your Spring/XBean <a href="https://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-core/src/test/resources/org/apache/activemq/xbean/activemq.xml">XML configuration</a> with ActiveMQ’s configuration.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans 
+  xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:amq="http://activemq.apache.org/schema/core"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd"&gt;
+
+  &lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/&gt;
+
+  &lt;broker useJmx="true" xmlns="http://activemq.apache.org/schema/core"&gt;
+
+    &lt;persistenceFactory&gt;
+      &lt;kahaDB directory="${basedir}/target" /&gt;
+    &lt;/persistenceFactory&gt;
+
+    &lt;transportConnectors&gt;
+      &lt;transportConnector uri="tcp://localhost:61636" /&gt;
+    &lt;/transportConnectors&gt;
+
+  &lt;/broker&gt;
+&lt;/beans&gt;
+</code></pre></div></div>
+
+<h3 id="using-spring-20">Using Spring 2.0</h3>
+
+<p>If you are using Spring 2.0 and ActiveMQ 4.1 or later (and xbean-spring 2.5 or later) you can embed the ActiveMQ broker XML inside any regular Spring.xml file without requiring the above factory bean. e.g. here is an <a href="http://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-core/src/test/resources/spring-embedded-xbean.xml">example</a> of a regular Spring XML file in Spring 2.0 which also configures a broker.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans 
+  xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:amq="http://activemq.apache.org/schema/core"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd"&gt;
+  
+  &lt;!--  lets create an embedded ActiveMQ Broker --&gt;
+  &lt;amq:broker useJmx="false" persistent="false"&gt;
+    &lt;amq:transportConnectors&gt;
+      &lt;amq:transportConnector uri="tcp://localhost:0" /&gt;
+    &lt;/amq:transportConnectors&gt;
+  &lt;/amq:broker&gt;
+
+   &lt;!--  ActiveMQ destinations to use  --&gt;
+  &lt;amq:queue id="destination"  physicalName="org.apache.activemq.spring.Test.spring.embedded"/&gt;
+
+  &lt;!-- JMS ConnectionFactory to use, configuring the embedded broker using XML --&gt;
+  &lt;amq:connectionFactory id="jmsFactory" brokerURL="vm://localhost"/&gt;
+  
+
+  &lt;!-- Spring JMS Template --&gt;
+  &lt;bean id="myJmsTemplate" class="org.springframework.jms.core.JmsTemplate"&gt;
+    &lt;property name="connectionFactory"&gt;
+      &lt;!-- lets wrap in a pool to avoid creating a connection per send --&gt;
+      &lt;bean class="org.springframework.jms.connection.SingleConnectionFactory"&gt;
+        &lt;property name="targetConnectionFactory"&gt;
+          &lt;ref local="jmsFactory" /&gt;
+        &lt;/property&gt;
+      &lt;/bean&gt;
+    &lt;/property&gt;
+  &lt;/bean&gt;
+
+  &lt;bean id="consumerJmsTemplate" class="org.springframework.jms.core.JmsTemplate"&gt;
+    &lt;property name="connectionFactory" ref="jmsFactory"/&gt;
+  &lt;/bean&gt;
+
+  &lt;!-- a sample POJO which uses a Spring JmsTemplate --&gt;
+  &lt;bean id="producer" class="org.apache.activemq.spring.SpringProducer"&gt;
+    &lt;property name="template"&gt;
+      &lt;ref bean="myJmsTemplate"&gt;&lt;/ref&gt;
+    &lt;/property&gt;
+
+    &lt;property name="destination"&gt;
+      &lt;ref bean="destination" /&gt;
+    &lt;/property&gt;
+
+    &lt;property name="messageCount"&gt;
+      &lt;value&gt;10&lt;/value&gt;
+    &lt;/property&gt;
+  &lt;/bean&gt;
+
+  &lt;!-- a sample POJO consumer --&gt;
+  &lt;bean id="consumer" class="org.apache.activemq.spring.SpringConsumer"&gt;
+    &lt;property name="template" ref="consumerJmsTemplate"/&gt;
+    &lt;property name="destination" ref="destination"/&gt;
+  &lt;/bean&gt;
+
+&lt;/beans&gt;
+</code></pre></div></div>
+
+<h3 id="using-activemqconnectionfactory">Using ActiveMQConnectionFactory</h3>
+
+<p>An embedded broker can also be created using an ActiveMQConnectionFactory and using a vm connector as a uri. e.g.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
+</code></pre></div></div>
+<p>Use the query parameters “broker.<property>" to configure the broker, where <property> matches the bean properties on the BrokerService.</property></property></p>
+
+<p>The broker will be created upon creation of the first connection.</p>
+
+<p>You can turn off auto creation by setting the create property on the VM Transport to false:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost?create=false");
+</code></pre></div></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

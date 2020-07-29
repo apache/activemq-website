@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components</a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ 5</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Contact</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#mailing">Mailing Lists</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#chat">Chat</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact#contributing">Contributing</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apache</a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories.html">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/team/reports">Board Reports</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-activemq5">
+    <div class="container">
+      <h1>JMS and JDBC operations in one transaction</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 activemq5">
+        <p><a href="using-activemq">Using ActiveMQ</a> &gt; <a href="user-submitted-configurations">User Submitted Configurations</a> &gt; <a href="jms-and-jdbc-operations-in-one-transaction">JMS and JDBC operations in one transaction</a></p>
+
+<h3 id="jms-and-jdbc-operations-in-one-transaction-with-springjencksactivemq">JMS and JDBC operations in one transaction with Spring/Jencks/ActiveMQ</h3>
+
+<p>Spring beans:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans&gt;
+    &lt;!-- ActiveMQ Broker --&gt;
+    &lt;bean id="broker" class="org.apache.activemq.broker.BrokerService" init-method="start" destroy-method="stop"&gt;
+        &lt;property name="persistent" value="false"/&gt;
+        &lt;property name="transportConnectorURIs"&gt;
+            &lt;list&gt;
+                &lt;value&gt;tcp://localhost:5000&lt;/value&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- Geronimo Transaction Manager --&gt;
+    &lt;bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean"/&gt;
+    &lt;bean id="geronimo" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean"/&gt;
+    &lt;bean id="geronimoTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"&gt;
+        &lt;property name="userTransaction" ref="geronimo" /&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- Jencks Connection Manager --&gt;
+    &lt;bean id="connectionManager" class="org.jencks.factory.ConnectionManagerFactoryBean"&gt;
+        &lt;property name="transactionSupport"&gt;
+            &lt;bean class="org.jencks.factory.XATransactionFactoryBean"&gt;
+                &lt;property name="useTransactionCaching" value="true"/&gt;
+                &lt;property name="useThreadCaching" value="false"/&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+        &lt;property name="poolingSupport"&gt;
+            &lt;bean class="org.jencks.factory.SinglePoolFactoryBean"&gt;
+                &lt;property name="maxSize" value="2"/&gt;
+                &lt;property name="minSize" value="1"/&gt;
+                &lt;property name="blockingTimeoutMilliseconds" value="60"/&gt;
+                &lt;property name="idleTimeoutMinutes" value="60"/&gt;
+                &lt;property name="matchOne" value="true"/&gt;
+                &lt;property name="matchAll" value="true"/&gt;
+                &lt;property name="selectOneAssumeMatch" value="true"/&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- ActiveMQ Connection --&gt;
+    &lt;bean id="jmsResourceAdapter" class="org.apache.activemq.ra.ActiveMQResourceAdapter" depends-on="broker"&gt;
+        &lt;property name="serverUrl"&gt;
+            &lt;value&gt;tcp://localhost:5000&lt;/value&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+    &lt;bean id="jmsManagedConnectionFactory" class="org.apache.activemq.ra.ActiveMQManagedConnectionFactory"&gt;
+        &lt;property name="resourceAdapter" ref="jmsResourceAdapter"/&gt;
+    &lt;/bean&gt;
+    &lt;bean id="jmsConnectionFactory" class="org.springframework.jca.support.LocalConnectionFactoryBean"&gt;
+        &lt;property name="managedConnectionFactory" ref="jmsManagedConnectionFactory"/&gt;
+        &lt;property name="connectionManager" ref="connectionManager"/&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- Tranql JDBC Connection --&gt;
+    &lt;!--
+    &lt;bean id="tranqlManagedConnectionFactory" class="org.jencks.tranql.XAPoolDataSourceMCF"&gt;
+        &lt;property name="driverName" value="org.postgresql.Driver"/&gt;
+        &lt;property name="url" value="jdbc:postgresql://ats-manager/activemq"/&gt;
+        &lt;property name="user" value="activemq"/&gt;
+    &lt;/bean&gt;
+    &lt;bean id="tranqlDataSource" class="org.springframework.jca.support.LocalConnectionFactoryBean"&gt;
+        &lt;property name="managedConnectionFactory" ref="tranqlManagedConnectionFactory"/&gt;
+        &lt;property name="connectionManager" ref="connectionManager"/&gt;
+    &lt;/bean&gt;
+    --&gt;
+
+    &lt;!-- Enhydra JDBC Connection --&gt;
+    &lt;bean id="enhydraDataSource" class="org.enhydra.jdbc.pool.StandardXAPoolDataSource" destroy-method="shutdown"&gt;
+        &lt;property name="dataSource"&gt;
+            &lt;bean class="org.enhydra.jdbc.standard.StandardXADataSource" destroy-method="shutdown"&gt;
+                &lt;property name="transactionManager" ref="geronimo" /&gt;
+                &lt;property name="driverName" value="org.postgresql.Driver" /&gt;
+                &lt;property name="url" value="jdbc:postgresql://ats-manager/activemq" /&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+        &lt;property name="user" value="activemq"/&gt;
+    &lt;/bean&gt;
+
+    &lt;bean id="jencksJCAContainer" class="org.jencks.JCAContainer"&gt;
+        &lt;property name="bootstrapContext"&gt;
+            &lt;bean class="org.jencks.factory.BootstrapContextFactoryBean"&gt;
+                &lt;property name="threadPoolSize" value="25"/&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+        &lt;property name="resourceAdapter" ref="jmsResourceAdapter"/&gt;
+    &lt;/bean&gt;
+
+    &lt;bean id="inboundConnector" class="org.jencks.JCAConnector"&gt;
+        &lt;property name="jcaContainer" ref="jencksJCAContainer" /&gt;
+        &lt;property name="activationSpec"&gt;
+            &lt;bean class="org.apache.activemq.ra.ActiveMQActivationSpec"&gt;
+                &lt;property name="destination" value="messages.input"/&gt;
+                &lt;property name="destinationType" value="javax.jms.Queue"/&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+        &lt;property name="transactionManager" ref="geronimo"/&gt;
+        &lt;property name="ref" value="echoBean"/&gt;
+    &lt;/bean&gt;
+
+    &lt;bean id="echoBean" class="transactions.EchoBean"&gt;
+        &lt;property name="jdbcTemplate"&gt;
+            &lt;bean class="org.springframework.jdbc.core.JdbcTemplate"&gt;
+                &lt;property name="dataSource" ref="enhydraDataSource"/&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+        &lt;property name="jmsTemplate"&gt;
+            &lt;bean class="org.springframework.jms.core.JmsTemplate"&gt;
+                &lt;property name="connectionFactory" ref="jmsConnectionFactory"/&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;
+</code></pre></div></div>
+<p>Java code:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class EchoBean implements MessageListener {
+
+    private Log log = LogFactory.getLog(getClass());
+
+    private JdbcTemplate jdbcTemplate;
+    private JmsTemplate jmsTemplate;
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public void setJmsTemplate(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
+    }
+
+    public void onMessage(Message message) {
+        log.debug(message);
+        if (message instanceof TextMessage) {
+            try {
+                String messageText = ((TextMessage)message).getText();
+                log.debug("execute JMS operation");
+                jmsTemplate.convertAndSend("messages.ouptut", messageText);
+                log.debug("execute JDBC operation");
+                jdbcTemplate.execute("insert into t1 values('"+messageText+"')");
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+</code></pre></div></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p>Apache ActiveMQ, ActiveMQ, ActiveMQ Artemis, Apache, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2019, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
