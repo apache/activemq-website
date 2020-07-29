@@ -10,12 +10,12 @@ type: activemq5
 Introduction
 ------------
 
-This document describes how to install and configure ActiveMQ 4.x/5.x for both Unix and Windows' platforms.
+This document describes how to install and configure ActiveMQ 5.x for both Unix and Windows' platforms.
 
 Document Organization
 ---------------------
 
-The Getting Started Guide for ActiveMQ 4.x document contains the following sections:
+The Getting Started Guide for ActiveMQ 5.x document contains the following sections:
 
 *   [Introduction](#Introduction)
 *   [Document Organization](#DocumentOrganization)
