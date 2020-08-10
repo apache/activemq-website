@@ -87,7 +87,7 @@ Source Distribution:|[apache-artemis-2.7.0-source-release.tar.gz](https://archiv
 
 <br/>
 
-#### ActiveMQ Artemis 2.6.4
+#### ActiveMQ Artemis 2.6.4  (January 28, 2019)
 
 [Release Notes](release-notes-2.6.4) \| [Git Report](commit-report-2.6.4) \| [Documentation](../documentation/2.6.0)
 
@@ -97,7 +97,7 @@ Source Code Distribution:|[apache-artemis-2.6.4-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 2.6.3
+#### ActiveMQ Artemis 2.6.3  (September 8, 2018)
 
 [Release Notes](release-notes-2.6.3) \| [Git Report](commit-report-2.6.3) \| [Documentation](../documentation/2.6.0)
 
@@ -107,7 +107,7 @@ Source Code Distribution:|[apache-artemis-2.6.3-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 2.6.2
+#### ActiveMQ Artemis 2.6.2  (June 25, 2018)
 
 [Release Notes](release-notes-2.6.2) \| [Git Report](commit-report-2.6.2) \| [Documentation](../documentation/2.6.0)
 
@@ -117,7 +117,7 @@ Source Code Distribution:|[apache-artemis-2.6.2-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 2.6.1
+#### ActiveMQ Artemis 2.6.1  (June 14, 2018)
 
 [Release Notes](release-notes-2.6.1) \| [Git Report](commit-report-2.6.1) \| [Documentation](../documentation/2.6.0)
 
@@ -127,7 +127,7 @@ Source Code Distribution:|[apache-artemis-2.6.1-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 2.6.0
+#### ActiveMQ Artemis 2.6.0  (May 22, 2018)
 
 [Release Notes](release-notes-2.6.0) \| [Git Report](commit-report-2.6.0) \| [Documentation](../documentation/2.6.0)
 
@@ -137,7 +137,7 @@ Source Code Distribution:|[apache-artemis-2.6.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 2.5.0
+#### ActiveMQ Artemis 2.5.0  (March 21, 2018)
 
 [Release Notes](release-notes-2.5.0) \| [Documentation](../documentation/2.5.0)
 
@@ -147,7 +147,7 @@ Source Code Distribution:|[apache-artemis-2.5.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 2.4.0
+#### ActiveMQ Artemis 2.4.0  (November 7, 2017)
 
 [Release Notes](release-notes-2.4.0) \| [Documentation](../documentation/2.4.0)
 
@@ -157,7 +157,7 @@ Source Code Distribution:|[apache-artemis-2.4.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 2.3.0
+#### ActiveMQ Artemis 2.3.0  (September 14, 2017)
 
 [Release Notes](release-notes-2.3.0) \| [Documentation](../documentation/2.3.0)
 
@@ -167,7 +167,7 @@ Source Code Distribution:|[apache-artemis-2.3.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 2.2.0
+#### ActiveMQ Artemis 2.2.0  (July 31, 2017)
 
 [Release Notes](release-notes-2.2.0) \| [Documentation](../documentation/2.2.0)
 
@@ -177,7 +177,7 @@ Source Code Distribution:|[apache-artemis-2.2.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 2.1.0
+#### ActiveMQ Artemis 2.1.0 (May 15, 2017)
 
 [Release Notes](release-notes-2.1.0) \| [Documentation](../documentation/2.1.0)
 
@@ -187,7 +187,7 @@ Source Code Distribution:|[apache-artemis-2.1.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 2.0.0
+#### ActiveMQ Artemis 2.0.0  (March 22, 2017)
 
 [Release Notes](release-notes-2.0.0) \| [Documentation](../documentation/2.0.0)
 
@@ -197,7 +197,7 @@ Source Code Distribution:|[apache-artemis-2.0.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.5.6
+#### ActiveMQ Artemis 1.5.6 (February 26, 2018)
 
 [Release Notes](release-notes-1.5.6) \| [Documentation](../documentation/1.5.6)
 
@@ -207,7 +207,7 @@ Source Code Distribution:|[apache-artemis-1.5.6-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.5.5
+#### ActiveMQ Artemis 1.5.5  (May 15, 2017)
 
 [Release Notes](release-notes-1.5.5) \| [Documentation](../documentation/1.5.5)
 
@@ -217,7 +217,7 @@ Source Code Distribution:|[apache-artemis-1.5.5-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.5.4
+#### ActiveMQ Artemis 1.5.4  (March 31, 2017)
 
 [Release Notes](release-notes-1.5.4) \| [Documentation](../documentation/1.5.4)
 
@@ -227,7 +227,7 @@ Source Code Distribution:|[apache-artemis-1.5.4-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.5.3
+#### ActiveMQ Artemis 1.5.3  (February 20, 2017)
 
 [Release Notes](release-notes-1.5.3) \| [Documentation](../documentation/1.5.3)
 
@@ -237,7 +237,7 @@ Source Code Distribution:|[apache-artemis-1.5.3-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.5.2
+#### ActiveMQ Artemis 1.5.2  (January 25, 2017)
 
 [Release Notes](release-notes-1.5.2) \| [Documentation](../documentation/1.5.2)
 
@@ -247,7 +247,7 @@ Source Code Distribution:|[apache-artemis-1.5.2-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.5.1
+#### ActiveMQ Artemis 1.5.1  (December 14, 2016)
 
 [Release Notes](release-notes-1.5.1) \| [Documentation](../documentation/1.5.1)
 
@@ -257,7 +257,7 @@ Source Code Distribution:|[apache-artemis-1.5.1-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.5.0
+#### ActiveMQ Artemis 1.5.0  (November 10, 2016)
 
 [Release Notes](release-notes-1.5.0) \| [Documentation](../documentation/1.5.0)
 
@@ -267,7 +267,7 @@ Source Code Distribution:|[apache-artemis-1.5.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.4.0
+#### ActiveMQ Artemis 1.4.0  (September 13, 2016)
 
 [Release Notes](release-notes-1.4.0) \| [Documentation](../documentation/1.4.0)
 
@@ -277,7 +277,7 @@ Source Code Distribution:|[apache-artemis-1.4.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.3.0
+#### ActiveMQ Artemis 1.3.0  (June 17, 2016)
 
 [Release Notes](release-notes-1.3.0) \| [Documentation](../documentation/1.3.0)
 
@@ -287,7 +287,7 @@ Source Code Distribution:|[apache-artemis-1.3.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.2.0
+#### ActiveMQ Artemis 1.2.0  (January 11, 2016)
 
 [Release Notes](release-notes-1.2.0) \| [Documentation](../documentation/1.2.0)
 
@@ -297,7 +297,7 @@ Source Code Distribution:|[apache-artemis-1.2.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.1.0
+#### ActiveMQ Artemis 1.1.0  (October 5, 2015)
 
 [Release Notes](release-notes-1.1.0) \| [Documentation](../documentation/1.1.0)
 
@@ -307,7 +307,7 @@ Source Code Distribution:|[apache-artemis-1.1.0-source-release.tar.gz](https://a
 
 <br/>
 
-#### ActiveMQ Artemis 1.0.0
+#### ActiveMQ Artemis 1.0.0  (June 2, 2015)
 
 [Release Notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&version=12328953) \| [Documentation](../documentation/1.0.0)
 
