@@ -1196,10 +1196,80 @@ chapter in addition to any version-specific upgrade instructions outlined here.<
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12348290" target="_blank">Full release notes</a>.</p>
 <p>Highlights:</p>
 <ul>
-<li>Removing <code>broker.xml</code> queue parameters now causes these to be reset to their default values.</li>
+<li>Management methods to update diverts</li>
+<li>Ability to &quot;disabled&quot; a queue so that messages are not routed to it</li>
+<li>Support JVM GC &amp; thread metrics</li>
+<li>Support for resetting queue properties by unsetting them in <code>broker.xml</code></li>
+<li>Undeploy diverts by removing them from <code>broker.xml</code></li>
+<li>Add <code>addressMemoryUsagePercentage</code> and <code>addressSize</code> as metrics</li>
 </ul>
 <h4 id="upgrading-from-older-versions">Upgrading from older versions</h4>
 <p>Make sure the existing queues have their parameters set according to the <code>broker.xml</code> values before upgrading.</p>
+<h2 id="2130">2.13.0</h2>
+<p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12348088" target="_blank">Full release notes</a>.</p>
+<p>Highlights:</p>
+<ul>
+<li>Management methods for an address&apos; duplicate ID cache to check the cache&apos;s size and clear it</li>
+<li>Support for <a href="message-expiry.html#configuring-expiry-delay">min/max expiry-delay</a></li>
+<li><a href="security.html#per-acceptor-security-domains">Per-acceptor security domains</a></li>
+<li>Command-line <code>check</code> tool for checking the health of a broker</li>
+<li>Support disabling metrics per address via the <a href="address-model.html#configuring-addresses-and-queues-via-address-settings"><code>enable-metrics</code> address setting</a></li>
+<li>Improvements to the <a href="logging.html#configuring-audit-logging">audit logging</a></li>
+<li>Speed optimizations for the <code>HierarchicalObjectRepository</code>, an internal object used to store address and security settings</li>
+</ul>
+<h4 id="upgrading-from-older-versions">Upgrading from older versions</h4>
+<p>Version 2.13.0 added new <a href="logging.html#configuring-audit-logging">audit logging</a>
+which is logged at <code>INFO</code> level and can be very verbose. The
+<code>logging.properties</code> shipped with this new version is set up to filter this out
+by default. If your <code>logging.properties</code> isn&apos;t updated appropriately this audit
+logging will likely appear in your console and <code>artemis.log</code> file assuming
+you&apos;re using a logging configuration close to the default. Add this to your
+<code>logging.properties</code>:</p>
+<pre><code># to enable audit change the level to INFO
+logger.org.apache.activemq.audit.base.level=ERROR
+logger.org.apache.activemq.audit.base.handlers=AUDIT_FILE
+logger.org.apache.activemq.audit.base.useParentHandlers=false
+
+logger.org.apache.activemq.audit.resource.level=ERROR
+logger.org.apache.activemq.audit.resource.handlers=AUDIT_FILE
+logger.org.apache.activemq.audit.resource.useParentHandlers=false
+
+logger.org.apache.activemq.audit.message.level=ERROR
+logger.org.apache.activemq.audit.message.handlers=AUDIT_FILE
+logger.org.apache.activemq.audit.message.useParentHandlers=false
+
+...
+
+#Audit logger
+handler.AUDIT_FILE=org.jboss.logmanager.handlers.PeriodicRotatingFileHandler
+handler.AUDIT_FILE.level=INFO
+handler.AUDIT_FILE.properties=suffix,append,autoFlush,fileName
+handler.AUDIT_FILE.suffix=.yyyy-MM-dd
+handler.AUDIT_FILE.append=true
+handler.AUDIT_FILE.autoFlush=true
+handler.AUDIT_FILE.fileName=${artemis.instance}/log/audit.log
+handler.AUDIT_FILE.formatter=AUDIT_PATTERN
+
+formatter.AUDIT_PATTERN=org.jboss.logmanager.formatters.PatternFormatter
+formatter.AUDIT_PATTERN.properties=pattern
+formatter.AUDIT_PATTERN.pattern=%d [AUDIT](%t) %s%E%n
+</code></pre><h2 id="2120">2.12.0</h2>
+<p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12346675" target="_blank">Full release notes</a>.</p>
+<p>Highlights:</p>
+<ul>
+<li>Support for <a href="configuring-transports.html#configuring-netty-socks-proxy">SOCKS proxy</a></li>
+<li>Real <a href="large-messages.html">large message</a> support for AMQP</li>
+<li><a href="undelivered-messages.html#automatically-creating-dead-letter-resources">Automatic creation of dead-letter resources</a> akin to ActiveMQ 5&apos;s individual dead-letter strategy</li>
+<li><a href="message-expiry.html#configuring-automatic-creation-of-expiry-resources">Automatic creation of expiry resources</a></li>
+<li>Improved API for queue creation</li>
+<li>Allow users to override JAVA_ARGS via environment variable</li>
+<li>Reduce heap usage during journal loading during broker start-up</li>
+<li>Allow <code>server</code> header in STOMP <code>CONNECTED</code> frame to be disabled</li>
+<li>Support disk store used percentage as an exportable metric (e.g. to be monitored by tools like Prometheus, etc.)</li>
+<li>Ability to configure a &quot;<a href="https://www.eclipse.org/jetty/javadoc/9.4.26.v20200117/org/eclipse/jetty/server/HttpConfiguration.Customizer.html" target="_blank">customizer</a>&quot; for the embedded web server</li>
+<li>Improved logging for errors when starting an <code>acceptor</code> to more easily identify the <code>acceptor</code> which has the problem.</li>
+<li>The CLI will now read the <code>broker.xml</code> to find the default <code>connector</code> URL for commands which require it (e.g. <code>consumer</code>, <code>producer</code>, etc.)</li>
+</ul>
 <h2 id="2110">2.11.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12346258" target="_blank">Full release notes</a>.</p>
 <p>Highlights:</p>
@@ -1568,7 +1638,7 @@ production.</li>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2020-07-08T19:06:56.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-20T14:05:25.043Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2020-08-24T11:33:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-24T13:56:04.858Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

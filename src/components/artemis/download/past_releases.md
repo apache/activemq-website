@@ -11,6 +11,14 @@ The keys file for verifying the release can be obtained [here](https://www.apach
 
 For any releases not shown here, check the [archive](https://archive.apache.org/dist/activemq/activemq-artemis/).
 <br/>
+#### ActiveMQ Artemis 2.14.0  (July 20, 2020)
+[Release Notes](release-notes-2.14.0) | [Git Report](commit-report-2.14.0) | [Documentation](../documentation/latest)
+
+tar.gz:|[apache-artemis-2.14.0-bin.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/2.14.0/apache-artemis-2.14.0-bin.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/2.14.0/apache-artemis-2.14.0-bin.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/2.14.0/apache-artemis-2.14.0-bin.tar.gz.asc)
+ZIP:|[apache-artemis-2.14.0-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/2.14.0/apache-artemis-2.14.0-bin.zip&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/2.14.0/apache-artemis-2.14.0-bin.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/2.14.0/apache-artemis-2.14.0-bin.zip.asc)
+Source Distribution:|[apache-artemis-2.14.0-source-release.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/2.14.0/apache-artemis-2.14.0-source-release.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/2.14.0/apache-artemis-2.14.0-source-release.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/2.14.0/apache-artemis-2.14.0-source-release.tar.gz.asc)|
+
+<br/>
 #### ActiveMQ Artemis 2.13.0   (May 26, 2020)
 [Release Notes](release-notes-2.13.0) | [Git Report](commit-report-2.13.0) | [Documentation](../documentation/2.13.0)
 
