@@ -1295,6 +1295,29 @@ block.</p>
 <p>By not inheriting permissions, it allows you to effectively deny permissions in
 more specific security-setting blocks by simply not specifying them. Otherwise
 it would not be possible to deny permissions in sub-groups of addresses.</p>
+<h3 id="fine-grained-security-using-fully-qualified-queue-name">Fine-grained security using fully qualified queue name</h3>
+<p>In certain situations it may be necessary to configure security that is more
+fine-grained that simply across an entire address. For example, consider an
+address with multiple queues:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">addresses</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">address</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;foo&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">anycast</span>&gt;</span>
+         <span class="hljs-tag">&lt;<span class="hljs-name">queue</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;q1&quot;</span> /&gt;</span>
+         <span class="hljs-tag">&lt;<span class="hljs-name">queue</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;q2&quot;</span> /&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">anycast</span>&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">address</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">addresses</span>&gt;</span>
+</code></pre>
+<p>You may want to limit consumption from <code>q1</code> to one role and consumption from
+<code>q2</code> to another role. You can do this using the fully qualified queue name (i.e.
+fqqn&quot;) in the <code>match</code> of the <code>security-setting</code>, e.g.:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">security-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;foo::q1&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">permission</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;consume&quot;</span> <span class="hljs-attr">roles</span>=<span class="hljs-string">&quot;q1Role&quot;</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">security-setting</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">security-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;foo::q2&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">permission</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;consume&quot;</span> <span class="hljs-attr">roles</span>=<span class="hljs-string">&quot;q2Role&quot;</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">security-setting</span>&gt;</span>
+</code></pre>
 <h2 id="security-setting-plugin">Security Setting Plugin</h2>
 <p>Aside from configuring sets of permissions via XML these permissions can
 alternatively be configured via a plugin which implements
@@ -2311,7 +2334,7 @@ parameter and indicate which domain from your <code>login.config</code> to use, 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.49","depth":1,"next":{"title":"Masking Passwords","level":"1.50","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.48","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2020-07-08T19:06:56.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-20T14:05:25.043Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.49","depth":1,"next":{"title":"Masking Passwords","level":"1.50","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.48","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2020-08-24T11:33:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-24T13:56:04.858Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
