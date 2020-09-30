@@ -1,5 +1,5 @@
-Apache ActiveMQ Website
-=======================
+Apache ActiveMQ - An amazing Website
+====================================
 
 This is the repository for the Apache ActiveMQ website, hosted at [activemq.apache.org](http://activemq.apache.org/).
 
