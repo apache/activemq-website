@@ -243,6 +243,25 @@
             
 
             
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.1" data-path="amqp-broker-connections.html">
+            
+                <a href="amqp-broker-connections.html">
+            
+                    
+                    Broker Connections
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
         </li>
     
         <li class="chapter " data-level="1.13" data-path="mqtt.html">
@@ -1135,6 +1154,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.79" data-path="restart-sequence.html">
+            
+                <a href="restart-sequence.html">
+            
+                    
+                    Restart Sequence
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
 
@@ -1462,6 +1494,44 @@ frame this length can be adjusted by using the <code>stompMaxFramePayloadLength<
 parameter on the acceptor.</p>
 <p>The <code>stomp-websockets</code> example shows how to configure an Apache ActiveMQ
 Artemis broker to have web browsers and Java applications exchanges messages.</p>
+<h2 id="flow-control">Flow Control</h2>
+<p>STOMP clients can use the <code>consumer-window-size</code> header on the <code>SUBSCRIBE</code>
+frame to control the flow of messages to clients. This is broadly discussed in
+the <a href="flow-control.html">Flow Control</a> chapter.</p>
+<p>This ability is similiar to the <code>activemq.prefetchSize</code> header supported by
+ActiveMQ 5.x. However, that header specifies the size in terms of <em>messages</em>
+whereas <code>consumer-window-size</code> specifies the size in terms of <em>bytes</em>. ActiveMQ
+Artemis supports the <code>activemq.prefetchSize</code> header for backwards compatibility
+but the value will be interpreted as <em>bytes</em> just like <code>consumer-window-size</code>
+would be. If both <code>activemq.prefetchSize</code> and <code>consumer-window-size</code> are set
+then the value for <code>consumer-window-size</code> will be used.</p>
+<p>Setting <code>consumer-window-size</code> to <code>0</code> will ensure that once a STOMP client
+receives a message that it will <em>not</em> receive another one until it sends the
+appropriate <code>ACK</code> or <code>NACK</code> frame for the message it already has.</p>
+<p>Setting <code>consumer-window-size</code> to a value <em>greater than</em> <code>0</code> will allow it to
+receive messages until the cumulative bytes of those messages reaches the
+configured size. Once that happens the client will not receive any more
+messages until it sends the appropriate <code>ACK</code> or <code>NACK</code> frame for the messages
+it already has.</p>
+<p>Setting <code>consumer-window-size</code> to <code>-1</code> means there is no flow control and the
+broker will dispatch messages to clients as fast as it can.</p>
+<p>Flow control can be configured at the <code>acceptor</code> as well using the
+<code>stompConsumerWindowSize</code> URL parameter. This value is <code>10240</code> (i.e. 10K) by
+default for clients using <code>client</code> and <code>client-individual</code> acknowledgement
+modes. It is <code>-1</code> for clients using the <code>auto</code> acknowledgement mode. Even
+if <code>stompConsumerWindowSize</code> is set on the STOMP <code>acceptor</code> it will be
+overriden by the value provided by individual clients using the
+<code>consumer-window-size</code> header on their <code>SUBSCRIBE</code> frame.</p>
+<blockquote>
+<p><strong>Note:</strong></p>
+<p>The <code>stompConsumerWindowSize</code> URL parameter used to be called
+<code>stompConsumerCredits</code> but was changed to be more consistent with the new
+header name (i.e. <code>consumer-window-size</code>). The <code>stompConsumerCredits</code>
+parameter is deprecated but it will still work for the time being.</p>
+</blockquote>
+<p>Using the <a href="#logging">DEBUG logging</a> mentioned earlier it is possible to see the
+size of the <code>MESSAGE</code> frames dispatched to clients. This can help when trying
+to determine the best <code>consumer-window-size</code> setting.</p>
 
                                 
                                 </section>
@@ -1505,7 +1575,7 @@ Artemis broker to have web browsers and Java applications exchanges messages.</p
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"STOMP","level":"1.14","depth":1,"next":{"title":"OpenWire","level":"1.15","depth":1,"path":"openwire.md","ref":"openwire.md","articles":[]},"previous":{"title":"MQTT","level":"1.13","depth":1,"path":"mqtt.md","ref":"mqtt.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"stomp.md","mtime":"2020-08-24T11:33:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-24T13:56:04.858Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"STOMP","level":"1.14","depth":1,"next":{"title":"OpenWire","level":"1.15","depth":1,"path":"openwire.md","ref":"openwire.md","articles":[]},"previous":{"title":"MQTT","level":"1.13","depth":1,"path":"mqtt.md","ref":"mqtt.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"stomp.md","mtime":"2020-11-02T23:43:03.229Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-02T23:52:09.751Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

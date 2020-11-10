@@ -243,6 +243,25 @@
             
 
             
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.1" data-path="amqp-broker-connections.html">
+            
+                <a href="amqp-broker-connections.html">
+            
+                    
+                    Broker Connections
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
         </li>
     
         <li class="chapter " data-level="1.13" data-path="mqtt.html">
@@ -1135,6 +1154,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.79" data-path="restart-sequence.html">
+            
+                <a href="restart-sequence.html">
+            
+                    
+                    Restart Sequence
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
 
@@ -1625,6 +1657,35 @@ but dont wish to have further messages routed to the queue to avoid message buil
 <span class="hljs-tag">&lt;/<span class="hljs-name">addresses</span>&gt;</span>
 </code></pre>
 <p>Warning: Disabling all the queues on an address means that any message sent to that address will be silently dropped.</p>
+<h3 id="temporary-queues">Temporary Queues</h3>
+<p>For some protocols and APIs which only support monolithic &quot;destinations&quot;
+without the address/queue separation (e.g. AMQP, JMS, etc.) temporary queues
+are created by the broker using a UUID (i.e universally unique identifier) as
+the name for both the address and the queue. Because the name is a UUID it is
+impossible to create an <code>address-setting</code> for it whose <code>match</code> is anything but
+<code>#</code>.</p>
+<p>To solve this problem one can specify the <code>temporary-queue-namespace</code> in
+<code>broker.xml</code> and then create an <code>address-setting</code> whose <code>match</code> value
+corresponds to the configured <code>temporary-queue-namespace</code>. When the
+<code>temporary-queue-namespace</code> is set and a temporary queue is created then the
+broker will prepend the <code>temporary-queue-namespace</code> value along with the
+<code>delimiter</code> value configured in <code>wildcard-addresses</code> (defaults to <code>.</code>) to the
+address name and use that to lookup the associated <code>address-setting</code> values.</p>
+<p>Here&apos;s a simple example configuration:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">temporary-queue-namespace</span>&gt;</span>temp<span class="hljs-tag">&lt;/<span class="hljs-name">temporary-queue-namespace</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">address-settings</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">address-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;temp.#&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">enable-metrics</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">enable-metrics</span>&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">address-setting</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">address-settings</span>&gt;</span>
+</code></pre>
+<p>Using this configuration any temporary queue will have metrics disabled.</p>
+<blockquote>
+<p><strong>Note:</strong></p>
+<p>This setting does <em>not</em> change the actual name of the temporary queue. It
+only changes the name used to <em>lookup</em> the address-settings.</p>
+</blockquote>
 <h2 id="protocol-managers">Protocol Managers</h2>
 <p>A &quot;protocol manager&quot; maps protocol-specific concepts down to the core
 addressing model (using addresses, queues and routing types). For example, when
@@ -1974,7 +2035,7 @@ about <a href="metrics.html">metrics</a>.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Address Model","level":"1.10","depth":1,"next":{"title":"Protocols and Interoperability","level":"1.11","depth":1,"path":"protocols-interoperability.md","ref":"protocols-interoperability.md","articles":[]},"previous":{"title":"Upgrading","level":"1.9","depth":1,"path":"upgrading.md","ref":"upgrading.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"address-model.md","mtime":"2020-08-24T11:33:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-24T13:56:04.858Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Address Model","level":"1.10","depth":1,"next":{"title":"Protocols and Interoperability","level":"1.11","depth":1,"path":"protocols-interoperability.md","ref":"protocols-interoperability.md","articles":[]},"previous":{"title":"Upgrading","level":"1.9","depth":1,"path":"upgrading.md","ref":"upgrading.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"address-model.md","mtime":"2020-11-02T23:43:03.196Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-02T23:52:09.751Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

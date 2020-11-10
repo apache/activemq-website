@@ -6,6 +6,7 @@ type: artemis
 
 Version|User Manual|Hacking Guide|API
 ---|---|---|---
+2.15.0|[HTML](2.15.0), [PDF](2.15.0/book.pdf), [Mobi](2.15.0/book.mobi), [ePub](2.15.0/book.epub)||[HTML](javadocs/javadoc-2.15.0)
 2.14.0|[HTML](2.14.0), [PDF](2.14.0/book.pdf), [Mobi](2.14.0/book.mobi), [ePub](2.14.0/book.epub)||[HTML](javadocs/javadoc-2.14.0)
 2.13.0|[HTML](2.13.0), [PDF](2.13.0/book.pdf), [Mobi](2.13.0/book.mobi), [ePub](2.13.0/book.epub)||[HTML](javadocs/javadoc-2.13.0)
 2.12.0|[HTML](2.12.0), [PDF](2.12.0/book.pdf), [Mobi](2.12.0/book.mobi), [ePub](2.12.0/book.epub)||[HTML](javadocs/javadoc-2.12.0)
