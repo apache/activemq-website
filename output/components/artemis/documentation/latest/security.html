@@ -243,6 +243,25 @@
             
 
             
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.12.1" data-path="amqp-broker-connections.html">
+            
+                <a href="amqp-broker-connections.html">
+            
+                    
+                    Broker Connections
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
         </li>
     
         <li class="chapter " data-level="1.13" data-path="mqtt.html">
@@ -1135,6 +1154,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.79" data-path="restart-sequence.html">
+            
+                <a href="restart-sequence.html">
+            
+                    
+                    Restart Sequence
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
 
@@ -1185,9 +1217,15 @@
 you can configure it.</p>
 <p>To disable security completely simply set the <code>security-enabled</code> property to
 <code>false</code> in the <code>broker.xml</code> file.</p>
-<p>For performance reasons security is cached and invalidated every so long. To
-change this period set the property <code>security-invalidation-interval</code>, which is
-in milliseconds. The default is <code>10000</code> ms.</p>
+<p>For performance reasons both <strong>authentication and authorization is cached</strong>
+independently. Entries are removed from the caches (i.e. invalidated) either
+when the cache reaches its maximum size in which case the least-recently used
+entry is removed or when an entry has been in the cache &quot;too long&quot;.</p>
+<p>The size of the caches are controlled by the <code>authentication-cache-size</code> and
+<code>authorization-cache-size</code> configuration parameters. Both deafult to <code>1000</code>.</p>
+<p>How long cache entries are valid is controlled by
+<code>security-invalidation-interval</code>, which is in milliseconds. Using <code>0</code> will
+disable caching. The default is <code>10000</code> ms.</p>
 <h2 id="tracking-the-validated-user">Tracking the Validated User</h2>
 <p>To assist in security auditing the <code>populate-validated-user</code> option exists. If
 this is <code>true</code> then the server will add the name of the validated user to the
@@ -1432,6 +1470,12 @@ configuration in real-time. The default value is <code>true</code>.</p>
 <code>manage</code> permission. See details of the mapping semantics below. The default
  value is <code>false</code>.</p>
 </li>
+<li><p><code>allowQueueAdminOnRead</code>. Whether or not to map the legacy <code>read</code> permission to
+the <code>createDurableQueue</code>, <code>createNonDurableQueue</code>, and <code>deleteDurableQueue</code>
+permissions so that JMS clients can create durable and non-durable subscriptions
+without needing the <code>admin</code> permission. This was allowed in ActiveMQ 5.x. The
+default value is <code>false</code>.</p>
+</li>
 </ul>
 <p>The name of the queue or topic defined in LDAP will serve as the &quot;match&quot; for
 the security-setting, the permission value will be mapped from the ActiveMQ 5.x
@@ -1475,15 +1519,22 @@ Artemis allows that traffic to be encrypted using the Secure Sockets Layer
 <p>For more information on configuring the SSL transport, please see <a href="configuring-transports.html">Configuring
 the Transport</a>.</p>
 <h2 id="user-credentials">User credentials</h2>
-<p>Apache ActiveMQ Artemis ships with two security manager implementations:</p>
+<p>Apache ActiveMQ Artemis ships with three security manager implementations:</p>
 <ul>
-<li><p>The legacy, deprecated <code>ActiveMQSecurityManager</code> that reads user credentials,
-i.e. user names, passwords and role information from properties files on the
-classpath called <code>artemis-users.properties</code> and <code>artemis-roles.properties</code>.</p>
-</li>
 <li><p>The flexible, pluggable <code>ActiveMQJAASSecurityManager</code> which supports any
 standard JAAS login module. Artemis ships with several login modules which
 will be discussed further down. This is the default security manager.</p>
+</li>
+<li><p>The <code>ActiveMQBasicSecurityManager</code> which doesn&apos;t use JAAS and only supports
+auth via username &amp; password credentials. It also supports adding, removing,
+and updating users via the management API. All user &amp; role data is stored
+in the broker&apos;s bindings journal which means any changes made to a live
+broker will be available on its backup.</p>
+</li>
+<li><p>The legacy, deprecated <code>ActiveMQSecurityManagerImpl</code> that reads user
+credentials, i.e. user names, passwords and role information from properties
+files on the classpath called <code>artemis-users.properties</code> and
+<code>artemis-roles.properties</code>.</p>
 </li>
 </ul>
 <h3 id="jaas-security-manager">JAAS Security Manager</h3>
@@ -1861,7 +1912,7 @@ node (maps to <code>javax.naming.directory.SearchControls.SUBTREE_SCOPE</code>).
 </li>
 <li><p><code>authenticateUser</code> - boolean flag to disable authentication. Useful as an
 optimisation when this module is used just for role mapping of a Subject&apos;s
-existing authenticated principals; default is <code>false</code>.</p>
+existing authenticated principals; default is <code>true</code>.</p>
 </li>
 <li><p><code>referral</code> - specify how to handle referrals; valid values: <code>ignore</code>,
 <code>follow</code>, <code>throw</code>; default is <code>ignore</code>.</p>
@@ -2125,6 +2176,78 @@ cypher suites offered by rfc2712 are dated and insecure and rfc2712 has been
 superseded by SASL GSSAPI. However, for clients that don&apos;t support SASL (core
 client), using TLS can provide Kerberos authentication over an <em>unsecure</em>
 channel.</p>
+<h3 id="basic-security-manager">Basic Security Manager</h3>
+<p>As the name suggests, the <code>ActiveMQBasicSecurityManager</code> is <em>basic</em>. It is not
+pluggable like the JAAS security manager and it <em>only</em> supports authentication
+via username and password credentials. Furthermore, the the Hawtio-based web
+console requires JAAS. Therefore you will <em>still need</em> to configure a
+<code>login.config</code> if you plan on using the web console. However, this security
+manager <em>may</em> still may have a couple of advantages depending on your use-case.</p>
+<p>All user &amp; role data is stored in the bindings journal (or bindings table if
+using JDBC). The advantage here is that in a live/backup use-case any user
+management performed on the live broker will be reflected on the backup upon
+failover. Typically LDAP would be employed for this kind of use-case, but not
+everyone wants or is able to administer an independent LDAP server.</p>
+<p>User management is provided by the broker&apos;s management API. This includes the
+ability to add, list, update, and remove users &amp; roles. As with all management
+functions, this is available via JMX, management messages, HTTP (via Jolokia),
+web console, etc. These functions are also available from the ActiveMQ Artemis
+command-line interface. Having the broker store this data directly means that
+it must be running in order to manage users. There is no way to modify the
+bindings data manually.</p>
+<p>To be clear, any management access via HTTP (e.g. web console or Jolokia) will
+go through Hawtio JAAS. MBean access via JConsole or other remote JMX tool will
+go through the basic security manager. Management messages will also go through
+the basic security manager.</p>
+<h4 id="configuration">Configuration</h4>
+<p>The configuration for the <code>ActiveMQBasicSecurityManager</code> happens in
+<code>bootstrap.xml</code> just like it does for all security manager implementations.
+Here&apos;s an example:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.org/schema&quot;</span>&gt;</span>
+
+   <span class="hljs-tag">&lt;<span class="hljs-name">security-manager</span> <span class="hljs-attr">class-name</span>=<span class="hljs-string">&quot;org.apache.activemq.artemis.spi.core.security.ActiveMQBasicSecurityManager&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;bootstrapUser&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;myUser&quot;</span>/&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;bootstrapPassword&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;myPass&quot;</span>/&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;bootstrapRole&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;myRole&quot;</span>/&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">security-manager</span>&gt;</span>
+
+   ...
+<span class="hljs-tag">&lt;/<span class="hljs-name">broker</span>&gt;</span>
+</code></pre>
+<p>Because the bindings data which holds the user &amp; role data cannot be modified
+manually and because the broker must be running to manage users and because
+the broker often needs to be secured from first boot the
+<code>ActiveMQBasicSecurityManager</code> has 3 properties to define a user whose
+credentials can then be used to add other users.</p>
+<ul>
+<li><code>bootstrapUser</code> - the name of the bootstrap user</li>
+<li><code>bootstrapPassword</code> - the password for the bootstrap user; supports masking</li>
+<li><code>bootstrapRole</code> - the role of the bootstrap user</li>
+</ul>
+<p>The value specified in the <code>bootstrapRole</code> will need the following permissions
+on the <code>activemq.management</code> address:</p>
+<ul>
+<li><code>createNonDurableQueue</code></li>
+<li><code>createAddress</code></li>
+<li><code>consume</code></li>
+<li><code>manage</code></li>
+<li><code>send</code></li>
+</ul>
+<p>For example:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">security-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;activemq.management.#&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">permission</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;createNonDurableQueue&quot;</span> <span class="hljs-attr">roles</span>=<span class="hljs-string">&quot;myRole&quot;</span>/&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">permission</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;createAddress&quot;</span> <span class="hljs-attr">roles</span>=<span class="hljs-string">&quot;myRole&quot;</span>/&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">permission</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;consume&quot;</span> <span class="hljs-attr">roles</span>=<span class="hljs-string">&quot;myRole&quot;</span>/&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">permission</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;manage&quot;</span> <span class="hljs-attr">roles</span>=<span class="hljs-string">&quot;myRole&quot;</span>/&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">permission</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;send&quot;</span> <span class="hljs-attr">roles</span>=<span class="hljs-string">&quot;myRole&quot;</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">security-setting</span>&gt;</span>
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong></p>
+<p>If the 3 <code>bootstrap</code> properties are defined then those credentials will be
+set whenever you start the broker no matter what changes may have been made
+to them at runtime previously.</p>
+</blockquote>
 <h2 id="mapping-external-roles">Mapping external roles</h2>
 <p>Roles from external authentication providers (i.e. LDAP) can be mapped to internally used roles. The is done through role-mapping entries in the security-settings block:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">security-settings</span>&gt;</span>
@@ -2334,7 +2457,7 @@ parameter and indicate which domain from your <code>login.config</code> to use, 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.49","depth":1,"next":{"title":"Masking Passwords","level":"1.50","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.48","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2020-08-24T11:33:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-24T13:56:04.858Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.49","depth":1,"next":{"title":"Masking Passwords","level":"1.50","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.48","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2020-11-02T23:43:03.229Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-02T23:52:09.751Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
