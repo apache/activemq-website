@@ -16,8 +16,8 @@ Apache ActiveMQ 5.15.13 includes several resolved[ issues](https://issues.apach
 
 Description|Download Link|_Verify_
 ---|---|---
-Windows Distribution|[apache-activemq-5.15.13-bin.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.15.13/apache-activemq-5.15.13-bin.zip&action=download)|[ASC](https://www.apache.org/dist/activemq/5.15.13/apache-activemq-5.15.13-bin.zip.asc), [SHA512](https://www.apache.org/dist/activemq/5.15.13/apache-activemq-5.15.13-bin.zip.sha512)
-Unix/Linux/Cygwin Distribution|[apache-activemq-5.15.13-bin.tar.gz](http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.15.13/apache-activemq-5.15.13-bin.tar.gz&action=download)|[ASC](https://www.apache.org/dist/activemq/5.15.13/apache-activemq-5.15.13-bin.tar.gz.asc), [SHA512](https://www.apache.org/dist/activemq/5.15.13/apache-activemq-5.15.13-bin.tar.gz.sha512)
+Windows Distribution|[apache-activemq-5.15.13-bin.zip](https://archive.apache.org/dist/activemq/5.15.13/apache-activemq-5.15.13-bin.zip)|[ASC](https://archive.apache.org/dist/activemq/5.15.13/apache-activemq-5.15.13-bin.zip.asc), [SHA512](https://archive.apache.org/dist/activemq/5.15.13/apache-activemq-5.15.13-bin.zip.sha512)
+Unix/Linux/Cygwin Distribution|[apache-activemq-5.15.13-bin.tar.gz](https://archive.apache.org/dist/activemq/5.15.13/apache-activemq-5.15.13-bin.tar.gz)|[ASC](https://archive.apache.org/dist/activemq/5.15.13/apache-activemq-5.15.13-bin.tar.gz.asc), [SHA512](https://archive.apache.org/dist/activemq/5.15.13/apache-activemq-5.15.13-bin.tar.gz.sha512)
 
 Verify the Integrity of Downloads
 ---------------------------------
@@ -70,7 +70,7 @@ Getting the Source Code
 
 Description|Download Link|Verify
 ---|---|---
-Source Release|[activemq-parent-5.15.13-source-release.zip](http://www.apache.org/dyn/closer.cgi?path=/activemq/5.15.13/activemq-parent-5.15.13-source-release.zip)|[ASC](https://www.apache.org/dist/activemq/5.15.13/activemq-parent-5.15.13-source-release.zip.asc), [SHA512](https://www.apache.org/dist/activemq/5.15.13/activemq-parent-5.15.13-source-release.zip.sha512)
+Source Release|[activemq-parent-5.15.13-source-release.zip](https://archive.apache.org/dist/activemq/5.15.13/activemq-parent-5.15.13-source-release.zip)|[ASC](https://archive.apache.org/dist/activemq/5.15.13/activemq-parent-5.15.13-source-release.zip.asc), [SHA512](https://archive.apache.org/dist/activemq/5.15.13/activemq-parent-5.15.13-source-release.zip.sha512)
 
 ### Git Tag
 
