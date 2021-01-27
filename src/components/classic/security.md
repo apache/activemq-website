@@ -9,6 +9,7 @@ Details of security problems fixed in released versions of Apache ActiveMQ 5.x a
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2021-26117](../../security-advisories.data/CVE-2021-26117-announcement.txt) - ActiveMQ: LDAP-Authentication does not verify passwords on servers with anonymous bind
 *   [CVE-2020-11998](../../security-advisories.data/CVE-2020-11998-announcement.txt) - JMX remote client could execute arbitrary code
 *   [CVE-2020-13920](../../security-advisories.data/CVE-2020-13920-announcement.txt) - JMX MITM vulnerability
 *   [CVE-2020-1941](../../security-advisories.data/CVE-2020-1941-announcement.txt) - XSS in WebConsole
