@@ -14,6 +14,7 @@ You can use the Apache Archives to download previous Apache ActiveMQ releases.
 
 All time Apache ActiveMQ releases pages:
 
+*   [ActiveMQ 5.16.1 Release](activemq-5161-release)
 *   [ActiveMQ 5.16.0 Release](activemq-5160-release)
 *   [ActiveMQ 5.15.14 Release](activemq-51514-release)
 *   [ActiveMQ 5.15.13 Release](activemq-51513-release)

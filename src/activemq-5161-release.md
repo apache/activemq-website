@@ -1,23 +1,25 @@
 ---
 layout: default_md
-title: ActiveMQ 5.16.0 Release 
+title: ActiveMQ 5.16.1 Release 
 title-class: page-title-activemq5
 type: activemq5
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ 5.16.0 Release](activemq-5160-release)
+[Overview](overview) > [Download](download) > [ActiveMQ 5.16.1 Release](activemq-5161-release)
 
-ActiveMQ 5.16.0 Release
+ActiveMQ 5.16.1 Release
 -----------------------
 
-Apache ActiveMQ 5.16.0 is the first release on the 5.16.x series. It fully supports JDK 9+ at runtime and includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12341032) and bug fixes.
+Apache ActiveMQ 5.16.1 fully supports JDK 9+ at runtime and includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12347027) and bug fixes.
+
+This release addresses [CVE-2021-26117: LDAP-Authentication does not verify passwords on servers with anonymous bind.](security-advisories.data/CVE-2021-26117-announcement.txt)
 
 ### Getting the Binary Distributions
 
 Description|Download Link|_Verify_
 ---|---|---
-Windows Distribution|[apache-activemq-5.16.0-bin.zip](https://archive.apache.org/dist/activemq/5.16.0/apache-activemq-5.16.0-bin.zip)|[ASC](https://archive.apache.org/dist/activemq/5.16.0/apache-activemq-5.16.0-bin.zip.asc), [SHA512](https://archive.apache.org/dist/activemq/5.16.0/apache-activemq-5.16.0-bin.zip.sha512)
-Unix/Linux/Cygwin Distribution|[apache-activemq-5.16.0-bin.tar.gz](https://archive.apache.org/dist/activemq/5.16.0/apache-activemq-5.16.0-bin.tar.gz)|[ASC](https://archive.apache.org/dist/activemq/5.16.0/apache-activemq-5.16.0-bin.tar.gz.asc), [SHA512](https://archive.apache.org/dist/activemq/5.16.0/apache-activemq-5.16.0-bin.tar.gz.sha512)
+Windows Distribution|[apache-activemq-5.16.1-bin.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.16.1/apache-activemq-5.16.1-bin.zip&action=download)|[ASC](https://www.apache.org/dist/activemq/5.16.1/apache-activemq-5.16.1-bin.zip.asc), [SHA512](https://www.apache.org/dist/activemq/5.16.1/apache-activemq-5.16.1-bin.zip.sha512)
+Unix/Linux/Cygwin Distribution|[apache-activemq-5.16.1-bin.tar.gz](http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.16.1/apache-activemq-5.16.1-bin.tar.gz&action=download)|[ASC](https://www.apache.org/dist/activemq/5.16.1/apache-activemq-5.16.1-bin.tar.gz.asc), [SHA512](https://www.apache.org/dist/activemq/5.16.1/apache-activemq-5.16.1-bin.tar.gz.sha512)
 
 Verify the Integrity of Downloads
 ---------------------------------
@@ -58,7 +60,7 @@ To use this release in your maven project, the simplest dependency that you can 
 <dependency>
   <groupId>org.apache.activemq</groupId>
   <artifactId>activemq-all</artifactId>
-  <version>5.16.0</version>
+  <version>5.16.1</version>
 </dependency>
 ```
 If you need more fine grained control of your dependencies (activemq-all is an uber jar) pick and choose from the various components activemq-client, activemq-broker, activemq-xx-store etc.
@@ -70,15 +72,15 @@ Getting the Source Code
 
 Description|Download Link|Verify
 ---|---|---
-Source Release|[activemq-parent-5.16.0-source-release.zip](https://archive.apache.org/dist/activemq/5.16.0/activemq-parent-5.16.0-source-release.zip)|[ASC](https://archive.apache.org/dist/activemq/5.16.0/activemq-parent-5.16.0-source-release.zip.asc), [SHA512](https://archive.apache.org/dist/activemq/5.16.0/activemq-parent-5.16.0-source-release.zip.sha512)
+Source Release|[activemq-parent-5.16.1-source-release.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.16.1/activemq-parent-5.16.1-source-release.zip&action=download)|[ASC](https://www.apache.org/dist/activemq/5.16.1/activemq-parent-5.16.1-source-release.zip.asc), [SHA512](https://www.apache.org/dist/activemq/5.16.1/activemq-parent-5.16.1-source-release.zip.sha512)
 
 ### Git Tag
 
-[https://gitbox.apache.org/repos/asf?p=activemq.git;a=tag;h=refs/tags/activemq-5.16.0](https://gitbox.apache.org/repos/asf?p=activemq.git;a=tag;h=refs/tags/activemq-5.16.0)
+[https://gitbox.apache.org/repos/asf?p=activemq.git;a=tag;h=refs/tags/activemq-5.16.1](https://gitbox.apache.org/repos/asf?p=activemq.git;a=tag;h=refs/tags/activemq-5.16.1)
 
 Change Log
 ----------
 
-For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12341032)
+For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12347027)
 
-Also see the previous [ActiveMQ 5.15.13 Release](activemq-51513-release)
+Also see the previous [ActiveMQ 5.16.0 Release](activemq-5160-release)
