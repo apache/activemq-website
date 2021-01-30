@@ -5,7 +5,7 @@ title-class: page-title-activemq5
 type: activemq5
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ 3.2.1 Release](activemq-40-release)
+[Overview](overview) > [Download](download) > [ActiveMQ 4.0 Release](activemq-40-release)
 
 New and Noteworthy
 ------------------
@@ -33,26 +33,8 @@ patch -p 0 < ${path-to-amq4-build.patch}
 
 The 4.x branch of Apache ActiveMQ has now moved to the Apache Incubator so the package names have changed from org.activemq to org.apache.activemq. For a full list see the [Changes in 4.0](New FeaturesFeatures/New Features/Features/New Features/changes-in-40).
 
-Download Here
--------------
-
-Download|Description
----|---
-[incubator-activemq-4.0.zip](http://people.apache.org/repository/incubator-activemq/distributions/incubator-activemq-4.0.zip)|Binary Distribution in zip package
-[incubator-activemq-4.0-src.zip](http://people.apache.org/repository/incubator-activemq/distributions/incubator-activemq-4.0-src.zip)|Source Distribution in zip package
-[incubator-activemq-4.0.tar.gz](http://people.apache.org/repository/incubator-activemq/distributions/incubator-activemq-4.0.tar.gz)|Binary Distribution in gz package
-[incubator-activemq-4.0-src.tar.gz](http://people.apache.org/repository/incubator-activemq/distributions/incubator-activemq-4.0-src.tar.gz)|Source Distribution in gz package
-
 SVN Tag Checkout
 ----------------
 ```
 svn co https://svn.apache.org/repos/asf/incubator/activemq/tags/activemq-4.0
 ```
-
-Changelog
----------
-
-For a more detailed view of new features and bug fixes, see the [release notes](http://issues.apache.org/activemq/secure/IssueNavigator.jspa?reset=true&pid=10520&fixfor=11660)
-
-Also see the previous [ActiveMQ 4.0 RC2 Release](activemq-40-rc2-release)
-

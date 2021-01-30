@@ -5,7 +5,7 @@ title-class: page-title-activemq5
 type: activemq5
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ 3.2.1 Release](activemq-11-release)
+[Overview](overview) > [Download](download) > [ActiveMQ 1.1 Release](activemq-11-release)
 
 New and Noteworthy
 ------------------
@@ -23,21 +23,3 @@ This release represents a major increase in functionality; the new features in t
 *   composite destinations support (allowing a publish or subscribe operation on several queues and/or topics in one atomic operation, such as writing to N queues in one operation)
 *   simpler pure-Java configuration API
 *   heaps of bug fixes and new test cases
-
-Download Here
--------------
-
-Download|Description
----|---
-[activemq-1.1.zip](http://dist.codehaus.org/activemq/distributions/activemq-1.1.zip)|Binary Distribution in zip package
-[activemq-1.1-src.zip](http://dist.codehaus.org/activemq/distributions/activemq-1.1-src.zip)|Source Distribution in zip package
-[activemq-1.1.tar.gz](http://dist.codehaus.org/activemq/distributions/activemq-1.1.tar.gz)|Binary Distribution in gz package
-[activemq-1.1-src.tar.gz](http://dist.codehaus.org/activemq/distributions/activemq-1.1-src.tar.gz)|Source Distribution in gz package
-
-Changelog
----------
-
-JIRA Issues Macro: Unable to locate JIRA server for this macro. It may be due to Application Link configuration.
-
-For a more detailed view of new features and bug fixes, see the [release notes](http://jira.activemq.org/jira/secure/ReleaseNote.jspa?projectId=10520&styleName=Html&version=10632)
-

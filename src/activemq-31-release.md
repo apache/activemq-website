@@ -5,7 +5,7 @@ title-class: page-title-activemq5
 type: activemq5
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ 3.2.1 Release](activemq-31-release)
+[Overview](overview) > [Download](download) > [ActiveMQ 3.1 Release](activemq-31-release)
 
 New and Noteworthy
 ------------------
@@ -35,21 +35,3 @@ This new release includes the following
 *   easier journal file size and checkpoint period configuration
 *   jabber transport
 *   various performance enhancements and bug fixes
-
-Download Here
--------------
-
-Download|Description
----|---
-[activemq-release-3.1.zip](http://dist.codehaus.org/activemq/distributions/activemq-release-3.1.zip)|Binary Distribution in zip package
-[activemq-release-3.1-src.zip](http://dist.codehaus.org/activemq/distributions/activemq-release-3.1-src.zip)|Source Distribution in zip package
-[activemq-release-3.1.tar.gz](http://dist.codehaus.org/activemq/distributions/activemq-release-3.1.tar.gz)|Binary Distribution in gz package
-[activemq-release-3.1-src.tar.gz](http://dist.codehaus.org/activemq/distributions/activemq-release-3.1-src.tar.gz)|Source Distribution in gz package
-
-Changelog
----------
-
-For a more detailed view of new features and bug fixes, see the [release notes](http://jira.activemq.org/jira/secure/ReleaseNote.jspa?version=11501&styleName=Html&projectId=10520&Create=Create)
-
-You may also want to look at [the previous Changelog](activemq-30-release)
-
