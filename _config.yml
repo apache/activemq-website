@@ -3,7 +3,7 @@ title: ActiveMQ
 email:
 author:
 description:
-        url: http://apache.activemq.org
+  url: http://apache.activemq.org
 
 # Build settings
 permalink: none
@@ -11,19 +11,37 @@ permalink: none
 sass:
   sass_dir: css/
 
+collections:
+  5x_releases:
+    output: true
+    permalink: /:name
+
+current_5x_releases:
+  - 5.16
+  - 5.15
+
 defaults:
   - scope:
       path: "assets/img"
     values:
       image: true
-
+  - scope:
+      path: ""
+      type: "5x_releases"
+    values:
+      layout: "5x_release"
+      title-class: page-title-activemq5
+      type: activemq5
 
 markdown: kramdown
 highlighter: rouge
 #permalink: /news/:year/:month/:day/:title/
 excerpt_separator: ""
 source: src
-exclude: [BUILD.md, Gemfile*]
-keep_files: [.git]
-exclude: [vendor]
+exclude: [ BUILD.md, Gemfile* ]
+keep_files: [ .git ]
+exclude: [ vendor ]
 baseurl:
+
+plugins:
+  - jekyll-redirect-from

@@ -7,18 +7,13 @@ type: activemq5
 
  [FAQ](faq) > [General](general) > [How does the website work](how-does-the-website-work)
 
+Apache ActiveMQ Website
+=======================
 
-This website is actually rendered from the Wiki contents that you can [edit](how-do-i-edit-the-website).  
+The repository for the Apache ActiveMQ website is hosted at [https://github.com/apache/activemq-website](https://github.com/apache/activemq-website).
 
-When viewing a page on the static HTML website you can click on the **edit** link (bottom of the page) and you can edit the page.
+How it works
+------------
+The [master branch](https://github.com/apache/activemq-website/tree/master/) of the repo contains the source files that are used to generate the HTML that ultimately gets pushed to the site. When a commit is made to the branch, a Jekyll build is automatically performed in CI and the generated site output committed back to the `asf-site` branch within the `output` directory. The generated content on `asf-site` is then automatically published to the live web server at https://activemq.apache.org/.
 
-Other useful [Site links](site) are
-
-*   [Banner](banner)
-*   [Navigation](navigation)
-*   [QuickLinks](quicklinks)
-*   [SiteIndex](siteindex)
-*   [SiteMap](sitemap)
-
-Note that it takes a little while to update the Apache site at [http://activemq.apache.org/](http://activemq.apache.org/) due to caching. Though this site usually updates quickly: [http://cwiki.apache.org/ACTIVEMQ/](http://cwiki.apache.org/ACTIVEMQ/)
-
+See [How do I edit the website](how-do-i-edit-the-website) for more information.

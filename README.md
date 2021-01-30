@@ -46,4 +46,3 @@ If you are a committer, do the following:
 3. Push the changes to the ASF remote.
 4. The CI build will run and commit the generated site to the `asf-site` branch automatically within a few minutes, from where it will also be published. CI build status mails go to the commits list.
 4. Verify the updated website works as expected by browsing it.
-
