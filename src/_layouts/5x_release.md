@@ -11,10 +11,28 @@ ActiveMQ {{page.version}} Release
 
 ### Getting the Binary Distributions
 
+{% assign releases = site["5x_releases"] | reverse %}
+{% assign isCurrentRelease = false %}
+
+{% for current_release in site.current_5x_releases %}
+    {% for release in releases %}
+        {% if release.version contains current_release %}
+                    {% if release.version == page.version %}
+                        {% assign isCurrentRelease = true %}
+                    {% endif %}          
+            {% break %}
+        {% endif %}          
+    {% endfor %}
+    {% if isCurrentRelease %} {% break %} {% endif %} 
+{% endfor %}
+
 Description|Download Link|_Verify_
----|---|---
+---|---|---{% if isCurrentRelease %}
+Windows Distribution|[apache-activemq-{{page.version}}-bin.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.zip&action=download)|[ASC](https://www.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.zip.asc), [SHA512](https://www.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.zip.sha512)
+Unix/Linux/Cygwin Distribution|[apache-activemq-{{page.version}}-bin.tar.gz](http://www.apache.org/dyn/closer.cgi?filename=/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.tar.gz&action=download)|[ASC](https://www.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.tar.gz.asc), [SHA512](https://www.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.tar.gz.sha512){% else %}
 Windows Distribution|[apache-activemq-{{page.version}}-bin.zip](https://archive.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.zip)|[ASC](https://archive.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.zip.asc), [SHA512](https://archive.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.zip.sha512)
 Unix/Linux/Cygwin Distribution|[apache-activemq-{{page.version}}-bin.tar.gz](https://archive.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.tar.gz)|[ASC](https://archive.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.tar.gz.asc), [SHA512](https://archive.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.tar.gz.sha512)
+{% endif %}          
 
 Verify the Integrity of Downloads
 ---------------------------------
@@ -66,8 +84,10 @@ Getting the Source Code
 ### Source Distributions
 
 Description|Download Link|Verify
----|---|---
+---|---|---{% if isCurrentRelease %}
+Source Release:|[activemq-parent-{{page.version}}-source-page.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip&action=download)|[ASC](https://www.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip.asc), [SHA512](https://www.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-page.zip.sha512)|{% else %}
 Source Release|[activemq-parent-{{page.version}}-source-release.zip](https://archive.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip)|[ASC](https://archive.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip.asc), [SHA512](https://archive.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip.sha512)
+{% endif %}     
 
 ### Git Tag
 

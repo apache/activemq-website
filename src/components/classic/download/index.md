@@ -8,9 +8,9 @@ type: activemq5
 These are the current releases. For prior releases, please see the [past releases](../../../download-archives) page.
 
 
-{% assign releases = site["releases"] | reverse %}
+{% assign releases = site["5x_releases"] | reverse %}
 
-{% for current_release in site.current_releases %}
+{% for current_release in site.current_5x_releases %}
     {% for release in releases %}
         {% if release.version contains current_release %}
 #### [ActiveMQ {{release.version}} ({{release.release_date}})]({{release.url}})
