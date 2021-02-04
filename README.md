@@ -47,3 +47,22 @@ If you are a committer, do the following:
 4. The CI build will run and commit the generated site to the `asf-site` branch automatically within a few minutes, from where it will also be published. CI build status mails go to the commits list.
 4. Verify the updated website works as expected by browsing it.
 
+Add a new ActiveMQ Classic Release
+----------------------------------
+To add a new version simply add a new file in `src/_releases/` and name the file with its version converted to an integer - for example the file for 5.16.1 should be name `activemq-5016001-release.md`. The Front Matter must include `version`, `release_notes`, `release_date`, and `title`. 
+
+For example, this is the content for the 5.16.1 release. 
+
+    ---
+    version: 5.16.1
+    release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12341032
+    release_date: Jan 20, 2021
+    title: ActiveMQ 5.16.1 Release 
+    ---
+    Apache ActiveMQ 5.16.1 fully supports JDK 9+ at runtime and includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12347027) and bug fixes.
+    
+    This release addresses [CVE-2021-26117: LDAP-Authentication does not verify passwords on servers with anonymous bind.](../security-advisories.data/CVE-2021-26117-announcement.txt) 
+
+Update the current versions of ActiveMQ Classic
+----------------------------------------------
+To update the current versions of ActiveMQ classic edit the `current_releases` list in `_config.yml`. The latest patch release published in `src/_releases/` for the major.minor versions in the list will automatically be included on the [download page](https://activemq.apache.org/components/classic/download/). 
