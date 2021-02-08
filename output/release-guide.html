@@ -278,10 +278,20 @@ svn add activemq-core.xsd
       <li>You might also want to search for resolved/closed issues with no fix version just in case</li>
     </ol>
   </li>
-  <li>Create a download page for the release in the WIKI similar like the <a href="DownloadOverview/Download/Overview/Download/activemq-530-release">ActiveMQ 5.3.0 Release</a>; also update the main <a href="download">Download</a> page as appropriate</li>
+  <li>Create a download page for the realease by adding a file in <code class="language-plaintext highlighter-rouge">src/_releases/</code> and name the file with its version converted to an integer - for example the file for 5.16.1 should be name <code class="language-plaintext highlighter-rouge">activemq-5016001-release.md</code>. The Front Matter must include <code class="language-plaintext highlighter-rouge">version</code>, <code class="language-plaintext highlighter-rouge">release_notes</code>, <code class="language-plaintext highlighter-rouge">release_date</code>, and <code class="language-plaintext highlighter-rouge">title</code>. For example, this is the content for the 5.16.1 release:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+version: 5.16.1
+release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&amp;version=12341032
+release_date: Jan 20, 2021
+title: ActiveMQ 5.16.1 Release 
+---
+Apache ActiveMQ 5.16.1 fully supports JDK 9+ at runtime and includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&amp;version=12347027) and bug fixes.
+    
+This release addresses [CVE-2021-26117: LDAP-Authentication does not verify passwords on servers with anonymous bind.](../security-advisories.data/CVE-2021-26117-announcement.txt)
+</code></pre></div>    </div>
+  </li>
+  <li>If necessary, update the current versions by updating the <code class="language-plaintext highlighter-rouge">current_5x_releases</code> list in <code class="language-plaintext highlighter-rouge">_config.yml</code>. The latest patch release published in <code class="language-plaintext highlighter-rouge">src/_releases/</code> for the major.minor versions in the list will automatically be included on the <a href="https://activemq.apache.org/components/classic/download/">download page</a>.</li>
   <li>Update the <a href="xml-reference">Xml Reference</a> page with a link to the HTML and XSD</li>
-  <li>Update latest release link on home page</li>
-  <li>Change the links for the prior release to reference the archive (at <a href="http://archive.apache.org/dist/activemq/">http://archive.apache.org/dist/activemq/</a>); otherwise, users will not be able to locate the older release for download</li>
   <li>Update <a href="quicklinks">QuickLinks</a> and <a href="docs">JavaDocs</a> pages</li>
   <li>Mail the <a href="mailto:dev@activemq.apache.org">dev</a> &amp; <a href="mailto:user@activemq.apache.org">user</a> lists</li>
   <li><a href="http://cwiki.apache.org/confluence/pages/viewrecentblogposts.action?key=ACTIVEMQ">Post</a> a news entry on the WIKI</li>
