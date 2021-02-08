@@ -13,9 +13,8 @@ These are the current releases. For prior releases, please see the [past release
 {% for current_release in site.current_5x_releases %}
     {% for release in releases %}
         {% if release.version contains current_release %}
-#### [ActiveMQ {{release.version}} ({{release.release_date}})]({{release.url}})
-
-[Documentation](../documentation)
+#### ActiveMQ {{release.version}} ({{release.release_date}})
+[Release Notes]({{ release.release_notes }}) | [Release Page]({{release.url}}) | [Documentation](../documentation)
 
 Windows|[apache-activemq-{{release.version}}-bin.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip&action=download)|[SHA512](https://www.apache.org/dist/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.asc)
 Unix/Linux/Cygwin|[apache-activemq-{{release.version}}-bin.tar.gz](http://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz.asc)

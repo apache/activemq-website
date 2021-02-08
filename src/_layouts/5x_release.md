@@ -85,7 +85,7 @@ Getting the Source Code
 
 Description|Download Link|Verify
 ---|---|---{% if isCurrentRelease %}
-Source Release:|[activemq-parent-{{page.version}}-source-page.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip&action=download)|[ASC](https://www.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip.asc), [SHA512](https://www.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-page.zip.sha512)|{% else %}
+Source Release:|[activemq-parent-{{page.version}}-source-release.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip&action=download)|[ASC](https://www.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip.asc), [SHA512](https://www.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip.sha512)|{% else %}
 Source Release|[activemq-parent-{{page.version}}-source-release.zip](https://archive.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip)|[ASC](https://archive.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip.asc), [SHA512](https://archive.apache.org/dist/activemq/{{page.version}}/activemq-parent-{{page.version}}-source-release.zip.sha512)
 {% endif %}     
 
