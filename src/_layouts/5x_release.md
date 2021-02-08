@@ -2,7 +2,7 @@
 layout: default_md
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ {{page.version}} Release](activemq-51513-release)
+[Overview](overview) > [Download](download) > [ActiveMQ {{page.version}} Release]({{page.url}})
 
 ActiveMQ {{page.version}} Release
 -----------------------
