@@ -185,17 +185,15 @@ Announcing the ActiveMQ Release
 1.  Perform a release in JIRA and create a new release version in JIRA.
     1.  Move unresolved issues to the next release first, in a bulk (do not send email) update
     2.  You might also want to search for resolved/closed issues with no fix version just in case   
-2.  Create a download page for the realease by adding a file in `src/_releases/` and name the file with its version converted to an integer - for example the file for 5.16.1 should be name `activemq-5016001-release.md`. The Front Matter must include `version`, `release_notes`, `release_date`, and `title`. For example, this is the content for the 5.16.1 release:  
+2.  Create a download page for the realease by adding a file in `src/_releases/` and name the file with its version converted to an integer - for example the file for 5.16.1 should be name `activemq-5016001-release.md`. The Front Matter must include `version`, `release_notes`, `release_date`, and `title`. For example, this might be an expected content based on the 5.16.1 release:
     ```
     ---
     version: 5.16.1
-    release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12341032
+    release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12347027
     release_date: Jan 20, 2021
     title: ActiveMQ 5.16.1 Release 
     ---
-    Apache ActiveMQ 5.16.1 fully supports JDK 9+ at runtime and includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12347027) and bug fixes.
-    
-    This release addresses [CVE-2021-26117: LDAP-Authentication does not verify passwords on servers with anonymous bind.](../security-advisories.data/CVE-2021-26117-announcement.txt)
+    Apache ActiveMQ {{ page.version }} was released on {{ page.release_date }}. It fully supports JDK 9+ at runtime and includes several resolved [issues]({{ page.release_notes }}) and bug fixes.
     ``` 
 3. If necessary, update the current versions by updating the `current_5x_releases` list in `_config.yml`. The latest patch release published in `src/_releases/` for the major.minor versions in the list will automatically be included on the [download page](https://activemq.apache.org/components/classic/download/).     
 4.  Update the [Xml Reference](xml-reference) page with a link to the HTML and XSD
