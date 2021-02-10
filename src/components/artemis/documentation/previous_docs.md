@@ -4,11 +4,22 @@ title: Previous ActiveMQ Artemis Documentation
 type: artemis
 ---
 
+{% assign reversed_releases = site["artemis_releases"] | reverse %}
+{% assign current_releases = "" | split: ',' %}
+
+{% for current_release_prefix in site.current_artemis_releases %}
+    {% for release in reversed_releases %}
+        {% if release.version contains current_release_prefix %}
+            {% assign current_releases = current_releases | push: release.version %}
+            {% break %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
 Version|User Manual|Hacking Guide|API
 ---|---|---|---
-2.15.0|[HTML](2.15.0), [PDF](2.15.0/book.pdf), [Mobi](2.15.0/book.mobi), [ePub](2.15.0/book.epub)||[HTML](javadocs/javadoc-2.15.0)
-2.14.0|[HTML](2.14.0), [PDF](2.14.0/book.pdf), [Mobi](2.14.0/book.mobi), [ePub](2.14.0/book.epub)||[HTML](javadocs/javadoc-2.14.0)
-2.13.0|[HTML](2.13.0), [PDF](2.13.0/book.pdf), [Mobi](2.13.0/book.mobi), [ePub](2.13.0/book.epub)||[HTML](javadocs/javadoc-2.13.0)
+{% for release in reversed_releases %}{% unless current_releases contains release.version %}{{release.version}}|[HTML]({{release.docs_version}}), [PDF]({{release.docs_version}}/book.pdf), [Mobi]({{release.docs_version}}/book.mobi), [ePub]({{release.docs_version}}/book.epub)||[HTML](javadocs/javadoc-{{release.docs_version}})
+{% endunless %}{% endfor %}2.13.0|[HTML](2.13.0), [PDF](2.13.0/book.pdf), [Mobi](2.13.0/book.mobi), [ePub](2.13.0/book.epub)||[HTML](javadocs/javadoc-2.13.0)
 2.12.0|[HTML](2.12.0), [PDF](2.12.0/book.pdf), [Mobi](2.12.0/book.mobi), [ePub](2.12.0/book.epub)||[HTML](javadocs/javadoc-2.12.0)
 2.11.0|[HTML](2.11.0), [PDF](2.11.0/book.pdf), [Mobi](2.11.0/book.mobi), [ePub](2.11.0/book.epub)|[HTML](2.11.0/hacking-guide)|[HTML](javadocs/javadoc-2.11.0)
 2.10.1|[HTML](2.10.1), [PDF](2.10.1/book.pdf), [Mobi](2.10.1/book.mobi), [ePub](2.10.1/book.epub)|[HTML](2.10.1/hacking-guide)|[HTML](javadocs/javadoc-2.10.1)
