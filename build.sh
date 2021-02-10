@@ -1,5 +1,5 @@
 set -e
 bundle
-jekyll build --incremental
+jekyll build
 set +e
 

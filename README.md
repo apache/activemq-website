@@ -23,9 +23,9 @@ Alternatively, to just build the site, run:
 
     ./build.sh
 
-Note that these helper scripts perform incremental builds. If for some reason you need to clear the metadata/cache used to support the build process, you can run:
-
-    rm -rf src/.jekyll-metadata src/.jekyll-cache/
+If for some reason you need to clear the metadata/cache used to support the build process, and the build output, you can run:
+    rm -rf src/.jekyll-*
+    rm -rf _site
 
 
 Contributing to the site
