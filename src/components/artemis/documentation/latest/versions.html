@@ -1224,19 +1224,86 @@ chapter in addition to any version-specific upgrade instructions outlined here.<
 </ul>
 </li>
 </ul>
+<h2 id="2170">2.17.0</h2>
+<p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12349326" target="_blank">Full release notes</a>.</p>
+<p>Highlights:</p>
+<ul>
+<li><a href="broker-plugins.html#using-the-brokermessageauthorizationplugin">Message-level authorization</a> similar to ActiveMQ 5.x.</li>
+<li>A count of addresses and queues is now available from the management API.</li>
+<li>You can now reload the broker&apos;s configuration from disk via the management API rather than waiting for the periodic 
+disk scan to pick it up</li>
+<li>Performance improvements on libaio journal.</li>
+<li>New command-line option to transfer messages.</li>
+<li>Performance improvements for the wildcard address manager.</li>
+<li>JDBC datasource property values can now be masked.</li>
+<li>Lots of usability improvements to the Hawtio 2 based web console introduced in 2.16.0</li>
+<li>New management method to create a core bridge using JSON-based configuration input.</li>
+</ul>
+<h2 id="2160">2.16.0</h2>
+<p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12348718" target="_blank">Full release notes</a>.</p>
+<p>Highlights:</p>
+<ul>
+<li>Configurable namespace for temporary queues</li>
+<li><a href="amqp-broker-connections.html">AMQP Server Connectivity</a></li>
+<li>&quot;Basic&quot; <a href="security.html#basic-security-manager"><code>SecurityManager</code> implementation</a> that supports replication</li>
+<li>Consumer window size support for individual STOMP clients</li>
+<li>Improved JDBC connection management</li>
+<li>New web console based on Hawtio 2</li>
+<li>Performance optimizations (i.e. caching) for authentication and authorization</li>
+<li>Support for admin objects in the JCA resource adapter to facilitate deployment into 3rd-party Java EE application servers</li>
+<li>Ability to prevent an acceptor from automatically starting</li>
+</ul>
+<h4 id="upgrading-from-older-versions">Upgrading from older versions</h4>
+<p>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-2893" target="_blank">ARTEMIS-2893</a> the
+fundamental way user management was implemented had to change to avoid data
+integrity issues related to concurrent modification. From a user&apos;s perspective
+two main things changed:</p>
+<ol>
+<li>User management is no longer possible using the <code>artemis user</code> commands
+when the broker is <strong>offline</strong>. Of course users are still free to modify the
+properties files directly in this situation.</li>
+<li><p>The parameters of the <code>artemis user</code> commands changed. Instead of using
+something like this:</p>
+<pre><code class="lang-sh">./artemis user add --user guest --password guest --role admin
+</code></pre>
+<p>Use this instead:</p>
+<pre><code class="lang-sh">./artemis user add --user-command-user guest --user-command-password guest --role admin
+</code></pre>
+<p>In short, use <code>user-command-user</code> in lieu of <code>user</code> and <code>user-command-password</code>
+in lieu of <code>password</code>. Both <code>user</code> and <code>password</code> parameters now apply to the
+connection used to send the command to the broker.</p>
+<p>For additional details see <a href="https://issues.apache.org/jira/browse/ARTEMIS-2893" target="_blank">ARTEMIS-2893</a>
+and <a href="https://issues.apache.org/jira/browse/ARTEMIS-3010" target="_blank">ARTEMIS-3010</a> </p>
+</li>
+</ol>
+<h2 id="2150">2.15.0</h2>
+<p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12348568" target="_blank">Full release notes</a>.</p>
+<p>Highlights:</p>
+<ul>
+<li>Ability to use FQQN syntax for both <code>security-settings</code> and JNDI lookup</li>
+<li>Support pausing dispatch during group rebalance (to avoid potential out-of-order consumption)</li>
+<li>Socks5h support</li>
+</ul>
 <h2 id="2140">2.14.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12348290" target="_blank">Full release notes</a>.</p>
 <p>Highlights:</p>
 <ul>
 <li>Management methods to update diverts</li>
-<li>Ability to &quot;disabled&quot; a queue so that messages are not routed to it</li>
+<li>Ability to &quot;disable&quot; a queue so that messages are not routed to it</li>
 <li>Support JVM GC &amp; thread metrics</li>
 <li>Support for resetting queue properties by unsetting them in <code>broker.xml</code></li>
 <li>Undeploy diverts by removing them from <code>broker.xml</code></li>
 <li>Add <code>addressMemoryUsagePercentage</code> and <code>addressSize</code> as metrics</li>
 </ul>
 <h4 id="upgrading-from-older-versions">Upgrading from older versions</h4>
-<p>Make sure the existing queues have their parameters set according to the <code>broker.xml</code> values before upgrading.</p>
+<p>This is likely a rare situation, but it&apos;s worth mentioning here anyway. Prior
+to 2.14.0 if you configured a parameter on a <code>queue</code> in <code>broker.xml</code> (e.g.
+<code>max-consumers</code>) and then later <em>removed</em> that setting the configured value you
+set would remain. This has changed in 2.14.0 via ARTEMIS-2797. Any value that
+is not explicitly set in <code>broker.xml</code> will be set back to either the static
+default or the dynamic default configured in the address-settings (e.g. via
+<code>default-max-consumers</code> in this example). Therefore, ensure any existing queues
+have all the needed parameters set in <code>broker.xml</code> values before upgrading.</p>
 <h2 id="2130">2.13.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12348088" target="_blank">Full release notes</a>.</p>
 <p>Highlights:</p>
@@ -1670,7 +1737,7 @@ production.</li>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2020-11-02T23:43:03.231Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-02T23:52:09.751Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2021-02-16T13:43:06.498Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-16T22:21:14.267Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

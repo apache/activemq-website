@@ -1222,7 +1222,7 @@ independently. Entries are removed from the caches (i.e. invalidated) either
 when the cache reaches its maximum size in which case the least-recently used
 entry is removed or when an entry has been in the cache &quot;too long&quot;.</p>
 <p>The size of the caches are controlled by the <code>authentication-cache-size</code> and
-<code>authorization-cache-size</code> configuration parameters. Both deafult to <code>1000</code>.</p>
+<code>authorization-cache-size</code> configuration parameters. Both default to <code>1000</code>.</p>
 <p>How long cache entries are valid is controlled by
 <code>security-invalidation-interval</code>, which is in milliseconds. Using <code>0</code> will
 disable caching. The default is <code>10000</code> ms.</p>
@@ -1245,7 +1245,7 @@ server then routes the message to those set of queues.</p>
 <p>Apache ActiveMQ Artemis allows sets of permissions to be defined against the
 queues based on their address. An exact match on the address can be used or a
 <a href="wildcard-syntax.html">wildcard match</a> can be used.</p>
-<p>Eight different permissions can be given to the set of queues which match the
+<p>There are different permissions that can be given to the set of queues which match the
 address. Those permissions are:</p>
 <ul>
 <li><p><code>createAddress</code>. This permission allows the user to create an address fitting
@@ -1727,10 +1727,12 @@ user=password
 guest=password
 </code></pre>
 <p>Passwords in <code>artemis-users.properties</code> can be hashed. Such passwords should
-follow the syntax <code>ENC(&lt;hash&gt;)</code>. Hashed passwords can easily be added to
-<code>artemis-users.properties</code> using the <code>user</code> CLI command from the Artemis
-<em>instance</em>. This command will not work from the Artemis home.</p>
-<pre><code class="lang-sh">./artemis user add --user guest --password guest --role admin
+follow the syntax <code>ENC(&lt;hash&gt;)</code>. </p>
+<p>Hashed passwords can easily be added to <code>artemis-users.properties</code> using the
+<code>user</code> CLI command from the Artemis <em>instance</em>. This command will not work 
+from the Artemis home, and it will also not work unless the broker has been
+started.</p>
+<pre><code class="lang-sh">./artemis user add --user-command-user guest --user-command-password guest --role admin
 </code></pre>
 <p>This will use the default codec to perform a &quot;one-way&quot; hash of the password
 and alter both the <code>artemis-users.properties</code> and <code>artemis-roles.properties</code>
@@ -1752,6 +1754,11 @@ etc.).</p>
 <p><strong>Warning</strong></p>
 <p>Management and CLI operations to manipulate user &amp; role data are only available
 when using the <code>PropertiesLoginModule</code>.</p>
+<p>In general, using properties files and broker-centric user management for
+anything other than very basic use-cases is not recommended. The broker is
+designed to deal with messages. It&apos;s not in the business of managing users,
+although that functionality is provided at a limited level for convenience. LDAP
+is recommended for enterprise level production use-cases.</p>
 </blockquote>
 <h4 id="ldaploginmodule">LDAPLoginModule</h4>
 <p>The LDAP login module enables you to perform authentication and authorization
@@ -2179,7 +2186,7 @@ channel.</p>
 <h3 id="basic-security-manager">Basic Security Manager</h3>
 <p>As the name suggests, the <code>ActiveMQBasicSecurityManager</code> is <em>basic</em>. It is not
 pluggable like the JAAS security manager and it <em>only</em> supports authentication
-via username and password credentials. Furthermore, the the Hawtio-based web
+via username and password credentials. Furthermore, the Hawtio-based web
 console requires JAAS. Therefore you will <em>still need</em> to configure a
 <code>login.config</code> if you plan on using the web console. However, this security
 manager <em>may</em> still may have a couple of advantages depending on your use-case.</p>
@@ -2287,7 +2294,7 @@ using HTTPS protocol. e.g.:</p>
 </code></pre>
 <p>As shown in the example, to enable https the first thing to do is config the
 <code>bind</code> to be an <code>https</code> url. In addition, You will have to configure a few
-extra properties desribed as below.</p>
+extra properties described as below.</p>
 <ul>
 <li><p><code>keyStorePath</code> - The path of the key store file.</p>
 </li>
@@ -2457,7 +2464,7 @@ parameter and indicate which domain from your <code>login.config</code> to use, 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.49","depth":1,"next":{"title":"Masking Passwords","level":"1.50","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.48","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2020-11-02T23:43:03.229Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-02T23:52:09.751Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.49","depth":1,"next":{"title":"Masking Passwords","level":"1.50","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.48","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2021-02-16T13:43:06.495Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-16T22:21:14.267Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
