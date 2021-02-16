@@ -1272,15 +1272,15 @@ logging from the logger <code>org.foo</code>. First you would need to add <code>
 </code></pre><p>Then you need to configure the logging level for the <code>org.foo</code> logger to <code>TRACE</code>,
 e.g.:</p>
 <pre><code>logger.org.foo.level=TRACE
-</code></pre><p>Lastly, you would need to update the <code>level</code> of the necessary <code>handler</code> to allow
-the <code>TRACE</code> logging through, e.g.:</p>
+</code></pre><p>Lastly, you would need to update the <code>level</code> of the necessary <code>handler</code>
+to allow the <code>TRACE</code> logging through, e.g.:</p>
 <pre><code>handler.CONSOLE.level=TRACE
 </code></pre><p>or</p>
 <pre><code>handler.FILE.level=TRACE
 </code></pre><h2 id="logging-in-a-client-or-with-an-embedded-server">Logging in a client or with an Embedded server</h2>
 <p>Firstly, if you want to enable logging on the client side you need to
-include the JBoss logging jars in your library. If you are using Maven
-the simplest way is to use the &quot;all&quot; client jar.</p>
+include the JBoss logging jars in your application. If you are using 
+Maven the simplest way is to use the &quot;all&quot; client jar, e.g.:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.jboss.logmanager<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jboss-logmanager<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
@@ -1289,17 +1289,17 @@ the simplest way is to use the &quot;all&quot; client jar.</p>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.activemq<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>activemq-core-client-all<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.14.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.16.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
 </code></pre>
 <p>There are 2 properties you need to set when starting your java program,
 the first is to set the Log Manager to use the JBoss Log Manager, this
-is done by setting the <code>-Djava.util.logging.manager</code> property i.e.
-<code>-Djava.util.logging.manager=org.jboss.logmanager.LogManager</code></p>
-<p>The second is to set the location of the logging.properties file to use,
-this is done via the <code>-Dlogging.configuration</code> for instance
-<code>-Dlogging.configuration=file:///home/user/projects/myProject/logging.properties</code>.</p>
-<blockquote>
+is done by setting the <code>-Djava.util.logging.manager</code> property i.e.:</p>
+<pre><code>-Djava.util.logging.manager=org.jboss.logmanager.LogManager
+</code></pre><p>The second is to set the location of the logging.properties file to use,
+this is done via the <code>-Dlogging.configuration</code>, e.g.:</p>
+<pre><code>-Dlogging.configuration=file:///home/user/projects/myProject/logging.properties
+</code></pre><blockquote>
 <p><strong>Note:</strong></p>
 <p>The <code>logging.configuration</code> system property needs to be valid URL</p>
 </blockquote>
@@ -1337,14 +1337,27 @@ formatter.PATTERN=org.jboss.logmanager.formatters.PatternFormatter
 formatter.PATTERN.properties=pattern
 formatter.PATTERN.pattern=%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n
 </code></pre><h2 id="configuring-audit-logging">Configuring Audit Logging</h2>
-<p>There are 3 audit loggers that can be enabled separately and audit sifferent types of events, these are:</p>
+<p>There are 3 audit loggers that can be enabled separately and audit 
+different types of events, these are:</p>
 <ol>
-<li>Base logger: This is a highly verbose logger that will capture most events that occur on JMX beans</li>
-<li>Resource logger: This logs creation, updates and deletion of resources such as Addresses and Queues and also authentication, the main purpose of this is to track console activity and access to broker.</li>
-<li>Message logger: this logs message production and consumption of messages and will have a potentially negatibve affect on performance</li>
+<li><strong>base</strong>: This is a highly verbose logger that will capture most 
+events that occur on JMX beans.</li>
+<li><strong>resource</strong>: This logs the creation of, updates to, and deletion
+of resources such as addresses and queues as well as authentication.
+The main purpose of this is to track console activity and access
+to the broker.</li>
+<li><strong>message</strong>: This logs the production and consumption of messages.</li>
 </ol>
-<p>These are disabled by default in the logging.properties configuration file:</p>
-<pre><code class="lang-$xslt">logger.org.apache.activemq.audit.base.level=ERROR
+<blockquote>
+<p><strong>Note:</strong></p>
+<p>All extra logging will negatively impact performance. Whether or not
+the performance impact is &quot;too much&quot; will depend on your use-case.</p>
+</blockquote>
+<p>These three audit loggers are disabled by default in the 
+<code>logging.properties</code> configuration file:</p>
+<pre><code>loggers=...,org.apache.activemq.audit.base,org.apache.activemq.audit.message,org.apache.activemq.audit.resource
+...
+logger.org.apache.activemq.audit.base.level=ERROR
 logger.org.apache.activemq.audit.base.handlers=AUDIT_FILE
 logger.org.apache.activemq.audit.base.useParentHandlers=false
 
@@ -1356,23 +1369,22 @@ logger.org.apache.activemq.audit.message.level=ERROR
 logger.org.apache.activemq.audit.message.handlers=AUDIT_FILE
 logger.org.apache.activemq.audit.message.useParentHandlers=false
 ...
-</code></pre>
-<p>To enable the audit log change the above level to INFO, like this:</p>
-<pre><code class="lang-$xslt">logger.org.apache.activemq.audit.base.level=INFO
-logger.org.apache.activemq.audit.base.handlers=AUDIT_FILE
-logger.org.apache.activemq.audit.base.useParentHandlers=false
+</code></pre><p>To <em>enable</em> the audit log change the <code>level</code> attributes to <code>INFO</code>, like
+this:</p>
+<pre><code>logger.org.apache.activemq.audit.base.level=INFO
 ...
-</code></pre>
-<p>The 3 audit loggers can be disable/enabled separately. </p>
+logger.org.apache.activemq.audit.resource.level=INFO
+...
+logger.org.apache.activemq.audit.message.level=INFO
+</code></pre><p>The 3 audit loggers can be disable/enabled separately. </p>
 <p>Once enabled, all audit records are written into a separate log
 file (by default audit.log).</p>
 <h3 id="logging-the-clients-remote-address">Logging the clients remote address</h3>
 <p>It is possible to configure the audit loggers to log the remote address of any calling clients either through normal 
 clients or through the console and JMX. This is configured by enabling a specific login module in the login config file. </p>
-<pre><code class="lang-$xslt">org.apache.activemq.artemis.spi.core.security.jaas.AuditLoginModule optional
+<pre><code>org.apache.activemq.artemis.spi.core.security.jaas.AuditLoginModule optional
        debug=false;
-</code></pre>
-<blockquote>
+</code></pre><blockquote>
 <p><strong>Note:</strong></p>
 <p>This needs to be the first entry in the login.config file</p>
 <p><strong>Note:</strong></p>
@@ -1381,7 +1393,7 @@ clients or through the console and JMX. This is configured by enabling a specifi
 <h2 id="use-custom-handlers">Use Custom Handlers</h2>
 <p>To use a different handler than the built-in ones, you either pick one from
 existing libraries or you implement it yourself. All handlers must extends the
-java.util.logging.Handler class.</p>
+<code>java.util.logging.Handler</code> class.</p>
 <p>To enable a custom handler you need to append it to the handlers list
 <code>logger.handlers</code> and add its configuration to the <code>logging.configuration</code>.</p>
 <p>Last but not least, once you get your own handler please <a href="using-server.html#adding-bootstrap-dependencies">add it to the boot
@@ -1430,7 +1442,7 @@ manager will fail to load it!</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Logging","level":"1.66","depth":1,"next":{"title":"REST Interface","level":"1.67","depth":1,"path":"rest.md","ref":"rest.md","articles":[]},"previous":{"title":"Embedded Web Server","level":"1.65","depth":1,"path":"web-server.md","ref":"web-server.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"logging.md","mtime":"2020-11-02T23:43:03.223Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-02T23:52:09.751Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Logging","level":"1.66","depth":1,"next":{"title":"REST Interface","level":"1.67","depth":1,"path":"rest.md","ref":"rest.md","articles":[]},"previous":{"title":"Embedded Web Server","level":"1.65","depth":1,"path":"web-server.md","ref":"web-server.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"logging.md","mtime":"2021-02-16T13:43:06.489Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-16T22:21:14.267Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
