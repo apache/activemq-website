@@ -1376,6 +1376,34 @@ In the example below both <code>SEND_CONNECTION_NOTIFICATIONS</code> and
    <span class="hljs-tag">&lt;/<span class="hljs-name">broker-plugin</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">broker-plugins</span>&gt;</span>
 </code></pre>
+<h2 id="using-the-brokermessageauthorizationplugin">Using the BrokerMessageAuthorizationPlugin</h2>
+<p>The <code>BrokerMessageAuthorizationPlugin</code> filters messages sent to consumers based on if they have a role that matches the value specified in a message property.</p>
+<p>You can select which property will be used to specify the required role for consuming a message by setting the following configuration.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Property Description</th>
+<th>Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ROLE_PROPERTY</code></td>
+<td>Property name used to determine the role required to consume a message.</td>
+<td><code>requiredRole</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>If the message does not have a property matching the configured <code>ROLE_PROPERTY</code> then the message will be sent to any consumer.</p>
+<p>To configure the plugin, you can add the following configuration to the broker.
+In the example below <code>ROLE_PROPERTY</code> is set to <code>permissions</code> when that property is present messages will only be sent to consumers with a role matching its value.</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker-plugins</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">broker-plugin</span> <span class="hljs-attr">class-name</span>=<span class="hljs-string">&quot;org.apache.activemq.artemis.core.server.plugin.impl.BrokerMessageAuthorizationPlugin&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;ROLE_PROPERTY&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;permissions&quot;</span> /&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">broker-plugin</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">broker-plugins</span>&gt;</span>
+</code></pre>
 
                                 
                                 </section>
@@ -1419,7 +1447,7 @@ In the example below both <code>SEND_CONNECTION_NOTIFICATIONS</code> and
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Broker Plugins","level":"1.51","depth":1,"next":{"title":"Resource Limits","level":"1.52","depth":1,"path":"resource-limits.md","ref":"resource-limits.md","articles":[]},"previous":{"title":"Masking Passwords","level":"1.50","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"broker-plugins.md","mtime":"2020-11-02T23:43:03.197Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-02T23:52:09.751Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Broker Plugins","level":"1.51","depth":1,"next":{"title":"Resource Limits","level":"1.52","depth":1,"path":"resource-limits.md","ref":"resource-limits.md","articles":[]},"previous":{"title":"Masking Passwords","level":"1.50","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"broker-plugins.md","mtime":"2021-02-16T13:43:06.479Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-16T22:21:14.267Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

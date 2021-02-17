@@ -1447,7 +1447,7 @@ Use it wisely!</p>
 <p>The default for this parameter is <code>10</code></p>
 </li>
 <li><p><code>journal-compact-percentage</code></p>
-<p>The threshold to start compacting. When less than this percentage is
+<p>The threshold to start compacting. When less than this percentage of journal space is
 considered live data, we start compacting. Note also that compacting
 won&apos;t kick in until you have at least <code>journal-compact-min-files</code>
 data files on the journal</p>
@@ -1546,13 +1546,13 @@ understand how to make the JDBC driver available to the broker.</p>
 </ol>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">store</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">database-store</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">jdbc-driver-class-name</span>&gt;</span>org.apache.derby.jdbc.EmbeddedDriver<span class="hljs-tag">&lt;/<span class="hljs-name">jdbc-driver-class-name</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">jdbc-connection-url</span>&gt;</span>jdbc:derby:data/derby/database-store;create=true<span class="hljs-tag">&lt;/<span class="hljs-name">jdbc-connection-url</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">bindings-table-name</span>&gt;</span>BINDINGS_TABLE<span class="hljs-tag">&lt;/<span class="hljs-name">bindings-table-name</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">message-table-name</span>&gt;</span>MESSAGE_TABLE<span class="hljs-tag">&lt;/<span class="hljs-name">message-table-name</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">page-store-table-name</span>&gt;</span>MESSAGE_TABLE<span class="hljs-tag">&lt;/<span class="hljs-name">page-store-table-name</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">large-message-table-name</span>&gt;</span>LARGE_MESSAGES_TABLE<span class="hljs-tag">&lt;/<span class="hljs-name">large-message-table-name</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">node-manager-store-table-name</span>&gt;</span>NODE_MANAGER_TABLE<span class="hljs-tag">&lt;/<span class="hljs-name">node-manager-store-table-name</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">jdbc-driver-class-name</span>&gt;</span>org.apache.derby.jdbc.EmbeddedDriver<span class="hljs-tag">&lt;/<span class="hljs-name">jdbc-driver-class-name</span>&gt;</span>
    <span class="hljs-tag">&lt;/<span class="hljs-name">database-store</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">store</span>&gt;</span>
 </code></pre>
@@ -1600,6 +1600,7 @@ is 20000 milliseconds (ie 20 seconds).</p>
 <p>It is also possible to explicitly add the user and password rather than in the JDBC url if you need to encode it, this would look like:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">store</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">database-store</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">jdbc-driver-class-name</span>&gt;</span>org.apache.derby.jdbc.EmbeddedDriver<span class="hljs-tag">&lt;/<span class="hljs-name">jdbc-driver-class-name</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">jdbc-connection-url</span>&gt;</span>jdbc:derby:data/derby/database-store;create=true<span class="hljs-tag">&lt;/<span class="hljs-name">jdbc-connection-url</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">jdbc-user</span>&gt;</span>ENC(dasfn353cewc)<span class="hljs-tag">&lt;/<span class="hljs-name">jdbc-user</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">jdbc-password</span>&gt;</span>ENC(ucwiurfjtew345)<span class="hljs-tag">&lt;/<span class="hljs-name">jdbc-password</span>&gt;</span>
@@ -1608,10 +1609,33 @@ is 20000 milliseconds (ie 20 seconds).</p>
       <span class="hljs-tag">&lt;<span class="hljs-name">page-store-table-name</span>&gt;</span>MESSAGE_TABLE<span class="hljs-tag">&lt;/<span class="hljs-name">page-store-table-name</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">large-message-table-name</span>&gt;</span>LARGE_MESSAGES_TABLE<span class="hljs-tag">&lt;/<span class="hljs-name">large-message-table-name</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">node-manager-store-table-name</span>&gt;</span>NODE_MANAGER_TABLE<span class="hljs-tag">&lt;/<span class="hljs-name">node-manager-store-table-name</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">jdbc-driver-class-name</span>&gt;</span>org.apache.derby.jdbc.EmbeddedDriver<span class="hljs-tag">&lt;/<span class="hljs-name">jdbc-driver-class-name</span>&gt;</span>
    <span class="hljs-tag">&lt;/<span class="hljs-name">database-store</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">store</span>&gt;</span>
 </code></pre>
+<h3 id="configuring-jdbc-connection-pooling">Configuring JDBC connection pooling</h3>
+<p>To configure Apache ActiveMQ Artemis to use a database with a JDBC connection pool
+you need to set the data source properties, for example:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">store</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">database-store</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">data-source-properties</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">data-source-property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;driverClassName&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;com.mysql.jdbc.Driver&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">data-source-property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;url&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;jdbc:mysql://localhost:3306/artemis&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">data-source-property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;username&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;artemis&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">data-source-property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;password&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;artemis&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">data-source-property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;poolPreparedStatements&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;true&quot;</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">data-source-properties</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">bindings-table-name</span>&gt;</span>BINDINGS<span class="hljs-tag">&lt;/<span class="hljs-name">bindings-table-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">message-table-name</span>&gt;</span>MESSAGES<span class="hljs-tag">&lt;/<span class="hljs-name">message-table-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">large-message-table-name</span>&gt;</span>LARGE_MESSAGES<span class="hljs-tag">&lt;/<span class="hljs-name">large-message-table-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">page-store-table-name</span>&gt;</span>PAGE_STORE<span class="hljs-tag">&lt;/<span class="hljs-name">page-store-table-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">node-manager-store-table-name</span>&gt;</span>NODE_MANAGER_STORE<span class="hljs-tag">&lt;/<span class="hljs-name">node-manager-store-table-name</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">database-store</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">store</span>&gt;</span>
+</code></pre>
+<p>You can find the documentation of the data source properties at <a href="https://commons.apache.org/proper/commons-dbcp/configuration.html" target="_blank">https://commons.apache.org/proper/commons-dbcp/configuration.html</a>.</p>
+<p>To mask the value of a property you can use the same procedure used to <a href="masking-passwords.html">mask passwords</a>.</p>
+<p>Please note that the reconnection works only if there is no client sending messages. Instead, if there is an attempt
+to write to the journal&apos;s tables during the reconnection, then the broker will fail fast and shutdown.</p>
 <h2 id="zero-persistence">Zero Persistence</h2>
 <p>In some situations, zero persistence is sometimes required for a
 messaging system. Configuring Apache ActiveMQ Artemis to perform zero persistence is
@@ -1663,7 +1687,7 @@ message data, duplicate id caches or paging data will be persisted.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Persistence","level":"1.24","depth":1,"next":{"title":"Configuring Transports","level":"1.25","depth":1,"path":"configuring-transports.md","ref":"configuring-transports.md","articles":[]},"previous":{"title":"Filter Expressions","level":"1.23","depth":1,"path":"filter-expressions.md","ref":"filter-expressions.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"persistence.md","mtime":"2020-11-02T23:43:03.226Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-02T23:52:09.751Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Persistence","level":"1.24","depth":1,"next":{"title":"Configuring Transports","level":"1.25","depth":1,"path":"configuring-transports.md","ref":"configuring-transports.md","articles":[]},"previous":{"title":"Filter Expressions","level":"1.23","depth":1,"path":"filter-expressions.md","ref":"filter-expressions.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"persistence.md","mtime":"2021-02-16T13:43:06.494Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-16T22:21:14.267Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

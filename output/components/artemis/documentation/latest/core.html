@@ -1344,6 +1344,15 @@ and receiving send acknowledgements asynchronously you can create true end to
 end asynchronous systems which is not possible using the standard JMS API. For
 more information on this advanced feature please see the section <a href="send-guarantees.html">Guarantees of
 sends and commits</a>.</p>
+<h3 id="identifying-your-session-for-management-and-debugging">Identifying your session for management and debugging</h3>
+<p>Assigning IDs to your core sessions can help you with monitoring and debugging the cluster using the <a href="management-console.html">management console</a>.</p>
+<pre><code class="lang-java"> ClientSession session;
+ <span class="hljs-comment">// ...</span>
+ session.addMetaData(ClientSession.JMS_SESSION_IDENTIFIER_PROPERTY, <span class="hljs-string">&quot;jms-client-id&quot;</span>);
+ session.addMetaData(<span class="hljs-string">&quot;jms-client-id&quot;</span>, <span class="hljs-string">&quot;my-session&quot;</span>);
+</code></pre>
+<p>Such ID will then appear in the <strong>Client ID</strong> column under the <strong>Connections</strong>, <strong>Consumers</strong> and <strong>Producers</strong> tabs.</p>
+<p>If you are using the JMS API, the <code>setClientID</code> would give you the same effect.</p>
 <h3 id="clientconsumer">ClientConsumer</h3>
 <p>Clients use <code>ClientConsumer</code> instances to consume messages from a queue. Core
 messaging supports both synchronous and asynchronous message consumption
@@ -1366,7 +1375,7 @@ in the section on performance tuning <a href="perf-tuning.html">Performance Tuni
 <h2 id="a-simple-example-of-using-core">A simple example of using Core</h2>
 <p>Here&apos;s a very simple program using the core messaging API to send and receive a
 message. Logically it&apos;s comprised of two sections: firstly setting up the
-producer to write a message to an <em>addresss</em>, and secondly, creating a <em>queue</em>
+producer to write a message to an <em>address</em>, and secondly, creating a <em>queue</em>
 for the consumer using anycast routing, creating the consumer, and <em>starting</em>
 it.</p>
 <pre><code class="lang-java">ServerLocator locator = ActiveMQClient.createServerLocator(<span class="hljs-string">&quot;vm://0&quot;</span>);
@@ -1446,7 +1455,7 @@ session.close();
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Core","level":"1.16","depth":1,"next":{"title":"Mapping JMS Concepts to the Core API","level":"1.17","depth":1,"path":"jms-core-mapping.md","ref":"jms-core-mapping.md","articles":[]},"previous":{"title":"OpenWire","level":"1.15","depth":1,"path":"openwire.md","ref":"openwire.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"core.md","mtime":"2020-11-02T23:43:03.199Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-02T23:52:09.751Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Core","level":"1.16","depth":1,"next":{"title":"Mapping JMS Concepts to the Core API","level":"1.17","depth":1,"path":"jms-core-mapping.md","ref":"jms-core-mapping.md","articles":[]},"previous":{"title":"OpenWire","level":"1.15","depth":1,"path":"openwire.md","ref":"openwire.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"core.md","mtime":"2021-02-16T13:43:06.484Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-16T22:21:14.267Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

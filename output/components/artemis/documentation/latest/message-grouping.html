@@ -1377,6 +1377,23 @@ set of addresses.</p>
 <p>See the <a href="examples.html#message-group">Message Group Example</a> which shows how
 message groups are configured and used with JMS and via a connection factory.</p>
 <h2 id="clustered-grouping">Clustered Grouping</h2>
+<p>Before looking at the details for configuring clustered grouping support it is
+worth examing the idea of clustered grouping as a whole. In general, combining
+clustering and message grouping is a poor choice because the fundamental ideas
+of grouped (i.e. ordered) messages and horizontal scaling through clustering are
+essentially at odds with each other. </p>
+<p>Message grouping enforces ordered message consumption. Ordered message consumption
+requires that each message be fully consumed and acknowledged before the next 
+message in the group is consumed. This results in <em>serial</em> message processing
+(i.e. no concurrency). </p>
+<p>However, the idea of clustering is to scale brokers horizontally in order to
+increase message throughput by adding consumers which can process messages
+concurrently. But since the message groups are ordered the messages in each group
+cannot be consumed concurrently which defeats the purpose of horizontal scaling.</p>
+<p>If you&apos;ve evaluated your overall use-case with these design caveats in mind and
+determined that clustered grouping is still viable read on for all the
+configuration details and best practices.</p>
+<h3 id="clustered-grouping-configuration">Clustered Grouping Configuration</h3>
 <p>Using message groups in a cluster is a bit more complex. This is because
 messages with a particular group id can arrive on any node so each node needs
 to know about which group id&apos;s are bound to which consumer on which node. The
@@ -1431,7 +1448,7 @@ local handler. If this node crashes then no decisions will be able to be made.
 Any messages sent will be not be delivered and an exception thrown. To avoid
 this happening Local Handlers can be replicated on another backup node. Simple
 create your back up node and configure it with the same Local handler.</p>
-<h2 id="clustered-grouping-best-practices">Clustered Grouping Best Practices</h2>
+<h3 id="clustered-grouping-best-practices">Clustered Grouping Best Practices</h3>
 <p>Some best practices should be followed when using clustered grouping:</p>
 <ol>
 <li><p>Make sure your consumers are distributed evenly across the different nodes
@@ -1459,7 +1476,7 @@ is because this will determine how often the last-time-use value should be
 updated with a round trip for a request to the group between the nodes.</p>
 </li>
 </ol>
-<h2 id="clustered-grouping-example">Clustered Grouping Example</h2>
+<h3 id="clustered-grouping-example">Clustered Grouping Example</h3>
 <p>See the <a href="examples.html#clustered-grouping">Clustered Grouping Example</a> which
 shows how to configure message groups with a ActiveMQ Artemis Cluster.</p>
 
@@ -1505,7 +1522,7 @@ shows how to configure message groups with a ActiveMQ Artemis Cluster.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Message Grouping","level":"1.43","depth":1,"next":{"title":"Consumer Priority","level":"1.44","depth":1,"path":"consumer-priority.md","ref":"consumer-priority.md","articles":[]},"previous":{"title":"Exclusive Queues","level":"1.42","depth":1,"path":"exclusive-queues.md","ref":"exclusive-queues.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"message-grouping.md","mtime":"2020-11-02T23:43:03.225Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-02T23:52:09.751Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Message Grouping","level":"1.43","depth":1,"next":{"title":"Consumer Priority","level":"1.44","depth":1,"path":"consumer-priority.md","ref":"consumer-priority.md","articles":[]},"previous":{"title":"Exclusive Queues","level":"1.42","depth":1,"path":"exclusive-queues.md","ref":"exclusive-queues.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"message-grouping.md","mtime":"2021-02-16T13:43:06.492Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-16T22:21:14.267Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
