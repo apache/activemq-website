@@ -40,7 +40,7 @@ The following properties can be applied _only_ to a queue:
 
 Queue Only Property|Default|Description
 ---|---|---
-`allConsumersExclusiveByDefault`|`false`|When `true` all consumers will be exclusive. See [ActiveMQ Exclusive Consumers](activemq-exclusive-consumers)
+`allConsumersExclusiveByDefault`|`false`|When `true` all consumers will be exclusive. See [ActiveMQ Exclusive Consumers](exclusive-consumer)
 `cursorMemoryHighWaterMark`|`70`|The percentage (%) threshold applied either to the `<systemUsage>/<memoryUsage>` or the destination's `memoryLimit` (when defined) which when exceeded will cause the destination's cursor to either block or write to disk.
 `consumersBeforeDispatchStarts`|`0`|When the first consumer connects, wait for specified number of consumers before message dispatching starts.
 `expireMessagesPeriod`|`30000`|The period (in ms) of checks for message expiry on queued messages. A value of `0` will disable expiration checking.
