@@ -92,8 +92,8 @@ Advisory Topics|Description|Properties|Data Structure|Default|PolicyEntry Proper
 ---|---|---|---|---|---
 `ActiveMQ.Advisory.SlowConsumer.Queue`|Slow Queue Consumer.|`String='consumerId'` - the consumer id|`ConsumerInfo`|`false`|`advisoryForSlowConsumers`
 `ActiveMQ.Advisory.SlowConsumer.Topic`|Slow Topic Consumer.|`String='consumerId'` - the consumer id|`ConsumerInfo`|`false`|`advisoryForSlowConsumers`
-`ActiveMQ.Advisory.FastProducer.Queue`|Fast Queue producer.|`String='producerId'` - the producer id|`ProducerInfo`|`false`|`advisdoryForFastProducers`
-`ActiveMQ.Advisory. FastProducer.Topic`|Fast Topic producer.|`String='consumerId'`' - the producer id|`ProducerInfo`|`false`|`advisdoryForFastProducers`
+`ActiveMQ.Advisory.FastProducer.Queue`|Fast Queue producer.|`String='producerId'` - the producer id|`ProducerInfo`|`false`|`advisoryForFastProducers`
+`ActiveMQ.Advisory.FastProducer.Topic`|Fast Topic producer.|`String='consumerId'`' - the producer id|`ProducerInfo`|`false`|`advisoryForFastProducers`
 `ActiveMQ.Advisory.MessageDiscarded.Queue`|Message discarded.|`String='orignalMessageId'` - the discarded id|`Message`|`false`|`advisoryForDiscardingMessages`
 `ActiveMQ.Advisory.MessageDiscarded.Topic`|Message discarded.|`String='orignalMessageId'` - the discarded id|`Message`|`false`|`advisoryForDiscardingMessages`
 `ActiveMQ.Advisory.MessageDelivered.Queue`|Message delivered to the broker.|`String='orignalMessageId'` - the delivered id|`Message`|`false`|`advisoryForDelivery`
