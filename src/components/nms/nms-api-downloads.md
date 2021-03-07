@@ -5,6 +5,35 @@ title-class: page-title-nms
 type: nms
 ---
 
+2.0.0 (03/07/2021)
+-----
+
+##### New and Noteworthy
+
+This release brings NMS 2.0 support.
+
+##### Download Here
+
+|Description|Download Link|PGP Signature File|Version|
+|---|---|---|---|
+|Apache.NMS Source code|[Apache.NMS-2.0.0-src.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-src.zip)|[Apache.NMS-2.0.0-src.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-src.zip.asc)|2.0.0|
+|Apache.NMS Binary Assemblies|[Apache.NMS-2.0.0-bin.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-bin.zip)|[Apache.NMS-2.0.0-bin.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-bin.zip.asc)|2.0.0|
+|Apache.NMS Nuget Package|[Apache.NMS.2.0.0.nupkg](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/2.0.0/Apache.NMS.2.0.0.nupkg)|[Apache.NMS.2.0.0.nupkg.asc](http://www.apache.org/dist/activemq/apache-nms-api/2.0.0/Apache.NMS.2.0.0.nupkg.asc)|2.0.0|
+|Apache.NMS Documentation |[Apache.NMS-2.0.0-docs.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-docs.zip)|[Apache.NMS-2.0.0-docs.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-docs.zip.asc)|2.0.0|
+
+
+##### Git Tag Checkout
+```
+git clone https://github.com/apache/activemq-nms-api.git
+git checkout tags/2.0.0
+```
+
+##### Changelog
+
+https://issues.apache.org/jira/browse/AMQNET-637
+  
+---
+
 1.8.0 (01/07/2019)
 -----
 
