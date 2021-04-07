@@ -5,16 +5,13 @@ title-class: page-title-activemq5
 type: activemq5
 ---
 
-Here are a list of commonly asked questions and answers. If you have any questions which are not on this list, please talk to us on the [forums](discussion-forums).
-
-We [welcome contributions](contributing) and this entire website is a [wiki that you can edit](how-does-the-website-work) so please join in and help us make the documentation better!
+Here are a list of commonly asked questions and answers. If you have any questions which are not on this list, please [contact us](contact).
 
 ### General
 
 General questions about ActiveMQ
 
-*   [Can I get commercial support](can-i-get-commercial-support)
-*   [How can I get help](how-can-i-get-help)
+*   [Can I get commercial support](issues#commercial-support)
 *   [How can I get the source code from subversion](how-can-i-get-the-source-code-from-subversion)
 *   [How does ActiveMQ compare to AMQP](how-does-activemq-compare-to-amqp)
 *   [How does ActiveMQ compare to Artemis](how-does-activemq-compare-to-artemis)
@@ -24,11 +21,9 @@ General questions about ActiveMQ
 *   [How does ActiveMQ compare to Mule](how-does-activemq-compare-to-mule)
 *   [How does ActiveMQ compare to Spread Toolkit](how-does-activemq-compare-to-spread-toolkit)
 *   [How does OpenWire compare to Stomp](how-does-openwire-compare-to-stomp)
-*   [How does the website work](how-does-the-website-work)
 *   [How do I avoid Maven downloading latest jars](how-do-i-avoid-maven-downloading-latest-jars)
 *   [How do I build but disable the unit tests](how-do-i-build-but-disable-the-unit-tests)
 *   [How do I compile from the source](how-do-i-compile-from-the-source)
-*   [How do I edit the website](how-do-i-edit-the-website)
 *   [How fast is ActiveMQ](how-fast-is-activemq)
 *   [Should I run ActiveMQ on Windows in a directory with spaces](should-i-run-activemq-on-windows-in-a-directory-with-spaces)
 *   [What is ActiveMQ](what-is-activemq)
@@ -164,7 +159,7 @@ Questions relating to long term persistence of messages.
 Questions on specific kinds of errors. If you have seen a specific exception then check the [Exceptions](exceptions)
 
 *   [Could not find PacketReader for packet type - UNKNOWN PACKET TYPE](could-not-find-packetreader-for-packet-type-unknown-packet-type)
-*   [Exceptions](exceptions)
+*   Exceptions
     *   [certificate_unknown](certificateunknown)
     *   [IOException - could not find class for resource](ioexception-could-not-find-class-for-reDevelopers/source)
     *   [java.io.InterruptedIOException](javaiointerruptedioexception)
@@ -200,7 +195,7 @@ Questions on specific kinds of errors. If you have seen a specific exception the
 Questions for developers wishing to extend or enhance Apache ActiveMQ
 
 *   [How can I add a new type of transport](how-can-i-add-a-new-type-of-transport)
-*   [How can I contribute](how-can-i-contribute)
+*   [How can I contribute](contributing)
 *   [How do I add my own plugins](how-do-i-add-my-own-plugins)
 *   [How do I debug ActiveMQ from my IDE](how-do-i-debug-activemq-from-my-ide)
 

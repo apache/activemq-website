@@ -28,5 +28,5 @@ To help you get started using Apache ActiveMQ version 5 you may wish to start of
 
 ### Commercial Documentation
 
-The Commercial Providers listed on the [Support](support) page may also have additional documentation, examples, tutorials, etc... that can help you get started using ActiveMQ.
+The commercial providers listed on the [issues](issues) page may also have additional documentation, examples, tutorials, etc... that can help you get started using ActiveMQ.
 

@@ -66,7 +66,6 @@ Community
 *   [Articles](articles)
 *   [Books](books)
 *   [Contributing](contributing)
-*   [Discussion Forums](discussion-forums)
 *   [FAQ](faq)
     *   [Configuration](configuration)
         *   [How can I enable detailed logging](how-can-i-enable-detailed-logging)
@@ -85,7 +84,7 @@ Community
         *   [How to disable multicast discovery](how-to-disable-multicast-discovery)
     *   [Developing ActiveMQ](developing-activemq)
         *   [How can I add a new type of transport](how-can-i-add-a-new-type-of-transport)
-        *   [How can I contribute](how-can-i-contribute)
+        *   [How can I contribute](contributing)
         *   [How do I add my own plugins](how-do-i-add-my-own-plugins)
         *   [How do I debug ActiveMQ from my IDE](how-do-i-debug-activemq-from-my-ide)
     *   [Errors](errors)
@@ -121,8 +120,7 @@ Community
         *   [Why do I not receive messages on my durable topic subscription](why-do-i-not-receive-messages-on-my-durable-topic-subscription)
         *   [Why do KahaDB log files remain after cleanup](why-do-kahadb-log-files-remain-after-cleanup)
     *   [General](general)
-        *   [Can I get commercial support](can-i-get-commercial-support)
-        *   [How can I get help](how-can-i-get-help)
+        *   [Can I get commercial support](issues#commercial-support)
         *   [How can I get the source code from subversion](how-can-i-get-the-source-code-from-subversion)
         *   [How does ActiveMQ compare to AMQP](how-does-activemq-compare-to-amqp)
         *   [How does ActiveMQ compare to Artemis](how-does-activemq-compare-to-artemis)
@@ -132,11 +130,9 @@ Community
         *   [How does ActiveMQ compare to Mule](how-does-activemq-compare-to-mule)
         *   [How does ActiveMQ compare to Spread Toolkit](how-does-activemq-compare-to-spread-toolkit)
         *   [How does OpenWire compare to Stomp](how-does-openwire-compare-to-stomp)
-        *   [How does the website work](how-does-the-website-work)
         *   [How do I avoid Maven downloading latest jars](how-do-i-avoid-maven-downloading-latest-jars)
         *   [How do I build but disable the unit tests](how-do-i-build-but-disable-the-unit-tests)
         *   [How do I compile from the source](how-do-i-compile-from-the-source)
-        *   [How do I edit the website](how-do-i-edit-the-website)
         *   [How fast is ActiveMQ](how-fast-is-activemq)
         *   [Should I run ActiveMQ on Windows in a directory with spaces](should-i-run-activemq-on-windows-in-a-directory-with-spaces)
         *   [What is ActiveMQ](what-is-activemq)
@@ -243,18 +239,10 @@ Community
         *   [What is the difference between discovery, multicast and zeroconf](what-is-the-difference-between-discovery-multicast-and-zeroconf)
         *   [What is the Prefetch Limit For?](what-is-the-prefetch-limit-for)
         *   [While posting large binary file to activeMQ, is there a way to measure its progress](while-posting-large-binary-file-to-activemq-is-there-a-way-to-measure-its-progress)
-*   [Mailing Lists](mailing-lists)
-    *   [All Forums](all-forums)
-    *   [Developer Forum](developer-forum)
-    *   [User Forum](user-forum)
 *   [Privacy Policy](privacy-policy)
 *   [Projects Using ActiveMQ](projects-using-activemq)
 *   [Security Advisories](security-advisories)
-*   [Sponsorship](sponsorship)
-*   [Support](support)
-*   [Team](team)
-*   [Tips for getting help](tips-for-getting-help)
-*   [Users](users)
+*   [Support](issues)
 
 Overview
 --------
@@ -515,10 +503,8 @@ Tools
 Developers
 ----------
 
-*   [Becoming a committer](becoming-a-committer)
+*   [Becoming a committer](contributing)
 *   [Benchmark Tests](benchmark-tests)
-*   [Board Reports](board-reports)
-    *   [2007 April](Board Reports/2007-april)
 *   [Building](building)
 *   [Code Overview](code-overview)
 *   [Developer Guide](developer-guide)
@@ -551,14 +537,4 @@ Developers
 *   [SVN](svn)
 *   [Test Source XRef](test-source-xref)
 *   [Wire Protocol](wire-protocol)
-
-Site
-----
-
-*   [Banner](banner)
-*   [Navigation](navigation)
-    *   [IRC](Navigation/irc)
-*   [QuickLinks](quicklinks)
-*   [SiteIndex](Sitesiteindex)
-*   [SiteMap](Sitesitemap)
 

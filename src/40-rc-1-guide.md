@@ -40,7 +40,7 @@ Issues Resolved for this Release
 How to Help
 -----------
 
-Everyone in the ActiveMQ community can help with releases; users, developers, commmiters are all encouraged to test out a release and post any comments to the [activemq-dev@ mailing list](mailing-lists) or create a [JIRA](https://issues.apache.org/activemq/browse/AMQ) issue.
+Everyone in the ActiveMQ community can help with releases; users, developers, commmiters are all encouraged to test out a release and post any comments to the [activemq-dev@ mailing list](contact#mailing) or create an [issue](issues).
 
 ActiveMQ is available in both source and binary distributions. See [Getting Started](getting-started).
 

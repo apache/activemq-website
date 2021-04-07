@@ -345,7 +345,7 @@ Also see [Configuring Transports](configuring-transports) to see how you can con
 
 See the [Initial Configuration](configuration) for details of which jars you need to add to your classpath to start using ActiveMQ in your Java code
 
-If you want to use JNDI to connect to your JMS provider then please view the [JNDI Support](support). If you are a Spring user you should read about [Spring Support](support)
+If you want to use JNDI to connect to your JMS provider then please view the [JNDI Support](jndi-support). If you are a Spring user you should read about [Spring Support](spring-support)
 
 After the installation, ActiveMQ is running with a basic configuration. For details on configuring options, please see refer to the [Configuration](configuration) section.
 
@@ -354,5 +354,5 @@ Additional Resources
 
 If you are new to using ActiveMQ, running the [Web Samples](web-samples) or the [Examples](examples) is a good next step to learn more about ActiveMQ.
 
-The Commercial Providers listed on the [Support](support) page may also have additional documentation, examples, tutorials, etc... that can help you get started.
+The commercial providers listed on the [issues](issues) page may also have additional documentation, examples, tutorials, etc... that can help you get started.
 

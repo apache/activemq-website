@@ -41,8 +41,9 @@ If you would like to make a change to the ActiveMQ site:
 
 If you are a committer, do the following:
 
-1. Update the `master` branch with your (or a Pull Request's) changes.
-2. Run `serve.sh`/ `build.sh`and very the updates made look appropriate.
-3. Push the changes to the ASF remote.
-4. The CI build will run and commit the generated site to the `asf-site` branch automatically within a few minutes, from where it will also be published. CI build status mails go to the commits list.
-4. Verify the updated website works as expected by browsing it.
+1. Clone `https://gitbox.apache.org/repos/asf/activemq-website.git`.
+2. Update the `master` branch with your (or a Pull Request's) changes.
+3. Run `serve.sh` or `build.sh`and verify the updates look appropriate.
+4. Push the changes to the ASF remote.
+5. The CI build will run and commit the generated site to the `asf-site` branch automatically within a few minutes, from where it will also be published. CI build status mails go to the commits list.
+6. Verify the updated website works as expected by browsing it.

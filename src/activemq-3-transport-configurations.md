@@ -4,9 +4,6 @@ title: ActiveMQ 3 Transport Configurations
 title-class: page-title-activemq5
 type: activemq5
 ---
-
-[Site](site) > [Old Links](old-links) > [Previous Versions](previous-versions) > [ActiveMQ 3 Transport Configurations](activemq-3-transport-configurations)
-
 Some of the transports support configuration, such as timeout values, maximum retry count and so forth. To configure the transports you can use the URI query syntax. e.g.
 
 If you are using a list of URLs like above with the _list_ and _reliable_ protocols you can wrap the list in parens to be able to configure the list. e.g.

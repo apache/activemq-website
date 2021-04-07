@@ -1,22 +1,17 @@
 ---
 layout: default_md
-title: ActiveMQ Artemis Roadmap to 6.0
-title-class: page-title-activemq5
-type: activemq5
+title: Artemis' Roadmap to ActiveMQ <i>Next</i>
+title-class: page-title-main
+type: main
 ---
 
-The goal of this page is to identify the outstanding issues that must be addressed by Artemis in order to achieve some level of feature parity with ActiveMQ 5.x. The overall objective for working toward feature parity between ActiveMQ 5.x and Artemis is for Artemis to eventually become ActiveMQ 6.x. This page exists so that we can work together as a group to achieve this goal. This page does **not** list the features which Artemis has *beyond* what currently exists in ActiveMQ 5.x.
+The goal of this page is to identify the outstanding issues that must be addressed by Artemis in order to achieve feature parity with ActiveMQ "Classic". The overall objective for working toward feature parity between "Classic" and Artemis is for Artemis to eventually become the next major version of ActiveMQ. This page exists so that we can work together as a group to achieve this goal. This page does **not** list the features which Artemis has *beyond* what currently exists in ActiveMQ "Classic".
 
-> **Work in Progress**
-> 
-> This page is a work in progress and will be updated frequently.
+## Features/Scenarios
 
-Features/Scenarios
-==================
+This section should be used to compare what features from ActiveMQ "Classic" have been implemented in Artemis. Feature items can be listed, with links to JIRA tickets for longer conversation and hashing out specific feature details. This will help us to more clearly track everything that Artemis needs. This list of features was taken from the "Classic" [features page](features).
 
-This section should be used to compare what features from ActiveMQ 5.x have been implemented in Artemis. Feature items can be listed, with links to JIRA tickets for longer conversation and hashing out specific feature details. This will help us to more clearly track everything that Artemis needs. This list of ActiveMQ 5.x features was taken from the [5.x features page](features).
-
-Keep in mind that not every feature must have an &#9989;. Artemis may still be ready to become ActiveMQ 6.0 even if a feature on this page still has an &#10060; if that feature is deemed low priority. Artemis is not meant to be a 100% complete reimplementation of ActiveMQ 5.x. Features should only be reimplimented where it makes good sense.
+Keep in mind that not every feature must have a &#9989;. Artemis may still be ready to become ActiveMQ *Next* even if features on this page still have an &#10060; if those features are deemed low priority. Artemis is not meant to be a 100% complete reimplementation of ActiveMQ "Classic". Features should only be reimplimented where it makes good sense.
 
 ### Protocol Support
 
@@ -95,7 +90,7 @@ Keep in mind that not every feature must have an &#9989;. Artemis may still be r
 |Feature|Artemis Support|JIRA|Notes|
 |---|:---:|---|---|
 |[Async Sends](async-sends)|&#9989;||supported for OpenWire & also for core (via `blockOnDurableSend` and `blockOnNonDurableSend` URL parameters)|
-|[Dispatch Policies](dispatch-policies)|&#10060;|||
+|[Pluggable Dispatch Policies](dispatch-policies)|&#10060;||delay-before-dispatch and consumers-before-dispatch have been implemented|
 |[Message Cursors](message-cursors)|&#9989;||equivalent via [paging](components/artemis/documentation/latest/paging)|
 |[Optimized Acknowledgement](optimized-acknowledgement)|&#9989;||supported for OpenWire & core as well via `ackBatchSize` URL parameter|
 |[Producer Flow Control](producer-flow-control)|&#9989;||[documentation](components/artemis/documentation/latest/flow-control)|
@@ -139,8 +134,8 @@ Keep in mind that not every feature must have an &#9989;. Artemis may still be r
 Migration
 =========
 
-This section should help to answer the end user question, _'How do I migrate from ActiveMQ 5.x to Artemis?'_. This should include the identification of any tools that can help make this easier, as well as documenting information and procedures specific to migrating.
+This section should help to answer the end user question, _'How do I migrate from ActiveMQ "Classic" to Artemis?'_. This should include the identification of any tools that can help make this easier, as well as documenting information and procedures specific to migrating.
 
 * [Migration Guide](components/artemis/migration)
 * Export messages from KahaDB using [this tool](https://github.com/apache/activemq-cli-tools/tree/master/activemq-kahadb-exporter). The exported XML can be imported via the `./artemis data imp` command.
-* For non-standard backends (where direct export isn't an option) follow [this example](https://github.com/apache/activemq-artemis/tree/master/examples/features/sub-modules/inter-broker-bridge/artemis-jms-bridge) to migrate messages from ActiveMQ 5.x to Artemis over the wire.
+* For non-standard backends (where direct export isn't an option) follow [this example](https://github.com/apache/activemq-artemis/tree/master/examples/features/sub-modules/inter-broker-bridge/artemis-jms-bridge) to migrate messages from ActiveMQ "Classic" to Artemis over the wire.

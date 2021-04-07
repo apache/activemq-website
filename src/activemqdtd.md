@@ -4,9 +4,6 @@ title: activemq.dtd
 title-class: page-title-activemq5
 type: activemq5
 ---
-
-[Site](site) > [Old Links](old-links) > [activemq.dtd](activemqdtd)
-
 We support a custom [Xml Configuration](xml-configuration) mechanism for configuring a Message Broker instance.
 
 To provide tools and IDEs with an easy way of editing the XML as well as providing some handy documentation, we provide our own [activemq.dtd](http://svn.activemq.org/trunk/activemq/modules/core/src/conf/org/activemq/activemq.dtd?view=markup) file which describes all of the various configuration options available.

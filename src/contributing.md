@@ -1,97 +1,47 @@
 ---
 layout: default_md
 title: Contributing
-title-class: page-title-activemq5
-type: activemq5
+title-class: page-title-main
+type: main
 ---
-
-[Community](community) > [Contributing](contributing)
-
-
 There are many ways you can help make ActiveMQ a better piece of software - please dive in and help!
 
-Try surf the documentation - if somethings confusing or not clear, let us know. Download the code & try it out and see what you think. Browse the source code. Got an itch to scratch, want to tune some operation or add some feature?
+ - If you have a problem with the software or the documentation the first thing you might consider is [asking a question](contact#mailing). 
+ - If you think you've hit a bug or want to request a new feature feel free to open [an issue](issues) in one of our trackers.
+ - If you're already familiar with an ActiveMQ component then join a [mailing list](contact#mailing) and help answers questions from the community.
 
-Want to do some hacking on ActiveMQ? Try surfing to our [issue tracker](http://issues.apache.org/jira/browse/AMQ) for open issues or features that need to be implemented, take ownership of an issue and try fix it.
+#### Documentation
 
-Getting in touch
-----------------
+If anything in any component's documentation is confusing or not clear please [let us know](contact).
 
-There are various ways of communicating with the ActiveMQ community.
+#### Code
 
-*   join us on the [Discussion Forums](discussion-forums) or subscribe to the [Mailing Lists](mailing-lists) and take part in any conversations
-*   pop by on in [irc](irc) and say hi    
-*   add some comments to the [wiki](navigation)
+If you want to get your hands on the code here are the repos for all our components. It's typically best to use the GitHub mirror as that will allow you to easily send pull requests which can be reviewed by project committers and merged.
 
-If you find a bug or problem
-----------------------------
+|Component|Apache Git Repository|GitHub Mirror|
+|---|---|
+|Classic|[activemq](https://git-wip-us.apache.org/repos/asf?p=activemq.git)|[activemq](https://github.com/apache/activemq)|
+|Artemis|[activemq-artemis](https://git-wip-us.apache.org/repos/asf?p=activemq-artemis.git)|[activemq-artemis](https://github.com/apache/activemq-artemis)|
+|Artemis Native|[activemq-artemis-native](https://git-wip-us.apache.org/repos/asf?p=activemq-artemis-native.git)|[activemq-artemis-native](https://github.com/apache/activemq-artemis-native)|
+|NMS API|[activemq-nms-api](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-api.git)|[activemq-nms-api](https://github.com/apache/activemq-nms-api)|
+|NMS AMQP|[activemq-nms-amqp](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-amqp.git)|[activemq-nms-amqp](https://github.com/apache/activemq-nms-amqp)|
+|NMS EMS|[activemq-nms-ems](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-ems.git)|[activemq-nms-ems](https://github.com/apache/activemq-nms-ems)|
+|NMS OpenWire|[activemq-nms-openwire](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-openwire.git)|[activemq-nms-openwire](https://github.com/apache/activemq-nms-openwire)|
+|NMS MSMQ|[activemq-nms-msmq](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-msmq.git)|[activemq-nms-msmq](https://github.com/apache/activemq-nms-msmq)|
+|NMS STOMP|[activemq-nms-stomp](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-stomp.git)|[activemq-nms-stomp](https://github.com/apache/activemq-nms-stomp)|
+|NMS XMS|[activemq-nms-xms](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-xms.git)|[activemq-nms-xms](https://github.com/apache/activemq-nms-xms)|
+|NMS ZMQ|[activemq-nms-zmq](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-zmq.git)|[activemq-nms-zmq](https://github.com/apache/activemq-nms-zmq)|
+|CLI Tools|[activemq-cli-tools](https://git-wip-us.apache.org/repos/asf?p=activemq-cli-tools.git)|[activemq-cli-tools](https://github.com/apache/activemq-cli-tools)|
+|CPP|[activemq-cpp](https://git-wip-us.apache.org/repos/asf?p=activemq-cpp.git)|[activemq-cpp](https://github.com/apache/activemq-cpp)|
+|Website|[activemq-website](https://git-wip-us.apache.org/repos/asf?p=activemq-website.git)|[activemq-website](https://github.com/apache/activemq-website)|
 
-Please raise a new issue in our [issue tracker](https://issues.apache.org/jira/browse/AMQ)
+#### Becoming a commmitter
 
-If you can create a JUnit test case then your issue is more likely to be resolved quicker.  
-e.g. take a look at some of the existing [unit tests cases](https://git-wip-us.apache.org/repos/asf?p=activemq.git;a=tree;f=activemq-unit-tests/src/test;h=185a655c5200ed30fd2964bc236c18c5bde534c4;hb=refs/heads/master)
+If you're interested in becoming a "committer" please check out this [this guide from Apache](https://infra.apache.org/new-committers-guide.html).
 
-Then we can add your issue to the test suite and then we'll know when its really fixed and we can ensure that the problem **stays fixed** in future releases.
+#### Mailing Lists for Development Updates
 
-If you want to help out with the documentation
-----------------------------------------------
-
-If you want to contribute to the ActiveMQ documentation you should first subscribe our [dev@](mailto:dev-subscribe@activemq.apache.org) where ActiveMQ developers interact with each other. If you want edit rights on the ActiveMQ site, create an account in the [ActiveMQ wiki](https://cwiki.apache.org/confluence/display/ACTIVEMQ) and fill in and submit an ICLA to the ASF (see the [Committer Guide](becoming-a-committer)). Then ask on the dev@ list to be granted edit rights and an admin will do so fairly quickly. If you want to just contribute the content, please submit the content on the dev@ list or create an issue and attach it there. **All** contributions are highly appreciated.
-
-Working on the code
--------------------
-
-Grab the [Source](source) from git
-
-Build the project.
-```
-export MAVEN_OPTS="-Xmx512M -XX:MaxPermSize=128M"
-mvn -Dtest=false install
-```
-PS: You might need to build multiple times (if you get a build error) because sometimes maven fails to download all the files.
-
-Create a project in your IDE. e.g. if you are using Eclipse the following should do the trick.
-```
-mvn eclipse:eclipse
-```
-Then import the projects into your workspace.
-
-Creating patches
-----------------
-
-We gladly accept patches if you can find ways to improve, tune or fix ActiveMQ in some way.
-
-Most IDEs can create nice patches now very easily. e.g. in Eclipse just right click on a file/directory and select Team -> Create Patch. Then just save the patch as a file and then submit it. (You may have to click on Team -> Share... first to enable the Subversion options).
-
-If you're a command line person try the following to create the patch
-```
-diff -u Main.java.orig Main.java >> patchfile.txt
-```
-or
-```
-git diff Main.java >> patchfile.txt
-```
-
-Submitting patches
-------------------
-
-The easiest way to submit a patch is to create a new JIRA issue, attach the patch and tick the ASF license grant check box, tick the Patch Attached button on the issue then fire off an email to the [Mailing Lists](mailing-lists) or [Discussion Forums](discussion-forums).
-
-Becoming a commmitter
----------------------
-
-Once you've got involved as above, we may well invite you to be a committer. See [Becoming a committer](becoming-a-committer) for more details.
-
-Using the issue tracker
------------------------
-
-Before you can raise an issue in the issue tracker you need to register with it. This is quick & painless.
-
-If you want to have a go at fixing an issue you need to be in the list of activemq-developers on the issue tracker. To join the group, please mail the [dev@activemq.apache.org](mailto:dev@activemq.apache.org) mail list with the email address you used to register with the issue tracker and we'll add you to the group.
-
-Why not dive in the [issue tracker](https://issues.apache.org/jira/browse/AMQ), and try tackle some of our outstanding issues?
-
-Becoming a committer
---------------------
-
-The first step is contributing to the project; if you want to take that a step forward and become a fellow committer on the project then see the [Committer Guide](becoming-a-committer)
+|List|Subscribe|Unsubscribe|Archives|Summary|
+|---|---|---|---|---|
+|Commits|[commits-subscribe@activemq.apache.org](mailto:commits-subscribe@activemq.apache.org)|[commits-unsubscribe@activemq.apache.org](mailto:commits-unsubscribe@activemq.apache.org)|[Apache](http://mail-archives.apache.org/mod_mbox/activemq-commits/), [Markmail](http://activemq.markmail.org/search/list:org.apache.activemq.commits)|notifications when the project source code gets updated|
+|Gitbox|[gitbox-subscribe@activemq.apache.org](mailto:gitbox-subscribe@activemq.apache.org)|[gitbox-unsubscribe@activemq.apache.org](mailto:gitbox-unsubscribe@activemq.apache.org)|[Apache](http://mail-archives.apache.org/mod_mbox/activemq-gitbox/), [Markmail](http://activemq.markmail.org/search/list:org.apache.activemq.gitbox)|comments and other events for pull-requests|

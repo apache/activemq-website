@@ -1,13 +1,9 @@
 ---
 layout: default_md
 title: Source 
-title-class: page-title-activemq5
-type: activemq5
+title-class: page-title-main
+type: main
 ---
-
-[Developers](developers) > [Source](source)
-
-
 ActiveMQ 5
 ==========
 

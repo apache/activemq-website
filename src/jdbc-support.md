@@ -28,7 +28,7 @@ as well as a number of generic JDBC providers.
 
 We try to auto-detect from the JDBC driver which JDBCAdapter to use via these [config files](https://git-wip-us.apache.org/repos/asf?p=activemq.git;a=tree;f=activemq-jdbc-store/src/main/resources/META-INF/services/org/apache/activemq/store/jdbc) and the return string from the JDBC driver.
 
-If you have a JDBC database which we don't support then please let us know what JDBC driver string you're getting and [drop us a note](discussion-forums) or raise an issue in our [support database](http://issues.apache.org/activemq/browse/AMQ) and we'll fix it pretty quickly.
+If you have a JDBC database which we don't support then please let us know what JDBC driver string you're getting and [drop us a note](contact) or raise an issue in our [support database](http://issues.apache.org/activemq/browse/AMQ) and we'll fix it pretty quickly.
 
 If your database is not in the above list it is normally a matter of tweaking the StatementProvider to ensure that the JDBCMessageStore uses the right flavour of SQL. So normally most databases support one of these providers...
 

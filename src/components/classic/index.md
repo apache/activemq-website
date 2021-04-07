@@ -1,7 +1,7 @@
 ---
 layout: project_default_md
-project_name: ActiveMQ 5
-project_info: The Classic Open Source Message Broker
+project_name: ActiveMQ "Classic"
+project_info: The Tried and Trusted Open Source Message Broker
 project_class: activemq5
 project_color: pink
 ---
@@ -10,7 +10,7 @@ Apache ActiveMQ&reg; is the most popular and powerful open source messaging and 
 
 Apache ActiveMQ is fast, supports many [Cross Language Clients and Protocols](../../cross-language-clients), comes with easy to use [Enterprise Integration Patterns](../../enterprise-integration-patterns) and many [advanced features](../../features) while fully supporting [JMS 1.1](http://java.sun.com/products/jms/) and J2EE 1.4\. Apache ActiveMQ is released under the [Apache](http://www.apache.org/) [2.0 License](http://www.apache.org/licenses/LICENSE-2.0)
 
-Grab yourself a [Download](../../download), try our [Getting Started Guide](../../getting-started), surf our [FAQ](../../faq) or start [Contributing](../../contributing) and join us on our [Discussion Forums](../../discussion-forums).
+Grab yourself a [download](../../download), review our [Getting Started Guide](../../getting-started), surf our [FAQ](../../faq), or start [contributing](../../contributing).
 
 ---
 

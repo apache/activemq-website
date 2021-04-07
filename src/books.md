@@ -10,7 +10,7 @@ type: activemq5
 Books
 =====
 
-This page lists the known books about Apache ActiveMQ. If you happen to know a book which is not listed then please contact us, for example using the [Mailing Lists](mailing-lists).
+This page lists the known books about Apache ActiveMQ. If you happen to know a book which is not listed then please contact us, for example using the [Mailing Lists](contact#mailing).
 
 *   [ActiveMQ in Action](http://bit.ly/2je6cQ)
 *   [Instant Apache ActiveMQ Messaging Application Development](http://goo.gl/RFltj)
@@ -29,9 +29,9 @@ Along the way, you'll pick up best practices forged out of the deep experience t
 
 ### Instant Apache ActiveMQ Messaging Application Development
 
-[Instant Apache ActiveMQ Messaging Application Development](http://goo.gl/RFltj) by [Timothy Bish](http://timbish.blogspot.com/). Published by [Packt Publishing](http://www.packtpub.com/).
+[Instant Apache ActiveMQ Messaging Application Development](https://subscription.packtpub.com/book/application-development/9781782169413) by [Timothy Bish](http://timbish.blogspot.com/). Published by [Packt Publishing](http://www.packtpub.com/).
 
-[![](http://dgdsbygo8mp3h.cloudfront.net/sites/default/files/imagecache/productview_larger/9413OS.jpg)](http://goo.gl/RFltj)
+[![](https://static.packt-cdn.com/products/9781782169413/cover/smaller)](https://subscription.packtpub.com/book/application-development/9781782169413)
 
 Instant ActiveMQ Application Development How-to is for the developers who are new to Java Message Service application development or new to JMS development using ActiveMQ. Readers will come away ready to solve complicated messaging related problems using the JMS API and ActiveMQ.
 

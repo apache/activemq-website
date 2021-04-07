@@ -8,7 +8,7 @@ type: activemq5
 [Developers](developers)
 
 
-*   [Becoming a committer](becoming-a-committer)
+*   [Becoming a committer](https://infra.apache.org/new-committers-guide.html)
 *   [Benchmark Tests](benchmark-tests)
 *   [Building](building)
 *   [Code Overview](code-overview)

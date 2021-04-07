@@ -20,5 +20,5 @@ For more details see the discussion of the **warnAboutUnstartedConnectionTimeout
 
 ### If you are calling connection.start()
 
-Another common gotcha is [due to another consumer grabbing the messages](i-do-not-receive-messages-in-my-second-consumer). If its not that then please look at [JMX](jmx) or the [Web Console](web-console) to determine what consumers are available and their status. Then get some [Support](support) to help you resolve your issue.
+Another common gotcha is [due to another consumer grabbing the messages](i-do-not-receive-messages-in-my-second-consumer). If it's not that then please look at [JMX](jmx) or the [Web Console](web-console) to determine what consumers are available and their status. Then report an [issue](issues) to help you resolve your issue.
 

@@ -4,9 +4,6 @@ title: Running a 3.x Broker
 title-class: page-title-activemq5
 type: activemq5
 ---
-
-[Site](site) > [Old Links](old-links) > [Previous Versions](previous-versions) > [Running a 3.x Broker](running-a-3x-broker)
-
 The 3.x [binary distribution](download) of ActiveMQ comes with a script called 'activemq' which allows you to run a broker. Typing the following will run an ActiveMQ Broker using the out of the box configuration
 
 ```

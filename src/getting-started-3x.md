@@ -5,8 +5,6 @@ title-class: page-title-activemq5
 type: activemq5
 ---
 
-[Site](site) > [Old Links](old-links) > [Previous Versions](previous-versions) > [Getting Started 3.x](getting-started-3x)
-
 Introduction
 ------------
 
