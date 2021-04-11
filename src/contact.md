@@ -6,7 +6,7 @@ type: main
 ---
 Whether you have a simple question about configuration, a use-case you're confused about, a new feature you want to discuss, etc. the community is here to help.
 
-If you fairly certain you're hitting a bug [please report it](issues) via one of our issue trackers.
+If you're fairly certain you're hitting a bug [please report it](issues) via one of our issue trackers.
 
 #### Mailing Lists
 
