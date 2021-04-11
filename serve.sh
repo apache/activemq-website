@@ -1,5 +1,5 @@
 set -e
 bundle
-jekyll serve
+jekyll serve --incremental --livereload
 set +e
 

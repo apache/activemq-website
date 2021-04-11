@@ -1,7 +1,7 @@
 Apache ActiveMQ Website
 =======================
 
-This is the repository for the Apache ActiveMQ website, hosted at [activemq.apache.org](http://activemq.apache.org/).
+This is the repository for the Apache ActiveMQ website, hosted at [activemq.apache.org](https://activemq.apache.org/).
 
 How it works
 ------------
