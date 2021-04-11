@@ -1,5 +1,7 @@
 RewriteEngine On
-RewriteRule ^camel/(.*)$ http://camel.apache.org/$1 [R=301,L]
+RewriteCond %{HTTPS} !=on [NC]
+RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+RewriteRule ^camel/(.*)$ https://camel.apache.org/$1 [R=301,L]
 RewriteRule ^nms.*$ https://activemq.apache.org/components/nms/ [R=301,L]
 RewriteRule ^cms.*$ https://activemq.apache.org/components/cms/ [R=301,L]
 RewriteRule ^artemis/migration.html https://activemq.apache.org/components/artemis/migration [R=301,L]
