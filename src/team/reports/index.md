@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: Team
+title: Board Reports
 title-class: page-title-main
 type: main
 ---
