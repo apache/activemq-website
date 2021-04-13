@@ -33,7 +33,7 @@ Contributing to the site
 If you would like to make a change to the ActiveMQ site:
 
 1. Fork the [Apache ActiveMQ site repository](https://github.com/apache/activemq-website) to your github account.
-2. Create a new branch from `master`
+2. Create a new branch from `main`
 3. Test your changes locally
 4. Add commit(s) to your branch
 5. Open a pull request on the github mirror

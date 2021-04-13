@@ -31,4 +31,4 @@ git fetch $ACTIVEMQWEB_GITHUB_REMOTE_NAME
 
 git checkout $ACTIVEMQWEB_GITHUB_REMOTE_NAME/pr/$1 -B $1
 
-echo "\ndo your own rebase by typing: git pull --rebase $ACTIVEMQWEB_APACHE_REMOTE_NAME master"
+echo "\ndo your own rebase by typing: git pull --rebase $ACTIVEMQWEB_APACHE_REMOTE_NAME main"
