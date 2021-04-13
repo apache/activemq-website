@@ -29,7 +29,7 @@ set -e
 # - apache being the apache origin:: https://gitbox.apache.org/repos/asf/activemq-ACTIVEMQWEB.git
 #
 # Notice: you should add +refs/pull/*/head to your fetch config on upstream
-#        as specified on https://github.com/apache/activemq-ACTIVEMQWEB/blob/master/docs/hacking-guide/en/maintainers.md
+#        as specified on https://github.com/apache/activemq-ACTIVEMQWEB/blob/main/docs/hacking-guide/en/maintainers.md
 
 ACTIVEMQWEB_USER_REMOTE_NAME=${ACTIVEMQWEB_USER_REMOTE_NAME:-origin}
 ACTIVEMQWEB_APACHE_REMOTE_NAME=${ACTIVEMQWEB_APACHE_REMOTE_NAME:-apache}
@@ -39,9 +39,9 @@ git fetch $ACTIVEMQWEB_USER_REMOTE_NAME
 git fetch $ACTIVEMQWEB_APACHE_REMOTE_NAME
 git fetch $ACTIVEMQWEB_GITHUB_REMOTE_NAME
 
-git checkout $ACTIVEMQWEB_APACHE_REMOTE_NAME/master -B master
+git checkout $ACTIVEMQWEB_APACHE_REMOTE_NAME/main -B main
 git checkout $ACTIVEMQWEB_GITHUB_REMOTE_NAME/pr/$1 -B $1
-git pull --rebase $ACTIVEMQWEB_APACHE_REMOTE_NAME master
-git checkout master
+git pull --rebase $ACTIVEMQWEB_APACHE_REMOTE_NAME main
+git checkout main
 git merge --no-ff $1 -m "This closes #$*"
 git branch -D $1

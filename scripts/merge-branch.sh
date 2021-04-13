@@ -33,8 +33,8 @@ git fetch $ACTIVEMQWEB_GITHUB_REMOTE_NAME
 
 git checkout $1
 
-git pull --rebase $ACTIVEMQWEB_APACHE_REMOTE_NAME master
-git checkout $ACTIVEMQWEB_APACHE_REMOTE_NAME/master -B master
+git pull --rebase $ACTIVEMQWEB_APACHE_REMOTE_NAME main
+git checkout $ACTIVEMQWEB_APACHE_REMOTE_NAME/main -B main
 
 git merge --no-ff $1 -m "This closes #$*"
 git branch -D $1
