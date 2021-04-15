@@ -75,7 +75,7 @@ This page captures resources and articles outside the ActiveMQ project which may
 
 #### Additional Resources
 
-* Many of the commercial providers listed on the [issues](issues#commercial-support) page provide additional examples, articles, tutorials, documentation, etc...
+* Many [commercial providers](support#commercial-support) have additional examples, articles, tutorials, documentation, etc...
 
 #### Bloggers
 
