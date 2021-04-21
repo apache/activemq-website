@@ -16,12 +16,12 @@ These are the current releases. For prior releases, please see the [past release
 #### ActiveMQ {{release.version}} ({{release.release_date}})
 [Release Notes]({{ release.release_notes }}) | [Release Page]({{release.url}}) | [Documentation](../documentation)
 
-Windows|[apache-activemq-{{release.version}}-bin.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip&action=download)|[SHA512](https://www.apache.org/dist/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.asc)
-Unix/Linux/Cygwin|[apache-activemq-{{release.version}}-bin.tar.gz](http://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz.asc)
-Source Code Distribution:|[activemq-parent-{{release.version}}-source-release.zip](http://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/activemq-parent-{{release.version}}-source-release.zip&action=download)|[SHA512](https://www.apache.org/dist/activemq/{{release.version}}/activemq-parent-{{release.version}}-source-release.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/{{release.version}}/activemq-parent-{{release.version}}-source-release.zip.asc)
+Windows|[apache-activemq-{{release.version}}-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.asc)
+Unix/Linux/Cygwin|[apache-activemq-{{release.version}}-bin.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz&action=download)|[SHA512](https://downloads.apache.org/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz.sha512)|[GPG Signature](https://downloads.apache.org/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz.asc)
+Source Code Distribution:|[activemq-parent-{{release.version}}-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/activemq-parent-{{release.version}}-source-release.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/{{release.version}}/activemq-parent-{{release.version}}-source-release.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/{{release.version}}/activemq-parent-{{release.version}}-source-release.zip.asc)
             {% break %}
         {% endif %}
     {% endfor %}
 {% endfor %}
 
-The keys file for verifying the release can be obtained [here](https://www.apache.org/dist/activemq/KEYS)
+The keys file for verifying the release can be obtained [here](https://downloads.apache.org/activemq/KEYS)

@@ -7,7 +7,7 @@ type: artemis
 
 These are older releases for the libaio native component. For current releases, please see the [download](./) page.
 
-The keys file for verifying the release can be obtained [here](https://www.apache.org/dist/activemq/KEYS)
+The keys file for verifying the release can be obtained [here](https://downloads.apache.org/activemq/KEYS)
 
 For any releases not shown here, check the [archive](https://archive.apache.org/dist/activemq/activemq-artemis/).
 

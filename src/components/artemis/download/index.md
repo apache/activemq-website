@@ -7,7 +7,7 @@ type: artemis
 
 This is the current ActiveMQ Artemis release. For prior releases, please see the <a href="past_releases">past releases</a> page.
 
-The keys file for verifying these releases can be obtained <a href="https://www.apache.org/dist/activemq/KEYS">here</a>.
+The keys file for verifying these releases can be obtained <a href="https://downloads.apache.org/activemq/KEYS">here</a>.
 
 {% assign reversed_releases = site["artemis_releases"] | reverse %}
 
@@ -17,9 +17,9 @@ The keys file for verifying these releases can be obtained <a href="https://www.
 #### ActiveMQ Artemis {{release.version}}  ({{release.release_date}})
 [Release Notes](release-notes-{{release.version}}) | [Git Report](commit-report-{{release.version}}) | [Documentation](../documentation/latest)
 
-tar.gz:|[apache-artemis-{{release.version}}-bin.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz.asc)
-ZIP:|[apache-artemis-{{release.version}}-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip.asc)
-Source Distribution:|[apache-artemis-{{release.version}}-source-release.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz.asc)|
+tar.gz:|[apache-artemis-{{release.version}}-bin.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz.asc)
+ZIP:|[apache-artemis-{{release.version}}-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip.asc)
+Source Distribution:|[apache-artemis-{{release.version}}-source-release.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz.asc)|
             {% break %}
         {% endif %}
     {% endfor %}
@@ -34,6 +34,6 @@ This is the current release of ActiveMQ Artemis Native, which is a sub component
 
 [Release Notes](release-notes-native-1.0.2)
 
-Source Distribution:|[apache-artemis-native-1.0.2-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip&action=download)|[SHA512](https://www.apache.org/dist/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.sha512)|[GPG Signature](https://www.apache.org/dist/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.asc)|
+Source Distribution:|[apache-artemis-native-1.0.2-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.asc)|
 
 This is the native layer used by ActiveMQ Artemis for storage. The broker binary archives above already include a pre-compiled version of this component.
