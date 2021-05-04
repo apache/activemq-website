@@ -7,3 +7,5 @@ redirect_from:
 - /activemq-51515-release 
 ---
 Apache ActiveMQ {{ page.version }} was released on {{ page.release_date }} and includes several resolved [issues]({{page.release-notes}}) and bug fixes.
+
+**NOTE**: This is the last planned 5.15.x release. Users should upgrade to the current 5.16.x stream for ongoing releases.
