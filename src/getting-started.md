@@ -58,7 +58,7 @@ Pre-Installation Requirements
 
 **Environment:**
 
-*   [Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)  **JRE 1.7** (1.6 for version <=5.10.0)  
+*   [Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)  **JRE 1.8** or greater (1.7 for version <=5.15.0, 1.6 for version <=5.10.0)  
     (a JDK is required if you plan to recompile source code)
 *   The JAVA_HOME environment variable must be set to the directory where the JRE is installed  
     (Unix: the binary "java" has to be resolvable by the PATH variable; execute "which java" to verify)
