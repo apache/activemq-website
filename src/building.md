@@ -19,14 +19,14 @@ ActiveMQ uses [Maven](http://maven.apache.org/) as its build and management tool
 
 *   Download and [install Maven](http://maven.apache.org/download).
 *   Get the latest [Source](source)
-*   JDK (1.6 for version <= 5.10, 1.7 for version > 5.10)
+*   JDK (11 for version 5.17.0+, 1.8 for version <= 5.17.0, 1.6 for version <= 5.10, 1.7 for version > 5.10)
 
-Using Maven 2 (ActiveMQ 4.1.x and Up)
+Using Maven 3
 -------------------------------------
 
-ActiveMQ 4.1.x and up use Maven 2 to Build. We recommend you download and install [Maven 2.0.4](http://maven.apache.org/download).
+ActiveMQ uses Maven 3 to Build. We recommend you download and install [Maven](http://maven.apache.org/download).
 
-> You should set the MAVEN_OPTS environment variable to -Xmx800m. There are portions of the ActiveMQ build that are very memory intensive. Increase the maven memory limit so that the build does not fail for you.
+> You should set the MAVEN_OPTS environment variable to at least -Xmx800m. There are portions of the ActiveMQ build that are very memory intensive. Increase the maven memory limit so that the build does not fail for you.
 
 ### Doing a Quick Build
 ```
