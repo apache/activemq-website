@@ -328,7 +328,6 @@ Features
     *   [MasterSlave]()
         *   [JDBC Master Slave](jdbc-master-slave)
         *   [KahaDB Replication (Experimental)](kahadb-replication-experimental)
-        *   [Pure Master Slave](pure-master-slave)
         *   [Shared File System Master Slave](shared-file-system-master-slave)
     *   [Networks of Brokers](networks-of-brokers)
     *   [Replicated Message Store](replicated-message-store)

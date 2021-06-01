@@ -7,6 +7,12 @@ type: activemq5
 
 [Features](features) > [Clustering](clustering) > [MasterSlave](masterslave) > [Pure Master Slave](pure-master-slave)
 
+> **Warning**
+> 
+> The LevelDB store has been removed from production.
+> This page only serves as an archival page for previous releases.
+> Use [shared storage master/slave](masterslave) instead.
+
 
 ### Pure Master Slave
 
