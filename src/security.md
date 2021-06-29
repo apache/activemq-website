@@ -111,7 +111,7 @@ To control access to temporary destinations, you will need to add a `<tempDestin
           <authorizationMap> 
             <authorizationEntries> 
               <authorizationEntry queue="TEST.Q" read="users" write="users" admin="users" /> 
-              <authorizationEntry topic="ActiveMQ.Advisory.>" read="all" write="all" admin="all"/> 
+              <authorizationEntry topic="ActiveMQ.Advisory.>" read="*" write="*" admin="*"/> 
             </authorizationEntries> 
             <tempDestinationAuthorizationEntry> 
               <tempDestinationAuthorizationEntry read="admin" write="admin" admin="admin"/> 
