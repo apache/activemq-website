@@ -34,8 +34,6 @@ If you're curious you can [read more](https://apache.org/foundation/mailinglists
 
 #### Chat
 
-If for some reason a mailing list doesn't work for you then you can potentially chat with other community members in real-time using **[IRC](https://en.wikipedia.org/wiki/Internet_Relay_Chat)** or **[Slack](https://slack.com/)**. 
-
-The **IRC** channel is not very active these days, but you may still have luck. Point your IRC client to `irc.freenode.net` or use [https://webchat.freenode.net/](https://webchat.freenode.net/) and join the `#apache-activemq` channel. Due to some spam issues we've experienced in the past you'll need to register your nickname before entering the channel. You can find more details about that on [Freenode's website](https://freenode.net/kb/answer/registration). Chat [logs](http://javabot.evanchooly.com/logs/%23apache-activemq/today) are maintained.
+If for some reason a mailing list doesn't work for you then you can potentially chat with other community members in real-time using **[Slack](https://slack.com/)**. 
 
 **Slack** is a relatively new and productive collaboration platform. Access to the [ASF Slack](https://the-asf.slack.com) requires an invitation. If you want an invitation to the ActiveMQ Slack channel simply send a request to the [users mailing list](#mailing).
