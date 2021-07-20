@@ -22,6 +22,16 @@ Decrypted text: mypassword
 ```
 **Note:** It is recommended that you use only alphanumeric characters for the password. Special characters, such as `$/^&`, are not supported.
 
+As of the 5.16.0 release, support has been added to specify an algorithm
+parameter to the "encrypt" and "decrypt" commands. By default, the algorithm
+that is used is "PBEWithMD5AndDES". To use a more modern encryption algorithm
+you can specify:
+```
+$ bin/activemq encrypt --password activemq --input mypassword --algorithm PBEWITHHMACSHA256ANDAES_256
+...
+Encrypted text: h/cWj/ZZelMt3Y7NSzUG2vHYSnfWK561qjNg9Ywyr9yT72ru7pR4IEUnHLIdLSOb
+```
+
 The next step is to add the password to the appropriate configuration file, `$ACTIVEMQ_HOME/conf/credentials-enc.properties` by default.
 ```
 activemq.username=system
