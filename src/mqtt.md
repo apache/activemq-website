@@ -12,6 +12,10 @@ ActiveMQ supports the [MQTT](http://mqtt.org/) protocol and will automatically m
 
 Please see the [MQTT site](http://mqtt.org/) for more details
 
+### Supported versions
+
+ActiveMQ supports MQTT [v3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html) and [v3.1](https://public.dhe.ibm.com/software/dw/webservices/ws-mqtt/mqtt-v3r1.html).
+
 ### Enabling the ActiveMQ Broker for MQTT
 
 Its very easy to enable ActiveMQ for MQTT. Just add a connector to the broker using the MQTT URL.
