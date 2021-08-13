@@ -20,10 +20,10 @@ To subscribe to or unsubscribe from a list simply:
 
 <a class="anchor" name="mailing"></a>
 
-|List|Subscribe|Unsubscribe|Archives|Forum|
+|List|Subscribe|Unsubscribe|Archives|
 |---|---|---|---|---|
-|Users|[users-subscribe@activemq.apache.org](mailto:users-subscribe@activemq.apache.org)|[users-unsubscribe@activemq.apache.org](mailto:users-unsubscribe@activemq.apache.org)|[Apache](http://mail-archives.apache.org/mod_mbox/activemq-users/), [Markmail](http://activemq.markmail.org/search/list:org.apache.activemq.users)|[Nabble](http://activemq.2283324.n4.nabble.com/ActiveMQ-User-f2341805.html)|
-|Dev|[dev-subscribe@activemq.apache.org](mailto:dev-subscribe@activemq.apache.org)|[dev-unsubscribe@activemq.apache.org](mailto:dev-unsubscribe@activemq.apache.org)|[Apache](http://mail-archives.apache.org/mod_mbox/activemq-dev/), [Markmail](http://activemq.markmail.org/search/list:org.apache.activemq.dev)|[Nabble](http://activemq.2283324.n4.nabble.com/ActiveMQ-Dev-f2368404.html)|
+|Users|[users-subscribe@activemq.apache.org](mailto:users-subscribe@activemq.apache.org)|[users-unsubscribe@activemq.apache.org](mailto:users-unsubscribe@activemq.apache.org)|[Apache](http://mail-archives.apache.org/mod_mbox/activemq-users/), [Markmail](http://activemq.markmail.org/search/list:org.apache.activemq.users)|
+|Dev|[dev-subscribe@activemq.apache.org](mailto:dev-subscribe@activemq.apache.org)|[dev-unsubscribe@activemq.apache.org](mailto:dev-unsubscribe@activemq.apache.org)|[Apache](http://mail-archives.apache.org/mod_mbox/activemq-dev/), [Markmail](http://activemq.markmail.org/search/list:org.apache.activemq.dev)|
 
 Mailing list participants are expected to abide by the well-established rules of "netiquette", as well as the ASF's published [Code of Conduct](https://www.apache.org/foundation/policies/conduct.html).
 
