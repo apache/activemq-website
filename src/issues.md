@@ -45,5 +45,6 @@ This mailing list is automatically notified when JIRA issues are created and upd
 
 Subscribe|[issues-subscribe@activemq.apache.org](mailto:issues-subscribe@activemq.apache.org)
 Unsubscribe|[issues-unsubscribe@activemq.apache.org](mailto:issues-unsubscribe@activemq.apache.org)
-Apache Archive|[http://mail-archives.apache.org/mod_mbox/activemq-issues/](http://mail-archives.apache.org/mod_mbox/activemq-issues/)
+Apache Archive|[https://lists.apache.org/list.html?issues@activemq.apache.org](https://lists.apache.org/list.html?issues@activemq.apache.org)
+Apache Archive 2|[http://mail-archives.apache.org/mod_mbox/activemq-issues/](http://mail-archives.apache.org/mod_mbox/activemq-issues/)
 Mark Mail Archive|[http://activemq.markmail.org/search/list:org.apache.activemq.issues](http://activemq.markmail.org/search/list:org.apache.activemq.issues)
