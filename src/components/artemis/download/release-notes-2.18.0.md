@@ -178,7 +178,7 @@ A list of commits can be found     * [here](commit-report-2.18.0).
  * [ARTEMIS-3352] - misc pom cleanups
  * [ARTEMIS-3373] - Update org.apache.activemq.artemis.utils.collections to be consistent on Types
 
- # Dependency upgrade
+# Dependency upgrade
  * [ARTEMIS-3123] - Update netty version to 4.1.59.Final
  * [ARTEMIS-3144] - Update resteasy version to 3.15.0.Final
  * [ARTEMIS-3165] - Update karaf version to 4.3.0
