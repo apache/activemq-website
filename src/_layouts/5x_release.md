@@ -54,8 +54,17 @@ It is essential that you verify the integrity of the downloaded files using the 
     or
     ```
     $ gpg --import KEYS
-    $ gpg --verify apache-activemq-<version>-bin.tar.gz.asc
+    $ gpg --verify apache-activemq-<version>-bin.tar.gz.asc apache-activemq-<version>-bin.tar.gz
     ```
+
+(Where <version> is replaced with the actual version, e.g., 5.1.0, 5.2.0, etc.).
+
+You can also verify SHA512 hash using `sha512sum` command:
+
+```
+$ sha512sum -c apache-activemq-<version>-bin.tar.gz.sha512
+apache-activemq-<version>-bin.tar.gz: OK
+```
 
 (Where <version> is replaced with the actual version, e.g., 5.1.0, 5.2.0, etc.).
 
