@@ -1,5 +1,5 @@
 set -e
-bundle
-jekyll build
+bundle install
+bundle exec jekyll build
 set +e
 

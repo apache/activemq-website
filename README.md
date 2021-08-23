@@ -13,17 +13,38 @@ See the *Contributing* section below for more.
 To Build the site locally
 -------------------------
 
-Before building the site you will need to install [Jekyll](https://jekyllrb.com/) (and Bundler).  The Jekyll site has [installation instructions](https://jekyllrb.com/docs/installation/) to help get you started.
+The site is built using [Jekyll](https://jekyllrb.com/). Before building the site you will need to install a Ruby development environment, and GCC. The Jekyll site has [guides](https://jekyllrb.com/docs/installation/#guides) that may help get you started with these pre-requisites.
 
-You can build (from the `src` directory, to the `_site` output directory) and serve the site locally using Jekyll to test changes you have made or are making:
+You need to install the [Bundler](https://bundler.io/) tool with:
 
-    ./serve.sh
+    gem install bundler
 
-Alternatively, to just build the site, run:
+Then ensure you are within a checkout directory of the website repo for instructions/commands that follow.
 
-    ./build.sh
+You can optionally isolate the ActiveMQ website dependencies from your general environment by configuring Bundler to use a local install path
+with `bundle config set path --local vendor/bundle` from within the site checkout. This sets the _./.bundle/config_ file to have Bundle install
+items in the _./vendor/bundle_ directory. Both are ignored in _.gitignore_ to help prevent showing or checking in changes to them.
+
+You can then use Bundler to install the required dependencies:
+
+    bundle install
+
+You can now build (from the `src` directory, to the `_site` output directory) and serve + reload the site locally using Jekyll to test changes as you make them:
+
+    bundle exec jekyll serve --incremental --livereload
+
+You can view the site by navigating to the printed `Sever Address`, e.g http://127.0.0.1:4000.
+
+_NOTE_: Changes to the _config.yml file (such as to update the current releases detail) are intentionally not reloaded by _jekyll serve_. You must stop and re-start the process to pick them up.
+
+Alternatively, rather than serving the site, to just build the site simply run:
+
+    bundle exec jekyll build
+
+Helper scripts `./serve.sh` and `./build.sh` are provided which do an inline bundle install followed by jekyll serve or build.
 
 If for some reason you need to clear the metadata/cache used to support the build process, and the build output, you can run:
+
     rm -rf src/.jekyll-*
     rm -rf _site
 
