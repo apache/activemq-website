@@ -14,7 +14,7 @@ ActiveMQ {{page.version}} Release
 {% assign releases = site["5x_releases"] | reverse %}
 {% assign isCurrentRelease = false %}
 
-{% for current_release in site.current_5x_releases %}
+{% for current_release in site.data.current_releases["5x"] %}
     {% for release in releases %}
         {% if release.version contains current_release %}
                     {% if release.version == page.version %}

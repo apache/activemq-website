@@ -7,7 +7,7 @@ type: artemis
 {% assign reversed_releases = site["artemis_releases"] | reverse %}
 {% assign current_releases = "" | split: ',' %}
 
-{% for current_release_prefix in site.current_artemis_releases %}
+{% for current_release_prefix in site.data.current_releases["artemis"] %}
     {% for release in reversed_releases %}
         {% if release.version contains current_release_prefix %}
             {% assign current_releases = current_releases | push: release.version %}

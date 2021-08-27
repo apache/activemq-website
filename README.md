@@ -31,11 +31,9 @@ You can then use Bundler to install the required dependencies:
 
 You can now build (from the `src` directory, to the `_site` output directory) and serve + reload the site locally using Jekyll to test changes as you make them:
 
-    bundle exec jekyll serve --incremental --livereload
+    bundle exec jekyll serve --livereload
 
 You can view the site by navigating to the printed `Sever Address`, e.g http://127.0.0.1:4000.
-
-_NOTE_: Changes to the _config.yml file (such as to update the current releases detail) are intentionally not reloaded by _jekyll serve_. You must stop and re-start the process to pick them up.
 
 Alternatively, rather than serving the site, to just build the site simply run:
 
