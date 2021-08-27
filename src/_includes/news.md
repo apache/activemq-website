@@ -10,7 +10,7 @@
             <div class="card-body">
                 {% if release.collection contains "artemis" %}
                     <h5 class="card-title text-blue">Artemis {{release.version}} Release</h5>
-                    <a style="margin-top: 10px" href="/components/artemis/download/release-notes-{{release.version}}" class="btn btn-secondary float-right">Release<i class="fa-download fa btn-icon"></i></a>
+                    <a style="margin-top: 10px" href="./components/artemis/download/past_releases" class="btn btn-secondary float-right">Release<i class="fa-download fa btn-icon"></i></a>
                 {% else %}
                     <h5 class="card-title text-blue">{{release.title}}</h5>
                     <a style="margin-top: 10px" href="{{release.url}}" class="btn btn-secondary float-right">Release<i class="fa-download fa btn-icon"></i></a>
@@ -25,3 +25,4 @@
 {% endfor %}
         
     </div>
+
