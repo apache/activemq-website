@@ -4,7 +4,18 @@
     <h3>Recent Releases</h3>
     <div class="row align-middle">
 
+{% assign collections = "" %}
+{% assign i = 0 %}
+
 {% for release in releases %}
+    {% if i > 2 %}
+        {% break %}
+    {% endif %} 
+    {% if collections contains release.collection  %}
+        {% continue %}
+    {% else %}
+        {% assign collections = collections | append:'|' | append:release.collection %}
+    {% endif %}
     <div class="col-lg-4 col-md-auto">
         <div class="card card-orange">
             <div class="card-body">
@@ -19,9 +30,7 @@
             </div>
         </div>
     </div>
-    {% if forloop.index > 2 %}
-        {% break %}
-    {% endif %}
+    {% assign i = i | plus:1 %}
 {% endfor %}
         
     </div>
