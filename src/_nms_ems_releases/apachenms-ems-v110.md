@@ -3,7 +3,6 @@ layout: default_md
 title: Apache ActiveMQ ™ -- Apache.NMS EMS v1.1.0 
 title-class: page-title-nms
 type: nms
-release_date: 2009-07-12
 ---
 
 ##### New and Noteworthy

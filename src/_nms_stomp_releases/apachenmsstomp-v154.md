@@ -3,7 +3,6 @@ layout: default_md
 title: Apache.NMS.Stomp v1.5.4 
 title-class: page-title-nms
 type: nms
-release_date: 2013-10-26
 ---
 
 ##### New and Noteworthy

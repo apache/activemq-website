@@ -26,12 +26,7 @@ For any releases not shown here, check the [archive](https://archive.apache.org/
 {% for release in reversed_releases %}
     {% unless current_releases contains release.version %}
 <br/>
-#### ActiveMQ Artemis {{ release.version }}  ({{ release.release_date }})
-[Release Notes](release-notes-{{release.version}}) | [Git Report](commit-report-{{release.version}}) | [Documentation](../documentation/{{release.docs_version}})
-
-tar.gz:|[apache-artemis-{{release.version}}-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz.asc)
-ZIP:|[apache-artemis-{{release.version}}-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip.asc)
-Source Distribution:|[apache-artemis-{{release.version}}-source-release.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz.asc)|
+{% include artemis_release.md release=release %}
     {% endunless %}
 {% endfor %}
 

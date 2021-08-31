@@ -3,7 +3,6 @@ layout: default_md
 title: CMS 3.9.5 Download
 title-class: page-title-cms
 type: cms
-release_date: 2019-02-04
 ---
 
 New and Noteworthy
