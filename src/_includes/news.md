@@ -3,7 +3,7 @@
 {% assign i = 0 %}
 <div class="card-group">
 {% for release in releases %} {% if i > 2 %} {% break %} {% endif %}
-<div class="card card-orange">
+<div class="card card-grey-small">
 <div class="card-body ml-0 p-2">
     <h6 class="card-title"><a class="text-blue" href="{{release.url}}">{{release.title}}</a></h6>
     {{release.shortDescription }}<a style="display: unset;" class="nav-link pl-0 ml-0" href="{{release.url}}">...more</a>
