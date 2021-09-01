@@ -11,7 +11,7 @@ The keys file for verifying these releases can be obtained <a href="https://down
 
 {% assign reversed_releases = site["artemis_releases"] | reverse %}
 
-{% for current_release_prefix in site.current_artemis_releases %}
+{% for current_release_prefix in site.data.current_releases["artemis"] %}
     {% for release in reversed_releases %}
         {% if release.version contains current_release_prefix %}
             {% include artemis_release.md release=release %}
