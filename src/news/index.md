@@ -18,5 +18,9 @@ type: activemq5
 
 {{document.shortDescription}}
 
+{% if document.collection contains "artemis" %}
+[Read More]({{site.baseurl}}/components/artemis/download/)
+{% else %}
 [Read More]({{document.url}})
+{% endif %}
 {% endfor %}
