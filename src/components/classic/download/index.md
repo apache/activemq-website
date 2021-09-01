@@ -13,7 +13,7 @@ These are the current releases. For prior releases, please see the [past release
 {% for current_release in site.data.current_releases["5x"] %}
     {% for release in releases %}
         {% if release.version contains current_release %}
-#### ActiveMQ {{release.version}} ({{release.release_date}})
+#### ActiveMQ {{release.version}} ({{release.release_date | date_to_string: "ordinal", "US"}})
 [Release Notes]({{ release.release_notes }}) | [Release Page]({{release.url}}) | [Documentation](../documentation)
 {% if release.version contains "5.15." %}
 

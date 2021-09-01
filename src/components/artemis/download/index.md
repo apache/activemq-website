@@ -14,12 +14,7 @@ The keys file for verifying these releases can be obtained <a href="https://down
 {% for current_release_prefix in site.data.current_releases["artemis"] %}
     {% for release in reversed_releases %}
         {% if release.version contains current_release_prefix %}
-#### ActiveMQ Artemis {{release.version}}  ({{release.release_date}})
-[Release Notes](release-notes-{{release.version}}) | [Git Report](commit-report-{{release.version}}) | [Documentation](../documentation/latest)
-
-tar.gz:|[apache-artemis-{{release.version}}-bin.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.tar.gz.asc)
-ZIP:|[apache-artemis-{{release.version}}-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-bin.zip.asc)
-Source Distribution:|[apache-artemis-{{release.version}}-source-release.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis/{{release.version}}/apache-artemis-{{release.version}}-source-release.tar.gz.asc)|
+            {% include artemis_release.md release=release %}
             {% break %}
         {% endif %}
     {% endfor %}
