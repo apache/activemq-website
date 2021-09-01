@@ -13,7 +13,7 @@ New Features
 
 This page documents the various new features we add in each major release
 
-*   [New Features in 6.0](new-features-in-60)
+*   [New Features in 5.17 (Work in Progress)](components/classic/releases/new-features-in-517)
 *   [New Features in 5.13](new-features-in-513)
 *   [New Features in 5.11](new-features-in-511)
 *   [New Features in 5.6](new-features-in-56)
