@@ -1,8 +1,8 @@
 ---
 layout: default_md
 title: News 
-title-class: page-title-activemq5
-type: activemq5
+title-class: page-title-main
+type: main
 ---
 
 [Home](/) > [News](/news)
