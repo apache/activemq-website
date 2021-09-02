@@ -1,7 +1,7 @@
 {% assign is_current_release = false %}
-{% for current_release_prefix in site.current_artemis_releases %}
+{% for current_release_prefix in site.data.current_releases["artemis"] %}
     {% if include.release.version contains current_release_prefix %}
-        {% assign sis_current_release = true %}
+        {% assign is_current_release = true %}
         {% break %}
     {% endif %}
 {% endfor %}
