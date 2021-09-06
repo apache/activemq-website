@@ -10,11 +10,13 @@ This is the current ActiveMQ Artemis release. For prior releases, please see the
 The keys file for verifying these releases can be obtained <a href="https://downloads.apache.org/activemq/KEYS">here</a>.
 
 {% assign reversed_releases = site["artemis_releases"] | reverse %}
+{% assign latest_docs = true %}
 
 {% for current_release_prefix in site.data.current_releases["artemis"] %}
     {% for release in reversed_releases %}
         {% if release.version contains current_release_prefix %}
-            {% include artemis_release.md release=release %}
+            {% include artemis_release.md release=release latest_docs=latest_docs %}
+            {% assign latest_docs = false %}
             {% break %}
         {% endif %}
     {% endfor %}
