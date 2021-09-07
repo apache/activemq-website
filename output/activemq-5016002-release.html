@@ -91,9 +91,14 @@
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 activemq5">
-        <p><a href="overview">Overview</a> &gt; <a href="download">Download</a> &gt; <a href="/activemq-5016002-release">ActiveMQ 5.16.2 Release</a></p>
+        
+<p><a href="overview">Overview</a> &gt; <a href="download">Download</a> &gt; <a href="/activemq-5016002-release">ActiveMQ 5.16.2 Release</a></p>
 
 <h2 id="activemq-5162-release">ActiveMQ 5.16.2 Release</h2>
+
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="/components/classic/download" class="alert-link">download page</a>.
+</div>
 
 <p>Apache ActiveMQ 5.16.2 was released on Apr 28th, 2021. It fully supports JDK 9+ at runtime and includes several resolved <a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&amp;version=12349550">issues</a> and bug fixes.</p>
 
@@ -123,35 +128,30 @@
 
 <h2 id="verify-the-integrity-of-downloads">Verify the Integrity of Downloads</h2>
 
-<p>It is essential that you verify the integrity of the downloaded files using the PGP. The PGP signatures can be verified using PGP or GPG. Begin by following these steps:</p>
+<p>It is essential that you verify the integrity of the downloaded files using the PGP signature or SHA checksum.</p>
+
+<p>The PGP signatures can be verified using PGP or GPG. Begin by following these steps:</p>
 
 <ol>
-  <li>Download the <a href="https://downloads.apache.org/activemq/KEYS">KEYS</a></li>
-  <li>Download the asc signature file for the relevant distribution</li>
-  <li>Verify the signatures using the following commands, depending on your use of PGP or GPG:
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pgpk -a KEYS
-$ pgpv apache-activemq-&lt;version&gt;-bin.tar.gz.asc
-</code></pre></div>    </div>
-    <p>or</p>
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pgp -ka KEYS
-$ pgp apache-activemq-&lt;version&gt;-bin.tar.gz.asc
-</code></pre></div>    </div>
-    <p>or</p>
+  <li>Download the <a href="https://downloads.apache.org/activemq/KEYS">KEYS</a> file.</li>
+  <li>Download the .asc signature for the relevant distribution file.</li>
+  <li>Verify the signature using one the following sets of commands, depending on your use of PGP or GPG:
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gpg --import KEYS
-$ gpg --verify apache-activemq-&lt;version&gt;-bin.tar.gz.asc apache-activemq-&lt;version&gt;-bin.tar.gz
+$ gpg --verify &lt;file-name&gt;.asc &lt;file-name&gt;
+
+$ pgpk -a KEYS
+$ pgpv &lt;file-name&gt;.asc
+
+$ pgp -ka KEYS
+$ pgp &lt;file-name&gt;.asc
 </code></pre></div>    </div>
   </li>
 </ol>
 
-<p>(Where <version> is replaced with the actual version, e.g., 5.1.0, 5.2.0, etc.).</version></p>
+<p>Alternatively you can [also] verify the SHA-512 checksum of the file. For example, using the <code class="language-plaintext highlighter-rouge">sha512sum</code> command:</p>
 
-<p>You can also verify SHA512 hash using <code class="language-plaintext highlighter-rouge">sha512sum</code> command:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sha512sum -c apache-activemq-&lt;version&gt;-bin.tar.gz.sha512
-apache-activemq-&lt;version&gt;-bin.tar.gz: OK
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sha512sum -c &lt;file-name&gt;.sha512
 </code></pre></div></div>
-
-<p>(Where <version> is replaced with the actual version, e.g., 5.1.0, 5.2.0, etc.).</version></p>
 
 <h2 id="getting-the-binaries-using-maven-3">Getting the Binaries using Maven 3</h2>
 
@@ -188,6 +188,8 @@ apache-activemq-&lt;version&gt;-bin.tar.gz: OK
 <h2 id="change-log">Change Log</h2>
 
 <p>For a more detailed view of new features and bug fixes, see the <a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&amp;version=12349550">release notes</a></p>
+
+<p>Also see the previous <a href="/activemq-5016001-release">ActiveMQ 5.16.1 Release</a></p>
 
 
       </div>

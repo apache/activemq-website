@@ -93,6 +93,8 @@
       <div class="col-12 activemq5">
         <p>These are the current releases. For prior releases, please see the <a href="../../../download-archives">past releases</a> page.</p>
 
+<p>It is important to <a href="#verify-the-integrity-of-downloads">verify the integrity</a> of the files you download.</p>
+
 <h4 id="activemq-5163-aug-17th-2021">ActiveMQ 5.16.3 (Aug 17th, 2021)</h4>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&amp;version=12350105">Release Notes</a> | <a href="/activemq-5016003-release">Release Page</a> | <a href="../documentation">Documentation</a></p>
 
@@ -147,7 +149,37 @@
   </tbody>
 </table>
 
-<p>The keys file for verifying the release can be obtained <a href="https://downloads.apache.org/activemq/KEYS">here</a></p>
+<p><br /></p>
+
+<hr />
+
+<h4 id="verify-the-integrity-of-downloads">Verify the Integrity of Downloads</h4>
+
+<p>It is essential that you verify the integrity of the downloaded files using the PGP signature or SHA checksum.</p>
+
+<p>The PGP signatures can be verified using PGP or GPG. Begin by following these steps:</p>
+
+<ol>
+  <li>Download the <a href="https://downloads.apache.org/activemq/KEYS">KEYS</a> file.</li>
+  <li>Download the .asc signature for the relevant distribution file.</li>
+  <li>Verify the signature using one the following sets of commands, depending on your use of PGP or GPG:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gpg --import KEYS
+$ gpg --verify &lt;file-name&gt;.asc &lt;file-name&gt;
+
+$ pgpk -a KEYS
+$ pgpv &lt;file-name&gt;.asc
+
+$ pgp -ka KEYS
+$ pgp &lt;file-name&gt;.asc
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>Alternatively you can [also] verify the SHA-512 checksum of the file. For example, using the <code class="language-plaintext highlighter-rouge">sha512sum</code> command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sha512sum -c &lt;file-name&gt;.sha512
+</code></pre></div></div>
+
 
       </div>
     </div>

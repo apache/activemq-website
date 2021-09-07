@@ -98,37 +98,31 @@
     <tr>
       <th>Description</th>
       <th>Download Link</th>
-      <th>PGP Signature File</th>
+      <th>Verify</th>
       <th>Version</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Apache.NMS.AMQP Source code</td>
-      <td><a href="http://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-src.zip">Apache.NMS.AMQP-1.8.1-src.zip</a></td>
-      <td><a href="http://www.apache.org/dist/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-src.zip.asc">Apache.NMS.AMQP-1.8.1-src.zip.asc</a></td>
+      <td><a href="https://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-src.zip">Apache.NMS.AMQP-1.8.1-src.zip</a></td>
+      <td><a href="https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-src.zip.asc">ASC</a>, <a href="https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-src.zip.sha512">SHA512</a></td>
       <td>1.8.1</td>
     </tr>
     <tr>
       <td>Apache.NMS.AMQP Binary Assemblies</td>
-      <td><a href="http://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-bin.zip">Apache.NMS.AMQP-1.8.1-bin.zip</a></td>
-      <td><a href="http://www.apache.org/dist/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-bin.zip.asc">Apache.NMS.AMQP-1.8.1-bin.zip.asc</a></td>
+      <td><a href="https://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-bin.zip">Apache.NMS.AMQP-1.8.1-bin.zip</a></td>
+      <td><a href="https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-bin.zip.asc">ASC</a>, <a href="https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-bin.zip.sha512">SHA512</a></td>
       <td>1.8.1</td>
     </tr>
     <tr>
       <td>Apache.NMS.AMQP Nuget Package</td>
-      <td><a href="http://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP.1.8.1.nupkg">Apache.NMS.AMQP.1.8.1.nupkg</a></td>
-      <td><a href="http://www.apache.org/dist/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP.1.8.1.nupkg.asc">Apache.NMS.AMQP.1.8.1.nupkg.asc</a></td>
+      <td><a href="https://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP.1.8.1.nupkg">Apache.NMS.AMQP.1.8.1.nupkg</a></td>
+      <td><a href="https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP.1.8.1.nupkg.asc">ASC</a>, <a href="https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP.1.8.1.nupkg.sha512">SHA512</a></td>
       <td>1.8.1</td>
     </tr>
   </tbody>
 </table>
-
-<h2 id="git-tag-checkout">Git Tag Checkout</h2>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://gitbox.apache.org/repos/asf/activemq-nms-amqp.git
-git checkout tags/1.8.1
-</code></pre></div></div>
 
 <h2 id="changelog">Changelog</h2>
 
@@ -140,6 +134,34 @@ git checkout tags/1.8.1
   <li>AMQNET-634: Use 4 as default msg priority</li>
   <li>AMQNET-635: Update AMQPNetLite.Core to 2.4.0 version</li>
 </ul>
+
+<h2 id="verify-the-integrity-of-downloads">Verify the Integrity of Downloads</h2>
+
+<p>It is essential that you verify the integrity of the downloaded files using the PGP signature or SHA checksum.</p>
+
+<p>The PGP signatures can be verified using PGP or GPG. Begin by following these steps:</p>
+
+<ol>
+  <li>Download the <a href="https://downloads.apache.org/activemq/KEYS">KEYS</a> file.</li>
+  <li>Download the .asc signature for the relevant distribution file.</li>
+  <li>Verify the signature using one the following sets of commands, depending on your use of PGP or GPG:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gpg --import KEYS
+$ gpg --verify &lt;file-name&gt;.asc &lt;file-name&gt;
+
+$ pgpk -a KEYS
+$ pgpv &lt;file-name&gt;.asc
+
+$ pgp -ka KEYS
+$ pgp &lt;file-name&gt;.asc
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>Alternatively you can [also] verify the SHA-512 checksum of the file. For example, using the <code class="language-plaintext highlighter-rouge">sha512sum</code> command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sha512sum -c &lt;file-name&gt;.sha512
+</code></pre></div></div>
+
 
       </div>
     </div>
