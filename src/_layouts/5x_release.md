@@ -101,7 +101,7 @@ Change Log
 
 For a more detailed view of new features and bug fixes, see the [release notes]({{page.release_notes}})
 
-{% assign releases = site["releases"]  %}
+{% assign releases = site["5x_releases"]  %}
 
 {% for release in releases %}
     {% if release.title == page.title %}
