@@ -9,20 +9,11 @@ release_date: 2021-04-04
 Download Here
 -------------
 
-|Description|Download Link|PGP Signature File|Version|
+|Description|Download Link|Verify|Version|
 |---|---|---|---|
-|Apache.NMS.AMQP Source code|[Apache.NMS.AMQP-1.8.1-src.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-src.zip)|[Apache.NMS.AMQP-1.8.1-src.zip.asc](http://www.apache.org/dist/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-src.zip.asc)|1.8.1|
-|Apache.NMS.AMQP Binary Assemblies|[Apache.NMS.AMQP-1.8.1-bin.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-bin.zip)|[Apache.NMS.AMQP-1.8.1-bin.zip.asc](http://www.apache.org/dist/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-bin.zip.asc)|1.8.1|
-|Apache.NMS.AMQP Nuget Package|[Apache.NMS.AMQP.1.8.1.nupkg](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP.1.8.1.nupkg)|[Apache.NMS.AMQP.1.8.1.nupkg.asc](http://www.apache.org/dist/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP.1.8.1.nupkg.asc)|1.8.1|
-
-
-Git Tag Checkout
-----------------
-
-```
-git clone https://gitbox.apache.org/repos/asf/activemq-nms-amqp.git
-git checkout tags/1.8.1
-```
+|Apache.NMS.AMQP Source code|[Apache.NMS.AMQP-1.8.1-src.zip](https://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-src.zip)|[ASC](https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-src.zip.asc), [SHA512](https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-src.zip.sha512)|1.8.1|
+|Apache.NMS.AMQP Binary Assemblies|[Apache.NMS.AMQP-1.8.1-bin.zip](https://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-bin.zip)|[ASC](https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-bin.zip.asc), [SHA512](https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP-1.8.1-bin.zip.sha512)|1.8.1|
+|Apache.NMS.AMQP Nuget Package|[Apache.NMS.AMQP.1.8.1.nupkg](https://www.apache.org/dyn/closer.lua/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP.1.8.1.nupkg)|[ASC](https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP.1.8.1.nupkg.asc), [SHA512](https://downloads.apache.org/activemq/apache-nms-amqp/1.8.1/Apache.NMS.AMQP.1.8.1.nupkg.sha512)|1.8.1|
 
 Changelog
 ---------
