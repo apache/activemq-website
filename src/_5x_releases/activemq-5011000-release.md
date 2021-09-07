@@ -8,7 +8,10 @@ redirect_from:
 ---
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.11.0 Release](activemq-5110-release)
------------------------
+
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
 
 Apache ActiveMQ 5.11.0 resolves [more than 130 issues](https://issues.apache.org/jira/issues/?jql=fixVersion%20%3D%205.11.0%20AND%20project%20%3D%20AMQ), mostly bug fixes and improvements. It is build with and requires jdk 1.7
 

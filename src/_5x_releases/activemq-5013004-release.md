@@ -12,6 +12,10 @@ redirect_from:
 ActiveMQ 5.13.4 Release
 -----------------------
 
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
+
 Apache ActiveMQ 5.13.4 includes 30 resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12335661&projectId=12311210) and improvements.
 
 ### Getting the Binary Distributions

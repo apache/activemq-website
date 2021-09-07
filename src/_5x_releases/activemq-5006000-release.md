@@ -9,6 +9,10 @@ redirect_from:
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.6.0 Release](activemq-560-release)
 
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
+
 Apache ActiveMQ 5.6.0 is primarily a maintenance release which resolves over [435 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+12317974+AND+status+in+%28Resolved%2C+Closed%29+ORDER+BY+priority+DESC), mostly bug fixes and improvements
 
 New Features in 5.6.0

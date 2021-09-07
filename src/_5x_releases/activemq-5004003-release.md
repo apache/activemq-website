@@ -9,7 +9,9 @@ redirect_from:
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.4.3 Release](activemq-543-release)
 
-
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
 
 Apache ActiveMQ 5.4.3 is a maintenance release which resolves [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491), a critical bug which caused the 5.4.0, 5.4.1, and 5.4.2 releases to be retracted.
 

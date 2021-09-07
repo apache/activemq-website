@@ -9,6 +9,10 @@ redirect_from:
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.9.0 Release](activemq-590-release)
 
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
+
 Apache ActiveMQ 5.9.0 resolves [more than 200 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+%225.9.0%22+AND+status+%3D+Resolved+ORDER+BY+priority+DESC&mode=hide), mostly bug fixes and improvements. It has the following new features:
 
 *   [Replicated LevelDB Store](replicated-Features/PersistenceFeatures/Persistence/Features/Persistence/leveldb-store) for shared nothing Master/Slave.

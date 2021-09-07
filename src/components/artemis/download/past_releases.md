@@ -5,7 +5,9 @@ title-class: page-title-artemis
 type: artemis
 ---
 
-These are older releases. For the current releases, please see the [download](./) page.
+<div class="alert alert-warning">
+  These are older releases. To get the current release, please see the <a href="{{site.baseurl}}/components/artemis/download" class="alert-link">download page</a>.
+</div>
 
 The keys file for verifying the release can be obtained [here](https://downloads.apache.org/activemq/KEYS).
 

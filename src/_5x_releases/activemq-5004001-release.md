@@ -9,6 +9,10 @@ redirect_from:
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.4.1 Release](activemq-541-release)
 
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
+
 Warning
 
 This release has been retracted due to bug [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491). It is no longer downloadable from ASF servers. Please use the [ActiveMQ 5.4.3 Release](activemq-543-release) instead.

@@ -12,6 +12,10 @@ redirect_from:
 ActiveMQ 5.13.0 Release
 -----------------------
 
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
+
 Apache ActiveMQ 5.13.0 includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12329848) as well as new features such as the new [auto transport](auto) protocol, [dynamic network support for virtual destinations](networks-of-brokers), and much more.
 
 ### Getting the Binary Distributions

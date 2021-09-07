@@ -9,7 +9,9 @@ redirect_from:
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.3.2 Release](activemq-532-release)
 
-
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
 
 Apache ActiveMQ 5.3.2 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/IssueNavigator.jspa?reset=true&&pid=10520&fixfor=12310&sorter/field=priority&sorter/order=DESC) 3 issues.
 

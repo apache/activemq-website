@@ -9,6 +9,10 @@ redirect_from:
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.3.1 Release](activemq-531-release)
 
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
+
 Apache ActiveMQ 5.3 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=10520&styleName=Html&version=12183) 98 issues.
 
 The most improved areas in this release are:

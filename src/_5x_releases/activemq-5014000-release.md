@@ -12,6 +12,10 @@ redirect_from:
 ActiveMQ 5.14.0 Release
 -----------------------
 
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
+
 Apache ActiveMQ 5.14.0 includes many resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12334188), and provides several new features including AMQP over WebSockets and improved support durable subscriptions over a network bridge.
 
 ### Getting the Binary Distributions

@@ -12,6 +12,10 @@ redirect_from:
 ActiveMQ 5.12.0 Release
 -----------------------
 
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
+
 Apache ActiveMQ 5.12.0 resolves several [issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12329258), and provides significant improves to the [AMQP](amqp) and [MQTT](ProtocolsConnectivity/Protocols/Connectivity/Protocols/mqtt) support in the broker as well as fixing issues with [STOMP](stomp) and [MQTT](ProtocolsConnectivity/Protocols/Connectivity/Protocols/mqtt) over WebSockets plus much much more.
 
 ### Getting the Binary Distributions

@@ -9,6 +9,10 @@ redirect_from:
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.7.0 Release](activemq-570-release)
 
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
+
 Apache ActiveMQ 5.7.0 is primarily a maintenance release which resolves nearly [200 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+%225.7.0%22+AND+status+%3D+Resolved+ORDER+BY+priority+DESC&mode=hide), mostly bug fixes and improvements
 
 *   Java 7 support (compiled with jdk6 and validated with jdk7)

@@ -1,16 +1,6 @@
 ---
 layout: default_md
 ---
-
-[Overview](overview) > [Download](download) > [ActiveMQ {{page.version}} Release]({{page.url}})
-
-ActiveMQ {{page.version}} Release
------------------------
-
-{{content}}
-
-### Getting the Binary Distributions
-
 {% assign releases = site["5x_releases"] | reverse %}
 {% assign isCurrentRelease = false %}
 
@@ -25,6 +15,20 @@ ActiveMQ {{page.version}} Release
     {% endfor %}
     {% if isCurrentRelease %} {% break %} {% endif %} 
 {% endfor %}
+
+[Overview](overview) > [Download](download) > [ActiveMQ {{page.version}} Release]({{page.url}})
+
+ActiveMQ {{page.version}} Release
+-----------------------
+{% unless isCurrentRelease %}
+<div class="alert alert-warning">
+  This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+</div>
+{% endunless %}
+
+{{content}}
+
+### Getting the Binary Distributions
 
 Description|Download Link|_Verify_
 ---|---|---{% if isCurrentRelease %}
