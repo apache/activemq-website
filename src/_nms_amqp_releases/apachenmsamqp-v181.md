@@ -24,3 +24,8 @@ Changelog
 - AMQNET-633: Fix session creation when connection not started
 - AMQNET-634: Use 4 as default msg priority
 - AMQNET-635: Update AMQPNetLite.Core to 2.4.0 version
+
+Verify the Integrity of Downloads
+---------------------------------
+
+{% include verify_download.md %}

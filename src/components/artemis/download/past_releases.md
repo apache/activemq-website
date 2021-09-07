@@ -9,9 +9,9 @@ type: artemis
   These are older releases. To get the current release, please see the <a href="{{site.baseurl}}/components/artemis/download" class="alert-link">download page</a>.
 </div>
 
-The keys file for verifying the release can be obtained [here](https://downloads.apache.org/activemq/KEYS).
-
 For any releases not shown here, check the [archive](https://archive.apache.org/dist/activemq/activemq-artemis/).
+
+It is important to [verify the integrity]({{site.baseurl}}/components/artemis/download#verify-the-integrity-of-downloads) of the files you download.
 
 {% assign reversed_releases = site["artemis_releases"] | reverse %}
 {% assign current_releases = "" | split: ',' %}
@@ -27,12 +27,11 @@ For any releases not shown here, check the [archive](https://archive.apache.org/
 
 {% for release in reversed_releases %}
     {% unless current_releases contains release.version %}
-<br/>
 {% include artemis_release.md release=release %}
+<br/>
     {% endunless %}
 {% endfor %}
 
-<br/>
 #### ActiveMQ Artemis 2.13.0   (May 26, 2020)
 [Release Notes](release-notes-2.13.0) | [Git Report](commit-report-2.13.0) | [Documentation](../documentation/2.13.0)
 

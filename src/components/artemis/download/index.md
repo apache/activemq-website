@@ -7,7 +7,7 @@ type: artemis
 
 This is the current ActiveMQ Artemis release. For prior releases, please see the <a href="past_releases">past releases</a> page.
 
-The keys file for verifying these releases can be obtained <a href="https://downloads.apache.org/activemq/KEYS">here</a>.
+It is important to [verify the integrity](#verify-the-integrity-of-downloads) of the files you download.
 
 {% assign reversed_releases = site["artemis_releases"] | reverse %}
 {% assign latest_docs = true %}
@@ -34,3 +34,9 @@ This is the current release of ActiveMQ Artemis Native, which is a sub component
 Source Distribution:|[apache-artemis-native-1.0.2-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.asc)|
 
 This is the native layer used by ActiveMQ Artemis for storage. The broker binary archives above already include a pre-compiled version of this component.
+<br/>
+
+--------------------------------------
+#### Verify the Integrity of Downloads
+
+{% include verify_download.md %}

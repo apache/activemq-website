@@ -7,6 +7,7 @@ type: activemq5
 
 These are the current releases. For prior releases, please see the [past releases](../../../download-archives) page.
 
+It is important to [verify the integrity](#verify-the-integrity-of-downloads) of the files you download.
 
 {% assign releases = site["5x_releases"] | reverse %}
 
@@ -28,4 +29,9 @@ Source Code Distribution:|[activemq-parent-{{release.version}}-source-release.zi
     {% endfor %}
 {% endfor %}
 
-The keys file for verifying the release can be obtained [here](https://downloads.apache.org/activemq/KEYS)
+<br/>
+
+--------------------------------------
+#### Verify the Integrity of Downloads
+
+{% include verify_download.md %}

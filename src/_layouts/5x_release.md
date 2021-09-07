@@ -41,36 +41,8 @@ Unix/Linux/Cygwin Distribution|[apache-activemq-{{page.version}}-bin.tar.gz](htt
 Verify the Integrity of Downloads
 ---------------------------------
 
-It is essential that you verify the integrity of the downloaded files using the PGP. The PGP signatures can be verified using PGP or GPG. Begin by following these steps:
+{% include verify_download.md %}
 
-1.  Download the [KEYS](https://downloads.apache.org/activemq/KEYS)
-2.  Download the asc signature file for the relevant distribution
-3.  Verify the signatures using the following commands, depending on your use of PGP or GPG:
-    ```
-    $ pgpk -a KEYS
-    $ pgpv apache-activemq-<version>-bin.tar.gz.asc
-    ```
-    or
-    ```
-    $ pgp -ka KEYS
-    $ pgp apache-activemq-<version>-bin.tar.gz.asc
-    ```
-    or
-    ```
-    $ gpg --import KEYS
-    $ gpg --verify apache-activemq-<version>-bin.tar.gz.asc apache-activemq-<version>-bin.tar.gz
-    ```
-
-(Where <version> is replaced with the actual version, e.g., 5.1.0, 5.2.0, etc.).
-
-You can also verify SHA512 hash using `sha512sum` command:
-
-```
-$ sha512sum -c apache-activemq-<version>-bin.tar.gz.sha512
-apache-activemq-<version>-bin.tar.gz: OK
-```
-
-(Where <version> is replaced with the actual version, e.g., 5.1.0, 5.2.0, etc.).
 
 Getting the Binaries using Maven 3
 ----------------------------------
