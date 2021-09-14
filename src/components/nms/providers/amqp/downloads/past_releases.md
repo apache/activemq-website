@@ -30,7 +30,7 @@ It is important to [verify the integrity]({{site.baseurl}}/components/nms/provid
 #### NMS AMQP {{release.version}} ({{release.release_date | date_to_string: "ordinal", "US"}})
 [Release Notes]({{ release.release_notes }}) | [Release Page]({{release.url}})
 
-{% include nms_amqp_download_links.md release=release %}
+{% include nms_amqp_download_links.md release=release is_current_release=false %}
 
 <br/>
     {% endunless %}

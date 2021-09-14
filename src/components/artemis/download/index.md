@@ -15,7 +15,7 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
 {% for current_release_prefix in site.data.current_releases["artemis"] %}
     {% for release in reversed_releases %}
         {% if release.version contains current_release_prefix %}
-            {% include artemis_release.md release=release latest_docs=latest_docs %}
+            {% include artemis_release.md release=release is_current_release=true latest_docs=latest_docs %}
             {% assign latest_docs = false %}
             {% break %}
         {% endif %}

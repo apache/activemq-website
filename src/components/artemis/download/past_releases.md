@@ -27,7 +27,7 @@ It is important to [verify the integrity]({{site.baseurl}}/components/artemis/do
 
 {% for release in reversed_releases %}
     {% unless current_releases contains release.version %}
-{% include artemis_release.md release=release %}
+{% include artemis_release.md release=release is_current_release=false %}
 <br/>
     {% endunless %}
 {% endfor %}

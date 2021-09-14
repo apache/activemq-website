@@ -27,7 +27,7 @@ layout: default_md
 Download
 --------
 
-{% include nms_amqp_download_links.md release=page %}
+{% include nms_amqp_download_links.md release=page is_current_release=isCurrentRelease %}
 
 Change Log
 ----------
