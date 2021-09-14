@@ -1115,7 +1115,20 @@
             
         </li>
     
-        <li class="chapter " data-level="1.76" data-path="maven-plugin.html">
+        <li class="chapter " data-level="1.76" data-path="activation-tools.html">
+            
+                <a href="activation-tools.html">
+            
+                    
+                    Activation Tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.77" data-path="maven-plugin.html">
             
                 <a href="maven-plugin.html">
             
@@ -1128,7 +1141,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.77" data-path="unit-testing.html">
+        <li class="chapter " data-level="1.78" data-path="unit-testing.html">
             
                 <a href="unit-testing.html">
             
@@ -1141,7 +1154,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.78" data-path="perf-tuning.html">
+        <li class="chapter " data-level="1.79" data-path="perf-tuning.html">
             
                 <a href="perf-tuning.html">
             
@@ -1154,7 +1167,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.79" data-path="configuration-index.html">
+        <li class="chapter " data-level="1.80" data-path="configuration-index.html">
             
                 <a href="configuration-index.html">
             
@@ -1167,7 +1180,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.80" data-path="restart-sequence.html">
+        <li class="chapter " data-level="1.81" data-path="restart-sequence.html">
             
                 <a href="restart-sequence.html">
             
@@ -1241,13 +1254,19 @@ chapter in addition to any version-specific upgrade instructions outlined here.<
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12349689" target="_blank">Full release notes</a>.</p>
 <p>Highlights:</p>
 <ul>
-<li>Dual Mirror support improving capabilities on AMQP Mirror for Disaster Recovery</li>
-<li>Journal Retention</li>
-<li>Replication integrated with ZookeeperA</li>
-<li>Broker load balancer</li>
+<li><a href="amqp-broker-connections.html#dual-mirror-disaster-recovery">Dual Mirror</a>
+support improving capabilities on AMQP Mirror for Disaster Recovery</li>
+<li><a href="persistence.html#journal-retention">Journal Retention</a></li>
+<li><a href="ha.html#pluggable-quorum-vote-replication-configurations">Replication integrated with Zookeeper</a></li>
+<li><a href="broker-balancers.html">Broker load balancer</a></li>
+<li><a href="core-bridges.html#configuring-bridges">Concurrency</a> configuration for core
+bridges.</li>
+<li><a href="filter-expressions.html#xpath">XPath filter expressions</a> (for parity with 
+ActiveMQ &quot;Classic&quot;).</li>
 </ul>
 <h4 id="upgrading-from-older-versions">Upgrading from older versions</h4>
-<p>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-3367" target="_blank">ARTEMIS-3367</a> the
+<ol>
+<li><p>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-3367" target="_blank">ARTEMIS-3367</a> the
 default setting for <code>verifyHost</code> on <em>core connectors</em> has been changed from
 <code>false</code> to <code>true</code>. This means that <strong>core clients will now expect the <code>CN</code> or
 Subject Alternative Name values of the broker&apos;s SSL certificate to match the
@@ -1266,6 +1285,31 @@ verification, but no certificates will need to change. This essentially
 restores the previous default behavior.</li>
 </ul>
 <p>For additional details about please refer to section 3.1 of <a href="https://datatracker.ietf.org/doc/html/rfc2818#section-3.1" target="_blank">RFC 2818 &quot;HTTP over TLS&quot;</a>.</p>
+</li>
+<li><p>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-3117" target="_blank">ARTEMIS-3117</a>
+SSL keystore and truststores are no longer reloaded automatically.
+Previously an instance of <code>javax.net.ssl.SSLContext</code> was created for <em>every</em>
+connection. This would implicitly pick up any changes to the keystore and 
+truststore for any new connection. However, this was grossly inefficient and
+therefore didn&apos;t scale well with lots of connections. The behavior was
+changed so that just one <code>javax.net.ssl.SSLContext</code> is created for each
+<code>acceptor</code>. However, one can still reload keystores &amp; truststores from disk
+without restarting the broker. Simply use the <code>reload</code> management operation
+on the <code>acceptor</code>. This is available via JMX, the web console, Jolokia, etc.</p>
+<p>Here&apos;s an example <code>curl</code> command you can use with Jolokia to invoke the
+<code>artemis</code> acceptor&apos;s <code>reload</code> operation:</p>
+<pre><code class="lang-bash">curl --user admin:admin --header <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> --request POST --data <span class="hljs-string">&apos;{&quot;type&quot;:&quot;exec&quot;, &quot;mbean&quot;:&quot;org.apache.activemq.artemis:broker=\&quot;0.0.0.0\&quot;,component=acceptors,name=\&quot;artemis\&quot;&quot;, &quot;operation&quot;:&quot;reload&quot;}&apos;</span> http://localhost:8161/console/jolokia/<span class="hljs-built_in">exec</span>
+</code></pre>
+<p>Of course you&apos;ll want to adjust the username &amp; password as well as the
+broker and acceptor names for your environment.</p>
+</li>
+<li><p>The &quot;rate&quot; metric for queues was removed from the web console via <a href="https://issues.apache.org/jira/browse/ARTEMIS-3397" target="_blank">ARTEMIS-3397</a>.
+This was a follow-up from <a href="https://issues.apache.org/jira/browse/ARTEMIS-2909" target="_blank">ARTEMIS-2909</a>
+in 2.16.0 (referenced in the <a href="#2160">upgrade instructions below</a>). The
+&quot;rate&quot; metric mistakenly left visible on the web console after it was
+removed from the management API.</p>
+</li>
+</ol>
 <h2 id="2170">2.17.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12349326" target="_blank">Full release notes</a>.</p>
 <p>Highlights:</p>
@@ -1296,7 +1340,8 @@ disk scan to pick it up</li>
 <li>Ability to prevent an acceptor from automatically starting</li>
 </ul>
 <h4 id="upgrading-from-older-versions">Upgrading from older versions</h4>
-<p>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-2893" target="_blank">ARTEMIS-2893</a> the
+<ol>
+<li><p>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-2893" target="_blank">ARTEMIS-2893</a> the
 fundamental way user management was implemented had to change to avoid data
 integrity issues related to concurrent modification. From a user&apos;s perspective
 two main things changed:</p>
@@ -1315,7 +1360,42 @@ something like this:</p>
 in lieu of <code>password</code>. Both <code>user</code> and <code>password</code> parameters now apply to the
 connection used to send the command to the broker.</p>
 <p>For additional details see <a href="https://issues.apache.org/jira/browse/ARTEMIS-2893" target="_blank">ARTEMIS-2893</a>
-and <a href="https://issues.apache.org/jira/browse/ARTEMIS-3010" target="_blank">ARTEMIS-3010</a> </p>
+and <a href="https://issues.apache.org/jira/browse/ARTEMIS-3010" target="_blank">ARTEMIS-3010</a></p>
+</li>
+</ol>
+</li>
+<li><p>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-2909" target="_blank">ARTEMIS-2909</a> 
+the &quot;rate&quot; metric was removed from the management API for queues. In short,
+the <code>org.apache.activemq.artemis.core.server.Queue#getRate</code> method is for
+slow-consumer detection and is designed for <em>internal</em> use only.</p>
+<p>Furthermore, it&apos;s too opaque to be trusted by a remote user as it only
+returns the number of message added to the queue since <em>the last time
+it was called</em>. The problem here is that the user calling it doesn&apos;t
+know when it was invoked last. Therefore, they could be getting the
+rate of messages added for the last 5 minutes or the last 5
+milliseconds. This can lead to inconsistent and misleading results.</p>
+<p>There are three main ways for users to track rates of message
+production and consumption (in recommended order):</p>
+<ol>
+<li><p>Use a <a href="metrics.html">metrics</a> plugin. This is the most feature-rich and
+flexible way to track broker metrics, although it requires tools (e.g.
+Prometheus) to store the metrics and display them (e.g. Grafana).</p>
+</li>
+<li><p>Invoke the <code>getMessageCount()</code> and <code>getMessagesAdded()</code> management
+methods and store the returned values along with the time they were
+retrieved. A time-series database is a great tool for this job. This is
+exactly what tools like Prometheus do. That data can then be used to
+create informative graphs, etc. using tools like Grafana. Of course, one
+can skip all the tools and just do some simple math to calculate rates
+based on the last time the counts were retrieved.</p>
+</li>
+<li><p>Use the broker&apos;s <a href="management.html#message-counters">message counters</a>.
+Message counters are the broker&apos;s simple way of providing historical
+information about the queue. They provide similar results to the previous
+solutions, but with less flexibility since they only track data while the
+broker is up and there&apos;s not really any good options for graphing.</p>
+</li>
+</ol>
 </li>
 </ol>
 <h2 id="2150">2.15.0</h2>
@@ -1779,7 +1859,7 @@ production.</li>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2021-08-18T15:47:56.136Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-08-18T15:53:54.935Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2021-09-14T16:57:33.317Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-09-14T17:04:12.113Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
@@ -1815,4 +1895,3 @@ production.</li>
 
     </body>
 </html>
-
