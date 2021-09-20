@@ -1309,6 +1309,18 @@ in 2.16.0 (referenced in the <a href="#2160">upgrade instructions below</a>). Th
 &quot;rate&quot; metric mistakenly left visible on the web console after it was
 removed from the management API.</p>
 </li>
+<li><p>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-3141" target="_blank">ARTEMIS-3141</a>,
+<a href="https://issues.apache.org/jira/browse/ARTEMIS-3128" target="_blank">ARTEMIS-3128</a>, &amp;
+<a href="https://issues.apache.org/jira/browse/ARTEMIS-3175" target="_blank">ARTEMIS-3175</a>
+the data returned for any &quot;list&quot; or &quot;browse&quot; management method which return
+message data, including those exposed via the web console, will have their
+return data truncated by default. This is done to avoid adverse conditions
+with large volumes of message data which could potentially negatively impact
+broker stability. The <code>management-message-attribute-size-limit</code>
+address-setting controls this behavior. If you wish to restore the previous
+(and potentially dangerous behavior) then you can specify <code>-1</code> for this.
+It is <code>256</code> by default.</p>
+</li>
 </ol>
 <h2 id="2170">2.17.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12349326" target="_blank">Full release notes</a>.</p>
@@ -1324,6 +1336,7 @@ disk scan to pick it up</li>
 <li>JDBC datasource property values can now be masked.</li>
 <li>Lots of usability improvements to the Hawtio 2 based web console introduced in 2.16.0</li>
 <li>New management method to create a core bridge using JSON-based configuration input.</li>
+<li><a href="https://blogs.apache.org/activemq/entry/activemq-artemis-embraces-jakarta-ee" target="_blank">Jakarta Messaging 2.0 &amp; 3.0 artifacts for Jakarta EE 8 &amp; 9 respectively</a>.</li>
 </ul>
 <h2 id="2160">2.16.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&amp;version=12348718" target="_blank">Full release notes</a>.</p>
@@ -1859,7 +1872,7 @@ production.</li>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2021-09-14T16:57:33.317Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-09-14T17:04:12.113Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2021-09-20T02:35:16.753Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-09-20T02:38:25.086Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
