@@ -57,7 +57,7 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="maven-plugin.html" />
+    <link rel="next" href="activation-tools.html" />
     
     
     <link rel="prev" href="intercepting-operations.html" />
@@ -1115,7 +1115,20 @@
             
         </li>
     
-        <li class="chapter " data-level="1.76" data-path="maven-plugin.html">
+        <li class="chapter " data-level="1.76" data-path="activation-tools.html">
+            
+                <a href="activation-tools.html">
+            
+                    
+                    Activation Tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.77" data-path="maven-plugin.html">
             
                 <a href="maven-plugin.html">
             
@@ -1128,7 +1141,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.77" data-path="unit-testing.html">
+        <li class="chapter " data-level="1.78" data-path="unit-testing.html">
             
                 <a href="unit-testing.html">
             
@@ -1141,7 +1154,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.78" data-path="perf-tuning.html">
+        <li class="chapter " data-level="1.79" data-path="perf-tuning.html">
             
                 <a href="perf-tuning.html">
             
@@ -1154,7 +1167,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.79" data-path="configuration-index.html">
+        <li class="chapter " data-level="1.80" data-path="configuration-index.html">
             
                 <a href="configuration-index.html">
             
@@ -1167,7 +1180,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.80" data-path="restart-sequence.html">
+        <li class="chapter " data-level="1.81" data-path="restart-sequence.html">
             
                 <a href="restart-sequence.html">
             
@@ -1227,7 +1240,9 @@
                                 
                                 <h1 id="data-tools">Data Tools</h1>
 <p>You can use the Artemis CLI to execute data maintenance tools:</p>
-<p>This is a list of sub-commands available</p>
+<p>The following sub-commands are available when running the CLI data
+command from a particular broker instance that has already been
+installed using the create command:</p>
 <table>
 <thead>
 <tr>
@@ -1237,20 +1252,16 @@
 </thead>
 <tbody>
 <tr>
+<td>print</td>
+<td>Prints a report about journal records of a non-running server</td>
+</tr>
+<tr>
 <td>exp</td>
 <td>Export the message data using a special and independent XML format</td>
 </tr>
 <tr>
 <td>imp</td>
 <td>Imports the journal to a running broker using the output from expt</td>
-</tr>
-<tr>
-<td>data</td>
-<td>Prints a report about journal records and summary of existent records, as well a report on paging</td>
-</tr>
-<tr>
-<td>recover</td>
-<td>Revive data from the journal. It can be used in conjunction with historic journaling.</td>
 </tr>
 <tr>
 <td>encode</td>
@@ -1260,9 +1271,17 @@
 <td>decode</td>
 <td>imports the internal journal format from encode</td>
 </tr>
+<tr>
+<td>compact</td>
+<td>Compacts the journal of a non running server</td>
+</tr>
+<tr>
+<td>recover</td>
+<td>Recover (undelete) messages from an existing journal and create a new one.</td>
+</tr>
 </tbody>
 </table>
-<p>You can use the help at the tool for more information on how to execute each of the tools. For example:</p>
+<p>You can use the CLI help for more information on how to execute each of the tools. For example:</p>
 <pre><code>$ ./artemis help data print
 NAME
         artemis data print - Print data records information (WARNING: don&apos;t use
@@ -1275,9 +1294,11 @@ SYNOPSIS
                 [--jdbc-driver-class-name &lt;jdbcClassName&gt;]
                 [--jdbc-large-message-table-name &lt;jdbcLargeMessages&gt;]
                 [--jdbc-message-table-name &lt;jdbcMessages&gt;]
+                [--jdbc-node-manager-table-name &lt;jdbcNodeManager&gt;]
                 [--jdbc-page-store-table-name &lt;jdbcPageStore&gt;] [--journal &lt;journal&gt;]
                 [--large-messages &lt;largeMessges&gt;] [--output &lt;output&gt;]
-                [--paging &lt;paging&gt;] [--safe] [--verbose] [--] [&lt;configuration&gt;]
+                [--paging &lt;paging&gt;] [--reclaimed] [--safe] [--verbose] [--]
+                [&lt;configuration&gt;]
 
 OPTIONS
         --bindings &lt;binding&gt;
@@ -1310,8 +1331,11 @@ OPTIONS
         --jdbc-message-table-name &lt;jdbcMessages&gt;
             Name of the jdbc messages table
 
+        --jdbc-node-manager-table-name &lt;jdbcNodeManager&gt;
+            Name of the jdbc node manager table
+
         --jdbc-page-store-table-name &lt;jdbcPageStore&gt;
-            Name of the page sotre messages table
+            Name of the page store messages table
 
         --journal &lt;journal&gt;
             The folder used for messages journal (default from broker.xml)
@@ -1324,6 +1348,10 @@ OPTIONS
 
         --paging &lt;paging&gt;
             The folder used for paging (default from broker.xml)
+
+        --reclaimed
+            This option will try to print as many records as possible from
+            reclaimed files
 
         --safe
             It will print your data structure without showing your data
@@ -1342,251 +1370,329 @@ OPTIONS
 </code></pre><p>For a full list of data tools commands available use:</p>
 <pre><code>$ ./artemis help data
 NAME
-        artemis data - data tools group (print|imp|exp|encode|decode|compact)
-        (example ./artemis data print)
+        artemis data - data tools group
+        (print|imp|exp|encode|decode|compact|recover) (example ./artemis data
+        print)
 
 SYNOPSIS
         artemis data
-        artemis data compact [--verbose] [--paging &lt;paging&gt;]
-                [--journal &lt;journal&gt;] [--large-messages &lt;largeMessges&gt;]
-                [--broker &lt;brokerConfig&gt;] [--bindings &lt;binding&gt;]
-        artemis data decode [--verbose] [--suffix &lt;suffix&gt;] [--paging &lt;paging&gt;]
-                [--prefix &lt;prefix&gt;] [--file-size &lt;size&gt;] --input &lt;input&gt;
-                [--journal &lt;journal&gt;] [--directory &lt;directory&gt;]
-                [--large-messages &lt;largeMessges&gt;] [--broker &lt;brokerConfig&gt;]
-                [--bindings &lt;binding&gt;]
-        artemis data encode [--verbose] [--directory &lt;directory&gt;]
-                [--suffix &lt;suffix&gt;] [--paging &lt;paging&gt;] [--prefix &lt;prefix&gt;]
-                [--file-size &lt;size&gt;] [--journal &lt;journal&gt;]
-                [--large-messages &lt;largeMessges&gt;] [--broker &lt;brokerConfig&gt;]
-                [--bindings &lt;binding&gt;]
-        artemis data exp [--jdbc-bindings-table-name &lt;jdbcBindings&gt;]
-                [--jdbc-message-table-name &lt;jdbcMessages&gt;] [--paging &lt;paging&gt;]
-                [--jdbc-connection-url &lt;jdbcURL&gt;]
-                [--jdbc-large-message-table-name &lt;jdbcLargeMessages&gt;] [--f]
-                [--large-messages &lt;largeMessges&gt;] [--broker &lt;brokerConfig&gt;]
-                [--jdbc-page-store-table-name &lt;jdbcPageStore&gt;]
-                [--jdbc-driver-class-name &lt;jdbcClassName&gt;] [--jdbc] [--verbose]
-                [--journal &lt;journal&gt;] [--output &lt;output&gt;] [--bindings &lt;binding&gt;]
-        artemis data imp [--user &lt;user&gt;] [--legacy-prefixes] [--verbose]
-                [--host &lt;host&gt;] [--port &lt;port&gt;] [--transaction] --input &lt;input&gt;
-                [--password &lt;password&gt;] [--sort]
-        artemis data print [--jdbc-bindings-table-name &lt;jdbcBindings&gt;]
-                [--jdbc-message-table-name &lt;jdbcMessages&gt;] [--paging &lt;paging&gt;]
-                [--jdbc-connection-url &lt;jdbcURL&gt;]
-                [--jdbc-large-message-table-name &lt;jdbcLargeMessages&gt;] [--f]
-                [--large-messages &lt;largeMessges&gt;] [--broker &lt;brokerConfig&gt;]
-                [--jdbc-page-store-table-name &lt;jdbcPageStore&gt;]
-                [--jdbc-driver-class-name &lt;jdbcClassName&gt;] [--safe] [--jdbc] [--verbose]
-                [--journal &lt;journal&gt;] [--output &lt;output&gt;] [--bindings &lt;binding&gt;]
+        artemis data compact [--journal &lt;journal&gt;]
+                [--large-messages &lt;largeMessges&gt;] [--paging &lt;paging&gt;]
+                [--broker &lt;brokerConfig&gt;] [--bindings &lt;binding&gt;] [--verbose]
+        artemis data decode [--journal &lt;journal&gt;]
+                [--large-messages &lt;largeMessges&gt;] [--file-size &lt;size&gt;]
+                [--paging &lt;paging&gt;] [--prefix &lt;prefix&gt;] [--suffix &lt;suffix&gt;]
+                [--broker &lt;brokerConfig&gt;] [--directory &lt;directory&gt;]
+                [--bindings &lt;binding&gt;] [--verbose] --input &lt;input&gt;
+        artemis data encode [--journal &lt;journal&gt;]
+                [--large-messages &lt;largeMessges&gt;] [--file-size &lt;size&gt;]
+                [--paging &lt;paging&gt;] [--prefix &lt;prefix&gt;] [--suffix &lt;suffix&gt;]
+                [--broker &lt;brokerConfig&gt;] [--bindings &lt;binding&gt;] [--verbose]
+                [--directory &lt;directory&gt;]
+        artemis data exp [--jdbc-driver-class-name &lt;jdbcClassName&gt;]
+                [--journal &lt;journal&gt;] [--jdbc-connection-url &lt;jdbcURL&gt;]
+                [--large-messages &lt;largeMessges&gt;]
+                [--jdbc-bindings-table-name &lt;jdbcBindings&gt;] [--paging &lt;paging&gt;] [--f]
+                [--jdbc-large-message-table-name &lt;jdbcLargeMessages&gt;]
+                [--broker &lt;brokerConfig&gt;] [--jdbc-page-store-table-name &lt;jdbcPageStore&gt;]
+                [--bindings &lt;binding&gt;] [--jdbc] [--verbose]
+                [--jdbc-message-table-name &lt;jdbcMessages&gt;]
+                [--jdbc-node-manager-table-name &lt;jdbcNodeManager&gt;] [--output &lt;output&gt;]
+        artemis data imp [--legacy-prefixes] [--password &lt;password&gt;]
+                [--transaction] [--verbose] [--port &lt;port&gt;] [--user &lt;user&gt;] [--sort]
+                --input &lt;input&gt; [--host &lt;host&gt;]
+        artemis data print [--reclaimed]
+                [--jdbc-driver-class-name &lt;jdbcClassName&gt;] [--journal &lt;journal&gt;]
+                [--jdbc-connection-url &lt;jdbcURL&gt;] [--large-messages &lt;largeMessges&gt;]
+                [--jdbc-bindings-table-name &lt;jdbcBindings&gt;] [--paging &lt;paging&gt;] [--f]
+                [--jdbc-large-message-table-name &lt;jdbcLargeMessages&gt;] [--safe]
+                [--broker &lt;brokerConfig&gt;] [--jdbc-page-store-table-name &lt;jdbcPageStore&gt;]
+                [--bindings &lt;binding&gt;] [--jdbc] [--verbose]
+                [--jdbc-message-table-name &lt;jdbcMessages&gt;]
+                [--jdbc-node-manager-table-name &lt;jdbcNodeManager&gt;] [--output &lt;output&gt;]
+        artemis data recover [--jdbc-driver-class-name &lt;jdbcClassName&gt;]
+                [--journal &lt;journal&gt;] [--jdbc-connection-url &lt;jdbcURL&gt;]
+                [--large-messages &lt;largeMessges&gt;] [--reclaimed] --target &lt;outputJournal&gt;
+                [--jdbc-bindings-table-name &lt;jdbcBindings&gt;] [--paging &lt;paging&gt;] [--f]
+                [--jdbc-large-message-table-name &lt;jdbcLargeMessages&gt;]
+                [--broker &lt;brokerConfig&gt;] [--jdbc-page-store-table-name &lt;jdbcPageStore&gt;]
+                [--bindings &lt;binding&gt;] [--jdbc] [--verbose]
+                [--jdbc-message-table-name &lt;jdbcMessages&gt;]
+                [--jdbc-node-manager-table-name &lt;jdbcNodeManager&gt;] [--output &lt;output&gt;]
 
 COMMANDS
         With no arguments, Display help information
+
+        recover
+            Recover (undelete) every message on the journal by creating a new
+            output journal. Rolled backed and acked messages will be sent out to
+            the output as much as possible.
+
+            With --jdbc-driver-class-name option, JDBC driver classname
+
+            With --journal option, The folder used for messages journal (default
+            from broker.xml)
+
+            With --jdbc-connection-url option, The connection used for the
+            database
+
+            With --large-messages option, The folder used for large-messages
+            (default from broker.xml)
+
+            With --reclaimed option, This option will try to recover as many
+            records as possible from reclaimed files
+
+            With --target option, Output folder container the new journal with
+            all the generated messages
+
+            With --jdbc-bindings-table-name option, Name of the jdbc bindigns
+            table
+
+            With --paging option, The folder used for paging (default from
+            broker.xml)
+
+            With --f option, This will allow certain tools like print-data to be
+            performed ignoring any running servers. WARNING: Changing data
+            concurrently with a running broker may damage your data. Be careful
+            with this option.
+
+            With --jdbc-large-message-table-name option, Name of the large
+            messages table
+
+            With --broker option, This would override the broker configuration
+            from the bootstrap
+
+            With --jdbc-page-store-table-name option, Name of the page store
+            messages table
+
+            With --bindings option, The folder used for bindings (default from
+            broker.xml)
+
+            With --jdbc option, It will activate jdbc
+
+            With --verbose option, Adds more information on the execution
+
+            With --jdbc-message-table-name option, Name of the jdbc messages
+            table
+
+            With --jdbc-node-manager-table-name option, Name of the jdbc node
+            manager table
+
+            With --output option, Output name for the file
 
         print
             Print data records information (WARNING: don&apos;t use while a
             production server is running)
 
-            With --jdbc-bindings-table-name option, Name of the jdbc bindigns
-            table
+            With --reclaimed option, This option will try to print as many
+            records as possible from reclaimed files
 
-            With --jdbc-message-table-name option, Name of the jdbc messages
-            table
+            With --jdbc-driver-class-name option, JDBC driver classname
 
-            With --paging option, The folder used for paging (default from
-            broker.xml)
+            With --journal option, The folder used for messages journal (default
+            from broker.xml)
 
             With --jdbc-connection-url option, The connection used for the
             database
 
-            With --jdbc-large-message-table-name option, Name of the large
-            messages table
+            With --large-messages option, The folder used for large-messages
+            (default from broker.xml)
+
+            With --jdbc-bindings-table-name option, Name of the jdbc bindigns
+            table
+
+            With --paging option, The folder used for paging (default from
+            broker.xml)
 
             With --f option, This will allow certain tools like print-data to be
             performed ignoring any running servers. WARNING: Changing data
             concurrently with a running broker may damage your data. Be careful
             with this option.
 
-            With --large-messages option, The folder used for large-messages
-            (default from broker.xml)
+            With --jdbc-large-message-table-name option, Name of the large
+            messages table
+
+            With --safe option, It will print your data structure without
+            showing your data
 
             With --broker option, This would override the broker configuration
             from the bootstrap
 
-            With --jdbc-page-store-table-name option, Name of the page sotre
+            With --jdbc-page-store-table-name option, Name of the page store
             messages table
 
-            With --jdbc-driver-class-name option, JDBC driver classname
-
-            With --safe option, It will print your data structure without
-            showing your data
+            With --bindings option, The folder used for bindings (default from
+            broker.xml)
 
             With --jdbc option, It will activate jdbc
 
             With --verbose option, Adds more information on the execution
 
-            With --journal option, The folder used for messages journal (default
-            from broker.xml)
+            With --jdbc-message-table-name option, Name of the jdbc messages
+            table
+
+            With --jdbc-node-manager-table-name option, Name of the jdbc node
+            manager table
 
             With --output option, Output name for the file
-
-            With --bindings option, The folder used for bindings (default from
-            broker.xml)
 
         exp
             Export all message-data using an XML that could be interpreted by
             any system.
 
-            With --jdbc-bindings-table-name option, Name of the jdbc bindigns
-            table
+            With --jdbc-driver-class-name option, JDBC driver classname
 
-            With --jdbc-message-table-name option, Name of the jdbc messages
-            table
-
-            With --paging option, The folder used for paging (default from
-            broker.xml)
+            With --journal option, The folder used for messages journal (default
+            from broker.xml)
 
             With --jdbc-connection-url option, The connection used for the
             database
 
-            With --jdbc-large-message-table-name option, Name of the large
-            messages table
+            With --large-messages option, The folder used for large-messages
+            (default from broker.xml)
+
+            With --jdbc-bindings-table-name option, Name of the jdbc bindigns
+            table
+
+            With --paging option, The folder used for paging (default from
+            broker.xml)
 
             With --f option, This will allow certain tools like print-data to be
             performed ignoring any running servers. WARNING: Changing data
             concurrently with a running broker may damage your data. Be careful
             with this option.
 
-            With --large-messages option, The folder used for large-messages
-            (default from broker.xml)
+            With --jdbc-large-message-table-name option, Name of the large
+            messages table
 
             With --broker option, This would override the broker configuration
             from the bootstrap
 
-            With --jdbc-page-store-table-name option, Name of the page sotre
+            With --jdbc-page-store-table-name option, Name of the page store
             messages table
 
-            With --jdbc-driver-class-name option, JDBC driver classname
+            With --bindings option, The folder used for bindings (default from
+            broker.xml)
 
             With --jdbc option, It will activate jdbc
 
             With --verbose option, Adds more information on the execution
 
-            With --journal option, The folder used for messages journal (default
-            from broker.xml)
+            With --jdbc-message-table-name option, Name of the jdbc messages
+            table
+
+            With --jdbc-node-manager-table-name option, Name of the jdbc node
+            manager table
 
             With --output option, Output name for the file
-
-            With --bindings option, The folder used for bindings (default from
-            broker.xml)
 
         imp
             Import all message-data using an XML that could be interpreted by
             any system.
 
-            With --user option, User name used to import the data. (default
-            null)
-
             With --legacy-prefixes option, Do not remove prefixes from legacy
             imports
 
-            With --verbose option, Adds more information on the execution
-
-            With --host option, The host used to import the data (default
-            localhost)
-
-            With --port option, The port used to import the data (default 61616)
+            With --password option, User name used to import the data. (default
+            null)
 
             With --transaction option, If this is set to true you will need a
             whole transaction to commit at the end. (default false)
 
-            With --input option, The input file name (default=exp.dmp)
+            With --verbose option, Adds more information on the execution
 
-            With --password option, User name used to import the data. (default
+            With --port option, The port used to import the data (default 61616)
+
+            With --user option, User name used to import the data. (default
             null)
 
             With --sort option, Sort the messages from the input (used for older
             versions that won&apos;t sort messages)
 
+            With --input option, The input file name (default=exp.dmp)
+
+            With --host option, The host used to import the data (default
+            localhost)
+
         decode
             Decode a journal&apos;s internal format into a new journal set of files
 
-            With --verbose option, Adds more information on the execution
+            With --journal option, The folder used for messages journal (default
+            from broker.xml)
 
-            With --suffix option, The journal suffix (default amq)
+            With --large-messages option, The folder used for large-messages
+            (default from broker.xml)
+
+            With --file-size option, The journal size (default 10485760)
 
             With --paging option, The folder used for paging (default from
             broker.xml)
 
             With --prefix option, The journal prefix (default activemq-data)
 
-            With --file-size option, The journal size (default 10485760)
+            With --suffix option, The journal suffix (default amq)
 
-            With --input option, The input file name (default=exp.dmp)
-
-            With --journal option, The folder used for messages journal (default
-            from broker.xml)
+            With --broker option, This would override the broker configuration
+            from the bootstrap
 
             With --directory option, The journal folder (default journal folder
             from broker.xml)
 
+            With --bindings option, The folder used for bindings (default from
+            broker.xml)
+
+            With --verbose option, Adds more information on the execution
+
+            With --input option, The input file name (default=exp.dmp)
+
+        encode
+            Encode a set of journal files into an internal encoded data format
+
+            With --journal option, The folder used for messages journal (default
+            from broker.xml)
+
             With --large-messages option, The folder used for large-messages
             (default from broker.xml)
+
+            With --file-size option, The journal size (default 10485760)
+
+            With --paging option, The folder used for paging (default from
+            broker.xml)
+
+            With --prefix option, The journal prefix (default activemq-data)
+
+            With --suffix option, The journal suffix (default amq)
 
             With --broker option, This would override the broker configuration
             from the bootstrap
 
             With --bindings option, The folder used for bindings (default from
             broker.xml)
-
-        encode
-            Encode a set of journal files into an internal encoded data format
 
             With --verbose option, Adds more information on the execution
 
             With --directory option, The journal folder (default the journal
             folder from broker.xml)
 
-            With --suffix option, The journal suffix (default amq)
-
-            With --paging option, The folder used for paging (default from
-            broker.xml)
-
-            With --prefix option, The journal prefix (default activemq-data)
-
-            With --file-size option, The journal size (default 10485760)
-
-            With --journal option, The folder used for messages journal (default
-            from broker.xml)
-
-            With --large-messages option, The folder used for large-messages
-            (default from broker.xml)
-
-            With --broker option, This would override the broker configuration
-            from the bootstrap
-
-            With --bindings option, The folder used for bindings (default from
-            broker.xml)
-
         compact
             Compacts the journal of a non running server
 
-            With --verbose option, Adds more information on the execution
-
-            With --paging option, The folder used for paging (default from
-            broker.xml)
-
             With --journal option, The folder used for messages journal (default
             from broker.xml)
 
             With --large-messages option, The folder used for large-messages
             (default from broker.xml)
 
+            With --paging option, The folder used for paging (default from
+            broker.xml)
+
             With --broker option, This would override the broker configuration
             from the bootstrap
 
             With --bindings option, The folder used for bindings (default from
             broker.xml)
+
+            With --verbose option, Adds more information on the execution
 </code></pre>
                                 
                                 </section>
@@ -1619,7 +1725,7 @@ COMMANDS
                 </a>
                 
                 
-                <a href="maven-plugin.html" class="navigation navigation-next " aria-label="Next page: Maven Plugin">
+                <a href="activation-tools.html" class="navigation navigation-next " aria-label="Next page: Activation Tools">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1630,7 +1736,7 @@ COMMANDS
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Data Tools","level":"1.75","depth":1,"next":{"title":"Maven Plugin","level":"1.76","depth":1,"path":"maven-plugin.md","ref":"maven-plugin.md","articles":[]},"previous":{"title":"Intercepting Operations","level":"1.74","depth":1,"path":"intercepting-operations.md","ref":"intercepting-operations.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"data-tools.md","mtime":"2021-08-18T15:47:56.093Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-08-18T15:53:54.935Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Data Tools","level":"1.75","depth":1,"next":{"title":"Activation Tools","level":"1.76","depth":1,"path":"activation-tools.md","ref":"activation-tools.md","articles":[]},"previous":{"title":"Intercepting Operations","level":"1.74","depth":1,"path":"intercepting-operations.md","ref":"intercepting-operations.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"data-tools.md","mtime":"2021-10-11T18:47:35.927Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-10-11T18:56:58.842Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

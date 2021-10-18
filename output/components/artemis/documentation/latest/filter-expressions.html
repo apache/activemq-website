@@ -1115,7 +1115,20 @@
             
         </li>
     
-        <li class="chapter " data-level="1.76" data-path="maven-plugin.html">
+        <li class="chapter " data-level="1.76" data-path="activation-tools.html">
+            
+                <a href="activation-tools.html">
+            
+                    
+                    Activation Tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.77" data-path="maven-plugin.html">
             
                 <a href="maven-plugin.html">
             
@@ -1128,7 +1141,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.77" data-path="unit-testing.html">
+        <li class="chapter " data-level="1.78" data-path="unit-testing.html">
             
                 <a href="unit-testing.html">
             
@@ -1141,7 +1154,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.78" data-path="perf-tuning.html">
+        <li class="chapter " data-level="1.79" data-path="perf-tuning.html">
             
                 <a href="perf-tuning.html">
             
@@ -1154,7 +1167,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.79" data-path="configuration-index.html">
+        <li class="chapter " data-level="1.80" data-path="configuration-index.html">
             
                 <a href="configuration-index.html">
             
@@ -1167,7 +1180,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.80" data-path="restart-sequence.html">
+        <li class="chapter " data-level="1.81" data-path="restart-sequence.html">
             
                 <a href="restart-sequence.html">
             
@@ -1228,10 +1241,10 @@
                                 <h1 id="filter-expressions">Filter Expressions</h1>
 <p>Apache ActiveMQ Artemis provides a powerful filter language based on a subset of the
 SQL 92 expression syntax.</p>
-<p>It is the same as the syntax used for JMS selectors, but the predefined
-identifiers are different. For documentation on JMS selector syntax
-please the JMS javadoc for
-<a href="https://docs.oracle.com/javaee/7/api/javax/jms/Message.html" target="_blank">javax.jms.Message</a>.</p>
+<p>It is the same as the syntax used for JMS &amp; Jakarta Messaging selectors, but the
+predefined identifiers are different. For documentation on JMS selector syntax
+please the JavaDoc for <a href="https://docs.oracle.com/javaee/7/api/javax/jms/Message.html" target="_blank"><code>javax.jms.Message</code></a>.
+For the corresponding Jakarta Messaging JavaDoc see <a href="https://jakarta.ee/specifications/messaging/3.0/apidocs/jakarta/jms/message" target="_blank"><code>jakarta.jms.Message</code></a></p>
 <p>Filter expressions are used in several places in Apache ActiveMQ Artemis</p>
 <ul>
 <li><p>Predefined Queues. When pre-defining a queue, in
@@ -1274,18 +1287,19 @@ value is a long integer.</p>
 </ul>
 <p>Any other identifiers used in core filter expressions will be assumed to
 be properties of the message.</p>
-<p>The JMS spec states that a String property should not get converted to a 
-numeric when used in a selector. So for example, if a message has the <code>age</code> 
-property set to String <code>21</code> then the following selector should not match 
-it: <code>age &gt; 18</code>. Since Apache ActiveMQ Artemis supports STOMP clients which
-can only send messages with string properties, that restriction is a bit 
-limiting. Therefore, if you want your filter expressions to auto-convert String 
-properties to the appropriate number type, just prefix it with
-<code>convert_string_expressions:</code>. If you changed the filter expression in the
+<p>The JMS and Jakarta Messaging specs state that a String property should not
+get converted to a numeric when used in a selector. So for example, if a
+message has the <code>age</code> property set to <code>String</code> <code>21</code> then the following selector
+should not match it: <code>age &gt; 18</code>. Since Apache ActiveMQ Artemis supports STOMP
+clients which can only send messages with string properties, that restriction
+is a bit limiting. Therefore, if you want your filter expressions to
+auto-convert <code>String</code> properties to the appropriate number type, just prefix it
+with <code>convert_string_expressions:</code>. If you changed the filter expression in the
 previous example to be <code>convert_string_expressions:age &gt; 18</code>, then it would 
 match the aforementioned message.</p>
-<p>The JMS spec also states that property identifiers (and therefore the
-identifiers which are valid for use in a filter expression) are an: </p>
+<p>The JMS and Jakarta Messaging specs also state that property identifiers (and
+therefore the identifiers which are valid for use in a filter expression) are
+an:</p>
 <blockquote>
 <p>unlimited-length sequence of letters and digits, the first of which must be
 a letter. A letter is any character for which the method 
@@ -1293,10 +1307,10 @@ a letter. A letter is any character for which the method
 or digit is any character for which the method <code>Character.isJavaLetterOrDigit</code>
 returns <code>true</code>.</p>
 </blockquote>
-<p>This constraint means that hyphens (i.e. <code>-</code>) cannot be used.
-However, this constraint can be overcome by using the <code>hyphenated_props:</code> 
-prefix. For example, if a message had the <code>foo-bar</code> property set to <code>0</code> then
-the filter expression <code>hyphenated_props:foo-bar = 0</code> would match it.</p>
+<p>This constraint means that hyphens (i.e. <code>-</code>) cannot be used. However, this
+constraint can be overcome by using the <code>hyphenated_props:</code> prefix. For
+example, if a message had the <code>foo-bar</code> property set to <code>0</code> then the filter
+expression <code>hyphenated_props:foo-bar = 0</code> would match it.</p>
 <h2 id="xpath">XPath</h2>
 <p>Apache ActiveMQ Artemis also supports special <a href="https://en.wikipedia.org/wiki/XPath" target="_blank">XPath</a>
 filters which operate on the <em>body</em> of a message. The body must be XML. To
@@ -1366,7 +1380,7 @@ can be customized by using system properties starting with the
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Filter Expressions","level":"1.23","depth":1,"next":{"title":"Persistence","level":"1.24","depth":1,"path":"persistence.md","ref":"persistence.md","articles":[]},"previous":{"title":"Wildcard Syntax","level":"1.22","depth":1,"path":"wildcard-syntax.md","ref":"wildcard-syntax.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"filter-expressions.md","mtime":"2021-08-18T15:47:56.103Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-08-18T15:53:54.935Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Filter Expressions","level":"1.23","depth":1,"next":{"title":"Persistence","level":"1.24","depth":1,"path":"persistence.md","ref":"persistence.md","articles":[]},"previous":{"title":"Wildcard Syntax","level":"1.22","depth":1,"path":"wildcard-syntax.md","ref":"wildcard-syntax.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"filter-expressions.md","mtime":"2021-10-11T18:47:35.927Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-10-11T18:56:58.842Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
