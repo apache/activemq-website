@@ -1115,7 +1115,20 @@
             
         </li>
     
-        <li class="chapter " data-level="1.76" data-path="maven-plugin.html">
+        <li class="chapter " data-level="1.76" data-path="activation-tools.html">
+            
+                <a href="activation-tools.html">
+            
+                    
+                    Activation Tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.77" data-path="maven-plugin.html">
             
                 <a href="maven-plugin.html">
             
@@ -1128,7 +1141,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.77" data-path="unit-testing.html">
+        <li class="chapter " data-level="1.78" data-path="unit-testing.html">
             
                 <a href="unit-testing.html">
             
@@ -1141,7 +1154,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.78" data-path="perf-tuning.html">
+        <li class="chapter " data-level="1.79" data-path="perf-tuning.html">
             
                 <a href="perf-tuning.html">
             
@@ -1154,7 +1167,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.79" data-path="configuration-index.html">
+        <li class="chapter " data-level="1.80" data-path="configuration-index.html">
             
                 <a href="configuration-index.html">
             
@@ -1167,7 +1180,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.80" data-path="restart-sequence.html">
+        <li class="chapter " data-level="1.81" data-path="restart-sequence.html">
             
                 <a href="restart-sequence.html">
             
@@ -1244,13 +1257,13 @@ It is a string retrieved from an incoming client connection, the supported value
 <li><code>USER_NAME</code> is the username indicated by the client.</li>
 </ul>
 <h2 id="pools">Pools</h2>
-<p>The pool is a group of target brokers and checks periodically their state.
+<p>The pool is a group of target brokers with periodic checks on their state.
 It provides a list of ready target brokers to distribute incoming client connections only when it is active.
-A pool becomes active when the minimum number of ready target brokers defined by the <code>quorum-size</code> parameter is reached.
+A pool becomes active when the minimum number of target brokers, as defined by the <code>quorum-size</code> parameter, become ready.
 When it is not active, it doesn&apos;t provide any target avoiding weird distribution at startup or after a restart.
 Including the local broker in the target pool allows broker hosting the balancer to accept incoming client connections as well.
 By default, a pool doesn&apos;t include the local broker, to include it as a target the <code>local-target-enabled</code> parameter must be <code>true</code>.
-There are two pool types: <a href="#discovery-pool">discovery pool</a> and <a href="#static-pool">static pool</a>.</p>
+There are three pool types: <a href="#cluster-pool">cluster pool</a>, <a href="#discovery-pool">discovery pool</a> and <a href="#static-pool">static pool</a>.</p>
 <h3 id="cluster-pool">Cluster Pool</h3>
 <p>The cluster pool uses a <a href="clusters.html#configuring-cluster-connections">cluster connection</a> to get the target brokers to add.
 Let&apos;s take a look at a cluster pool example from broker.xml that uses a cluster connection:</p>
@@ -1318,20 +1331,26 @@ this policy selects the second target broker only when the first target broker i
 <p>The broker balancer provides a cache with a timeout to improve the stickiness of the target broker selected,
 returning the same target broker for a target key as long as it is present in the cache and is ready.
 So a broker balancer with the cache enabled doesn&apos;t strictly follow the configured policy.
-By default, the cache is enabled, to disable the cache the <code>cache-timeout</code> parameter must be <code>0</code>.</p>
+By default, the cache is enabled and will never timeout. See below
+for more details about setting the <code>cache-timeout</code> parameter.</p>
 <h2 id="defining-broker-balancers">Defining broker balancers</h2>
-<p>A broker balancer is defined by <code>broker-balancer</code> element, it includes the following items:</p>
+<p>A broker balancer is defined by the <code>broker-balancer</code> element, it includes the following items:</p>
 <ul>
-<li>the <code>name</code> attribute defines the name of the broker balancer;</li>
+<li>the <code>name</code> attribute defines the name of the broker balancer and is used to reference the balancer from an acceptor;</li>
 <li>the <code>target-key</code> element defines what key to select a target broker, the supported values are: <code>CLIENT_ID</code>, <code>SNI_HOST</code>, <code>SOURCE_IP</code>, <code>USER_NAME</code>, default is <code>SOURCE_IP</code>, see <a href="#target-key">target key</a> for further details;</li>
 <li>the <code>target-key-filter</code> element defines a regular expression to filter the resolved keys;</li>
 <li>the <code>local-target-filter</code> element defines a regular expression to match the keys that have to return a local target;</li>
 <li>the <code>cache-timeout</code> element is the time period for a target broker to remain in the cache, measured in milliseconds, setting <code>0</code> will disable the cache, default is <code>-1</code>, meaning no expiration;</li>
 <li>the <code>pool</code> element defines the pool to group the target brokers, see <a href="#pools">pools</a>.</li>
-<li>the <code>policy</code> element defines the policy used to select the target brokers, see <a href="#policies">policies</a>;</li>
+<li>the <code>policy</code> element defines the policy used to select the target brokers from the pool, see <a href="#policies">policies</a>;</li>
 </ul>
 <p>Let&apos;s take a look at some broker balancer examples from broker.xml:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker-balancers</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">broker-balancer</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;local-partition&quot;</span>&gt;</span>
+         <span class="hljs-tag">&lt;<span class="hljs-name">target-key</span>&gt;</span>CLIENT_ID<span class="hljs-tag">&lt;/<span class="hljs-name">target-key</span>&gt;</span>
+         <span class="hljs-tag">&lt;<span class="hljs-name">target-key-filter</span>&gt;</span>^.{3}<span class="hljs-tag">&lt;/<span class="hljs-name">target-key-filter</span>&gt;</span>
+         <span class="hljs-tag">&lt;<span class="hljs-name">local-target-filter</span>&gt;</span>^FOO.*<span class="hljs-tag">&lt;/<span class="hljs-name">local-target-filter</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">broker-balancer</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">broker-balancer</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;simple-balancer&quot;</span>&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-name">policy</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;FIRST_ELEMENT&quot;</span>/&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-name">pool</span>&gt;</span>
@@ -1369,14 +1388,30 @@ By default, the cache is enabled, to disable the cache the <code>cache-timeout</
 <ul>
 <li>Retrieve the target key from the incoming connection;</li>
 <li>Return the local target broker if the target key matches the local filter;</li>
+<li>Delegate to the pool:</li>
 <li>Return the cached target broker if it is ready;</li>
-<li>Get ready target brokers from the pool;</li>
+<li>Get ready/active target brokers from the pool;</li>
 <li>Select one target broker using the policy;</li>
 <li>Add the selected broker in the cache;</li>
 <li>Return the selected broker.</li>
 </ul>
 <p>Let&apos;s take a look at flowchart of the broker balancer workflow:
 <img src="images/broker_balancer_workflow.png" alt="Broker Balancer Workflow"></p>
+<h2 id="data-gravity">Data gravity</h2>
+<p>The first balancer configuration: <code>local-partition</code>, demonstrates the simplest use case,
+that of preserving <code>data gravity</code> by confining a subset of application data to a given broker.
+Each broker is given a subset of keys that it will exclusively service or reject.
+If brokers are behind a round-robin load-balancer or have full knowledge of the broker
+urls, <code>their</code> broker will eventually respond. The <code>local-target-filter</code> regular expression
+determines the granularity of partition that is best for preserving <code>data gravity</code> for your applications.</p>
+<p>The challenge is in providing a consistent <a href="#Target_Key">key</a> in all related application connections.</p>
+<p>Note: the concept of <code>data gravity</code> tries to capture the reality that while addresses are shared by multiple
+applications, it is best to keep related addresses and their data co-located on a single broker. Typically,
+applications should <code>connect</code> to the data rather than the data moving to whatever broker the application connects too.
+This is particularly true when the amount of data (backlog) is large, the cost of movement to follow consumers outweighs
+the cost of delivery to the application.
+With the &apos;data gravity&apos; mindset, operators are less concerned with numbers of connections and more concerned with
+applications and the addresses they need to interact with.</p>
 <h2 id="redirection">Redirection</h2>
 <p>Apache ActiveMQ Artemis provides a native redirection for supported clients and a new management API for other clients.
 The native redirection can be enabled per acceptor and is supported only for AMQP, CORE and OPENWIRE clients.
@@ -1439,7 +1474,7 @@ otherwise the client queries again the API.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Broker Balancers","level":"1.62","depth":1,"next":{"title":"Graceful Server Shutdown","level":"1.63","depth":1,"path":"graceful-shutdown.md","ref":"graceful-shutdown.md","articles":[]},"previous":{"title":"High Availability and Failover","level":"1.61","depth":1,"path":"ha.md","ref":"ha.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"broker-balancers.md","mtime":"2021-08-18T15:47:56.087Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-08-18T15:53:54.935Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Broker Balancers","level":"1.62","depth":1,"next":{"title":"Graceful Server Shutdown","level":"1.63","depth":1,"path":"graceful-shutdown.md","ref":"graceful-shutdown.md","articles":[]},"previous":{"title":"High Availability and Failover","level":"1.61","depth":1,"path":"ha.md","ref":"ha.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"broker-balancers.md","mtime":"2021-10-11T18:47:35.923Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-10-11T18:56:58.842Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

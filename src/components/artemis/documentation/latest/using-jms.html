@@ -1115,7 +1115,20 @@
             
         </li>
     
-        <li class="chapter " data-level="1.76" data-path="maven-plugin.html">
+        <li class="chapter " data-level="1.76" data-path="activation-tools.html">
+            
+                <a href="activation-tools.html">
+            
+                    
+                    Activation Tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.77" data-path="maven-plugin.html">
             
                 <a href="maven-plugin.html">
             
@@ -1128,7 +1141,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.77" data-path="unit-testing.html">
+        <li class="chapter " data-level="1.78" data-path="unit-testing.html">
             
                 <a href="unit-testing.html">
             
@@ -1141,7 +1154,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.78" data-path="perf-tuning.html">
+        <li class="chapter " data-level="1.79" data-path="perf-tuning.html">
             
                 <a href="perf-tuning.html">
             
@@ -1154,7 +1167,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.79" data-path="configuration-index.html">
+        <li class="chapter " data-level="1.80" data-path="configuration-index.html">
             
                 <a href="configuration-index.html">
             
@@ -1167,7 +1180,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.80" data-path="restart-sequence.html">
+        <li class="chapter " data-level="1.81" data-path="restart-sequence.html">
             
                 <a href="restart-sequence.html">
             
@@ -1225,7 +1238,7 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="using-jms">Using JMS</h1>
+                                <h1 id="using-jms-or-jakarta-messaging">Using JMS or Jakarta Messaging</h1>
 <p>Although Apache ActiveMQ Artemis provides a JMS agnostic messaging API, many
 users will be more comfortable using JMS.</p>
 <p>JMS is a very popular API standard for messaging, and most messaging systems
@@ -1372,13 +1385,16 @@ the <code>channelName</code> is the name given to the jgroups channel created.</
 <p>The <code>refreshTimeout</code> and <code>discoveryInitialWaitTimeout</code> properties are supported
 just like with <code>udp</code>.</p>
 <p>The default type for the default connection factory is of type
-<code>javax.jms.ConnectionFactory</code>.  This can be changed by setting the type like so</p>
+<code>javax.jms.ConnectionFactory</code>or <code>jakarta.jms.ConnectionFactory</code> depending on the
+client you&apos;re using.  This can be changed by setting the type like so</p>
 <pre><code class="lang-properties">java.naming.factory.initial=org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory
 java.naming.provider.url=tcp://localhost:5445?type=CF
 </code></pre>
 <p>In this example it is still set to the default, below shows a list of types
 that can be set.</p>
 <h4 id="configuration-for-connection-factory-types">Configuration for Connection Factory Types</h4>
+<p>The interface provided will depend on whether you&apos;re using the JMS or Jakarta
+Messaging client implementation.</p>
 <table>
 <thead>
 <tr>
@@ -1389,27 +1405,27 @@ that can be set.</p>
 <tbody>
 <tr>
 <td>CF (default)</td>
-<td>javax.jms.ConnectionFactory</td>
+<td><code>javax.jms.ConnectionFactory</code> or <code>jakarta.jms.ConnectionFactory</code></td>
 </tr>
 <tr>
 <td>XA_CF</td>
-<td>javax.jms.XAConnectionFactory</td>
+<td><code>javax.jms.XAConnectionFactory</code>or <code>jakarta.jms.XAConnectionFactory</code></td>
 </tr>
 <tr>
 <td>QUEUE_CF</td>
-<td>javax.jms.QueueConnectionFactory</td>
+<td><code>javax.jms.QueueConnectionFactory</code>or <code>jakarta.jms.QueueConnectionFactory</code></td>
 </tr>
 <tr>
 <td>QUEUE_XA_CF</td>
-<td>javax.jms.XAQueueConnectionFactory</td>
+<td><code>javax.jms.XAQueueConnectionFactory</code>or <code>jakarta.jms.XAQueueConnectionFactory</code></td>
 </tr>
 <tr>
 <td>TOPIC_CF</td>
-<td>javax.jms.TopicConnectionFactory</td>
+<td><code>javax.jms.TopicConnectionFactory</code>or <code>jakarta.jms.TopicConnectionFactory</code></td>
 </tr>
 <tr>
 <td>TOPIC_XA_CF</td>
-<td>javax.jms.XATopicConnectionFactory</td>
+<td><code>javax.jms.XATopicConnectionFactory</code>or <code>jakarta.jms.XATopicConnectionFactory</code></td>
 </tr>
 </tbody>
 </table>
@@ -1625,7 +1641,7 @@ reduce the calls to the broker.  This should not be used if destinations
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Using JMS","level":"1.18","depth":1,"next":{"title":"The Client Classpath","level":"1.19","depth":1,"path":"client-classpath.md","ref":"client-classpath.md","articles":[]},"previous":{"title":"Mapping JMS Concepts to the Core API","level":"1.17","depth":1,"path":"jms-core-mapping.md","ref":"jms-core-mapping.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"using-jms.md","mtime":"2021-08-18T15:47:56.135Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-08-18T15:53:54.935Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Using JMS","level":"1.18","depth":1,"next":{"title":"The Client Classpath","level":"1.19","depth":1,"path":"client-classpath.md","ref":"client-classpath.md","articles":[]},"previous":{"title":"Mapping JMS Concepts to the Core API","level":"1.17","depth":1,"path":"jms-core-mapping.md","ref":"jms-core-mapping.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"using-jms.md","mtime":"2021-10-11T18:47:35.943Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-10-11T18:56:58.842Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

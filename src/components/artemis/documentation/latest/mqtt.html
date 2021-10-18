@@ -1115,7 +1115,20 @@
             
         </li>
     
-        <li class="chapter " data-level="1.76" data-path="maven-plugin.html">
+        <li class="chapter " data-level="1.76" data-path="activation-tools.html">
+            
+                <a href="activation-tools.html">
+            
+                    
+                    Activation Tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.77" data-path="maven-plugin.html">
             
                 <a href="maven-plugin.html">
             
@@ -1128,7 +1141,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.77" data-path="unit-testing.html">
+        <li class="chapter " data-level="1.78" data-path="unit-testing.html">
             
                 <a href="unit-testing.html">
             
@@ -1141,7 +1154,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.78" data-path="perf-tuning.html">
+        <li class="chapter " data-level="1.79" data-path="perf-tuning.html">
             
                 <a href="perf-tuning.html">
             
@@ -1154,7 +1167,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.79" data-path="configuration-index.html">
+        <li class="chapter " data-level="1.80" data-path="configuration-index.html">
             
                 <a href="configuration-index.html">
             
@@ -1167,7 +1180,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.80" data-path="restart-sequence.html">
+        <li class="chapter " data-level="1.81" data-path="restart-sequence.html">
             
                 <a href="restart-sequence.html">
             
@@ -1351,6 +1364,18 @@ browsers which support Web Sockets can send and receive MQTT messages.</p>
 <p>With this configuration, Apache ActiveMQ Artemis will accept MQTT connections
 over Web Sockets on the port <code>1883</code>. Web browsers can then connect to
 <code>ws://&lt;server&gt;:1883</code> using a Web Socket to send and receive MQTT messages.</p>
+<h2 id="automatic-subscription-clean-up">Automatic Subscription Clean-up</h2>
+<p>Sometimes MQTT clients don&apos;t clean up their subscriptions. In such situations
+the <code>auto-delete-queues-delay</code> and <code>auto-delete-queues-message-count</code>
+address-settings can be used to clean up the abandoned subscription queues.
+However, the MQTT session meta-data is still present in memory and needs to be
+cleaned up as well. The URL parameter <code>defaultMqttSessionExpiryInterval</code> can be
+configured on the MQTT <code>acceptor</code> to deal with this situation.</p>
+<p>The default <code>defaultMqttSessionExpiryInterval</code> is <code>-1</code> which means no session
+state will be expired. Otherwise it represents the number of <em>milliseconds</em>
+which must elapse after the client has disconnected before the broker will
+remove the session state.</p>
+<p>MQTT session state is scanned every 5 seconds.</p>
 
                                 
                                 </section>
@@ -1394,7 +1419,7 @@ over Web Sockets on the port <code>1883</code>. Web browsers can then connect to
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"MQTT","level":"1.13","depth":1,"next":{"title":"STOMP","level":"1.14","depth":1,"path":"stomp.md","ref":"stomp.md","articles":[]},"previous":{"title":"Broker Connections","level":"1.12.1","depth":2,"path":"amqp-broker-connections.md","ref":"amqp-broker-connections.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"mqtt.md","mtime":"2021-08-18T15:47:56.128Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-08-18T15:53:54.935Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"MQTT","level":"1.13","depth":1,"next":{"title":"STOMP","level":"1.14","depth":1,"path":"stomp.md","ref":"stomp.md","articles":[]},"previous":{"title":"Broker Connections","level":"1.12.1","depth":2,"path":"amqp-broker-connections.md","ref":"amqp-broker-connections.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"mqtt.md","mtime":"2021-10-11T18:47:35.939Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-10-11T18:56:58.842Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
