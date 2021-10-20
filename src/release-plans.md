@@ -10,10 +10,10 @@ type: activemq5
 
 ### Information
 
-*   [Release Info](Release Plans/release-info)
-*   [How you can help release](Release Plans/how-you-can-help-release)
+*   [Release Info](release-info)
+*   [How you can help release](how-you-can-help-release)
 
 ### Release Plans
 
-*   [4.0 RC 1 Guide](Release Plans/40-rc-1-guide)
+*   [4.0 RC 1 Guide](40-rc-1-guide)
 
