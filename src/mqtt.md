@@ -45,7 +45,7 @@ The ActiveMQ MQTT Transport implementation fully supports an [ActiveMQ security]
 
 ### Enabling MQTT over NIO
 
-For better scalability (and performance) you might want to run the MQTT protocol over NIO transport. To do that just use `mqtt+nio` transport prefix instead of `matt`. For example, add the following transport configuration in your XML file
+For better scalability (and performance) you might want to run the MQTT protocol over NIO transport. To do that just use `mqtt+nio` transport prefix instead of `mqtt`. For example, add the following transport configuration in your XML file
 ```
 <transportConnector name="mqtt+nio" uri="mqtt+nio://localhost:1883"/>
 ```
