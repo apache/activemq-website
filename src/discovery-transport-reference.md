@@ -36,6 +36,7 @@ To configure discovery in a Broker you should use the [Xml Configuration](xml-co
 ```
 
 ##### Transport Options
+
 Option Name|Default Value|Description
 ---|---|---
 reconnectDelay|10|How long to wait for discovery

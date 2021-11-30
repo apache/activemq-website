@@ -22,11 +22,12 @@ fanout:discoveryURI
 ```
 
 ##### Transport Options
+
 Option Name|Default Value|Description
 ---|---|---
 initialReconnectDelay|10|How long to wait before the first reconnect attempt
 maxReconnectDelay|30000|The maximum amount of time we ever wait between reconnect attempts
-useExponentialBackOff|true|Should an exponential backoff be used btween reconnect attempts
+useExponentialBackOff|true|Should an exponential backoff be used between reconnect attempts
 backOffMultiplier|2|The exponent used in the exponential backoff attempts
 maxReconnectAttempts|0|If not 0, then this is the maximum number of reconnect attempts before an error is sent back to the client
 fanOutQueues|false|If set to 'true', commands are replicated to queues as well as topics
