@@ -17,6 +17,7 @@ Many of the more advanced ActiveMQ features are implemented in the transports. S
 
 If you wanted to accept normal connection on port 6001, but also wanted to expose port 6002 which in turn was proxied using the fanout transport, the following example is shows you how to do it!
 
+```
 <beans xmlns="http://activemq.org/config/1.0">
   <broker>
 
@@ -34,4 +35,4 @@ If you wanted to accept normal connection on port 6001, but also wanted to expos
 
   </broker>
 </beans>
-
+```
