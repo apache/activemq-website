@@ -58,7 +58,7 @@ Additional resources
 ### Related reading
 
 *   Sun's [JMS Tutorial](http://java.sun.com/products/jms/tutorial/) is a handy place to start looking at how to use the JMS API directly
-*   The ActiveMQ [Website](http://activemq.org) for specifics on how to use ActiveMQ
+*   The ActiveMQ [Website](http://activemq.apache.org) for specifics on how to use ActiveMQ
 *   [ActiveMQ Topologies](topologies)
 *   [ActiveMQ Clustering](clustering)
 *   [ActiveMQ Network of Brokers](networks-of-brokers)
