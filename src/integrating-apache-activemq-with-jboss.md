@@ -11,9 +11,9 @@ type: activemq5
 Integrating Apache ActiveMQ with JBoss
 ======================================
 
-Integration with application servers is a common scenario in the enterprise Java world, especially when it comes to messaging. [ActiveMQ](http://activemq.org/) is a JMS 1.1 compliant, open source, Apache Licensed, message oriented middleware (MOM) with [many](http://activemq.org/siteFeatures/New FeaturesFeatures/New Features/Features/New Features/changes-in-40), [many](http://activemq.org/siteFeatures/New Features/new-features-in-41) features far beyond the JMS specification. ActiveMQ offers many different [points of connectivity](http://activemq.org/siteconnectivity), many [cross language clients](http://activemq.org/siteConnectivity/cross-language-clients) and many [pluggable transport protocols](http://activemq.org/siteConnectivityConnectivity/Connectivity/protocols) including integration with any J2EE 1.4 application server.
+Integration with application servers is a common scenario in the enterprise Java world, especially when it comes to messaging. ActiveMQ is a JMS 1.1 compliant, open source, Apache Licensed, message oriented middleware (MOM) with [many](changes-in-40), [many](new-features-in-41) features far beyond the JMS specification. ActiveMQ offers many different [points of connectivity](connectivity), many [cross language clients](cross-language-clients) and many [pluggable transport protocols](protocols) including integration with any J2EE 1.4 application server.
 
-One of the application servers in the open source world is JBoss. A very common requirement is to configure ActiveMQ as the messaging infrastructure within JBoss. Although there is [a bit of documentation](http://www.activemq.org/siteConnectivity/ContainersConnectivity/Containers/Connectivity/Containers/jboss-integration) on this integration, this article seeks to provide much more detail and explanation. So if you have a need to integrate ActiveMQ with JBoss, this article is for you.
+One of the application servers in the open source world is JBoss. A very common requirement is to configure ActiveMQ as the messaging infrastructure within JBoss. Although there is [a bit of documentation](jboss-integration) on this integration, this article seeks to provide much more detail and explanation. So if you have a need to integrate ActiveMQ with JBoss, this article is for you.
 
 This article explains how to configure JBoss to start up ActiveMQ as part of its lifecycle and how to configure the ActiveMQ resource adapter to handle the messaging and transactionality between ActiveMQ and JBoss.
 
@@ -22,7 +22,7 @@ Requirements
 
 Below are the software requirements for this article with links to download each:
 
-*   [Apache ActiveMQ 4.0.1+](http://activemq.org/siteOverviewOverview/Overview/download)
+*   [Apache ActiveMQ 4.0.1+](download)
 *   [JBoss 4.0.4+](http://sourceforge.net/project/showfiles.php?group_id=22866&package_id=16942&release_id=416591)
 *   [Sun Java 1.5+](http://www.java.com/en/download/index.jsp)
 *   [Apache Ant 1.6+](http://ant.apache.org/bindownload.cgi)
@@ -334,9 +334,9 @@ The `<persistenceAdapter>` element should be reconfigured to store its data in a
 ```
 Now, modify the `dataDirectory` attribute of the `journaledJDBC` element to be the following: `${jboss.server.data.dir}/activemq`.
 
-The `<transportConnectors>` element is used to advertise the ActiveMQ broker for client-to-broker communications and the `<networkConnectors>` element advertises the ActiveMQ broker for broker-to-broker communications. The default configuration is to use the ActiveMQ [multicast transport](http://www.activemq.org/siteUsing ActiveMQ/Configuring Transports/ActiveMQ Connection URIs/multicast-transport-reference) for both. This is simply an easy configuration under which to get ActiveMQ up and running, so we'll just leave it at that for the time being.
+The `<transportConnectors>` element is used to advertise the ActiveMQ broker for client-to-broker communications and the `<networkConnectors>` element advertises the ActiveMQ broker for broker-to-broker communications. The default configuration is to use the ActiveMQ [multicast transport](multicast-transport-reference) for both. This is simply an easy configuration under which to get ActiveMQ up and running, so we'll just leave it at that for the time being.
 
-`_NOTE:_** There are far more configuration options available for ActiveMQ than are noted here. The configuration above is only enough to just get ActiveMQ up and running, nothing more. For more information on the ActiveMQ configuration, see the [ActiveMQ 4.1 XML Reference](http://www.activemq.org/siteUsing ActiveMQ/Xml ReferenceUsing ActiveMQ/Xml Reference/Using ActiveMQ/Xml Reference/xbean-xml-reference-41).
+`_NOTE:_** There are far more configuration options available for ActiveMQ than are noted here. The configuration above is only enough to just get ActiveMQ up and running, nothing more. For more information on the ActiveMQ configuration, see the [ActiveMQ 4.1 XML Reference](xbean-xml-reference-41).
 
 Now we just need to start up JBoss to assure that it comes up correctly without error using the same commands we used previously to start JBoss:
 ```
