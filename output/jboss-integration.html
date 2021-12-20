@@ -95,9 +95,9 @@
 
 <h1 id="integrating-apache-activemq-with-jboss">Integrating Apache ActiveMQ with JBoss</h1>
 
-<p>Integration with application servers is a common scenario in the enterprise Java world, especially when it comes to messaging. <a href="http://activemq.org/">ActiveMQ</a> is a JMS 1.1 compliant, open source, Apache Licensed, message oriented middleware (MOM) with <a href="http://activemq.org/siteFeatures/New FeaturesFeatures/New Features/Features/New Features/changes-in-40">many</a>, <a href="http://activemq.org/siteFeatures/New Features/new-features-in-41">many</a> features far beyond the JMS specification. ActiveMQ offers many different <a href="http://activemq.org/siteconnectivity">points of connectivity</a>, many <a href="http://activemq.org/siteConnectivity/cross-language-clients">cross language clients</a> and many <a href="http://activemq.org/siteConnectivityConnectivity/Connectivity/protocols">pluggable transport protocols</a> including integration with any J2EE 1.4 application server.</p>
+<p>Integration with application servers is a common scenario in the enterprise Java world, especially when it comes to messaging. ActiveMQ is a JMS 1.1 compliant, open source, Apache Licensed, message oriented middleware (MOM) with <a href="changes-in-40">many</a>, <a href="new-features-in-41">many</a> features far beyond the JMS specification. ActiveMQ offers many different <a href="connectivity">points of connectivity</a>, many <a href="cross-language-clients">cross language clients</a> and many <a href="protocols">pluggable transport protocols</a> including integration with any J2EE 1.4 application server.</p>
 
-<p>One of the application servers in the open source world is JBoss. A very common requirement is to configure ActiveMQ as the messaging infrastructure within JBoss. Although there is <a href="http://www.activemq.org/siteConnectivity/ContainersConnectivity/Containers/Connectivity/Containers/jboss-integration">a bit of documentation</a> on this integration, this article seeks to provide much more detail and explanation. So if you have a need to integrate ActiveMQ with JBoss, this article is for you.</p>
+<p>One of the application servers in the open source world is JBoss. A very common requirement is to configure ActiveMQ as the messaging infrastructure within JBoss. Although there is <a href="jboss-integration">a bit of documentation</a> on this integration, this article seeks to provide much more detail and explanation. So if you have a need to integrate ActiveMQ with JBoss, this article is for you.</p>
 
 <p>This article explains how to configure JBoss to start up ActiveMQ as part of its lifecycle and how to configure the ActiveMQ resource adapter to handle the messaging and transactionality between ActiveMQ and JBoss.</p>
 
@@ -106,7 +106,7 @@
 <p>Below are the software requirements for this article with links to download each:</p>
 
 <ul>
-  <li><a href="http://activemq.org/siteOverviewOverview/Overview/download">Apache ActiveMQ 4.0.1+</a></li>
+  <li><a href="download">Apache ActiveMQ 4.0.1+</a></li>
   <li><a href="http://sourceforge.net/project/showfiles.php?group_id=22866&amp;package_id=16942&amp;release_id=416591">JBoss 4.0.4+</a></li>
   <li><a href="http://www.java.com/en/download/index.jsp">Sun Java 1.5+</a></li>
   <li><a href="http://ant.apache.org/bindownload.cgi">Apache Ant 1.6+</a></li>
@@ -401,9 +401,9 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 </code></pre></div></div>
 <p>Now, modify the <code class="language-plaintext highlighter-rouge">dataDirectory</code> attribute of the <code class="language-plaintext highlighter-rouge">journaledJDBC</code> element to be the following: <code class="language-plaintext highlighter-rouge">${jboss.server.data.dir}/activemq</code>.</p>
 
-<p>The <code class="language-plaintext highlighter-rouge">&lt;transportConnectors&gt;</code> element is used to advertise the ActiveMQ broker for client-to-broker communications and the <code class="language-plaintext highlighter-rouge">&lt;networkConnectors&gt;</code> element advertises the ActiveMQ broker for broker-to-broker communications. The default configuration is to use the ActiveMQ <a href="http://www.activemq.org/siteUsing ActiveMQ/Configuring Transports/ActiveMQ Connection URIs/multicast-transport-reference">multicast transport</a> for both. This is simply an easy configuration under which to get ActiveMQ up and running, so we’ll just leave it at that for the time being.</p>
+<p>The <code class="language-plaintext highlighter-rouge">&lt;transportConnectors&gt;</code> element is used to advertise the ActiveMQ broker for client-to-broker communications and the <code class="language-plaintext highlighter-rouge">&lt;networkConnectors&gt;</code> element advertises the ActiveMQ broker for broker-to-broker communications. The default configuration is to use the ActiveMQ <a href="multicast-transport-reference">multicast transport</a> for both. This is simply an easy configuration under which to get ActiveMQ up and running, so we’ll just leave it at that for the time being.</p>
 
-<p>`<em>NOTE:</em>** There are far more configuration options available for ActiveMQ than are noted here. The configuration above is only enough to just get ActiveMQ up and running, nothing more. For more information on the ActiveMQ configuration, see the <a href="http://www.activemq.org/siteUsing ActiveMQ/Xml ReferenceUsing ActiveMQ/Xml Reference/Using ActiveMQ/Xml Reference/xbean-xml-reference-41">ActiveMQ 4.1 XML Reference</a>.</p>
+<p>`<em>NOTE:</em>** There are far more configuration options available for ActiveMQ than are noted here. The configuration above is only enough to just get ActiveMQ up and running, nothing more. For more information on the ActiveMQ configuration, see the <a href="xbean-xml-reference-41">ActiveMQ 4.1 XML Reference</a>.</p>
 
 <p>Now we just need to start up JBoss to assure that it comes up correctly without error using the same commands we used previously to start JBoss:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd jboss-4.0.4.GA
