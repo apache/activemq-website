@@ -1247,20 +1247,27 @@ applications (e.g. using Camel).</p>
 <h2 id="configuration">Configuration</h2>
 <p>The embedded Jetty instance is configured in <code>etc/bootstrap.xml</code> via the <code>web</code>
 element, e.g.:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">bind</span>=<span class="hljs-string">&quot;http://localhost:8161&quot;</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;activemq-branding&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;activemq-branding.war&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;artemis-plugin&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;artemis-plugin.war&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;console&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;console.war&quot;</span>/&gt;</span>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">binding</span> <span class="hljs-attr">uri</span>=<span class="hljs-string">&quot;http://localhost:8161&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;activemq-branding&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;activemq-branding.war&quot;</span>/&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;artemis-plugin&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;artemis-plugin.war&quot;</span>/&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;console&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;console.war&quot;</span>/&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">binding</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">web</span>&gt;</span>
 </code></pre>
 <p>The <code>web</code> element has the following attributes:</p>
 <ul>
-<li><code>bind</code> The protocol to use (i.e. <code>http</code> or <code>https</code>) as well as the host and
-port on which to listen.</li>
 <li><code>path</code> The name of the subdirectory in which to find the web application
 archives (i.e. WAR files). This is a subdirectory of the broker&apos;s home or
 instance directory.</li>
 <li><code>customizer</code> The name of customizer class to load.</li>
+</ul>
+<p>The <code>web</code> element should contain at least one <code>binding</code> element to configure how 
+clients can connect to the web-server. A <code>binding</code> element has the following
+attributes:</p>
+<ul>
+<li><code>uri</code> The protocol to use (i.e. <code>http</code> or <code>https</code>) as well as the host and
+port on which to listen. This attribute is required.</li>
 <li><code>clientAuth</code> Whether or not clients should present an SSL certificate when
 they connect. Only applicable when using <code>https</code>.</li>
 <li><code>passwordCodec</code> The custom coded to use for unmasking the <code>keystorePassword</code>
@@ -1285,8 +1292,8 @@ Only applicable when using <code>https</code>.</li>
 <li><code>excludedCipherSuites</code> A comma seperated list of excluded cipher suites.
 Only applicable when using <code>https</code>.</li>
 </ul>
-<p>Each web application should be defined in an <code>app</code> element. The <code>app</code> element
-has the following attributes:</p>
+<p>Each web application should be defined in an <code>app</code> element inside an <code>binding</code> element.
+The <code>app</code> element has the following attributes:</p>
 <ul>
 <li><code>url</code> The context to use for the web application.</li>
 <li><code>war</code> The name of the web application archive on disk.</li>
@@ -1313,10 +1320,12 @@ the IP address from the <code>X-Forwarded-For</code> header will be logged. Bool
 <a href="https://www.eclipse.org/jetty/javadoc/current/org/eclipse/jetty/server/NCSARequestLog.html" target="_blank"><code>org.eclipse.jetty.server.NCSARequestLog</code></a>
 instance. Default values are based on this implementation.</p>
 <p>Here is an example configuration:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">bind</span>=<span class="hljs-string">&quot;http://localhost:8161&quot;</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;activemq-branding&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;activemq-branding.war&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;artemis-plugin&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;artemis-plugin.war&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;console&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;console.war&quot;</span>/&gt;</span>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">binding</span> <span class="hljs-attr">uri</span>=<span class="hljs-string">&quot;http://localhost:8161&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;activemq-branding&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;activemq-branding.war&quot;</span>/&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;artemis-plugin&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;artemis-plugin.war&quot;</span>/&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;console&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;console.war&quot;</span>/&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">binding</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">request-log</span> <span class="hljs-attr">filename</span>=<span class="hljs-string">&quot;${artemis.instance}/log/http-access-yyyy_MM_dd.log&quot;</span> <span class="hljs-attr">append</span>=<span class="hljs-string">&quot;true&quot;</span> <span class="hljs-attr">extended</span>=<span class="hljs-string">&quot;true&quot;</span>/&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">web</span>&gt;</span>
 </code></pre>
@@ -1326,10 +1335,12 @@ to send information altered or lost when a proxy is involved
 in the path of the request. Jetty supports the <a href="https://www.eclipse.org/jetty/javadoc/current/org/eclipse/jetty/server/ForwardedRequestCustomizer.html" target="_blank"><code>ForwardedRequestCustomizer</code></a>
 customizer to handle <code>X-Forwarded</code> headers.
 Set the <code>customizer</code> attribute via the <code>web</code> element to enable the <a href="https://www.eclipse.org/jetty/javadoc/current/org/eclipse/jetty/server/ForwardedRequestCustomizer.html" target="_blank"><code>ForwardedRequestCustomizer</code></a> customizer, ie:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">bind</span>=<span class="hljs-string">&quot;http://localhost:8161&quot;</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span> <span class="hljs-attr">customizer</span>=<span class="hljs-string">&quot;org.eclipse.jetty.server.ForwardedRequestCustomizer&quot;</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;activemq-branding&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;activemq-branding.war&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;artemis-plugin&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;artemis-plugin.war&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;console&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;console.war&quot;</span>/&gt;</span>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span> <span class="hljs-attr">customizer</span>=<span class="hljs-string">&quot;org.eclipse.jetty.server.ForwardedRequestCustomizer&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">binding</span> <span class="hljs-attr">uri</span>=<span class="hljs-string">&quot;http://localhost:8161&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;activemq-branding&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;activemq-branding.war&quot;</span>/&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;artemis-plugin&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;artemis-plugin.war&quot;</span>/&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;console&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;console.war&quot;</span>/&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">binding</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">web</span>&gt;</span>
 </code></pre>
 
@@ -1375,7 +1386,7 @@ Set the <code>customizer</code> attribute via the <code>web</code> element to en
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Embedded Web Server","level":"1.66","depth":1,"next":{"title":"Logging","level":"1.67","depth":1,"path":"logging.md","ref":"logging.md","articles":[]},"previous":{"title":"Thread management","level":"1.65","depth":1,"path":"thread-pooling.md","ref":"thread-pooling.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"web-server.md","mtime":"2021-10-11T18:47:35.943Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-10-11T18:56:58.842Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Embedded Web Server","level":"1.66","depth":1,"next":{"title":"Logging","level":"1.67","depth":1,"path":"logging.md","ref":"logging.md","articles":[]},"previous":{"title":"Thread management","level":"1.65","depth":1,"path":"thread-pooling.md","ref":"thread-pooling.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"web-server.md","mtime":"2021-12-17T21:45:40.395Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-12-21T13:30:15.776Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

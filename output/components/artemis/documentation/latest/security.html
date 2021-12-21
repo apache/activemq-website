@@ -1974,6 +1974,8 @@ testing or debugging; normally, it should be set to <code>false</code>, or omitt
 default is <code>false</code></p>
 </li>
 </ul>
+<p>Any additional configuration option not recognized by the LDAP login module itself 
+is passed as-is to the underlying LDAP connection logic.</p>
 <p>Add user entries under the node specified by the <code>userBase</code> option. When
 creating a new user entry in the directory, choose an object class that
 supports the <code>userPassword</code> attribute (for example, the <code>person</code> or
@@ -2307,7 +2309,7 @@ either:</p>
 <li>properties files from which to load users &amp; roles in bulk</li>
 </ul>
 <p>Here&apos;s an example of the single bootstrap user configuration:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.org/schema&quot;</span>&gt;</span>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.apache.org/schema&quot;</span>&gt;</span>
 
    <span class="hljs-tag">&lt;<span class="hljs-name">security-manager</span> <span class="hljs-attr">class-name</span>=<span class="hljs-string">&quot;org.apache.activemq.artemis.spi.core.security.ActiveMQBasicSecurityManager&quot;</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;bootstrapUser&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;myUser&quot;</span>/&gt;</span>
@@ -2325,7 +2327,7 @@ either:</p>
 </ul>
 <p>If your use-case requires <em>multiple</em> users to be available when the broker
 starts then you can use a configuration like this:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.org/schema&quot;</span>&gt;</span>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.apache.org/schema&quot;</span>&gt;</span>
 
    <span class="hljs-tag">&lt;<span class="hljs-name">security-manager</span> <span class="hljs-attr">class-name</span>=<span class="hljs-string">&quot;org.apache.activemq.artemis.spi.core.security.ActiveMQBasicSecurityManager&quot;</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;bootstrapUserFile&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;artemis-users.properties&quot;</span>/&gt;</span>
@@ -2396,17 +2398,20 @@ security risk.</p>
 <p>Artemis comes with a web console that allows user to browse Artemis
 documentation via an embedded server. By default the web access is plain HTTP.
 It is configured in <code>bootstrap.xml</code>:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">bind</span>=<span class="hljs-string">&quot;http://localhost:8161&quot;</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;console&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;console.war&quot;</span>/&gt;</span>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">binding</span> <span class="hljs-attr">uri</span>=<span class="hljs-string">&quot;http://localhost:8161&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;console&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;console.war&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">binding</span>&gt;</span> 
 <span class="hljs-tag">&lt;/<span class="hljs-name">web</span>&gt;</span>
 </code></pre>
 <p>Alternatively you can edit the above configuration to enable secure access
 using HTTPS protocol. e.g.:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">bind</span>=<span class="hljs-string">&quot;https://localhost:8443&quot;</span>
-    <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>
-    <span class="hljs-attr">keyStorePath</span>=<span class="hljs-string">&quot;${artemis.instance}/etc/keystore.jks&quot;</span>
-    <span class="hljs-attr">keyStorePassword</span>=<span class="hljs-string">&quot;password&quot;</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;jolokia&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;jolokia-war-1.3.5.war&quot;</span>/&gt;</span>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">binding</span> <span class="hljs-attr">uri</span>=<span class="hljs-string">&quot;https://localhost:8443&quot;</span>
+             <span class="hljs-attr">keyStorePath</span>=<span class="hljs-string">&quot;${artemis.instance}/etc/keystore.jks&quot;</span>
+             <span class="hljs-attr">keyStorePassword</span>=<span class="hljs-string">&quot;password&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;jolokia&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;jolokia-war-1.3.5.war&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">binding</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">web</span>&gt;</span>
 </code></pre>
 <p>As shown in the example, to enable https the first thing to do is config the
@@ -2449,14 +2454,15 @@ keytool -storetype pkcs12 -keystore client-truststore.p12 -storepass securepass 
 </ul>
 <ul>
 <li>Enable secure access using HTTPS protocol with client authentication,
-use the truststore file created in the previous step to set the trustStorePath and trustStorePassword:<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">bind</span>=<span class="hljs-string">&quot;https://localhost:8443&quot;</span>
-  <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>
-  <span class="hljs-attr">keyStorePath</span>=<span class="hljs-string">&quot;${artemis.instance}/etc/server-keystore.p12&quot;</span>
-  <span class="hljs-attr">keyStorePassword</span>=<span class="hljs-string">&quot;password&quot;</span>
-  <span class="hljs-attr">clientAuth</span>=<span class="hljs-string">&quot;true&quot;</span>
-  <span class="hljs-attr">trustStorePath</span>=<span class="hljs-string">&quot;${artemis.instance}/etc/client-truststore.p12&quot;</span>
-  <span class="hljs-attr">trustStorePassword</span>=<span class="hljs-string">&quot;password&quot;</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;jolokia&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;jolokia-war-1.3.5.war&quot;</span>/&gt;</span>
+use the truststore file created in the previous step to set the trustStorePath and trustStorePassword:<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">binding</span> <span class="hljs-attr">uri</span>=<span class="hljs-string">&quot;https://localhost:8443&quot;</span>
+           <span class="hljs-attr">keyStorePath</span>=<span class="hljs-string">&quot;${artemis.instance}/etc/server-keystore.p12&quot;</span>
+           <span class="hljs-attr">keyStorePassword</span>=<span class="hljs-string">&quot;password&quot;</span>
+           <span class="hljs-attr">clientAuth</span>=<span class="hljs-string">&quot;true&quot;</span>
+           <span class="hljs-attr">trustStorePath</span>=<span class="hljs-string">&quot;${artemis.instance}/etc/client-truststore.p12&quot;</span>
+           <span class="hljs-attr">trustStorePassword</span>=<span class="hljs-string">&quot;password&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;jolokia&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;jolokia-war-1.3.5.war&quot;</span>/&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">binding</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">web</span>&gt;</span>
 </code></pre>
 </li>
@@ -2558,7 +2564,7 @@ the actual authentication and authorization checks. By default, the broker uses
 provide JAAS integration, but users can provide their own implementation of
 <code>org.apache.activemq.artemis.spi.core.security.ActiveMQSecurityManager3</code> and
 configure it in <code>bootstrap.xml</code> using the <code>security-manager</code> element, e.g.:</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.org/schema&quot;</span>&gt;</span>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.apache.org/schema&quot;</span>&gt;</span>
 
    <span class="hljs-tag">&lt;<span class="hljs-name">security-manager</span> <span class="hljs-attr">class-name</span>=<span class="hljs-string">&quot;com.foo.MySecurityManager&quot;</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;myKey1&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;myValue1&quot;</span>/&gt;</span>
@@ -2620,7 +2626,7 @@ parameter and indicate which domain from your <code>login.config</code> to use, 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.49","depth":1,"next":{"title":"Masking Passwords","level":"1.50","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.48","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2021-10-11T18:47:35.943Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-10-11T18:56:58.842Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.49","depth":1,"next":{"title":"Masking Passwords","level":"1.50","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.48","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2021-12-20T19:44:06.273Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-12-21T13:30:15.776Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
