@@ -1794,6 +1794,7 @@ that would be found in the <code>broker.xml</code> file.</p>
       <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-addresses-delay</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-addresses-delay</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">config-delete-addresses</span>&gt;</span>OFF<span class="hljs-tag">&lt;/<span class="hljs-name">config-delete-addresses</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">management-browse-page-size</span>&gt;</span>200<span class="hljs-tag">&lt;/<span class="hljs-name">management-browse-page-size</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">management-message-attribute-size-limit</span>&gt;</span>256<span class="hljs-tag">&lt;/<span class="hljs-name">management-message-attribute-size-limit</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">default-purge-on-no-consumers</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">default-purge-on-no-consumers</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">default-max-consumers</span>&gt;</span>-1<span class="hljs-tag">&lt;/<span class="hljs-name">default-max-consumers</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">default-queue-routing-type</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">default-queue-routing-type</span>&gt;</span>
@@ -1914,7 +1915,9 @@ address, if it exists.</p>
 <p><code>slow-consumer-threshold</code>. The minimum rate of message consumption allowed
 before a consumer is considered &quot;slow.&quot; Measured in units specified by the
 slow-consumer-threshold-measurement-unit configuration option. Default is <code>-1</code>
- (i.e. disabled); any other valid value must be greater than 0. 
+ (i.e. disabled); any other value must be greater than 0 to ensure a queue
+has messages, and it is the actual consumer that is slow. A value of 0 will
+allow a consumer with no messages pending to be considered slow.
  Read more about <a href="slow-consumers.html">slow consumers</a>.</p>
 <p><code>slow-consumer-threshold-measurement-unit</code>. The units used to measure the 
 slow-consumer-threshold.  Valid options are:</p>
@@ -2015,6 +2018,13 @@ about <a href="config-reload.html">configuration reload</a>.</p>
 <p><code>management-browse-page-size</code> is the number of messages a management resource
 can browse. This is relevant for the <code>browse, list and count-with-filter</code> management
 methods exposed on the queue control. Default is <code>200</code>.</p>
+<p><code>management-message-attribute-size-limit</code> is the number of bytes collected from
+the message for browse. This is relevant for the <code>browse and list</code> management
+methods exposed on the queue control. Message attributes longer than this value
+appear truncated. Default is <code>256</code>. Use <code>-1</code> to switch this limit off. Note that
+memory needs to be allocated for all messages that are visible at a given moment.
+Setting this value too high may impact the browser stability due to the large
+amount of memory that may be required to browse through many messages.</p>
 <p><code>default-purge-on-no-consumers</code> defines a queue&apos;s default
 <code>purge-on-no-consumers</code> setting if none is provided on the queue itself.
 Default is <code>false</code>. This value can be overridden at the queue level using the
@@ -2098,7 +2108,7 @@ named <code>ingress-timestamp</code>. The value will be the number of millisecon
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Address Model","level":"1.10","depth":1,"next":{"title":"Protocols and Interoperability","level":"1.11","depth":1,"path":"protocols-interoperability.md","ref":"protocols-interoperability.md","articles":[]},"previous":{"title":"Upgrading","level":"1.9","depth":1,"path":"upgrading.md","ref":"upgrading.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"address-model.md","mtime":"2021-10-11T18:47:35.923Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-10-11T18:56:58.842Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Address Model","level":"1.10","depth":1,"next":{"title":"Protocols and Interoperability","level":"1.11","depth":1,"path":"protocols-interoperability.md","ref":"protocols-interoperability.md","articles":[]},"previous":{"title":"Upgrading","level":"1.9","depth":1,"path":"upgrading.md","ref":"upgrading.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"address-model.md","mtime":"2021-12-17T21:45:40.368Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-12-21T13:30:15.776Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

@@ -9,6 +9,15 @@ A complete list of JIRAs for the 2.20.0 release can be found  * [here](https://i
 
 A list of commits can be found  * [here](commit-report-2.20.0).
 
+
+# Known issues:
+
+ * [ARTEMIS-3616](https://issues.apache.org/jira/browse/ARTEMIS-3616) - Epoll not loading correctly.
+
+Right after the release of 2.20.0 we discovered that epoll from Netty is not loading correctly which may affect performance for high throughput use cases. 
+The work around is simple and it is described on on [ARTEMIS-3616](https://issues.apache.org/jira/browse/ARTEMIS-3616)
+
+
 # Bug
  * [ARTEMIS-2293] - addPacket method in the org.apache.activemq.artemis.core.client.impl.LargeMessageControllerImpl doesn't notify threads in case of an Exception
  * [ARTEMIS-2922] - artemis-cli consumer on large message results in a ClassCastException
