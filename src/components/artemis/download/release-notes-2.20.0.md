@@ -9,6 +9,7 @@ A complete list of JIRAs for the 2.20.0 release can be found  * [here](https://i
 
 A list of commits can be found  * [here](commit-report-2.20.0).
 
+**Note**: This release requires use of Java 11 or above.
 
 # Known issues:
 
