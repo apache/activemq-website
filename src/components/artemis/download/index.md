@@ -21,9 +21,9 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
         {% endif %}
     {% endfor %}
 {% endfor %}
-
 <br/>
 
+--------------------------------------
 
 This is the current release of ActiveMQ Artemis Native, which is a sub component used within the broker. For prior releases, please see the <a href="past_native_releases">past native releases</a> page.
 
