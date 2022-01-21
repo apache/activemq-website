@@ -271,7 +271,7 @@ Source Distribution:|[apache-artemis-1.5.0-source-release.tar.gz](https://archiv
 <br/>
 
 #### ActiveMQ Artemis 1.4.0 (September 13, 2016)
-[Release Notes](release-notes-1.4.0) | [Documentation](../documentation/1.4.0) | Java compatibility: **8**
+[Release Notes](release-notes-1.4.0) | [Documentation](../documentation/1.4.0) | Java compatibility: **7**
 
 tar.gz:|[apache-artemis-1.4.0-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/1.4.0/apache-artemis-1.4.0-bin.tar.gz)| [SHA1](https://archive.apache.org/dist/activemq/activemq-artemis/1.4.0/apache-artemis-1.4.0-bin.tar.gz.sha1)|[MD5](https://archive.apache.org/dist/activemq/activemq-artemis/1.4.0/apache-artemis-1.4.0-bin.tar.gz.md5)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/1.4.0/apache-artemis-1.4.0-bin.tar.gz.asc)
 ZIP:|[apache-artemis-1.4.0-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/1.4.0/apache-artemis-1.4.0-bin.zip)| [SHA1](https://archive.apache.org/dist/activemq/activemq-artemis/1.4.0/apache-artemis-1.4.0-bin.zip.sha1)|[MD5](https://archive.apache.org/dist/activemq/activemq-artemis/1.4.0/apache-artemis-1.4.0-bin.zip.md5)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/1.4.0/apache-artemis-1.4.0-bin.zip.asc)
@@ -280,7 +280,7 @@ Source Distribution:|[apache-artemis-1.4.0-source-release.tar.gz](https://archiv
 <br/>
 
 #### ActiveMQ Artemis 1.3.0 (June 17, 2016)
-[Release Notes](release-notes-1.3.0) | [Documentation](../documentation/1.3.0) | Java compatibility: **8**
+[Release Notes](release-notes-1.3.0) | [Documentation](../documentation/1.3.0) | Java compatibility: **7**
 
 tar.gz:|[apache-artemis-1.3.0-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/1.3.0/apache-artemis-1.3.0-bin.tar.gz)| [SHA1](https://archive.apache.org/dist/activemq/activemq-artemis/1.3.0/apache-artemis-1.3.0-bin.tar.gz.sha1)|[MD5](https://archive.apache.org/dist/activemq/activemq-artemis/1.3.0/apache-artemis-1.3.0-bin.tar.gz.md5)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/1.3.0/apache-artemis-1.3.0-bin.tar.gz.asc)
 ZIP:|[apache-artemis-1.3.0-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/1.3.0/apache-artemis-1.3.0-bin.zip)| [SHA1](https://archive.apache.org/dist/activemq/activemq-artemis/1.3.0/apache-artemis-1.3.0-bin.zip.sha1)|[MD5](https://archive.apache.org/dist/activemq/activemq-artemis/1.3.0/apache-artemis-1.3.0-bin.zip.md5)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/1.3.0/apache-artemis-1.3.0-bin.zip.asc)
@@ -289,7 +289,7 @@ Source Distribution:|[apache-artemis-1.3.0-source-release.tar.gz](https://archiv
 <br/>
 
 #### ActiveMQ Artemis 1.2.0 (January 11, 2016)
-[Release Notes](release-notes-1.2.0) | [Documentation](../documentation/1.2.0) | Java compatibility: **8**
+[Release Notes](release-notes-1.2.0) | [Documentation](../documentation/1.2.0) | Java compatibility: **7**
 
 tar.gz:|[apache-artemis-1.2.0-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/1.2.0/apache-artemis-1.2.0-bin.tar.gz)| [SHA1](https://archive.apache.org/dist/activemq/activemq-artemis/1.2.0/apache-artemis-1.2.0-bin.tar.gz.sha1)|[MD5](https://archive.apache.org/dist/activemq/activemq-artemis/1.2.0/apache-artemis-1.2.0-bin.tar.gz.md5)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/1.2.0/apache-artemis-1.2.0-bin.tar.gz.asc)
 ZIP:|[apache-artemis-1.2.0-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/1.2.0/apache-artemis-1.2.0-bin.zip)| [SHA1](https://archive.apache.org/dist/activemq/activemq-artemis/1.2.0/apache-artemis-1.2.0-bin.zip.sha1)|[MD5](https://archive.apache.org/dist/activemq/activemq-artemis/1.2.0/apache-artemis-1.2.0-bin.zip.md5)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/1.2.0/apache-artemis-1.2.0-bin.zip.asc)
@@ -298,7 +298,7 @@ Source Distribution:|[apache-artemis-1.2.0-source-release.tar.gz](https://archiv
 <br/>
 
 #### ActiveMQ Artemis 1.1.0 (October 5, 2015)
-[Release Notes](release-notes-1.1.0) | [Documentation](../documentation/1.1.0) | Java compatibility: **8**
+[Release Notes](release-notes-1.1.0) | [Documentation](../documentation/1.1.0) | Java compatibility: **7**
 
 tar.gz:|[apache-artemis-1.1.0-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/1.1.0/apache-artemis-1.1.0-bin.tar.gz)| [SHA1](https://archive.apache.org/dist/activemq/activemq-artemis/1.1.0/apache-artemis-1.1.0-bin.tar.gz.sha1)|[MD5](https://archive.apache.org/dist/activemq/activemq-artemis/1.1.0/apache-artemis-1.1.0-bin.tar.gz.md5)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/1.1.0/apache-artemis-1.1.0-bin.tar.gz.asc)
 ZIP:|[apache-artemis-1.1.0-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/1.1.0/apache-artemis-1.1.0-bin.zip)| [SHA1](https://archive.apache.org/dist/activemq/activemq-artemis/1.1.0/apache-artemis-1.1.0-bin.zip.sha1)|[MD5](https://archive.apache.org/dist/activemq/activemq-artemis/1.1.0/apache-artemis-1.1.0-bin.zip.md5)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/1.1.0/apache-artemis-1.1.0-bin.zip.asc)
@@ -307,7 +307,7 @@ Source Distribution:|[apache-artemis-1.1.0-source-release.tar.gz](https://archiv
 <br/>
 
 #### ActiveMQ Artemis 1.0.0 (June 2, 2015)
-[Release Notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&version=12328953) | [Documentation](../documentation/1.0.0) | Java compatibility: **8**
+[Release Notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&version=12328953) | [Documentation](../documentation/1.0.0) | Java compatibility: **7**
 
 tar.gz:|[apache-artemis-1.0.0-bin.tar.gz](https://archive.apache.org/dist/activemq/activemq-artemis/1.0.0/apache-artemis-1.0.0-bin.tar.gz)| [SHA1](https://archive.apache.org/dist/activemq/activemq-artemis/1.0.0/apache-artemis-1.0.0-bin.tar.gz.sha1)|[MD5](https://archive.apache.org/dist/activemq/activemq-artemis/1.0.0/apache-artemis-1.0.0-bin.tar.gz.md5)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/1.0.0/apache-artemis-1.0.0-bin.tar.gz.asc)
 ZIP:|[apache-artemis-1.0.0-bin.zip](https://archive.apache.org/dist/activemq/activemq-artemis/1.0.0/apache-artemis-1.0.0-bin.zip)| [SHA1](https://archive.apache.org/dist/activemq/activemq-artemis/1.0.0/apache-artemis-1.0.0-bin.zip.sha1)|[MD5](https://archive.apache.org/dist/activemq/activemq-artemis/1.0.0/apache-artemis-1.0.0-bin.zip.md5)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis/1.0.0/apache-artemis-1.0.0-bin.zip.asc)
