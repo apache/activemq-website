@@ -15,7 +15,7 @@ We use [slf4j](#) which allows the underlying logging implementation to be stati
  
 By default we ship with log4j but feel free to make your own choice.
 
-If you've got log4j.jar on your classpath you can use a log4j.properties file to configure the logging levels. See the [log4j.properties example](http://svn.apache.org/repos/asf/activemq/trunk/activemq-core/src/test/resources/log4j.properties) for the kind of thing you'll need.
+If you've got log4j.jar on your classpath you can use a log4j.properties file to configure the logging levels. See the [log4j.properties example](https://github.com/apache/activemq/blob/main/activemq-broker/src/test/resources/log4j.properties) for the kind of thing you'll need.
 
 e.g. adding the following to your log4j.properties will enable tracing of ActiveMQ code:
 
