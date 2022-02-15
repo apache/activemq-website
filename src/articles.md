@@ -11,7 +11,8 @@ This page captures resources and articles outside the ActiveMQ project which may
 
 #### Interviews and Podcasts
 
-* [ActiveMQ FeatherCast](https://feathercast.apache.org/2007/04/02/episode-27-apache-activemq/), James Strachan is interviewed on the ActiveMQ project
+* [ActiveMQ FeatherCast 2021-09-07](https://feathercast.apache.org/2021/09/07/apache-activemq/), An interview with Jean-Baptiste Onofre, Justin Bertram, Matt Pavlovich and Clebert Suconic on what it means to be “Flexible & Powerful Open Source Multi-Protocol Messaging" and what's new with the project. 
+* [ActiveMQ FeatherCast 2007-04-02](https://feathercast.apache.org/2007/04/02/episode-27-apache-activemq/), James Strachan is interviewed on the ActiveMQ project
 
 #### Webinars, Videos and Screencasts
 
@@ -22,7 +23,7 @@ This page captures resources and articles outside the ActiveMQ project which may
 * [Connecting to ActiveMQ with Payara Server](http://blog.payara.fish/connecting-to-activemq-with-payara-server) by Steve Millidge (December, 2015)
 * [Messaging for Web and Mobile with Apache ActiveMQ](http://de.slideshare.net/dejanb/messaging-for-web-and-mobile-with-apache-activemq) by [Dejan Bosanac](http://Dejan Bosanac) (June, 2013)
 * [ActiveMQ in Action: Common Problems and Solutions](http://de.slideshare.net/bruce.snyder/activemq-in-action) by Bruce Snyder (July, 2011)
-* [Mutual SSL authentication and LDAP authorisation for ActiveMQ](http://christopherhunt-software.blogspot.com/2009/03/mutual-ssl-authentication-and-ldap.html) _by [Christopher Hunt](http://christopherhunt-software.blogspot.com)_ (March, 2009)
+* [Mutual SSL authentication and LDAP authorization for ActiveMQ](http://christopherhunt-software.blogspot.com/2009/03/mutual-ssl-authentication-and-ldap.html) _by [Christopher Hunt](http://christopherhunt-software.blogspot.com)_ (March, 2009)
 * [Made of Messages](http://www.slideshare.net/carsonified/dopplr-its-made-of-messages-matt-biddulph-presentation) _by Matt Biddulph of [Dopplr](http://www.dopplr.com/)_
 * [Publish-Subscribe with ActiveMQ and NMS](http://remark.wordpress.com/articles/publish-subscribe-with-activemq-and-nms/)
 * [Implementing Request-Response with ActiveMQ and NMS](http://remark.wordpress.com/articles/implementing-request-response-with-activemq-and-nms/) _by Mark_
@@ -30,7 +31,6 @@ This page captures resources and articles outside the ActiveMQ project which may
 
 #### Maintenance and Monitoring
 
-* [Running ActiveMQ and hawtio in Standalone Mode](http://www.bennet-schulz.com/2016/07/apache-activemq-and-hawtio.html) by [Bennet Schulz](https://twitter.com/bennetelli) (July, 2016)
 * [Management and monitoring ActiveMQ using hawtio](http://sensatic.net/activemq/activemq-and-hawtio.html) (how to install hawtio out of  the box in ActiveMQ) by Dejan Bosanac (April 2014)
 * [Use JConsole with ActiveMQ for a quick JMS test client](http://soatechlab.blogspot.com/2008/01/use-jconsole-with-activemq-for-quick.html) _by [Rod Biresch](http://soatechlab.blogspot.com/)_ (January 2008)
 
@@ -67,7 +67,6 @@ This page captures resources and articles outside the ActiveMQ project which may
 * [Why use ActiveMQ over JBossMQ?](http://www.mail-archive.com/activemq-users@geronimo.apache.org/msg05630.html)
 * [How does ActiveMQ compare to Mule?](http://activemq.apache.org/how-does-activemq-compare-to-mule)
 * [Performance and scalability: Analysis and comparison of ActiveMQ, Websphere MQ and SonicMQ](http://www.theserverside.com/discussions/thread.tss?thread_id=57192)
-* [ActiveMQ vs. Camel vs. Qpid](http://activemq.2283324.n4.nabble.com/ActiveMQ-vs-Camel-vs-Qpid-td2355914.html)
 
 #### Books and Reference Guides
 
