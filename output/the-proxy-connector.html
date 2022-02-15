@@ -101,24 +101,24 @@
 
 <p>If you wanted to accept normal connection on port 6001, but also wanted to expose port 6002 which in turn was proxied using the fanout transport, the following example is shows you how to do it!</p>
 
-<beans xmlns="http://activemq.org/config/1.0">
-  <broker>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://activemq.org/config/1.0"&gt;
+  &lt;broker&gt;
 
-    <persistenceAdapter>
-      <journaledJDBC dataDirectory="../data" />
-    </persistenceAdapter>
+    &lt;persistenceAdapter&gt;
+      &lt;journaledJDBC dataDirectory="../data"/&gt;
+    &lt;/persistenceAdapter&gt;
 
-    <transportConnectors>
-      <transportConnector uri="tcp://localhost:6001" />
-    </transportConnectors>
+    &lt;transportConnectors&gt;
+      &lt;transportConnector uri="tcp://localhost:6001"/&gt;
+    &lt;/transportConnectors&gt;
 
-    <proxyConnectors>
-      <proxyConnector bind="tcp://localhost:6002" remote="fanout:static:(tcp://localhost:61616)" />
-    </proxyConnectors>
+    &lt;proxyConnectors&gt;
+      &lt;proxyConnector bind="tcp://localhost:6002" remote="fanout:static:(tcp://localhost:61616)"/&gt;
+    &lt;/proxyConnectors&gt;
 
-  </broker>
-</beans>
-
+  &lt;/broker&gt;
+&lt;/beans&gt;
+</code></pre></div></div>
 
       </div>
     </div>
