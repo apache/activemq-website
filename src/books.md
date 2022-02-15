@@ -12,8 +12,8 @@ Books
 
 This page lists the known books about Apache ActiveMQ. If you happen to know a book which is not listed then please contact us, for example using the [Mailing Lists](contact#mailing).
 
-*   [ActiveMQ in Action](http://bit.ly/2je6cQ)
-*   [Instant Apache ActiveMQ Messaging Application Development](http://goo.gl/RFltj)
+*   [ActiveMQ in Action](https://www.manning.com/books/activemq-in-action)
+*   [Instant Apache ActiveMQ Messaging Application Development](https://subscription.packtpub.com/book/application-development/9781782169413)
 *   [Mobile and Web Messaging](http://shop.oreilly.com/product/0636920032366.do)
 *   [Apache ActiveMQ Reference Guide](http://www.ttmsolutions.com/Apache_Software/ActiveMQ_Reference_Guide.php)
 
