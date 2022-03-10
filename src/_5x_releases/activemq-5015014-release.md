@@ -6,4 +6,4 @@ title: ActiveMQ 5.15.14 Release
 redirect_from:
 - /activemq-51514-release 
 ---
-Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }} and includes several resolved [issues]({{page.release-notes}}) and bug fixes.
+Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }} and includes several resolved [issues]({{page.release_notes}}) and bug fixes.

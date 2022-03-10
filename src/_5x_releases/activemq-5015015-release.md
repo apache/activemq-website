@@ -8,6 +8,6 @@ shortDescription: >
 
     <br/><br/><strong>NOTE:</strong> This is the last planned 5.15.x release. Users should upgrade to the current 5.16.x stream for ongoing releases.
 ---
-Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }} and includes several resolved [issues]({{page.release-notes}}) and bug fixes.
+Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }} and includes several resolved [issues]({{page.release_notes}}) and bug fixes.
 
 **NOTE**: This is the last planned 5.15.x release. Users should upgrade to the current 5.16.x stream for ongoing releases.

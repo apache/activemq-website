@@ -5,4 +5,4 @@ title: ActiveMQ 5.15.13 Release
 redirect_from:
 - /activemq-51513-release
 ---
-Apache ActiveMQ {{page.version}} includes several resolved [issues]({{page.release-notes}}) and bug fixes.
+Apache ActiveMQ {{page.version}} includes several resolved [issues]({{page.release_notes}}) and bug fixes.
