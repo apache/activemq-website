@@ -3,6 +3,7 @@ version: 5.15.15
 release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12349417
 release_date: 2021-04-28
 title: ActiveMQ 5.15.15 Release
+java_version: 8
 shortDescription: >
     Apache ActiveMQ 5.15.15 was released on Apr 28th, 2021 and includes several resolved issues and bug fixes. 
 

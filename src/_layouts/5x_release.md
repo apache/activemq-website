@@ -38,6 +38,8 @@ Windows Distribution|[apache-activemq-{{page.version}}-bin.zip](https://archive.
 Unix/Linux/Cygwin Distribution|[apache-activemq-{{page.version}}-bin.tar.gz](https://archive.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.tar.gz)|[ASC](https://archive.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.tar.gz.asc), [SHA512](https://archive.apache.org/dist/activemq/{{page.version}}/apache-activemq-{{page.version}}-bin.tar.gz.sha512)
 {% endif %}          
 
+Java compatibility: **{{page.java_version}}**
+
 Verify the Integrity of Downloads
 ---------------------------------
 

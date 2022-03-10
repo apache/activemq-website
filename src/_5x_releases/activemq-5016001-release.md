@@ -3,6 +3,7 @@ version: 5.16.1
 release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12347027
 release_date: 2021-01-20
 title: ActiveMQ 5.16.1 Release 
+java_version: 8+
 redirect_from:
 - /activemq-5161-release
 ---
