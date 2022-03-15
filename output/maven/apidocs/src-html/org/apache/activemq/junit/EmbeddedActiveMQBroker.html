@@ -1,807 +1,808 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
 <title>Source code</title>
 <link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
 </head>
 <body>
+<main role="main">
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
-<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
-<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
-<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
-<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
-<span class="sourceLineNo">008</span> *<a name="line.8"></a>
-<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
-<span class="sourceLineNo">010</span> *<a name="line.10"></a>
-<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
-<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
-<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
-<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
-<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
-<span class="sourceLineNo">016</span> */<a name="line.16"></a>
-<span class="sourceLineNo">017</span>package org.apache.activemq.junit;<a name="line.17"></a>
-<span class="sourceLineNo">018</span><a name="line.18"></a>
-<span class="sourceLineNo">019</span>import static org.apache.activemq.command.ActiveMQDestination.QUEUE_TYPE;<a name="line.19"></a>
-<span class="sourceLineNo">020</span><a name="line.20"></a>
-<span class="sourceLineNo">021</span>import java.io.Serializable;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>import java.net.URI;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import java.net.URISyntaxException;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import java.util.Map;<a name="line.24"></a>
-<span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>import javax.jms.BytesMessage;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import javax.jms.Connection;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import javax.jms.JMSException;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>import javax.jms.MapMessage;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>import javax.jms.Message;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>import javax.jms.MessageProducer;<a name="line.31"></a>
-<span class="sourceLineNo">032</span>import javax.jms.ObjectMessage;<a name="line.32"></a>
-<span class="sourceLineNo">033</span>import javax.jms.Session;<a name="line.33"></a>
-<span class="sourceLineNo">034</span>import javax.jms.StreamMessage;<a name="line.34"></a>
-<span class="sourceLineNo">035</span>import javax.jms.TextMessage;<a name="line.35"></a>
-<span class="sourceLineNo">036</span><a name="line.36"></a>
-<span class="sourceLineNo">037</span>import org.apache.activemq.ActiveMQConnectionFactory;<a name="line.37"></a>
-<span class="sourceLineNo">038</span>import org.apache.activemq.broker.BrokerFactory;<a name="line.38"></a>
-<span class="sourceLineNo">039</span>import org.apache.activemq.broker.BrokerPlugin;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>import org.apache.activemq.broker.BrokerService;<a name="line.40"></a>
-<span class="sourceLineNo">041</span>import org.apache.activemq.broker.region.Destination;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>import org.apache.activemq.broker.region.policy.PolicyEntry;<a name="line.42"></a>
-<span class="sourceLineNo">043</span>import org.apache.activemq.broker.region.policy.PolicyMap;<a name="line.43"></a>
-<span class="sourceLineNo">044</span>import org.apache.activemq.command.ActiveMQDestination;<a name="line.44"></a>
-<span class="sourceLineNo">045</span>import org.apache.activemq.plugin.StatisticsBrokerPlugin;<a name="line.45"></a>
-<span class="sourceLineNo">046</span>import org.apache.activemq.pool.PooledConnectionFactory;<a name="line.46"></a>
-<span class="sourceLineNo">047</span>import org.junit.rules.ExternalResource;<a name="line.47"></a>
-<span class="sourceLineNo">048</span>import org.slf4j.Logger;<a name="line.48"></a>
-<span class="sourceLineNo">049</span>import org.slf4j.LoggerFactory;<a name="line.49"></a>
-<span class="sourceLineNo">050</span><a name="line.50"></a>
-<span class="sourceLineNo">051</span>/**<a name="line.51"></a>
-<span class="sourceLineNo">052</span> * A JUnit Rule that embeds an ActiveMQ broker into a test.<a name="line.52"></a>
-<span class="sourceLineNo">053</span> */<a name="line.53"></a>
-<span class="sourceLineNo">054</span>public class EmbeddedActiveMQBroker extends ExternalResource {<a name="line.54"></a>
-<span class="sourceLineNo">055</span>    Logger log = LoggerFactory.getLogger(this.getClass());<a name="line.55"></a>
-<span class="sourceLineNo">056</span><a name="line.56"></a>
-<span class="sourceLineNo">057</span>    BrokerService brokerService;<a name="line.57"></a>
-<span class="sourceLineNo">058</span>    InternalClient internalClient;<a name="line.58"></a>
-<span class="sourceLineNo">059</span><a name="line.59"></a>
-<span class="sourceLineNo">060</span>    /**<a name="line.60"></a>
-<span class="sourceLineNo">061</span>     * Create an embedded ActiveMQ broker using defaults<a name="line.61"></a>
-<span class="sourceLineNo">062</span>     * &lt;p&gt;<a name="line.62"></a>
-<span class="sourceLineNo">063</span>     * The defaults are:<a name="line.63"></a>
-<span class="sourceLineNo">064</span>     * - the broker name is 'embedded-broker'<a name="line.64"></a>
-<span class="sourceLineNo">065</span>     * - JMX is enable but no management connector is created.<a name="line.65"></a>
-<span class="sourceLineNo">066</span>     * - Persistence is disabled<a name="line.66"></a>
-<span class="sourceLineNo">067</span>     */<a name="line.67"></a>
-<span class="sourceLineNo">068</span>    public EmbeddedActiveMQBroker() {<a name="line.68"></a>
-<span class="sourceLineNo">069</span>        brokerService = new BrokerService();<a name="line.69"></a>
-<span class="sourceLineNo">070</span>        brokerService.setUseJmx(true);<a name="line.70"></a>
-<span class="sourceLineNo">071</span>        brokerService.getManagementContext().setCreateConnector(false);<a name="line.71"></a>
-<span class="sourceLineNo">072</span>        brokerService.setUseShutdownHook(false);<a name="line.72"></a>
-<span class="sourceLineNo">073</span>        brokerService.setPersistent(false);<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        brokerService.setBrokerName("embedded-broker");<a name="line.74"></a>
-<span class="sourceLineNo">075</span>    }<a name="line.75"></a>
-<span class="sourceLineNo">076</span><a name="line.76"></a>
-<span class="sourceLineNo">077</span>    /**<a name="line.77"></a>
-<span class="sourceLineNo">078</span>     * Create an embedded ActiveMQ broker using a configuration URI<a name="line.78"></a>
-<span class="sourceLineNo">079</span>     */<a name="line.79"></a>
-<span class="sourceLineNo">080</span>    public EmbeddedActiveMQBroker(String configurationURI) {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>        try {<a name="line.81"></a>
-<span class="sourceLineNo">082</span>            brokerService = BrokerFactory.createBroker(configurationURI);<a name="line.82"></a>
-<span class="sourceLineNo">083</span>        } catch (Exception ex) {<a name="line.83"></a>
-<span class="sourceLineNo">084</span>            throw new RuntimeException("Exception encountered creating embedded ActiveMQ broker from configuration URI: " + configurationURI, ex);<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        }<a name="line.85"></a>
-<span class="sourceLineNo">086</span>    }<a name="line.86"></a>
-<span class="sourceLineNo">087</span><a name="line.87"></a>
-<span class="sourceLineNo">088</span>    /**<a name="line.88"></a>
-<span class="sourceLineNo">089</span>     * Create an embedded ActiveMQ broker using a configuration URI<a name="line.89"></a>
-<span class="sourceLineNo">090</span>     */<a name="line.90"></a>
-<span class="sourceLineNo">091</span>    public EmbeddedActiveMQBroker(URI configurationURI) {<a name="line.91"></a>
-<span class="sourceLineNo">092</span>        try {<a name="line.92"></a>
-<span class="sourceLineNo">093</span>            brokerService = BrokerFactory.createBroker(configurationURI);<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        } catch (Exception ex) {<a name="line.94"></a>
-<span class="sourceLineNo">095</span>            throw new RuntimeException("Exception encountered creating embedded ActiveMQ broker from configuration URI: " + configurationURI, ex);<a name="line.95"></a>
-<span class="sourceLineNo">096</span>        }<a name="line.96"></a>
-<span class="sourceLineNo">097</span>    }<a name="line.97"></a>
-<span class="sourceLineNo">098</span><a name="line.98"></a>
-<span class="sourceLineNo">099</span>    public static void setMessageProperties(Message message, Map&lt;String, Object&gt; properties) {<a name="line.99"></a>
-<span class="sourceLineNo">100</span>        if (properties != null &amp;&amp; properties.size() &gt; 0) {<a name="line.100"></a>
-<span class="sourceLineNo">101</span>            for (Map.Entry&lt;String, Object&gt; property : properties.entrySet()) {<a name="line.101"></a>
-<span class="sourceLineNo">102</span>                try {<a name="line.102"></a>
-<span class="sourceLineNo">103</span>                    message.setObjectProperty(property.getKey(), property.getValue());<a name="line.103"></a>
-<span class="sourceLineNo">104</span>                } catch (JMSException jmsEx) {<a name="line.104"></a>
-<span class="sourceLineNo">105</span>                    throw new EmbeddedActiveMQBrokerException(String.format("Failed to set property {%s = %s}", property.getKey(), property.getValue().toString()), jmsEx);<a name="line.105"></a>
-<span class="sourceLineNo">106</span>                }<a name="line.106"></a>
-<span class="sourceLineNo">107</span>            }<a name="line.107"></a>
-<span class="sourceLineNo">108</span>        }<a name="line.108"></a>
-<span class="sourceLineNo">109</span>    }<a name="line.109"></a>
-<span class="sourceLineNo">110</span><a name="line.110"></a>
-<span class="sourceLineNo">111</span>    /**<a name="line.111"></a>
-<span class="sourceLineNo">112</span>     * Customize the configuration of the embedded ActiveMQ broker<a name="line.112"></a>
-<span class="sourceLineNo">113</span>     * &lt;p&gt;<a name="line.113"></a>
-<span class="sourceLineNo">114</span>     * This method is called before the embedded ActiveMQ broker is started, and can<a name="line.114"></a>
-<span class="sourceLineNo">115</span>     * be overridden to this method to customize the broker configuration.<a name="line.115"></a>
-<span class="sourceLineNo">116</span>     */<a name="line.116"></a>
-<span class="sourceLineNo">117</span>    protected void configure() {<a name="line.117"></a>
-<span class="sourceLineNo">118</span>    }<a name="line.118"></a>
-<span class="sourceLineNo">119</span><a name="line.119"></a>
-<span class="sourceLineNo">120</span>    /**<a name="line.120"></a>
-<span class="sourceLineNo">121</span>     * Start the embedded ActiveMQ broker, blocking until the broker has successfully started.<a name="line.121"></a>
-<span class="sourceLineNo">122</span>     * &lt;p/&gt;<a name="line.122"></a>
-<span class="sourceLineNo">123</span>     * The broker will normally be started by JUnit using the before() method.  This method allows the broker to<a name="line.123"></a>
-<span class="sourceLineNo">124</span>     * be started manually to support advanced testing scenarios.<a name="line.124"></a>
-<span class="sourceLineNo">125</span>     */<a name="line.125"></a>
-<span class="sourceLineNo">126</span>    public void start() {<a name="line.126"></a>
-<span class="sourceLineNo">127</span>        try {<a name="line.127"></a>
-<span class="sourceLineNo">128</span>            this.configure();<a name="line.128"></a>
-<span class="sourceLineNo">129</span>            brokerService.start();<a name="line.129"></a>
-<span class="sourceLineNo">130</span>            internalClient = new InternalClient();<a name="line.130"></a>
-<span class="sourceLineNo">131</span>            internalClient.start();<a name="line.131"></a>
-<span class="sourceLineNo">132</span>        } catch (Exception ex) {<a name="line.132"></a>
-<span class="sourceLineNo">133</span>            throw new RuntimeException("Exception encountered starting embedded ActiveMQ broker: {}" + this.getBrokerName(), ex);<a name="line.133"></a>
-<span class="sourceLineNo">134</span>        }<a name="line.134"></a>
-<span class="sourceLineNo">135</span><a name="line.135"></a>
-<span class="sourceLineNo">136</span>        brokerService.waitUntilStarted();<a name="line.136"></a>
-<span class="sourceLineNo">137</span>    }<a name="line.137"></a>
-<span class="sourceLineNo">138</span><a name="line.138"></a>
-<span class="sourceLineNo">139</span>    /**<a name="line.139"></a>
-<span class="sourceLineNo">140</span>     * Stop the embedded ActiveMQ broker, blocking until the broker has stopped.<a name="line.140"></a>
-<span class="sourceLineNo">141</span>     * &lt;p/&gt;<a name="line.141"></a>
-<span class="sourceLineNo">142</span>     * The broker will normally be stopped by JUnit using the after() method.  This method allows the broker to<a name="line.142"></a>
-<span class="sourceLineNo">143</span>     * be stopped manually to support advanced testing scenarios.<a name="line.143"></a>
-<span class="sourceLineNo">144</span>     */<a name="line.144"></a>
-<span class="sourceLineNo">145</span>    public void stop() {<a name="line.145"></a>
-<span class="sourceLineNo">146</span>        if (internalClient != null) {<a name="line.146"></a>
-<span class="sourceLineNo">147</span>            internalClient.stop();<a name="line.147"></a>
-<span class="sourceLineNo">148</span>            internalClient = null;<a name="line.148"></a>
-<span class="sourceLineNo">149</span>        }<a name="line.149"></a>
-<span class="sourceLineNo">150</span>        if (!brokerService.isStopped()) {<a name="line.150"></a>
-<span class="sourceLineNo">151</span>            try {<a name="line.151"></a>
-<span class="sourceLineNo">152</span>                brokerService.stop();<a name="line.152"></a>
-<span class="sourceLineNo">153</span>            } catch (Exception ex) {<a name="line.153"></a>
-<span class="sourceLineNo">154</span>                log.warn("Exception encountered stopping embedded ActiveMQ broker: {}" + this.getBrokerName(), ex);<a name="line.154"></a>
-<span class="sourceLineNo">155</span>            }<a name="line.155"></a>
-<span class="sourceLineNo">156</span>        }<a name="line.156"></a>
-<span class="sourceLineNo">157</span><a name="line.157"></a>
-<span class="sourceLineNo">158</span>        brokerService.waitUntilStopped();<a name="line.158"></a>
-<span class="sourceLineNo">159</span>    }<a name="line.159"></a>
-<span class="sourceLineNo">160</span><a name="line.160"></a>
-<span class="sourceLineNo">161</span>    /**<a name="line.161"></a>
-<span class="sourceLineNo">162</span>     * Start the embedded ActiveMQ Broker<a name="line.162"></a>
-<span class="sourceLineNo">163</span>     * &lt;p/&gt;<a name="line.163"></a>
-<span class="sourceLineNo">164</span>     * Invoked by JUnit to setup the resource<a name="line.164"></a>
-<span class="sourceLineNo">165</span>     */<a name="line.165"></a>
-<span class="sourceLineNo">166</span>    @Override<a name="line.166"></a>
-<span class="sourceLineNo">167</span>    protected void before() throws Throwable {<a name="line.167"></a>
-<span class="sourceLineNo">168</span>        log.info("Starting embedded ActiveMQ broker: {}", this.getBrokerName());<a name="line.168"></a>
-<span class="sourceLineNo">169</span><a name="line.169"></a>
-<span class="sourceLineNo">170</span>        this.start();<a name="line.170"></a>
-<span class="sourceLineNo">171</span><a name="line.171"></a>
-<span class="sourceLineNo">172</span>        super.before();<a name="line.172"></a>
-<span class="sourceLineNo">173</span>    }<a name="line.173"></a>
-<span class="sourceLineNo">174</span><a name="line.174"></a>
-<span class="sourceLineNo">175</span>    /**<a name="line.175"></a>
-<span class="sourceLineNo">176</span>     * Stop the embedded ActiveMQ Broker<a name="line.176"></a>
-<span class="sourceLineNo">177</span>     * &lt;p/&gt;<a name="line.177"></a>
-<span class="sourceLineNo">178</span>     * Invoked by JUnit to tear down the resource<a name="line.178"></a>
-<span class="sourceLineNo">179</span>     */<a name="line.179"></a>
-<span class="sourceLineNo">180</span>    @Override<a name="line.180"></a>
-<span class="sourceLineNo">181</span>    protected void after() {<a name="line.181"></a>
-<span class="sourceLineNo">182</span>        log.info("Stopping Embedded ActiveMQ Broker: {}", this.getBrokerName());<a name="line.182"></a>
-<span class="sourceLineNo">183</span><a name="line.183"></a>
-<span class="sourceLineNo">184</span>        super.after();<a name="line.184"></a>
-<span class="sourceLineNo">185</span><a name="line.185"></a>
-<span class="sourceLineNo">186</span>        this.stop();<a name="line.186"></a>
-<span class="sourceLineNo">187</span>    }<a name="line.187"></a>
-<span class="sourceLineNo">188</span><a name="line.188"></a>
-<span class="sourceLineNo">189</span>    /**<a name="line.189"></a>
-<span class="sourceLineNo">190</span>     * Create an ActiveMQConnectionFactory for the embedded ActiveMQ Broker<a name="line.190"></a>
-<span class="sourceLineNo">191</span>     *<a name="line.191"></a>
-<span class="sourceLineNo">192</span>     * @return a new ActiveMQConnectionFactory<a name="line.192"></a>
-<span class="sourceLineNo">193</span>     */<a name="line.193"></a>
-<span class="sourceLineNo">194</span>    public ActiveMQConnectionFactory createConnectionFactory() {<a name="line.194"></a>
-<span class="sourceLineNo">195</span>        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();<a name="line.195"></a>
-<span class="sourceLineNo">196</span>        connectionFactory.setBrokerURL(getVmURL());<a name="line.196"></a>
-<span class="sourceLineNo">197</span>        return connectionFactory;<a name="line.197"></a>
-<span class="sourceLineNo">198</span>    }<a name="line.198"></a>
-<span class="sourceLineNo">199</span><a name="line.199"></a>
-<span class="sourceLineNo">200</span>    /**<a name="line.200"></a>
-<span class="sourceLineNo">201</span>     * Create an PooledConnectionFactory for the embedded ActiveMQ Broker<a name="line.201"></a>
-<span class="sourceLineNo">202</span>     *<a name="line.202"></a>
-<span class="sourceLineNo">203</span>     * @return a new PooledConnectionFactory<a name="line.203"></a>
-<span class="sourceLineNo">204</span>     */<a name="line.204"></a>
-<span class="sourceLineNo">205</span>    public PooledConnectionFactory createPooledConnectionFactory() {<a name="line.205"></a>
-<span class="sourceLineNo">206</span>        ActiveMQConnectionFactory connectionFactory = createConnectionFactory();<a name="line.206"></a>
-<span class="sourceLineNo">207</span><a name="line.207"></a>
-<span class="sourceLineNo">208</span>        PooledConnectionFactory pooledConnectionFactory = new PooledConnectionFactory(connectionFactory);<a name="line.208"></a>
-<span class="sourceLineNo">209</span><a name="line.209"></a>
-<span class="sourceLineNo">210</span>        return pooledConnectionFactory;<a name="line.210"></a>
-<span class="sourceLineNo">211</span>    }<a name="line.211"></a>
-<span class="sourceLineNo">212</span><a name="line.212"></a>
-<span class="sourceLineNo">213</span>    /**<a name="line.213"></a>
-<span class="sourceLineNo">214</span>     * Get the BrokerService for the embedded ActiveMQ broker.<a name="line.214"></a>
-<span class="sourceLineNo">215</span>     * &lt;p/&gt;<a name="line.215"></a>
-<span class="sourceLineNo">216</span>     * This may be required for advanced configuration of the BrokerService.<a name="line.216"></a>
-<span class="sourceLineNo">217</span>     *<a name="line.217"></a>
-<span class="sourceLineNo">218</span>     * @return the embedded ActiveMQ broker<a name="line.218"></a>
-<span class="sourceLineNo">219</span>     */<a name="line.219"></a>
-<span class="sourceLineNo">220</span>    public BrokerService getBrokerService() {<a name="line.220"></a>
-<span class="sourceLineNo">221</span>        return brokerService;<a name="line.221"></a>
-<span class="sourceLineNo">222</span>    }<a name="line.222"></a>
-<span class="sourceLineNo">223</span><a name="line.223"></a>
-<span class="sourceLineNo">224</span>    /**<a name="line.224"></a>
-<span class="sourceLineNo">225</span>     * Get the failover VM URL for the embedded ActiveMQ Broker<a name="line.225"></a>
-<span class="sourceLineNo">226</span>     * &lt;p/&gt;<a name="line.226"></a>
-<span class="sourceLineNo">227</span>     * NOTE:  The create=false option is appended to the URL to avoid the automatic creation of brokers<a name="line.227"></a>
-<span class="sourceLineNo">228</span>     * and the resulting duplicate broker errors<a name="line.228"></a>
-<span class="sourceLineNo">229</span>     *<a name="line.229"></a>
-<span class="sourceLineNo">230</span>     * @return the VM URL for the embedded broker<a name="line.230"></a>
-<span class="sourceLineNo">231</span>     */<a name="line.231"></a>
-<span class="sourceLineNo">232</span>    public String getVmURL() {<a name="line.232"></a>
-<span class="sourceLineNo">233</span>        return getVmURL(true);<a name="line.233"></a>
-<span class="sourceLineNo">234</span>    }<a name="line.234"></a>
-<span class="sourceLineNo">235</span><a name="line.235"></a>
-<span class="sourceLineNo">236</span>    /**<a name="line.236"></a>
-<span class="sourceLineNo">237</span>     * Get the VM URL for the embedded ActiveMQ Broker<a name="line.237"></a>
-<span class="sourceLineNo">238</span>     * &lt;p/&gt;<a name="line.238"></a>
-<span class="sourceLineNo">239</span>     * NOTE:  The create=false option is appended to the URL to avoid the automatic creation of brokers<a name="line.239"></a>
-<span class="sourceLineNo">240</span>     * and the resulting duplicate broker errors<a name="line.240"></a>
-<span class="sourceLineNo">241</span>     *<a name="line.241"></a>
-<span class="sourceLineNo">242</span>     * @param failoverURL if true a failover URL will be returned<a name="line.242"></a>
-<span class="sourceLineNo">243</span>     * @return the VM URL for the embedded broker<a name="line.243"></a>
-<span class="sourceLineNo">244</span>     */<a name="line.244"></a>
-<span class="sourceLineNo">245</span>    public String getVmURL(boolean failoverURL) {<a name="line.245"></a>
-<span class="sourceLineNo">246</span>        if (failoverURL) {<a name="line.246"></a>
-<span class="sourceLineNo">247</span>            return String.format("failover:(%s?create=false)", brokerService.getVmConnectorURI().toString());<a name="line.247"></a>
-<span class="sourceLineNo">248</span>        }<a name="line.248"></a>
-<span class="sourceLineNo">249</span><a name="line.249"></a>
-<span class="sourceLineNo">250</span>        return brokerService.getVmConnectorURI().toString() + "?create=false";<a name="line.250"></a>
-<span class="sourceLineNo">251</span>    }<a name="line.251"></a>
-<span class="sourceLineNo">252</span><a name="line.252"></a>
-<span class="sourceLineNo">253</span>    /**<a name="line.253"></a>
-<span class="sourceLineNo">254</span>     * Get the failover VM URI for the embedded ActiveMQ Broker<a name="line.254"></a>
-<span class="sourceLineNo">255</span>     * &lt;p/&gt;<a name="line.255"></a>
-<span class="sourceLineNo">256</span>     * NOTE:  The create=false option is appended to the URI to avoid the automatic creation of brokers<a name="line.256"></a>
-<span class="sourceLineNo">257</span>     * and the resulting duplicate broker errors<a name="line.257"></a>
-<span class="sourceLineNo">258</span>     *<a name="line.258"></a>
-<span class="sourceLineNo">259</span>     * @return the VM URI for the embedded broker<a name="line.259"></a>
-<span class="sourceLineNo">260</span>     */<a name="line.260"></a>
-<span class="sourceLineNo">261</span>    public URI getVmURI() {<a name="line.261"></a>
-<span class="sourceLineNo">262</span>        return getVmURI(true);<a name="line.262"></a>
-<span class="sourceLineNo">263</span>    }<a name="line.263"></a>
-<span class="sourceLineNo">264</span><a name="line.264"></a>
-<span class="sourceLineNo">265</span>    /**<a name="line.265"></a>
-<span class="sourceLineNo">266</span>     * Get the VM URI for the embedded ActiveMQ Broker<a name="line.266"></a>
-<span class="sourceLineNo">267</span>     * &lt;p/&gt;<a name="line.267"></a>
-<span class="sourceLineNo">268</span>     * NOTE:  The create=false option is appended to the URI to avoid the automatic creation of brokers<a name="line.268"></a>
-<span class="sourceLineNo">269</span>     * and the resulting duplicate broker errors<a name="line.269"></a>
-<span class="sourceLineNo">270</span>     *<a name="line.270"></a>
-<span class="sourceLineNo">271</span>     * @param failoverURI if true a failover URI will be returned<a name="line.271"></a>
-<span class="sourceLineNo">272</span>     * @return the VM URI for the embedded broker<a name="line.272"></a>
-<span class="sourceLineNo">273</span>     */<a name="line.273"></a>
-<span class="sourceLineNo">274</span>    public URI getVmURI(boolean failoverURI) {<a name="line.274"></a>
-<span class="sourceLineNo">275</span>        URI result;<a name="line.275"></a>
-<span class="sourceLineNo">276</span>        try {<a name="line.276"></a>
-<span class="sourceLineNo">277</span>            result = new URI(getVmURL(failoverURI));<a name="line.277"></a>
-<span class="sourceLineNo">278</span>        } catch (URISyntaxException uriEx) {<a name="line.278"></a>
-<span class="sourceLineNo">279</span>            throw new RuntimeException("Unable to create failover URI", uriEx);<a name="line.279"></a>
-<span class="sourceLineNo">280</span>        }<a name="line.280"></a>
-<span class="sourceLineNo">281</span><a name="line.281"></a>
-<span class="sourceLineNo">282</span>        return result;<a name="line.282"></a>
-<span class="sourceLineNo">283</span>    }<a name="line.283"></a>
-<span class="sourceLineNo">284</span><a name="line.284"></a>
-<span class="sourceLineNo">285</span>    /**<a name="line.285"></a>
-<span class="sourceLineNo">286</span>     * Get the name of the embedded ActiveMQ Broker<a name="line.286"></a>
-<span class="sourceLineNo">287</span>     *<a name="line.287"></a>
-<span class="sourceLineNo">288</span>     * @return name of the embedded broker<a name="line.288"></a>
-<span class="sourceLineNo">289</span>     */<a name="line.289"></a>
-<span class="sourceLineNo">290</span>    public String getBrokerName() {<a name="line.290"></a>
-<span class="sourceLineNo">291</span>        return brokerService.getBrokerName();<a name="line.291"></a>
-<span class="sourceLineNo">292</span>    }<a name="line.292"></a>
-<span class="sourceLineNo">293</span><a name="line.293"></a>
-<span class="sourceLineNo">294</span>    public void setBrokerName(String brokerName) {<a name="line.294"></a>
-<span class="sourceLineNo">295</span>        brokerService.setBrokerName(brokerName);<a name="line.295"></a>
-<span class="sourceLineNo">296</span>    }<a name="line.296"></a>
-<span class="sourceLineNo">297</span><a name="line.297"></a>
-<span class="sourceLineNo">298</span>    public boolean isStatisticsPluginEnabled() {<a name="line.298"></a>
-<span class="sourceLineNo">299</span>        BrokerPlugin[] plugins = brokerService.getPlugins();<a name="line.299"></a>
-<span class="sourceLineNo">300</span><a name="line.300"></a>
-<span class="sourceLineNo">301</span>        if (null != plugins) {<a name="line.301"></a>
-<span class="sourceLineNo">302</span>            for (BrokerPlugin plugin : plugins) {<a name="line.302"></a>
-<span class="sourceLineNo">303</span>                if (plugin instanceof StatisticsBrokerPlugin) {<a name="line.303"></a>
-<span class="sourceLineNo">304</span>                    return true;<a name="line.304"></a>
-<span class="sourceLineNo">305</span>                }<a name="line.305"></a>
-<span class="sourceLineNo">306</span>            }<a name="line.306"></a>
-<span class="sourceLineNo">307</span>        }<a name="line.307"></a>
-<span class="sourceLineNo">308</span><a name="line.308"></a>
-<span class="sourceLineNo">309</span>        return false;<a name="line.309"></a>
-<span class="sourceLineNo">310</span>    }<a name="line.310"></a>
-<span class="sourceLineNo">311</span><a name="line.311"></a>
-<span class="sourceLineNo">312</span>    public void enableStatisticsPlugin() {<a name="line.312"></a>
-<span class="sourceLineNo">313</span>        if (!isStatisticsPluginEnabled()) {<a name="line.313"></a>
-<span class="sourceLineNo">314</span>            BrokerPlugin[] newPlugins;<a name="line.314"></a>
-<span class="sourceLineNo">315</span>            BrokerPlugin[] currentPlugins = brokerService.getPlugins();<a name="line.315"></a>
-<span class="sourceLineNo">316</span>            if (null != currentPlugins &amp;&amp; 0 &lt; currentPlugins.length) {<a name="line.316"></a>
-<span class="sourceLineNo">317</span>                newPlugins = new BrokerPlugin[currentPlugins.length + 1];<a name="line.317"></a>
-<span class="sourceLineNo">318</span><a name="line.318"></a>
-<span class="sourceLineNo">319</span>                System.arraycopy(currentPlugins, 0, newPlugins, 0, currentPlugins.length);<a name="line.319"></a>
-<span class="sourceLineNo">320</span>            } else {<a name="line.320"></a>
-<span class="sourceLineNo">321</span>                newPlugins = new BrokerPlugin[1];<a name="line.321"></a>
-<span class="sourceLineNo">322</span>            }<a name="line.322"></a>
-<span class="sourceLineNo">323</span><a name="line.323"></a>
-<span class="sourceLineNo">324</span>            newPlugins[newPlugins.length - 1] = new StatisticsBrokerPlugin();<a name="line.324"></a>
-<span class="sourceLineNo">325</span><a name="line.325"></a>
-<span class="sourceLineNo">326</span>            brokerService.setPlugins(newPlugins);<a name="line.326"></a>
-<span class="sourceLineNo">327</span>        }<a name="line.327"></a>
-<span class="sourceLineNo">328</span>    }<a name="line.328"></a>
-<span class="sourceLineNo">329</span><a name="line.329"></a>
-<span class="sourceLineNo">330</span>    public void disableStatisticsPlugin() {<a name="line.330"></a>
-<span class="sourceLineNo">331</span>        if (isStatisticsPluginEnabled()) {<a name="line.331"></a>
-<span class="sourceLineNo">332</span>            BrokerPlugin[] currentPlugins = brokerService.getPlugins();<a name="line.332"></a>
-<span class="sourceLineNo">333</span>            if (1 &lt; currentPlugins.length) {<a name="line.333"></a>
-<span class="sourceLineNo">334</span>                BrokerPlugin[] newPlugins = new BrokerPlugin[currentPlugins.length - 1];<a name="line.334"></a>
-<span class="sourceLineNo">335</span><a name="line.335"></a>
-<span class="sourceLineNo">336</span>                int i = 0;<a name="line.336"></a>
-<span class="sourceLineNo">337</span>                for (BrokerPlugin plugin : currentPlugins) {<a name="line.337"></a>
-<span class="sourceLineNo">338</span>                    if (!(plugin instanceof StatisticsBrokerPlugin)) {<a name="line.338"></a>
-<span class="sourceLineNo">339</span>                        newPlugins[i++] = plugin;<a name="line.339"></a>
-<span class="sourceLineNo">340</span>                    }<a name="line.340"></a>
-<span class="sourceLineNo">341</span>                }<a name="line.341"></a>
-<span class="sourceLineNo">342</span>                brokerService.setPlugins(newPlugins);<a name="line.342"></a>
-<span class="sourceLineNo">343</span>            } else {<a name="line.343"></a>
-<span class="sourceLineNo">344</span>                brokerService.setPlugins(null);<a name="line.344"></a>
-<span class="sourceLineNo">345</span>            }<a name="line.345"></a>
-<span class="sourceLineNo">346</span><a name="line.346"></a>
-<span class="sourceLineNo">347</span>        }<a name="line.347"></a>
-<span class="sourceLineNo">348</span>    }<a name="line.348"></a>
-<span class="sourceLineNo">349</span><a name="line.349"></a>
-<span class="sourceLineNo">350</span>    public boolean isAdvisoryForDeliveryEnabled() {<a name="line.350"></a>
-<span class="sourceLineNo">351</span>        return getDefaultPolicyEntry().isAdvisoryForDelivery();<a name="line.351"></a>
-<span class="sourceLineNo">352</span>    }<a name="line.352"></a>
-<span class="sourceLineNo">353</span><a name="line.353"></a>
-<span class="sourceLineNo">354</span>    public void enableAdvisoryForDelivery() {<a name="line.354"></a>
-<span class="sourceLineNo">355</span>        getDefaultPolicyEntry().setAdvisoryForDelivery(true);<a name="line.355"></a>
-<span class="sourceLineNo">356</span>    }<a name="line.356"></a>
-<span class="sourceLineNo">357</span><a name="line.357"></a>
-<span class="sourceLineNo">358</span>    public void disableAdvisoryForDelivery() {<a name="line.358"></a>
-<span class="sourceLineNo">359</span>        getDefaultPolicyEntry().setAdvisoryForDelivery(false);<a name="line.359"></a>
-<span class="sourceLineNo">360</span>    }<a name="line.360"></a>
-<span class="sourceLineNo">361</span><a name="line.361"></a>
-<span class="sourceLineNo">362</span>    public boolean isAdvisoryForConsumedEnabled() {<a name="line.362"></a>
-<span class="sourceLineNo">363</span>        return getDefaultPolicyEntry().isAdvisoryForConsumed();<a name="line.363"></a>
-<span class="sourceLineNo">364</span>    }<a name="line.364"></a>
-<span class="sourceLineNo">365</span><a name="line.365"></a>
-<span class="sourceLineNo">366</span>    public void enableAdvisoryForConsumed() {<a name="line.366"></a>
-<span class="sourceLineNo">367</span>        getDefaultPolicyEntry().setAdvisoryForConsumed(true);<a name="line.367"></a>
-<span class="sourceLineNo">368</span>    }<a name="line.368"></a>
-<span class="sourceLineNo">369</span><a name="line.369"></a>
-<span class="sourceLineNo">370</span>    public void disableAdvisoryForConsumed() {<a name="line.370"></a>
-<span class="sourceLineNo">371</span>        getDefaultPolicyEntry().setAdvisoryForConsumed(false);<a name="line.371"></a>
-<span class="sourceLineNo">372</span>    }<a name="line.372"></a>
-<span class="sourceLineNo">373</span><a name="line.373"></a>
-<span class="sourceLineNo">374</span>    public boolean isAdvisoryForDiscardingMessagesEnabled() {<a name="line.374"></a>
-<span class="sourceLineNo">375</span>        return getDefaultPolicyEntry().isAdvisoryForDiscardingMessages();<a name="line.375"></a>
-<span class="sourceLineNo">376</span>    }<a name="line.376"></a>
-<span class="sourceLineNo">377</span><a name="line.377"></a>
-<span class="sourceLineNo">378</span>    public void enableAdvisoryForDiscardingMessages() {<a name="line.378"></a>
-<span class="sourceLineNo">379</span>        getDefaultPolicyEntry().setAdvisoryForDiscardingMessages(true);<a name="line.379"></a>
-<span class="sourceLineNo">380</span>    }<a name="line.380"></a>
-<span class="sourceLineNo">381</span><a name="line.381"></a>
-<span class="sourceLineNo">382</span>    public void disableAdvisoryForDiscardingMessages() {<a name="line.382"></a>
-<span class="sourceLineNo">383</span>        getDefaultPolicyEntry().setAdvisoryForDiscardingMessages(false);<a name="line.383"></a>
-<span class="sourceLineNo">384</span>    }<a name="line.384"></a>
-<span class="sourceLineNo">385</span><a name="line.385"></a>
-<span class="sourceLineNo">386</span>    public boolean isAdvisoryForFastProducersEnabled() {<a name="line.386"></a>
-<span class="sourceLineNo">387</span>        return getDefaultPolicyEntry().isAdvisoryForFastProducers();<a name="line.387"></a>
-<span class="sourceLineNo">388</span>    }<a name="line.388"></a>
-<span class="sourceLineNo">389</span><a name="line.389"></a>
-<span class="sourceLineNo">390</span>    public void enableAdvisoryForFastProducers() {<a name="line.390"></a>
-<span class="sourceLineNo">391</span>        getDefaultPolicyEntry().setAdvisoryForFastProducers(true);<a name="line.391"></a>
-<span class="sourceLineNo">392</span>    }<a name="line.392"></a>
-<span class="sourceLineNo">393</span><a name="line.393"></a>
-<span class="sourceLineNo">394</span>    public void disableAdvisoryForFastProducers() {<a name="line.394"></a>
-<span class="sourceLineNo">395</span>        getDefaultPolicyEntry().setAdvisoryForFastProducers(false);<a name="line.395"></a>
-<span class="sourceLineNo">396</span>    }<a name="line.396"></a>
-<span class="sourceLineNo">397</span><a name="line.397"></a>
-<span class="sourceLineNo">398</span>    public boolean isAdvisoryForSlowConsumersEnabled() {<a name="line.398"></a>
-<span class="sourceLineNo">399</span>        return getDefaultPolicyEntry().isAdvisoryForSlowConsumers();<a name="line.399"></a>
-<span class="sourceLineNo">400</span>    }<a name="line.400"></a>
-<span class="sourceLineNo">401</span><a name="line.401"></a>
-<span class="sourceLineNo">402</span>    public void enableAdvisoryForSlowConsumers() {<a name="line.402"></a>
-<span class="sourceLineNo">403</span>        getDefaultPolicyEntry().setAdvisoryForSlowConsumers(true);<a name="line.403"></a>
-<span class="sourceLineNo">404</span>    }<a name="line.404"></a>
-<span class="sourceLineNo">405</span><a name="line.405"></a>
-<span class="sourceLineNo">406</span>    public void disableAdvisoryForSlowConsumers() {<a name="line.406"></a>
-<span class="sourceLineNo">407</span>        getDefaultPolicyEntry().setAdvisoryForSlowConsumers(false);<a name="line.407"></a>
-<span class="sourceLineNo">408</span>    }<a name="line.408"></a>
-<span class="sourceLineNo">409</span><a name="line.409"></a>
-<span class="sourceLineNo">410</span>    /**<a name="line.410"></a>
-<span class="sourceLineNo">411</span>     * Get the number of messages in a specific JMS Destination.<a name="line.411"></a>
-<span class="sourceLineNo">412</span>     * &lt;p/&gt;<a name="line.412"></a>
-<span class="sourceLineNo">413</span>     * The full name of the JMS destination including the prefix should be provided - i.e. queue://myQueue<a name="line.413"></a>
-<span class="sourceLineNo">414</span>     * or topic://myTopic.  If the destination type prefix is not included in the destination name, a prefix<a name="line.414"></a>
-<span class="sourceLineNo">415</span>     * of "queue://" is assumed.<a name="line.415"></a>
-<span class="sourceLineNo">416</span>     *<a name="line.416"></a>
-<span class="sourceLineNo">417</span>     * @param destinationName the full name of the JMS Destination<a name="line.417"></a>
-<span class="sourceLineNo">418</span>     * @return the number of messages in the JMS Destination<a name="line.418"></a>
-<span class="sourceLineNo">419</span>     */<a name="line.419"></a>
-<span class="sourceLineNo">420</span>    public long getMessageCount(String destinationName) {<a name="line.420"></a>
-<span class="sourceLineNo">421</span>        if (null == brokerService) {<a name="line.421"></a>
-<span class="sourceLineNo">422</span>            throw new IllegalStateException("BrokerService has not yet been created - was before() called?");<a name="line.422"></a>
-<span class="sourceLineNo">423</span>        }<a name="line.423"></a>
-<span class="sourceLineNo">424</span><a name="line.424"></a>
-<span class="sourceLineNo">425</span>        // TODO: Figure out how to do this for Topics<a name="line.425"></a>
-<span class="sourceLineNo">426</span>        Destination destination = getDestination(destinationName);<a name="line.426"></a>
-<span class="sourceLineNo">427</span>        if (destination == null) {<a name="line.427"></a>
-<span class="sourceLineNo">428</span>            throw new RuntimeException("Failed to find destination: " + destinationName);<a name="line.428"></a>
-<span class="sourceLineNo">429</span>        }<a name="line.429"></a>
-<span class="sourceLineNo">430</span><a name="line.430"></a>
-<span class="sourceLineNo">431</span>        // return destination.getMessageStore().getMessageCount();<a name="line.431"></a>
-<span class="sourceLineNo">432</span>        return destination.getDestinationStatistics().getMessages().getCount();<a name="line.432"></a>
-<span class="sourceLineNo">433</span>    }<a name="line.433"></a>
-<span class="sourceLineNo">434</span><a name="line.434"></a>
-<span class="sourceLineNo">435</span>    /**<a name="line.435"></a>
-<span class="sourceLineNo">436</span>     * Get the ActiveMQ destination<a name="line.436"></a>
-<span class="sourceLineNo">437</span>     * &lt;p/&gt;<a name="line.437"></a>
-<span class="sourceLineNo">438</span>     * The full name of the JMS destination including the prefix should be provided - i.e. queue://myQueue<a name="line.438"></a>
-<span class="sourceLineNo">439</span>     * or topic://myTopic.  If the destination type prefix is not included in the destination name, a prefix<a name="line.439"></a>
-<span class="sourceLineNo">440</span>     * of "queue://" is assumed.<a name="line.440"></a>
-<span class="sourceLineNo">441</span>     *<a name="line.441"></a>
-<span class="sourceLineNo">442</span>     * @param destinationName the full name of the JMS Destination<a name="line.442"></a>
-<span class="sourceLineNo">443</span>     * @return the ActiveMQ destination, null if not found<a name="line.443"></a>
-<span class="sourceLineNo">444</span>     */<a name="line.444"></a>
-<span class="sourceLineNo">445</span>    public Destination getDestination(String destinationName) {<a name="line.445"></a>
-<span class="sourceLineNo">446</span>        if (null == brokerService) {<a name="line.446"></a>
-<span class="sourceLineNo">447</span>            throw new IllegalStateException("BrokerService has not yet been created - was before() called?");<a name="line.447"></a>
-<span class="sourceLineNo">448</span>        }<a name="line.448"></a>
-<span class="sourceLineNo">449</span><a name="line.449"></a>
-<span class="sourceLineNo">450</span>        Destination destination = null;<a name="line.450"></a>
-<span class="sourceLineNo">451</span>        try {<a name="line.451"></a>
-<span class="sourceLineNo">452</span>            destination = brokerService.getDestination(ActiveMQDestination.createDestination(destinationName, QUEUE_TYPE));<a name="line.452"></a>
-<span class="sourceLineNo">453</span>        } catch (RuntimeException runtimeEx) {<a name="line.453"></a>
-<span class="sourceLineNo">454</span>            throw runtimeEx;<a name="line.454"></a>
-<span class="sourceLineNo">455</span>        } catch (Exception ex) {<a name="line.455"></a>
-<span class="sourceLineNo">456</span>            throw new EmbeddedActiveMQBrokerException("Unexpected exception getting destination from broker", ex);<a name="line.456"></a>
-<span class="sourceLineNo">457</span>        }<a name="line.457"></a>
-<span class="sourceLineNo">458</span><a name="line.458"></a>
-<span class="sourceLineNo">459</span>        return destination;<a name="line.459"></a>
-<span class="sourceLineNo">460</span>    }<a name="line.460"></a>
-<span class="sourceLineNo">461</span><a name="line.461"></a>
-<span class="sourceLineNo">462</span>    private PolicyEntry getDefaultPolicyEntry() {<a name="line.462"></a>
-<span class="sourceLineNo">463</span>        PolicyMap destinationPolicy = brokerService.getDestinationPolicy();<a name="line.463"></a>
-<span class="sourceLineNo">464</span>        if (null == destinationPolicy) {<a name="line.464"></a>
-<span class="sourceLineNo">465</span>            destinationPolicy = new PolicyMap();<a name="line.465"></a>
-<span class="sourceLineNo">466</span>            brokerService.setDestinationPolicy(destinationPolicy);<a name="line.466"></a>
-<span class="sourceLineNo">467</span>        }<a name="line.467"></a>
-<span class="sourceLineNo">468</span><a name="line.468"></a>
-<span class="sourceLineNo">469</span>        PolicyEntry defaultEntry = destinationPolicy.getDefaultEntry();<a name="line.469"></a>
-<span class="sourceLineNo">470</span>        if (null == defaultEntry) {<a name="line.470"></a>
-<span class="sourceLineNo">471</span>            defaultEntry = new PolicyEntry();<a name="line.471"></a>
-<span class="sourceLineNo">472</span>            destinationPolicy.setDefaultEntry(defaultEntry);<a name="line.472"></a>
-<span class="sourceLineNo">473</span>        }<a name="line.473"></a>
-<span class="sourceLineNo">474</span><a name="line.474"></a>
-<span class="sourceLineNo">475</span>        return defaultEntry;<a name="line.475"></a>
-<span class="sourceLineNo">476</span>    }<a name="line.476"></a>
-<span class="sourceLineNo">477</span><a name="line.477"></a>
-<span class="sourceLineNo">478</span>    public BytesMessage createBytesMessage() {<a name="line.478"></a>
-<span class="sourceLineNo">479</span>        return internalClient.createBytesMessage();<a name="line.479"></a>
-<span class="sourceLineNo">480</span>    }<a name="line.480"></a>
-<span class="sourceLineNo">481</span><a name="line.481"></a>
-<span class="sourceLineNo">482</span>    public TextMessage createTextMessage() {<a name="line.482"></a>
-<span class="sourceLineNo">483</span>        return internalClient.createTextMessage();<a name="line.483"></a>
-<span class="sourceLineNo">484</span>    }<a name="line.484"></a>
-<span class="sourceLineNo">485</span><a name="line.485"></a>
-<span class="sourceLineNo">486</span>    public MapMessage createMapMessage() {<a name="line.486"></a>
-<span class="sourceLineNo">487</span>        return internalClient.createMapMessage();<a name="line.487"></a>
-<span class="sourceLineNo">488</span>    }<a name="line.488"></a>
-<span class="sourceLineNo">489</span><a name="line.489"></a>
-<span class="sourceLineNo">490</span>    public ObjectMessage createObjectMessage() {<a name="line.490"></a>
-<span class="sourceLineNo">491</span>        return internalClient.createObjectMessage();<a name="line.491"></a>
-<span class="sourceLineNo">492</span>    }<a name="line.492"></a>
-<span class="sourceLineNo">493</span><a name="line.493"></a>
-<span class="sourceLineNo">494</span>    public StreamMessage createStreamMessage() {<a name="line.494"></a>
-<span class="sourceLineNo">495</span>        return internalClient.createStreamMessage();<a name="line.495"></a>
-<span class="sourceLineNo">496</span>    }<a name="line.496"></a>
-<span class="sourceLineNo">497</span><a name="line.497"></a>
-<span class="sourceLineNo">498</span>    public BytesMessage createMessage(byte[] body) {<a name="line.498"></a>
-<span class="sourceLineNo">499</span>        return this.createMessage(body, null);<a name="line.499"></a>
-<span class="sourceLineNo">500</span>    }<a name="line.500"></a>
-<span class="sourceLineNo">501</span><a name="line.501"></a>
-<span class="sourceLineNo">502</span>    public TextMessage createMessage(String body) {<a name="line.502"></a>
-<span class="sourceLineNo">503</span>        return this.createMessage(body, null);<a name="line.503"></a>
-<span class="sourceLineNo">504</span>    }<a name="line.504"></a>
-<span class="sourceLineNo">505</span><a name="line.505"></a>
-<span class="sourceLineNo">506</span>    public MapMessage createMessage(Map&lt;String, Object&gt; body) {<a name="line.506"></a>
-<span class="sourceLineNo">507</span>        return this.createMessage(body, null);<a name="line.507"></a>
-<span class="sourceLineNo">508</span>    }<a name="line.508"></a>
-<span class="sourceLineNo">509</span><a name="line.509"></a>
-<span class="sourceLineNo">510</span>    public ObjectMessage createMessage(Serializable body) {<a name="line.510"></a>
-<span class="sourceLineNo">511</span>        return this.createMessage(body, null);<a name="line.511"></a>
-<span class="sourceLineNo">512</span>    }<a name="line.512"></a>
-<span class="sourceLineNo">513</span><a name="line.513"></a>
-<span class="sourceLineNo">514</span>    public BytesMessage createMessage(byte[] body, Map&lt;String, Object&gt; properties) {<a name="line.514"></a>
-<span class="sourceLineNo">515</span>        BytesMessage message = this.createBytesMessage();<a name="line.515"></a>
-<span class="sourceLineNo">516</span>        if (body != null) {<a name="line.516"></a>
-<span class="sourceLineNo">517</span>            try {<a name="line.517"></a>
-<span class="sourceLineNo">518</span>                message.writeBytes(body);<a name="line.518"></a>
-<span class="sourceLineNo">519</span>            } catch (JMSException jmsEx) {<a name="line.519"></a>
-<span class="sourceLineNo">520</span>                throw new EmbeddedActiveMQBrokerException(String.format("Failed to set body {%s} on BytesMessage", new String(body)), jmsEx);<a name="line.520"></a>
-<span class="sourceLineNo">521</span>            }<a name="line.521"></a>
-<span class="sourceLineNo">522</span>        }<a name="line.522"></a>
-<span class="sourceLineNo">523</span><a name="line.523"></a>
-<span class="sourceLineNo">524</span>        setMessageProperties(message, properties);<a name="line.524"></a>
-<span class="sourceLineNo">525</span><a name="line.525"></a>
-<span class="sourceLineNo">526</span>        return message;<a name="line.526"></a>
-<span class="sourceLineNo">527</span>    }<a name="line.527"></a>
-<span class="sourceLineNo">528</span><a name="line.528"></a>
-<span class="sourceLineNo">529</span>    public TextMessage createMessage(String body, Map&lt;String, Object&gt; properties) {<a name="line.529"></a>
-<span class="sourceLineNo">530</span>        TextMessage message = this.createTextMessage();<a name="line.530"></a>
-<span class="sourceLineNo">531</span>        if (body != null) {<a name="line.531"></a>
-<span class="sourceLineNo">532</span>            try {<a name="line.532"></a>
-<span class="sourceLineNo">533</span>                message.setText(body);<a name="line.533"></a>
-<span class="sourceLineNo">534</span>            } catch (JMSException jmsEx) {<a name="line.534"></a>
-<span class="sourceLineNo">535</span>                throw new EmbeddedActiveMQBrokerException(String.format("Failed to set body {%s} on TextMessage", body), jmsEx);<a name="line.535"></a>
-<span class="sourceLineNo">536</span>            }<a name="line.536"></a>
-<span class="sourceLineNo">537</span>        }<a name="line.537"></a>
-<span class="sourceLineNo">538</span><a name="line.538"></a>
-<span class="sourceLineNo">539</span>        setMessageProperties(message, properties);<a name="line.539"></a>
-<span class="sourceLineNo">540</span><a name="line.540"></a>
-<span class="sourceLineNo">541</span>        return message;<a name="line.541"></a>
-<span class="sourceLineNo">542</span>    }<a name="line.542"></a>
-<span class="sourceLineNo">543</span><a name="line.543"></a>
-<span class="sourceLineNo">544</span>    public MapMessage createMessage(Map&lt;String, Object&gt; body, Map&lt;String, Object&gt; properties) {<a name="line.544"></a>
-<span class="sourceLineNo">545</span>        MapMessage message = this.createMapMessage();<a name="line.545"></a>
-<span class="sourceLineNo">546</span><a name="line.546"></a>
-<span class="sourceLineNo">547</span>        if (body != null) {<a name="line.547"></a>
-<span class="sourceLineNo">548</span>            for (Map.Entry&lt;String, Object&gt; entry : body.entrySet()) {<a name="line.548"></a>
-<span class="sourceLineNo">549</span>                try {<a name="line.549"></a>
-<span class="sourceLineNo">550</span>                    message.setObject(entry.getKey(), entry.getValue());<a name="line.550"></a>
-<span class="sourceLineNo">551</span>                } catch (JMSException jmsEx) {<a name="line.551"></a>
-<span class="sourceLineNo">552</span>                    throw new EmbeddedActiveMQBrokerException(String.format("Failed to set body entry {%s = %s} on MapMessage", entry.getKey(), entry.getValue().toString()), jmsEx);<a name="line.552"></a>
-<span class="sourceLineNo">553</span>                }<a name="line.553"></a>
-<span class="sourceLineNo">554</span>            }<a name="line.554"></a>
-<span class="sourceLineNo">555</span>        }<a name="line.555"></a>
-<span class="sourceLineNo">556</span><a name="line.556"></a>
-<span class="sourceLineNo">557</span>        setMessageProperties(message, properties);<a name="line.557"></a>
-<span class="sourceLineNo">558</span><a name="line.558"></a>
-<span class="sourceLineNo">559</span>        return message;<a name="line.559"></a>
-<span class="sourceLineNo">560</span>    }<a name="line.560"></a>
-<span class="sourceLineNo">561</span><a name="line.561"></a>
-<span class="sourceLineNo">562</span>    public ObjectMessage createMessage(Serializable body, Map&lt;String, Object&gt; properties) {<a name="line.562"></a>
-<span class="sourceLineNo">563</span>        ObjectMessage message = this.createObjectMessage();<a name="line.563"></a>
-<span class="sourceLineNo">564</span><a name="line.564"></a>
-<span class="sourceLineNo">565</span>        if (body != null) {<a name="line.565"></a>
-<span class="sourceLineNo">566</span>            try {<a name="line.566"></a>
-<span class="sourceLineNo">567</span>                message.setObject(body);<a name="line.567"></a>
-<span class="sourceLineNo">568</span>            } catch (JMSException jmsEx) {<a name="line.568"></a>
-<span class="sourceLineNo">569</span>                throw new EmbeddedActiveMQBrokerException(String.format("Failed to set body {%s} on ObjectMessage", body.toString()), jmsEx);<a name="line.569"></a>
-<span class="sourceLineNo">570</span>            }<a name="line.570"></a>
-<span class="sourceLineNo">571</span>        }<a name="line.571"></a>
-<span class="sourceLineNo">572</span><a name="line.572"></a>
-<span class="sourceLineNo">573</span>        setMessageProperties(message, properties);<a name="line.573"></a>
-<span class="sourceLineNo">574</span><a name="line.574"></a>
-<span class="sourceLineNo">575</span>        return message;<a name="line.575"></a>
-<span class="sourceLineNo">576</span>    }<a name="line.576"></a>
-<span class="sourceLineNo">577</span><a name="line.577"></a>
-<span class="sourceLineNo">578</span>    public void pushMessage(String destinationName, Message message) {<a name="line.578"></a>
-<span class="sourceLineNo">579</span>        if (destinationName == null) {<a name="line.579"></a>
-<span class="sourceLineNo">580</span>            throw new IllegalArgumentException("pushMessage failure - destination name is required");<a name="line.580"></a>
-<span class="sourceLineNo">581</span>        } else if (message == null) {<a name="line.581"></a>
-<span class="sourceLineNo">582</span>            throw new IllegalArgumentException("pushMessage failure - a Message is required");<a name="line.582"></a>
-<span class="sourceLineNo">583</span>        }<a name="line.583"></a>
-<span class="sourceLineNo">584</span>        ActiveMQDestination destination = ActiveMQDestination.createDestination(destinationName, ActiveMQDestination.QUEUE_TYPE);<a name="line.584"></a>
-<span class="sourceLineNo">585</span><a name="line.585"></a>
-<span class="sourceLineNo">586</span>        internalClient.pushMessage(destination, message);<a name="line.586"></a>
-<span class="sourceLineNo">587</span>    }<a name="line.587"></a>
-<span class="sourceLineNo">588</span><a name="line.588"></a>
-<span class="sourceLineNo">589</span>    public BytesMessage pushMessage(String destinationName, byte[] body) {<a name="line.589"></a>
-<span class="sourceLineNo">590</span>        BytesMessage message = createMessage(body, null);<a name="line.590"></a>
-<span class="sourceLineNo">591</span>        pushMessage(destinationName, message);<a name="line.591"></a>
-<span class="sourceLineNo">592</span>        return message;<a name="line.592"></a>
-<span class="sourceLineNo">593</span>    }<a name="line.593"></a>
-<span class="sourceLineNo">594</span><a name="line.594"></a>
-<span class="sourceLineNo">595</span>    public TextMessage pushMessage(String destinationName, String body) {<a name="line.595"></a>
-<span class="sourceLineNo">596</span>        TextMessage message = createMessage(body, null);<a name="line.596"></a>
-<span class="sourceLineNo">597</span>        pushMessage(destinationName, message);<a name="line.597"></a>
-<span class="sourceLineNo">598</span>        return message;<a name="line.598"></a>
-<span class="sourceLineNo">599</span>    }<a name="line.599"></a>
-<span class="sourceLineNo">600</span><a name="line.600"></a>
-<span class="sourceLineNo">601</span>    public MapMessage pushMessage(String destinationName, Map&lt;String, Object&gt; body) {<a name="line.601"></a>
-<span class="sourceLineNo">602</span>        MapMessage message = createMessage(body, null);<a name="line.602"></a>
-<span class="sourceLineNo">603</span>        pushMessage(destinationName, message);<a name="line.603"></a>
-<span class="sourceLineNo">604</span>        return message;<a name="line.604"></a>
-<span class="sourceLineNo">605</span>    }<a name="line.605"></a>
-<span class="sourceLineNo">606</span><a name="line.606"></a>
-<span class="sourceLineNo">607</span>    public ObjectMessage pushMessage(String destinationName, Serializable body) {<a name="line.607"></a>
-<span class="sourceLineNo">608</span>        ObjectMessage message = createMessage(body, null);<a name="line.608"></a>
-<span class="sourceLineNo">609</span>        pushMessage(destinationName, message);<a name="line.609"></a>
-<span class="sourceLineNo">610</span>        return message;<a name="line.610"></a>
-<span class="sourceLineNo">611</span>    }<a name="line.611"></a>
-<span class="sourceLineNo">612</span><a name="line.612"></a>
-<span class="sourceLineNo">613</span>    public BytesMessage pushMessageWithProperties(String destinationName, byte[] body, Map&lt;String, Object&gt; properties) {<a name="line.613"></a>
-<span class="sourceLineNo">614</span>        BytesMessage message = createMessage(body, properties);<a name="line.614"></a>
-<span class="sourceLineNo">615</span>        pushMessage(destinationName, message);<a name="line.615"></a>
-<span class="sourceLineNo">616</span>        return message;<a name="line.616"></a>
-<span class="sourceLineNo">617</span>    }<a name="line.617"></a>
-<span class="sourceLineNo">618</span><a name="line.618"></a>
-<span class="sourceLineNo">619</span>    public TextMessage pushMessageWithProperties(String destinationName, String body, Map&lt;String, Object&gt; properties) {<a name="line.619"></a>
-<span class="sourceLineNo">620</span>        TextMessage message = createMessage(body, properties);<a name="line.620"></a>
-<span class="sourceLineNo">621</span>        pushMessage(destinationName, message);<a name="line.621"></a>
-<span class="sourceLineNo">622</span>        return message;<a name="line.622"></a>
-<span class="sourceLineNo">623</span>    }<a name="line.623"></a>
-<span class="sourceLineNo">624</span><a name="line.624"></a>
-<span class="sourceLineNo">625</span>    public MapMessage pushMessageWithProperties(String destinationName, Map&lt;String, Object&gt; body, Map&lt;String, Object&gt; properties) {<a name="line.625"></a>
-<span class="sourceLineNo">626</span>        MapMessage message = createMessage(body, properties);<a name="line.626"></a>
-<span class="sourceLineNo">627</span>        pushMessage(destinationName, message);<a name="line.627"></a>
-<span class="sourceLineNo">628</span>        return message;<a name="line.628"></a>
-<span class="sourceLineNo">629</span>    }<a name="line.629"></a>
-<span class="sourceLineNo">630</span><a name="line.630"></a>
-<span class="sourceLineNo">631</span>    public ObjectMessage pushMessageWithProperties(String destinationName, Serializable body, Map&lt;String, Object&gt; properties) {<a name="line.631"></a>
-<span class="sourceLineNo">632</span>        ObjectMessage message = createMessage(body, properties);<a name="line.632"></a>
-<span class="sourceLineNo">633</span>        pushMessage(destinationName, message);<a name="line.633"></a>
-<span class="sourceLineNo">634</span>        return message;<a name="line.634"></a>
-<span class="sourceLineNo">635</span>    }<a name="line.635"></a>
-<span class="sourceLineNo">636</span><a name="line.636"></a>
-<span class="sourceLineNo">637</span><a name="line.637"></a>
-<span class="sourceLineNo">638</span>    public Message peekMessage(String destinationName) {<a name="line.638"></a>
-<span class="sourceLineNo">639</span>        if (null == brokerService) {<a name="line.639"></a>
-<span class="sourceLineNo">640</span>            throw new NullPointerException("peekMessage failure  - BrokerService is null");<a name="line.640"></a>
-<span class="sourceLineNo">641</span>        }<a name="line.641"></a>
-<span class="sourceLineNo">642</span><a name="line.642"></a>
-<span class="sourceLineNo">643</span>        if (destinationName == null) {<a name="line.643"></a>
-<span class="sourceLineNo">644</span>            throw new IllegalArgumentException("peekMessage failure - destination name is required");<a name="line.644"></a>
-<span class="sourceLineNo">645</span>        }<a name="line.645"></a>
-<span class="sourceLineNo">646</span><a name="line.646"></a>
-<span class="sourceLineNo">647</span>        ActiveMQDestination destination = ActiveMQDestination.createDestination(destinationName, ActiveMQDestination.QUEUE_TYPE);<a name="line.647"></a>
-<span class="sourceLineNo">648</span>        Destination brokerDestination = null;<a name="line.648"></a>
-<span class="sourceLineNo">649</span><a name="line.649"></a>
-<span class="sourceLineNo">650</span>        try {<a name="line.650"></a>
-<span class="sourceLineNo">651</span>            brokerDestination = brokerService.getDestination(destination);<a name="line.651"></a>
-<span class="sourceLineNo">652</span>        } catch (Exception ex) {<a name="line.652"></a>
-<span class="sourceLineNo">653</span>            throw new EmbeddedActiveMQBrokerException("peekMessage failure - unexpected exception getting destination from BrokerService", ex);<a name="line.653"></a>
-<span class="sourceLineNo">654</span>        }<a name="line.654"></a>
-<span class="sourceLineNo">655</span><a name="line.655"></a>
-<span class="sourceLineNo">656</span>        if (brokerDestination == null) {<a name="line.656"></a>
-<span class="sourceLineNo">657</span>            throw new IllegalStateException(String.format("peekMessage failure - destination %s not found in broker %s", destination.toString(), brokerService.getBrokerName()));<a name="line.657"></a>
-<span class="sourceLineNo">658</span>        }<a name="line.658"></a>
-<span class="sourceLineNo">659</span><a name="line.659"></a>
-<span class="sourceLineNo">660</span>        org.apache.activemq.command.Message[] messages = brokerDestination.browse();<a name="line.660"></a>
-<span class="sourceLineNo">661</span>        if (messages != null &amp;&amp; messages.length &gt; 0) {<a name="line.661"></a>
-<span class="sourceLineNo">662</span>            return (Message) messages[0];<a name="line.662"></a>
-<span class="sourceLineNo">663</span>        }<a name="line.663"></a>
-<span class="sourceLineNo">664</span><a name="line.664"></a>
-<span class="sourceLineNo">665</span>        return null;<a name="line.665"></a>
-<span class="sourceLineNo">666</span>    }<a name="line.666"></a>
-<span class="sourceLineNo">667</span><a name="line.667"></a>
-<span class="sourceLineNo">668</span>    public BytesMessage peekBytesMessage(String destinationName) {<a name="line.668"></a>
-<span class="sourceLineNo">669</span>        return (BytesMessage) peekMessage(destinationName);<a name="line.669"></a>
-<span class="sourceLineNo">670</span>    }<a name="line.670"></a>
-<span class="sourceLineNo">671</span><a name="line.671"></a>
-<span class="sourceLineNo">672</span>    public TextMessage peekTextMessage(String destinationName) {<a name="line.672"></a>
-<span class="sourceLineNo">673</span>        return (TextMessage) peekMessage(destinationName);<a name="line.673"></a>
-<span class="sourceLineNo">674</span>    }<a name="line.674"></a>
-<span class="sourceLineNo">675</span><a name="line.675"></a>
-<span class="sourceLineNo">676</span>    public MapMessage peekMapMessage(String destinationName) {<a name="line.676"></a>
-<span class="sourceLineNo">677</span>        return (MapMessage) peekMessage(destinationName);<a name="line.677"></a>
-<span class="sourceLineNo">678</span>    }<a name="line.678"></a>
-<span class="sourceLineNo">679</span><a name="line.679"></a>
-<span class="sourceLineNo">680</span>    public ObjectMessage peekObjectMessage(String destinationName) {<a name="line.680"></a>
-<span class="sourceLineNo">681</span>        return (ObjectMessage) peekMessage(destinationName);<a name="line.681"></a>
-<span class="sourceLineNo">682</span>    }<a name="line.682"></a>
-<span class="sourceLineNo">683</span><a name="line.683"></a>
-<span class="sourceLineNo">684</span>    public StreamMessage peekStreamMessage(String destinationName) {<a name="line.684"></a>
-<span class="sourceLineNo">685</span>        return (StreamMessage) peekMessage(destinationName);<a name="line.685"></a>
-<span class="sourceLineNo">686</span>    }<a name="line.686"></a>
-<span class="sourceLineNo">687</span><a name="line.687"></a>
-<span class="sourceLineNo">688</span>    public static class EmbeddedActiveMQBrokerException extends RuntimeException {<a name="line.688"></a>
-<span class="sourceLineNo">689</span>        public EmbeddedActiveMQBrokerException(String message) {<a name="line.689"></a>
-<span class="sourceLineNo">690</span>            super(message);<a name="line.690"></a>
-<span class="sourceLineNo">691</span>        }<a name="line.691"></a>
-<span class="sourceLineNo">692</span><a name="line.692"></a>
-<span class="sourceLineNo">693</span>        public EmbeddedActiveMQBrokerException(String message, Exception cause) {<a name="line.693"></a>
-<span class="sourceLineNo">694</span>            super(message, cause);<a name="line.694"></a>
-<span class="sourceLineNo">695</span>        }<a name="line.695"></a>
-<span class="sourceLineNo">696</span>    }<a name="line.696"></a>
-<span class="sourceLineNo">697</span><a name="line.697"></a>
-<span class="sourceLineNo">698</span>    private class InternalClient {<a name="line.698"></a>
-<span class="sourceLineNo">699</span>        ActiveMQConnectionFactory connectionFactory;<a name="line.699"></a>
-<span class="sourceLineNo">700</span>        Connection connection;<a name="line.700"></a>
-<span class="sourceLineNo">701</span>        Session session;<a name="line.701"></a>
-<span class="sourceLineNo">702</span>        MessageProducer producer;<a name="line.702"></a>
-<span class="sourceLineNo">703</span><a name="line.703"></a>
-<span class="sourceLineNo">704</span>        public InternalClient() {<a name="line.704"></a>
-<span class="sourceLineNo">705</span>        }<a name="line.705"></a>
-<span class="sourceLineNo">706</span><a name="line.706"></a>
-<span class="sourceLineNo">707</span>        void start() {<a name="line.707"></a>
-<span class="sourceLineNo">708</span>            connectionFactory = createConnectionFactory();<a name="line.708"></a>
-<span class="sourceLineNo">709</span>            try {<a name="line.709"></a>
-<span class="sourceLineNo">710</span>                connection = connectionFactory.createConnection();<a name="line.710"></a>
-<span class="sourceLineNo">711</span>                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);<a name="line.711"></a>
-<span class="sourceLineNo">712</span>                producer = session.createProducer(null);<a name="line.712"></a>
-<span class="sourceLineNo">713</span>                connection.start();<a name="line.713"></a>
-<span class="sourceLineNo">714</span>            } catch (JMSException jmsEx) {<a name="line.714"></a>
-<span class="sourceLineNo">715</span>                throw new EmbeddedActiveMQBrokerException("Internal Client creation failure", jmsEx);<a name="line.715"></a>
-<span class="sourceLineNo">716</span>            }<a name="line.716"></a>
-<span class="sourceLineNo">717</span>        }<a name="line.717"></a>
-<span class="sourceLineNo">718</span><a name="line.718"></a>
-<span class="sourceLineNo">719</span>        void stop() {<a name="line.719"></a>
-<span class="sourceLineNo">720</span>            if (null != connection) {<a name="line.720"></a>
-<span class="sourceLineNo">721</span>                try {<a name="line.721"></a>
-<span class="sourceLineNo">722</span>                    connection.close();<a name="line.722"></a>
-<span class="sourceLineNo">723</span>                } catch (JMSException jmsEx) {<a name="line.723"></a>
-<span class="sourceLineNo">724</span>                    log.warn("JMSException encounter closing InternalClient connection - ignoring", jmsEx);<a name="line.724"></a>
-<span class="sourceLineNo">725</span>                }<a name="line.725"></a>
-<span class="sourceLineNo">726</span>            }<a name="line.726"></a>
-<span class="sourceLineNo">727</span>        }<a name="line.727"></a>
-<span class="sourceLineNo">728</span><a name="line.728"></a>
-<span class="sourceLineNo">729</span>        public BytesMessage createBytesMessage() {<a name="line.729"></a>
-<span class="sourceLineNo">730</span>            checkSession();<a name="line.730"></a>
-<span class="sourceLineNo">731</span><a name="line.731"></a>
-<span class="sourceLineNo">732</span>            try {<a name="line.732"></a>
-<span class="sourceLineNo">733</span>                return session.createBytesMessage();<a name="line.733"></a>
-<span class="sourceLineNo">734</span>            } catch (JMSException jmsEx) {<a name="line.734"></a>
-<span class="sourceLineNo">735</span>                throw new EmbeddedActiveMQBrokerException("Failed to create BytesMessage", jmsEx);<a name="line.735"></a>
-<span class="sourceLineNo">736</span>            }<a name="line.736"></a>
-<span class="sourceLineNo">737</span>        }<a name="line.737"></a>
-<span class="sourceLineNo">738</span><a name="line.738"></a>
-<span class="sourceLineNo">739</span>        public TextMessage createTextMessage() {<a name="line.739"></a>
-<span class="sourceLineNo">740</span>            checkSession();<a name="line.740"></a>
-<span class="sourceLineNo">741</span><a name="line.741"></a>
-<span class="sourceLineNo">742</span>            try {<a name="line.742"></a>
-<span class="sourceLineNo">743</span>                return session.createTextMessage();<a name="line.743"></a>
-<span class="sourceLineNo">744</span>            } catch (JMSException jmsEx) {<a name="line.744"></a>
-<span class="sourceLineNo">745</span>                throw new EmbeddedActiveMQBrokerException("Failed to create TextMessage", jmsEx);<a name="line.745"></a>
-<span class="sourceLineNo">746</span>            }<a name="line.746"></a>
-<span class="sourceLineNo">747</span>        }<a name="line.747"></a>
-<span class="sourceLineNo">748</span><a name="line.748"></a>
-<span class="sourceLineNo">749</span>        public MapMessage createMapMessage() {<a name="line.749"></a>
-<span class="sourceLineNo">750</span>            checkSession();<a name="line.750"></a>
-<span class="sourceLineNo">751</span><a name="line.751"></a>
-<span class="sourceLineNo">752</span>            try {<a name="line.752"></a>
-<span class="sourceLineNo">753</span>                return session.createMapMessage();<a name="line.753"></a>
-<span class="sourceLineNo">754</span>            } catch (JMSException jmsEx) {<a name="line.754"></a>
-<span class="sourceLineNo">755</span>                throw new EmbeddedActiveMQBrokerException("Failed to create MapMessage", jmsEx);<a name="line.755"></a>
-<span class="sourceLineNo">756</span>            }<a name="line.756"></a>
-<span class="sourceLineNo">757</span>        }<a name="line.757"></a>
-<span class="sourceLineNo">758</span><a name="line.758"></a>
-<span class="sourceLineNo">759</span>        public ObjectMessage createObjectMessage() {<a name="line.759"></a>
-<span class="sourceLineNo">760</span>            checkSession();<a name="line.760"></a>
-<span class="sourceLineNo">761</span><a name="line.761"></a>
-<span class="sourceLineNo">762</span>            try {<a name="line.762"></a>
-<span class="sourceLineNo">763</span>                return session.createObjectMessage();<a name="line.763"></a>
-<span class="sourceLineNo">764</span>            } catch (JMSException jmsEx) {<a name="line.764"></a>
-<span class="sourceLineNo">765</span>                throw new EmbeddedActiveMQBrokerException("Failed to create ObjectMessage", jmsEx);<a name="line.765"></a>
-<span class="sourceLineNo">766</span>            }<a name="line.766"></a>
-<span class="sourceLineNo">767</span>        }<a name="line.767"></a>
-<span class="sourceLineNo">768</span><a name="line.768"></a>
-<span class="sourceLineNo">769</span>        public StreamMessage createStreamMessage() {<a name="line.769"></a>
-<span class="sourceLineNo">770</span>            checkSession();<a name="line.770"></a>
-<span class="sourceLineNo">771</span>            try {<a name="line.771"></a>
-<span class="sourceLineNo">772</span>                return session.createStreamMessage();<a name="line.772"></a>
-<span class="sourceLineNo">773</span>            } catch (JMSException jmsEx) {<a name="line.773"></a>
-<span class="sourceLineNo">774</span>                throw new EmbeddedActiveMQBrokerException("Failed to create StreamMessage", jmsEx);<a name="line.774"></a>
-<span class="sourceLineNo">775</span>            }<a name="line.775"></a>
-<span class="sourceLineNo">776</span>        }<a name="line.776"></a>
-<span class="sourceLineNo">777</span><a name="line.777"></a>
-<span class="sourceLineNo">778</span>        public void pushMessage(ActiveMQDestination destination, Message message) {<a name="line.778"></a>
-<span class="sourceLineNo">779</span>            if (producer == null) {<a name="line.779"></a>
-<span class="sourceLineNo">780</span>                throw new IllegalStateException("JMS MessageProducer is null - has the InternalClient been started?");<a name="line.780"></a>
-<span class="sourceLineNo">781</span>            }<a name="line.781"></a>
-<span class="sourceLineNo">782</span><a name="line.782"></a>
-<span class="sourceLineNo">783</span>            try {<a name="line.783"></a>
-<span class="sourceLineNo">784</span>                producer.send(destination, message);<a name="line.784"></a>
-<span class="sourceLineNo">785</span>            } catch (JMSException jmsEx) {<a name="line.785"></a>
-<span class="sourceLineNo">786</span>                throw new EmbeddedActiveMQBrokerException(String.format("Failed to push %s to %s", message.getClass().getSimpleName(), destination.toString()), jmsEx);<a name="line.786"></a>
-<span class="sourceLineNo">787</span>            }<a name="line.787"></a>
-<span class="sourceLineNo">788</span>        }<a name="line.788"></a>
-<span class="sourceLineNo">789</span><a name="line.789"></a>
-<span class="sourceLineNo">790</span>        void checkSession() {<a name="line.790"></a>
-<span class="sourceLineNo">791</span>            if (session == null) {<a name="line.791"></a>
-<span class="sourceLineNo">792</span>                throw new IllegalStateException("JMS Session is null - has the InternalClient been started?");<a name="line.792"></a>
-<span class="sourceLineNo">793</span>            }<a name="line.793"></a>
-<span class="sourceLineNo">794</span>        }<a name="line.794"></a>
-<span class="sourceLineNo">795</span>    }<a name="line.795"></a>
-<span class="sourceLineNo">796</span>}<a name="line.796"></a>
+<pre><span class="sourceLineNo">001</span><a id="line.1">/*</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.junit;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import static org.apache.activemq.command.ActiveMQDestination.QUEUE_TYPE;</a>
+<span class="sourceLineNo">020</span><a id="line.20"></a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.io.Serializable;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.net.URI;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.net.URISyntaxException;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.Map;</a>
+<span class="sourceLineNo">025</span><a id="line.25"></a>
+<span class="sourceLineNo">026</span><a id="line.26">import javax.jms.BytesMessage;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import javax.jms.Connection;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import javax.jms.JMSException;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import javax.jms.MapMessage;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import javax.jms.Message;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import javax.jms.MessageProducer;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import javax.jms.ObjectMessage;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import javax.jms.Session;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import javax.jms.StreamMessage;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import javax.jms.TextMessage;</a>
+<span class="sourceLineNo">036</span><a id="line.36"></a>
+<span class="sourceLineNo">037</span><a id="line.37">import org.apache.activemq.ActiveMQConnectionFactory;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import org.apache.activemq.broker.BrokerFactory;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import org.apache.activemq.broker.BrokerPlugin;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import org.apache.activemq.broker.BrokerService;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import org.apache.activemq.broker.region.Destination;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.apache.activemq.broker.region.policy.PolicyEntry;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import org.apache.activemq.broker.region.policy.PolicyMap;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import org.apache.activemq.command.ActiveMQDestination;</a>
+<span class="sourceLineNo">045</span><a id="line.45">import org.apache.activemq.plugin.StatisticsBrokerPlugin;</a>
+<span class="sourceLineNo">046</span><a id="line.46">import org.apache.activemq.pool.PooledConnectionFactory;</a>
+<span class="sourceLineNo">047</span><a id="line.47">import org.junit.rules.ExternalResource;</a>
+<span class="sourceLineNo">048</span><a id="line.48">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">049</span><a id="line.49">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">050</span><a id="line.50"></a>
+<span class="sourceLineNo">051</span><a id="line.51">/**</a>
+<span class="sourceLineNo">052</span><a id="line.52"> * A JUnit Rule that embeds an ActiveMQ broker into a test.</a>
+<span class="sourceLineNo">053</span><a id="line.53"> */</a>
+<span class="sourceLineNo">054</span><a id="line.54">public class EmbeddedActiveMQBroker extends ExternalResource {</a>
+<span class="sourceLineNo">055</span><a id="line.55">    Logger log = LoggerFactory.getLogger(this.getClass());</a>
+<span class="sourceLineNo">056</span><a id="line.56"></a>
+<span class="sourceLineNo">057</span><a id="line.57">    BrokerService brokerService;</a>
+<span class="sourceLineNo">058</span><a id="line.58">    InternalClient internalClient;</a>
+<span class="sourceLineNo">059</span><a id="line.59"></a>
+<span class="sourceLineNo">060</span><a id="line.60">    /**</a>
+<span class="sourceLineNo">061</span><a id="line.61">     * Create an embedded ActiveMQ broker using defaults</a>
+<span class="sourceLineNo">062</span><a id="line.62">     * &lt;p&gt;</a>
+<span class="sourceLineNo">063</span><a id="line.63">     * The defaults are:</a>
+<span class="sourceLineNo">064</span><a id="line.64">     * - the broker name is 'embedded-broker'</a>
+<span class="sourceLineNo">065</span><a id="line.65">     * - JMX is enable but no management connector is created.</a>
+<span class="sourceLineNo">066</span><a id="line.66">     * - Persistence is disabled</a>
+<span class="sourceLineNo">067</span><a id="line.67">     */</a>
+<span class="sourceLineNo">068</span><a id="line.68">    public EmbeddedActiveMQBroker() {</a>
+<span class="sourceLineNo">069</span><a id="line.69">        brokerService = new BrokerService();</a>
+<span class="sourceLineNo">070</span><a id="line.70">        brokerService.setUseJmx(true);</a>
+<span class="sourceLineNo">071</span><a id="line.71">        brokerService.getManagementContext().setCreateConnector(false);</a>
+<span class="sourceLineNo">072</span><a id="line.72">        brokerService.setUseShutdownHook(false);</a>
+<span class="sourceLineNo">073</span><a id="line.73">        brokerService.setPersistent(false);</a>
+<span class="sourceLineNo">074</span><a id="line.74">        brokerService.setBrokerName("embedded-broker");</a>
+<span class="sourceLineNo">075</span><a id="line.75">    }</a>
+<span class="sourceLineNo">076</span><a id="line.76"></a>
+<span class="sourceLineNo">077</span><a id="line.77">    /**</a>
+<span class="sourceLineNo">078</span><a id="line.78">     * Create an embedded ActiveMQ broker using a configuration URI</a>
+<span class="sourceLineNo">079</span><a id="line.79">     */</a>
+<span class="sourceLineNo">080</span><a id="line.80">    public EmbeddedActiveMQBroker(String configurationURI) {</a>
+<span class="sourceLineNo">081</span><a id="line.81">        try {</a>
+<span class="sourceLineNo">082</span><a id="line.82">            brokerService = BrokerFactory.createBroker(configurationURI);</a>
+<span class="sourceLineNo">083</span><a id="line.83">        } catch (Exception ex) {</a>
+<span class="sourceLineNo">084</span><a id="line.84">            throw new RuntimeException("Exception encountered creating embedded ActiveMQ broker from configuration URI: " + configurationURI, ex);</a>
+<span class="sourceLineNo">085</span><a id="line.85">        }</a>
+<span class="sourceLineNo">086</span><a id="line.86">    }</a>
+<span class="sourceLineNo">087</span><a id="line.87"></a>
+<span class="sourceLineNo">088</span><a id="line.88">    /**</a>
+<span class="sourceLineNo">089</span><a id="line.89">     * Create an embedded ActiveMQ broker using a configuration URI</a>
+<span class="sourceLineNo">090</span><a id="line.90">     */</a>
+<span class="sourceLineNo">091</span><a id="line.91">    public EmbeddedActiveMQBroker(URI configurationURI) {</a>
+<span class="sourceLineNo">092</span><a id="line.92">        try {</a>
+<span class="sourceLineNo">093</span><a id="line.93">            brokerService = BrokerFactory.createBroker(configurationURI);</a>
+<span class="sourceLineNo">094</span><a id="line.94">        } catch (Exception ex) {</a>
+<span class="sourceLineNo">095</span><a id="line.95">            throw new RuntimeException("Exception encountered creating embedded ActiveMQ broker from configuration URI: " + configurationURI, ex);</a>
+<span class="sourceLineNo">096</span><a id="line.96">        }</a>
+<span class="sourceLineNo">097</span><a id="line.97">    }</a>
+<span class="sourceLineNo">098</span><a id="line.98"></a>
+<span class="sourceLineNo">099</span><a id="line.99">    public static void setMessageProperties(Message message, Map&lt;String, Object&gt; properties) {</a>
+<span class="sourceLineNo">100</span><a id="line.100">        if (properties != null &amp;&amp; properties.size() &gt; 0) {</a>
+<span class="sourceLineNo">101</span><a id="line.101">            for (Map.Entry&lt;String, Object&gt; property : properties.entrySet()) {</a>
+<span class="sourceLineNo">102</span><a id="line.102">                try {</a>
+<span class="sourceLineNo">103</span><a id="line.103">                    message.setObjectProperty(property.getKey(), property.getValue());</a>
+<span class="sourceLineNo">104</span><a id="line.104">                } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">105</span><a id="line.105">                    throw new EmbeddedActiveMQBrokerException(String.format("Failed to set property {%s = %s}", property.getKey(), property.getValue().toString()), jmsEx);</a>
+<span class="sourceLineNo">106</span><a id="line.106">                }</a>
+<span class="sourceLineNo">107</span><a id="line.107">            }</a>
+<span class="sourceLineNo">108</span><a id="line.108">        }</a>
+<span class="sourceLineNo">109</span><a id="line.109">    }</a>
+<span class="sourceLineNo">110</span><a id="line.110"></a>
+<span class="sourceLineNo">111</span><a id="line.111">    /**</a>
+<span class="sourceLineNo">112</span><a id="line.112">     * Customize the configuration of the embedded ActiveMQ broker</a>
+<span class="sourceLineNo">113</span><a id="line.113">     * &lt;p&gt;</a>
+<span class="sourceLineNo">114</span><a id="line.114">     * This method is called before the embedded ActiveMQ broker is started, and can</a>
+<span class="sourceLineNo">115</span><a id="line.115">     * be overridden to this method to customize the broker configuration.</a>
+<span class="sourceLineNo">116</span><a id="line.116">     */</a>
+<span class="sourceLineNo">117</span><a id="line.117">    protected void configure() {</a>
+<span class="sourceLineNo">118</span><a id="line.118">    }</a>
+<span class="sourceLineNo">119</span><a id="line.119"></a>
+<span class="sourceLineNo">120</span><a id="line.120">    /**</a>
+<span class="sourceLineNo">121</span><a id="line.121">     * Start the embedded ActiveMQ broker, blocking until the broker has successfully started.</a>
+<span class="sourceLineNo">122</span><a id="line.122">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">123</span><a id="line.123">     * The broker will normally be started by JUnit using the before() method.  This method allows the broker to</a>
+<span class="sourceLineNo">124</span><a id="line.124">     * be started manually to support advanced testing scenarios.</a>
+<span class="sourceLineNo">125</span><a id="line.125">     */</a>
+<span class="sourceLineNo">126</span><a id="line.126">    public void start() {</a>
+<span class="sourceLineNo">127</span><a id="line.127">        try {</a>
+<span class="sourceLineNo">128</span><a id="line.128">            this.configure();</a>
+<span class="sourceLineNo">129</span><a id="line.129">            brokerService.start();</a>
+<span class="sourceLineNo">130</span><a id="line.130">            internalClient = new InternalClient();</a>
+<span class="sourceLineNo">131</span><a id="line.131">            internalClient.start();</a>
+<span class="sourceLineNo">132</span><a id="line.132">        } catch (Exception ex) {</a>
+<span class="sourceLineNo">133</span><a id="line.133">            throw new RuntimeException("Exception encountered starting embedded ActiveMQ broker: {}" + this.getBrokerName(), ex);</a>
+<span class="sourceLineNo">134</span><a id="line.134">        }</a>
+<span class="sourceLineNo">135</span><a id="line.135"></a>
+<span class="sourceLineNo">136</span><a id="line.136">        brokerService.waitUntilStarted();</a>
+<span class="sourceLineNo">137</span><a id="line.137">    }</a>
+<span class="sourceLineNo">138</span><a id="line.138"></a>
+<span class="sourceLineNo">139</span><a id="line.139">    /**</a>
+<span class="sourceLineNo">140</span><a id="line.140">     * Stop the embedded ActiveMQ broker, blocking until the broker has stopped.</a>
+<span class="sourceLineNo">141</span><a id="line.141">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">142</span><a id="line.142">     * The broker will normally be stopped by JUnit using the after() method.  This method allows the broker to</a>
+<span class="sourceLineNo">143</span><a id="line.143">     * be stopped manually to support advanced testing scenarios.</a>
+<span class="sourceLineNo">144</span><a id="line.144">     */</a>
+<span class="sourceLineNo">145</span><a id="line.145">    public void stop() {</a>
+<span class="sourceLineNo">146</span><a id="line.146">        if (internalClient != null) {</a>
+<span class="sourceLineNo">147</span><a id="line.147">            internalClient.stop();</a>
+<span class="sourceLineNo">148</span><a id="line.148">            internalClient = null;</a>
+<span class="sourceLineNo">149</span><a id="line.149">        }</a>
+<span class="sourceLineNo">150</span><a id="line.150">        if (!brokerService.isStopped()) {</a>
+<span class="sourceLineNo">151</span><a id="line.151">            try {</a>
+<span class="sourceLineNo">152</span><a id="line.152">                brokerService.stop();</a>
+<span class="sourceLineNo">153</span><a id="line.153">            } catch (Exception ex) {</a>
+<span class="sourceLineNo">154</span><a id="line.154">                log.warn("Exception encountered stopping embedded ActiveMQ broker: {}" + this.getBrokerName(), ex);</a>
+<span class="sourceLineNo">155</span><a id="line.155">            }</a>
+<span class="sourceLineNo">156</span><a id="line.156">        }</a>
+<span class="sourceLineNo">157</span><a id="line.157"></a>
+<span class="sourceLineNo">158</span><a id="line.158">        brokerService.waitUntilStopped();</a>
+<span class="sourceLineNo">159</span><a id="line.159">    }</a>
+<span class="sourceLineNo">160</span><a id="line.160"></a>
+<span class="sourceLineNo">161</span><a id="line.161">    /**</a>
+<span class="sourceLineNo">162</span><a id="line.162">     * Start the embedded ActiveMQ Broker</a>
+<span class="sourceLineNo">163</span><a id="line.163">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">164</span><a id="line.164">     * Invoked by JUnit to setup the resource</a>
+<span class="sourceLineNo">165</span><a id="line.165">     */</a>
+<span class="sourceLineNo">166</span><a id="line.166">    @Override</a>
+<span class="sourceLineNo">167</span><a id="line.167">    protected void before() throws Throwable {</a>
+<span class="sourceLineNo">168</span><a id="line.168">        log.info("Starting embedded ActiveMQ broker: {}", this.getBrokerName());</a>
+<span class="sourceLineNo">169</span><a id="line.169"></a>
+<span class="sourceLineNo">170</span><a id="line.170">        this.start();</a>
+<span class="sourceLineNo">171</span><a id="line.171"></a>
+<span class="sourceLineNo">172</span><a id="line.172">        super.before();</a>
+<span class="sourceLineNo">173</span><a id="line.173">    }</a>
+<span class="sourceLineNo">174</span><a id="line.174"></a>
+<span class="sourceLineNo">175</span><a id="line.175">    /**</a>
+<span class="sourceLineNo">176</span><a id="line.176">     * Stop the embedded ActiveMQ Broker</a>
+<span class="sourceLineNo">177</span><a id="line.177">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">178</span><a id="line.178">     * Invoked by JUnit to tear down the resource</a>
+<span class="sourceLineNo">179</span><a id="line.179">     */</a>
+<span class="sourceLineNo">180</span><a id="line.180">    @Override</a>
+<span class="sourceLineNo">181</span><a id="line.181">    protected void after() {</a>
+<span class="sourceLineNo">182</span><a id="line.182">        log.info("Stopping Embedded ActiveMQ Broker: {}", this.getBrokerName());</a>
+<span class="sourceLineNo">183</span><a id="line.183"></a>
+<span class="sourceLineNo">184</span><a id="line.184">        super.after();</a>
+<span class="sourceLineNo">185</span><a id="line.185"></a>
+<span class="sourceLineNo">186</span><a id="line.186">        this.stop();</a>
+<span class="sourceLineNo">187</span><a id="line.187">    }</a>
+<span class="sourceLineNo">188</span><a id="line.188"></a>
+<span class="sourceLineNo">189</span><a id="line.189">    /**</a>
+<span class="sourceLineNo">190</span><a id="line.190">     * Create an ActiveMQConnectionFactory for the embedded ActiveMQ Broker</a>
+<span class="sourceLineNo">191</span><a id="line.191">     *</a>
+<span class="sourceLineNo">192</span><a id="line.192">     * @return a new ActiveMQConnectionFactory</a>
+<span class="sourceLineNo">193</span><a id="line.193">     */</a>
+<span class="sourceLineNo">194</span><a id="line.194">    public ActiveMQConnectionFactory createConnectionFactory() {</a>
+<span class="sourceLineNo">195</span><a id="line.195">        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();</a>
+<span class="sourceLineNo">196</span><a id="line.196">        connectionFactory.setBrokerURL(getVmURL());</a>
+<span class="sourceLineNo">197</span><a id="line.197">        return connectionFactory;</a>
+<span class="sourceLineNo">198</span><a id="line.198">    }</a>
+<span class="sourceLineNo">199</span><a id="line.199"></a>
+<span class="sourceLineNo">200</span><a id="line.200">    /**</a>
+<span class="sourceLineNo">201</span><a id="line.201">     * Create an PooledConnectionFactory for the embedded ActiveMQ Broker</a>
+<span class="sourceLineNo">202</span><a id="line.202">     *</a>
+<span class="sourceLineNo">203</span><a id="line.203">     * @return a new PooledConnectionFactory</a>
+<span class="sourceLineNo">204</span><a id="line.204">     */</a>
+<span class="sourceLineNo">205</span><a id="line.205">    public PooledConnectionFactory createPooledConnectionFactory() {</a>
+<span class="sourceLineNo">206</span><a id="line.206">        ActiveMQConnectionFactory connectionFactory = createConnectionFactory();</a>
+<span class="sourceLineNo">207</span><a id="line.207"></a>
+<span class="sourceLineNo">208</span><a id="line.208">        PooledConnectionFactory pooledConnectionFactory = new PooledConnectionFactory(connectionFactory);</a>
+<span class="sourceLineNo">209</span><a id="line.209"></a>
+<span class="sourceLineNo">210</span><a id="line.210">        return pooledConnectionFactory;</a>
+<span class="sourceLineNo">211</span><a id="line.211">    }</a>
+<span class="sourceLineNo">212</span><a id="line.212"></a>
+<span class="sourceLineNo">213</span><a id="line.213">    /**</a>
+<span class="sourceLineNo">214</span><a id="line.214">     * Get the BrokerService for the embedded ActiveMQ broker.</a>
+<span class="sourceLineNo">215</span><a id="line.215">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">216</span><a id="line.216">     * This may be required for advanced configuration of the BrokerService.</a>
+<span class="sourceLineNo">217</span><a id="line.217">     *</a>
+<span class="sourceLineNo">218</span><a id="line.218">     * @return the embedded ActiveMQ broker</a>
+<span class="sourceLineNo">219</span><a id="line.219">     */</a>
+<span class="sourceLineNo">220</span><a id="line.220">    public BrokerService getBrokerService() {</a>
+<span class="sourceLineNo">221</span><a id="line.221">        return brokerService;</a>
+<span class="sourceLineNo">222</span><a id="line.222">    }</a>
+<span class="sourceLineNo">223</span><a id="line.223"></a>
+<span class="sourceLineNo">224</span><a id="line.224">    /**</a>
+<span class="sourceLineNo">225</span><a id="line.225">     * Get the failover VM URL for the embedded ActiveMQ Broker</a>
+<span class="sourceLineNo">226</span><a id="line.226">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">227</span><a id="line.227">     * NOTE:  The create=false option is appended to the URL to avoid the automatic creation of brokers</a>
+<span class="sourceLineNo">228</span><a id="line.228">     * and the resulting duplicate broker errors</a>
+<span class="sourceLineNo">229</span><a id="line.229">     *</a>
+<span class="sourceLineNo">230</span><a id="line.230">     * @return the VM URL for the embedded broker</a>
+<span class="sourceLineNo">231</span><a id="line.231">     */</a>
+<span class="sourceLineNo">232</span><a id="line.232">    public String getVmURL() {</a>
+<span class="sourceLineNo">233</span><a id="line.233">        return getVmURL(true);</a>
+<span class="sourceLineNo">234</span><a id="line.234">    }</a>
+<span class="sourceLineNo">235</span><a id="line.235"></a>
+<span class="sourceLineNo">236</span><a id="line.236">    /**</a>
+<span class="sourceLineNo">237</span><a id="line.237">     * Get the VM URL for the embedded ActiveMQ Broker</a>
+<span class="sourceLineNo">238</span><a id="line.238">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">239</span><a id="line.239">     * NOTE:  The create=false option is appended to the URL to avoid the automatic creation of brokers</a>
+<span class="sourceLineNo">240</span><a id="line.240">     * and the resulting duplicate broker errors</a>
+<span class="sourceLineNo">241</span><a id="line.241">     *</a>
+<span class="sourceLineNo">242</span><a id="line.242">     * @param failoverURL if true a failover URL will be returned</a>
+<span class="sourceLineNo">243</span><a id="line.243">     * @return the VM URL for the embedded broker</a>
+<span class="sourceLineNo">244</span><a id="line.244">     */</a>
+<span class="sourceLineNo">245</span><a id="line.245">    public String getVmURL(boolean failoverURL) {</a>
+<span class="sourceLineNo">246</span><a id="line.246">        if (failoverURL) {</a>
+<span class="sourceLineNo">247</span><a id="line.247">            return String.format("failover:(%s?create=false)", brokerService.getVmConnectorURI().toString());</a>
+<span class="sourceLineNo">248</span><a id="line.248">        }</a>
+<span class="sourceLineNo">249</span><a id="line.249"></a>
+<span class="sourceLineNo">250</span><a id="line.250">        return brokerService.getVmConnectorURI().toString() + "?create=false";</a>
+<span class="sourceLineNo">251</span><a id="line.251">    }</a>
+<span class="sourceLineNo">252</span><a id="line.252"></a>
+<span class="sourceLineNo">253</span><a id="line.253">    /**</a>
+<span class="sourceLineNo">254</span><a id="line.254">     * Get the failover VM URI for the embedded ActiveMQ Broker</a>
+<span class="sourceLineNo">255</span><a id="line.255">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">256</span><a id="line.256">     * NOTE:  The create=false option is appended to the URI to avoid the automatic creation of brokers</a>
+<span class="sourceLineNo">257</span><a id="line.257">     * and the resulting duplicate broker errors</a>
+<span class="sourceLineNo">258</span><a id="line.258">     *</a>
+<span class="sourceLineNo">259</span><a id="line.259">     * @return the VM URI for the embedded broker</a>
+<span class="sourceLineNo">260</span><a id="line.260">     */</a>
+<span class="sourceLineNo">261</span><a id="line.261">    public URI getVmURI() {</a>
+<span class="sourceLineNo">262</span><a id="line.262">        return getVmURI(true);</a>
+<span class="sourceLineNo">263</span><a id="line.263">    }</a>
+<span class="sourceLineNo">264</span><a id="line.264"></a>
+<span class="sourceLineNo">265</span><a id="line.265">    /**</a>
+<span class="sourceLineNo">266</span><a id="line.266">     * Get the VM URI for the embedded ActiveMQ Broker</a>
+<span class="sourceLineNo">267</span><a id="line.267">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">268</span><a id="line.268">     * NOTE:  The create=false option is appended to the URI to avoid the automatic creation of brokers</a>
+<span class="sourceLineNo">269</span><a id="line.269">     * and the resulting duplicate broker errors</a>
+<span class="sourceLineNo">270</span><a id="line.270">     *</a>
+<span class="sourceLineNo">271</span><a id="line.271">     * @param failoverURI if true a failover URI will be returned</a>
+<span class="sourceLineNo">272</span><a id="line.272">     * @return the VM URI for the embedded broker</a>
+<span class="sourceLineNo">273</span><a id="line.273">     */</a>
+<span class="sourceLineNo">274</span><a id="line.274">    public URI getVmURI(boolean failoverURI) {</a>
+<span class="sourceLineNo">275</span><a id="line.275">        URI result;</a>
+<span class="sourceLineNo">276</span><a id="line.276">        try {</a>
+<span class="sourceLineNo">277</span><a id="line.277">            result = new URI(getVmURL(failoverURI));</a>
+<span class="sourceLineNo">278</span><a id="line.278">        } catch (URISyntaxException uriEx) {</a>
+<span class="sourceLineNo">279</span><a id="line.279">            throw new RuntimeException("Unable to create failover URI", uriEx);</a>
+<span class="sourceLineNo">280</span><a id="line.280">        }</a>
+<span class="sourceLineNo">281</span><a id="line.281"></a>
+<span class="sourceLineNo">282</span><a id="line.282">        return result;</a>
+<span class="sourceLineNo">283</span><a id="line.283">    }</a>
+<span class="sourceLineNo">284</span><a id="line.284"></a>
+<span class="sourceLineNo">285</span><a id="line.285">    /**</a>
+<span class="sourceLineNo">286</span><a id="line.286">     * Get the name of the embedded ActiveMQ Broker</a>
+<span class="sourceLineNo">287</span><a id="line.287">     *</a>
+<span class="sourceLineNo">288</span><a id="line.288">     * @return name of the embedded broker</a>
+<span class="sourceLineNo">289</span><a id="line.289">     */</a>
+<span class="sourceLineNo">290</span><a id="line.290">    public String getBrokerName() {</a>
+<span class="sourceLineNo">291</span><a id="line.291">        return brokerService.getBrokerName();</a>
+<span class="sourceLineNo">292</span><a id="line.292">    }</a>
+<span class="sourceLineNo">293</span><a id="line.293"></a>
+<span class="sourceLineNo">294</span><a id="line.294">    public void setBrokerName(String brokerName) {</a>
+<span class="sourceLineNo">295</span><a id="line.295">        brokerService.setBrokerName(brokerName);</a>
+<span class="sourceLineNo">296</span><a id="line.296">    }</a>
+<span class="sourceLineNo">297</span><a id="line.297"></a>
+<span class="sourceLineNo">298</span><a id="line.298">    public boolean isStatisticsPluginEnabled() {</a>
+<span class="sourceLineNo">299</span><a id="line.299">        BrokerPlugin[] plugins = brokerService.getPlugins();</a>
+<span class="sourceLineNo">300</span><a id="line.300"></a>
+<span class="sourceLineNo">301</span><a id="line.301">        if (null != plugins) {</a>
+<span class="sourceLineNo">302</span><a id="line.302">            for (BrokerPlugin plugin : plugins) {</a>
+<span class="sourceLineNo">303</span><a id="line.303">                if (plugin instanceof StatisticsBrokerPlugin) {</a>
+<span class="sourceLineNo">304</span><a id="line.304">                    return true;</a>
+<span class="sourceLineNo">305</span><a id="line.305">                }</a>
+<span class="sourceLineNo">306</span><a id="line.306">            }</a>
+<span class="sourceLineNo">307</span><a id="line.307">        }</a>
+<span class="sourceLineNo">308</span><a id="line.308"></a>
+<span class="sourceLineNo">309</span><a id="line.309">        return false;</a>
+<span class="sourceLineNo">310</span><a id="line.310">    }</a>
+<span class="sourceLineNo">311</span><a id="line.311"></a>
+<span class="sourceLineNo">312</span><a id="line.312">    public void enableStatisticsPlugin() {</a>
+<span class="sourceLineNo">313</span><a id="line.313">        if (!isStatisticsPluginEnabled()) {</a>
+<span class="sourceLineNo">314</span><a id="line.314">            BrokerPlugin[] newPlugins;</a>
+<span class="sourceLineNo">315</span><a id="line.315">            BrokerPlugin[] currentPlugins = brokerService.getPlugins();</a>
+<span class="sourceLineNo">316</span><a id="line.316">            if (null != currentPlugins &amp;&amp; 0 &lt; currentPlugins.length) {</a>
+<span class="sourceLineNo">317</span><a id="line.317">                newPlugins = new BrokerPlugin[currentPlugins.length + 1];</a>
+<span class="sourceLineNo">318</span><a id="line.318"></a>
+<span class="sourceLineNo">319</span><a id="line.319">                System.arraycopy(currentPlugins, 0, newPlugins, 0, currentPlugins.length);</a>
+<span class="sourceLineNo">320</span><a id="line.320">            } else {</a>
+<span class="sourceLineNo">321</span><a id="line.321">                newPlugins = new BrokerPlugin[1];</a>
+<span class="sourceLineNo">322</span><a id="line.322">            }</a>
+<span class="sourceLineNo">323</span><a id="line.323"></a>
+<span class="sourceLineNo">324</span><a id="line.324">            newPlugins[newPlugins.length - 1] = new StatisticsBrokerPlugin();</a>
+<span class="sourceLineNo">325</span><a id="line.325"></a>
+<span class="sourceLineNo">326</span><a id="line.326">            brokerService.setPlugins(newPlugins);</a>
+<span class="sourceLineNo">327</span><a id="line.327">        }</a>
+<span class="sourceLineNo">328</span><a id="line.328">    }</a>
+<span class="sourceLineNo">329</span><a id="line.329"></a>
+<span class="sourceLineNo">330</span><a id="line.330">    public void disableStatisticsPlugin() {</a>
+<span class="sourceLineNo">331</span><a id="line.331">        if (isStatisticsPluginEnabled()) {</a>
+<span class="sourceLineNo">332</span><a id="line.332">            BrokerPlugin[] currentPlugins = brokerService.getPlugins();</a>
+<span class="sourceLineNo">333</span><a id="line.333">            if (1 &lt; currentPlugins.length) {</a>
+<span class="sourceLineNo">334</span><a id="line.334">                BrokerPlugin[] newPlugins = new BrokerPlugin[currentPlugins.length - 1];</a>
+<span class="sourceLineNo">335</span><a id="line.335"></a>
+<span class="sourceLineNo">336</span><a id="line.336">                int i = 0;</a>
+<span class="sourceLineNo">337</span><a id="line.337">                for (BrokerPlugin plugin : currentPlugins) {</a>
+<span class="sourceLineNo">338</span><a id="line.338">                    if (!(plugin instanceof StatisticsBrokerPlugin)) {</a>
+<span class="sourceLineNo">339</span><a id="line.339">                        newPlugins[i++] = plugin;</a>
+<span class="sourceLineNo">340</span><a id="line.340">                    }</a>
+<span class="sourceLineNo">341</span><a id="line.341">                }</a>
+<span class="sourceLineNo">342</span><a id="line.342">                brokerService.setPlugins(newPlugins);</a>
+<span class="sourceLineNo">343</span><a id="line.343">            } else {</a>
+<span class="sourceLineNo">344</span><a id="line.344">                brokerService.setPlugins(null);</a>
+<span class="sourceLineNo">345</span><a id="line.345">            }</a>
+<span class="sourceLineNo">346</span><a id="line.346"></a>
+<span class="sourceLineNo">347</span><a id="line.347">        }</a>
+<span class="sourceLineNo">348</span><a id="line.348">    }</a>
+<span class="sourceLineNo">349</span><a id="line.349"></a>
+<span class="sourceLineNo">350</span><a id="line.350">    public boolean isAdvisoryForDeliveryEnabled() {</a>
+<span class="sourceLineNo">351</span><a id="line.351">        return getDefaultPolicyEntry().isAdvisoryForDelivery();</a>
+<span class="sourceLineNo">352</span><a id="line.352">    }</a>
+<span class="sourceLineNo">353</span><a id="line.353"></a>
+<span class="sourceLineNo">354</span><a id="line.354">    public void enableAdvisoryForDelivery() {</a>
+<span class="sourceLineNo">355</span><a id="line.355">        getDefaultPolicyEntry().setAdvisoryForDelivery(true);</a>
+<span class="sourceLineNo">356</span><a id="line.356">    }</a>
+<span class="sourceLineNo">357</span><a id="line.357"></a>
+<span class="sourceLineNo">358</span><a id="line.358">    public void disableAdvisoryForDelivery() {</a>
+<span class="sourceLineNo">359</span><a id="line.359">        getDefaultPolicyEntry().setAdvisoryForDelivery(false);</a>
+<span class="sourceLineNo">360</span><a id="line.360">    }</a>
+<span class="sourceLineNo">361</span><a id="line.361"></a>
+<span class="sourceLineNo">362</span><a id="line.362">    public boolean isAdvisoryForConsumedEnabled() {</a>
+<span class="sourceLineNo">363</span><a id="line.363">        return getDefaultPolicyEntry().isAdvisoryForConsumed();</a>
+<span class="sourceLineNo">364</span><a id="line.364">    }</a>
+<span class="sourceLineNo">365</span><a id="line.365"></a>
+<span class="sourceLineNo">366</span><a id="line.366">    public void enableAdvisoryForConsumed() {</a>
+<span class="sourceLineNo">367</span><a id="line.367">        getDefaultPolicyEntry().setAdvisoryForConsumed(true);</a>
+<span class="sourceLineNo">368</span><a id="line.368">    }</a>
+<span class="sourceLineNo">369</span><a id="line.369"></a>
+<span class="sourceLineNo">370</span><a id="line.370">    public void disableAdvisoryForConsumed() {</a>
+<span class="sourceLineNo">371</span><a id="line.371">        getDefaultPolicyEntry().setAdvisoryForConsumed(false);</a>
+<span class="sourceLineNo">372</span><a id="line.372">    }</a>
+<span class="sourceLineNo">373</span><a id="line.373"></a>
+<span class="sourceLineNo">374</span><a id="line.374">    public boolean isAdvisoryForDiscardingMessagesEnabled() {</a>
+<span class="sourceLineNo">375</span><a id="line.375">        return getDefaultPolicyEntry().isAdvisoryForDiscardingMessages();</a>
+<span class="sourceLineNo">376</span><a id="line.376">    }</a>
+<span class="sourceLineNo">377</span><a id="line.377"></a>
+<span class="sourceLineNo">378</span><a id="line.378">    public void enableAdvisoryForDiscardingMessages() {</a>
+<span class="sourceLineNo">379</span><a id="line.379">        getDefaultPolicyEntry().setAdvisoryForDiscardingMessages(true);</a>
+<span class="sourceLineNo">380</span><a id="line.380">    }</a>
+<span class="sourceLineNo">381</span><a id="line.381"></a>
+<span class="sourceLineNo">382</span><a id="line.382">    public void disableAdvisoryForDiscardingMessages() {</a>
+<span class="sourceLineNo">383</span><a id="line.383">        getDefaultPolicyEntry().setAdvisoryForDiscardingMessages(false);</a>
+<span class="sourceLineNo">384</span><a id="line.384">    }</a>
+<span class="sourceLineNo">385</span><a id="line.385"></a>
+<span class="sourceLineNo">386</span><a id="line.386">    public boolean isAdvisoryForFastProducersEnabled() {</a>
+<span class="sourceLineNo">387</span><a id="line.387">        return getDefaultPolicyEntry().isAdvisoryForFastProducers();</a>
+<span class="sourceLineNo">388</span><a id="line.388">    }</a>
+<span class="sourceLineNo">389</span><a id="line.389"></a>
+<span class="sourceLineNo">390</span><a id="line.390">    public void enableAdvisoryForFastProducers() {</a>
+<span class="sourceLineNo">391</span><a id="line.391">        getDefaultPolicyEntry().setAdvisoryForFastProducers(true);</a>
+<span class="sourceLineNo">392</span><a id="line.392">    }</a>
+<span class="sourceLineNo">393</span><a id="line.393"></a>
+<span class="sourceLineNo">394</span><a id="line.394">    public void disableAdvisoryForFastProducers() {</a>
+<span class="sourceLineNo">395</span><a id="line.395">        getDefaultPolicyEntry().setAdvisoryForFastProducers(false);</a>
+<span class="sourceLineNo">396</span><a id="line.396">    }</a>
+<span class="sourceLineNo">397</span><a id="line.397"></a>
+<span class="sourceLineNo">398</span><a id="line.398">    public boolean isAdvisoryForSlowConsumersEnabled() {</a>
+<span class="sourceLineNo">399</span><a id="line.399">        return getDefaultPolicyEntry().isAdvisoryForSlowConsumers();</a>
+<span class="sourceLineNo">400</span><a id="line.400">    }</a>
+<span class="sourceLineNo">401</span><a id="line.401"></a>
+<span class="sourceLineNo">402</span><a id="line.402">    public void enableAdvisoryForSlowConsumers() {</a>
+<span class="sourceLineNo">403</span><a id="line.403">        getDefaultPolicyEntry().setAdvisoryForSlowConsumers(true);</a>
+<span class="sourceLineNo">404</span><a id="line.404">    }</a>
+<span class="sourceLineNo">405</span><a id="line.405"></a>
+<span class="sourceLineNo">406</span><a id="line.406">    public void disableAdvisoryForSlowConsumers() {</a>
+<span class="sourceLineNo">407</span><a id="line.407">        getDefaultPolicyEntry().setAdvisoryForSlowConsumers(false);</a>
+<span class="sourceLineNo">408</span><a id="line.408">    }</a>
+<span class="sourceLineNo">409</span><a id="line.409"></a>
+<span class="sourceLineNo">410</span><a id="line.410">    /**</a>
+<span class="sourceLineNo">411</span><a id="line.411">     * Get the number of messages in a specific JMS Destination.</a>
+<span class="sourceLineNo">412</span><a id="line.412">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">413</span><a id="line.413">     * The full name of the JMS destination including the prefix should be provided - i.e. queue://myQueue</a>
+<span class="sourceLineNo">414</span><a id="line.414">     * or topic://myTopic.  If the destination type prefix is not included in the destination name, a prefix</a>
+<span class="sourceLineNo">415</span><a id="line.415">     * of "queue://" is assumed.</a>
+<span class="sourceLineNo">416</span><a id="line.416">     *</a>
+<span class="sourceLineNo">417</span><a id="line.417">     * @param destinationName the full name of the JMS Destination</a>
+<span class="sourceLineNo">418</span><a id="line.418">     * @return the number of messages in the JMS Destination</a>
+<span class="sourceLineNo">419</span><a id="line.419">     */</a>
+<span class="sourceLineNo">420</span><a id="line.420">    public long getMessageCount(String destinationName) {</a>
+<span class="sourceLineNo">421</span><a id="line.421">        if (null == brokerService) {</a>
+<span class="sourceLineNo">422</span><a id="line.422">            throw new IllegalStateException("BrokerService has not yet been created - was before() called?");</a>
+<span class="sourceLineNo">423</span><a id="line.423">        }</a>
+<span class="sourceLineNo">424</span><a id="line.424"></a>
+<span class="sourceLineNo">425</span><a id="line.425">        // TODO: Figure out how to do this for Topics</a>
+<span class="sourceLineNo">426</span><a id="line.426">        Destination destination = getDestination(destinationName);</a>
+<span class="sourceLineNo">427</span><a id="line.427">        if (destination == null) {</a>
+<span class="sourceLineNo">428</span><a id="line.428">            throw new RuntimeException("Failed to find destination: " + destinationName);</a>
+<span class="sourceLineNo">429</span><a id="line.429">        }</a>
+<span class="sourceLineNo">430</span><a id="line.430"></a>
+<span class="sourceLineNo">431</span><a id="line.431">        // return destination.getMessageStore().getMessageCount();</a>
+<span class="sourceLineNo">432</span><a id="line.432">        return destination.getDestinationStatistics().getMessages().getCount();</a>
+<span class="sourceLineNo">433</span><a id="line.433">    }</a>
+<span class="sourceLineNo">434</span><a id="line.434"></a>
+<span class="sourceLineNo">435</span><a id="line.435">    /**</a>
+<span class="sourceLineNo">436</span><a id="line.436">     * Get the ActiveMQ destination</a>
+<span class="sourceLineNo">437</span><a id="line.437">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">438</span><a id="line.438">     * The full name of the JMS destination including the prefix should be provided - i.e. queue://myQueue</a>
+<span class="sourceLineNo">439</span><a id="line.439">     * or topic://myTopic.  If the destination type prefix is not included in the destination name, a prefix</a>
+<span class="sourceLineNo">440</span><a id="line.440">     * of "queue://" is assumed.</a>
+<span class="sourceLineNo">441</span><a id="line.441">     *</a>
+<span class="sourceLineNo">442</span><a id="line.442">     * @param destinationName the full name of the JMS Destination</a>
+<span class="sourceLineNo">443</span><a id="line.443">     * @return the ActiveMQ destination, null if not found</a>
+<span class="sourceLineNo">444</span><a id="line.444">     */</a>
+<span class="sourceLineNo">445</span><a id="line.445">    public Destination getDestination(String destinationName) {</a>
+<span class="sourceLineNo">446</span><a id="line.446">        if (null == brokerService) {</a>
+<span class="sourceLineNo">447</span><a id="line.447">            throw new IllegalStateException("BrokerService has not yet been created - was before() called?");</a>
+<span class="sourceLineNo">448</span><a id="line.448">        }</a>
+<span class="sourceLineNo">449</span><a id="line.449"></a>
+<span class="sourceLineNo">450</span><a id="line.450">        Destination destination = null;</a>
+<span class="sourceLineNo">451</span><a id="line.451">        try {</a>
+<span class="sourceLineNo">452</span><a id="line.452">            destination = brokerService.getDestination(ActiveMQDestination.createDestination(destinationName, QUEUE_TYPE));</a>
+<span class="sourceLineNo">453</span><a id="line.453">        } catch (RuntimeException runtimeEx) {</a>
+<span class="sourceLineNo">454</span><a id="line.454">            throw runtimeEx;</a>
+<span class="sourceLineNo">455</span><a id="line.455">        } catch (Exception ex) {</a>
+<span class="sourceLineNo">456</span><a id="line.456">            throw new EmbeddedActiveMQBrokerException("Unexpected exception getting destination from broker", ex);</a>
+<span class="sourceLineNo">457</span><a id="line.457">        }</a>
+<span class="sourceLineNo">458</span><a id="line.458"></a>
+<span class="sourceLineNo">459</span><a id="line.459">        return destination;</a>
+<span class="sourceLineNo">460</span><a id="line.460">    }</a>
+<span class="sourceLineNo">461</span><a id="line.461"></a>
+<span class="sourceLineNo">462</span><a id="line.462">    private PolicyEntry getDefaultPolicyEntry() {</a>
+<span class="sourceLineNo">463</span><a id="line.463">        PolicyMap destinationPolicy = brokerService.getDestinationPolicy();</a>
+<span class="sourceLineNo">464</span><a id="line.464">        if (null == destinationPolicy) {</a>
+<span class="sourceLineNo">465</span><a id="line.465">            destinationPolicy = new PolicyMap();</a>
+<span class="sourceLineNo">466</span><a id="line.466">            brokerService.setDestinationPolicy(destinationPolicy);</a>
+<span class="sourceLineNo">467</span><a id="line.467">        }</a>
+<span class="sourceLineNo">468</span><a id="line.468"></a>
+<span class="sourceLineNo">469</span><a id="line.469">        PolicyEntry defaultEntry = destinationPolicy.getDefaultEntry();</a>
+<span class="sourceLineNo">470</span><a id="line.470">        if (null == defaultEntry) {</a>
+<span class="sourceLineNo">471</span><a id="line.471">            defaultEntry = new PolicyEntry();</a>
+<span class="sourceLineNo">472</span><a id="line.472">            destinationPolicy.setDefaultEntry(defaultEntry);</a>
+<span class="sourceLineNo">473</span><a id="line.473">        }</a>
+<span class="sourceLineNo">474</span><a id="line.474"></a>
+<span class="sourceLineNo">475</span><a id="line.475">        return defaultEntry;</a>
+<span class="sourceLineNo">476</span><a id="line.476">    }</a>
+<span class="sourceLineNo">477</span><a id="line.477"></a>
+<span class="sourceLineNo">478</span><a id="line.478">    public BytesMessage createBytesMessage() {</a>
+<span class="sourceLineNo">479</span><a id="line.479">        return internalClient.createBytesMessage();</a>
+<span class="sourceLineNo">480</span><a id="line.480">    }</a>
+<span class="sourceLineNo">481</span><a id="line.481"></a>
+<span class="sourceLineNo">482</span><a id="line.482">    public TextMessage createTextMessage() {</a>
+<span class="sourceLineNo">483</span><a id="line.483">        return internalClient.createTextMessage();</a>
+<span class="sourceLineNo">484</span><a id="line.484">    }</a>
+<span class="sourceLineNo">485</span><a id="line.485"></a>
+<span class="sourceLineNo">486</span><a id="line.486">    public MapMessage createMapMessage() {</a>
+<span class="sourceLineNo">487</span><a id="line.487">        return internalClient.createMapMessage();</a>
+<span class="sourceLineNo">488</span><a id="line.488">    }</a>
+<span class="sourceLineNo">489</span><a id="line.489"></a>
+<span class="sourceLineNo">490</span><a id="line.490">    public ObjectMessage createObjectMessage() {</a>
+<span class="sourceLineNo">491</span><a id="line.491">        return internalClient.createObjectMessage();</a>
+<span class="sourceLineNo">492</span><a id="line.492">    }</a>
+<span class="sourceLineNo">493</span><a id="line.493"></a>
+<span class="sourceLineNo">494</span><a id="line.494">    public StreamMessage createStreamMessage() {</a>
+<span class="sourceLineNo">495</span><a id="line.495">        return internalClient.createStreamMessage();</a>
+<span class="sourceLineNo">496</span><a id="line.496">    }</a>
+<span class="sourceLineNo">497</span><a id="line.497"></a>
+<span class="sourceLineNo">498</span><a id="line.498">    public BytesMessage createMessage(byte[] body) {</a>
+<span class="sourceLineNo">499</span><a id="line.499">        return this.createMessage(body, null);</a>
+<span class="sourceLineNo">500</span><a id="line.500">    }</a>
+<span class="sourceLineNo">501</span><a id="line.501"></a>
+<span class="sourceLineNo">502</span><a id="line.502">    public TextMessage createMessage(String body) {</a>
+<span class="sourceLineNo">503</span><a id="line.503">        return this.createMessage(body, null);</a>
+<span class="sourceLineNo">504</span><a id="line.504">    }</a>
+<span class="sourceLineNo">505</span><a id="line.505"></a>
+<span class="sourceLineNo">506</span><a id="line.506">    public MapMessage createMessage(Map&lt;String, Object&gt; body) {</a>
+<span class="sourceLineNo">507</span><a id="line.507">        return this.createMessage(body, null);</a>
+<span class="sourceLineNo">508</span><a id="line.508">    }</a>
+<span class="sourceLineNo">509</span><a id="line.509"></a>
+<span class="sourceLineNo">510</span><a id="line.510">    public ObjectMessage createMessage(Serializable body) {</a>
+<span class="sourceLineNo">511</span><a id="line.511">        return this.createMessage(body, null);</a>
+<span class="sourceLineNo">512</span><a id="line.512">    }</a>
+<span class="sourceLineNo">513</span><a id="line.513"></a>
+<span class="sourceLineNo">514</span><a id="line.514">    public BytesMessage createMessage(byte[] body, Map&lt;String, Object&gt; properties) {</a>
+<span class="sourceLineNo">515</span><a id="line.515">        BytesMessage message = this.createBytesMessage();</a>
+<span class="sourceLineNo">516</span><a id="line.516">        if (body != null) {</a>
+<span class="sourceLineNo">517</span><a id="line.517">            try {</a>
+<span class="sourceLineNo">518</span><a id="line.518">                message.writeBytes(body);</a>
+<span class="sourceLineNo">519</span><a id="line.519">            } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">520</span><a id="line.520">                throw new EmbeddedActiveMQBrokerException(String.format("Failed to set body {%s} on BytesMessage", new String(body)), jmsEx);</a>
+<span class="sourceLineNo">521</span><a id="line.521">            }</a>
+<span class="sourceLineNo">522</span><a id="line.522">        }</a>
+<span class="sourceLineNo">523</span><a id="line.523"></a>
+<span class="sourceLineNo">524</span><a id="line.524">        setMessageProperties(message, properties);</a>
+<span class="sourceLineNo">525</span><a id="line.525"></a>
+<span class="sourceLineNo">526</span><a id="line.526">        return message;</a>
+<span class="sourceLineNo">527</span><a id="line.527">    }</a>
+<span class="sourceLineNo">528</span><a id="line.528"></a>
+<span class="sourceLineNo">529</span><a id="line.529">    public TextMessage createMessage(String body, Map&lt;String, Object&gt; properties) {</a>
+<span class="sourceLineNo">530</span><a id="line.530">        TextMessage message = this.createTextMessage();</a>
+<span class="sourceLineNo">531</span><a id="line.531">        if (body != null) {</a>
+<span class="sourceLineNo">532</span><a id="line.532">            try {</a>
+<span class="sourceLineNo">533</span><a id="line.533">                message.setText(body);</a>
+<span class="sourceLineNo">534</span><a id="line.534">            } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">535</span><a id="line.535">                throw new EmbeddedActiveMQBrokerException(String.format("Failed to set body {%s} on TextMessage", body), jmsEx);</a>
+<span class="sourceLineNo">536</span><a id="line.536">            }</a>
+<span class="sourceLineNo">537</span><a id="line.537">        }</a>
+<span class="sourceLineNo">538</span><a id="line.538"></a>
+<span class="sourceLineNo">539</span><a id="line.539">        setMessageProperties(message, properties);</a>
+<span class="sourceLineNo">540</span><a id="line.540"></a>
+<span class="sourceLineNo">541</span><a id="line.541">        return message;</a>
+<span class="sourceLineNo">542</span><a id="line.542">    }</a>
+<span class="sourceLineNo">543</span><a id="line.543"></a>
+<span class="sourceLineNo">544</span><a id="line.544">    public MapMessage createMessage(Map&lt;String, Object&gt; body, Map&lt;String, Object&gt; properties) {</a>
+<span class="sourceLineNo">545</span><a id="line.545">        MapMessage message = this.createMapMessage();</a>
+<span class="sourceLineNo">546</span><a id="line.546"></a>
+<span class="sourceLineNo">547</span><a id="line.547">        if (body != null) {</a>
+<span class="sourceLineNo">548</span><a id="line.548">            for (Map.Entry&lt;String, Object&gt; entry : body.entrySet()) {</a>
+<span class="sourceLineNo">549</span><a id="line.549">                try {</a>
+<span class="sourceLineNo">550</span><a id="line.550">                    message.setObject(entry.getKey(), entry.getValue());</a>
+<span class="sourceLineNo">551</span><a id="line.551">                } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">552</span><a id="line.552">                    throw new EmbeddedActiveMQBrokerException(String.format("Failed to set body entry {%s = %s} on MapMessage", entry.getKey(), entry.getValue().toString()), jmsEx);</a>
+<span class="sourceLineNo">553</span><a id="line.553">                }</a>
+<span class="sourceLineNo">554</span><a id="line.554">            }</a>
+<span class="sourceLineNo">555</span><a id="line.555">        }</a>
+<span class="sourceLineNo">556</span><a id="line.556"></a>
+<span class="sourceLineNo">557</span><a id="line.557">        setMessageProperties(message, properties);</a>
+<span class="sourceLineNo">558</span><a id="line.558"></a>
+<span class="sourceLineNo">559</span><a id="line.559">        return message;</a>
+<span class="sourceLineNo">560</span><a id="line.560">    }</a>
+<span class="sourceLineNo">561</span><a id="line.561"></a>
+<span class="sourceLineNo">562</span><a id="line.562">    public ObjectMessage createMessage(Serializable body, Map&lt;String, Object&gt; properties) {</a>
+<span class="sourceLineNo">563</span><a id="line.563">        ObjectMessage message = this.createObjectMessage();</a>
+<span class="sourceLineNo">564</span><a id="line.564"></a>
+<span class="sourceLineNo">565</span><a id="line.565">        if (body != null) {</a>
+<span class="sourceLineNo">566</span><a id="line.566">            try {</a>
+<span class="sourceLineNo">567</span><a id="line.567">                message.setObject(body);</a>
+<span class="sourceLineNo">568</span><a id="line.568">            } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">569</span><a id="line.569">                throw new EmbeddedActiveMQBrokerException(String.format("Failed to set body {%s} on ObjectMessage", body.toString()), jmsEx);</a>
+<span class="sourceLineNo">570</span><a id="line.570">            }</a>
+<span class="sourceLineNo">571</span><a id="line.571">        }</a>
+<span class="sourceLineNo">572</span><a id="line.572"></a>
+<span class="sourceLineNo">573</span><a id="line.573">        setMessageProperties(message, properties);</a>
+<span class="sourceLineNo">574</span><a id="line.574"></a>
+<span class="sourceLineNo">575</span><a id="line.575">        return message;</a>
+<span class="sourceLineNo">576</span><a id="line.576">    }</a>
+<span class="sourceLineNo">577</span><a id="line.577"></a>
+<span class="sourceLineNo">578</span><a id="line.578">    public void pushMessage(String destinationName, Message message) {</a>
+<span class="sourceLineNo">579</span><a id="line.579">        if (destinationName == null) {</a>
+<span class="sourceLineNo">580</span><a id="line.580">            throw new IllegalArgumentException("pushMessage failure - destination name is required");</a>
+<span class="sourceLineNo">581</span><a id="line.581">        } else if (message == null) {</a>
+<span class="sourceLineNo">582</span><a id="line.582">            throw new IllegalArgumentException("pushMessage failure - a Message is required");</a>
+<span class="sourceLineNo">583</span><a id="line.583">        }</a>
+<span class="sourceLineNo">584</span><a id="line.584">        ActiveMQDestination destination = ActiveMQDestination.createDestination(destinationName, ActiveMQDestination.QUEUE_TYPE);</a>
+<span class="sourceLineNo">585</span><a id="line.585"></a>
+<span class="sourceLineNo">586</span><a id="line.586">        internalClient.pushMessage(destination, message);</a>
+<span class="sourceLineNo">587</span><a id="line.587">    }</a>
+<span class="sourceLineNo">588</span><a id="line.588"></a>
+<span class="sourceLineNo">589</span><a id="line.589">    public BytesMessage pushMessage(String destinationName, byte[] body) {</a>
+<span class="sourceLineNo">590</span><a id="line.590">        BytesMessage message = createMessage(body, null);</a>
+<span class="sourceLineNo">591</span><a id="line.591">        pushMessage(destinationName, message);</a>
+<span class="sourceLineNo">592</span><a id="line.592">        return message;</a>
+<span class="sourceLineNo">593</span><a id="line.593">    }</a>
+<span class="sourceLineNo">594</span><a id="line.594"></a>
+<span class="sourceLineNo">595</span><a id="line.595">    public TextMessage pushMessage(String destinationName, String body) {</a>
+<span class="sourceLineNo">596</span><a id="line.596">        TextMessage message = createMessage(body, null);</a>
+<span class="sourceLineNo">597</span><a id="line.597">        pushMessage(destinationName, message);</a>
+<span class="sourceLineNo">598</span><a id="line.598">        return message;</a>
+<span class="sourceLineNo">599</span><a id="line.599">    }</a>
+<span class="sourceLineNo">600</span><a id="line.600"></a>
+<span class="sourceLineNo">601</span><a id="line.601">    public MapMessage pushMessage(String destinationName, Map&lt;String, Object&gt; body) {</a>
+<span class="sourceLineNo">602</span><a id="line.602">        MapMessage message = createMessage(body, null);</a>
+<span class="sourceLineNo">603</span><a id="line.603">        pushMessage(destinationName, message);</a>
+<span class="sourceLineNo">604</span><a id="line.604">        return message;</a>
+<span class="sourceLineNo">605</span><a id="line.605">    }</a>
+<span class="sourceLineNo">606</span><a id="line.606"></a>
+<span class="sourceLineNo">607</span><a id="line.607">    public ObjectMessage pushMessage(String destinationName, Serializable body) {</a>
+<span class="sourceLineNo">608</span><a id="line.608">        ObjectMessage message = createMessage(body, null);</a>
+<span class="sourceLineNo">609</span><a id="line.609">        pushMessage(destinationName, message);</a>
+<span class="sourceLineNo">610</span><a id="line.610">        return message;</a>
+<span class="sourceLineNo">611</span><a id="line.611">    }</a>
+<span class="sourceLineNo">612</span><a id="line.612"></a>
+<span class="sourceLineNo">613</span><a id="line.613">    public BytesMessage pushMessageWithProperties(String destinationName, byte[] body, Map&lt;String, Object&gt; properties) {</a>
+<span class="sourceLineNo">614</span><a id="line.614">        BytesMessage message = createMessage(body, properties);</a>
+<span class="sourceLineNo">615</span><a id="line.615">        pushMessage(destinationName, message);</a>
+<span class="sourceLineNo">616</span><a id="line.616">        return message;</a>
+<span class="sourceLineNo">617</span><a id="line.617">    }</a>
+<span class="sourceLineNo">618</span><a id="line.618"></a>
+<span class="sourceLineNo">619</span><a id="line.619">    public TextMessage pushMessageWithProperties(String destinationName, String body, Map&lt;String, Object&gt; properties) {</a>
+<span class="sourceLineNo">620</span><a id="line.620">        TextMessage message = createMessage(body, properties);</a>
+<span class="sourceLineNo">621</span><a id="line.621">        pushMessage(destinationName, message);</a>
+<span class="sourceLineNo">622</span><a id="line.622">        return message;</a>
+<span class="sourceLineNo">623</span><a id="line.623">    }</a>
+<span class="sourceLineNo">624</span><a id="line.624"></a>
+<span class="sourceLineNo">625</span><a id="line.625">    public MapMessage pushMessageWithProperties(String destinationName, Map&lt;String, Object&gt; body, Map&lt;String, Object&gt; properties) {</a>
+<span class="sourceLineNo">626</span><a id="line.626">        MapMessage message = createMessage(body, properties);</a>
+<span class="sourceLineNo">627</span><a id="line.627">        pushMessage(destinationName, message);</a>
+<span class="sourceLineNo">628</span><a id="line.628">        return message;</a>
+<span class="sourceLineNo">629</span><a id="line.629">    }</a>
+<span class="sourceLineNo">630</span><a id="line.630"></a>
+<span class="sourceLineNo">631</span><a id="line.631">    public ObjectMessage pushMessageWithProperties(String destinationName, Serializable body, Map&lt;String, Object&gt; properties) {</a>
+<span class="sourceLineNo">632</span><a id="line.632">        ObjectMessage message = createMessage(body, properties);</a>
+<span class="sourceLineNo">633</span><a id="line.633">        pushMessage(destinationName, message);</a>
+<span class="sourceLineNo">634</span><a id="line.634">        return message;</a>
+<span class="sourceLineNo">635</span><a id="line.635">    }</a>
+<span class="sourceLineNo">636</span><a id="line.636"></a>
+<span class="sourceLineNo">637</span><a id="line.637"></a>
+<span class="sourceLineNo">638</span><a id="line.638">    public Message peekMessage(String destinationName) {</a>
+<span class="sourceLineNo">639</span><a id="line.639">        if (null == brokerService) {</a>
+<span class="sourceLineNo">640</span><a id="line.640">            throw new NullPointerException("peekMessage failure  - BrokerService is null");</a>
+<span class="sourceLineNo">641</span><a id="line.641">        }</a>
+<span class="sourceLineNo">642</span><a id="line.642"></a>
+<span class="sourceLineNo">643</span><a id="line.643">        if (destinationName == null) {</a>
+<span class="sourceLineNo">644</span><a id="line.644">            throw new IllegalArgumentException("peekMessage failure - destination name is required");</a>
+<span class="sourceLineNo">645</span><a id="line.645">        }</a>
+<span class="sourceLineNo">646</span><a id="line.646"></a>
+<span class="sourceLineNo">647</span><a id="line.647">        ActiveMQDestination destination = ActiveMQDestination.createDestination(destinationName, ActiveMQDestination.QUEUE_TYPE);</a>
+<span class="sourceLineNo">648</span><a id="line.648">        Destination brokerDestination = null;</a>
+<span class="sourceLineNo">649</span><a id="line.649"></a>
+<span class="sourceLineNo">650</span><a id="line.650">        try {</a>
+<span class="sourceLineNo">651</span><a id="line.651">            brokerDestination = brokerService.getDestination(destination);</a>
+<span class="sourceLineNo">652</span><a id="line.652">        } catch (Exception ex) {</a>
+<span class="sourceLineNo">653</span><a id="line.653">            throw new EmbeddedActiveMQBrokerException("peekMessage failure - unexpected exception getting destination from BrokerService", ex);</a>
+<span class="sourceLineNo">654</span><a id="line.654">        }</a>
+<span class="sourceLineNo">655</span><a id="line.655"></a>
+<span class="sourceLineNo">656</span><a id="line.656">        if (brokerDestination == null) {</a>
+<span class="sourceLineNo">657</span><a id="line.657">            throw new IllegalStateException(String.format("peekMessage failure - destination %s not found in broker %s", destination.toString(), brokerService.getBrokerName()));</a>
+<span class="sourceLineNo">658</span><a id="line.658">        }</a>
+<span class="sourceLineNo">659</span><a id="line.659"></a>
+<span class="sourceLineNo">660</span><a id="line.660">        org.apache.activemq.command.Message[] messages = brokerDestination.browse();</a>
+<span class="sourceLineNo">661</span><a id="line.661">        if (messages != null &amp;&amp; messages.length &gt; 0) {</a>
+<span class="sourceLineNo">662</span><a id="line.662">            return (Message) messages[0];</a>
+<span class="sourceLineNo">663</span><a id="line.663">        }</a>
+<span class="sourceLineNo">664</span><a id="line.664"></a>
+<span class="sourceLineNo">665</span><a id="line.665">        return null;</a>
+<span class="sourceLineNo">666</span><a id="line.666">    }</a>
+<span class="sourceLineNo">667</span><a id="line.667"></a>
+<span class="sourceLineNo">668</span><a id="line.668">    public BytesMessage peekBytesMessage(String destinationName) {</a>
+<span class="sourceLineNo">669</span><a id="line.669">        return (BytesMessage) peekMessage(destinationName);</a>
+<span class="sourceLineNo">670</span><a id="line.670">    }</a>
+<span class="sourceLineNo">671</span><a id="line.671"></a>
+<span class="sourceLineNo">672</span><a id="line.672">    public TextMessage peekTextMessage(String destinationName) {</a>
+<span class="sourceLineNo">673</span><a id="line.673">        return (TextMessage) peekMessage(destinationName);</a>
+<span class="sourceLineNo">674</span><a id="line.674">    }</a>
+<span class="sourceLineNo">675</span><a id="line.675"></a>
+<span class="sourceLineNo">676</span><a id="line.676">    public MapMessage peekMapMessage(String destinationName) {</a>
+<span class="sourceLineNo">677</span><a id="line.677">        return (MapMessage) peekMessage(destinationName);</a>
+<span class="sourceLineNo">678</span><a id="line.678">    }</a>
+<span class="sourceLineNo">679</span><a id="line.679"></a>
+<span class="sourceLineNo">680</span><a id="line.680">    public ObjectMessage peekObjectMessage(String destinationName) {</a>
+<span class="sourceLineNo">681</span><a id="line.681">        return (ObjectMessage) peekMessage(destinationName);</a>
+<span class="sourceLineNo">682</span><a id="line.682">    }</a>
+<span class="sourceLineNo">683</span><a id="line.683"></a>
+<span class="sourceLineNo">684</span><a id="line.684">    public StreamMessage peekStreamMessage(String destinationName) {</a>
+<span class="sourceLineNo">685</span><a id="line.685">        return (StreamMessage) peekMessage(destinationName);</a>
+<span class="sourceLineNo">686</span><a id="line.686">    }</a>
+<span class="sourceLineNo">687</span><a id="line.687"></a>
+<span class="sourceLineNo">688</span><a id="line.688">    public static class EmbeddedActiveMQBrokerException extends RuntimeException {</a>
+<span class="sourceLineNo">689</span><a id="line.689">        public EmbeddedActiveMQBrokerException(String message) {</a>
+<span class="sourceLineNo">690</span><a id="line.690">            super(message);</a>
+<span class="sourceLineNo">691</span><a id="line.691">        }</a>
+<span class="sourceLineNo">692</span><a id="line.692"></a>
+<span class="sourceLineNo">693</span><a id="line.693">        public EmbeddedActiveMQBrokerException(String message, Exception cause) {</a>
+<span class="sourceLineNo">694</span><a id="line.694">            super(message, cause);</a>
+<span class="sourceLineNo">695</span><a id="line.695">        }</a>
+<span class="sourceLineNo">696</span><a id="line.696">    }</a>
+<span class="sourceLineNo">697</span><a id="line.697"></a>
+<span class="sourceLineNo">698</span><a id="line.698">    private class InternalClient {</a>
+<span class="sourceLineNo">699</span><a id="line.699">        ActiveMQConnectionFactory connectionFactory;</a>
+<span class="sourceLineNo">700</span><a id="line.700">        Connection connection;</a>
+<span class="sourceLineNo">701</span><a id="line.701">        Session session;</a>
+<span class="sourceLineNo">702</span><a id="line.702">        MessageProducer producer;</a>
+<span class="sourceLineNo">703</span><a id="line.703"></a>
+<span class="sourceLineNo">704</span><a id="line.704">        public InternalClient() {</a>
+<span class="sourceLineNo">705</span><a id="line.705">        }</a>
+<span class="sourceLineNo">706</span><a id="line.706"></a>
+<span class="sourceLineNo">707</span><a id="line.707">        void start() {</a>
+<span class="sourceLineNo">708</span><a id="line.708">            connectionFactory = createConnectionFactory();</a>
+<span class="sourceLineNo">709</span><a id="line.709">            try {</a>
+<span class="sourceLineNo">710</span><a id="line.710">                connection = connectionFactory.createConnection();</a>
+<span class="sourceLineNo">711</span><a id="line.711">                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);</a>
+<span class="sourceLineNo">712</span><a id="line.712">                producer = session.createProducer(null);</a>
+<span class="sourceLineNo">713</span><a id="line.713">                connection.start();</a>
+<span class="sourceLineNo">714</span><a id="line.714">            } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">715</span><a id="line.715">                throw new EmbeddedActiveMQBrokerException("Internal Client creation failure", jmsEx);</a>
+<span class="sourceLineNo">716</span><a id="line.716">            }</a>
+<span class="sourceLineNo">717</span><a id="line.717">        }</a>
+<span class="sourceLineNo">718</span><a id="line.718"></a>
+<span class="sourceLineNo">719</span><a id="line.719">        void stop() {</a>
+<span class="sourceLineNo">720</span><a id="line.720">            if (null != connection) {</a>
+<span class="sourceLineNo">721</span><a id="line.721">                try {</a>
+<span class="sourceLineNo">722</span><a id="line.722">                    connection.close();</a>
+<span class="sourceLineNo">723</span><a id="line.723">                } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">724</span><a id="line.724">                    log.warn("JMSException encounter closing InternalClient connection - ignoring", jmsEx);</a>
+<span class="sourceLineNo">725</span><a id="line.725">                }</a>
+<span class="sourceLineNo">726</span><a id="line.726">            }</a>
+<span class="sourceLineNo">727</span><a id="line.727">        }</a>
+<span class="sourceLineNo">728</span><a id="line.728"></a>
+<span class="sourceLineNo">729</span><a id="line.729">        public BytesMessage createBytesMessage() {</a>
+<span class="sourceLineNo">730</span><a id="line.730">            checkSession();</a>
+<span class="sourceLineNo">731</span><a id="line.731"></a>
+<span class="sourceLineNo">732</span><a id="line.732">            try {</a>
+<span class="sourceLineNo">733</span><a id="line.733">                return session.createBytesMessage();</a>
+<span class="sourceLineNo">734</span><a id="line.734">            } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">735</span><a id="line.735">                throw new EmbeddedActiveMQBrokerException("Failed to create BytesMessage", jmsEx);</a>
+<span class="sourceLineNo">736</span><a id="line.736">            }</a>
+<span class="sourceLineNo">737</span><a id="line.737">        }</a>
+<span class="sourceLineNo">738</span><a id="line.738"></a>
+<span class="sourceLineNo">739</span><a id="line.739">        public TextMessage createTextMessage() {</a>
+<span class="sourceLineNo">740</span><a id="line.740">            checkSession();</a>
+<span class="sourceLineNo">741</span><a id="line.741"></a>
+<span class="sourceLineNo">742</span><a id="line.742">            try {</a>
+<span class="sourceLineNo">743</span><a id="line.743">                return session.createTextMessage();</a>
+<span class="sourceLineNo">744</span><a id="line.744">            } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">745</span><a id="line.745">                throw new EmbeddedActiveMQBrokerException("Failed to create TextMessage", jmsEx);</a>
+<span class="sourceLineNo">746</span><a id="line.746">            }</a>
+<span class="sourceLineNo">747</span><a id="line.747">        }</a>
+<span class="sourceLineNo">748</span><a id="line.748"></a>
+<span class="sourceLineNo">749</span><a id="line.749">        public MapMessage createMapMessage() {</a>
+<span class="sourceLineNo">750</span><a id="line.750">            checkSession();</a>
+<span class="sourceLineNo">751</span><a id="line.751"></a>
+<span class="sourceLineNo">752</span><a id="line.752">            try {</a>
+<span class="sourceLineNo">753</span><a id="line.753">                return session.createMapMessage();</a>
+<span class="sourceLineNo">754</span><a id="line.754">            } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">755</span><a id="line.755">                throw new EmbeddedActiveMQBrokerException("Failed to create MapMessage", jmsEx);</a>
+<span class="sourceLineNo">756</span><a id="line.756">            }</a>
+<span class="sourceLineNo">757</span><a id="line.757">        }</a>
+<span class="sourceLineNo">758</span><a id="line.758"></a>
+<span class="sourceLineNo">759</span><a id="line.759">        public ObjectMessage createObjectMessage() {</a>
+<span class="sourceLineNo">760</span><a id="line.760">            checkSession();</a>
+<span class="sourceLineNo">761</span><a id="line.761"></a>
+<span class="sourceLineNo">762</span><a id="line.762">            try {</a>
+<span class="sourceLineNo">763</span><a id="line.763">                return session.createObjectMessage();</a>
+<span class="sourceLineNo">764</span><a id="line.764">            } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">765</span><a id="line.765">                throw new EmbeddedActiveMQBrokerException("Failed to create ObjectMessage", jmsEx);</a>
+<span class="sourceLineNo">766</span><a id="line.766">            }</a>
+<span class="sourceLineNo">767</span><a id="line.767">        }</a>
+<span class="sourceLineNo">768</span><a id="line.768"></a>
+<span class="sourceLineNo">769</span><a id="line.769">        public StreamMessage createStreamMessage() {</a>
+<span class="sourceLineNo">770</span><a id="line.770">            checkSession();</a>
+<span class="sourceLineNo">771</span><a id="line.771">            try {</a>
+<span class="sourceLineNo">772</span><a id="line.772">                return session.createStreamMessage();</a>
+<span class="sourceLineNo">773</span><a id="line.773">            } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">774</span><a id="line.774">                throw new EmbeddedActiveMQBrokerException("Failed to create StreamMessage", jmsEx);</a>
+<span class="sourceLineNo">775</span><a id="line.775">            }</a>
+<span class="sourceLineNo">776</span><a id="line.776">        }</a>
+<span class="sourceLineNo">777</span><a id="line.777"></a>
+<span class="sourceLineNo">778</span><a id="line.778">        public void pushMessage(ActiveMQDestination destination, Message message) {</a>
+<span class="sourceLineNo">779</span><a id="line.779">            if (producer == null) {</a>
+<span class="sourceLineNo">780</span><a id="line.780">                throw new IllegalStateException("JMS MessageProducer is null - has the InternalClient been started?");</a>
+<span class="sourceLineNo">781</span><a id="line.781">            }</a>
+<span class="sourceLineNo">782</span><a id="line.782"></a>
+<span class="sourceLineNo">783</span><a id="line.783">            try {</a>
+<span class="sourceLineNo">784</span><a id="line.784">                producer.send(destination, message);</a>
+<span class="sourceLineNo">785</span><a id="line.785">            } catch (JMSException jmsEx) {</a>
+<span class="sourceLineNo">786</span><a id="line.786">                throw new EmbeddedActiveMQBrokerException(String.format("Failed to push %s to %s", message.getClass().getSimpleName(), destination.toString()), jmsEx);</a>
+<span class="sourceLineNo">787</span><a id="line.787">            }</a>
+<span class="sourceLineNo">788</span><a id="line.788">        }</a>
+<span class="sourceLineNo">789</span><a id="line.789"></a>
+<span class="sourceLineNo">790</span><a id="line.790">        void checkSession() {</a>
+<span class="sourceLineNo">791</span><a id="line.791">            if (session == null) {</a>
+<span class="sourceLineNo">792</span><a id="line.792">                throw new IllegalStateException("JMS Session is null - has the InternalClient been started?");</a>
+<span class="sourceLineNo">793</span><a id="line.793">            }</a>
+<span class="sourceLineNo">794</span><a id="line.794">        }</a>
+<span class="sourceLineNo">795</span><a id="line.795">    }</a>
+<span class="sourceLineNo">796</span><a id="line.796">}</a>
 
 
 
@@ -864,5 +865,6 @@
 
 </pre>
 </div>
+</main>
 </body>
 </html>

@@ -1,270 +1,271 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
 <title>Source code</title>
 <link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
 </head>
 <body>
+<main role="main">
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one or more<a name="line.2"></a>
-<span class="sourceLineNo">003</span> * contributor license agreements.  See the NOTICE file distributed with<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * this work for additional information regarding copyright ownership.<a name="line.4"></a>
-<span class="sourceLineNo">005</span> * The ASF licenses this file to You under the Apache License, Version 2.0<a name="line.5"></a>
-<span class="sourceLineNo">006</span> * (the "License"); you may not use this file except in compliance with<a name="line.6"></a>
-<span class="sourceLineNo">007</span> * the License.  You may obtain a copy of the License at<a name="line.7"></a>
-<span class="sourceLineNo">008</span> *<a name="line.8"></a>
-<span class="sourceLineNo">009</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.9"></a>
-<span class="sourceLineNo">010</span> *<a name="line.10"></a>
-<span class="sourceLineNo">011</span> * Unless required by applicable law or agreed to in writing, software<a name="line.11"></a>
-<span class="sourceLineNo">012</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.12"></a>
-<span class="sourceLineNo">013</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.13"></a>
-<span class="sourceLineNo">014</span> * See the License for the specific language governing permissions and<a name="line.14"></a>
-<span class="sourceLineNo">015</span> * limitations under the License.<a name="line.15"></a>
-<span class="sourceLineNo">016</span> */<a name="line.16"></a>
-<span class="sourceLineNo">017</span>package org.apache.activemq.filter;<a name="line.17"></a>
-<span class="sourceLineNo">018</span><a name="line.18"></a>
-<span class="sourceLineNo">019</span>import java.util.ArrayList;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>import java.util.Collection;<a name="line.20"></a>
-<span class="sourceLineNo">021</span>import java.util.HashMap;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>import java.util.Iterator;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import java.util.List;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import java.util.Map;<a name="line.24"></a>
-<span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>import javax.jms.JMSException;<a name="line.26"></a>
-<span class="sourceLineNo">027</span><a name="line.27"></a>
-<span class="sourceLineNo">028</span>/**<a name="line.28"></a>
-<span class="sourceLineNo">029</span> * A MultiExpressionEvaluator is used to evaluate multiple expressions in single<a name="line.29"></a>
-<span class="sourceLineNo">030</span> * method call. &lt;p/&gt; Multiple Expression/ExpressionListener pairs can be added<a name="line.30"></a>
-<span class="sourceLineNo">031</span> * to a MultiExpressionEvaluator object. When the MultiExpressionEvaluator<a name="line.31"></a>
-<span class="sourceLineNo">032</span> * object is evaluated, all the registed Expressions are evaluated and then the<a name="line.32"></a>
-<span class="sourceLineNo">033</span> * associated ExpressionListener is invoked to inform it of the evaluation<a name="line.33"></a>
-<span class="sourceLineNo">034</span> * result. &lt;p/&gt; By evaluating multiple expressions at one time, some<a name="line.34"></a>
-<span class="sourceLineNo">035</span> * optimizations can be made to reduce the number of computations normally<a name="line.35"></a>
-<span class="sourceLineNo">036</span> * required to evaluate all the expressions. &lt;p/&gt; When this class adds an<a name="line.36"></a>
-<span class="sourceLineNo">037</span> * Expression it wrapps each node in the Expression's AST with a CacheExpression<a name="line.37"></a>
-<span class="sourceLineNo">038</span> * object. Then each CacheExpression object (one for each node) is placed in the<a name="line.38"></a>
-<span class="sourceLineNo">039</span> * cachedExpressions map. The cachedExpressions map allows us to find the sub<a name="line.39"></a>
-<span class="sourceLineNo">040</span> * expressions that are common across two different expressions. When adding an<a name="line.40"></a>
-<span class="sourceLineNo">041</span> * Expression in, if a sub Expression of the Expression is allready in the<a name="line.41"></a>
-<span class="sourceLineNo">042</span> * cachedExpressions map, then instead of wrapping the sub expression in a new<a name="line.42"></a>
-<span class="sourceLineNo">043</span> * CacheExpression object, we reuse the CacheExpression allready int the map.<a name="line.43"></a>
-<span class="sourceLineNo">044</span> * &lt;p/&gt; To help illustrate what going on, lets try to give an exmample: If we<a name="line.44"></a>
-<span class="sourceLineNo">045</span> * denote the AST of a Expression as follows:<a name="line.45"></a>
-<span class="sourceLineNo">046</span> * [AST-Node-Type,Left-Node,Right-Node], then A expression like: "3*5+6" would<a name="line.46"></a>
-<span class="sourceLineNo">047</span> * result in "[*,3,[+,5,6]]" &lt;p/&gt; If the [*,3,[+,5,6]] expression is added to<a name="line.47"></a>
-<span class="sourceLineNo">048</span> * the MultiExpressionEvaluator, it would really be converted to:<a name="line.48"></a>
-<span class="sourceLineNo">049</span> * [c0,[*,3,[c1,[+,5,6]]]] where c0 and c1 represent the CacheExpression<a name="line.49"></a>
-<span class="sourceLineNo">050</span> * expression objects that cache the results of the * and the + operation.<a name="line.50"></a>
-<span class="sourceLineNo">051</span> * Constants and Property nodes are not cached. &lt;p/&gt; If later on we add the<a name="line.51"></a>
-<span class="sourceLineNo">052</span> * following expression [=,11,[+,5,6]] ("11=5+6") to the<a name="line.52"></a>
-<span class="sourceLineNo">053</span> * MultiExpressionEvaluator it would be converted to: [c2,[=,11,[c1,[+,5,6]]]],<a name="line.53"></a>
-<span class="sourceLineNo">054</span> * where c2 is a new CacheExpression object but c1 is the same CacheExpression<a name="line.54"></a>
-<span class="sourceLineNo">055</span> * used in the previous expression. &lt;p/&gt; When the expressions are evaluated, the<a name="line.55"></a>
-<span class="sourceLineNo">056</span> * c1 CacheExpression object will only evaluate the [+,5,6] expression once and<a name="line.56"></a>
-<span class="sourceLineNo">057</span> * cache the resulting value. Hence evauating the second expression costs less<a name="line.57"></a>
-<span class="sourceLineNo">058</span> * because that [+,5,6] is not done 2 times. &lt;p/&gt; Problems: - cacheing the<a name="line.58"></a>
-<span class="sourceLineNo">059</span> * values introduces overhead. It may be possible to be smarter about WHICH<a name="line.59"></a>
-<span class="sourceLineNo">060</span> * nodes in the AST are cached and which are not. - Current implementation is<a name="line.60"></a>
-<span class="sourceLineNo">061</span> * not thread safe. This is because you need a way to invalidate all the cached<a name="line.61"></a>
-<span class="sourceLineNo">062</span> * values so that the next evaluation re-evaluates the nodes. By going single<a name="line.62"></a>
-<span class="sourceLineNo">063</span> * threaded, chache invalidation is done quickly by incrementing a 'view'<a name="line.63"></a>
-<span class="sourceLineNo">064</span> * counter. When a CacheExpressionnotices it's last cached value was generated<a name="line.64"></a>
-<span class="sourceLineNo">065</span> * in an old 'view', it invalidates its cached value.<a name="line.65"></a>
-<span class="sourceLineNo">066</span> * <a name="line.66"></a>
-<span class="sourceLineNo">067</span> *  $Date: 2005/08/27 03:52:36 $<a name="line.67"></a>
-<span class="sourceLineNo">068</span> */<a name="line.68"></a>
-<span class="sourceLineNo">069</span>public class MultiExpressionEvaluator {<a name="line.69"></a>
-<span class="sourceLineNo">070</span><a name="line.70"></a>
-<span class="sourceLineNo">071</span>    Map&lt;String, ExpressionListenerSet&gt; rootExpressions = new HashMap&lt;String, ExpressionListenerSet&gt;();<a name="line.71"></a>
-<span class="sourceLineNo">072</span>    Map&lt;Expression, CacheExpression&gt; cachedExpressions = new HashMap&lt;Expression, CacheExpression&gt;();<a name="line.72"></a>
-<span class="sourceLineNo">073</span><a name="line.73"></a>
-<span class="sourceLineNo">074</span>    int view;<a name="line.74"></a>
-<span class="sourceLineNo">075</span><a name="line.75"></a>
-<span class="sourceLineNo">076</span>    /**<a name="line.76"></a>
-<span class="sourceLineNo">077</span>     * A UnaryExpression that caches the result of the nested expression. The<a name="line.77"></a>
-<span class="sourceLineNo">078</span>     * cached value is valid if the<a name="line.78"></a>
-<span class="sourceLineNo">079</span>     * CacheExpression.cview==MultiExpressionEvaluator.view<a name="line.79"></a>
-<span class="sourceLineNo">080</span>     */<a name="line.80"></a>
-<span class="sourceLineNo">081</span>    public class CacheExpression extends UnaryExpression {<a name="line.81"></a>
-<span class="sourceLineNo">082</span>        short refCount;<a name="line.82"></a>
-<span class="sourceLineNo">083</span>        int cview = view - 1;<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        Object cachedValue;<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        int cachedHashCode;<a name="line.85"></a>
-<span class="sourceLineNo">086</span><a name="line.86"></a>
-<span class="sourceLineNo">087</span>        public CacheExpression(Expression realExpression) {<a name="line.87"></a>
-<span class="sourceLineNo">088</span>            super(realExpression);<a name="line.88"></a>
-<span class="sourceLineNo">089</span>            cachedHashCode = realExpression.hashCode();<a name="line.89"></a>
-<span class="sourceLineNo">090</span>        }<a name="line.90"></a>
-<span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span>        /**<a name="line.92"></a>
-<span class="sourceLineNo">093</span>         * @see org.apache.activemq.filter.Expression#evaluate(MessageEvaluationContext)<a name="line.93"></a>
-<span class="sourceLineNo">094</span>         */<a name="line.94"></a>
-<span class="sourceLineNo">095</span>        public Object evaluate(MessageEvaluationContext message) throws JMSException {<a name="line.95"></a>
-<span class="sourceLineNo">096</span>            if (view == cview) {<a name="line.96"></a>
-<span class="sourceLineNo">097</span>                return cachedValue;<a name="line.97"></a>
-<span class="sourceLineNo">098</span>            }<a name="line.98"></a>
-<span class="sourceLineNo">099</span>            cachedValue = right.evaluate(message);<a name="line.99"></a>
-<span class="sourceLineNo">100</span>            cview = view;<a name="line.100"></a>
-<span class="sourceLineNo">101</span>            return cachedValue;<a name="line.101"></a>
-<span class="sourceLineNo">102</span>        }<a name="line.102"></a>
-<span class="sourceLineNo">103</span><a name="line.103"></a>
-<span class="sourceLineNo">104</span>        public int hashCode() {<a name="line.104"></a>
-<span class="sourceLineNo">105</span>            return cachedHashCode;<a name="line.105"></a>
-<span class="sourceLineNo">106</span>        }<a name="line.106"></a>
-<span class="sourceLineNo">107</span><a name="line.107"></a>
-<span class="sourceLineNo">108</span>        public boolean equals(Object o) {<a name="line.108"></a>
-<span class="sourceLineNo">109</span>            if (o == null) {<a name="line.109"></a>
-<span class="sourceLineNo">110</span>                return false;<a name="line.110"></a>
-<span class="sourceLineNo">111</span>            }<a name="line.111"></a>
-<span class="sourceLineNo">112</span>            return ((CacheExpression)o).right.equals(right);<a name="line.112"></a>
-<span class="sourceLineNo">113</span>        }<a name="line.113"></a>
-<span class="sourceLineNo">114</span><a name="line.114"></a>
-<span class="sourceLineNo">115</span>        public String getExpressionSymbol() {<a name="line.115"></a>
-<span class="sourceLineNo">116</span>            return null;<a name="line.116"></a>
-<span class="sourceLineNo">117</span>        }<a name="line.117"></a>
-<span class="sourceLineNo">118</span><a name="line.118"></a>
-<span class="sourceLineNo">119</span>        public String toString() {<a name="line.119"></a>
-<span class="sourceLineNo">120</span>            return right.toString();<a name="line.120"></a>
-<span class="sourceLineNo">121</span>        }<a name="line.121"></a>
-<span class="sourceLineNo">122</span><a name="line.122"></a>
-<span class="sourceLineNo">123</span>    }<a name="line.123"></a>
-<span class="sourceLineNo">124</span><a name="line.124"></a>
-<span class="sourceLineNo">125</span>    /**<a name="line.125"></a>
-<span class="sourceLineNo">126</span>     * Multiple listeners my be interested in the results of a single<a name="line.126"></a>
-<span class="sourceLineNo">127</span>     * expression.<a name="line.127"></a>
-<span class="sourceLineNo">128</span>     */<a name="line.128"></a>
-<span class="sourceLineNo">129</span>    static class ExpressionListenerSet {<a name="line.129"></a>
-<span class="sourceLineNo">130</span>        Expression expression;<a name="line.130"></a>
-<span class="sourceLineNo">131</span>        List&lt;ExpressionListener&gt; listeners = new ArrayList&lt;ExpressionListener&gt;();<a name="line.131"></a>
-<span class="sourceLineNo">132</span>    }<a name="line.132"></a>
-<span class="sourceLineNo">133</span><a name="line.133"></a>
-<span class="sourceLineNo">134</span>    /**<a name="line.134"></a>
-<span class="sourceLineNo">135</span>     * Objects that are interested in the results of an expression should<a name="line.135"></a>
-<span class="sourceLineNo">136</span>     * implement this interface.<a name="line.136"></a>
-<span class="sourceLineNo">137</span>     */<a name="line.137"></a>
-<span class="sourceLineNo">138</span>    static interface ExpressionListener {<a name="line.138"></a>
-<span class="sourceLineNo">139</span>        void evaluateResultEvent(Expression selector, MessageEvaluationContext message, Object result);<a name="line.139"></a>
-<span class="sourceLineNo">140</span>    }<a name="line.140"></a>
-<span class="sourceLineNo">141</span><a name="line.141"></a>
-<span class="sourceLineNo">142</span>    /**<a name="line.142"></a>
-<span class="sourceLineNo">143</span>     * Adds an ExpressionListener to a given expression. When evaluate is<a name="line.143"></a>
-<span class="sourceLineNo">144</span>     * called, the ExpressionListener will be provided the results of the<a name="line.144"></a>
-<span class="sourceLineNo">145</span>     * Expression applied to the evaluated message.<a name="line.145"></a>
-<span class="sourceLineNo">146</span>     */<a name="line.146"></a>
-<span class="sourceLineNo">147</span>    public void addExpressionListner(Expression selector, ExpressionListener c) {<a name="line.147"></a>
-<span class="sourceLineNo">148</span>        ExpressionListenerSet data = rootExpressions.get(selector.toString());<a name="line.148"></a>
-<span class="sourceLineNo">149</span>        if (data == null) {<a name="line.149"></a>
-<span class="sourceLineNo">150</span>            data = new ExpressionListenerSet();<a name="line.150"></a>
-<span class="sourceLineNo">151</span>            data.expression = addToCache(selector);<a name="line.151"></a>
-<span class="sourceLineNo">152</span>            rootExpressions.put(selector.toString(), data);<a name="line.152"></a>
-<span class="sourceLineNo">153</span>        }<a name="line.153"></a>
-<span class="sourceLineNo">154</span>        data.listeners.add(c);<a name="line.154"></a>
-<span class="sourceLineNo">155</span>    }<a name="line.155"></a>
-<span class="sourceLineNo">156</span><a name="line.156"></a>
-<span class="sourceLineNo">157</span>    /**<a name="line.157"></a>
-<span class="sourceLineNo">158</span>     * Removes an ExpressionListener from receiving the results of a given<a name="line.158"></a>
-<span class="sourceLineNo">159</span>     * evaluation.<a name="line.159"></a>
-<span class="sourceLineNo">160</span>     */<a name="line.160"></a>
-<span class="sourceLineNo">161</span>    public boolean removeEventListner(String selector, ExpressionListener c) {<a name="line.161"></a>
-<span class="sourceLineNo">162</span>        String expKey = selector;<a name="line.162"></a>
-<span class="sourceLineNo">163</span>        ExpressionListenerSet d = rootExpressions.get(expKey);<a name="line.163"></a>
-<span class="sourceLineNo">164</span>        // that selector had not been added.<a name="line.164"></a>
-<span class="sourceLineNo">165</span>        if (d == null) {<a name="line.165"></a>
-<span class="sourceLineNo">166</span>            return false;<a name="line.166"></a>
-<span class="sourceLineNo">167</span>        }<a name="line.167"></a>
-<span class="sourceLineNo">168</span>        // that selector did not have that listeners..<a name="line.168"></a>
-<span class="sourceLineNo">169</span>        if (!d.listeners.remove(c)) {<a name="line.169"></a>
-<span class="sourceLineNo">170</span>            return false;<a name="line.170"></a>
-<span class="sourceLineNo">171</span>        }<a name="line.171"></a>
-<span class="sourceLineNo">172</span><a name="line.172"></a>
-<span class="sourceLineNo">173</span>        // If there are no more listeners for this expression....<a name="line.173"></a>
-<span class="sourceLineNo">174</span>        if (d.listeners.size() == 0) {<a name="line.174"></a>
-<span class="sourceLineNo">175</span>            // Un-cache it...<a name="line.175"></a>
-<span class="sourceLineNo">176</span>            removeFromCache((CacheExpression)d.expression);<a name="line.176"></a>
-<span class="sourceLineNo">177</span>            rootExpressions.remove(expKey);<a name="line.177"></a>
-<span class="sourceLineNo">178</span>        }<a name="line.178"></a>
-<span class="sourceLineNo">179</span>        return true;<a name="line.179"></a>
-<span class="sourceLineNo">180</span>    }<a name="line.180"></a>
-<span class="sourceLineNo">181</span><a name="line.181"></a>
-<span class="sourceLineNo">182</span>    /**<a name="line.182"></a>
-<span class="sourceLineNo">183</span>     * Finds the CacheExpression that has been associated with an expression. If<a name="line.183"></a>
-<span class="sourceLineNo">184</span>     * it is the first time the Expression is being added to the Cache, a new<a name="line.184"></a>
-<span class="sourceLineNo">185</span>     * CacheExpression is created and associated with the expression. &lt;p/&gt; This<a name="line.185"></a>
-<span class="sourceLineNo">186</span>     * method updates the reference counters on the CacheExpression to know when<a name="line.186"></a>
-<span class="sourceLineNo">187</span>     * it is no longer needed.<a name="line.187"></a>
-<span class="sourceLineNo">188</span>     */<a name="line.188"></a>
-<span class="sourceLineNo">189</span>    private CacheExpression addToCache(Expression expr) {<a name="line.189"></a>
-<span class="sourceLineNo">190</span><a name="line.190"></a>
-<span class="sourceLineNo">191</span>        CacheExpression n = cachedExpressions.get(expr);<a name="line.191"></a>
-<span class="sourceLineNo">192</span>        if (n == null) {<a name="line.192"></a>
-<span class="sourceLineNo">193</span>            n = new CacheExpression(expr);<a name="line.193"></a>
-<span class="sourceLineNo">194</span>            cachedExpressions.put(expr, n);<a name="line.194"></a>
-<span class="sourceLineNo">195</span>            if (expr instanceof UnaryExpression) {<a name="line.195"></a>
-<span class="sourceLineNo">196</span><a name="line.196"></a>
-<span class="sourceLineNo">197</span>                // Cache the sub expressions too<a name="line.197"></a>
-<span class="sourceLineNo">198</span>                UnaryExpression un = (UnaryExpression)expr;<a name="line.198"></a>
-<span class="sourceLineNo">199</span>                un.setRight(addToCache(un.getRight()));<a name="line.199"></a>
-<span class="sourceLineNo">200</span><a name="line.200"></a>
-<span class="sourceLineNo">201</span>            } else if (expr instanceof BinaryExpression) {<a name="line.201"></a>
-<span class="sourceLineNo">202</span><a name="line.202"></a>
-<span class="sourceLineNo">203</span>                // Cache the sub expressions too.<a name="line.203"></a>
-<span class="sourceLineNo">204</span>                BinaryExpression bn = (BinaryExpression)expr;<a name="line.204"></a>
-<span class="sourceLineNo">205</span>                bn.setRight(addToCache(bn.getRight()));<a name="line.205"></a>
-<span class="sourceLineNo">206</span>                bn.setLeft(addToCache(bn.getLeft()));<a name="line.206"></a>
-<span class="sourceLineNo">207</span><a name="line.207"></a>
-<span class="sourceLineNo">208</span>            }<a name="line.208"></a>
-<span class="sourceLineNo">209</span>        }<a name="line.209"></a>
-<span class="sourceLineNo">210</span>        n.refCount++;<a name="line.210"></a>
-<span class="sourceLineNo">211</span>        return n;<a name="line.211"></a>
-<span class="sourceLineNo">212</span>    }<a name="line.212"></a>
-<span class="sourceLineNo">213</span><a name="line.213"></a>
-<span class="sourceLineNo">214</span>    /**<a name="line.214"></a>
-<span class="sourceLineNo">215</span>     * Removes an expression from the cache. Updates the reference counters on<a name="line.215"></a>
-<span class="sourceLineNo">216</span>     * the CacheExpression object. When the refernce counter goes to zero, the<a name="line.216"></a>
-<span class="sourceLineNo">217</span>     * entry int the Expression to CacheExpression map is removed.<a name="line.217"></a>
-<span class="sourceLineNo">218</span>     * <a name="line.218"></a>
-<span class="sourceLineNo">219</span>     * @param cn<a name="line.219"></a>
-<span class="sourceLineNo">220</span>     */<a name="line.220"></a>
-<span class="sourceLineNo">221</span>    private void removeFromCache(CacheExpression cn) {<a name="line.221"></a>
-<span class="sourceLineNo">222</span>        cn.refCount--;<a name="line.222"></a>
-<span class="sourceLineNo">223</span>        Expression realExpr = cn.getRight();<a name="line.223"></a>
-<span class="sourceLineNo">224</span>        if (cn.refCount == 0) {<a name="line.224"></a>
-<span class="sourceLineNo">225</span>            cachedExpressions.remove(realExpr);<a name="line.225"></a>
-<span class="sourceLineNo">226</span>        }<a name="line.226"></a>
-<span class="sourceLineNo">227</span>        if (realExpr instanceof UnaryExpression) {<a name="line.227"></a>
-<span class="sourceLineNo">228</span>            UnaryExpression un = (UnaryExpression)realExpr;<a name="line.228"></a>
-<span class="sourceLineNo">229</span>            removeFromCache((CacheExpression)un.getRight());<a name="line.229"></a>
-<span class="sourceLineNo">230</span>        }<a name="line.230"></a>
-<span class="sourceLineNo">231</span>        if (realExpr instanceof BinaryExpression) {<a name="line.231"></a>
-<span class="sourceLineNo">232</span>            BinaryExpression bn = (BinaryExpression)realExpr;<a name="line.232"></a>
-<span class="sourceLineNo">233</span>            removeFromCache((CacheExpression)bn.getRight());<a name="line.233"></a>
-<span class="sourceLineNo">234</span>        }<a name="line.234"></a>
-<span class="sourceLineNo">235</span>    }<a name="line.235"></a>
-<span class="sourceLineNo">236</span><a name="line.236"></a>
-<span class="sourceLineNo">237</span>    /**<a name="line.237"></a>
-<span class="sourceLineNo">238</span>     * Evaluates the message against all the Expressions added to this object.<a name="line.238"></a>
-<span class="sourceLineNo">239</span>     * The added ExpressionListeners are notified of the result of the<a name="line.239"></a>
-<span class="sourceLineNo">240</span>     * evaluation.<a name="line.240"></a>
-<span class="sourceLineNo">241</span>     * <a name="line.241"></a>
-<span class="sourceLineNo">242</span>     * @param message<a name="line.242"></a>
-<span class="sourceLineNo">243</span>     */<a name="line.243"></a>
-<span class="sourceLineNo">244</span>    public void evaluate(MessageEvaluationContext message) {<a name="line.244"></a>
-<span class="sourceLineNo">245</span>        Collection&lt;ExpressionListenerSet&gt; expressionListeners = rootExpressions.values();<a name="line.245"></a>
-<span class="sourceLineNo">246</span>        for (Iterator&lt;ExpressionListenerSet&gt; iter = expressionListeners.iterator(); iter.hasNext();) {<a name="line.246"></a>
-<span class="sourceLineNo">247</span>            ExpressionListenerSet els = iter.next();<a name="line.247"></a>
-<span class="sourceLineNo">248</span>            try {<a name="line.248"></a>
-<span class="sourceLineNo">249</span>                Object result = els.expression.evaluate(message);<a name="line.249"></a>
-<span class="sourceLineNo">250</span>                for (Iterator&lt;ExpressionListener&gt; iterator = els.listeners.iterator(); iterator.hasNext();) {<a name="line.250"></a>
-<span class="sourceLineNo">251</span>                    ExpressionListener l = iterator.next();<a name="line.251"></a>
-<span class="sourceLineNo">252</span>                    l.evaluateResultEvent(els.expression, message, result);<a name="line.252"></a>
-<span class="sourceLineNo">253</span>                }<a name="line.253"></a>
-<span class="sourceLineNo">254</span>            } catch (Throwable e) {<a name="line.254"></a>
-<span class="sourceLineNo">255</span>                e.printStackTrace();<a name="line.255"></a>
-<span class="sourceLineNo">256</span>            }<a name="line.256"></a>
-<span class="sourceLineNo">257</span>        }<a name="line.257"></a>
-<span class="sourceLineNo">258</span>    }<a name="line.258"></a>
-<span class="sourceLineNo">259</span>}<a name="line.259"></a>
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.filter;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.util.ArrayList;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.util.Collection;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.util.HashMap;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.util.Iterator;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.util.List;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.Map;</a>
+<span class="sourceLineNo">025</span><a id="line.25"></a>
+<span class="sourceLineNo">026</span><a id="line.26">import javax.jms.JMSException;</a>
+<span class="sourceLineNo">027</span><a id="line.27"></a>
+<span class="sourceLineNo">028</span><a id="line.28">/**</a>
+<span class="sourceLineNo">029</span><a id="line.29"> * A MultiExpressionEvaluator is used to evaluate multiple expressions in single</a>
+<span class="sourceLineNo">030</span><a id="line.30"> * method call. &lt;p/&gt; Multiple Expression/ExpressionListener pairs can be added</a>
+<span class="sourceLineNo">031</span><a id="line.31"> * to a MultiExpressionEvaluator object. When the MultiExpressionEvaluator</a>
+<span class="sourceLineNo">032</span><a id="line.32"> * object is evaluated, all the registed Expressions are evaluated and then the</a>
+<span class="sourceLineNo">033</span><a id="line.33"> * associated ExpressionListener is invoked to inform it of the evaluation</a>
+<span class="sourceLineNo">034</span><a id="line.34"> * result. &lt;p/&gt; By evaluating multiple expressions at one time, some</a>
+<span class="sourceLineNo">035</span><a id="line.35"> * optimizations can be made to reduce the number of computations normally</a>
+<span class="sourceLineNo">036</span><a id="line.36"> * required to evaluate all the expressions. &lt;p/&gt; When this class adds an</a>
+<span class="sourceLineNo">037</span><a id="line.37"> * Expression it wrapps each node in the Expression's AST with a CacheExpression</a>
+<span class="sourceLineNo">038</span><a id="line.38"> * object. Then each CacheExpression object (one for each node) is placed in the</a>
+<span class="sourceLineNo">039</span><a id="line.39"> * cachedExpressions map. The cachedExpressions map allows us to find the sub</a>
+<span class="sourceLineNo">040</span><a id="line.40"> * expressions that are common across two different expressions. When adding an</a>
+<span class="sourceLineNo">041</span><a id="line.41"> * Expression in, if a sub Expression of the Expression is allready in the</a>
+<span class="sourceLineNo">042</span><a id="line.42"> * cachedExpressions map, then instead of wrapping the sub expression in a new</a>
+<span class="sourceLineNo">043</span><a id="line.43"> * CacheExpression object, we reuse the CacheExpression allready int the map.</a>
+<span class="sourceLineNo">044</span><a id="line.44"> * &lt;p/&gt; To help illustrate what going on, lets try to give an exmample: If we</a>
+<span class="sourceLineNo">045</span><a id="line.45"> * denote the AST of a Expression as follows:</a>
+<span class="sourceLineNo">046</span><a id="line.46"> * [AST-Node-Type,Left-Node,Right-Node], then A expression like: "3*5+6" would</a>
+<span class="sourceLineNo">047</span><a id="line.47"> * result in "[*,3,[+,5,6]]" &lt;p/&gt; If the [*,3,[+,5,6]] expression is added to</a>
+<span class="sourceLineNo">048</span><a id="line.48"> * the MultiExpressionEvaluator, it would really be converted to:</a>
+<span class="sourceLineNo">049</span><a id="line.49"> * [c0,[*,3,[c1,[+,5,6]]]] where c0 and c1 represent the CacheExpression</a>
+<span class="sourceLineNo">050</span><a id="line.50"> * expression objects that cache the results of the * and the + operation.</a>
+<span class="sourceLineNo">051</span><a id="line.51"> * Constants and Property nodes are not cached. &lt;p/&gt; If later on we add the</a>
+<span class="sourceLineNo">052</span><a id="line.52"> * following expression [=,11,[+,5,6]] ("11=5+6") to the</a>
+<span class="sourceLineNo">053</span><a id="line.53"> * MultiExpressionEvaluator it would be converted to: [c2,[=,11,[c1,[+,5,6]]]],</a>
+<span class="sourceLineNo">054</span><a id="line.54"> * where c2 is a new CacheExpression object but c1 is the same CacheExpression</a>
+<span class="sourceLineNo">055</span><a id="line.55"> * used in the previous expression. &lt;p/&gt; When the expressions are evaluated, the</a>
+<span class="sourceLineNo">056</span><a id="line.56"> * c1 CacheExpression object will only evaluate the [+,5,6] expression once and</a>
+<span class="sourceLineNo">057</span><a id="line.57"> * cache the resulting value. Hence evauating the second expression costs less</a>
+<span class="sourceLineNo">058</span><a id="line.58"> * because that [+,5,6] is not done 2 times. &lt;p/&gt; Problems: - cacheing the</a>
+<span class="sourceLineNo">059</span><a id="line.59"> * values introduces overhead. It may be possible to be smarter about WHICH</a>
+<span class="sourceLineNo">060</span><a id="line.60"> * nodes in the AST are cached and which are not. - Current implementation is</a>
+<span class="sourceLineNo">061</span><a id="line.61"> * not thread safe. This is because you need a way to invalidate all the cached</a>
+<span class="sourceLineNo">062</span><a id="line.62"> * values so that the next evaluation re-evaluates the nodes. By going single</a>
+<span class="sourceLineNo">063</span><a id="line.63"> * threaded, chache invalidation is done quickly by incrementing a 'view'</a>
+<span class="sourceLineNo">064</span><a id="line.64"> * counter. When a CacheExpressionnotices it's last cached value was generated</a>
+<span class="sourceLineNo">065</span><a id="line.65"> * in an old 'view', it invalidates its cached value.</a>
+<span class="sourceLineNo">066</span><a id="line.66"> * </a>
+<span class="sourceLineNo">067</span><a id="line.67"> *  $Date: 2005/08/27 03:52:36 $</a>
+<span class="sourceLineNo">068</span><a id="line.68"> */</a>
+<span class="sourceLineNo">069</span><a id="line.69">public class MultiExpressionEvaluator {</a>
+<span class="sourceLineNo">070</span><a id="line.70"></a>
+<span class="sourceLineNo">071</span><a id="line.71">    Map&lt;String, ExpressionListenerSet&gt; rootExpressions = new HashMap&lt;String, ExpressionListenerSet&gt;();</a>
+<span class="sourceLineNo">072</span><a id="line.72">    Map&lt;Expression, CacheExpression&gt; cachedExpressions = new HashMap&lt;Expression, CacheExpression&gt;();</a>
+<span class="sourceLineNo">073</span><a id="line.73"></a>
+<span class="sourceLineNo">074</span><a id="line.74">    int view;</a>
+<span class="sourceLineNo">075</span><a id="line.75"></a>
+<span class="sourceLineNo">076</span><a id="line.76">    /**</a>
+<span class="sourceLineNo">077</span><a id="line.77">     * A UnaryExpression that caches the result of the nested expression. The</a>
+<span class="sourceLineNo">078</span><a id="line.78">     * cached value is valid if the</a>
+<span class="sourceLineNo">079</span><a id="line.79">     * CacheExpression.cview==MultiExpressionEvaluator.view</a>
+<span class="sourceLineNo">080</span><a id="line.80">     */</a>
+<span class="sourceLineNo">081</span><a id="line.81">    public class CacheExpression extends UnaryExpression {</a>
+<span class="sourceLineNo">082</span><a id="line.82">        short refCount;</a>
+<span class="sourceLineNo">083</span><a id="line.83">        int cview = view - 1;</a>
+<span class="sourceLineNo">084</span><a id="line.84">        Object cachedValue;</a>
+<span class="sourceLineNo">085</span><a id="line.85">        int cachedHashCode;</a>
+<span class="sourceLineNo">086</span><a id="line.86"></a>
+<span class="sourceLineNo">087</span><a id="line.87">        public CacheExpression(Expression realExpression) {</a>
+<span class="sourceLineNo">088</span><a id="line.88">            super(realExpression);</a>
+<span class="sourceLineNo">089</span><a id="line.89">            cachedHashCode = realExpression.hashCode();</a>
+<span class="sourceLineNo">090</span><a id="line.90">        }</a>
+<span class="sourceLineNo">091</span><a id="line.91"></a>
+<span class="sourceLineNo">092</span><a id="line.92">        /**</a>
+<span class="sourceLineNo">093</span><a id="line.93">         * @see org.apache.activemq.filter.Expression#evaluate(MessageEvaluationContext)</a>
+<span class="sourceLineNo">094</span><a id="line.94">         */</a>
+<span class="sourceLineNo">095</span><a id="line.95">        public Object evaluate(MessageEvaluationContext message) throws JMSException {</a>
+<span class="sourceLineNo">096</span><a id="line.96">            if (view == cview) {</a>
+<span class="sourceLineNo">097</span><a id="line.97">                return cachedValue;</a>
+<span class="sourceLineNo">098</span><a id="line.98">            }</a>
+<span class="sourceLineNo">099</span><a id="line.99">            cachedValue = right.evaluate(message);</a>
+<span class="sourceLineNo">100</span><a id="line.100">            cview = view;</a>
+<span class="sourceLineNo">101</span><a id="line.101">            return cachedValue;</a>
+<span class="sourceLineNo">102</span><a id="line.102">        }</a>
+<span class="sourceLineNo">103</span><a id="line.103"></a>
+<span class="sourceLineNo">104</span><a id="line.104">        public int hashCode() {</a>
+<span class="sourceLineNo">105</span><a id="line.105">            return cachedHashCode;</a>
+<span class="sourceLineNo">106</span><a id="line.106">        }</a>
+<span class="sourceLineNo">107</span><a id="line.107"></a>
+<span class="sourceLineNo">108</span><a id="line.108">        public boolean equals(Object o) {</a>
+<span class="sourceLineNo">109</span><a id="line.109">            if (o == null) {</a>
+<span class="sourceLineNo">110</span><a id="line.110">                return false;</a>
+<span class="sourceLineNo">111</span><a id="line.111">            }</a>
+<span class="sourceLineNo">112</span><a id="line.112">            return ((CacheExpression)o).right.equals(right);</a>
+<span class="sourceLineNo">113</span><a id="line.113">        }</a>
+<span class="sourceLineNo">114</span><a id="line.114"></a>
+<span class="sourceLineNo">115</span><a id="line.115">        public String getExpressionSymbol() {</a>
+<span class="sourceLineNo">116</span><a id="line.116">            return null;</a>
+<span class="sourceLineNo">117</span><a id="line.117">        }</a>
+<span class="sourceLineNo">118</span><a id="line.118"></a>
+<span class="sourceLineNo">119</span><a id="line.119">        public String toString() {</a>
+<span class="sourceLineNo">120</span><a id="line.120">            return right.toString();</a>
+<span class="sourceLineNo">121</span><a id="line.121">        }</a>
+<span class="sourceLineNo">122</span><a id="line.122"></a>
+<span class="sourceLineNo">123</span><a id="line.123">    }</a>
+<span class="sourceLineNo">124</span><a id="line.124"></a>
+<span class="sourceLineNo">125</span><a id="line.125">    /**</a>
+<span class="sourceLineNo">126</span><a id="line.126">     * Multiple listeners my be interested in the results of a single</a>
+<span class="sourceLineNo">127</span><a id="line.127">     * expression.</a>
+<span class="sourceLineNo">128</span><a id="line.128">     */</a>
+<span class="sourceLineNo">129</span><a id="line.129">    static class ExpressionListenerSet {</a>
+<span class="sourceLineNo">130</span><a id="line.130">        Expression expression;</a>
+<span class="sourceLineNo">131</span><a id="line.131">        List&lt;ExpressionListener&gt; listeners = new ArrayList&lt;ExpressionListener&gt;();</a>
+<span class="sourceLineNo">132</span><a id="line.132">    }</a>
+<span class="sourceLineNo">133</span><a id="line.133"></a>
+<span class="sourceLineNo">134</span><a id="line.134">    /**</a>
+<span class="sourceLineNo">135</span><a id="line.135">     * Objects that are interested in the results of an expression should</a>
+<span class="sourceLineNo">136</span><a id="line.136">     * implement this interface.</a>
+<span class="sourceLineNo">137</span><a id="line.137">     */</a>
+<span class="sourceLineNo">138</span><a id="line.138">    static interface ExpressionListener {</a>
+<span class="sourceLineNo">139</span><a id="line.139">        void evaluateResultEvent(Expression selector, MessageEvaluationContext message, Object result);</a>
+<span class="sourceLineNo">140</span><a id="line.140">    }</a>
+<span class="sourceLineNo">141</span><a id="line.141"></a>
+<span class="sourceLineNo">142</span><a id="line.142">    /**</a>
+<span class="sourceLineNo">143</span><a id="line.143">     * Adds an ExpressionListener to a given expression. When evaluate is</a>
+<span class="sourceLineNo">144</span><a id="line.144">     * called, the ExpressionListener will be provided the results of the</a>
+<span class="sourceLineNo">145</span><a id="line.145">     * Expression applied to the evaluated message.</a>
+<span class="sourceLineNo">146</span><a id="line.146">     */</a>
+<span class="sourceLineNo">147</span><a id="line.147">    public void addExpressionListner(Expression selector, ExpressionListener c) {</a>
+<span class="sourceLineNo">148</span><a id="line.148">        ExpressionListenerSet data = rootExpressions.get(selector.toString());</a>
+<span class="sourceLineNo">149</span><a id="line.149">        if (data == null) {</a>
+<span class="sourceLineNo">150</span><a id="line.150">            data = new ExpressionListenerSet();</a>
+<span class="sourceLineNo">151</span><a id="line.151">            data.expression = addToCache(selector);</a>
+<span class="sourceLineNo">152</span><a id="line.152">            rootExpressions.put(selector.toString(), data);</a>
+<span class="sourceLineNo">153</span><a id="line.153">        }</a>
+<span class="sourceLineNo">154</span><a id="line.154">        data.listeners.add(c);</a>
+<span class="sourceLineNo">155</span><a id="line.155">    }</a>
+<span class="sourceLineNo">156</span><a id="line.156"></a>
+<span class="sourceLineNo">157</span><a id="line.157">    /**</a>
+<span class="sourceLineNo">158</span><a id="line.158">     * Removes an ExpressionListener from receiving the results of a given</a>
+<span class="sourceLineNo">159</span><a id="line.159">     * evaluation.</a>
+<span class="sourceLineNo">160</span><a id="line.160">     */</a>
+<span class="sourceLineNo">161</span><a id="line.161">    public boolean removeEventListner(String selector, ExpressionListener c) {</a>
+<span class="sourceLineNo">162</span><a id="line.162">        String expKey = selector;</a>
+<span class="sourceLineNo">163</span><a id="line.163">        ExpressionListenerSet d = rootExpressions.get(expKey);</a>
+<span class="sourceLineNo">164</span><a id="line.164">        // that selector had not been added.</a>
+<span class="sourceLineNo">165</span><a id="line.165">        if (d == null) {</a>
+<span class="sourceLineNo">166</span><a id="line.166">            return false;</a>
+<span class="sourceLineNo">167</span><a id="line.167">        }</a>
+<span class="sourceLineNo">168</span><a id="line.168">        // that selector did not have that listeners..</a>
+<span class="sourceLineNo">169</span><a id="line.169">        if (!d.listeners.remove(c)) {</a>
+<span class="sourceLineNo">170</span><a id="line.170">            return false;</a>
+<span class="sourceLineNo">171</span><a id="line.171">        }</a>
+<span class="sourceLineNo">172</span><a id="line.172"></a>
+<span class="sourceLineNo">173</span><a id="line.173">        // If there are no more listeners for this expression....</a>
+<span class="sourceLineNo">174</span><a id="line.174">        if (d.listeners.size() == 0) {</a>
+<span class="sourceLineNo">175</span><a id="line.175">            // Un-cache it...</a>
+<span class="sourceLineNo">176</span><a id="line.176">            removeFromCache((CacheExpression)d.expression);</a>
+<span class="sourceLineNo">177</span><a id="line.177">            rootExpressions.remove(expKey);</a>
+<span class="sourceLineNo">178</span><a id="line.178">        }</a>
+<span class="sourceLineNo">179</span><a id="line.179">        return true;</a>
+<span class="sourceLineNo">180</span><a id="line.180">    }</a>
+<span class="sourceLineNo">181</span><a id="line.181"></a>
+<span class="sourceLineNo">182</span><a id="line.182">    /**</a>
+<span class="sourceLineNo">183</span><a id="line.183">     * Finds the CacheExpression that has been associated with an expression. If</a>
+<span class="sourceLineNo">184</span><a id="line.184">     * it is the first time the Expression is being added to the Cache, a new</a>
+<span class="sourceLineNo">185</span><a id="line.185">     * CacheExpression is created and associated with the expression. &lt;p/&gt; This</a>
+<span class="sourceLineNo">186</span><a id="line.186">     * method updates the reference counters on the CacheExpression to know when</a>
+<span class="sourceLineNo">187</span><a id="line.187">     * it is no longer needed.</a>
+<span class="sourceLineNo">188</span><a id="line.188">     */</a>
+<span class="sourceLineNo">189</span><a id="line.189">    private CacheExpression addToCache(Expression expr) {</a>
+<span class="sourceLineNo">190</span><a id="line.190"></a>
+<span class="sourceLineNo">191</span><a id="line.191">        CacheExpression n = cachedExpressions.get(expr);</a>
+<span class="sourceLineNo">192</span><a id="line.192">        if (n == null) {</a>
+<span class="sourceLineNo">193</span><a id="line.193">            n = new CacheExpression(expr);</a>
+<span class="sourceLineNo">194</span><a id="line.194">            cachedExpressions.put(expr, n);</a>
+<span class="sourceLineNo">195</span><a id="line.195">            if (expr instanceof UnaryExpression) {</a>
+<span class="sourceLineNo">196</span><a id="line.196"></a>
+<span class="sourceLineNo">197</span><a id="line.197">                // Cache the sub expressions too</a>
+<span class="sourceLineNo">198</span><a id="line.198">                UnaryExpression un = (UnaryExpression)expr;</a>
+<span class="sourceLineNo">199</span><a id="line.199">                un.setRight(addToCache(un.getRight()));</a>
+<span class="sourceLineNo">200</span><a id="line.200"></a>
+<span class="sourceLineNo">201</span><a id="line.201">            } else if (expr instanceof BinaryExpression) {</a>
+<span class="sourceLineNo">202</span><a id="line.202"></a>
+<span class="sourceLineNo">203</span><a id="line.203">                // Cache the sub expressions too.</a>
+<span class="sourceLineNo">204</span><a id="line.204">                BinaryExpression bn = (BinaryExpression)expr;</a>
+<span class="sourceLineNo">205</span><a id="line.205">                bn.setRight(addToCache(bn.getRight()));</a>
+<span class="sourceLineNo">206</span><a id="line.206">                bn.setLeft(addToCache(bn.getLeft()));</a>
+<span class="sourceLineNo">207</span><a id="line.207"></a>
+<span class="sourceLineNo">208</span><a id="line.208">            }</a>
+<span class="sourceLineNo">209</span><a id="line.209">        }</a>
+<span class="sourceLineNo">210</span><a id="line.210">        n.refCount++;</a>
+<span class="sourceLineNo">211</span><a id="line.211">        return n;</a>
+<span class="sourceLineNo">212</span><a id="line.212">    }</a>
+<span class="sourceLineNo">213</span><a id="line.213"></a>
+<span class="sourceLineNo">214</span><a id="line.214">    /**</a>
+<span class="sourceLineNo">215</span><a id="line.215">     * Removes an expression from the cache. Updates the reference counters on</a>
+<span class="sourceLineNo">216</span><a id="line.216">     * the CacheExpression object. When the refernce counter goes to zero, the</a>
+<span class="sourceLineNo">217</span><a id="line.217">     * entry int the Expression to CacheExpression map is removed.</a>
+<span class="sourceLineNo">218</span><a id="line.218">     * </a>
+<span class="sourceLineNo">219</span><a id="line.219">     * @param cn</a>
+<span class="sourceLineNo">220</span><a id="line.220">     */</a>
+<span class="sourceLineNo">221</span><a id="line.221">    private void removeFromCache(CacheExpression cn) {</a>
+<span class="sourceLineNo">222</span><a id="line.222">        cn.refCount--;</a>
+<span class="sourceLineNo">223</span><a id="line.223">        Expression realExpr = cn.getRight();</a>
+<span class="sourceLineNo">224</span><a id="line.224">        if (cn.refCount == 0) {</a>
+<span class="sourceLineNo">225</span><a id="line.225">            cachedExpressions.remove(realExpr);</a>
+<span class="sourceLineNo">226</span><a id="line.226">        }</a>
+<span class="sourceLineNo">227</span><a id="line.227">        if (realExpr instanceof UnaryExpression) {</a>
+<span class="sourceLineNo">228</span><a id="line.228">            UnaryExpression un = (UnaryExpression)realExpr;</a>
+<span class="sourceLineNo">229</span><a id="line.229">            removeFromCache((CacheExpression)un.getRight());</a>
+<span class="sourceLineNo">230</span><a id="line.230">        }</a>
+<span class="sourceLineNo">231</span><a id="line.231">        if (realExpr instanceof BinaryExpression) {</a>
+<span class="sourceLineNo">232</span><a id="line.232">            BinaryExpression bn = (BinaryExpression)realExpr;</a>
+<span class="sourceLineNo">233</span><a id="line.233">            removeFromCache((CacheExpression)bn.getRight());</a>
+<span class="sourceLineNo">234</span><a id="line.234">        }</a>
+<span class="sourceLineNo">235</span><a id="line.235">    }</a>
+<span class="sourceLineNo">236</span><a id="line.236"></a>
+<span class="sourceLineNo">237</span><a id="line.237">    /**</a>
+<span class="sourceLineNo">238</span><a id="line.238">     * Evaluates the message against all the Expressions added to this object.</a>
+<span class="sourceLineNo">239</span><a id="line.239">     * The added ExpressionListeners are notified of the result of the</a>
+<span class="sourceLineNo">240</span><a id="line.240">     * evaluation.</a>
+<span class="sourceLineNo">241</span><a id="line.241">     * </a>
+<span class="sourceLineNo">242</span><a id="line.242">     * @param message</a>
+<span class="sourceLineNo">243</span><a id="line.243">     */</a>
+<span class="sourceLineNo">244</span><a id="line.244">    public void evaluate(MessageEvaluationContext message) {</a>
+<span class="sourceLineNo">245</span><a id="line.245">        Collection&lt;ExpressionListenerSet&gt; expressionListeners = rootExpressions.values();</a>
+<span class="sourceLineNo">246</span><a id="line.246">        for (Iterator&lt;ExpressionListenerSet&gt; iter = expressionListeners.iterator(); iter.hasNext();) {</a>
+<span class="sourceLineNo">247</span><a id="line.247">            ExpressionListenerSet els = iter.next();</a>
+<span class="sourceLineNo">248</span><a id="line.248">            try {</a>
+<span class="sourceLineNo">249</span><a id="line.249">                Object result = els.expression.evaluate(message);</a>
+<span class="sourceLineNo">250</span><a id="line.250">                for (Iterator&lt;ExpressionListener&gt; iterator = els.listeners.iterator(); iterator.hasNext();) {</a>
+<span class="sourceLineNo">251</span><a id="line.251">                    ExpressionListener l = iterator.next();</a>
+<span class="sourceLineNo">252</span><a id="line.252">                    l.evaluateResultEvent(els.expression, message, result);</a>
+<span class="sourceLineNo">253</span><a id="line.253">                }</a>
+<span class="sourceLineNo">254</span><a id="line.254">            } catch (Throwable e) {</a>
+<span class="sourceLineNo">255</span><a id="line.255">                e.printStackTrace();</a>
+<span class="sourceLineNo">256</span><a id="line.256">            }</a>
+<span class="sourceLineNo">257</span><a id="line.257">        }</a>
+<span class="sourceLineNo">258</span><a id="line.258">    }</a>
+<span class="sourceLineNo">259</span><a id="line.259">}</a>
 
 
 
@@ -327,5 +328,6 @@
 
 </pre>
 </div>
+</main>
 </body>
 </html>
