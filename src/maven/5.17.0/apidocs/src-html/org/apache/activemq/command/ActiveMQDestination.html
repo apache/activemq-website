@@ -1,0 +1,516 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.command;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.Externalizable;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.io.IOException;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.io.ObjectInput;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.io.ObjectOutput;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.net.URISyntaxException;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.ArrayList;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.util.HashMap;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import java.util.HashSet;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import java.util.List;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import java.util.Map;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import java.util.Properties;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import java.util.Set;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import java.util.StringTokenizer;</a>
+<span class="sourceLineNo">032</span><a id="line.32"></a>
+<span class="sourceLineNo">033</span><a id="line.33">import javax.jms.Destination;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import javax.jms.JMSException;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import javax.jms.Queue;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import javax.jms.TemporaryQueue;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import javax.jms.TemporaryTopic;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import javax.jms.Topic;</a>
+<span class="sourceLineNo">039</span><a id="line.39"></a>
+<span class="sourceLineNo">040</span><a id="line.40">import org.apache.activemq.filter.AnyDestination;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import org.apache.activemq.filter.DestinationFilter;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.apache.activemq.jndi.JNDIBaseStorable;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import org.apache.activemq.util.IntrospectionSupport;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import org.apache.activemq.util.URISupport;</a>
+<span class="sourceLineNo">045</span><a id="line.45"></a>
+<span class="sourceLineNo">046</span><a id="line.46">/**</a>
+<span class="sourceLineNo">047</span><a id="line.47"> * @openwire:marshaller</a>
+<span class="sourceLineNo">048</span><a id="line.48"> */</a>
+<span class="sourceLineNo">049</span><a id="line.49">public abstract class ActiveMQDestination extends JNDIBaseStorable implements DataStructure, Destination, Externalizable, Comparable&lt;Object&gt; {</a>
+<span class="sourceLineNo">050</span><a id="line.50"></a>
+<span class="sourceLineNo">051</span><a id="line.51">    public static final String PATH_SEPERATOR = ".";</a>
+<span class="sourceLineNo">052</span><a id="line.52">    public static final char COMPOSITE_SEPERATOR = ',';</a>
+<span class="sourceLineNo">053</span><a id="line.53"></a>
+<span class="sourceLineNo">054</span><a id="line.54">    public static final byte QUEUE_TYPE = 0x01;</a>
+<span class="sourceLineNo">055</span><a id="line.55">    public static final byte TOPIC_TYPE = 0x02;</a>
+<span class="sourceLineNo">056</span><a id="line.56">    public static final byte TEMP_MASK = 0x04;</a>
+<span class="sourceLineNo">057</span><a id="line.57">    public static final byte TEMP_TOPIC_TYPE = TOPIC_TYPE | TEMP_MASK;</a>
+<span class="sourceLineNo">058</span><a id="line.58">    public static final byte TEMP_QUEUE_TYPE = QUEUE_TYPE | TEMP_MASK;</a>
+<span class="sourceLineNo">059</span><a id="line.59"></a>
+<span class="sourceLineNo">060</span><a id="line.60">    public static final String QUEUE_QUALIFIED_PREFIX = "queue://";</a>
+<span class="sourceLineNo">061</span><a id="line.61">    public static final String TOPIC_QUALIFIED_PREFIX = "topic://";</a>
+<span class="sourceLineNo">062</span><a id="line.62">    public static final String TEMP_QUEUE_QUALIFED_PREFIX = "temp-queue://";</a>
+<span class="sourceLineNo">063</span><a id="line.63">    public static final String TEMP_TOPIC_QUALIFED_PREFIX = "temp-topic://";</a>
+<span class="sourceLineNo">064</span><a id="line.64">    public static final String IS_DLQ = "isDLQ";</a>
+<span class="sourceLineNo">065</span><a id="line.65"></a>
+<span class="sourceLineNo">066</span><a id="line.66">    public static final String TEMP_DESTINATION_NAME_PREFIX = "ID:";</a>
+<span class="sourceLineNo">067</span><a id="line.67"></a>
+<span class="sourceLineNo">068</span><a id="line.68">    private static final long serialVersionUID = -3885260014960795889L;</a>
+<span class="sourceLineNo">069</span><a id="line.69"></a>
+<span class="sourceLineNo">070</span><a id="line.70">    protected String physicalName;</a>
+<span class="sourceLineNo">071</span><a id="line.71"></a>
+<span class="sourceLineNo">072</span><a id="line.72">    protected transient ActiveMQDestination[] compositeDestinations;</a>
+<span class="sourceLineNo">073</span><a id="line.73">    protected transient String[] destinationPaths;</a>
+<span class="sourceLineNo">074</span><a id="line.74">    protected transient boolean isPattern;</a>
+<span class="sourceLineNo">075</span><a id="line.75">    protected transient int hashValue;</a>
+<span class="sourceLineNo">076</span><a id="line.76">    protected Map&lt;String, String&gt; options;</a>
+<span class="sourceLineNo">077</span><a id="line.77"></a>
+<span class="sourceLineNo">078</span><a id="line.78">    protected static UnresolvedDestinationTransformer unresolvableDestinationTransformer = new DefaultUnresolvedDestinationTransformer();</a>
+<span class="sourceLineNo">079</span><a id="line.79"></a>
+<span class="sourceLineNo">080</span><a id="line.80">    public ActiveMQDestination() {</a>
+<span class="sourceLineNo">081</span><a id="line.81">    }</a>
+<span class="sourceLineNo">082</span><a id="line.82"></a>
+<span class="sourceLineNo">083</span><a id="line.83">    protected ActiveMQDestination(String name) {</a>
+<span class="sourceLineNo">084</span><a id="line.84">        setPhysicalName(name);</a>
+<span class="sourceLineNo">085</span><a id="line.85">    }</a>
+<span class="sourceLineNo">086</span><a id="line.86"></a>
+<span class="sourceLineNo">087</span><a id="line.87">    public ActiveMQDestination(ActiveMQDestination composites[]) {</a>
+<span class="sourceLineNo">088</span><a id="line.88">        setCompositeDestinations(composites);</a>
+<span class="sourceLineNo">089</span><a id="line.89">    }</a>
+<span class="sourceLineNo">090</span><a id="line.90"></a>
+<span class="sourceLineNo">091</span><a id="line.91">    // static helper methods for working with destinations</a>
+<span class="sourceLineNo">092</span><a id="line.92">    // -------------------------------------------------------------------------</a>
+<span class="sourceLineNo">093</span><a id="line.93">    public static ActiveMQDestination createDestination(String name, byte defaultType) {</a>
+<span class="sourceLineNo">094</span><a id="line.94">        if (name.startsWith(QUEUE_QUALIFIED_PREFIX)) {</a>
+<span class="sourceLineNo">095</span><a id="line.95">            return new ActiveMQQueue(name.substring(QUEUE_QUALIFIED_PREFIX.length()));</a>
+<span class="sourceLineNo">096</span><a id="line.96">        } else if (name.startsWith(TOPIC_QUALIFIED_PREFIX)) {</a>
+<span class="sourceLineNo">097</span><a id="line.97">            return new ActiveMQTopic(name.substring(TOPIC_QUALIFIED_PREFIX.length()));</a>
+<span class="sourceLineNo">098</span><a id="line.98">        } else if (name.startsWith(TEMP_QUEUE_QUALIFED_PREFIX)) {</a>
+<span class="sourceLineNo">099</span><a id="line.99">            return new ActiveMQTempQueue(name.substring(TEMP_QUEUE_QUALIFED_PREFIX.length()));</a>
+<span class="sourceLineNo">100</span><a id="line.100">        } else if (name.startsWith(TEMP_TOPIC_QUALIFED_PREFIX)) {</a>
+<span class="sourceLineNo">101</span><a id="line.101">            return new ActiveMQTempTopic(name.substring(TEMP_TOPIC_QUALIFED_PREFIX.length()));</a>
+<span class="sourceLineNo">102</span><a id="line.102">        }</a>
+<span class="sourceLineNo">103</span><a id="line.103"></a>
+<span class="sourceLineNo">104</span><a id="line.104">        switch (defaultType) {</a>
+<span class="sourceLineNo">105</span><a id="line.105">            case QUEUE_TYPE:</a>
+<span class="sourceLineNo">106</span><a id="line.106">                return new ActiveMQQueue(name);</a>
+<span class="sourceLineNo">107</span><a id="line.107">            case TOPIC_TYPE:</a>
+<span class="sourceLineNo">108</span><a id="line.108">                return new ActiveMQTopic(name);</a>
+<span class="sourceLineNo">109</span><a id="line.109">            case TEMP_QUEUE_TYPE:</a>
+<span class="sourceLineNo">110</span><a id="line.110">                return new ActiveMQTempQueue(name);</a>
+<span class="sourceLineNo">111</span><a id="line.111">            case TEMP_TOPIC_TYPE:</a>
+<span class="sourceLineNo">112</span><a id="line.112">                return new ActiveMQTempTopic(name);</a>
+<span class="sourceLineNo">113</span><a id="line.113">            default:</a>
+<span class="sourceLineNo">114</span><a id="line.114">                throw new IllegalArgumentException("Invalid default destination type: " + defaultType);</a>
+<span class="sourceLineNo">115</span><a id="line.115">        }</a>
+<span class="sourceLineNo">116</span><a id="line.116">    }</a>
+<span class="sourceLineNo">117</span><a id="line.117"></a>
+<span class="sourceLineNo">118</span><a id="line.118">    public static ActiveMQDestination transform(Destination dest) throws JMSException {</a>
+<span class="sourceLineNo">119</span><a id="line.119">        if (dest == null) {</a>
+<span class="sourceLineNo">120</span><a id="line.120">            return null;</a>
+<span class="sourceLineNo">121</span><a id="line.121">        }</a>
+<span class="sourceLineNo">122</span><a id="line.122">        if (dest instanceof ActiveMQDestination) {</a>
+<span class="sourceLineNo">123</span><a id="line.123">            return (ActiveMQDestination) dest;</a>
+<span class="sourceLineNo">124</span><a id="line.124">        }</a>
+<span class="sourceLineNo">125</span><a id="line.125"></a>
+<span class="sourceLineNo">126</span><a id="line.126">        if (dest instanceof Queue &amp;&amp; dest instanceof Topic) {</a>
+<span class="sourceLineNo">127</span><a id="line.127">            String queueName = ((Queue) dest).getQueueName();</a>
+<span class="sourceLineNo">128</span><a id="line.128">            String topicName = ((Topic) dest).getTopicName();</a>
+<span class="sourceLineNo">129</span><a id="line.129">            if (queueName != null &amp;&amp; topicName == null) {</a>
+<span class="sourceLineNo">130</span><a id="line.130">                return new ActiveMQQueue(queueName);</a>
+<span class="sourceLineNo">131</span><a id="line.131">            } else if (queueName == null &amp;&amp; topicName != null) {</a>
+<span class="sourceLineNo">132</span><a id="line.132">                return new ActiveMQTopic(topicName);</a>
+<span class="sourceLineNo">133</span><a id="line.133">            } else {</a>
+<span class="sourceLineNo">134</span><a id="line.134">                return unresolvableDestinationTransformer.transform(dest);</a>
+<span class="sourceLineNo">135</span><a id="line.135">            }</a>
+<span class="sourceLineNo">136</span><a id="line.136">        }</a>
+<span class="sourceLineNo">137</span><a id="line.137">        if (dest instanceof TemporaryQueue) {</a>
+<span class="sourceLineNo">138</span><a id="line.138">            return new ActiveMQTempQueue(((TemporaryQueue) dest).getQueueName());</a>
+<span class="sourceLineNo">139</span><a id="line.139">        }</a>
+<span class="sourceLineNo">140</span><a id="line.140">        if (dest instanceof TemporaryTopic) {</a>
+<span class="sourceLineNo">141</span><a id="line.141">            return new ActiveMQTempTopic(((TemporaryTopic) dest).getTopicName());</a>
+<span class="sourceLineNo">142</span><a id="line.142">        }</a>
+<span class="sourceLineNo">143</span><a id="line.143">        if (dest instanceof Queue) {</a>
+<span class="sourceLineNo">144</span><a id="line.144">            return new ActiveMQQueue(((Queue) dest).getQueueName());</a>
+<span class="sourceLineNo">145</span><a id="line.145">        }</a>
+<span class="sourceLineNo">146</span><a id="line.146">        if (dest instanceof Topic) {</a>
+<span class="sourceLineNo">147</span><a id="line.147">            return new ActiveMQTopic(((Topic) dest).getTopicName());</a>
+<span class="sourceLineNo">148</span><a id="line.148">        }</a>
+<span class="sourceLineNo">149</span><a id="line.149">        throw new JMSException("Could not transform the destination into a ActiveMQ destination: " + dest);</a>
+<span class="sourceLineNo">150</span><a id="line.150">    }</a>
+<span class="sourceLineNo">151</span><a id="line.151"></a>
+<span class="sourceLineNo">152</span><a id="line.152">    public static int compare(ActiveMQDestination destination, ActiveMQDestination destination2) {</a>
+<span class="sourceLineNo">153</span><a id="line.153">        if (destination == destination2) {</a>
+<span class="sourceLineNo">154</span><a id="line.154">            return 0;</a>
+<span class="sourceLineNo">155</span><a id="line.155">        }</a>
+<span class="sourceLineNo">156</span><a id="line.156">        if (destination == null || destination2 instanceof AnyDestination) {</a>
+<span class="sourceLineNo">157</span><a id="line.157">            return -1;</a>
+<span class="sourceLineNo">158</span><a id="line.158">        } else if (destination2 == null || destination instanceof AnyDestination) {</a>
+<span class="sourceLineNo">159</span><a id="line.159">            return 1;</a>
+<span class="sourceLineNo">160</span><a id="line.160">        } else {</a>
+<span class="sourceLineNo">161</span><a id="line.161">            if (destination.getDestinationType() == destination2.getDestinationType()) {</a>
+<span class="sourceLineNo">162</span><a id="line.162"></a>
+<span class="sourceLineNo">163</span><a id="line.163">                if (destination.isPattern() &amp;&amp; destination2.isPattern() ) {</a>
+<span class="sourceLineNo">164</span><a id="line.164">                    if (destination.getPhysicalName().compareTo(destination2.getPhysicalName()) == 0) {</a>
+<span class="sourceLineNo">165</span><a id="line.165">                        return 0;</a>
+<span class="sourceLineNo">166</span><a id="line.166">                    }</a>
+<span class="sourceLineNo">167</span><a id="line.167">                }</a>
+<span class="sourceLineNo">168</span><a id="line.168">                if (destination.isPattern()) {</a>
+<span class="sourceLineNo">169</span><a id="line.169">                    DestinationFilter filter = DestinationFilter.parseFilter(destination);</a>
+<span class="sourceLineNo">170</span><a id="line.170">                    if (filter.matches(destination2)) {</a>
+<span class="sourceLineNo">171</span><a id="line.171">                        return 1;</a>
+<span class="sourceLineNo">172</span><a id="line.172">                    }</a>
+<span class="sourceLineNo">173</span><a id="line.173">                }</a>
+<span class="sourceLineNo">174</span><a id="line.174">                if (destination2.isPattern()) {</a>
+<span class="sourceLineNo">175</span><a id="line.175">                    DestinationFilter filter = DestinationFilter.parseFilter(destination2);</a>
+<span class="sourceLineNo">176</span><a id="line.176">                    if (filter.matches(destination)) {</a>
+<span class="sourceLineNo">177</span><a id="line.177">                        return -1;</a>
+<span class="sourceLineNo">178</span><a id="line.178">                    }</a>
+<span class="sourceLineNo">179</span><a id="line.179">                }</a>
+<span class="sourceLineNo">180</span><a id="line.180">                return destination.getPhysicalName().compareTo(destination2.getPhysicalName());</a>
+<span class="sourceLineNo">181</span><a id="line.181"></a>
+<span class="sourceLineNo">182</span><a id="line.182">            } else {</a>
+<span class="sourceLineNo">183</span><a id="line.183">                return destination.isQueue() ? -1 : 1;</a>
+<span class="sourceLineNo">184</span><a id="line.184">            }</a>
+<span class="sourceLineNo">185</span><a id="line.185">        }</a>
+<span class="sourceLineNo">186</span><a id="line.186">    }</a>
+<span class="sourceLineNo">187</span><a id="line.187"></a>
+<span class="sourceLineNo">188</span><a id="line.188">    @Override</a>
+<span class="sourceLineNo">189</span><a id="line.189">    public int compareTo(Object that) {</a>
+<span class="sourceLineNo">190</span><a id="line.190">        if (that instanceof ActiveMQDestination) {</a>
+<span class="sourceLineNo">191</span><a id="line.191">            return compare(this, (ActiveMQDestination) that);</a>
+<span class="sourceLineNo">192</span><a id="line.192">        }</a>
+<span class="sourceLineNo">193</span><a id="line.193">        if (that == null) {</a>
+<span class="sourceLineNo">194</span><a id="line.194">            return 1;</a>
+<span class="sourceLineNo">195</span><a id="line.195">        } else {</a>
+<span class="sourceLineNo">196</span><a id="line.196">            return getClass().getName().compareTo(that.getClass().getName());</a>
+<span class="sourceLineNo">197</span><a id="line.197">        }</a>
+<span class="sourceLineNo">198</span><a id="line.198">    }</a>
+<span class="sourceLineNo">199</span><a id="line.199"></a>
+<span class="sourceLineNo">200</span><a id="line.200">    public boolean isComposite() {</a>
+<span class="sourceLineNo">201</span><a id="line.201">        return compositeDestinations != null;</a>
+<span class="sourceLineNo">202</span><a id="line.202">    }</a>
+<span class="sourceLineNo">203</span><a id="line.203"></a>
+<span class="sourceLineNo">204</span><a id="line.204">    public ActiveMQDestination[] getCompositeDestinations() {</a>
+<span class="sourceLineNo">205</span><a id="line.205">        return compositeDestinations;</a>
+<span class="sourceLineNo">206</span><a id="line.206">    }</a>
+<span class="sourceLineNo">207</span><a id="line.207"></a>
+<span class="sourceLineNo">208</span><a id="line.208">    public void setCompositeDestinations(ActiveMQDestination[] destinations) {</a>
+<span class="sourceLineNo">209</span><a id="line.209">        this.compositeDestinations = destinations;</a>
+<span class="sourceLineNo">210</span><a id="line.210">        this.destinationPaths = null;</a>
+<span class="sourceLineNo">211</span><a id="line.211">        this.hashValue = 0;</a>
+<span class="sourceLineNo">212</span><a id="line.212">        this.isPattern = false;</a>
+<span class="sourceLineNo">213</span><a id="line.213"></a>
+<span class="sourceLineNo">214</span><a id="line.214">        StringBuffer sb = new StringBuffer();</a>
+<span class="sourceLineNo">215</span><a id="line.215">        for (int i = 0; i &lt; destinations.length; i++) {</a>
+<span class="sourceLineNo">216</span><a id="line.216">            if (i != 0) {</a>
+<span class="sourceLineNo">217</span><a id="line.217">                sb.append(COMPOSITE_SEPERATOR);</a>
+<span class="sourceLineNo">218</span><a id="line.218">            }</a>
+<span class="sourceLineNo">219</span><a id="line.219">            if (getDestinationType() == destinations[i].getDestinationType()) {</a>
+<span class="sourceLineNo">220</span><a id="line.220">                sb.append(destinations[i].getPhysicalName());</a>
+<span class="sourceLineNo">221</span><a id="line.221">            } else {</a>
+<span class="sourceLineNo">222</span><a id="line.222">                sb.append(destinations[i].getQualifiedName());</a>
+<span class="sourceLineNo">223</span><a id="line.223">            }</a>
+<span class="sourceLineNo">224</span><a id="line.224">        }</a>
+<span class="sourceLineNo">225</span><a id="line.225">        physicalName = sb.toString();</a>
+<span class="sourceLineNo">226</span><a id="line.226">    }</a>
+<span class="sourceLineNo">227</span><a id="line.227"></a>
+<span class="sourceLineNo">228</span><a id="line.228">    public String getQualifiedName() {</a>
+<span class="sourceLineNo">229</span><a id="line.229">        if (isComposite()) {</a>
+<span class="sourceLineNo">230</span><a id="line.230">            return physicalName;</a>
+<span class="sourceLineNo">231</span><a id="line.231">        }</a>
+<span class="sourceLineNo">232</span><a id="line.232">        return getQualifiedPrefix() + physicalName;</a>
+<span class="sourceLineNo">233</span><a id="line.233">    }</a>
+<span class="sourceLineNo">234</span><a id="line.234"></a>
+<span class="sourceLineNo">235</span><a id="line.235">    protected abstract String getQualifiedPrefix();</a>
+<span class="sourceLineNo">236</span><a id="line.236"></a>
+<span class="sourceLineNo">237</span><a id="line.237">    /**</a>
+<span class="sourceLineNo">238</span><a id="line.238">     * @openwire:property version=1</a>
+<span class="sourceLineNo">239</span><a id="line.239">     */</a>
+<span class="sourceLineNo">240</span><a id="line.240">    public String getPhysicalName() {</a>
+<span class="sourceLineNo">241</span><a id="line.241">        return physicalName;</a>
+<span class="sourceLineNo">242</span><a id="line.242">    }</a>
+<span class="sourceLineNo">243</span><a id="line.243"></a>
+<span class="sourceLineNo">244</span><a id="line.244">    public void setPhysicalName(String physicalName) {</a>
+<span class="sourceLineNo">245</span><a id="line.245">        physicalName = physicalName.trim();</a>
+<span class="sourceLineNo">246</span><a id="line.246">        final int length = physicalName.length();</a>
+<span class="sourceLineNo">247</span><a id="line.247"></a>
+<span class="sourceLineNo">248</span><a id="line.248">        if (physicalName.isEmpty()) {</a>
+<span class="sourceLineNo">249</span><a id="line.249">            throw new IllegalArgumentException("Invalid destination name: a non-empty name is required");</a>
+<span class="sourceLineNo">250</span><a id="line.250">        }</a>
+<span class="sourceLineNo">251</span><a id="line.251"></a>
+<span class="sourceLineNo">252</span><a id="line.252">        // options offset</a>
+<span class="sourceLineNo">253</span><a id="line.253">        int p = -1;</a>
+<span class="sourceLineNo">254</span><a id="line.254">        boolean composite = false;</a>
+<span class="sourceLineNo">255</span><a id="line.255">        for (int i = 0; i &lt; length; i++) {</a>
+<span class="sourceLineNo">256</span><a id="line.256">            char c = physicalName.charAt(i);</a>
+<span class="sourceLineNo">257</span><a id="line.257">            if (c == '?') {</a>
+<span class="sourceLineNo">258</span><a id="line.258">                p = i;</a>
+<span class="sourceLineNo">259</span><a id="line.259">                break;</a>
+<span class="sourceLineNo">260</span><a id="line.260">            }</a>
+<span class="sourceLineNo">261</span><a id="line.261">            if (c == COMPOSITE_SEPERATOR) {</a>
+<span class="sourceLineNo">262</span><a id="line.262">                // won't be wild card</a>
+<span class="sourceLineNo">263</span><a id="line.263">                isPattern = false;</a>
+<span class="sourceLineNo">264</span><a id="line.264">                composite = true;</a>
+<span class="sourceLineNo">265</span><a id="line.265">            } else if (!composite &amp;&amp; (c == '*' || c == '&gt;')) {</a>
+<span class="sourceLineNo">266</span><a id="line.266">                isPattern = true;</a>
+<span class="sourceLineNo">267</span><a id="line.267">            }</a>
+<span class="sourceLineNo">268</span><a id="line.268">        }</a>
+<span class="sourceLineNo">269</span><a id="line.269">        // Strip off any options</a>
+<span class="sourceLineNo">270</span><a id="line.270">        if (p &gt;= 0) {</a>
+<span class="sourceLineNo">271</span><a id="line.271">            String optstring = physicalName.substring(p + 1);</a>
+<span class="sourceLineNo">272</span><a id="line.272">            physicalName = physicalName.substring(0, p);</a>
+<span class="sourceLineNo">273</span><a id="line.273">            try {</a>
+<span class="sourceLineNo">274</span><a id="line.274">                options = URISupport.parseQuery(optstring);</a>
+<span class="sourceLineNo">275</span><a id="line.275">            } catch (URISyntaxException e) {</a>
+<span class="sourceLineNo">276</span><a id="line.276">                throw new IllegalArgumentException("Invalid destination name: " + physicalName + ", it's options are not encoded properly: " + e);</a>
+<span class="sourceLineNo">277</span><a id="line.277">            }</a>
+<span class="sourceLineNo">278</span><a id="line.278">        }</a>
+<span class="sourceLineNo">279</span><a id="line.279">        this.physicalName = physicalName;</a>
+<span class="sourceLineNo">280</span><a id="line.280">        this.destinationPaths = null;</a>
+<span class="sourceLineNo">281</span><a id="line.281">        this.hashValue = 0;</a>
+<span class="sourceLineNo">282</span><a id="line.282">        if (composite) {</a>
+<span class="sourceLineNo">283</span><a id="line.283">            // Check to see if it is a composite.</a>
+<span class="sourceLineNo">284</span><a id="line.284">            Set&lt;String&gt; l = new HashSet&lt;String&gt;();</a>
+<span class="sourceLineNo">285</span><a id="line.285">            StringTokenizer iter = new StringTokenizer(physicalName, "" + COMPOSITE_SEPERATOR);</a>
+<span class="sourceLineNo">286</span><a id="line.286">            while (iter.hasMoreTokens()) {</a>
+<span class="sourceLineNo">287</span><a id="line.287">                String name = iter.nextToken().trim();</a>
+<span class="sourceLineNo">288</span><a id="line.288">                if (name.length() == 0) {</a>
+<span class="sourceLineNo">289</span><a id="line.289">                    continue;</a>
+<span class="sourceLineNo">290</span><a id="line.290">                }</a>
+<span class="sourceLineNo">291</span><a id="line.291">                l.add(name);</a>
+<span class="sourceLineNo">292</span><a id="line.292">            }</a>
+<span class="sourceLineNo">293</span><a id="line.293">            compositeDestinations = new ActiveMQDestination[l.size()];</a>
+<span class="sourceLineNo">294</span><a id="line.294">            int counter = 0;</a>
+<span class="sourceLineNo">295</span><a id="line.295">            for (String dest : l) {</a>
+<span class="sourceLineNo">296</span><a id="line.296">                compositeDestinations[counter++] = createDestination(dest);</a>
+<span class="sourceLineNo">297</span><a id="line.297">            }</a>
+<span class="sourceLineNo">298</span><a id="line.298">        }</a>
+<span class="sourceLineNo">299</span><a id="line.299">    }</a>
+<span class="sourceLineNo">300</span><a id="line.300"></a>
+<span class="sourceLineNo">301</span><a id="line.301">    public ActiveMQDestination createDestination(String name) {</a>
+<span class="sourceLineNo">302</span><a id="line.302">        return createDestination(name, getDestinationType());</a>
+<span class="sourceLineNo">303</span><a id="line.303">    }</a>
+<span class="sourceLineNo">304</span><a id="line.304"></a>
+<span class="sourceLineNo">305</span><a id="line.305">    public String[] getDestinationPaths() {</a>
+<span class="sourceLineNo">306</span><a id="line.306"></a>
+<span class="sourceLineNo">307</span><a id="line.307">        if (destinationPaths != null) {</a>
+<span class="sourceLineNo">308</span><a id="line.308">            return destinationPaths;</a>
+<span class="sourceLineNo">309</span><a id="line.309">        }</a>
+<span class="sourceLineNo">310</span><a id="line.310"></a>
+<span class="sourceLineNo">311</span><a id="line.311">        List&lt;String&gt; l = new ArrayList&lt;String&gt;();</a>
+<span class="sourceLineNo">312</span><a id="line.312">        StringBuilder level = new StringBuilder();</a>
+<span class="sourceLineNo">313</span><a id="line.313">        final char separator = PATH_SEPERATOR.charAt(0);</a>
+<span class="sourceLineNo">314</span><a id="line.314">        for (char c : physicalName.toCharArray()) {</a>
+<span class="sourceLineNo">315</span><a id="line.315">            if (c == separator) {</a>
+<span class="sourceLineNo">316</span><a id="line.316">                l.add(level.toString());</a>
+<span class="sourceLineNo">317</span><a id="line.317">                level.delete(0, level.length());</a>
+<span class="sourceLineNo">318</span><a id="line.318">            } else {</a>
+<span class="sourceLineNo">319</span><a id="line.319">                level.append(c);</a>
+<span class="sourceLineNo">320</span><a id="line.320">            }</a>
+<span class="sourceLineNo">321</span><a id="line.321">        }</a>
+<span class="sourceLineNo">322</span><a id="line.322">        l.add(level.toString());</a>
+<span class="sourceLineNo">323</span><a id="line.323"></a>
+<span class="sourceLineNo">324</span><a id="line.324">        destinationPaths = new String[l.size()];</a>
+<span class="sourceLineNo">325</span><a id="line.325">        l.toArray(destinationPaths);</a>
+<span class="sourceLineNo">326</span><a id="line.326">        return destinationPaths;</a>
+<span class="sourceLineNo">327</span><a id="line.327">    }</a>
+<span class="sourceLineNo">328</span><a id="line.328"></a>
+<span class="sourceLineNo">329</span><a id="line.329">    public abstract byte getDestinationType();</a>
+<span class="sourceLineNo">330</span><a id="line.330"></a>
+<span class="sourceLineNo">331</span><a id="line.331">    public boolean isQueue() {</a>
+<span class="sourceLineNo">332</span><a id="line.332">        return false;</a>
+<span class="sourceLineNo">333</span><a id="line.333">    }</a>
+<span class="sourceLineNo">334</span><a id="line.334"></a>
+<span class="sourceLineNo">335</span><a id="line.335">    public boolean isTopic() {</a>
+<span class="sourceLineNo">336</span><a id="line.336">        return false;</a>
+<span class="sourceLineNo">337</span><a id="line.337">    }</a>
+<span class="sourceLineNo">338</span><a id="line.338"></a>
+<span class="sourceLineNo">339</span><a id="line.339">    public boolean isTemporary() {</a>
+<span class="sourceLineNo">340</span><a id="line.340">        return false;</a>
+<span class="sourceLineNo">341</span><a id="line.341">    }</a>
+<span class="sourceLineNo">342</span><a id="line.342"></a>
+<span class="sourceLineNo">343</span><a id="line.343">    @Override</a>
+<span class="sourceLineNo">344</span><a id="line.344">    public boolean equals(Object o) {</a>
+<span class="sourceLineNo">345</span><a id="line.345">        if (this == o) {</a>
+<span class="sourceLineNo">346</span><a id="line.346">            return true;</a>
+<span class="sourceLineNo">347</span><a id="line.347">        }</a>
+<span class="sourceLineNo">348</span><a id="line.348">        if (o == null || getClass() != o.getClass()) {</a>
+<span class="sourceLineNo">349</span><a id="line.349">            return false;</a>
+<span class="sourceLineNo">350</span><a id="line.350">        }</a>
+<span class="sourceLineNo">351</span><a id="line.351"></a>
+<span class="sourceLineNo">352</span><a id="line.352">        ActiveMQDestination d = (ActiveMQDestination) o;</a>
+<span class="sourceLineNo">353</span><a id="line.353">        return physicalName.equals(d.physicalName);</a>
+<span class="sourceLineNo">354</span><a id="line.354">    }</a>
+<span class="sourceLineNo">355</span><a id="line.355"></a>
+<span class="sourceLineNo">356</span><a id="line.356">    @Override</a>
+<span class="sourceLineNo">357</span><a id="line.357">    public int hashCode() {</a>
+<span class="sourceLineNo">358</span><a id="line.358">        if (hashValue == 0) {</a>
+<span class="sourceLineNo">359</span><a id="line.359">            hashValue = physicalName.hashCode();</a>
+<span class="sourceLineNo">360</span><a id="line.360">        }</a>
+<span class="sourceLineNo">361</span><a id="line.361">        return hashValue;</a>
+<span class="sourceLineNo">362</span><a id="line.362">    }</a>
+<span class="sourceLineNo">363</span><a id="line.363"></a>
+<span class="sourceLineNo">364</span><a id="line.364">    @Override</a>
+<span class="sourceLineNo">365</span><a id="line.365">    public String toString() {</a>
+<span class="sourceLineNo">366</span><a id="line.366">        return getQualifiedName();</a>
+<span class="sourceLineNo">367</span><a id="line.367">    }</a>
+<span class="sourceLineNo">368</span><a id="line.368"></a>
+<span class="sourceLineNo">369</span><a id="line.369">    @Override</a>
+<span class="sourceLineNo">370</span><a id="line.370">    public void writeExternal(ObjectOutput out) throws IOException {</a>
+<span class="sourceLineNo">371</span><a id="line.371">        out.writeUTF(this.getPhysicalName());</a>
+<span class="sourceLineNo">372</span><a id="line.372">        out.writeObject(options);</a>
+<span class="sourceLineNo">373</span><a id="line.373">    }</a>
+<span class="sourceLineNo">374</span><a id="line.374"></a>
+<span class="sourceLineNo">375</span><a id="line.375">    @Override</a>
+<span class="sourceLineNo">376</span><a id="line.376">    @SuppressWarnings("unchecked")</a>
+<span class="sourceLineNo">377</span><a id="line.377">    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {</a>
+<span class="sourceLineNo">378</span><a id="line.378">        this.setPhysicalName(in.readUTF());</a>
+<span class="sourceLineNo">379</span><a id="line.379">        this.options = (Map&lt;String, String&gt;) in.readObject();</a>
+<span class="sourceLineNo">380</span><a id="line.380">    }</a>
+<span class="sourceLineNo">381</span><a id="line.381"></a>
+<span class="sourceLineNo">382</span><a id="line.382">    public String getDestinationTypeAsString() {</a>
+<span class="sourceLineNo">383</span><a id="line.383">        switch (getDestinationType()) {</a>
+<span class="sourceLineNo">384</span><a id="line.384">            case QUEUE_TYPE:</a>
+<span class="sourceLineNo">385</span><a id="line.385">                return "Queue";</a>
+<span class="sourceLineNo">386</span><a id="line.386">            case TOPIC_TYPE:</a>
+<span class="sourceLineNo">387</span><a id="line.387">                return "Topic";</a>
+<span class="sourceLineNo">388</span><a id="line.388">            case TEMP_QUEUE_TYPE:</a>
+<span class="sourceLineNo">389</span><a id="line.389">                return "TempQueue";</a>
+<span class="sourceLineNo">390</span><a id="line.390">            case TEMP_TOPIC_TYPE:</a>
+<span class="sourceLineNo">391</span><a id="line.391">                return "TempTopic";</a>
+<span class="sourceLineNo">392</span><a id="line.392">            default:</a>
+<span class="sourceLineNo">393</span><a id="line.393">                throw new IllegalArgumentException("Invalid destination type: " + getDestinationType());</a>
+<span class="sourceLineNo">394</span><a id="line.394">        }</a>
+<span class="sourceLineNo">395</span><a id="line.395">    }</a>
+<span class="sourceLineNo">396</span><a id="line.396"></a>
+<span class="sourceLineNo">397</span><a id="line.397">    public Map&lt;String, String&gt; getOptions() {</a>
+<span class="sourceLineNo">398</span><a id="line.398">        return options;</a>
+<span class="sourceLineNo">399</span><a id="line.399">    }</a>
+<span class="sourceLineNo">400</span><a id="line.400"></a>
+<span class="sourceLineNo">401</span><a id="line.401">    @Override</a>
+<span class="sourceLineNo">402</span><a id="line.402">    public boolean isMarshallAware() {</a>
+<span class="sourceLineNo">403</span><a id="line.403">        return false;</a>
+<span class="sourceLineNo">404</span><a id="line.404">    }</a>
+<span class="sourceLineNo">405</span><a id="line.405"></a>
+<span class="sourceLineNo">406</span><a id="line.406">    @Override</a>
+<span class="sourceLineNo">407</span><a id="line.407">    public void buildFromProperties(Properties properties) {</a>
+<span class="sourceLineNo">408</span><a id="line.408">        if (properties == null) {</a>
+<span class="sourceLineNo">409</span><a id="line.409">            properties = new Properties();</a>
+<span class="sourceLineNo">410</span><a id="line.410">        }</a>
+<span class="sourceLineNo">411</span><a id="line.411"></a>
+<span class="sourceLineNo">412</span><a id="line.412">        IntrospectionSupport.setProperties(this, properties);</a>
+<span class="sourceLineNo">413</span><a id="line.413">    }</a>
+<span class="sourceLineNo">414</span><a id="line.414"></a>
+<span class="sourceLineNo">415</span><a id="line.415">    @Override</a>
+<span class="sourceLineNo">416</span><a id="line.416">    public void populateProperties(Properties props) {</a>
+<span class="sourceLineNo">417</span><a id="line.417">        props.setProperty("physicalName", getPhysicalName());</a>
+<span class="sourceLineNo">418</span><a id="line.418">    }</a>
+<span class="sourceLineNo">419</span><a id="line.419"></a>
+<span class="sourceLineNo">420</span><a id="line.420">    public boolean isPattern() {</a>
+<span class="sourceLineNo">421</span><a id="line.421">        return isPattern;</a>
+<span class="sourceLineNo">422</span><a id="line.422">    }</a>
+<span class="sourceLineNo">423</span><a id="line.423"></a>
+<span class="sourceLineNo">424</span><a id="line.424">    public boolean isDLQ() {</a>
+<span class="sourceLineNo">425</span><a id="line.425">        return options != null &amp;&amp; options.containsKey(IS_DLQ);</a>
+<span class="sourceLineNo">426</span><a id="line.426">    }</a>
+<span class="sourceLineNo">427</span><a id="line.427"></a>
+<span class="sourceLineNo">428</span><a id="line.428">    public void setDLQ(boolean val) {</a>
+<span class="sourceLineNo">429</span><a id="line.429">        if (options == null) {</a>
+<span class="sourceLineNo">430</span><a id="line.430">            options = new HashMap&lt;String, String&gt;();</a>
+<span class="sourceLineNo">431</span><a id="line.431">        }</a>
+<span class="sourceLineNo">432</span><a id="line.432">        options.put(IS_DLQ, String.valueOf(val));</a>
+<span class="sourceLineNo">433</span><a id="line.433">    }</a>
+<span class="sourceLineNo">434</span><a id="line.434"></a>
+<span class="sourceLineNo">435</span><a id="line.435">    public static UnresolvedDestinationTransformer getUnresolvableDestinationTransformer() {</a>
+<span class="sourceLineNo">436</span><a id="line.436">        return unresolvableDestinationTransformer;</a>
+<span class="sourceLineNo">437</span><a id="line.437">    }</a>
+<span class="sourceLineNo">438</span><a id="line.438"></a>
+<span class="sourceLineNo">439</span><a id="line.439">    public static void setUnresolvableDestinationTransformer(UnresolvedDestinationTransformer unresolvableDestinationTransformer) {</a>
+<span class="sourceLineNo">440</span><a id="line.440">        ActiveMQDestination.unresolvableDestinationTransformer = unresolvableDestinationTransformer;</a>
+<span class="sourceLineNo">441</span><a id="line.441">    }</a>
+<span class="sourceLineNo">442</span><a id="line.442">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

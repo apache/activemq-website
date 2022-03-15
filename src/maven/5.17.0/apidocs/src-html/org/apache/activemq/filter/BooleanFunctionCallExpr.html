@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.filter;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.util.List;</a>
+<span class="sourceLineNo">020</span><a id="line.20"></a>
+<span class="sourceLineNo">021</span><a id="line.21">/**</a>
+<span class="sourceLineNo">022</span><a id="line.22"> * Function call expression that evaluates to a boolean value.  Selector parsing requires BooleanExpression objects for</a>
+<span class="sourceLineNo">023</span><a id="line.23"> * Boolean expressions, such as operands to AND, and as the final result of a selector.  This provides that interface</a>
+<span class="sourceLineNo">024</span><a id="line.24"> * for function call expressions that resolve to Boolean values.</a>
+<span class="sourceLineNo">025</span><a id="line.25"> * &lt;p/&gt;</a>
+<span class="sourceLineNo">026</span><a id="line.26"> * If a function can return different types at evaluation-time, the function implementation needs to decide whether it</a>
+<span class="sourceLineNo">027</span><a id="line.27"> * supports casting to Boolean at parse-time.</a>
+<span class="sourceLineNo">028</span><a id="line.28"> *</a>
+<span class="sourceLineNo">029</span><a id="line.29"> * @see    FunctionCallExpression#createFunctionCall</a>
+<span class="sourceLineNo">030</span><a id="line.30"> */</a>
+<span class="sourceLineNo">031</span><a id="line.31"></a>
+<span class="sourceLineNo">032</span><a id="line.32">public class BooleanFunctionCallExpr extends FunctionCallExpression implements BooleanExpression {</a>
+<span class="sourceLineNo">033</span><a id="line.33">    /**</a>
+<span class="sourceLineNo">034</span><a id="line.34">     * Constructs a function call expression with the named filter function and arguments, which returns a boolean</a>
+<span class="sourceLineNo">035</span><a id="line.35">     * result.</a>
+<span class="sourceLineNo">036</span><a id="line.36">     *</a>
+<span class="sourceLineNo">037</span><a id="line.37">     * @param    func_name - Name of the filter function to be called when evaluated.</a>
+<span class="sourceLineNo">038</span><a id="line.38">     * @param    args - List of argument expressions passed to the function.</a>
+<span class="sourceLineNo">039</span><a id="line.39">     */</a>
+<span class="sourceLineNo">040</span><a id="line.40"></a>
+<span class="sourceLineNo">041</span><a id="line.41">    public BooleanFunctionCallExpr(String func_name, List&lt;Expression&gt; args)</a>
+<span class="sourceLineNo">042</span><a id="line.42">            throws invalidFunctionExpressionException {</a>
+<span class="sourceLineNo">043</span><a id="line.43">        super(func_name, args);</a>
+<span class="sourceLineNo">044</span><a id="line.44">    }</a>
+<span class="sourceLineNo">045</span><a id="line.45"></a>
+<span class="sourceLineNo">046</span><a id="line.46"></a>
+<span class="sourceLineNo">047</span><a id="line.47">    /**</a>
+<span class="sourceLineNo">048</span><a id="line.48">     * Evaluate the function call expression, in the given context, and return an indication of whether the</a>
+<span class="sourceLineNo">049</span><a id="line.49">     * expression "matches" (i.e.&amp;nbsp;evaluates to true).</a>
+<span class="sourceLineNo">050</span><a id="line.50">     *</a>
+<span class="sourceLineNo">051</span><a id="line.51">     * @param    message_ctx - message context against which the expression will be evaluated.</a>
+<span class="sourceLineNo">052</span><a id="line.52">     * @return the boolean evaluation of the function call expression.</a>
+<span class="sourceLineNo">053</span><a id="line.53">     */</a>
+<span class="sourceLineNo">054</span><a id="line.54"></a>
+<span class="sourceLineNo">055</span><a id="line.55">    public boolean matches(MessageEvaluationContext message_ctx) throws javax.jms.JMSException {</a>
+<span class="sourceLineNo">056</span><a id="line.56">        Boolean result;</a>
+<span class="sourceLineNo">057</span><a id="line.57"></a>
+<span class="sourceLineNo">058</span><a id="line.58">        result = (Boolean) evaluate(message_ctx);</a>
+<span class="sourceLineNo">059</span><a id="line.59"></a>
+<span class="sourceLineNo">060</span><a id="line.60">        if (result != null)</a>
+<span class="sourceLineNo">061</span><a id="line.61">            return result.booleanValue();</a>
+<span class="sourceLineNo">062</span><a id="line.62"></a>
+<span class="sourceLineNo">063</span><a id="line.63">        return false;</a>
+<span class="sourceLineNo">064</span><a id="line.64">    }</a>
+<span class="sourceLineNo">065</span><a id="line.65">}</a>
+<span class="sourceLineNo">066</span><a id="line.66"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

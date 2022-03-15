@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.tool.reports;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.util.Arrays;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.util.Iterator;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.util.Map;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.util.Properties;</a>
+<span class="sourceLineNo">023</span><a id="line.23"></a>
+<span class="sourceLineNo">024</span><a id="line.24">import org.apache.activemq.tool.reports.plugins.CpuReportPlugin;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import org.apache.activemq.tool.reports.plugins.ThroughputReportPlugin;</a>
+<span class="sourceLineNo">026</span><a id="line.26"></a>
+<span class="sourceLineNo">027</span><a id="line.27">public class VerbosePerfReportWriter extends AbstractPerfReportWriter {</a>
+<span class="sourceLineNo">028</span><a id="line.28"></a>
+<span class="sourceLineNo">029</span><a id="line.29">    public void openReportWriter() {</a>
+<span class="sourceLineNo">030</span><a id="line.30">        // Do nothing</a>
+<span class="sourceLineNo">031</span><a id="line.31">    }</a>
+<span class="sourceLineNo">032</span><a id="line.32"></a>
+<span class="sourceLineNo">033</span><a id="line.33">    public void closeReportWriter() {</a>
+<span class="sourceLineNo">034</span><a id="line.34">        writeHeader("Performance Summary");</a>
+<span class="sourceLineNo">035</span><a id="line.35">        writePerfSummary();</a>
+<span class="sourceLineNo">036</span><a id="line.36">    }</a>
+<span class="sourceLineNo">037</span><a id="line.37"></a>
+<span class="sourceLineNo">038</span><a id="line.38">    public void writeInfo(String info) {</a>
+<span class="sourceLineNo">039</span><a id="line.39">        System.out.println("[PERF-INFO]: " + info);</a>
+<span class="sourceLineNo">040</span><a id="line.40">    }</a>
+<span class="sourceLineNo">041</span><a id="line.41"></a>
+<span class="sourceLineNo">042</span><a id="line.42">    public void writeCsvData(int csvType, String csvData) {</a>
+<span class="sourceLineNo">043</span><a id="line.43">        if (csvType == REPORT_PLUGIN_THROUGHPUT) {</a>
+<span class="sourceLineNo">044</span><a id="line.44">            System.out.println("[PERF-TP]: " + csvData);</a>
+<span class="sourceLineNo">045</span><a id="line.45">        } else if (csvType == REPORT_PLUGIN_CPU) {</a>
+<span class="sourceLineNo">046</span><a id="line.46">            System.out.println("[PERF-CPU]: " + csvData);</a>
+<span class="sourceLineNo">047</span><a id="line.47">        }</a>
+<span class="sourceLineNo">048</span><a id="line.48">        handleCsvData(csvType, csvData);</a>
+<span class="sourceLineNo">049</span><a id="line.49">    }</a>
+<span class="sourceLineNo">050</span><a id="line.50"></a>
+<span class="sourceLineNo">051</span><a id="line.51">    public void writeProperties(String header, Properties props) {</a>
+<span class="sourceLineNo">052</span><a id="line.52">        writeHeader(header);</a>
+<span class="sourceLineNo">053</span><a id="line.53">        writeProperties(props);</a>
+<span class="sourceLineNo">054</span><a id="line.54">    }</a>
+<span class="sourceLineNo">055</span><a id="line.55"></a>
+<span class="sourceLineNo">056</span><a id="line.56">    public void writeProperties(Properties props) {</a>
+<span class="sourceLineNo">057</span><a id="line.57">        for (Iterator i = props.keySet().iterator(); i.hasNext();) {</a>
+<span class="sourceLineNo">058</span><a id="line.58">            String key = (String)i.next();</a>
+<span class="sourceLineNo">059</span><a id="line.59">            String val = props.getProperty(key, "");</a>
+<span class="sourceLineNo">060</span><a id="line.60">            System.out.println("[PERF-PROP]: " + key + "=" + val);</a>
+<span class="sourceLineNo">061</span><a id="line.61">        }</a>
+<span class="sourceLineNo">062</span><a id="line.62">    }</a>
+<span class="sourceLineNo">063</span><a id="line.63"></a>
+<span class="sourceLineNo">064</span><a id="line.64">    public void writePerfSummary() {</a>
+<span class="sourceLineNo">065</span><a id="line.65"></a>
+<span class="sourceLineNo">066</span><a id="line.66">        Map summary;</a>
+<span class="sourceLineNo">067</span><a id="line.67"></a>
+<span class="sourceLineNo">068</span><a id="line.68">        summary = getSummary(REPORT_PLUGIN_THROUGHPUT);</a>
+<span class="sourceLineNo">069</span><a id="line.69">        if (summary != null &amp;&amp; summary.size() &gt; 0) {</a>
+<span class="sourceLineNo">070</span><a id="line.70">            writeThroughputSummary(summary);</a>
+<span class="sourceLineNo">071</span><a id="line.71">        }</a>
+<span class="sourceLineNo">072</span><a id="line.72"></a>
+<span class="sourceLineNo">073</span><a id="line.73">        summary = getSummary(REPORT_PLUGIN_CPU);</a>
+<span class="sourceLineNo">074</span><a id="line.74">        if (summary != null &amp;&amp; summary.size() &gt; 0) {</a>
+<span class="sourceLineNo">075</span><a id="line.75">            writeCpuSummary(summary);</a>
+<span class="sourceLineNo">076</span><a id="line.76">        }</a>
+<span class="sourceLineNo">077</span><a id="line.77"></a>
+<span class="sourceLineNo">078</span><a id="line.78">    }</a>
+<span class="sourceLineNo">079</span><a id="line.79"></a>
+<span class="sourceLineNo">080</span><a id="line.80">    protected void writeThroughputSummary(Map summary) {</a>
+<span class="sourceLineNo">081</span><a id="line.81">        writeHeader("SYSTEM THROUGHPUT SUMMARY");</a>
+<span class="sourceLineNo">082</span><a id="line.82">        System.out.println("[PERF-TP-SUMMARY] System Total Throughput: " + summary.get(ThroughputReportPlugin.KEY_SYS_TOTAL_TP));</a>
+<span class="sourceLineNo">083</span><a id="line.83">        System.out.println("[PERF-TP-SUMMARY] System Total Clients: " + summary.get(ThroughputReportPlugin.KEY_SYS_TOTAL_CLIENTS));</a>
+<span class="sourceLineNo">084</span><a id="line.84">        System.out.println("[PERF-TP-SUMMARY] System Average Throughput: " + summary.get(ThroughputReportPlugin.KEY_SYS_AVE_TP));</a>
+<span class="sourceLineNo">085</span><a id="line.85">        System.out.println("[PERF-TP-SUMMARY] System Average Throughput Excluding Min/Max: " + summary.get(ThroughputReportPlugin.KEY_SYS_AVE_EMM_TP));</a>
+<span class="sourceLineNo">086</span><a id="line.86">        System.out.println("[PERF-TP-SUMMARY] System Average Client Throughput: " + summary.get(ThroughputReportPlugin.KEY_SYS_AVE_CLIENT_TP));</a>
+<span class="sourceLineNo">087</span><a id="line.87">        System.out.println("[PERF-TP-SUMMARY] System Average Client Throughput Excluding Min/Max: " + summary.get(ThroughputReportPlugin.KEY_SYS_AVE_CLIENT_EMM_TP));</a>
+<span class="sourceLineNo">088</span><a id="line.88">        System.out.println("[PERF-TP-SUMMARY] Min Client Throughput Per Sample: " + summary.get(ThroughputReportPlugin.KEY_MIN_CLIENT_TP));</a>
+<span class="sourceLineNo">089</span><a id="line.89">        System.out.println("[PERF-TP-SUMMARY] Max Client Throughput Per Sample: " + summary.get(ThroughputReportPlugin.KEY_MAX_CLIENT_TP));</a>
+<span class="sourceLineNo">090</span><a id="line.90">        System.out.println("[PERF-TP-SUMMARY] Min Client Total Throughput: " + summary.get(ThroughputReportPlugin.KEY_MIN_CLIENT_TOTAL_TP));</a>
+<span class="sourceLineNo">091</span><a id="line.91">        System.out.println("[PERF-TP-SUMMARY] Max Client Total Throughput: " + summary.get(ThroughputReportPlugin.KEY_MAX_CLIENT_TOTAL_TP));</a>
+<span class="sourceLineNo">092</span><a id="line.92">        System.out.println("[PERF-TP-SUMMARY] Min Client Average Throughput: " + summary.get(ThroughputReportPlugin.KEY_MIN_CLIENT_AVE_TP));</a>
+<span class="sourceLineNo">093</span><a id="line.93">        System.out.println("[PERF-TP-SUMMARY] Max Client Average Throughput: " + summary.get(ThroughputReportPlugin.KEY_MAX_CLIENT_AVE_TP));</a>
+<span class="sourceLineNo">094</span><a id="line.94">        System.out.println("[PERF-TP-SUMMARY] Min Client Average Throughput Excluding Min/Max: " + summary.get(ThroughputReportPlugin.KEY_MIN_CLIENT_AVE_EMM_TP));</a>
+<span class="sourceLineNo">095</span><a id="line.95">        System.out.println("[PERF-TP-SUMMARY] Max Client Average Throughput Excluding Min/Max: " + summary.get(ThroughputReportPlugin.KEY_MAX_CLIENT_AVE_EMM_TP));</a>
+<span class="sourceLineNo">096</span><a id="line.96">    }</a>
+<span class="sourceLineNo">097</span><a id="line.97"></a>
+<span class="sourceLineNo">098</span><a id="line.98">    protected void writeCpuSummary(Map summary) {</a>
+<span class="sourceLineNo">099</span><a id="line.99">        writeHeader("SYSTEM CPU USAGE SUMMARY");</a>
+<span class="sourceLineNo">100</span><a id="line.100">        System.out.println("[PERF-CPU-SUMMARY] Total Blocks Received: " + summary.get(CpuReportPlugin.KEY_BLOCK_RECV));</a>
+<span class="sourceLineNo">101</span><a id="line.101">        System.out.println("[PERF-CPU-SUMMARY] Ave Blocks Received: " + summary.get(CpuReportPlugin.KEY_AVE_BLOCK_RECV));</a>
+<span class="sourceLineNo">102</span><a id="line.102"></a>
+<span class="sourceLineNo">103</span><a id="line.103">        System.out.println("[PERF-CPU-SUMMARY] Total Blocks Sent: " + summary.get(CpuReportPlugin.KEY_BLOCK_SENT));</a>
+<span class="sourceLineNo">104</span><a id="line.104">        System.out.println("[PERF-CPU-SUMMARY] Ave Blocks Sent: " + summary.get(CpuReportPlugin.KEY_AVE_BLOCK_SENT));</a>
+<span class="sourceLineNo">105</span><a id="line.105"></a>
+<span class="sourceLineNo">106</span><a id="line.106">        System.out.println("[PERF-CPU-SUMMARY] Total Context Switches: " + summary.get(CpuReportPlugin.KEY_CTX_SWITCH));</a>
+<span class="sourceLineNo">107</span><a id="line.107">        System.out.println("[PERF-CPU-SUMMARY] Ave Context Switches: " + summary.get(CpuReportPlugin.KEY_AVE_CTX_SWITCH));</a>
+<span class="sourceLineNo">108</span><a id="line.108"></a>
+<span class="sourceLineNo">109</span><a id="line.109">        System.out.println("[PERF-CPU-SUMMARY] Total User Time: " + summary.get(CpuReportPlugin.KEY_USER_TIME));</a>
+<span class="sourceLineNo">110</span><a id="line.110">        System.out.println("[PERF-CPU-SUMMARY] Ave User Time: " + summary.get(CpuReportPlugin.KEY_AVE_USER_TIME));</a>
+<span class="sourceLineNo">111</span><a id="line.111"></a>
+<span class="sourceLineNo">112</span><a id="line.112">        System.out.println("[PERF-CPU-SUMMARY] Total System Time: " + summary.get(CpuReportPlugin.KEY_SYS_TIME));</a>
+<span class="sourceLineNo">113</span><a id="line.113">        System.out.println("[PERF-CPU-SUMMARY] Ave System Time: " + summary.get(CpuReportPlugin.KEY_AVE_SYS_TIME));</a>
+<span class="sourceLineNo">114</span><a id="line.114"></a>
+<span class="sourceLineNo">115</span><a id="line.115">        System.out.println("[PERF-CPU-SUMMARY] Total Idle Time: " + summary.get(CpuReportPlugin.KEY_IDLE_TIME));</a>
+<span class="sourceLineNo">116</span><a id="line.116">        System.out.println("[PERF-CPU-SUMMARY] Ave Idle Time: " + summary.get(CpuReportPlugin.KEY_AVE_IDLE_TIME));</a>
+<span class="sourceLineNo">117</span><a id="line.117"></a>
+<span class="sourceLineNo">118</span><a id="line.118">        System.out.println("[PERF-CPU-SUMMARY] Total Wait Time: " + summary.get(CpuReportPlugin.KEY_WAIT_TIME));</a>
+<span class="sourceLineNo">119</span><a id="line.119">        System.out.println("[PERF-CPU-SUMMARY] Ave Wait Time: " + summary.get(CpuReportPlugin.KEY_AVE_WAIT_TIME));</a>
+<span class="sourceLineNo">120</span><a id="line.120">    }</a>
+<span class="sourceLineNo">121</span><a id="line.121"></a>
+<span class="sourceLineNo">122</span><a id="line.122">    protected void writeHeader(String header) {</a>
+<span class="sourceLineNo">123</span><a id="line.123">        char[] border = new char[header.length() + 8]; // +8 for spacing</a>
+<span class="sourceLineNo">124</span><a id="line.124">        Arrays.fill(border, '#');</a>
+<span class="sourceLineNo">125</span><a id="line.125">        String borderStr = new String(border);</a>
+<span class="sourceLineNo">126</span><a id="line.126"></a>
+<span class="sourceLineNo">127</span><a id="line.127">        System.out.println(borderStr);</a>
+<span class="sourceLineNo">128</span><a id="line.128">        System.out.println("#   " + header + "   #");</a>
+<span class="sourceLineNo">129</span><a id="line.129">        System.out.println(borderStr);</a>
+<span class="sourceLineNo">130</span><a id="line.130">    }</a>
+<span class="sourceLineNo">131</span><a id="line.131"></a>
+<span class="sourceLineNo">132</span><a id="line.132">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

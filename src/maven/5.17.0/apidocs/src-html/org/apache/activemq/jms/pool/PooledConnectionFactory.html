@@ -1,0 +1,709 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/*</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.jms.pool;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.util.NoSuchElementException;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.util.Properties;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.util.concurrent.atomic.AtomicBoolean;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.util.concurrent.atomic.AtomicReference;</a>
+<span class="sourceLineNo">023</span><a id="line.23"></a>
+<span class="sourceLineNo">024</span><a id="line.24">import javax.jms.Connection;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import javax.jms.ConnectionFactory;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import javax.jms.JMSException;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import javax.jms.QueueConnection;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import javax.jms.QueueConnectionFactory;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import javax.jms.TopicConnection;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import javax.jms.TopicConnectionFactory;</a>
+<span class="sourceLineNo">031</span><a id="line.31"></a>
+<span class="sourceLineNo">032</span><a id="line.32">import org.apache.commons.pool2.KeyedPooledObjectFactory;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import org.apache.commons.pool2.PooledObject;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import org.apache.commons.pool2.impl.DefaultPooledObject;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import org.apache.commons.pool2.impl.GenericKeyedObjectPool;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">039</span><a id="line.39"></a>
+<span class="sourceLineNo">040</span><a id="line.40">/**</a>
+<span class="sourceLineNo">041</span><a id="line.41"> * A JMS provider which pools Connection, Session and MessageProducer instances</a>
+<span class="sourceLineNo">042</span><a id="line.42"> * so it can be used with tools like &lt;a href="http://camel.apache.org/activemq.html"&gt;Camel&lt;/a&gt; and Spring's</a>
+<span class="sourceLineNo">043</span><a id="line.43"> * &lt;a href="http://activemq.apache.org/spring-support.html"&gt;JmsTemplate and MessagListenerContainer&lt;/a&gt;.</a>
+<span class="sourceLineNo">044</span><a id="line.44"> * Connections, sessions and producers are returned to a pool after use so that they can be reused later</a>
+<span class="sourceLineNo">045</span><a id="line.45"> * without having to undergo the cost of creating them again.</a>
+<span class="sourceLineNo">046</span><a id="line.46"> *</a>
+<span class="sourceLineNo">047</span><a id="line.47"> * b&gt;NOTE:&lt;/b&gt; while this implementation does allow the creation of a collection of active consumers,</a>
+<span class="sourceLineNo">048</span><a id="line.48"> * it does not 'pool' consumers. Pooling makes sense for connections, sessions and producers, which</a>
+<span class="sourceLineNo">049</span><a id="line.49"> * are expensive to create and can remain idle a minimal cost. Consumers, on the other hand, are usually</a>
+<span class="sourceLineNo">050</span><a id="line.50"> * just created at startup and left active, handling incoming messages as they come. When a consumer is</a>
+<span class="sourceLineNo">051</span><a id="line.51"> * complete, it is best to close it rather than return it to a pool for later reuse: this is because,</a>
+<span class="sourceLineNo">052</span><a id="line.52"> * even if a consumer is idle, ActiveMQ will keep delivering messages to the consumer's prefetch buffer,</a>
+<span class="sourceLineNo">053</span><a id="line.53"> * where they'll get held until the consumer is active again.</a>
+<span class="sourceLineNo">054</span><a id="line.54"> *</a>
+<span class="sourceLineNo">055</span><a id="line.55"> * If you are creating a collection of consumers (for example, for multi-threaded message consumption), you</a>
+<span class="sourceLineNo">056</span><a id="line.56"> * might want to consider using a lower prefetch value for each consumer (e.g. 10 or 20), to ensure that</a>
+<span class="sourceLineNo">057</span><a id="line.57"> * all messages don't end up going to just one of the consumers. See this FAQ entry for more detail:</a>
+<span class="sourceLineNo">058</span><a id="line.58"> * http://activemq.apache.org/i-do-not-receive-messages-in-my-second-consumer.html</a>
+<span class="sourceLineNo">059</span><a id="line.59"> *</a>
+<span class="sourceLineNo">060</span><a id="line.60"> * Optionally, one may configure the pool to examine and possibly evict objects as they sit idle in the</a>
+<span class="sourceLineNo">061</span><a id="line.61"> * pool. This is performed by an "idle object eviction" thread, which runs asynchronously. Caution should</a>
+<span class="sourceLineNo">062</span><a id="line.62"> * be used when configuring this optional feature. Eviction runs contend with client threads for access</a>
+<span class="sourceLineNo">063</span><a id="line.63"> * to objects in the pool, so if they run too frequently performance issues may result. The idle object</a>
+<span class="sourceLineNo">064</span><a id="line.64"> * eviction thread may be configured using the {@link org.apache.activemq.jms.pool.PooledConnectionFactory#setTimeBetweenExpirationCheckMillis} method.  By</a>
+<span class="sourceLineNo">065</span><a id="line.65"> * default the value is -1 which means no eviction thread will be run.  Set to a non-negative value to</a>
+<span class="sourceLineNo">066</span><a id="line.66"> * configure the idle eviction thread to run.</a>
+<span class="sourceLineNo">067</span><a id="line.67"> */</a>
+<span class="sourceLineNo">068</span><a id="line.68">public class PooledConnectionFactory implements ConnectionFactory, QueueConnectionFactory, TopicConnectionFactory {</a>
+<span class="sourceLineNo">069</span><a id="line.69">    private static final transient Logger LOG = LoggerFactory.getLogger(PooledConnectionFactory.class);</a>
+<span class="sourceLineNo">070</span><a id="line.70"></a>
+<span class="sourceLineNo">071</span><a id="line.71">    protected final AtomicBoolean stopped = new AtomicBoolean(false);</a>
+<span class="sourceLineNo">072</span><a id="line.72">    private GenericKeyedObjectPool&lt;ConnectionKey, ConnectionPool&gt; connectionsPool;</a>
+<span class="sourceLineNo">073</span><a id="line.73"></a>
+<span class="sourceLineNo">074</span><a id="line.74">    protected Object connectionFactory;</a>
+<span class="sourceLineNo">075</span><a id="line.75"></a>
+<span class="sourceLineNo">076</span><a id="line.76">    private int maximumActiveSessionPerConnection = 500;</a>
+<span class="sourceLineNo">077</span><a id="line.77">    private int idleTimeout = 30 * 1000;</a>
+<span class="sourceLineNo">078</span><a id="line.78">    private int connectionTimeout = 30 * 1000;</a>
+<span class="sourceLineNo">079</span><a id="line.79">    private boolean blockIfSessionPoolIsFull = true;</a>
+<span class="sourceLineNo">080</span><a id="line.80">    private long blockIfSessionPoolIsFullTimeout = -1L;</a>
+<span class="sourceLineNo">081</span><a id="line.81">    private long expiryTimeout = 0l;</a>
+<span class="sourceLineNo">082</span><a id="line.82">    private boolean createConnectionOnStartup = true;</a>
+<span class="sourceLineNo">083</span><a id="line.83">    private boolean useAnonymousProducers = true;</a>
+<span class="sourceLineNo">084</span><a id="line.84">    private boolean reconnectOnException = true;</a>
+<span class="sourceLineNo">085</span><a id="line.85"></a>
+<span class="sourceLineNo">086</span><a id="line.86">    // Temporary value used to always fetch the result of makeObject.</a>
+<span class="sourceLineNo">087</span><a id="line.87">    private final AtomicReference&lt;ConnectionPool&gt; mostRecentlyCreated = new AtomicReference&lt;ConnectionPool&gt;(null);</a>
+<span class="sourceLineNo">088</span><a id="line.88"></a>
+<span class="sourceLineNo">089</span><a id="line.89">    public void initConnectionsPool() {</a>
+<span class="sourceLineNo">090</span><a id="line.90">        if (this.connectionsPool == null) {</a>
+<span class="sourceLineNo">091</span><a id="line.91">            final GenericKeyedObjectPoolConfig poolConfig = new GenericKeyedObjectPoolConfig();</a>
+<span class="sourceLineNo">092</span><a id="line.92">            poolConfig.setJmxEnabled(false);</a>
+<span class="sourceLineNo">093</span><a id="line.93">            this.connectionsPool = new GenericKeyedObjectPool&lt;ConnectionKey, ConnectionPool&gt;(</a>
+<span class="sourceLineNo">094</span><a id="line.94">                new KeyedPooledObjectFactory&lt;ConnectionKey, ConnectionPool&gt;() {</a>
+<span class="sourceLineNo">095</span><a id="line.95">                    @Override</a>
+<span class="sourceLineNo">096</span><a id="line.96">                    public PooledObject&lt;ConnectionPool&gt; makeObject(ConnectionKey connectionKey) throws Exception {</a>
+<span class="sourceLineNo">097</span><a id="line.97">                        Connection delegate = createConnection(connectionKey);</a>
+<span class="sourceLineNo">098</span><a id="line.98"></a>
+<span class="sourceLineNo">099</span><a id="line.99">                        ConnectionPool connection = createConnectionPool(delegate);</a>
+<span class="sourceLineNo">100</span><a id="line.100">                        connection.setIdleTimeout(getIdleTimeout());</a>
+<span class="sourceLineNo">101</span><a id="line.101">                        connection.setExpiryTimeout(getExpiryTimeout());</a>
+<span class="sourceLineNo">102</span><a id="line.102">                        connection.setMaximumActiveSessionPerConnection(getMaximumActiveSessionPerConnection());</a>
+<span class="sourceLineNo">103</span><a id="line.103">                        connection.setBlockIfSessionPoolIsFull(isBlockIfSessionPoolIsFull());</a>
+<span class="sourceLineNo">104</span><a id="line.104">                        if (isBlockIfSessionPoolIsFull() &amp;&amp; getBlockIfSessionPoolIsFullTimeout() &gt; 0) {</a>
+<span class="sourceLineNo">105</span><a id="line.105">                            connection.setBlockIfSessionPoolIsFullTimeout(getBlockIfSessionPoolIsFullTimeout());</a>
+<span class="sourceLineNo">106</span><a id="line.106">                        }</a>
+<span class="sourceLineNo">107</span><a id="line.107">                        connection.setUseAnonymousProducers(isUseAnonymousProducers());</a>
+<span class="sourceLineNo">108</span><a id="line.108">                        connection.setReconnectOnException(isReconnectOnException());</a>
+<span class="sourceLineNo">109</span><a id="line.109"></a>
+<span class="sourceLineNo">110</span><a id="line.110">                        LOG.trace("Created new connection: {}", connection);</a>
+<span class="sourceLineNo">111</span><a id="line.111"></a>
+<span class="sourceLineNo">112</span><a id="line.112">                        PooledConnectionFactory.this.mostRecentlyCreated.set(connection);</a>
+<span class="sourceLineNo">113</span><a id="line.113"></a>
+<span class="sourceLineNo">114</span><a id="line.114">                        return new DefaultPooledObject&lt;ConnectionPool&gt;(connection);</a>
+<span class="sourceLineNo">115</span><a id="line.115">                    }</a>
+<span class="sourceLineNo">116</span><a id="line.116"></a>
+<span class="sourceLineNo">117</span><a id="line.117">                    @Override</a>
+<span class="sourceLineNo">118</span><a id="line.118">                    public void destroyObject(ConnectionKey connectionKey, PooledObject&lt;ConnectionPool&gt; pooledObject) throws Exception {</a>
+<span class="sourceLineNo">119</span><a id="line.119">                        ConnectionPool connection = pooledObject.getObject();</a>
+<span class="sourceLineNo">120</span><a id="line.120">                        try {</a>
+<span class="sourceLineNo">121</span><a id="line.121">                            LOG.trace("Destroying connection: {}", connection);</a>
+<span class="sourceLineNo">122</span><a id="line.122">                            connection.close();</a>
+<span class="sourceLineNo">123</span><a id="line.123">                        } catch (Exception e) {</a>
+<span class="sourceLineNo">124</span><a id="line.124">                            LOG.warn("Close connection failed for connection: " + connection + ". This exception will be ignored.",e);</a>
+<span class="sourceLineNo">125</span><a id="line.125">                        }</a>
+<span class="sourceLineNo">126</span><a id="line.126">                    }</a>
+<span class="sourceLineNo">127</span><a id="line.127"></a>
+<span class="sourceLineNo">128</span><a id="line.128">                    @Override</a>
+<span class="sourceLineNo">129</span><a id="line.129">                    public boolean validateObject(ConnectionKey connectionKey, PooledObject&lt;ConnectionPool&gt; pooledObject) {</a>
+<span class="sourceLineNo">130</span><a id="line.130">                        ConnectionPool connection = pooledObject.getObject();</a>
+<span class="sourceLineNo">131</span><a id="line.131">                        if (connection != null &amp;&amp; connection.expiredCheck()) {</a>
+<span class="sourceLineNo">132</span><a id="line.132">                            LOG.trace("Connection has expired: {} and will be destroyed", connection);</a>
+<span class="sourceLineNo">133</span><a id="line.133">                            return false;</a>
+<span class="sourceLineNo">134</span><a id="line.134">                        }</a>
+<span class="sourceLineNo">135</span><a id="line.135"></a>
+<span class="sourceLineNo">136</span><a id="line.136">                        return true;</a>
+<span class="sourceLineNo">137</span><a id="line.137">                    }</a>
+<span class="sourceLineNo">138</span><a id="line.138"></a>
+<span class="sourceLineNo">139</span><a id="line.139">                    @Override</a>
+<span class="sourceLineNo">140</span><a id="line.140">                    public void activateObject(ConnectionKey connectionKey, PooledObject&lt;ConnectionPool&gt; pooledObject) throws Exception {</a>
+<span class="sourceLineNo">141</span><a id="line.141">                    }</a>
+<span class="sourceLineNo">142</span><a id="line.142"></a>
+<span class="sourceLineNo">143</span><a id="line.143">                    @Override</a>
+<span class="sourceLineNo">144</span><a id="line.144">                    public void passivateObject(ConnectionKey connectionKey, PooledObject&lt;ConnectionPool&gt; pooledObject) throws Exception {</a>
+<span class="sourceLineNo">145</span><a id="line.145">                    }</a>
+<span class="sourceLineNo">146</span><a id="line.146"></a>
+<span class="sourceLineNo">147</span><a id="line.147">                }, poolConfig);</a>
+<span class="sourceLineNo">148</span><a id="line.148"></a>
+<span class="sourceLineNo">149</span><a id="line.149">            // Set max wait time to control borrow from pool.</a>
+<span class="sourceLineNo">150</span><a id="line.150">            this.connectionsPool.setMaxWaitMillis(getConnectionTimeout());</a>
+<span class="sourceLineNo">151</span><a id="line.151"></a>
+<span class="sourceLineNo">152</span><a id="line.152">            // Set max idle (not max active) since our connections always idle in the pool.</a>
+<span class="sourceLineNo">153</span><a id="line.153">            this.connectionsPool.setMaxIdlePerKey(1);</a>
+<span class="sourceLineNo">154</span><a id="line.154">            this.connectionsPool.setLifo(false);</a>
+<span class="sourceLineNo">155</span><a id="line.155"></a>
+<span class="sourceLineNo">156</span><a id="line.156">            // We always want our validate method to control when idle objects are evicted.</a>
+<span class="sourceLineNo">157</span><a id="line.157">            this.connectionsPool.setTestOnBorrow(true);</a>
+<span class="sourceLineNo">158</span><a id="line.158">            this.connectionsPool.setTestWhileIdle(true);</a>
+<span class="sourceLineNo">159</span><a id="line.159">        }</a>
+<span class="sourceLineNo">160</span><a id="line.160">    }</a>
+<span class="sourceLineNo">161</span><a id="line.161"></a>
+<span class="sourceLineNo">162</span><a id="line.162">    /**</a>
+<span class="sourceLineNo">163</span><a id="line.163">     * @return the currently configured ConnectionFactory used to create the pooled Connections.</a>
+<span class="sourceLineNo">164</span><a id="line.164">     */</a>
+<span class="sourceLineNo">165</span><a id="line.165">    public Object getConnectionFactory() {</a>
+<span class="sourceLineNo">166</span><a id="line.166">        return connectionFactory;</a>
+<span class="sourceLineNo">167</span><a id="line.167">    }</a>
+<span class="sourceLineNo">168</span><a id="line.168"></a>
+<span class="sourceLineNo">169</span><a id="line.169">    /**</a>
+<span class="sourceLineNo">170</span><a id="line.170">     * Sets the ConnectionFactory used to create new pooled Connections.</a>
+<span class="sourceLineNo">171</span><a id="line.171">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">172</span><a id="line.172">     * Updates to this value do not affect Connections that were previously created and placed</a>
+<span class="sourceLineNo">173</span><a id="line.173">     * into the pool.  In order to allocate new Connections based off this new ConnectionFactory</a>
+<span class="sourceLineNo">174</span><a id="line.174">     * it is first necessary to {@link #clear} the pooled Connections.</a>
+<span class="sourceLineNo">175</span><a id="line.175">     *</a>
+<span class="sourceLineNo">176</span><a id="line.176">     * @param toUse</a>
+<span class="sourceLineNo">177</span><a id="line.177">     *      The factory to use to create pooled Connections.</a>
+<span class="sourceLineNo">178</span><a id="line.178">     */</a>
+<span class="sourceLineNo">179</span><a id="line.179">    public void setConnectionFactory(final Object toUse) {</a>
+<span class="sourceLineNo">180</span><a id="line.180">        if (toUse instanceof ConnectionFactory) {</a>
+<span class="sourceLineNo">181</span><a id="line.181">            this.connectionFactory = toUse;</a>
+<span class="sourceLineNo">182</span><a id="line.182">        } else {</a>
+<span class="sourceLineNo">183</span><a id="line.183">            throw new IllegalArgumentException("connectionFactory should implement javax.jms.ConnectionFactory");</a>
+<span class="sourceLineNo">184</span><a id="line.184">        }</a>
+<span class="sourceLineNo">185</span><a id="line.185">    }</a>
+<span class="sourceLineNo">186</span><a id="line.186"></a>
+<span class="sourceLineNo">187</span><a id="line.187">    @Override</a>
+<span class="sourceLineNo">188</span><a id="line.188">    public QueueConnection createQueueConnection() throws JMSException {</a>
+<span class="sourceLineNo">189</span><a id="line.189">        return (QueueConnection) createConnection();</a>
+<span class="sourceLineNo">190</span><a id="line.190">    }</a>
+<span class="sourceLineNo">191</span><a id="line.191"></a>
+<span class="sourceLineNo">192</span><a id="line.192">    @Override</a>
+<span class="sourceLineNo">193</span><a id="line.193">    public QueueConnection createQueueConnection(String userName, String password) throws JMSException {</a>
+<span class="sourceLineNo">194</span><a id="line.194">        return (QueueConnection) createConnection(userName, password);</a>
+<span class="sourceLineNo">195</span><a id="line.195">    }</a>
+<span class="sourceLineNo">196</span><a id="line.196"></a>
+<span class="sourceLineNo">197</span><a id="line.197">    @Override</a>
+<span class="sourceLineNo">198</span><a id="line.198">    public TopicConnection createTopicConnection() throws JMSException {</a>
+<span class="sourceLineNo">199</span><a id="line.199">        return (TopicConnection) createConnection();</a>
+<span class="sourceLineNo">200</span><a id="line.200">    }</a>
+<span class="sourceLineNo">201</span><a id="line.201"></a>
+<span class="sourceLineNo">202</span><a id="line.202">    @Override</a>
+<span class="sourceLineNo">203</span><a id="line.203">    public TopicConnection createTopicConnection(String userName, String password) throws JMSException {</a>
+<span class="sourceLineNo">204</span><a id="line.204">        return (TopicConnection) createConnection(userName, password);</a>
+<span class="sourceLineNo">205</span><a id="line.205">    }</a>
+<span class="sourceLineNo">206</span><a id="line.206"></a>
+<span class="sourceLineNo">207</span><a id="line.207">    @Override</a>
+<span class="sourceLineNo">208</span><a id="line.208">    public Connection createConnection() throws JMSException {</a>
+<span class="sourceLineNo">209</span><a id="line.209">        return createConnection(null, null);</a>
+<span class="sourceLineNo">210</span><a id="line.210">    }</a>
+<span class="sourceLineNo">211</span><a id="line.211"></a>
+<span class="sourceLineNo">212</span><a id="line.212">    @Override</a>
+<span class="sourceLineNo">213</span><a id="line.213">    public synchronized Connection createConnection(String userName, String password) throws JMSException {</a>
+<span class="sourceLineNo">214</span><a id="line.214">        if (stopped.get()) {</a>
+<span class="sourceLineNo">215</span><a id="line.215">            LOG.debug("PooledConnectionFactory is stopped, skip create new connection.");</a>
+<span class="sourceLineNo">216</span><a id="line.216">            return null;</a>
+<span class="sourceLineNo">217</span><a id="line.217">        }</a>
+<span class="sourceLineNo">218</span><a id="line.218"></a>
+<span class="sourceLineNo">219</span><a id="line.219">        ConnectionPool connection = null;</a>
+<span class="sourceLineNo">220</span><a id="line.220">        ConnectionKey key = new ConnectionKey(userName, password);</a>
+<span class="sourceLineNo">221</span><a id="line.221"></a>
+<span class="sourceLineNo">222</span><a id="line.222">        // This will either return an existing non-expired ConnectionPool or it</a>
+<span class="sourceLineNo">223</span><a id="line.223">        // will create a new one to meet the demand.</a>
+<span class="sourceLineNo">224</span><a id="line.224">        if (getConnectionsPool().getNumIdle(key) &lt; getMaxConnections()) {</a>
+<span class="sourceLineNo">225</span><a id="line.225">            try {</a>
+<span class="sourceLineNo">226</span><a id="line.226">                connectionsPool.addObject(key);</a>
+<span class="sourceLineNo">227</span><a id="line.227">                connection = mostRecentlyCreated.getAndSet(null);</a>
+<span class="sourceLineNo">228</span><a id="line.228">                connection.incrementReferenceCount();</a>
+<span class="sourceLineNo">229</span><a id="line.229">            } catch (Exception e) {</a>
+<span class="sourceLineNo">230</span><a id="line.230">                throw createJmsException("Error while attempting to add new Connection to the pool", e);</a>
+<span class="sourceLineNo">231</span><a id="line.231">            }</a>
+<span class="sourceLineNo">232</span><a id="line.232">        } else {</a>
+<span class="sourceLineNo">233</span><a id="line.233">            try {</a>
+<span class="sourceLineNo">234</span><a id="line.234">                // We can race against other threads returning the connection when there is an</a>
+<span class="sourceLineNo">235</span><a id="line.235">                // expiration or idle timeout.  We keep pulling out ConnectionPool instances until</a>
+<span class="sourceLineNo">236</span><a id="line.236">                // we win and get a non-closed instance and then increment the reference count</a>
+<span class="sourceLineNo">237</span><a id="line.237">                // under lock to prevent another thread from triggering an expiration check and</a>
+<span class="sourceLineNo">238</span><a id="line.238">                // pulling the rug out from under us.</a>
+<span class="sourceLineNo">239</span><a id="line.239">                while (connection == null) {</a>
+<span class="sourceLineNo">240</span><a id="line.240">                    try {</a>
+<span class="sourceLineNo">241</span><a id="line.241">                        connection = connectionsPool.borrowObject(key);</a>
+<span class="sourceLineNo">242</span><a id="line.242">                    } catch (NoSuchElementException ex) {</a>
+<span class="sourceLineNo">243</span><a id="line.243">                        if (!"Timeout waiting for idle object".equals(ex.getMessage())) {</a>
+<span class="sourceLineNo">244</span><a id="line.244">                            throw ex;</a>
+<span class="sourceLineNo">245</span><a id="line.245">                        }</a>
+<span class="sourceLineNo">246</span><a id="line.246">                    }</a>
+<span class="sourceLineNo">247</span><a id="line.247">                    if (connection != null) {</a>
+<span class="sourceLineNo">248</span><a id="line.248">                        synchronized (connection) {</a>
+<span class="sourceLineNo">249</span><a id="line.249">                            if (connection.getConnection() != null) {</a>
+<span class="sourceLineNo">250</span><a id="line.250">                                connection.incrementReferenceCount();</a>
+<span class="sourceLineNo">251</span><a id="line.251">                                break;</a>
+<span class="sourceLineNo">252</span><a id="line.252">                            }</a>
+<span class="sourceLineNo">253</span><a id="line.253"></a>
+<span class="sourceLineNo">254</span><a id="line.254">                            // Return the bad one to the pool and let if get destroyed as normal.</a>
+<span class="sourceLineNo">255</span><a id="line.255">                            connectionsPool.returnObject(key, connection);</a>
+<span class="sourceLineNo">256</span><a id="line.256">                            connection = null;</a>
+<span class="sourceLineNo">257</span><a id="line.257">                        }</a>
+<span class="sourceLineNo">258</span><a id="line.258">                    }</a>
+<span class="sourceLineNo">259</span><a id="line.259">                }</a>
+<span class="sourceLineNo">260</span><a id="line.260">            } catch (Exception e) {</a>
+<span class="sourceLineNo">261</span><a id="line.261">                throw createJmsException("Error while attempting to retrieve a connection from the pool", e);</a>
+<span class="sourceLineNo">262</span><a id="line.262">            }</a>
+<span class="sourceLineNo">263</span><a id="line.263"></a>
+<span class="sourceLineNo">264</span><a id="line.264">            try {</a>
+<span class="sourceLineNo">265</span><a id="line.265">                connectionsPool.returnObject(key, connection);</a>
+<span class="sourceLineNo">266</span><a id="line.266">            } catch (Exception e) {</a>
+<span class="sourceLineNo">267</span><a id="line.267">                throw createJmsException("Error when returning connection to the pool", e);</a>
+<span class="sourceLineNo">268</span><a id="line.268">            }</a>
+<span class="sourceLineNo">269</span><a id="line.269">        }</a>
+<span class="sourceLineNo">270</span><a id="line.270"></a>
+<span class="sourceLineNo">271</span><a id="line.271">        return newPooledConnection(connection);</a>
+<span class="sourceLineNo">272</span><a id="line.272">    }</a>
+<span class="sourceLineNo">273</span><a id="line.273"></a>
+<span class="sourceLineNo">274</span><a id="line.274">    protected Connection newPooledConnection(ConnectionPool connection) {</a>
+<span class="sourceLineNo">275</span><a id="line.275">        return new PooledConnection(connection);</a>
+<span class="sourceLineNo">276</span><a id="line.276">    }</a>
+<span class="sourceLineNo">277</span><a id="line.277"></a>
+<span class="sourceLineNo">278</span><a id="line.278">    private JMSException createJmsException(String msg, Exception cause) {</a>
+<span class="sourceLineNo">279</span><a id="line.279">        JMSException exception = new JMSException(msg);</a>
+<span class="sourceLineNo">280</span><a id="line.280">        exception.setLinkedException(cause);</a>
+<span class="sourceLineNo">281</span><a id="line.281">        exception.initCause(cause);</a>
+<span class="sourceLineNo">282</span><a id="line.282">        return exception;</a>
+<span class="sourceLineNo">283</span><a id="line.283">    }</a>
+<span class="sourceLineNo">284</span><a id="line.284"></a>
+<span class="sourceLineNo">285</span><a id="line.285">    protected Connection createConnection(ConnectionKey key) throws JMSException {</a>
+<span class="sourceLineNo">286</span><a id="line.286">        if (connectionFactory instanceof ConnectionFactory) {</a>
+<span class="sourceLineNo">287</span><a id="line.287">            if (key.getUserName() == null &amp;&amp; key.getPassword() == null) {</a>
+<span class="sourceLineNo">288</span><a id="line.288">                return ((ConnectionFactory) connectionFactory).createConnection();</a>
+<span class="sourceLineNo">289</span><a id="line.289">            } else {</a>
+<span class="sourceLineNo">290</span><a id="line.290">                return ((ConnectionFactory) connectionFactory).createConnection(key.getUserName(), key.getPassword());</a>
+<span class="sourceLineNo">291</span><a id="line.291">            }</a>
+<span class="sourceLineNo">292</span><a id="line.292">        } else {</a>
+<span class="sourceLineNo">293</span><a id="line.293">            throw new IllegalStateException("connectionFactory should implement javax.jms.ConnectionFactory");</a>
+<span class="sourceLineNo">294</span><a id="line.294">        }</a>
+<span class="sourceLineNo">295</span><a id="line.295">    }</a>
+<span class="sourceLineNo">296</span><a id="line.296"></a>
+<span class="sourceLineNo">297</span><a id="line.297">    public void start() {</a>
+<span class="sourceLineNo">298</span><a id="line.298">        LOG.debug("Staring the PooledConnectionFactory: create on start = {}", isCreateConnectionOnStartup());</a>
+<span class="sourceLineNo">299</span><a id="line.299">        stopped.set(false);</a>
+<span class="sourceLineNo">300</span><a id="line.300">        if (isCreateConnectionOnStartup()) {</a>
+<span class="sourceLineNo">301</span><a id="line.301">            try {</a>
+<span class="sourceLineNo">302</span><a id="line.302">                // warm the pool by creating a connection during startup</a>
+<span class="sourceLineNo">303</span><a id="line.303">                createConnection().close();</a>
+<span class="sourceLineNo">304</span><a id="line.304">            } catch (JMSException e) {</a>
+<span class="sourceLineNo">305</span><a id="line.305">                LOG.warn("Create pooled connection during start failed. This exception will be ignored.", e);</a>
+<span class="sourceLineNo">306</span><a id="line.306">            }</a>
+<span class="sourceLineNo">307</span><a id="line.307">        }</a>
+<span class="sourceLineNo">308</span><a id="line.308">    }</a>
+<span class="sourceLineNo">309</span><a id="line.309"></a>
+<span class="sourceLineNo">310</span><a id="line.310">    public void stop() {</a>
+<span class="sourceLineNo">311</span><a id="line.311">        if (stopped.compareAndSet(false, true)) {</a>
+<span class="sourceLineNo">312</span><a id="line.312">            LOG.debug("Stopping the PooledConnectionFactory, number of connections in cache: {}",</a>
+<span class="sourceLineNo">313</span><a id="line.313">                      connectionsPool != null ? connectionsPool.getNumActive() : 0);</a>
+<span class="sourceLineNo">314</span><a id="line.314">            try {</a>
+<span class="sourceLineNo">315</span><a id="line.315">                if (connectionsPool != null) {</a>
+<span class="sourceLineNo">316</span><a id="line.316">                    connectionsPool.close();</a>
+<span class="sourceLineNo">317</span><a id="line.317">                    connectionsPool = null;</a>
+<span class="sourceLineNo">318</span><a id="line.318">                }</a>
+<span class="sourceLineNo">319</span><a id="line.319">            } catch (Exception e) {</a>
+<span class="sourceLineNo">320</span><a id="line.320">            }</a>
+<span class="sourceLineNo">321</span><a id="line.321">        }</a>
+<span class="sourceLineNo">322</span><a id="line.322">    }</a>
+<span class="sourceLineNo">323</span><a id="line.323"></a>
+<span class="sourceLineNo">324</span><a id="line.324">    /**</a>
+<span class="sourceLineNo">325</span><a id="line.325">     * Clears all connections from the pool.  Each connection that is currently in the pool is</a>
+<span class="sourceLineNo">326</span><a id="line.326">     * closed and removed from the pool.  A new connection will be created on the next call to</a>
+<span class="sourceLineNo">327</span><a id="line.327">     * {@link #createConnection}.  Care should be taken when using this method as Connections that</a>
+<span class="sourceLineNo">328</span><a id="line.328">     * are in use be client's will be closed.</a>
+<span class="sourceLineNo">329</span><a id="line.329">     */</a>
+<span class="sourceLineNo">330</span><a id="line.330">    public void clear() {</a>
+<span class="sourceLineNo">331</span><a id="line.331">        if (stopped.get()) {</a>
+<span class="sourceLineNo">332</span><a id="line.332">            return;</a>
+<span class="sourceLineNo">333</span><a id="line.333">        }</a>
+<span class="sourceLineNo">334</span><a id="line.334"></a>
+<span class="sourceLineNo">335</span><a id="line.335">        getConnectionsPool().clear();</a>
+<span class="sourceLineNo">336</span><a id="line.336">    }</a>
+<span class="sourceLineNo">337</span><a id="line.337"></a>
+<span class="sourceLineNo">338</span><a id="line.338">    /**</a>
+<span class="sourceLineNo">339</span><a id="line.339">     * Returns the currently configured maximum number of sessions a pooled Connection will</a>
+<span class="sourceLineNo">340</span><a id="line.340">     * create before it either blocks or throws an exception when a new session is requested,</a>
+<span class="sourceLineNo">341</span><a id="line.341">     * depending on configuration.</a>
+<span class="sourceLineNo">342</span><a id="line.342">     *</a>
+<span class="sourceLineNo">343</span><a id="line.343">     * @return the number of session instances that can be taken from a pooled connection.</a>
+<span class="sourceLineNo">344</span><a id="line.344">     */</a>
+<span class="sourceLineNo">345</span><a id="line.345">    public int getMaximumActiveSessionPerConnection() {</a>
+<span class="sourceLineNo">346</span><a id="line.346">        return maximumActiveSessionPerConnection;</a>
+<span class="sourceLineNo">347</span><a id="line.347">    }</a>
+<span class="sourceLineNo">348</span><a id="line.348"></a>
+<span class="sourceLineNo">349</span><a id="line.349">    /**</a>
+<span class="sourceLineNo">350</span><a id="line.350">     * Sets the maximum number of active sessions per connection</a>
+<span class="sourceLineNo">351</span><a id="line.351">     *</a>
+<span class="sourceLineNo">352</span><a id="line.352">     * @param maximumActiveSessionPerConnection</a>
+<span class="sourceLineNo">353</span><a id="line.353">     *      The maximum number of active session per connection in the pool.</a>
+<span class="sourceLineNo">354</span><a id="line.354">     */</a>
+<span class="sourceLineNo">355</span><a id="line.355">    public void setMaximumActiveSessionPerConnection(int maximumActiveSessionPerConnection) {</a>
+<span class="sourceLineNo">356</span><a id="line.356">        this.maximumActiveSessionPerConnection = maximumActiveSessionPerConnection;</a>
+<span class="sourceLineNo">357</span><a id="line.357">    }</a>
+<span class="sourceLineNo">358</span><a id="line.358"></a>
+<span class="sourceLineNo">359</span><a id="line.359">    /**</a>
+<span class="sourceLineNo">360</span><a id="line.360">     * Controls the behavior of the internal session pool. By default the call to</a>
+<span class="sourceLineNo">361</span><a id="line.361">     * Connection.getSession() will block if the session pool is full.  If the</a>
+<span class="sourceLineNo">362</span><a id="line.362">     * argument false is given, it will change the default behavior and instead the</a>
+<span class="sourceLineNo">363</span><a id="line.363">     * call to getSession() will throw a JMSException.</a>
+<span class="sourceLineNo">364</span><a id="line.364">     *</a>
+<span class="sourceLineNo">365</span><a id="line.365">     * The size of the session pool is controlled by the @see #maximumActive</a>
+<span class="sourceLineNo">366</span><a id="line.366">     * property.</a>
+<span class="sourceLineNo">367</span><a id="line.367">     *</a>
+<span class="sourceLineNo">368</span><a id="line.368">     * @param block - if true, the call to getSession() blocks if the pool is full</a>
+<span class="sourceLineNo">369</span><a id="line.369">     * until a session object is available.  defaults to true.</a>
+<span class="sourceLineNo">370</span><a id="line.370">     */</a>
+<span class="sourceLineNo">371</span><a id="line.371">    public void setBlockIfSessionPoolIsFull(boolean block) {</a>
+<span class="sourceLineNo">372</span><a id="line.372">        this.blockIfSessionPoolIsFull = block;</a>
+<span class="sourceLineNo">373</span><a id="line.373">    }</a>
+<span class="sourceLineNo">374</span><a id="line.374"></a>
+<span class="sourceLineNo">375</span><a id="line.375">    /**</a>
+<span class="sourceLineNo">376</span><a id="line.376">     * Returns whether a pooled Connection will enter a blocked state or will throw an Exception</a>
+<span class="sourceLineNo">377</span><a id="line.377">     * once the maximum number of sessions has been borrowed from the the Session Pool.</a>
+<span class="sourceLineNo">378</span><a id="line.378">     *</a>
+<span class="sourceLineNo">379</span><a id="line.379">     * @return true if the pooled Connection createSession method will block when the limit is hit.</a>
+<span class="sourceLineNo">380</span><a id="line.380">     * @see #setBlockIfSessionPoolIsFull(boolean)</a>
+<span class="sourceLineNo">381</span><a id="line.381">     */</a>
+<span class="sourceLineNo">382</span><a id="line.382">    public boolean isBlockIfSessionPoolIsFull() {</a>
+<span class="sourceLineNo">383</span><a id="line.383">        return this.blockIfSessionPoolIsFull;</a>
+<span class="sourceLineNo">384</span><a id="line.384">    }</a>
+<span class="sourceLineNo">385</span><a id="line.385"></a>
+<span class="sourceLineNo">386</span><a id="line.386">    /**</a>
+<span class="sourceLineNo">387</span><a id="line.387">     * Returns the maximum number to pooled Connections that this factory will allow before it</a>
+<span class="sourceLineNo">388</span><a id="line.388">     * begins to return connections from the pool on calls to ({@link #createConnection}.</a>
+<span class="sourceLineNo">389</span><a id="line.389">     *</a>
+<span class="sourceLineNo">390</span><a id="line.390">     * @return the maxConnections that will be created for this pool.</a>
+<span class="sourceLineNo">391</span><a id="line.391">     */</a>
+<span class="sourceLineNo">392</span><a id="line.392">    public int getMaxConnections() {</a>
+<span class="sourceLineNo">393</span><a id="line.393">        return getConnectionsPool().getMaxIdlePerKey();</a>
+<span class="sourceLineNo">394</span><a id="line.394">    }</a>
+<span class="sourceLineNo">395</span><a id="line.395"></a>
+<span class="sourceLineNo">396</span><a id="line.396">    /**</a>
+<span class="sourceLineNo">397</span><a id="line.397">     * Sets the maximum number of pooled Connections (defaults to one).  Each call to</a>
+<span class="sourceLineNo">398</span><a id="line.398">     * {@link #createConnection} will result in a new Connection being create up to the max</a>
+<span class="sourceLineNo">399</span><a id="line.399">     * connections value.</a>
+<span class="sourceLineNo">400</span><a id="line.400">     *</a>
+<span class="sourceLineNo">401</span><a id="line.401">     * @param maxConnections the maxConnections to set</a>
+<span class="sourceLineNo">402</span><a id="line.402">     */</a>
+<span class="sourceLineNo">403</span><a id="line.403">    public void setMaxConnections(int maxConnections) {</a>
+<span class="sourceLineNo">404</span><a id="line.404">        getConnectionsPool().setMaxIdlePerKey(maxConnections);</a>
+<span class="sourceLineNo">405</span><a id="line.405">        getConnectionsPool().setMaxTotalPerKey(maxConnections);</a>
+<span class="sourceLineNo">406</span><a id="line.406">    }</a>
+<span class="sourceLineNo">407</span><a id="line.407"></a>
+<span class="sourceLineNo">408</span><a id="line.408">    /**</a>
+<span class="sourceLineNo">409</span><a id="line.409">     * Gets the Idle timeout value applied to new Connection's that are created by this pool.</a>
+<span class="sourceLineNo">410</span><a id="line.410">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">411</span><a id="line.411">     * The idle timeout is used determine if a Connection instance has sat to long in the pool unused</a>
+<span class="sourceLineNo">412</span><a id="line.412">     * and if so is closed and removed from the pool.  The default value is 30 seconds.</a>
+<span class="sourceLineNo">413</span><a id="line.413">     *</a>
+<span class="sourceLineNo">414</span><a id="line.414">     * @return idle timeout value (milliseconds)</a>
+<span class="sourceLineNo">415</span><a id="line.415">     */</a>
+<span class="sourceLineNo">416</span><a id="line.416">    public int getIdleTimeout() {</a>
+<span class="sourceLineNo">417</span><a id="line.417">        return idleTimeout;</a>
+<span class="sourceLineNo">418</span><a id="line.418">    }</a>
+<span class="sourceLineNo">419</span><a id="line.419"></a>
+<span class="sourceLineNo">420</span><a id="line.420">    /**</a>
+<span class="sourceLineNo">421</span><a id="line.421">     * Sets the idle timeout  value for Connection's that are created by this pool in Milliseconds,</a>
+<span class="sourceLineNo">422</span><a id="line.422">     * defaults to 30 seconds.</a>
+<span class="sourceLineNo">423</span><a id="line.423">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">424</span><a id="line.424">     * For a Connection that is in the pool but has no current users the idle timeout determines how</a>
+<span class="sourceLineNo">425</span><a id="line.425">     * long the Connection can live before it is eligible for removal from the pool.  Normally the</a>
+<span class="sourceLineNo">426</span><a id="line.426">     * connections are tested when an attempt to check one out occurs so a Connection instance can sit</a>
+<span class="sourceLineNo">427</span><a id="line.427">     * in the pool much longer than its idle timeout if connections are used infrequently.</a>
+<span class="sourceLineNo">428</span><a id="line.428">     *</a>
+<span class="sourceLineNo">429</span><a id="line.429">     * @param idleTimeout</a>
+<span class="sourceLineNo">430</span><a id="line.430">     *      The maximum time a pooled Connection can sit unused before it is eligible for removal.</a>
+<span class="sourceLineNo">431</span><a id="line.431">     */</a>
+<span class="sourceLineNo">432</span><a id="line.432">    public void setIdleTimeout(int idleTimeout) {</a>
+<span class="sourceLineNo">433</span><a id="line.433">        this.idleTimeout = idleTimeout;</a>
+<span class="sourceLineNo">434</span><a id="line.434">    }</a>
+<span class="sourceLineNo">435</span><a id="line.435"></a>
+<span class="sourceLineNo">436</span><a id="line.436">    /**</a>
+<span class="sourceLineNo">437</span><a id="line.437">     * Gets the connection timeout value. The maximum time waited to get a Connection from the pool.</a>
+<span class="sourceLineNo">438</span><a id="line.438">     * The default value is 30 seconds.</a>
+<span class="sourceLineNo">439</span><a id="line.439">     *</a>
+<span class="sourceLineNo">440</span><a id="line.440">     * @return connection timeout value (milliseconds)</a>
+<span class="sourceLineNo">441</span><a id="line.441">     */</a>
+<span class="sourceLineNo">442</span><a id="line.442">    public int getConnectionTimeout() {</a>
+<span class="sourceLineNo">443</span><a id="line.443">        return connectionTimeout;</a>
+<span class="sourceLineNo">444</span><a id="line.444">    }</a>
+<span class="sourceLineNo">445</span><a id="line.445"></a>
+<span class="sourceLineNo">446</span><a id="line.446">    /**</a>
+<span class="sourceLineNo">447</span><a id="line.447">     * Sets the connection timeout value for getting Connections from this pool in Milliseconds,</a>
+<span class="sourceLineNo">448</span><a id="line.448">     * defaults to 30 seconds.</a>
+<span class="sourceLineNo">449</span><a id="line.449">     *</a>
+<span class="sourceLineNo">450</span><a id="line.450">     * @param connectionTimeout</a>
+<span class="sourceLineNo">451</span><a id="line.451">     *      The maximum time to wait for getting a pooled Connection.</a>
+<span class="sourceLineNo">452</span><a id="line.452">     */</a>
+<span class="sourceLineNo">453</span><a id="line.453">    public void setConnectionTimeout(int connectionTimeout) {</a>
+<span class="sourceLineNo">454</span><a id="line.454">        this.connectionTimeout = connectionTimeout;</a>
+<span class="sourceLineNo">455</span><a id="line.455">    }</a>
+<span class="sourceLineNo">456</span><a id="line.456"></a>
+<span class="sourceLineNo">457</span><a id="line.457">    /**</a>
+<span class="sourceLineNo">458</span><a id="line.458">     * allow connections to expire, irrespective of load or idle time. This is useful with failover</a>
+<span class="sourceLineNo">459</span><a id="line.459">     * to force a reconnect from the pool, to reestablish load balancing or use of the master post recovery</a>
+<span class="sourceLineNo">460</span><a id="line.460">     *</a>
+<span class="sourceLineNo">461</span><a id="line.461">     * @param expiryTimeout non zero in milliseconds</a>
+<span class="sourceLineNo">462</span><a id="line.462">     */</a>
+<span class="sourceLineNo">463</span><a id="line.463">    public void setExpiryTimeout(long expiryTimeout) {</a>
+<span class="sourceLineNo">464</span><a id="line.464">        this.expiryTimeout = expiryTimeout;</a>
+<span class="sourceLineNo">465</span><a id="line.465">    }</a>
+<span class="sourceLineNo">466</span><a id="line.466"></a>
+<span class="sourceLineNo">467</span><a id="line.467">    /**</a>
+<span class="sourceLineNo">468</span><a id="line.468">     * @return the configured expiration timeout for connections in the pool.</a>
+<span class="sourceLineNo">469</span><a id="line.469">     */</a>
+<span class="sourceLineNo">470</span><a id="line.470">    public long getExpiryTimeout() {</a>
+<span class="sourceLineNo">471</span><a id="line.471">        return expiryTimeout;</a>
+<span class="sourceLineNo">472</span><a id="line.472">    }</a>
+<span class="sourceLineNo">473</span><a id="line.473"></a>
+<span class="sourceLineNo">474</span><a id="line.474">    /**</a>
+<span class="sourceLineNo">475</span><a id="line.475">     * @return true if a Connection is created immediately on a call to {@link start}.</a>
+<span class="sourceLineNo">476</span><a id="line.476">     */</a>
+<span class="sourceLineNo">477</span><a id="line.477">    public boolean isCreateConnectionOnStartup() {</a>
+<span class="sourceLineNo">478</span><a id="line.478">        return createConnectionOnStartup;</a>
+<span class="sourceLineNo">479</span><a id="line.479">    }</a>
+<span class="sourceLineNo">480</span><a id="line.480"></a>
+<span class="sourceLineNo">481</span><a id="line.481">    /**</a>
+<span class="sourceLineNo">482</span><a id="line.482">     * Whether to create a connection on starting this {@link PooledConnectionFactory}.</a>
+<span class="sourceLineNo">483</span><a id="line.483">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">484</span><a id="line.484">     * This can be used to warm-up the pool on startup. Notice that any kind of exception</a>
+<span class="sourceLineNo">485</span><a id="line.485">     * happens during startup is logged at WARN level and ignored.</a>
+<span class="sourceLineNo">486</span><a id="line.486">     *</a>
+<span class="sourceLineNo">487</span><a id="line.487">     * @param createConnectionOnStartup &lt;tt&gt;true&lt;/tt&gt; to create a connection on startup</a>
+<span class="sourceLineNo">488</span><a id="line.488">     */</a>
+<span class="sourceLineNo">489</span><a id="line.489">    public void setCreateConnectionOnStartup(boolean createConnectionOnStartup) {</a>
+<span class="sourceLineNo">490</span><a id="line.490">        this.createConnectionOnStartup = createConnectionOnStartup;</a>
+<span class="sourceLineNo">491</span><a id="line.491">    }</a>
+<span class="sourceLineNo">492</span><a id="line.492"></a>
+<span class="sourceLineNo">493</span><a id="line.493">    /**</a>
+<span class="sourceLineNo">494</span><a id="line.494">     * Should Sessions use one anonymous producer for all producer requests or should a new</a>
+<span class="sourceLineNo">495</span><a id="line.495">     * MessageProducer be created for each request to create a producer object, default is true.</a>
+<span class="sourceLineNo">496</span><a id="line.496">     *</a>
+<span class="sourceLineNo">497</span><a id="line.497">     * When enabled the session only needs to allocate one MessageProducer for all requests and</a>
+<span class="sourceLineNo">498</span><a id="line.498">     * the MessageProducer#send(destination, message) method can be used.  Normally this is the</a>
+<span class="sourceLineNo">499</span><a id="line.499">     * right thing to do however it does result in the Broker not showing the producers per</a>
+<span class="sourceLineNo">500</span><a id="line.500">     * destination.</a>
+<span class="sourceLineNo">501</span><a id="line.501">     *</a>
+<span class="sourceLineNo">502</span><a id="line.502">     * @return true if a PooledSession will use only a single anonymous message producer instance.</a>
+<span class="sourceLineNo">503</span><a id="line.503">     */</a>
+<span class="sourceLineNo">504</span><a id="line.504">    public boolean isUseAnonymousProducers() {</a>
+<span class="sourceLineNo">505</span><a id="line.505">        return this.useAnonymousProducers;</a>
+<span class="sourceLineNo">506</span><a id="line.506">    }</a>
+<span class="sourceLineNo">507</span><a id="line.507"></a>
+<span class="sourceLineNo">508</span><a id="line.508">    /**</a>
+<span class="sourceLineNo">509</span><a id="line.509">     * Sets whether a PooledSession uses only one anonymous MessageProducer instance or creates</a>
+<span class="sourceLineNo">510</span><a id="line.510">     * a new MessageProducer for each call the create a MessageProducer.</a>
+<span class="sourceLineNo">511</span><a id="line.511">     *</a>
+<span class="sourceLineNo">512</span><a id="line.512">     * @param value</a>
+<span class="sourceLineNo">513</span><a id="line.513">     *      Boolean value that configures whether anonymous producers are used.</a>
+<span class="sourceLineNo">514</span><a id="line.514">     */</a>
+<span class="sourceLineNo">515</span><a id="line.515">    public void setUseAnonymousProducers(boolean value) {</a>
+<span class="sourceLineNo">516</span><a id="line.516">        this.useAnonymousProducers = value;</a>
+<span class="sourceLineNo">517</span><a id="line.517">    }</a>
+<span class="sourceLineNo">518</span><a id="line.518"></a>
+<span class="sourceLineNo">519</span><a id="line.519">    /**</a>
+<span class="sourceLineNo">520</span><a id="line.520">     * Gets the Pool of ConnectionPool instances which are keyed by different ConnectionKeys.</a>
+<span class="sourceLineNo">521</span><a id="line.521">     *</a>
+<span class="sourceLineNo">522</span><a id="line.522">     * @return this factories pool of ConnectionPool instances.</a>
+<span class="sourceLineNo">523</span><a id="line.523">     */</a>
+<span class="sourceLineNo">524</span><a id="line.524">    protected GenericKeyedObjectPool&lt;ConnectionKey, ConnectionPool&gt; getConnectionsPool() {</a>
+<span class="sourceLineNo">525</span><a id="line.525">        initConnectionsPool();</a>
+<span class="sourceLineNo">526</span><a id="line.526">        return this.connectionsPool;</a>
+<span class="sourceLineNo">527</span><a id="line.527">    }</a>
+<span class="sourceLineNo">528</span><a id="line.528"></a>
+<span class="sourceLineNo">529</span><a id="line.529">    /**</a>
+<span class="sourceLineNo">530</span><a id="line.530">     * Sets the number of milliseconds to sleep between runs of the idle Connection eviction thread.</a>
+<span class="sourceLineNo">531</span><a id="line.531">     * When non-positive, no idle object eviction thread will be run, and Connections will only be</a>
+<span class="sourceLineNo">532</span><a id="line.532">     * checked on borrow to determine if they have sat idle for too long or have failed for some</a>
+<span class="sourceLineNo">533</span><a id="line.533">     * other reason.</a>
+<span class="sourceLineNo">534</span><a id="line.534">     * &lt;p/&gt;</a>
+<span class="sourceLineNo">535</span><a id="line.535">     * By default this value is set to -1 and no expiration thread ever runs.</a>
+<span class="sourceLineNo">536</span><a id="line.536">     *</a>
+<span class="sourceLineNo">537</span><a id="line.537">     * @param timeBetweenExpirationCheckMillis</a>
+<span class="sourceLineNo">538</span><a id="line.538">     *      The time to wait between runs of the idle Connection eviction thread.</a>
+<span class="sourceLineNo">539</span><a id="line.539">     */</a>
+<span class="sourceLineNo">540</span><a id="line.540">    public void setTimeBetweenExpirationCheckMillis(long timeBetweenExpirationCheckMillis) {</a>
+<span class="sourceLineNo">541</span><a id="line.541">        getConnectionsPool().setTimeBetweenEvictionRunsMillis(timeBetweenExpirationCheckMillis);</a>
+<span class="sourceLineNo">542</span><a id="line.542">    }</a>
+<span class="sourceLineNo">543</span><a id="line.543"></a>
+<span class="sourceLineNo">544</span><a id="line.544">    /**</a>
+<span class="sourceLineNo">545</span><a id="line.545">     * @return the number of milliseconds to sleep between runs of the idle connection eviction thread.</a>
+<span class="sourceLineNo">546</span><a id="line.546">     */</a>
+<span class="sourceLineNo">547</span><a id="line.547">    public long getTimeBetweenExpirationCheckMillis() {</a>
+<span class="sourceLineNo">548</span><a id="line.548">        return getConnectionsPool().getTimeBetweenEvictionRunsMillis();</a>
+<span class="sourceLineNo">549</span><a id="line.549">    }</a>
+<span class="sourceLineNo">550</span><a id="line.550"></a>
+<span class="sourceLineNo">551</span><a id="line.551">    /**</a>
+<span class="sourceLineNo">552</span><a id="line.552">     * @return the number of Connections currently in the Pool</a>
+<span class="sourceLineNo">553</span><a id="line.553">     */</a>
+<span class="sourceLineNo">554</span><a id="line.554">    public int getNumConnections() {</a>
+<span class="sourceLineNo">555</span><a id="line.555">        return getConnectionsPool().getNumIdle();</a>
+<span class="sourceLineNo">556</span><a id="line.556">    }</a>
+<span class="sourceLineNo">557</span><a id="line.557"></a>
+<span class="sourceLineNo">558</span><a id="line.558">    /**</a>
+<span class="sourceLineNo">559</span><a id="line.559">     * Delegate that creates each instance of an ConnectionPool object.  Subclasses can override</a>
+<span class="sourceLineNo">560</span><a id="line.560">     * this method to customize the type of connection pool returned.</a>
+<span class="sourceLineNo">561</span><a id="line.561">     *</a>
+<span class="sourceLineNo">562</span><a id="line.562">     * @param connection</a>
+<span class="sourceLineNo">563</span><a id="line.563">     *</a>
+<span class="sourceLineNo">564</span><a id="line.564">     * @return instance of a new ConnectionPool.</a>
+<span class="sourceLineNo">565</span><a id="line.565">     */</a>
+<span class="sourceLineNo">566</span><a id="line.566">    protected ConnectionPool createConnectionPool(Connection connection) {</a>
+<span class="sourceLineNo">567</span><a id="line.567">        return new ConnectionPool(connection);</a>
+<span class="sourceLineNo">568</span><a id="line.568">    }</a>
+<span class="sourceLineNo">569</span><a id="line.569"></a>
+<span class="sourceLineNo">570</span><a id="line.570">    /**</a>
+<span class="sourceLineNo">571</span><a id="line.571">     * Returns the timeout to use for blocking creating new sessions</a>
+<span class="sourceLineNo">572</span><a id="line.572">     *</a>
+<span class="sourceLineNo">573</span><a id="line.573">     * @return true if the pooled Connection createSession method will block when the limit is hit.</a>
+<span class="sourceLineNo">574</span><a id="line.574">     * @see #setBlockIfSessionPoolIsFull(boolean)</a>
+<span class="sourceLineNo">575</span><a id="line.575">     */</a>
+<span class="sourceLineNo">576</span><a id="line.576">    public long getBlockIfSessionPoolIsFullTimeout() {</a>
+<span class="sourceLineNo">577</span><a id="line.577">        return blockIfSessionPoolIsFullTimeout;</a>
+<span class="sourceLineNo">578</span><a id="line.578">    }</a>
+<span class="sourceLineNo">579</span><a id="line.579"></a>
+<span class="sourceLineNo">580</span><a id="line.580">    /**</a>
+<span class="sourceLineNo">581</span><a id="line.581">     * Controls the behavior of the internal session pool. By default the call to</a>
+<span class="sourceLineNo">582</span><a id="line.582">     * Connection.getSession() will block if the session pool is full.  This setting</a>
+<span class="sourceLineNo">583</span><a id="line.583">     * will affect how long it blocks and throws an exception after the timeout.</a>
+<span class="sourceLineNo">584</span><a id="line.584">     *</a>
+<span class="sourceLineNo">585</span><a id="line.585">     * The size of the session pool is controlled by the @see #maximumActive</a>
+<span class="sourceLineNo">586</span><a id="line.586">     * property.</a>
+<span class="sourceLineNo">587</span><a id="line.587">     *</a>
+<span class="sourceLineNo">588</span><a id="line.588">     * Whether or not the call to create session blocks is controlled by the @see #blockIfSessionPoolIsFull</a>
+<span class="sourceLineNo">589</span><a id="line.589">     * property</a>
+<span class="sourceLineNo">590</span><a id="line.590">     *</a>
+<span class="sourceLineNo">591</span><a id="line.591">     * @param blockIfSessionPoolIsFullTimeout - if blockIfSessionPoolIsFullTimeout is true,</a>
+<span class="sourceLineNo">592</span><a id="line.592">     *                                        then use this setting to configure how long to block before retry</a>
+<span class="sourceLineNo">593</span><a id="line.593">     */</a>
+<span class="sourceLineNo">594</span><a id="line.594">    public void setBlockIfSessionPoolIsFullTimeout(long blockIfSessionPoolIsFullTimeout) {</a>
+<span class="sourceLineNo">595</span><a id="line.595">        this.blockIfSessionPoolIsFullTimeout = blockIfSessionPoolIsFullTimeout;</a>
+<span class="sourceLineNo">596</span><a id="line.596">    }</a>
+<span class="sourceLineNo">597</span><a id="line.597"></a>
+<span class="sourceLineNo">598</span><a id="line.598">    /**</a>
+<span class="sourceLineNo">599</span><a id="line.599">     * @return true if the underlying connection will be renewed on JMSException, false otherwise</a>
+<span class="sourceLineNo">600</span><a id="line.600">     */</a>
+<span class="sourceLineNo">601</span><a id="line.601">    public boolean isReconnectOnException() {</a>
+<span class="sourceLineNo">602</span><a id="line.602">        return reconnectOnException;</a>
+<span class="sourceLineNo">603</span><a id="line.603">    }</a>
+<span class="sourceLineNo">604</span><a id="line.604"></a>
+<span class="sourceLineNo">605</span><a id="line.605">    /**</a>
+<span class="sourceLineNo">606</span><a id="line.606">     * Controls weather the underlying connection should be reset (and renewed) on JMSException</a>
+<span class="sourceLineNo">607</span><a id="line.607">     *</a>
+<span class="sourceLineNo">608</span><a id="line.608">     * @param reconnectOnException</a>
+<span class="sourceLineNo">609</span><a id="line.609">     *          Boolean value that configures whether reconnect on exception should happen</a>
+<span class="sourceLineNo">610</span><a id="line.610">     */</a>
+<span class="sourceLineNo">611</span><a id="line.611">    public void setReconnectOnException(boolean reconnectOnException) {</a>
+<span class="sourceLineNo">612</span><a id="line.612">        this.reconnectOnException = reconnectOnException;</a>
+<span class="sourceLineNo">613</span><a id="line.613">    }</a>
+<span class="sourceLineNo">614</span><a id="line.614"></a>
+<span class="sourceLineNo">615</span><a id="line.615">    /**</a>
+<span class="sourceLineNo">616</span><a id="line.616">     * Called by any superclass that implements a JNDIReferencable or similar that needs to collect</a>
+<span class="sourceLineNo">617</span><a id="line.617">     * the properties of this class for storage etc.</a>
+<span class="sourceLineNo">618</span><a id="line.618">     *</a>
+<span class="sourceLineNo">619</span><a id="line.619">     * This method should be updated any time there is a new property added.</a>
+<span class="sourceLineNo">620</span><a id="line.620">     *</a>
+<span class="sourceLineNo">621</span><a id="line.621">     * @param props</a>
+<span class="sourceLineNo">622</span><a id="line.622">     *        a properties object that should be filled in with this objects property values.</a>
+<span class="sourceLineNo">623</span><a id="line.623">     */</a>
+<span class="sourceLineNo">624</span><a id="line.624">    protected void populateProperties(Properties props) {</a>
+<span class="sourceLineNo">625</span><a id="line.625">        props.setProperty("maximumActiveSessionPerConnection", Integer.toString(getMaximumActiveSessionPerConnection()));</a>
+<span class="sourceLineNo">626</span><a id="line.626">        props.setProperty("maxConnections", Integer.toString(getMaxConnections()));</a>
+<span class="sourceLineNo">627</span><a id="line.627">        props.setProperty("idleTimeout", Integer.toString(getIdleTimeout()));</a>
+<span class="sourceLineNo">628</span><a id="line.628">        props.setProperty("expiryTimeout", Long.toString(getExpiryTimeout()));</a>
+<span class="sourceLineNo">629</span><a id="line.629">        props.setProperty("timeBetweenExpirationCheckMillis", Long.toString(getTimeBetweenExpirationCheckMillis()));</a>
+<span class="sourceLineNo">630</span><a id="line.630">        props.setProperty("createConnectionOnStartup", Boolean.toString(isCreateConnectionOnStartup()));</a>
+<span class="sourceLineNo">631</span><a id="line.631">        props.setProperty("useAnonymousProducers", Boolean.toString(isUseAnonymousProducers()));</a>
+<span class="sourceLineNo">632</span><a id="line.632">        props.setProperty("blockIfSessionPoolIsFullTimeout", Long.toString(getBlockIfSessionPoolIsFullTimeout()));</a>
+<span class="sourceLineNo">633</span><a id="line.633">        props.setProperty("reconnectOnException", Boolean.toString(isReconnectOnException()));</a>
+<span class="sourceLineNo">634</span><a id="line.634">    }</a>
+<span class="sourceLineNo">635</span><a id="line.635">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

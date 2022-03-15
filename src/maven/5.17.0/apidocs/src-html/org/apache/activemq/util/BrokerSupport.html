@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.util;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import org.apache.activemq.broker.Broker;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import org.apache.activemq.broker.ConnectionContext;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import org.apache.activemq.broker.ProducerBrokerExchange;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import org.apache.activemq.command.ActiveMQDestination;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import org.apache.activemq.command.Message;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import org.apache.activemq.command.ProducerInfo;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import org.apache.activemq.security.SecurityContext;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import org.apache.activemq.state.ProducerState;</a>
+<span class="sourceLineNo">027</span><a id="line.27"></a>
+<span class="sourceLineNo">028</span><a id="line.28">/**</a>
+<span class="sourceLineNo">029</span><a id="line.29"> * Utility class for broker operations</a>
+<span class="sourceLineNo">030</span><a id="line.30"> *</a>
+<span class="sourceLineNo">031</span><a id="line.31"> */</a>
+<span class="sourceLineNo">032</span><a id="line.32">public final class BrokerSupport {</a>
+<span class="sourceLineNo">033</span><a id="line.33"></a>
+<span class="sourceLineNo">034</span><a id="line.34">    private BrokerSupport() {</a>
+<span class="sourceLineNo">035</span><a id="line.35">    }</a>
+<span class="sourceLineNo">036</span><a id="line.36"></a>
+<span class="sourceLineNo">037</span><a id="line.37">    public static void resendNoCopy(final ConnectionContext context, Message originalMessage, ActiveMQDestination deadLetterDestination) throws Exception {</a>
+<span class="sourceLineNo">038</span><a id="line.38">        doResend(context, originalMessage, deadLetterDestination, false);</a>
+<span class="sourceLineNo">039</span><a id="line.39">    }</a>
+<span class="sourceLineNo">040</span><a id="line.40"></a>
+<span class="sourceLineNo">041</span><a id="line.41">    /**</a>
+<span class="sourceLineNo">042</span><a id="line.42">     * @param context</a>
+<span class="sourceLineNo">043</span><a id="line.43">     * @param originalMessage</a>
+<span class="sourceLineNo">044</span><a id="line.44">     * @param deadLetterDestination</a>
+<span class="sourceLineNo">045</span><a id="line.45">     * @throws Exception</a>
+<span class="sourceLineNo">046</span><a id="line.46">     */</a>
+<span class="sourceLineNo">047</span><a id="line.47">    public static void resend(final ConnectionContext context, Message originalMessage, ActiveMQDestination deadLetterDestination) throws Exception {</a>
+<span class="sourceLineNo">048</span><a id="line.48">        doResend(context, originalMessage, deadLetterDestination, true);</a>
+<span class="sourceLineNo">049</span><a id="line.49">    }</a>
+<span class="sourceLineNo">050</span><a id="line.50"></a>
+<span class="sourceLineNo">051</span><a id="line.51">    public static void doResend(final ConnectionContext context, Message originalMessage, ActiveMQDestination deadLetterDestination, boolean copy) throws Exception {</a>
+<span class="sourceLineNo">052</span><a id="line.52">        Message message = copy ? originalMessage.copy() : originalMessage;</a>
+<span class="sourceLineNo">053</span><a id="line.53">        message.setOriginalDestination(message.getDestination());</a>
+<span class="sourceLineNo">054</span><a id="line.54">        message.setOriginalTransactionId(message.getTransactionId());</a>
+<span class="sourceLineNo">055</span><a id="line.55">        message.setDestination(deadLetterDestination);</a>
+<span class="sourceLineNo">056</span><a id="line.56">        message.setTransactionId(null);</a>
+<span class="sourceLineNo">057</span><a id="line.57">        message.setMemoryUsage(null);</a>
+<span class="sourceLineNo">058</span><a id="line.58">        message.setRedeliveryCounter(0);</a>
+<span class="sourceLineNo">059</span><a id="line.59">        message.getMessageId().setDataLocator(null);</a>
+<span class="sourceLineNo">060</span><a id="line.60">        boolean originalFlowControl = context.isProducerFlowControl();</a>
+<span class="sourceLineNo">061</span><a id="line.61">        try {</a>
+<span class="sourceLineNo">062</span><a id="line.62">            context.setProducerFlowControl(false);</a>
+<span class="sourceLineNo">063</span><a id="line.63">            ProducerInfo info = new ProducerInfo();</a>
+<span class="sourceLineNo">064</span><a id="line.64">            ProducerState state = new ProducerState(info);</a>
+<span class="sourceLineNo">065</span><a id="line.65">            ProducerBrokerExchange producerExchange = new ProducerBrokerExchange();</a>
+<span class="sourceLineNo">066</span><a id="line.66">            producerExchange.setProducerState(state);</a>
+<span class="sourceLineNo">067</span><a id="line.67">            producerExchange.setMutable(true);</a>
+<span class="sourceLineNo">068</span><a id="line.68">            producerExchange.setConnectionContext(context);</a>
+<span class="sourceLineNo">069</span><a id="line.69">            context.getBroker().send(producerExchange, message);</a>
+<span class="sourceLineNo">070</span><a id="line.70">        } finally {</a>
+<span class="sourceLineNo">071</span><a id="line.71">            context.setProducerFlowControl(originalFlowControl);</a>
+<span class="sourceLineNo">072</span><a id="line.72">        }</a>
+<span class="sourceLineNo">073</span><a id="line.73">    }</a>
+<span class="sourceLineNo">074</span><a id="line.74"></a>
+<span class="sourceLineNo">075</span><a id="line.75">    /**</a>
+<span class="sourceLineNo">076</span><a id="line.76">     * Returns the broker's administration connection context used for</a>
+<span class="sourceLineNo">077</span><a id="line.77">     * configuring the broker at startup</a>
+<span class="sourceLineNo">078</span><a id="line.78">     */</a>
+<span class="sourceLineNo">079</span><a id="line.79">    public static ConnectionContext getConnectionContext(Broker broker) {</a>
+<span class="sourceLineNo">080</span><a id="line.80">        ConnectionContext adminConnectionContext = broker.getAdminConnectionContext();</a>
+<span class="sourceLineNo">081</span><a id="line.81">        if (adminConnectionContext == null) {</a>
+<span class="sourceLineNo">082</span><a id="line.82">            adminConnectionContext = createAdminConnectionContext(broker);</a>
+<span class="sourceLineNo">083</span><a id="line.83">            broker.setAdminConnectionContext(adminConnectionContext);</a>
+<span class="sourceLineNo">084</span><a id="line.84">        }</a>
+<span class="sourceLineNo">085</span><a id="line.85">        return adminConnectionContext;</a>
+<span class="sourceLineNo">086</span><a id="line.86">    }</a>
+<span class="sourceLineNo">087</span><a id="line.87"></a>
+<span class="sourceLineNo">088</span><a id="line.88">    /**</a>
+<span class="sourceLineNo">089</span><a id="line.89">     * Factory method to create the new administration connection context</a>
+<span class="sourceLineNo">090</span><a id="line.90">     * object. Note this method is here rather than inside a default broker</a>
+<span class="sourceLineNo">091</span><a id="line.91">     * implementation to ensure that the broker reference inside it is the outer</a>
+<span class="sourceLineNo">092</span><a id="line.92">     * most interceptor</a>
+<span class="sourceLineNo">093</span><a id="line.93">     */</a>
+<span class="sourceLineNo">094</span><a id="line.94">    protected static ConnectionContext createAdminConnectionContext(Broker broker) {</a>
+<span class="sourceLineNo">095</span><a id="line.95">        ConnectionContext context = new ConnectionContext();</a>
+<span class="sourceLineNo">096</span><a id="line.96">        context.setBroker(broker);</a>
+<span class="sourceLineNo">097</span><a id="line.97">        context.setSecurityContext(SecurityContext.BROKER_SECURITY_CONTEXT);</a>
+<span class="sourceLineNo">098</span><a id="line.98">        return context;</a>
+<span class="sourceLineNo">099</span><a id="line.99">    }</a>
+<span class="sourceLineNo">100</span><a id="line.100">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

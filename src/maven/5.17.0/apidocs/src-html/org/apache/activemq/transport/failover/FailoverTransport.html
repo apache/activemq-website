@@ -1,0 +1,1565 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/*</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.transport.failover;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.BufferedReader;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.io.FileReader;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.io.IOException;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.io.InputStreamReader;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.io.InterruptedIOException;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.net.InetAddress;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.net.MalformedURLException;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import java.net.URI;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import java.net.URISyntaxException;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import java.net.URL;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import java.security.cert.X509Certificate;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import java.util.ArrayList;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import java.util.Collections;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import java.util.HashSet;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import java.util.Iterator;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import java.util.LinkedHashMap;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import java.util.LinkedHashSet;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import java.util.List;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import java.util.Map;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import java.util.StringTokenizer;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import java.util.concurrent.CopyOnWriteArrayList;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import java.util.concurrent.atomic.AtomicReference;</a>
+<span class="sourceLineNo">041</span><a id="line.41"></a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.apache.activemq.MaxFrameSizeExceededException;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import org.apache.activemq.broker.SslContext;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import org.apache.activemq.command.Command;</a>
+<span class="sourceLineNo">045</span><a id="line.45">import org.apache.activemq.command.ConnectionControl;</a>
+<span class="sourceLineNo">046</span><a id="line.46">import org.apache.activemq.command.ConnectionId;</a>
+<span class="sourceLineNo">047</span><a id="line.47">import org.apache.activemq.command.ConsumerControl;</a>
+<span class="sourceLineNo">048</span><a id="line.48">import org.apache.activemq.command.MessageDispatch;</a>
+<span class="sourceLineNo">049</span><a id="line.49">import org.apache.activemq.command.MessagePull;</a>
+<span class="sourceLineNo">050</span><a id="line.50">import org.apache.activemq.command.RemoveInfo;</a>
+<span class="sourceLineNo">051</span><a id="line.51">import org.apache.activemq.command.Response;</a>
+<span class="sourceLineNo">052</span><a id="line.52">import org.apache.activemq.state.ConnectionStateTracker;</a>
+<span class="sourceLineNo">053</span><a id="line.53">import org.apache.activemq.state.Tracked;</a>
+<span class="sourceLineNo">054</span><a id="line.54">import org.apache.activemq.thread.Task;</a>
+<span class="sourceLineNo">055</span><a id="line.55">import org.apache.activemq.thread.TaskRunner;</a>
+<span class="sourceLineNo">056</span><a id="line.56">import org.apache.activemq.thread.TaskRunnerFactory;</a>
+<span class="sourceLineNo">057</span><a id="line.57">import org.apache.activemq.transport.CompositeTransport;</a>
+<span class="sourceLineNo">058</span><a id="line.58">import org.apache.activemq.transport.DefaultTransportListener;</a>
+<span class="sourceLineNo">059</span><a id="line.59">import org.apache.activemq.transport.FutureResponse;</a>
+<span class="sourceLineNo">060</span><a id="line.60">import org.apache.activemq.transport.ResponseCallback;</a>
+<span class="sourceLineNo">061</span><a id="line.61">import org.apache.activemq.transport.Transport;</a>
+<span class="sourceLineNo">062</span><a id="line.62">import org.apache.activemq.transport.TransportFactory;</a>
+<span class="sourceLineNo">063</span><a id="line.63">import org.apache.activemq.transport.TransportListener;</a>
+<span class="sourceLineNo">064</span><a id="line.64">import org.apache.activemq.util.IOExceptionSupport;</a>
+<span class="sourceLineNo">065</span><a id="line.65">import org.apache.activemq.util.ServiceSupport;</a>
+<span class="sourceLineNo">066</span><a id="line.66">import org.apache.activemq.util.URISupport;</a>
+<span class="sourceLineNo">067</span><a id="line.67">import org.apache.activemq.wireformat.WireFormat;</a>
+<span class="sourceLineNo">068</span><a id="line.68">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">069</span><a id="line.69">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">070</span><a id="line.70"></a>
+<span class="sourceLineNo">071</span><a id="line.71">/**</a>
+<span class="sourceLineNo">072</span><a id="line.72"> * A Transport that is made reliable by being able to fail over to another</a>
+<span class="sourceLineNo">073</span><a id="line.73"> * transport when a transport failure is detected.</a>
+<span class="sourceLineNo">074</span><a id="line.74"> */</a>
+<span class="sourceLineNo">075</span><a id="line.75">public class FailoverTransport implements CompositeTransport {</a>
+<span class="sourceLineNo">076</span><a id="line.76"></a>
+<span class="sourceLineNo">077</span><a id="line.77">    private static final Logger LOG = LoggerFactory.getLogger(FailoverTransport.class);</a>
+<span class="sourceLineNo">078</span><a id="line.78">    private static final int DEFAULT_INITIAL_RECONNECT_DELAY = 10;</a>
+<span class="sourceLineNo">079</span><a id="line.79">    private static final int INFINITE = -1;</a>
+<span class="sourceLineNo">080</span><a id="line.80">    private TransportListener transportListener;</a>
+<span class="sourceLineNo">081</span><a id="line.81">    private volatile boolean disposed;</a>
+<span class="sourceLineNo">082</span><a id="line.82">    private final CopyOnWriteArrayList&lt;URI&gt; uris = new CopyOnWriteArrayList&lt;URI&gt;();</a>
+<span class="sourceLineNo">083</span><a id="line.83">    private final CopyOnWriteArrayList&lt;URI&gt; updated = new CopyOnWriteArrayList&lt;URI&gt;();</a>
+<span class="sourceLineNo">084</span><a id="line.84"></a>
+<span class="sourceLineNo">085</span><a id="line.85">    private final Object reconnectMutex = new Object();</a>
+<span class="sourceLineNo">086</span><a id="line.86">    private final Object backupMutex = new Object();</a>
+<span class="sourceLineNo">087</span><a id="line.87">    private final Object sleepMutex = new Object();</a>
+<span class="sourceLineNo">088</span><a id="line.88">    private final Object listenerMutex = new Object();</a>
+<span class="sourceLineNo">089</span><a id="line.89">    private final ConnectionStateTracker stateTracker = new ConnectionStateTracker();</a>
+<span class="sourceLineNo">090</span><a id="line.90">    private final Map&lt;Integer, Command&gt; requestMap = new LinkedHashMap&lt;Integer, Command&gt;();</a>
+<span class="sourceLineNo">091</span><a id="line.91"></a>
+<span class="sourceLineNo">092</span><a id="line.92">    private URI connectedTransportURI;</a>
+<span class="sourceLineNo">093</span><a id="line.93">    private URI failedConnectTransportURI;</a>
+<span class="sourceLineNo">094</span><a id="line.94">    private final AtomicReference&lt;Transport&gt; connectedTransport = new AtomicReference&lt;Transport&gt;();</a>
+<span class="sourceLineNo">095</span><a id="line.95">    private final TaskRunnerFactory reconnectTaskFactory;</a>
+<span class="sourceLineNo">096</span><a id="line.96">    private final TaskRunner reconnectTask;</a>
+<span class="sourceLineNo">097</span><a id="line.97">    private volatile boolean started;</a>
+<span class="sourceLineNo">098</span><a id="line.98">    private long initialReconnectDelay = DEFAULT_INITIAL_RECONNECT_DELAY;</a>
+<span class="sourceLineNo">099</span><a id="line.99">    private long maxReconnectDelay = 1000 * 30;</a>
+<span class="sourceLineNo">100</span><a id="line.100">    private double backOffMultiplier = 2d;</a>
+<span class="sourceLineNo">101</span><a id="line.101">    private long timeout = INFINITE;</a>
+<span class="sourceLineNo">102</span><a id="line.102">    private boolean useExponentialBackOff = true;</a>
+<span class="sourceLineNo">103</span><a id="line.103">    private boolean randomize = true;</a>
+<span class="sourceLineNo">104</span><a id="line.104">    private int maxReconnectAttempts = INFINITE;</a>
+<span class="sourceLineNo">105</span><a id="line.105">    private int startupMaxReconnectAttempts = INFINITE;</a>
+<span class="sourceLineNo">106</span><a id="line.106">    private int connectFailures;</a>
+<span class="sourceLineNo">107</span><a id="line.107">    private int warnAfterReconnectAttempts = 10;</a>
+<span class="sourceLineNo">108</span><a id="line.108">    private long reconnectDelay = DEFAULT_INITIAL_RECONNECT_DELAY;</a>
+<span class="sourceLineNo">109</span><a id="line.109">    private Exception connectionFailure;</a>
+<span class="sourceLineNo">110</span><a id="line.110">    private boolean firstConnection = true;</a>
+<span class="sourceLineNo">111</span><a id="line.111">    // optionally always have a backup created</a>
+<span class="sourceLineNo">112</span><a id="line.112">    private boolean backup = false;</a>
+<span class="sourceLineNo">113</span><a id="line.113">    private final List&lt;BackupTransport&gt; backups = new CopyOnWriteArrayList&lt;BackupTransport&gt;();</a>
+<span class="sourceLineNo">114</span><a id="line.114">    private int backupPoolSize = 1;</a>
+<span class="sourceLineNo">115</span><a id="line.115">    private boolean trackMessages = false;</a>
+<span class="sourceLineNo">116</span><a id="line.116">    private boolean trackTransactionProducers = true;</a>
+<span class="sourceLineNo">117</span><a id="line.117">    private int maxCacheSize = 128 * 1024;</a>
+<span class="sourceLineNo">118</span><a id="line.118">    private final TransportListener disposedListener = new DefaultTransportListener() {};</a>
+<span class="sourceLineNo">119</span><a id="line.119">    private boolean updateURIsSupported = true;</a>
+<span class="sourceLineNo">120</span><a id="line.120">    private boolean reconnectSupported = true;</a>
+<span class="sourceLineNo">121</span><a id="line.121">    // remember for reconnect thread</a>
+<span class="sourceLineNo">122</span><a id="line.122">    private SslContext brokerSslContext;</a>
+<span class="sourceLineNo">123</span><a id="line.123">    private String updateURIsURL = null;</a>
+<span class="sourceLineNo">124</span><a id="line.124">    private boolean rebalanceUpdateURIs = true;</a>
+<span class="sourceLineNo">125</span><a id="line.125">    private boolean doRebalance = false;</a>
+<span class="sourceLineNo">126</span><a id="line.126">    private boolean doReconnect = false;</a>
+<span class="sourceLineNo">127</span><a id="line.127">    private boolean connectedToPriority = false;</a>
+<span class="sourceLineNo">128</span><a id="line.128"></a>
+<span class="sourceLineNo">129</span><a id="line.129">    private boolean priorityBackup = false;</a>
+<span class="sourceLineNo">130</span><a id="line.130">    private final ArrayList&lt;URI&gt; priorityList = new ArrayList&lt;URI&gt;();</a>
+<span class="sourceLineNo">131</span><a id="line.131">    private boolean priorityBackupAvailable = false;</a>
+<span class="sourceLineNo">132</span><a id="line.132">    private String nestedExtraQueryOptions;</a>
+<span class="sourceLineNo">133</span><a id="line.133">    private volatile boolean shuttingDown = false;</a>
+<span class="sourceLineNo">134</span><a id="line.134"></a>
+<span class="sourceLineNo">135</span><a id="line.135">    public FailoverTransport() {</a>
+<span class="sourceLineNo">136</span><a id="line.136">        brokerSslContext = SslContext.getCurrentSslContext();</a>
+<span class="sourceLineNo">137</span><a id="line.137">        stateTracker.setTrackTransactions(true);</a>
+<span class="sourceLineNo">138</span><a id="line.138">        // Setup a task that is used to reconnect the a connection async.</a>
+<span class="sourceLineNo">139</span><a id="line.139">        reconnectTaskFactory = new TaskRunnerFactory();</a>
+<span class="sourceLineNo">140</span><a id="line.140">        reconnectTaskFactory.init();</a>
+<span class="sourceLineNo">141</span><a id="line.141">        reconnectTask = reconnectTaskFactory.createTaskRunner(new Task() {</a>
+<span class="sourceLineNo">142</span><a id="line.142">            @Override</a>
+<span class="sourceLineNo">143</span><a id="line.143">            public boolean iterate() {</a>
+<span class="sourceLineNo">144</span><a id="line.144">                boolean result = false;</a>
+<span class="sourceLineNo">145</span><a id="line.145">                if (!started) {</a>
+<span class="sourceLineNo">146</span><a id="line.146">                    return result;</a>
+<span class="sourceLineNo">147</span><a id="line.147">                }</a>
+<span class="sourceLineNo">148</span><a id="line.148">                boolean buildBackup = true;</a>
+<span class="sourceLineNo">149</span><a id="line.149">                synchronized (backupMutex) {</a>
+<span class="sourceLineNo">150</span><a id="line.150">                    if ((connectedTransport.get() == null || doRebalance || priorityBackupAvailable) &amp;&amp; !disposed) {</a>
+<span class="sourceLineNo">151</span><a id="line.151">                        result = doReconnect();</a>
+<span class="sourceLineNo">152</span><a id="line.152">                        buildBackup = false;</a>
+<span class="sourceLineNo">153</span><a id="line.153">                    }</a>
+<span class="sourceLineNo">154</span><a id="line.154">                }</a>
+<span class="sourceLineNo">155</span><a id="line.155">                if (buildBackup) {</a>
+<span class="sourceLineNo">156</span><a id="line.156">                    buildBackups();</a>
+<span class="sourceLineNo">157</span><a id="line.157">                    if (priorityBackup &amp;&amp; !connectedToPriority) {</a>
+<span class="sourceLineNo">158</span><a id="line.158">                        try {</a>
+<span class="sourceLineNo">159</span><a id="line.159">                            doDelay();</a>
+<span class="sourceLineNo">160</span><a id="line.160">                            if (reconnectTask == null) {</a>
+<span class="sourceLineNo">161</span><a id="line.161">                                return true;</a>
+<span class="sourceLineNo">162</span><a id="line.162">                            }</a>
+<span class="sourceLineNo">163</span><a id="line.163">                            reconnectTask.wakeup();</a>
+<span class="sourceLineNo">164</span><a id="line.164">                        } catch (InterruptedException e) {</a>
+<span class="sourceLineNo">165</span><a id="line.165">                            LOG.debug("Reconnect task has been interrupted.", e);</a>
+<span class="sourceLineNo">166</span><a id="line.166">                        }</a>
+<span class="sourceLineNo">167</span><a id="line.167">                    }</a>
+<span class="sourceLineNo">168</span><a id="line.168">                } else {</a>
+<span class="sourceLineNo">169</span><a id="line.169">                    // build backups on the next iteration</a>
+<span class="sourceLineNo">170</span><a id="line.170">                    buildBackup = true;</a>
+<span class="sourceLineNo">171</span><a id="line.171">                    try {</a>
+<span class="sourceLineNo">172</span><a id="line.172">                        if (reconnectTask == null) {</a>
+<span class="sourceLineNo">173</span><a id="line.173">                            return true;</a>
+<span class="sourceLineNo">174</span><a id="line.174">                        }</a>
+<span class="sourceLineNo">175</span><a id="line.175">                        reconnectTask.wakeup();</a>
+<span class="sourceLineNo">176</span><a id="line.176">                    } catch (InterruptedException e) {</a>
+<span class="sourceLineNo">177</span><a id="line.177">                        LOG.debug("Reconnect task has been interrupted.", e);</a>
+<span class="sourceLineNo">178</span><a id="line.178">                    }</a>
+<span class="sourceLineNo">179</span><a id="line.179">                }</a>
+<span class="sourceLineNo">180</span><a id="line.180">                return result;</a>
+<span class="sourceLineNo">181</span><a id="line.181">            }</a>
+<span class="sourceLineNo">182</span><a id="line.182"></a>
+<span class="sourceLineNo">183</span><a id="line.183">        }, "ActiveMQ Failover Worker: " + System.identityHashCode(this));</a>
+<span class="sourceLineNo">184</span><a id="line.184">    }</a>
+<span class="sourceLineNo">185</span><a id="line.185"></a>
+<span class="sourceLineNo">186</span><a id="line.186">    private void processCommand(Object incoming) {</a>
+<span class="sourceLineNo">187</span><a id="line.187">        Command command = (Command) incoming;</a>
+<span class="sourceLineNo">188</span><a id="line.188">        if (command == null) {</a>
+<span class="sourceLineNo">189</span><a id="line.189">            return;</a>
+<span class="sourceLineNo">190</span><a id="line.190">        }</a>
+<span class="sourceLineNo">191</span><a id="line.191">        if (command.isResponse()) {</a>
+<span class="sourceLineNo">192</span><a id="line.192">            Object object = null;</a>
+<span class="sourceLineNo">193</span><a id="line.193">            synchronized (requestMap) {</a>
+<span class="sourceLineNo">194</span><a id="line.194">                object = requestMap.remove(Integer.valueOf(((Response) command).getCorrelationId()));</a>
+<span class="sourceLineNo">195</span><a id="line.195">            }</a>
+<span class="sourceLineNo">196</span><a id="line.196">            if (object != null &amp;&amp; object.getClass() == Tracked.class) {</a>
+<span class="sourceLineNo">197</span><a id="line.197">                ((Tracked) object).onResponses(command);</a>
+<span class="sourceLineNo">198</span><a id="line.198">            }</a>
+<span class="sourceLineNo">199</span><a id="line.199">        }</a>
+<span class="sourceLineNo">200</span><a id="line.200"></a>
+<span class="sourceLineNo">201</span><a id="line.201">        if (command.isConnectionControl()) {</a>
+<span class="sourceLineNo">202</span><a id="line.202">            handleConnectionControl((ConnectionControl) command);</a>
+<span class="sourceLineNo">203</span><a id="line.203">        } else if (command.isConsumerControl()) {</a>
+<span class="sourceLineNo">204</span><a id="line.204">            ConsumerControl consumerControl = (ConsumerControl)command;</a>
+<span class="sourceLineNo">205</span><a id="line.205">            if (consumerControl.isClose()) {</a>
+<span class="sourceLineNo">206</span><a id="line.206">                stateTracker.processRemoveConsumer(consumerControl.getConsumerId(), RemoveInfo.LAST_DELIVERED_UNKNOWN);</a>
+<span class="sourceLineNo">207</span><a id="line.207">            }</a>
+<span class="sourceLineNo">208</span><a id="line.208">        }</a>
+<span class="sourceLineNo">209</span><a id="line.209"></a>
+<span class="sourceLineNo">210</span><a id="line.210">        if (transportListener != null) {</a>
+<span class="sourceLineNo">211</span><a id="line.211">            transportListener.onCommand(command);</a>
+<span class="sourceLineNo">212</span><a id="line.212">        }</a>
+<span class="sourceLineNo">213</span><a id="line.213">    }</a>
+<span class="sourceLineNo">214</span><a id="line.214"></a>
+<span class="sourceLineNo">215</span><a id="line.215">    private TransportListener createTransportListener(final Transport owner) {</a>
+<span class="sourceLineNo">216</span><a id="line.216">        return new TransportListener() {</a>
+<span class="sourceLineNo">217</span><a id="line.217"></a>
+<span class="sourceLineNo">218</span><a id="line.218">            @Override</a>
+<span class="sourceLineNo">219</span><a id="line.219">            public void onCommand(Object o) {</a>
+<span class="sourceLineNo">220</span><a id="line.220">                processCommand(o);</a>
+<span class="sourceLineNo">221</span><a id="line.221">            }</a>
+<span class="sourceLineNo">222</span><a id="line.222"></a>
+<span class="sourceLineNo">223</span><a id="line.223">            @Override</a>
+<span class="sourceLineNo">224</span><a id="line.224">            public void onException(IOException error) {</a>
+<span class="sourceLineNo">225</span><a id="line.225">                try {</a>
+<span class="sourceLineNo">226</span><a id="line.226">                    handleTransportFailure(owner, error);</a>
+<span class="sourceLineNo">227</span><a id="line.227">                } catch (InterruptedException e) {</a>
+<span class="sourceLineNo">228</span><a id="line.228">                    Thread.currentThread().interrupt();</a>
+<span class="sourceLineNo">229</span><a id="line.229">                    if (transportListener != null) {</a>
+<span class="sourceLineNo">230</span><a id="line.230">                        transportListener.onException(new InterruptedIOException());</a>
+<span class="sourceLineNo">231</span><a id="line.231">                    }</a>
+<span class="sourceLineNo">232</span><a id="line.232">                }</a>
+<span class="sourceLineNo">233</span><a id="line.233">            }</a>
+<span class="sourceLineNo">234</span><a id="line.234"></a>
+<span class="sourceLineNo">235</span><a id="line.235">            @Override</a>
+<span class="sourceLineNo">236</span><a id="line.236">            public void transportInterupted() {</a>
+<span class="sourceLineNo">237</span><a id="line.237">            }</a>
+<span class="sourceLineNo">238</span><a id="line.238"></a>
+<span class="sourceLineNo">239</span><a id="line.239">            @Override</a>
+<span class="sourceLineNo">240</span><a id="line.240">            public void transportResumed() {</a>
+<span class="sourceLineNo">241</span><a id="line.241">            }</a>
+<span class="sourceLineNo">242</span><a id="line.242">        };</a>
+<span class="sourceLineNo">243</span><a id="line.243">    }</a>
+<span class="sourceLineNo">244</span><a id="line.244"></a>
+<span class="sourceLineNo">245</span><a id="line.245">    public final void disposeTransport(Transport transport) {</a>
+<span class="sourceLineNo">246</span><a id="line.246">        transport.setTransportListener(disposedListener);</a>
+<span class="sourceLineNo">247</span><a id="line.247">        ServiceSupport.dispose(transport);</a>
+<span class="sourceLineNo">248</span><a id="line.248">    }</a>
+<span class="sourceLineNo">249</span><a id="line.249"></a>
+<span class="sourceLineNo">250</span><a id="line.250">    public final void handleTransportFailure(IOException e) throws InterruptedException {</a>
+<span class="sourceLineNo">251</span><a id="line.251">        handleTransportFailure(getConnectedTransport(), e);</a>
+<span class="sourceLineNo">252</span><a id="line.252">    }</a>
+<span class="sourceLineNo">253</span><a id="line.253"></a>
+<span class="sourceLineNo">254</span><a id="line.254">    public final void handleTransportFailure(Transport failed, IOException e) throws InterruptedException {</a>
+<span class="sourceLineNo">255</span><a id="line.255">        if (shuttingDown) {</a>
+<span class="sourceLineNo">256</span><a id="line.256">            // shutdown info sent and remote socket closed and we see that before a local close</a>
+<span class="sourceLineNo">257</span><a id="line.257">            // let the close do the work</a>
+<span class="sourceLineNo">258</span><a id="line.258">            return;</a>
+<span class="sourceLineNo">259</span><a id="line.259">        }</a>
+<span class="sourceLineNo">260</span><a id="line.260"></a>
+<span class="sourceLineNo">261</span><a id="line.261">        if (LOG.isTraceEnabled()) {</a>
+<span class="sourceLineNo">262</span><a id="line.262">            LOG.trace(this + " handleTransportFailure: " + e, e);</a>
+<span class="sourceLineNo">263</span><a id="line.263">        }</a>
+<span class="sourceLineNo">264</span><a id="line.264"></a>
+<span class="sourceLineNo">265</span><a id="line.265">        // could be blocked in write with the reconnectMutex held, but still needs to be whacked</a>
+<span class="sourceLineNo">266</span><a id="line.266">        Transport transport = null;</a>
+<span class="sourceLineNo">267</span><a id="line.267"></a>
+<span class="sourceLineNo">268</span><a id="line.268">        if (connectedTransport.compareAndSet(failed, null)) {</a>
+<span class="sourceLineNo">269</span><a id="line.269">            transport = failed;</a>
+<span class="sourceLineNo">270</span><a id="line.270">            if (transport != null) {</a>
+<span class="sourceLineNo">271</span><a id="line.271">                disposeTransport(transport);</a>
+<span class="sourceLineNo">272</span><a id="line.272">            }</a>
+<span class="sourceLineNo">273</span><a id="line.273">        }</a>
+<span class="sourceLineNo">274</span><a id="line.274"></a>
+<span class="sourceLineNo">275</span><a id="line.275">        synchronized (reconnectMutex) {</a>
+<span class="sourceLineNo">276</span><a id="line.276">            if (transport != null &amp;&amp; connectedTransport.get() == null) {</a>
+<span class="sourceLineNo">277</span><a id="line.277">                boolean reconnectOk = false;</a>
+<span class="sourceLineNo">278</span><a id="line.278"></a>
+<span class="sourceLineNo">279</span><a id="line.279">                if (canReconnect()) {</a>
+<span class="sourceLineNo">280</span><a id="line.280">                    reconnectOk = true;</a>
+<span class="sourceLineNo">281</span><a id="line.281">                }</a>
+<span class="sourceLineNo">282</span><a id="line.282"></a>
+<span class="sourceLineNo">283</span><a id="line.283">                LOG.warn("Transport ({}) failed{} attempting to automatically reconnect",</a>
+<span class="sourceLineNo">284</span><a id="line.284">                         connectedTransportURI, (reconnectOk ? "," : ", not"), e);</a>
+<span class="sourceLineNo">285</span><a id="line.285"></a>
+<span class="sourceLineNo">286</span><a id="line.286">                failedConnectTransportURI = connectedTransportURI;</a>
+<span class="sourceLineNo">287</span><a id="line.287">                connectedTransportURI = null;</a>
+<span class="sourceLineNo">288</span><a id="line.288">                connectedToPriority = false;</a>
+<span class="sourceLineNo">289</span><a id="line.289"></a>
+<span class="sourceLineNo">290</span><a id="line.290">                if (reconnectOk) {</a>
+<span class="sourceLineNo">291</span><a id="line.291">                    // notify before any reconnect attempt so ack state can be whacked</a>
+<span class="sourceLineNo">292</span><a id="line.292">                    if (transportListener != null) {</a>
+<span class="sourceLineNo">293</span><a id="line.293">                        transportListener.transportInterupted();</a>
+<span class="sourceLineNo">294</span><a id="line.294">                    }</a>
+<span class="sourceLineNo">295</span><a id="line.295"></a>
+<span class="sourceLineNo">296</span><a id="line.296">                    reconnectTask.wakeup();</a>
+<span class="sourceLineNo">297</span><a id="line.297">                } else if (!isDisposed()) {</a>
+<span class="sourceLineNo">298</span><a id="line.298">                    propagateFailureToExceptionListener(e);</a>
+<span class="sourceLineNo">299</span><a id="line.299">                }</a>
+<span class="sourceLineNo">300</span><a id="line.300">            }</a>
+<span class="sourceLineNo">301</span><a id="line.301">        }</a>
+<span class="sourceLineNo">302</span><a id="line.302">    }</a>
+<span class="sourceLineNo">303</span><a id="line.303"></a>
+<span class="sourceLineNo">304</span><a id="line.304">    private boolean canReconnect() {</a>
+<span class="sourceLineNo">305</span><a id="line.305">        return started &amp;&amp; 0 != calculateReconnectAttemptLimit();</a>
+<span class="sourceLineNo">306</span><a id="line.306">    }</a>
+<span class="sourceLineNo">307</span><a id="line.307"></a>
+<span class="sourceLineNo">308</span><a id="line.308">    public final void handleConnectionControl(ConnectionControl control) {</a>
+<span class="sourceLineNo">309</span><a id="line.309">        String reconnectStr = control.getReconnectTo();</a>
+<span class="sourceLineNo">310</span><a id="line.310">        if (LOG.isTraceEnabled()) {</a>
+<span class="sourceLineNo">311</span><a id="line.311">            LOG.trace("Received ConnectionControl: {}", control);</a>
+<span class="sourceLineNo">312</span><a id="line.312">        }</a>
+<span class="sourceLineNo">313</span><a id="line.313"></a>
+<span class="sourceLineNo">314</span><a id="line.314">        if (reconnectStr != null) {</a>
+<span class="sourceLineNo">315</span><a id="line.315">            reconnectStr = reconnectStr.trim();</a>
+<span class="sourceLineNo">316</span><a id="line.316">            if (reconnectStr.length() &gt; 0) {</a>
+<span class="sourceLineNo">317</span><a id="line.317">                try {</a>
+<span class="sourceLineNo">318</span><a id="line.318">                    URI uri = new URI(reconnectStr);</a>
+<span class="sourceLineNo">319</span><a id="line.319">                    if (isReconnectSupported()) {</a>
+<span class="sourceLineNo">320</span><a id="line.320">                        reconnect(uri);</a>
+<span class="sourceLineNo">321</span><a id="line.321">                        LOG.info("Reconnected to: " + uri);</a>
+<span class="sourceLineNo">322</span><a id="line.322">                    }</a>
+<span class="sourceLineNo">323</span><a id="line.323">                } catch (Exception e) {</a>
+<span class="sourceLineNo">324</span><a id="line.324">                    LOG.error("Failed to handle ConnectionControl reconnect to " + reconnectStr, e);</a>
+<span class="sourceLineNo">325</span><a id="line.325">                }</a>
+<span class="sourceLineNo">326</span><a id="line.326">            }</a>
+<span class="sourceLineNo">327</span><a id="line.327">        }</a>
+<span class="sourceLineNo">328</span><a id="line.328">        processNewTransports(control.isRebalanceConnection(), control.getConnectedBrokers());</a>
+<span class="sourceLineNo">329</span><a id="line.329">    }</a>
+<span class="sourceLineNo">330</span><a id="line.330"></a>
+<span class="sourceLineNo">331</span><a id="line.331">    private final void processNewTransports(boolean rebalance, String newTransports) {</a>
+<span class="sourceLineNo">332</span><a id="line.332">        if (newTransports != null) {</a>
+<span class="sourceLineNo">333</span><a id="line.333">            newTransports = newTransports.trim();</a>
+<span class="sourceLineNo">334</span><a id="line.334">            if (newTransports.length() &gt; 0 &amp;&amp; isUpdateURIsSupported()) {</a>
+<span class="sourceLineNo">335</span><a id="line.335">                List&lt;URI&gt; list = new ArrayList&lt;URI&gt;();</a>
+<span class="sourceLineNo">336</span><a id="line.336">                StringTokenizer tokenizer = new StringTokenizer(newTransports, ",");</a>
+<span class="sourceLineNo">337</span><a id="line.337">                while (tokenizer.hasMoreTokens()) {</a>
+<span class="sourceLineNo">338</span><a id="line.338">                    String str = tokenizer.nextToken();</a>
+<span class="sourceLineNo">339</span><a id="line.339">                    try {</a>
+<span class="sourceLineNo">340</span><a id="line.340">                        URI uri = new URI(str);</a>
+<span class="sourceLineNo">341</span><a id="line.341">                        list.add(uri);</a>
+<span class="sourceLineNo">342</span><a id="line.342">                    } catch (Exception e) {</a>
+<span class="sourceLineNo">343</span><a id="line.343">                        LOG.error("Failed to parse broker address: " + str, e);</a>
+<span class="sourceLineNo">344</span><a id="line.344">                    }</a>
+<span class="sourceLineNo">345</span><a id="line.345">                }</a>
+<span class="sourceLineNo">346</span><a id="line.346">                if (list.isEmpty() == false) {</a>
+<span class="sourceLineNo">347</span><a id="line.347">                    try {</a>
+<span class="sourceLineNo">348</span><a id="line.348">                        updateURIs(rebalance, list.toArray(new URI[list.size()]));</a>
+<span class="sourceLineNo">349</span><a id="line.349">                    } catch (IOException e) {</a>
+<span class="sourceLineNo">350</span><a id="line.350">                        LOG.error("Failed to update transport URI's from: " + newTransports, e);</a>
+<span class="sourceLineNo">351</span><a id="line.351">                    }</a>
+<span class="sourceLineNo">352</span><a id="line.352">                }</a>
+<span class="sourceLineNo">353</span><a id="line.353">            }</a>
+<span class="sourceLineNo">354</span><a id="line.354">        }</a>
+<span class="sourceLineNo">355</span><a id="line.355">    }</a>
+<span class="sourceLineNo">356</span><a id="line.356"></a>
+<span class="sourceLineNo">357</span><a id="line.357">    @Override</a>
+<span class="sourceLineNo">358</span><a id="line.358">    public void start() throws Exception {</a>
+<span class="sourceLineNo">359</span><a id="line.359">        synchronized (reconnectMutex) {</a>
+<span class="sourceLineNo">360</span><a id="line.360">            LOG.debug("Started {}", this);</a>
+<span class="sourceLineNo">361</span><a id="line.361">            if (started) {</a>
+<span class="sourceLineNo">362</span><a id="line.362">                return;</a>
+<span class="sourceLineNo">363</span><a id="line.363">            }</a>
+<span class="sourceLineNo">364</span><a id="line.364">            started = true;</a>
+<span class="sourceLineNo">365</span><a id="line.365">            stateTracker.setMaxCacheSize(getMaxCacheSize());</a>
+<span class="sourceLineNo">366</span><a id="line.366">            stateTracker.setTrackMessages(isTrackMessages());</a>
+<span class="sourceLineNo">367</span><a id="line.367">            stateTracker.setTrackTransactionProducers(isTrackTransactionProducers());</a>
+<span class="sourceLineNo">368</span><a id="line.368">            if (connectedTransport.get() != null) {</a>
+<span class="sourceLineNo">369</span><a id="line.369">                stateTracker.restore(connectedTransport.get());</a>
+<span class="sourceLineNo">370</span><a id="line.370">            } else {</a>
+<span class="sourceLineNo">371</span><a id="line.371">                reconnect(false);</a>
+<span class="sourceLineNo">372</span><a id="line.372">            }</a>
+<span class="sourceLineNo">373</span><a id="line.373">        }</a>
+<span class="sourceLineNo">374</span><a id="line.374">    }</a>
+<span class="sourceLineNo">375</span><a id="line.375"></a>
+<span class="sourceLineNo">376</span><a id="line.376">    @Override</a>
+<span class="sourceLineNo">377</span><a id="line.377">    public void stop() throws Exception {</a>
+<span class="sourceLineNo">378</span><a id="line.378">        Transport transportToStop = null;</a>
+<span class="sourceLineNo">379</span><a id="line.379">        List&lt;Transport&gt; backupsToStop = new ArrayList&lt;Transport&gt;(backups.size());</a>
+<span class="sourceLineNo">380</span><a id="line.380"></a>
+<span class="sourceLineNo">381</span><a id="line.381">        try {</a>
+<span class="sourceLineNo">382</span><a id="line.382">            synchronized (reconnectMutex) {</a>
+<span class="sourceLineNo">383</span><a id="line.383">                if (LOG.isDebugEnabled()) {</a>
+<span class="sourceLineNo">384</span><a id="line.384">                    LOG.debug("Stopped {}", this);</a>
+<span class="sourceLineNo">385</span><a id="line.385">                }</a>
+<span class="sourceLineNo">386</span><a id="line.386">                if (!started) {</a>
+<span class="sourceLineNo">387</span><a id="line.387">                    return;</a>
+<span class="sourceLineNo">388</span><a id="line.388">                }</a>
+<span class="sourceLineNo">389</span><a id="line.389">                started = false;</a>
+<span class="sourceLineNo">390</span><a id="line.390">                disposed = true;</a>
+<span class="sourceLineNo">391</span><a id="line.391"></a>
+<span class="sourceLineNo">392</span><a id="line.392">                if (connectedTransport.get() != null) {</a>
+<span class="sourceLineNo">393</span><a id="line.393">                    transportToStop = connectedTransport.getAndSet(null);</a>
+<span class="sourceLineNo">394</span><a id="line.394">                }</a>
+<span class="sourceLineNo">395</span><a id="line.395">                reconnectMutex.notifyAll();</a>
+<span class="sourceLineNo">396</span><a id="line.396">            }</a>
+<span class="sourceLineNo">397</span><a id="line.397">            synchronized (sleepMutex) {</a>
+<span class="sourceLineNo">398</span><a id="line.398">                sleepMutex.notifyAll();</a>
+<span class="sourceLineNo">399</span><a id="line.399">            }</a>
+<span class="sourceLineNo">400</span><a id="line.400">        } finally {</a>
+<span class="sourceLineNo">401</span><a id="line.401">            reconnectTask.shutdown();</a>
+<span class="sourceLineNo">402</span><a id="line.402">            reconnectTaskFactory.shutdownNow();</a>
+<span class="sourceLineNo">403</span><a id="line.403">        }</a>
+<span class="sourceLineNo">404</span><a id="line.404"></a>
+<span class="sourceLineNo">405</span><a id="line.405">        synchronized(backupMutex) {</a>
+<span class="sourceLineNo">406</span><a id="line.406">            for (BackupTransport backup : backups) {</a>
+<span class="sourceLineNo">407</span><a id="line.407">                backup.setDisposed(true);</a>
+<span class="sourceLineNo">408</span><a id="line.408">                Transport transport = backup.getTransport();</a>
+<span class="sourceLineNo">409</span><a id="line.409">                if (transport != null) {</a>
+<span class="sourceLineNo">410</span><a id="line.410">                    transport.setTransportListener(disposedListener);</a>
+<span class="sourceLineNo">411</span><a id="line.411">                    backupsToStop.add(transport);</a>
+<span class="sourceLineNo">412</span><a id="line.412">                }</a>
+<span class="sourceLineNo">413</span><a id="line.413">            }</a>
+<span class="sourceLineNo">414</span><a id="line.414">            backups.clear();</a>
+<span class="sourceLineNo">415</span><a id="line.415">        }</a>
+<span class="sourceLineNo">416</span><a id="line.416">        for (Transport transport : backupsToStop) {</a>
+<span class="sourceLineNo">417</span><a id="line.417">            try {</a>
+<span class="sourceLineNo">418</span><a id="line.418">                LOG.trace("Stopped backup: {}", transport);</a>
+<span class="sourceLineNo">419</span><a id="line.419">                disposeTransport(transport);</a>
+<span class="sourceLineNo">420</span><a id="line.420">            } catch (Exception e) {</a>
+<span class="sourceLineNo">421</span><a id="line.421">            }</a>
+<span class="sourceLineNo">422</span><a id="line.422">        }</a>
+<span class="sourceLineNo">423</span><a id="line.423">        if (transportToStop != null) {</a>
+<span class="sourceLineNo">424</span><a id="line.424">            transportToStop.stop();</a>
+<span class="sourceLineNo">425</span><a id="line.425">        }</a>
+<span class="sourceLineNo">426</span><a id="line.426">    }</a>
+<span class="sourceLineNo">427</span><a id="line.427"></a>
+<span class="sourceLineNo">428</span><a id="line.428">    public long getInitialReconnectDelay() {</a>
+<span class="sourceLineNo">429</span><a id="line.429">        return initialReconnectDelay;</a>
+<span class="sourceLineNo">430</span><a id="line.430">    }</a>
+<span class="sourceLineNo">431</span><a id="line.431"></a>
+<span class="sourceLineNo">432</span><a id="line.432">    public void setInitialReconnectDelay(long initialReconnectDelay) {</a>
+<span class="sourceLineNo">433</span><a id="line.433">        this.initialReconnectDelay = initialReconnectDelay;</a>
+<span class="sourceLineNo">434</span><a id="line.434">    }</a>
+<span class="sourceLineNo">435</span><a id="line.435"></a>
+<span class="sourceLineNo">436</span><a id="line.436">    public long getMaxReconnectDelay() {</a>
+<span class="sourceLineNo">437</span><a id="line.437">        return maxReconnectDelay;</a>
+<span class="sourceLineNo">438</span><a id="line.438">    }</a>
+<span class="sourceLineNo">439</span><a id="line.439"></a>
+<span class="sourceLineNo">440</span><a id="line.440">    public void setMaxReconnectDelay(long maxReconnectDelay) {</a>
+<span class="sourceLineNo">441</span><a id="line.441">        this.maxReconnectDelay = maxReconnectDelay;</a>
+<span class="sourceLineNo">442</span><a id="line.442">    }</a>
+<span class="sourceLineNo">443</span><a id="line.443"></a>
+<span class="sourceLineNo">444</span><a id="line.444">    public long getReconnectDelay() {</a>
+<span class="sourceLineNo">445</span><a id="line.445">        return reconnectDelay;</a>
+<span class="sourceLineNo">446</span><a id="line.446">    }</a>
+<span class="sourceLineNo">447</span><a id="line.447"></a>
+<span class="sourceLineNo">448</span><a id="line.448">    public void setReconnectDelay(long reconnectDelay) {</a>
+<span class="sourceLineNo">449</span><a id="line.449">        this.reconnectDelay = reconnectDelay;</a>
+<span class="sourceLineNo">450</span><a id="line.450">    }</a>
+<span class="sourceLineNo">451</span><a id="line.451"></a>
+<span class="sourceLineNo">452</span><a id="line.452">    public double getReconnectDelayExponent() {</a>
+<span class="sourceLineNo">453</span><a id="line.453">        return backOffMultiplier;</a>
+<span class="sourceLineNo">454</span><a id="line.454">    }</a>
+<span class="sourceLineNo">455</span><a id="line.455"></a>
+<span class="sourceLineNo">456</span><a id="line.456">    public void setReconnectDelayExponent(double reconnectDelayExponent) {</a>
+<span class="sourceLineNo">457</span><a id="line.457">        this.backOffMultiplier = reconnectDelayExponent;</a>
+<span class="sourceLineNo">458</span><a id="line.458">    }</a>
+<span class="sourceLineNo">459</span><a id="line.459"></a>
+<span class="sourceLineNo">460</span><a id="line.460">    public Transport getConnectedTransport() {</a>
+<span class="sourceLineNo">461</span><a id="line.461">        return connectedTransport.get();</a>
+<span class="sourceLineNo">462</span><a id="line.462">    }</a>
+<span class="sourceLineNo">463</span><a id="line.463"></a>
+<span class="sourceLineNo">464</span><a id="line.464">    public URI getConnectedTransportURI() {</a>
+<span class="sourceLineNo">465</span><a id="line.465">        return connectedTransportURI;</a>
+<span class="sourceLineNo">466</span><a id="line.466">    }</a>
+<span class="sourceLineNo">467</span><a id="line.467"></a>
+<span class="sourceLineNo">468</span><a id="line.468">    public int getMaxReconnectAttempts() {</a>
+<span class="sourceLineNo">469</span><a id="line.469">        return maxReconnectAttempts;</a>
+<span class="sourceLineNo">470</span><a id="line.470">    }</a>
+<span class="sourceLineNo">471</span><a id="line.471"></a>
+<span class="sourceLineNo">472</span><a id="line.472">    public void setMaxReconnectAttempts(int maxReconnectAttempts) {</a>
+<span class="sourceLineNo">473</span><a id="line.473">        this.maxReconnectAttempts = maxReconnectAttempts;</a>
+<span class="sourceLineNo">474</span><a id="line.474">    }</a>
+<span class="sourceLineNo">475</span><a id="line.475"></a>
+<span class="sourceLineNo">476</span><a id="line.476">    public int getStartupMaxReconnectAttempts() {</a>
+<span class="sourceLineNo">477</span><a id="line.477">        return this.startupMaxReconnectAttempts;</a>
+<span class="sourceLineNo">478</span><a id="line.478">    }</a>
+<span class="sourceLineNo">479</span><a id="line.479"></a>
+<span class="sourceLineNo">480</span><a id="line.480">    public void setStartupMaxReconnectAttempts(int startupMaxReconnectAttempts) {</a>
+<span class="sourceLineNo">481</span><a id="line.481">        this.startupMaxReconnectAttempts = startupMaxReconnectAttempts;</a>
+<span class="sourceLineNo">482</span><a id="line.482">    }</a>
+<span class="sourceLineNo">483</span><a id="line.483"></a>
+<span class="sourceLineNo">484</span><a id="line.484">    public long getTimeout() {</a>
+<span class="sourceLineNo">485</span><a id="line.485">        return timeout;</a>
+<span class="sourceLineNo">486</span><a id="line.486">    }</a>
+<span class="sourceLineNo">487</span><a id="line.487"></a>
+<span class="sourceLineNo">488</span><a id="line.488">    public void setTimeout(long timeout) {</a>
+<span class="sourceLineNo">489</span><a id="line.489">        this.timeout = timeout;</a>
+<span class="sourceLineNo">490</span><a id="line.490">    }</a>
+<span class="sourceLineNo">491</span><a id="line.491"></a>
+<span class="sourceLineNo">492</span><a id="line.492">    /**</a>
+<span class="sourceLineNo">493</span><a id="line.493">     * @return Returns the randomize.</a>
+<span class="sourceLineNo">494</span><a id="line.494">     */</a>
+<span class="sourceLineNo">495</span><a id="line.495">    public boolean isRandomize() {</a>
+<span class="sourceLineNo">496</span><a id="line.496">        return randomize;</a>
+<span class="sourceLineNo">497</span><a id="line.497">    }</a>
+<span class="sourceLineNo">498</span><a id="line.498"></a>
+<span class="sourceLineNo">499</span><a id="line.499">    /**</a>
+<span class="sourceLineNo">500</span><a id="line.500">     * @param randomize The randomize to set.</a>
+<span class="sourceLineNo">501</span><a id="line.501">     */</a>
+<span class="sourceLineNo">502</span><a id="line.502">    public void setRandomize(boolean randomize) {</a>
+<span class="sourceLineNo">503</span><a id="line.503">        this.randomize = randomize;</a>
+<span class="sourceLineNo">504</span><a id="line.504">    }</a>
+<span class="sourceLineNo">505</span><a id="line.505"></a>
+<span class="sourceLineNo">506</span><a id="line.506">    public boolean isBackup() {</a>
+<span class="sourceLineNo">507</span><a id="line.507">        return backup;</a>
+<span class="sourceLineNo">508</span><a id="line.508">    }</a>
+<span class="sourceLineNo">509</span><a id="line.509"></a>
+<span class="sourceLineNo">510</span><a id="line.510">    public void setBackup(boolean backup) {</a>
+<span class="sourceLineNo">511</span><a id="line.511">        this.backup = backup;</a>
+<span class="sourceLineNo">512</span><a id="line.512">    }</a>
+<span class="sourceLineNo">513</span><a id="line.513"></a>
+<span class="sourceLineNo">514</span><a id="line.514">    public int getBackupPoolSize() {</a>
+<span class="sourceLineNo">515</span><a id="line.515">        return backupPoolSize;</a>
+<span class="sourceLineNo">516</span><a id="line.516">    }</a>
+<span class="sourceLineNo">517</span><a id="line.517"></a>
+<span class="sourceLineNo">518</span><a id="line.518">    public void setBackupPoolSize(int backupPoolSize) {</a>
+<span class="sourceLineNo">519</span><a id="line.519">        this.backupPoolSize = backupPoolSize;</a>
+<span class="sourceLineNo">520</span><a id="line.520">    }</a>
+<span class="sourceLineNo">521</span><a id="line.521"></a>
+<span class="sourceLineNo">522</span><a id="line.522">    public int getCurrentBackups() {</a>
+<span class="sourceLineNo">523</span><a id="line.523">        return this.backups.size();</a>
+<span class="sourceLineNo">524</span><a id="line.524">    }</a>
+<span class="sourceLineNo">525</span><a id="line.525"></a>
+<span class="sourceLineNo">526</span><a id="line.526">    public boolean isTrackMessages() {</a>
+<span class="sourceLineNo">527</span><a id="line.527">        return trackMessages;</a>
+<span class="sourceLineNo">528</span><a id="line.528">    }</a>
+<span class="sourceLineNo">529</span><a id="line.529"></a>
+<span class="sourceLineNo">530</span><a id="line.530">    public void setTrackMessages(boolean trackMessages) {</a>
+<span class="sourceLineNo">531</span><a id="line.531">        this.trackMessages = trackMessages;</a>
+<span class="sourceLineNo">532</span><a id="line.532">    }</a>
+<span class="sourceLineNo">533</span><a id="line.533"></a>
+<span class="sourceLineNo">534</span><a id="line.534">    public boolean isTrackTransactionProducers() {</a>
+<span class="sourceLineNo">535</span><a id="line.535">        return this.trackTransactionProducers;</a>
+<span class="sourceLineNo">536</span><a id="line.536">    }</a>
+<span class="sourceLineNo">537</span><a id="line.537"></a>
+<span class="sourceLineNo">538</span><a id="line.538">    public void setTrackTransactionProducers(boolean trackTransactionProducers) {</a>
+<span class="sourceLineNo">539</span><a id="line.539">        this.trackTransactionProducers = trackTransactionProducers;</a>
+<span class="sourceLineNo">540</span><a id="line.540">    }</a>
+<span class="sourceLineNo">541</span><a id="line.541"></a>
+<span class="sourceLineNo">542</span><a id="line.542">    public int getMaxCacheSize() {</a>
+<span class="sourceLineNo">543</span><a id="line.543">        return maxCacheSize;</a>
+<span class="sourceLineNo">544</span><a id="line.544">    }</a>
+<span class="sourceLineNo">545</span><a id="line.545"></a>
+<span class="sourceLineNo">546</span><a id="line.546">    public void setMaxCacheSize(int maxCacheSize) {</a>
+<span class="sourceLineNo">547</span><a id="line.547">        this.maxCacheSize = maxCacheSize;</a>
+<span class="sourceLineNo">548</span><a id="line.548">    }</a>
+<span class="sourceLineNo">549</span><a id="line.549"></a>
+<span class="sourceLineNo">550</span><a id="line.550">    public boolean isPriorityBackup() {</a>
+<span class="sourceLineNo">551</span><a id="line.551">        return priorityBackup;</a>
+<span class="sourceLineNo">552</span><a id="line.552">    }</a>
+<span class="sourceLineNo">553</span><a id="line.553"></a>
+<span class="sourceLineNo">554</span><a id="line.554">    public void setPriorityBackup(boolean priorityBackup) {</a>
+<span class="sourceLineNo">555</span><a id="line.555">        this.priorityBackup = priorityBackup;</a>
+<span class="sourceLineNo">556</span><a id="line.556">    }</a>
+<span class="sourceLineNo">557</span><a id="line.557"></a>
+<span class="sourceLineNo">558</span><a id="line.558">    public void setPriorityURIs(String priorityURIs) {</a>
+<span class="sourceLineNo">559</span><a id="line.559">        StringTokenizer tokenizer = new StringTokenizer(priorityURIs, ",");</a>
+<span class="sourceLineNo">560</span><a id="line.560">        while (tokenizer.hasMoreTokens()) {</a>
+<span class="sourceLineNo">561</span><a id="line.561">            String str = tokenizer.nextToken();</a>
+<span class="sourceLineNo">562</span><a id="line.562">            try {</a>
+<span class="sourceLineNo">563</span><a id="line.563">                URI uri = new URI(str);</a>
+<span class="sourceLineNo">564</span><a id="line.564">                priorityList.add(uri);</a>
+<span class="sourceLineNo">565</span><a id="line.565">            } catch (Exception e) {</a>
+<span class="sourceLineNo">566</span><a id="line.566">                LOG.error("Failed to parse broker address: " + str, e);</a>
+<span class="sourceLineNo">567</span><a id="line.567">            }</a>
+<span class="sourceLineNo">568</span><a id="line.568">        }</a>
+<span class="sourceLineNo">569</span><a id="line.569">    }</a>
+<span class="sourceLineNo">570</span><a id="line.570"></a>
+<span class="sourceLineNo">571</span><a id="line.571">    @Override</a>
+<span class="sourceLineNo">572</span><a id="line.572">    public void oneway(Object o) throws IOException {</a>
+<span class="sourceLineNo">573</span><a id="line.573"></a>
+<span class="sourceLineNo">574</span><a id="line.574">        Command command = (Command) o;</a>
+<span class="sourceLineNo">575</span><a id="line.575">        Exception error = null;</a>
+<span class="sourceLineNo">576</span><a id="line.576">        try {</a>
+<span class="sourceLineNo">577</span><a id="line.577"></a>
+<span class="sourceLineNo">578</span><a id="line.578">            synchronized (reconnectMutex) {</a>
+<span class="sourceLineNo">579</span><a id="line.579"></a>
+<span class="sourceLineNo">580</span><a id="line.580">                if (command != null &amp;&amp; connectedTransport.get() == null) {</a>
+<span class="sourceLineNo">581</span><a id="line.581">                    if (command.isShutdownInfo()) {</a>
+<span class="sourceLineNo">582</span><a id="line.582">                        // Skipping send of ShutdownInfo command when not connected.</a>
+<span class="sourceLineNo">583</span><a id="line.583">                        return;</a>
+<span class="sourceLineNo">584</span><a id="line.584">                    } else if (command instanceof RemoveInfo || command.isMessageAck()) {</a>
+<span class="sourceLineNo">585</span><a id="line.585">                        // Simulate response to RemoveInfo command or MessageAck (as it will be stale)</a>
+<span class="sourceLineNo">586</span><a id="line.586">                        stateTracker.track(command);</a>
+<span class="sourceLineNo">587</span><a id="line.587">                        if (command.isResponseRequired()) {</a>
+<span class="sourceLineNo">588</span><a id="line.588">                            Response response = new Response();</a>
+<span class="sourceLineNo">589</span><a id="line.589">                            response.setCorrelationId(command.getCommandId());</a>
+<span class="sourceLineNo">590</span><a id="line.590">                            processCommand(response);</a>
+<span class="sourceLineNo">591</span><a id="line.591">                        }</a>
+<span class="sourceLineNo">592</span><a id="line.592">                        return;</a>
+<span class="sourceLineNo">593</span><a id="line.593">                    } else if (command instanceof MessagePull) {</a>
+<span class="sourceLineNo">594</span><a id="line.594">                        // Simulate response to MessagePull if timed as we can't honor that now.</a>
+<span class="sourceLineNo">595</span><a id="line.595">                        MessagePull pullRequest = (MessagePull) command;</a>
+<span class="sourceLineNo">596</span><a id="line.596">                        if (pullRequest.getTimeout() != 0) {</a>
+<span class="sourceLineNo">597</span><a id="line.597">                            MessageDispatch dispatch = new MessageDispatch();</a>
+<span class="sourceLineNo">598</span><a id="line.598">                            dispatch.setConsumerId(pullRequest.getConsumerId());</a>
+<span class="sourceLineNo">599</span><a id="line.599">                            dispatch.setDestination(pullRequest.getDestination());</a>
+<span class="sourceLineNo">600</span><a id="line.600">                            processCommand(dispatch);</a>
+<span class="sourceLineNo">601</span><a id="line.601">                        }</a>
+<span class="sourceLineNo">602</span><a id="line.602">                        return;</a>
+<span class="sourceLineNo">603</span><a id="line.603">                    }</a>
+<span class="sourceLineNo">604</span><a id="line.604">                }</a>
+<span class="sourceLineNo">605</span><a id="line.605"></a>
+<span class="sourceLineNo">606</span><a id="line.606">                // Keep trying until the message is sent.</a>
+<span class="sourceLineNo">607</span><a id="line.607">                for (int i = 0; !disposed; i++) {</a>
+<span class="sourceLineNo">608</span><a id="line.608">                    try {</a>
+<span class="sourceLineNo">609</span><a id="line.609"></a>
+<span class="sourceLineNo">610</span><a id="line.610">                        // Wait for transport to be connected.</a>
+<span class="sourceLineNo">611</span><a id="line.611">                        Transport transport = connectedTransport.get();</a>
+<span class="sourceLineNo">612</span><a id="line.612">                        long start = System.currentTimeMillis();</a>
+<span class="sourceLineNo">613</span><a id="line.613">                        boolean timedout = false;</a>
+<span class="sourceLineNo">614</span><a id="line.614">                        while (transport == null &amp;&amp; !disposed &amp;&amp; connectionFailure == null</a>
+<span class="sourceLineNo">615</span><a id="line.615">                                &amp;&amp; !Thread.currentThread().isInterrupted() &amp;&amp; willReconnect()) {</a>
+<span class="sourceLineNo">616</span><a id="line.616"></a>
+<span class="sourceLineNo">617</span><a id="line.617">                            LOG.trace("Waiting for transport to reconnect..: {}", command);</a>
+<span class="sourceLineNo">618</span><a id="line.618">                            long end = System.currentTimeMillis();</a>
+<span class="sourceLineNo">619</span><a id="line.619">                            if (command.isMessage() &amp;&amp; timeout &gt; 0 &amp;&amp; (end - start &gt; timeout)) {</a>
+<span class="sourceLineNo">620</span><a id="line.620">                                timedout = true;</a>
+<span class="sourceLineNo">621</span><a id="line.621">                                LOG.info("Failover timed out after {} ms", (end - start));</a>
+<span class="sourceLineNo">622</span><a id="line.622">                                break;</a>
+<span class="sourceLineNo">623</span><a id="line.623">                            }</a>
+<span class="sourceLineNo">624</span><a id="line.624">                            try {</a>
+<span class="sourceLineNo">625</span><a id="line.625">                                reconnectMutex.wait(100);</a>
+<span class="sourceLineNo">626</span><a id="line.626">                            } catch (InterruptedException e) {</a>
+<span class="sourceLineNo">627</span><a id="line.627">                                Thread.currentThread().interrupt();</a>
+<span class="sourceLineNo">628</span><a id="line.628">                                LOG.debug("Interupted:", e);</a>
+<span class="sourceLineNo">629</span><a id="line.629">                            }</a>
+<span class="sourceLineNo">630</span><a id="line.630">                            transport = connectedTransport.get();</a>
+<span class="sourceLineNo">631</span><a id="line.631">                        }</a>
+<span class="sourceLineNo">632</span><a id="line.632"></a>
+<span class="sourceLineNo">633</span><a id="line.633">                        if (transport == null) {</a>
+<span class="sourceLineNo">634</span><a id="line.634">                            // Previous loop may have exited due to use being</a>
+<span class="sourceLineNo">635</span><a id="line.635">                            // disposed.</a>
+<span class="sourceLineNo">636</span><a id="line.636">                            if (disposed) {</a>
+<span class="sourceLineNo">637</span><a id="line.637">                                error = new IOException("Transport disposed.");</a>
+<span class="sourceLineNo">638</span><a id="line.638">                            } else if (connectionFailure != null) {</a>
+<span class="sourceLineNo">639</span><a id="line.639">                                error = connectionFailure;</a>
+<span class="sourceLineNo">640</span><a id="line.640">                            } else if (timedout == true) {</a>
+<span class="sourceLineNo">641</span><a id="line.641">                                error = new IOException("Failover timeout of " + timeout + " ms reached.");</a>
+<span class="sourceLineNo">642</span><a id="line.642">                            } else if (!willReconnect()) {</a>
+<span class="sourceLineNo">643</span><a id="line.643">                                error = new IOException("Reconnect attempts of " + maxReconnectAttempts + " exceeded");</a>
+<span class="sourceLineNo">644</span><a id="line.644">                            } else {</a>
+<span class="sourceLineNo">645</span><a id="line.645">                                error = new IOException("Unexpected failure.");</a>
+<span class="sourceLineNo">646</span><a id="line.646">                            }</a>
+<span class="sourceLineNo">647</span><a id="line.647">                            break;</a>
+<span class="sourceLineNo">648</span><a id="line.648">                        }</a>
+<span class="sourceLineNo">649</span><a id="line.649"></a>
+<span class="sourceLineNo">650</span><a id="line.650">                        Tracked tracked = null;</a>
+<span class="sourceLineNo">651</span><a id="line.651">                        try {</a>
+<span class="sourceLineNo">652</span><a id="line.652">                            tracked = stateTracker.track(command);</a>
+<span class="sourceLineNo">653</span><a id="line.653">                        } catch (IOException ioe) {</a>
+<span class="sourceLineNo">654</span><a id="line.654">                            LOG.debug("Cannot track the command {} {}", command, ioe);</a>
+<span class="sourceLineNo">655</span><a id="line.655">                        }</a>
+<span class="sourceLineNo">656</span><a id="line.656">                        // If it was a request and it was not being tracked by</a>
+<span class="sourceLineNo">657</span><a id="line.657">                        // the state tracker,</a>
+<span class="sourceLineNo">658</span><a id="line.658">                        // then hold it in the requestMap so that we can replay</a>
+<span class="sourceLineNo">659</span><a id="line.659">                        // it later.</a>
+<span class="sourceLineNo">660</span><a id="line.660">                        synchronized (requestMap) {</a>
+<span class="sourceLineNo">661</span><a id="line.661">                            if (tracked != null &amp;&amp; tracked.isWaitingForResponse()) {</a>
+<span class="sourceLineNo">662</span><a id="line.662">                                requestMap.put(Integer.valueOf(command.getCommandId()), tracked);</a>
+<span class="sourceLineNo">663</span><a id="line.663">                            } else if (tracked == null &amp;&amp; command.isResponseRequired()) {</a>
+<span class="sourceLineNo">664</span><a id="line.664">                                requestMap.put(Integer.valueOf(command.getCommandId()), command);</a>
+<span class="sourceLineNo">665</span><a id="line.665">                            }</a>
+<span class="sourceLineNo">666</span><a id="line.666">                        }</a>
+<span class="sourceLineNo">667</span><a id="line.667"></a>
+<span class="sourceLineNo">668</span><a id="line.668">                        // Send the message.</a>
+<span class="sourceLineNo">669</span><a id="line.669">                        try {</a>
+<span class="sourceLineNo">670</span><a id="line.670">                            transport.oneway(command);</a>
+<span class="sourceLineNo">671</span><a id="line.671">                            stateTracker.trackBack(command);</a>
+<span class="sourceLineNo">672</span><a id="line.672">                            if (command.isShutdownInfo()) {</a>
+<span class="sourceLineNo">673</span><a id="line.673">                                shuttingDown = true;</a>
+<span class="sourceLineNo">674</span><a id="line.674">                            }</a>
+<span class="sourceLineNo">675</span><a id="line.675">                        } catch (IOException e) {</a>
+<span class="sourceLineNo">676</span><a id="line.676"></a>
+<span class="sourceLineNo">677</span><a id="line.677">                            // If the command was not tracked.. we will retry in</a>
+<span class="sourceLineNo">678</span><a id="line.678">                            // this method</a>
+<span class="sourceLineNo">679</span><a id="line.679">                            if (tracked == null &amp;&amp; canReconnect()) {</a>
+<span class="sourceLineNo">680</span><a id="line.680"></a>
+<span class="sourceLineNo">681</span><a id="line.681">                                // since we will retry in this method.. take it</a>
+<span class="sourceLineNo">682</span><a id="line.682">                                // out of the request</a>
+<span class="sourceLineNo">683</span><a id="line.683">                                // map so that it is not sent 2 times on</a>
+<span class="sourceLineNo">684</span><a id="line.684">                                // recovery</a>
+<span class="sourceLineNo">685</span><a id="line.685">                                if (command.isResponseRequired()) {</a>
+<span class="sourceLineNo">686</span><a id="line.686">                                    requestMap.remove(Integer.valueOf(command.getCommandId()));</a>
+<span class="sourceLineNo">687</span><a id="line.687">                                }</a>
+<span class="sourceLineNo">688</span><a id="line.688"></a>
+<span class="sourceLineNo">689</span><a id="line.689">                                // Rethrow the exception so it will handled by</a>
+<span class="sourceLineNo">690</span><a id="line.690">                                // the outer catch</a>
+<span class="sourceLineNo">691</span><a id="line.691">                                throw e;</a>
+<span class="sourceLineNo">692</span><a id="line.692">                            } else {</a>
+<span class="sourceLineNo">693</span><a id="line.693">                                // Handle the error but allow the method to return since the</a>
+<span class="sourceLineNo">694</span><a id="line.694">                                // tracked commands are replayed on reconnect.</a>
+<span class="sourceLineNo">695</span><a id="line.695">                                LOG.debug("Send oneway attempt: {} failed for command: {}", i, command);</a>
+<span class="sourceLineNo">696</span><a id="line.696">                                handleTransportFailure(e);</a>
+<span class="sourceLineNo">697</span><a id="line.697">                            }</a>
+<span class="sourceLineNo">698</span><a id="line.698">                        }</a>
+<span class="sourceLineNo">699</span><a id="line.699"></a>
+<span class="sourceLineNo">700</span><a id="line.700">                        return;</a>
+<span class="sourceLineNo">701</span><a id="line.701">                    } catch (MaxFrameSizeExceededException e) {</a>
+<span class="sourceLineNo">702</span><a id="line.702">                        LOG.debug("MaxFrameSizeExceededException for command: {}", command);</a>
+<span class="sourceLineNo">703</span><a id="line.703">                        throw e;</a>
+<span class="sourceLineNo">704</span><a id="line.704">                    } catch (IOException e) {</a>
+<span class="sourceLineNo">705</span><a id="line.705">                        LOG.debug("Send oneway attempt: {} failed for command: {}", i, command);</a>
+<span class="sourceLineNo">706</span><a id="line.706">                        handleTransportFailure(e);</a>
+<span class="sourceLineNo">707</span><a id="line.707">                    }</a>
+<span class="sourceLineNo">708</span><a id="line.708">                }</a>
+<span class="sourceLineNo">709</span><a id="line.709">            }</a>
+<span class="sourceLineNo">710</span><a id="line.710">        } catch (InterruptedException e) {</a>
+<span class="sourceLineNo">711</span><a id="line.711">            // Some one may be trying to stop our thread.</a>
+<span class="sourceLineNo">712</span><a id="line.712">            Thread.currentThread().interrupt();</a>
+<span class="sourceLineNo">713</span><a id="line.713">            throw new InterruptedIOException();</a>
+<span class="sourceLineNo">714</span><a id="line.714">        }</a>
+<span class="sourceLineNo">715</span><a id="line.715"></a>
+<span class="sourceLineNo">716</span><a id="line.716">        if (!disposed) {</a>
+<span class="sourceLineNo">717</span><a id="line.717">            if (error != null) {</a>
+<span class="sourceLineNo">718</span><a id="line.718">                if (error instanceof IOException) {</a>
+<span class="sourceLineNo">719</span><a id="line.719">                    throw (IOException) error;</a>
+<span class="sourceLineNo">720</span><a id="line.720">                }</a>
+<span class="sourceLineNo">721</span><a id="line.721">                throw IOExceptionSupport.create(error);</a>
+<span class="sourceLineNo">722</span><a id="line.722">            }</a>
+<span class="sourceLineNo">723</span><a id="line.723">        }</a>
+<span class="sourceLineNo">724</span><a id="line.724">    }</a>
+<span class="sourceLineNo">725</span><a id="line.725"></a>
+<span class="sourceLineNo">726</span><a id="line.726">    private boolean willReconnect() {</a>
+<span class="sourceLineNo">727</span><a id="line.727">        return firstConnection || 0 != calculateReconnectAttemptLimit();</a>
+<span class="sourceLineNo">728</span><a id="line.728">    }</a>
+<span class="sourceLineNo">729</span><a id="line.729"></a>
+<span class="sourceLineNo">730</span><a id="line.730">    @Override</a>
+<span class="sourceLineNo">731</span><a id="line.731">    public FutureResponse asyncRequest(Object command, ResponseCallback responseCallback) throws IOException {</a>
+<span class="sourceLineNo">732</span><a id="line.732">        throw new AssertionError("Unsupported Method");</a>
+<span class="sourceLineNo">733</span><a id="line.733">    }</a>
+<span class="sourceLineNo">734</span><a id="line.734"></a>
+<span class="sourceLineNo">735</span><a id="line.735">    @Override</a>
+<span class="sourceLineNo">736</span><a id="line.736">    public Object request(Object command) throws IOException {</a>
+<span class="sourceLineNo">737</span><a id="line.737">        throw new AssertionError("Unsupported Method");</a>
+<span class="sourceLineNo">738</span><a id="line.738">    }</a>
+<span class="sourceLineNo">739</span><a id="line.739"></a>
+<span class="sourceLineNo">740</span><a id="line.740">    @Override</a>
+<span class="sourceLineNo">741</span><a id="line.741">    public Object request(Object command, int timeout) throws IOException {</a>
+<span class="sourceLineNo">742</span><a id="line.742">        throw new AssertionError("Unsupported Method");</a>
+<span class="sourceLineNo">743</span><a id="line.743">    }</a>
+<span class="sourceLineNo">744</span><a id="line.744"></a>
+<span class="sourceLineNo">745</span><a id="line.745">    @Override</a>
+<span class="sourceLineNo">746</span><a id="line.746">    public void add(boolean rebalance, URI u[]) {</a>
+<span class="sourceLineNo">747</span><a id="line.747">        boolean newURI = false;</a>
+<span class="sourceLineNo">748</span><a id="line.748">        for (URI uri : u) {</a>
+<span class="sourceLineNo">749</span><a id="line.749">            if (!contains(uri)) {</a>
+<span class="sourceLineNo">750</span><a id="line.750">                uris.add(uri);</a>
+<span class="sourceLineNo">751</span><a id="line.751">                newURI = true;</a>
+<span class="sourceLineNo">752</span><a id="line.752">            }</a>
+<span class="sourceLineNo">753</span><a id="line.753">        }</a>
+<span class="sourceLineNo">754</span><a id="line.754">        if (newURI) {</a>
+<span class="sourceLineNo">755</span><a id="line.755">            reconnect(rebalance);</a>
+<span class="sourceLineNo">756</span><a id="line.756">        }</a>
+<span class="sourceLineNo">757</span><a id="line.757">    }</a>
+<span class="sourceLineNo">758</span><a id="line.758">    </a>
+<span class="sourceLineNo">759</span><a id="line.759"></a>
+<span class="sourceLineNo">760</span><a id="line.760">    @Override</a>
+<span class="sourceLineNo">761</span><a id="line.761">    public void remove(boolean rebalance, URI u[]) {</a>
+<span class="sourceLineNo">762</span><a id="line.762">        for (URI uri : u) {</a>
+<span class="sourceLineNo">763</span><a id="line.763">            uris.remove(uri);</a>
+<span class="sourceLineNo">764</span><a id="line.764">        }</a>
+<span class="sourceLineNo">765</span><a id="line.765">        // rebalance is automatic if any connected to removed/stopped broker</a>
+<span class="sourceLineNo">766</span><a id="line.766">    }</a>
+<span class="sourceLineNo">767</span><a id="line.767"></a>
+<span class="sourceLineNo">768</span><a id="line.768">    public void add(boolean rebalance, String u) {</a>
+<span class="sourceLineNo">769</span><a id="line.769">        try {</a>
+<span class="sourceLineNo">770</span><a id="line.770">            URI newURI = new URI(u);</a>
+<span class="sourceLineNo">771</span><a id="line.771">            if (contains(newURI) == false) {</a>
+<span class="sourceLineNo">772</span><a id="line.772">                uris.add(newURI);</a>
+<span class="sourceLineNo">773</span><a id="line.773">                reconnect(rebalance);</a>
+<span class="sourceLineNo">774</span><a id="line.774">            }</a>
+<span class="sourceLineNo">775</span><a id="line.775"></a>
+<span class="sourceLineNo">776</span><a id="line.776">        } catch (Exception e) {</a>
+<span class="sourceLineNo">777</span><a id="line.777">            LOG.error("Failed to parse URI: {}", u);</a>
+<span class="sourceLineNo">778</span><a id="line.778">        }</a>
+<span class="sourceLineNo">779</span><a id="line.779">    }</a>
+<span class="sourceLineNo">780</span><a id="line.780"></a>
+<span class="sourceLineNo">781</span><a id="line.781">    public void reconnect(boolean rebalance) {</a>
+<span class="sourceLineNo">782</span><a id="line.782">        synchronized (reconnectMutex) {</a>
+<span class="sourceLineNo">783</span><a id="line.783">            if (started) {</a>
+<span class="sourceLineNo">784</span><a id="line.784">                if (rebalance) {</a>
+<span class="sourceLineNo">785</span><a id="line.785">                    doRebalance = true;</a>
+<span class="sourceLineNo">786</span><a id="line.786">                }</a>
+<span class="sourceLineNo">787</span><a id="line.787">                LOG.debug("Waking up reconnect task");</a>
+<span class="sourceLineNo">788</span><a id="line.788">                try {</a>
+<span class="sourceLineNo">789</span><a id="line.789">                    reconnectTask.wakeup();</a>
+<span class="sourceLineNo">790</span><a id="line.790">                } catch (InterruptedException e) {</a>
+<span class="sourceLineNo">791</span><a id="line.791">                    Thread.currentThread().interrupt();</a>
+<span class="sourceLineNo">792</span><a id="line.792">                }</a>
+<span class="sourceLineNo">793</span><a id="line.793">            } else {</a>
+<span class="sourceLineNo">794</span><a id="line.794">                LOG.debug("Reconnect was triggered but transport is not started yet. Wait for start to connect the transport.");</a>
+<span class="sourceLineNo">795</span><a id="line.795">            }</a>
+<span class="sourceLineNo">796</span><a id="line.796">        }</a>
+<span class="sourceLineNo">797</span><a id="line.797">    }</a>
+<span class="sourceLineNo">798</span><a id="line.798"></a>
+<span class="sourceLineNo">799</span><a id="line.799">    private List&lt;URI&gt; getConnectList() {</a>
+<span class="sourceLineNo">800</span><a id="line.800">        // updated have precedence</a>
+<span class="sourceLineNo">801</span><a id="line.801">        LinkedHashSet&lt;URI&gt; uniqueUris = new LinkedHashSet&lt;URI&gt;(updated);</a>
+<span class="sourceLineNo">802</span><a id="line.802">        uniqueUris.addAll(uris);</a>
+<span class="sourceLineNo">803</span><a id="line.803"></a>
+<span class="sourceLineNo">804</span><a id="line.804">        boolean removed = false;</a>
+<span class="sourceLineNo">805</span><a id="line.805">        if (failedConnectTransportURI != null) {</a>
+<span class="sourceLineNo">806</span><a id="line.806">            removed = uniqueUris.remove(failedConnectTransportURI);</a>
+<span class="sourceLineNo">807</span><a id="line.807">        }</a>
+<span class="sourceLineNo">808</span><a id="line.808"></a>
+<span class="sourceLineNo">809</span><a id="line.809">        ArrayList&lt;URI&gt; l = new ArrayList&lt;URI&gt;(uniqueUris);</a>
+<span class="sourceLineNo">810</span><a id="line.810">        if (randomize) {</a>
+<span class="sourceLineNo">811</span><a id="line.811">            // Randomly, reorder the list by random swapping</a>
+<span class="sourceLineNo">812</span><a id="line.812">            for (int i = 0; i &lt; l.size(); i++) {</a>
+<span class="sourceLineNo">813</span><a id="line.813">                // meed parenthesis due other JDKs (see AMQ-4826)</a>
+<span class="sourceLineNo">814</span><a id="line.814">                int p = ((int) (Math.random() * 100)) % l.size();</a>
+<span class="sourceLineNo">815</span><a id="line.815">                URI t = l.get(p);</a>
+<span class="sourceLineNo">816</span><a id="line.816">                l.set(p, l.get(i));</a>
+<span class="sourceLineNo">817</span><a id="line.817">                l.set(i, t);</a>
+<span class="sourceLineNo">818</span><a id="line.818">            }</a>
+<span class="sourceLineNo">819</span><a id="line.819">        }</a>
+<span class="sourceLineNo">820</span><a id="line.820">        if (removed) {</a>
+<span class="sourceLineNo">821</span><a id="line.821">            l.add(failedConnectTransportURI);</a>
+<span class="sourceLineNo">822</span><a id="line.822">        }</a>
+<span class="sourceLineNo">823</span><a id="line.823"></a>
+<span class="sourceLineNo">824</span><a id="line.824">        LOG.debug("urlList connectionList:{}, from: {}", l, uniqueUris);</a>
+<span class="sourceLineNo">825</span><a id="line.825"></a>
+<span class="sourceLineNo">826</span><a id="line.826">        return l;</a>
+<span class="sourceLineNo">827</span><a id="line.827">    }</a>
+<span class="sourceLineNo">828</span><a id="line.828"></a>
+<span class="sourceLineNo">829</span><a id="line.829">    @Override</a>
+<span class="sourceLineNo">830</span><a id="line.830">    public TransportListener getTransportListener() {</a>
+<span class="sourceLineNo">831</span><a id="line.831">        return transportListener;</a>
+<span class="sourceLineNo">832</span><a id="line.832">    }</a>
+<span class="sourceLineNo">833</span><a id="line.833"></a>
+<span class="sourceLineNo">834</span><a id="line.834">    @Override</a>
+<span class="sourceLineNo">835</span><a id="line.835">    public void setTransportListener(TransportListener commandListener) {</a>
+<span class="sourceLineNo">836</span><a id="line.836">        synchronized (listenerMutex) {</a>
+<span class="sourceLineNo">837</span><a id="line.837">            this.transportListener = commandListener;</a>
+<span class="sourceLineNo">838</span><a id="line.838">            listenerMutex.notifyAll();</a>
+<span class="sourceLineNo">839</span><a id="line.839">        }</a>
+<span class="sourceLineNo">840</span><a id="line.840">    }</a>
+<span class="sourceLineNo">841</span><a id="line.841"></a>
+<span class="sourceLineNo">842</span><a id="line.842">    @Override</a>
+<span class="sourceLineNo">843</span><a id="line.843">    public &lt;T&gt; T narrow(Class&lt;T&gt; target) {</a>
+<span class="sourceLineNo">844</span><a id="line.844">        if (target.isAssignableFrom(getClass())) {</a>
+<span class="sourceLineNo">845</span><a id="line.845">            return target.cast(this);</a>
+<span class="sourceLineNo">846</span><a id="line.846">        }</a>
+<span class="sourceLineNo">847</span><a id="line.847">        Transport transport = connectedTransport.get();</a>
+<span class="sourceLineNo">848</span><a id="line.848">        if (transport != null) {</a>
+<span class="sourceLineNo">849</span><a id="line.849">            return transport.narrow(target);</a>
+<span class="sourceLineNo">850</span><a id="line.850">        }</a>
+<span class="sourceLineNo">851</span><a id="line.851">        return null;</a>
+<span class="sourceLineNo">852</span><a id="line.852">    }</a>
+<span class="sourceLineNo">853</span><a id="line.853"></a>
+<span class="sourceLineNo">854</span><a id="line.854">    protected void restoreTransport(Transport t) throws Exception, IOException {</a>
+<span class="sourceLineNo">855</span><a id="line.855">        t.start();</a>
+<span class="sourceLineNo">856</span><a id="line.856">        // send information to the broker - informing it we are an ft client</a>
+<span class="sourceLineNo">857</span><a id="line.857">        ConnectionControl cc = new ConnectionControl();</a>
+<span class="sourceLineNo">858</span><a id="line.858">        cc.setFaultTolerant(true);</a>
+<span class="sourceLineNo">859</span><a id="line.859">        t.oneway(cc);</a>
+<span class="sourceLineNo">860</span><a id="line.860">        stateTracker.restore(t);</a>
+<span class="sourceLineNo">861</span><a id="line.861">        Map&lt;Integer, Command&gt; tmpMap = null;</a>
+<span class="sourceLineNo">862</span><a id="line.862">        synchronized (requestMap) {</a>
+<span class="sourceLineNo">863</span><a id="line.863">            tmpMap = new LinkedHashMap&lt;Integer, Command&gt;(requestMap);</a>
+<span class="sourceLineNo">864</span><a id="line.864">        }</a>
+<span class="sourceLineNo">865</span><a id="line.865">        for (Command command : tmpMap.values()) {</a>
+<span class="sourceLineNo">866</span><a id="line.866">            LOG.trace("restore requestMap, replay: {}", command);</a>
+<span class="sourceLineNo">867</span><a id="line.867">            t.oneway(command);</a>
+<span class="sourceLineNo">868</span><a id="line.868">        }</a>
+<span class="sourceLineNo">869</span><a id="line.869">    }</a>
+<span class="sourceLineNo">870</span><a id="line.870"></a>
+<span class="sourceLineNo">871</span><a id="line.871">    public boolean isUseExponentialBackOff() {</a>
+<span class="sourceLineNo">872</span><a id="line.872">        return useExponentialBackOff;</a>
+<span class="sourceLineNo">873</span><a id="line.873">    }</a>
+<span class="sourceLineNo">874</span><a id="line.874"></a>
+<span class="sourceLineNo">875</span><a id="line.875">    public void setUseExponentialBackOff(boolean useExponentialBackOff) {</a>
+<span class="sourceLineNo">876</span><a id="line.876">        this.useExponentialBackOff = useExponentialBackOff;</a>
+<span class="sourceLineNo">877</span><a id="line.877">    }</a>
+<span class="sourceLineNo">878</span><a id="line.878"></a>
+<span class="sourceLineNo">879</span><a id="line.879">    @Override</a>
+<span class="sourceLineNo">880</span><a id="line.880">    public String toString() {</a>
+<span class="sourceLineNo">881</span><a id="line.881">        return connectedTransportURI == null ? "unconnected" : connectedTransportURI.toString();</a>
+<span class="sourceLineNo">882</span><a id="line.882">    }</a>
+<span class="sourceLineNo">883</span><a id="line.883"></a>
+<span class="sourceLineNo">884</span><a id="line.884">    @Override</a>
+<span class="sourceLineNo">885</span><a id="line.885">    public String getRemoteAddress() {</a>
+<span class="sourceLineNo">886</span><a id="line.886">        Transport transport = connectedTransport.get();</a>
+<span class="sourceLineNo">887</span><a id="line.887">        if (transport != null) {</a>
+<span class="sourceLineNo">888</span><a id="line.888">            return transport.getRemoteAddress();</a>
+<span class="sourceLineNo">889</span><a id="line.889">        }</a>
+<span class="sourceLineNo">890</span><a id="line.890">        return null;</a>
+<span class="sourceLineNo">891</span><a id="line.891">    }</a>
+<span class="sourceLineNo">892</span><a id="line.892"></a>
+<span class="sourceLineNo">893</span><a id="line.893">    @Override</a>
+<span class="sourceLineNo">894</span><a id="line.894">    public boolean isFaultTolerant() {</a>
+<span class="sourceLineNo">895</span><a id="line.895">        return true;</a>
+<span class="sourceLineNo">896</span><a id="line.896">    }</a>
+<span class="sourceLineNo">897</span><a id="line.897"></a>
+<span class="sourceLineNo">898</span><a id="line.898">    private void doUpdateURIsFromDisk() {</a>
+<span class="sourceLineNo">899</span><a id="line.899">        // If updateURIsURL is specified, read the file and add any new</a>
+<span class="sourceLineNo">900</span><a id="line.900">        // transport URI's to this FailOverTransport.</a>
+<span class="sourceLineNo">901</span><a id="line.901">        // Note: Could track file timestamp to avoid unnecessary reading.</a>
+<span class="sourceLineNo">902</span><a id="line.902">        String fileURL = getUpdateURIsURL();</a>
+<span class="sourceLineNo">903</span><a id="line.903">        if (fileURL != null) {</a>
+<span class="sourceLineNo">904</span><a id="line.904">            BufferedReader in = null;</a>
+<span class="sourceLineNo">905</span><a id="line.905">            String newUris = null;</a>
+<span class="sourceLineNo">906</span><a id="line.906">            StringBuffer buffer = new StringBuffer();</a>
+<span class="sourceLineNo">907</span><a id="line.907"></a>
+<span class="sourceLineNo">908</span><a id="line.908">            try {</a>
+<span class="sourceLineNo">909</span><a id="line.909">                in = new BufferedReader(getURLStream(fileURL));</a>
+<span class="sourceLineNo">910</span><a id="line.910">                while (true) {</a>
+<span class="sourceLineNo">911</span><a id="line.911">                    String line = in.readLine();</a>
+<span class="sourceLineNo">912</span><a id="line.912">                    if (line == null) {</a>
+<span class="sourceLineNo">913</span><a id="line.913">                        break;</a>
+<span class="sourceLineNo">914</span><a id="line.914">                    }</a>
+<span class="sourceLineNo">915</span><a id="line.915">                    buffer.append(line);</a>
+<span class="sourceLineNo">916</span><a id="line.916">                }</a>
+<span class="sourceLineNo">917</span><a id="line.917">                newUris = buffer.toString();</a>
+<span class="sourceLineNo">918</span><a id="line.918">            } catch (IOException ioe) {</a>
+<span class="sourceLineNo">919</span><a id="line.919">                LOG.error("Failed to read updateURIsURL: {} {}",fileURL, ioe);</a>
+<span class="sourceLineNo">920</span><a id="line.920">            } finally {</a>
+<span class="sourceLineNo">921</span><a id="line.921">                if (in != null) {</a>
+<span class="sourceLineNo">922</span><a id="line.922">                    try {</a>
+<span class="sourceLineNo">923</span><a id="line.923">                        in.close();</a>
+<span class="sourceLineNo">924</span><a id="line.924">                    } catch (IOException ioe) {</a>
+<span class="sourceLineNo">925</span><a id="line.925">                        // ignore</a>
+<span class="sourceLineNo">926</span><a id="line.926">                    }</a>
+<span class="sourceLineNo">927</span><a id="line.927">                }</a>
+<span class="sourceLineNo">928</span><a id="line.928">            }</a>
+<span class="sourceLineNo">929</span><a id="line.929"></a>
+<span class="sourceLineNo">930</span><a id="line.930">            processNewTransports(isRebalanceUpdateURIs(), newUris);</a>
+<span class="sourceLineNo">931</span><a id="line.931">        }</a>
+<span class="sourceLineNo">932</span><a id="line.932">    }</a>
+<span class="sourceLineNo">933</span><a id="line.933"></a>
+<span class="sourceLineNo">934</span><a id="line.934">    final boolean doReconnect() {</a>
+<span class="sourceLineNo">935</span><a id="line.935">        Exception failure = null;</a>
+<span class="sourceLineNo">936</span><a id="line.936">        synchronized (reconnectMutex) {</a>
+<span class="sourceLineNo">937</span><a id="line.937">            List&lt;URI&gt; connectList = null;</a>
+<span class="sourceLineNo">938</span><a id="line.938">            // First ensure we are up to date.</a>
+<span class="sourceLineNo">939</span><a id="line.939">            doUpdateURIsFromDisk();</a>
+<span class="sourceLineNo">940</span><a id="line.940"></a>
+<span class="sourceLineNo">941</span><a id="line.941">            if (disposed || connectionFailure != null) {</a>
+<span class="sourceLineNo">942</span><a id="line.942">                reconnectMutex.notifyAll();</a>
+<span class="sourceLineNo">943</span><a id="line.943">            }</a>
+<span class="sourceLineNo">944</span><a id="line.944">            if ((connectedTransport.get() != null &amp;&amp; !doRebalance &amp;&amp; !priorityBackupAvailable) || disposed || connectionFailure != null) {</a>
+<span class="sourceLineNo">945</span><a id="line.945">                return false;</a>
+<span class="sourceLineNo">946</span><a id="line.946">            } else {</a>
+<span class="sourceLineNo">947</span><a id="line.947">                connectList = getConnectList();</a>
+<span class="sourceLineNo">948</span><a id="line.948">                if (connectList.isEmpty()) {</a>
+<span class="sourceLineNo">949</span><a id="line.949">                    failure = new IOException("No uris available to connect to.");</a>
+<span class="sourceLineNo">950</span><a id="line.950">                } else {</a>
+<span class="sourceLineNo">951</span><a id="line.951">                    if (doRebalance) {</a>
+<span class="sourceLineNo">952</span><a id="line.952">                        if (connectedToPriority || (!doReconnect &amp;&amp; compareURIs(connectList.get(0), connectedTransportURI))) {</a>
+<span class="sourceLineNo">953</span><a id="line.953">                            // already connected to first in the list, no need to rebalance</a>
+<span class="sourceLineNo">954</span><a id="line.954">                            doRebalance = false;</a>
+<span class="sourceLineNo">955</span><a id="line.955">                            return false;</a>
+<span class="sourceLineNo">956</span><a id="line.956">                        } else {</a>
+<span class="sourceLineNo">957</span><a id="line.957">                            LOG.debug("Doing rebalance from: {} to {}", connectedTransportURI, connectList);</a>
+<span class="sourceLineNo">958</span><a id="line.958"></a>
+<span class="sourceLineNo">959</span><a id="line.959">                            try {</a>
+<span class="sourceLineNo">960</span><a id="line.960">                                Transport transport = this.connectedTransport.getAndSet(null);</a>
+<span class="sourceLineNo">961</span><a id="line.961">                                if (transport != null) {</a>
+<span class="sourceLineNo">962</span><a id="line.962">                                    disposeTransport(transport);</a>
+<span class="sourceLineNo">963</span><a id="line.963">                                }</a>
+<span class="sourceLineNo">964</span><a id="line.964">                            } catch (Exception e) {</a>
+<span class="sourceLineNo">965</span><a id="line.965">                                LOG.debug("Caught an exception stopping existing transport for rebalance", e);</a>
+<span class="sourceLineNo">966</span><a id="line.966">                            }</a>
+<span class="sourceLineNo">967</span><a id="line.967">                            doReconnect = false;</a>
+<span class="sourceLineNo">968</span><a id="line.968">                        }</a>
+<span class="sourceLineNo">969</span><a id="line.969">                        doRebalance = false;</a>
+<span class="sourceLineNo">970</span><a id="line.970">                    }</a>
+<span class="sourceLineNo">971</span><a id="line.971"></a>
+<span class="sourceLineNo">972</span><a id="line.972">                    resetReconnectDelay();</a>
+<span class="sourceLineNo">973</span><a id="line.973"></a>
+<span class="sourceLineNo">974</span><a id="line.974">                    Transport transport = null;</a>
+<span class="sourceLineNo">975</span><a id="line.975">                    URI uri = null;</a>
+<span class="sourceLineNo">976</span><a id="line.976"></a>
+<span class="sourceLineNo">977</span><a id="line.977">                    // If we have a backup already waiting lets try it.</a>
+<span class="sourceLineNo">978</span><a id="line.978">                    synchronized (backupMutex) {</a>
+<span class="sourceLineNo">979</span><a id="line.979">                        if ((priorityBackup || backup) &amp;&amp; !backups.isEmpty()) {</a>
+<span class="sourceLineNo">980</span><a id="line.980">                            ArrayList&lt;BackupTransport&gt; l = new ArrayList&lt;BackupTransport&gt;(backups);</a>
+<span class="sourceLineNo">981</span><a id="line.981">                            if (randomize) {</a>
+<span class="sourceLineNo">982</span><a id="line.982">                                Collections.shuffle(l);</a>
+<span class="sourceLineNo">983</span><a id="line.983">                            }</a>
+<span class="sourceLineNo">984</span><a id="line.984">                            BackupTransport bt = l.remove(0);</a>
+<span class="sourceLineNo">985</span><a id="line.985">                            backups.remove(bt);</a>
+<span class="sourceLineNo">986</span><a id="line.986">                            transport = bt.getTransport();</a>
+<span class="sourceLineNo">987</span><a id="line.987">                            uri = bt.getUri();</a>
+<span class="sourceLineNo">988</span><a id="line.988">                            processCommand(bt.getBrokerInfo());</a>
+<span class="sourceLineNo">989</span><a id="line.989">                            if (priorityBackup &amp;&amp; priorityBackupAvailable) {</a>
+<span class="sourceLineNo">990</span><a id="line.990">                                Transport old = this.connectedTransport.getAndSet(null);</a>
+<span class="sourceLineNo">991</span><a id="line.991">                                if (old != null) {</a>
+<span class="sourceLineNo">992</span><a id="line.992">                                    disposeTransport(old);</a>
+<span class="sourceLineNo">993</span><a id="line.993">                                }</a>
+<span class="sourceLineNo">994</span><a id="line.994">                                priorityBackupAvailable = false;</a>
+<span class="sourceLineNo">995</span><a id="line.995">                            }</a>
+<span class="sourceLineNo">996</span><a id="line.996">                        }</a>
+<span class="sourceLineNo">997</span><a id="line.997">                    }</a>
+<span class="sourceLineNo">998</span><a id="line.998"></a>
+<span class="sourceLineNo">999</span><a id="line.999">                    // When there was no backup and we are reconnecting for the first time</a>
+<span class="sourceLineNo">1000</span><a id="line.1000">                    // we honor the initialReconnectDelay before trying a new connection, after</a>
+<span class="sourceLineNo">1001</span><a id="line.1001">                    // this normal reconnect delay happens following a failed attempt.</a>
+<span class="sourceLineNo">1002</span><a id="line.1002">                    if (transport == null &amp;&amp; !firstConnection &amp;&amp; connectFailures == 0 &amp;&amp; initialReconnectDelay &gt; 0 &amp;&amp; !disposed) {</a>
+<span class="sourceLineNo">1003</span><a id="line.1003">                        // reconnectDelay will be equal to initialReconnectDelay since we are on</a>
+<span class="sourceLineNo">1004</span><a id="line.1004">                        // the first connect attempt after we had a working connection, doDelay</a>
+<span class="sourceLineNo">1005</span><a id="line.1005">                        // will apply updates to move to the next reconnectDelay value based on</a>
+<span class="sourceLineNo">1006</span><a id="line.1006">                        // configuration.</a>
+<span class="sourceLineNo">1007</span><a id="line.1007">                        doDelay();</a>
+<span class="sourceLineNo">1008</span><a id="line.1008">                    }</a>
+<span class="sourceLineNo">1009</span><a id="line.1009"></a>
+<span class="sourceLineNo">1010</span><a id="line.1010">                    Iterator&lt;URI&gt; iter = connectList.iterator();</a>
+<span class="sourceLineNo">1011</span><a id="line.1011">                    while ((transport != null || iter.hasNext()) &amp;&amp; (connectedTransport.get() == null &amp;&amp; !disposed)) {</a>
+<span class="sourceLineNo">1012</span><a id="line.1012"></a>
+<span class="sourceLineNo">1013</span><a id="line.1013">                        try {</a>
+<span class="sourceLineNo">1014</span><a id="line.1014">                            SslContext.setCurrentSslContext(brokerSslContext);</a>
+<span class="sourceLineNo">1015</span><a id="line.1015"></a>
+<span class="sourceLineNo">1016</span><a id="line.1016">                            // We could be starting with a backup and if so we wait to grab a</a>
+<span class="sourceLineNo">1017</span><a id="line.1017">                            // URI from the pool until next time around.</a>
+<span class="sourceLineNo">1018</span><a id="line.1018">                            if (transport == null) {</a>
+<span class="sourceLineNo">1019</span><a id="line.1019">                                uri = addExtraQueryOptions(iter.next());</a>
+<span class="sourceLineNo">1020</span><a id="line.1020">                                transport = TransportFactory.compositeConnect(uri);</a>
+<span class="sourceLineNo">1021</span><a id="line.1021">                            }</a>
+<span class="sourceLineNo">1022</span><a id="line.1022"></a>
+<span class="sourceLineNo">1023</span><a id="line.1023">                            LOG.debug("Attempting {}th connect to: {}", connectFailures, uri);</a>
+<span class="sourceLineNo">1024</span><a id="line.1024"></a>
+<span class="sourceLineNo">1025</span><a id="line.1025">                            transport.setTransportListener(createTransportListener(transport));</a>
+<span class="sourceLineNo">1026</span><a id="line.1026">                            transport.start();</a>
+<span class="sourceLineNo">1027</span><a id="line.1027"></a>
+<span class="sourceLineNo">1028</span><a id="line.1028">                            if (started &amp;&amp; !firstConnection) {</a>
+<span class="sourceLineNo">1029</span><a id="line.1029">                                restoreTransport(transport);</a>
+<span class="sourceLineNo">1030</span><a id="line.1030">                            }</a>
+<span class="sourceLineNo">1031</span><a id="line.1031"></a>
+<span class="sourceLineNo">1032</span><a id="line.1032">                            LOG.debug("Connection established");</a>
+<span class="sourceLineNo">1033</span><a id="line.1033"></a>
+<span class="sourceLineNo">1034</span><a id="line.1034">                            reconnectDelay = initialReconnectDelay;</a>
+<span class="sourceLineNo">1035</span><a id="line.1035">                            connectedTransportURI = uri;</a>
+<span class="sourceLineNo">1036</span><a id="line.1036">                            connectedTransport.set(transport);</a>
+<span class="sourceLineNo">1037</span><a id="line.1037">                            connectedToPriority = isPriority(connectedTransportURI);</a>
+<span class="sourceLineNo">1038</span><a id="line.1038">                            reconnectMutex.notifyAll();</a>
+<span class="sourceLineNo">1039</span><a id="line.1039">                            connectFailures = 0;</a>
+<span class="sourceLineNo">1040</span><a id="line.1040"></a>
+<span class="sourceLineNo">1041</span><a id="line.1041">                            // Make sure on initial startup, that the transportListener</a>
+<span class="sourceLineNo">1042</span><a id="line.1042">                            // has been initialized for this instance.</a>
+<span class="sourceLineNo">1043</span><a id="line.1043">                            synchronized (listenerMutex) {</a>
+<span class="sourceLineNo">1044</span><a id="line.1044">                                if (transportListener == null) {</a>
+<span class="sourceLineNo">1045</span><a id="line.1045">                                    try {</a>
+<span class="sourceLineNo">1046</span><a id="line.1046">                                        // if it isn't set after 2secs - it probably never will be</a>
+<span class="sourceLineNo">1047</span><a id="line.1047">                                        listenerMutex.wait(2000);</a>
+<span class="sourceLineNo">1048</span><a id="line.1048">                                    } catch (InterruptedException ex) {</a>
+<span class="sourceLineNo">1049</span><a id="line.1049">                                    }</a>
+<span class="sourceLineNo">1050</span><a id="line.1050">                                }</a>
+<span class="sourceLineNo">1051</span><a id="line.1051">                            }</a>
+<span class="sourceLineNo">1052</span><a id="line.1052"></a>
+<span class="sourceLineNo">1053</span><a id="line.1053">                            if (transportListener != null) {</a>
+<span class="sourceLineNo">1054</span><a id="line.1054">                                transportListener.transportResumed();</a>
+<span class="sourceLineNo">1055</span><a id="line.1055">                            } else {</a>
+<span class="sourceLineNo">1056</span><a id="line.1056">                                LOG.debug("transport resumed by transport listener not set");</a>
+<span class="sourceLineNo">1057</span><a id="line.1057">                            }</a>
+<span class="sourceLineNo">1058</span><a id="line.1058"></a>
+<span class="sourceLineNo">1059</span><a id="line.1059">                            if (firstConnection) {</a>
+<span class="sourceLineNo">1060</span><a id="line.1060">                                firstConnection = false;</a>
+<span class="sourceLineNo">1061</span><a id="line.1061">                                LOG.info("Successfully connected to {}", uri);</a>
+<span class="sourceLineNo">1062</span><a id="line.1062">                            } else {</a>
+<span class="sourceLineNo">1063</span><a id="line.1063">                                LOG.info("Successfully reconnected to {}", uri);</a>
+<span class="sourceLineNo">1064</span><a id="line.1064">                            }</a>
+<span class="sourceLineNo">1065</span><a id="line.1065"></a>
+<span class="sourceLineNo">1066</span><a id="line.1066">                            return false;</a>
+<span class="sourceLineNo">1067</span><a id="line.1067">                        } catch (Exception e) {</a>
+<span class="sourceLineNo">1068</span><a id="line.1068">                            failure = e;</a>
+<span class="sourceLineNo">1069</span><a id="line.1069">                            LOG.debug("Connect fail to: {}, reason: {}", uri, e);</a>
+<span class="sourceLineNo">1070</span><a id="line.1070">                            if (transport != null) {</a>
+<span class="sourceLineNo">1071</span><a id="line.1071">                                try {</a>
+<span class="sourceLineNo">1072</span><a id="line.1072">                                    transport.stop();</a>
+<span class="sourceLineNo">1073</span><a id="line.1073">                                    transport = null;</a>
+<span class="sourceLineNo">1074</span><a id="line.1074">                                } catch (Exception ee) {</a>
+<span class="sourceLineNo">1075</span><a id="line.1075">                                    LOG.debug("Stop of failed transport: {} failed with reason: {}", transport, ee);</a>
+<span class="sourceLineNo">1076</span><a id="line.1076">                                }</a>
+<span class="sourceLineNo">1077</span><a id="line.1077">                            }</a>
+<span class="sourceLineNo">1078</span><a id="line.1078">                        } finally {</a>
+<span class="sourceLineNo">1079</span><a id="line.1079">                            SslContext.setCurrentSslContext(null);</a>
+<span class="sourceLineNo">1080</span><a id="line.1080">                        }</a>
+<span class="sourceLineNo">1081</span><a id="line.1081">                    }</a>
+<span class="sourceLineNo">1082</span><a id="line.1082">                }</a>
+<span class="sourceLineNo">1083</span><a id="line.1083">            }</a>
+<span class="sourceLineNo">1084</span><a id="line.1084"></a>
+<span class="sourceLineNo">1085</span><a id="line.1085">            int reconnectLimit = calculateReconnectAttemptLimit();</a>
+<span class="sourceLineNo">1086</span><a id="line.1086"></a>
+<span class="sourceLineNo">1087</span><a id="line.1087">            connectFailures++;</a>
+<span class="sourceLineNo">1088</span><a id="line.1088">            if (reconnectLimit != INFINITE &amp;&amp; connectFailures &gt;= reconnectLimit) {</a>
+<span class="sourceLineNo">1089</span><a id="line.1089">                LOG.error("Failed to connect to {} after: {} attempt(s)", connectList, connectFailures);</a>
+<span class="sourceLineNo">1090</span><a id="line.1090">                connectionFailure = failure;</a>
+<span class="sourceLineNo">1091</span><a id="line.1091"></a>
+<span class="sourceLineNo">1092</span><a id="line.1092">                // Make sure on initial startup, that the transportListener has been</a>
+<span class="sourceLineNo">1093</span><a id="line.1093">                // initialized for this instance.</a>
+<span class="sourceLineNo">1094</span><a id="line.1094">                synchronized (listenerMutex) {</a>
+<span class="sourceLineNo">1095</span><a id="line.1095">                    if (transportListener == null) {</a>
+<span class="sourceLineNo">1096</span><a id="line.1096">                        try {</a>
+<span class="sourceLineNo">1097</span><a id="line.1097">                            listenerMutex.wait(2000);</a>
+<span class="sourceLineNo">1098</span><a id="line.1098">                        } catch (InterruptedException ex) {</a>
+<span class="sourceLineNo">1099</span><a id="line.1099">                        }</a>
+<span class="sourceLineNo">1100</span><a id="line.1100">                    }</a>
+<span class="sourceLineNo">1101</span><a id="line.1101">                }</a>
+<span class="sourceLineNo">1102</span><a id="line.1102"></a>
+<span class="sourceLineNo">1103</span><a id="line.1103">                propagateFailureToExceptionListener(connectionFailure);</a>
+<span class="sourceLineNo">1104</span><a id="line.1104">                return false;</a>
+<span class="sourceLineNo">1105</span><a id="line.1105">            }</a>
+<span class="sourceLineNo">1106</span><a id="line.1106"></a>
+<span class="sourceLineNo">1107</span><a id="line.1107">            int warnInterval = getWarnAfterReconnectAttempts();</a>
+<span class="sourceLineNo">1108</span><a id="line.1108">            if (warnInterval &gt; 0 &amp;&amp; (connectFailures == 1 || (connectFailures % warnInterval) == 0)) {</a>
+<span class="sourceLineNo">1109</span><a id="line.1109">                LOG.warn("Failed to connect to {} after: {} attempt(s) with {}, continuing to retry.",</a>
+<span class="sourceLineNo">1110</span><a id="line.1110">                         connectList, connectFailures, (failure == null ? "?" : failure.getLocalizedMessage()));</a>
+<span class="sourceLineNo">1111</span><a id="line.1111">            }</a>
+<span class="sourceLineNo">1112</span><a id="line.1112">        }</a>
+<span class="sourceLineNo">1113</span><a id="line.1113"></a>
+<span class="sourceLineNo">1114</span><a id="line.1114">        if (!disposed) {</a>
+<span class="sourceLineNo">1115</span><a id="line.1115">            doDelay();</a>
+<span class="sourceLineNo">1116</span><a id="line.1116">        }</a>
+<span class="sourceLineNo">1117</span><a id="line.1117"></a>
+<span class="sourceLineNo">1118</span><a id="line.1118">        return !disposed;</a>
+<span class="sourceLineNo">1119</span><a id="line.1119">    }</a>
+<span class="sourceLineNo">1120</span><a id="line.1120"></a>
+<span class="sourceLineNo">1121</span><a id="line.1121">    private void doDelay() {</a>
+<span class="sourceLineNo">1122</span><a id="line.1122">        if (reconnectDelay &gt; 0) {</a>
+<span class="sourceLineNo">1123</span><a id="line.1123">            synchronized (sleepMutex) {</a>
+<span class="sourceLineNo">1124</span><a id="line.1124">                LOG.debug("Waiting {} ms before attempting connection", reconnectDelay);</a>
+<span class="sourceLineNo">1125</span><a id="line.1125">                try {</a>
+<span class="sourceLineNo">1126</span><a id="line.1126">                    sleepMutex.wait(reconnectDelay);</a>
+<span class="sourceLineNo">1127</span><a id="line.1127">                } catch (InterruptedException e) {</a>
+<span class="sourceLineNo">1128</span><a id="line.1128">                    Thread.currentThread().interrupt();</a>
+<span class="sourceLineNo">1129</span><a id="line.1129">                }</a>
+<span class="sourceLineNo">1130</span><a id="line.1130">            }</a>
+<span class="sourceLineNo">1131</span><a id="line.1131">        }</a>
+<span class="sourceLineNo">1132</span><a id="line.1132"></a>
+<span class="sourceLineNo">1133</span><a id="line.1133">        if (useExponentialBackOff) {</a>
+<span class="sourceLineNo">1134</span><a id="line.1134">            // Exponential increment of reconnect delay.</a>
+<span class="sourceLineNo">1135</span><a id="line.1135">            reconnectDelay *= backOffMultiplier;</a>
+<span class="sourceLineNo">1136</span><a id="line.1136">            if (reconnectDelay &gt; maxReconnectDelay) {</a>
+<span class="sourceLineNo">1137</span><a id="line.1137">                reconnectDelay = maxReconnectDelay;</a>
+<span class="sourceLineNo">1138</span><a id="line.1138">            }</a>
+<span class="sourceLineNo">1139</span><a id="line.1139">        }</a>
+<span class="sourceLineNo">1140</span><a id="line.1140">    }</a>
+<span class="sourceLineNo">1141</span><a id="line.1141"></a>
+<span class="sourceLineNo">1142</span><a id="line.1142">    private void resetReconnectDelay() {</a>
+<span class="sourceLineNo">1143</span><a id="line.1143">        if (!useExponentialBackOff || reconnectDelay == DEFAULT_INITIAL_RECONNECT_DELAY) {</a>
+<span class="sourceLineNo">1144</span><a id="line.1144">            reconnectDelay = initialReconnectDelay;</a>
+<span class="sourceLineNo">1145</span><a id="line.1145">        }</a>
+<span class="sourceLineNo">1146</span><a id="line.1146">    }</a>
+<span class="sourceLineNo">1147</span><a id="line.1147"></a>
+<span class="sourceLineNo">1148</span><a id="line.1148">    /*</a>
+<span class="sourceLineNo">1149</span><a id="line.1149">     * called with reconnectMutex held</a>
+<span class="sourceLineNo">1150</span><a id="line.1150">     */</a>
+<span class="sourceLineNo">1151</span><a id="line.1151">    private void propagateFailureToExceptionListener(Exception exception) {</a>
+<span class="sourceLineNo">1152</span><a id="line.1152">        if (transportListener != null) {</a>
+<span class="sourceLineNo">1153</span><a id="line.1153">            if (exception instanceof IOException) {</a>
+<span class="sourceLineNo">1154</span><a id="line.1154">                transportListener.onException((IOException)exception);</a>
+<span class="sourceLineNo">1155</span><a id="line.1155">            } else {</a>
+<span class="sourceLineNo">1156</span><a id="line.1156">                transportListener.onException(IOExceptionSupport.create(exception));</a>
+<span class="sourceLineNo">1157</span><a id="line.1157">            }</a>
+<span class="sourceLineNo">1158</span><a id="line.1158">        }</a>
+<span class="sourceLineNo">1159</span><a id="line.1159">        reconnectMutex.notifyAll();</a>
+<span class="sourceLineNo">1160</span><a id="line.1160">    }</a>
+<span class="sourceLineNo">1161</span><a id="line.1161"></a>
+<span class="sourceLineNo">1162</span><a id="line.1162">    private int calculateReconnectAttemptLimit() {</a>
+<span class="sourceLineNo">1163</span><a id="line.1163">        int maxReconnectValue = this.maxReconnectAttempts;</a>
+<span class="sourceLineNo">1164</span><a id="line.1164">        if (firstConnection &amp;&amp; this.startupMaxReconnectAttempts != INFINITE) {</a>
+<span class="sourceLineNo">1165</span><a id="line.1165">            maxReconnectValue = this.startupMaxReconnectAttempts;</a>
+<span class="sourceLineNo">1166</span><a id="line.1166">        }</a>
+<span class="sourceLineNo">1167</span><a id="line.1167">        return maxReconnectValue;</a>
+<span class="sourceLineNo">1168</span><a id="line.1168">    }</a>
+<span class="sourceLineNo">1169</span><a id="line.1169"></a>
+<span class="sourceLineNo">1170</span><a id="line.1170">    private boolean shouldBuildBackups() {</a>
+<span class="sourceLineNo">1171</span><a id="line.1171">       return (backup &amp;&amp; backups.size() &lt; backupPoolSize) || (priorityBackup &amp;&amp; !(priorityBackupAvailable || connectedToPriority));</a>
+<span class="sourceLineNo">1172</span><a id="line.1172">    }</a>
+<span class="sourceLineNo">1173</span><a id="line.1173"></a>
+<span class="sourceLineNo">1174</span><a id="line.1174">    final boolean buildBackups() {</a>
+<span class="sourceLineNo">1175</span><a id="line.1175">        synchronized (backupMutex) {</a>
+<span class="sourceLineNo">1176</span><a id="line.1176">            if (!disposed &amp;&amp; shouldBuildBackups()) {</a>
+<span class="sourceLineNo">1177</span><a id="line.1177">                ArrayList&lt;URI&gt; backupList = new ArrayList&lt;URI&gt;(priorityList);</a>
+<span class="sourceLineNo">1178</span><a id="line.1178">                List&lt;URI&gt; connectList = getConnectList();</a>
+<span class="sourceLineNo">1179</span><a id="line.1179">                for (URI uri: connectList) {</a>
+<span class="sourceLineNo">1180</span><a id="line.1180">                    if (!backupList.contains(uri)) {</a>
+<span class="sourceLineNo">1181</span><a id="line.1181">                        backupList.add(uri);</a>
+<span class="sourceLineNo">1182</span><a id="line.1182">                    }</a>
+<span class="sourceLineNo">1183</span><a id="line.1183">                }</a>
+<span class="sourceLineNo">1184</span><a id="line.1184">                // removed disposed backups</a>
+<span class="sourceLineNo">1185</span><a id="line.1185">                List&lt;BackupTransport&gt; disposedList = new ArrayList&lt;BackupTransport&gt;();</a>
+<span class="sourceLineNo">1186</span><a id="line.1186">                for (BackupTransport bt : backups) {</a>
+<span class="sourceLineNo">1187</span><a id="line.1187">                    if (bt.isDisposed()) {</a>
+<span class="sourceLineNo">1188</span><a id="line.1188">                        disposedList.add(bt);</a>
+<span class="sourceLineNo">1189</span><a id="line.1189">                    }</a>
+<span class="sourceLineNo">1190</span><a id="line.1190">                }</a>
+<span class="sourceLineNo">1191</span><a id="line.1191">                backups.removeAll(disposedList);</a>
+<span class="sourceLineNo">1192</span><a id="line.1192">                disposedList.clear();</a>
+<span class="sourceLineNo">1193</span><a id="line.1193">                for (Iterator&lt;URI&gt; iter = backupList.iterator(); !disposed &amp;&amp; iter.hasNext() &amp;&amp; shouldBuildBackups(); ) {</a>
+<span class="sourceLineNo">1194</span><a id="line.1194">                    URI uri = addExtraQueryOptions(iter.next());</a>
+<span class="sourceLineNo">1195</span><a id="line.1195">                    if (connectedTransportURI != null &amp;&amp; !connectedTransportURI.equals(uri)) {</a>
+<span class="sourceLineNo">1196</span><a id="line.1196">                        try {</a>
+<span class="sourceLineNo">1197</span><a id="line.1197">                            SslContext.setCurrentSslContext(brokerSslContext);</a>
+<span class="sourceLineNo">1198</span><a id="line.1198">                            BackupTransport bt = new BackupTransport(this);</a>
+<span class="sourceLineNo">1199</span><a id="line.1199">                            bt.setUri(uri);</a>
+<span class="sourceLineNo">1200</span><a id="line.1200">                            if (!backups.contains(bt)) {</a>
+<span class="sourceLineNo">1201</span><a id="line.1201">                                Transport t = TransportFactory.compositeConnect(uri);</a>
+<span class="sourceLineNo">1202</span><a id="line.1202">                                t.setTransportListener(bt);</a>
+<span class="sourceLineNo">1203</span><a id="line.1203">                                t.start();</a>
+<span class="sourceLineNo">1204</span><a id="line.1204">                                bt.setTransport(t);</a>
+<span class="sourceLineNo">1205</span><a id="line.1205">                                if (priorityBackup &amp;&amp; isPriority(uri)) {</a>
+<span class="sourceLineNo">1206</span><a id="line.1206">                                   priorityBackupAvailable = true;</a>
+<span class="sourceLineNo">1207</span><a id="line.1207">                                   backups.add(0, bt);</a>
+<span class="sourceLineNo">1208</span><a id="line.1208">                                   // if this priority backup overflows the pool</a>
+<span class="sourceLineNo">1209</span><a id="line.1209">                                   // remove the backup with the lowest priority</a>
+<span class="sourceLineNo">1210</span><a id="line.1210">                                   if (backups.size() &gt; backupPoolSize) {</a>
+<span class="sourceLineNo">1211</span><a id="line.1211">                                       BackupTransport disposeTransport = backups.remove(backups.size() - 1);</a>
+<span class="sourceLineNo">1212</span><a id="line.1212">                                       disposeTransport.setDisposed(true);</a>
+<span class="sourceLineNo">1213</span><a id="line.1213">                                       Transport transport = disposeTransport.getTransport();</a>
+<span class="sourceLineNo">1214</span><a id="line.1214">                                       if (transport != null) {</a>
+<span class="sourceLineNo">1215</span><a id="line.1215">                                           transport.setTransportListener(disposedListener);</a>
+<span class="sourceLineNo">1216</span><a id="line.1216">                                           disposeTransport(transport);</a>
+<span class="sourceLineNo">1217</span><a id="line.1217">                                       }</a>
+<span class="sourceLineNo">1218</span><a id="line.1218">                                   }</a>
+<span class="sourceLineNo">1219</span><a id="line.1219">                                } else {</a>
+<span class="sourceLineNo">1220</span><a id="line.1220">                                    backups.add(bt);</a>
+<span class="sourceLineNo">1221</span><a id="line.1221">                                }</a>
+<span class="sourceLineNo">1222</span><a id="line.1222">                            }</a>
+<span class="sourceLineNo">1223</span><a id="line.1223">                        } catch (Exception e) {</a>
+<span class="sourceLineNo">1224</span><a id="line.1224">                            LOG.debug("Failed to build backup ", e);</a>
+<span class="sourceLineNo">1225</span><a id="line.1225">                        } finally {</a>
+<span class="sourceLineNo">1226</span><a id="line.1226">                            SslContext.setCurrentSslContext(null);</a>
+<span class="sourceLineNo">1227</span><a id="line.1227">                        }</a>
+<span class="sourceLineNo">1228</span><a id="line.1228">                    }</a>
+<span class="sourceLineNo">1229</span><a id="line.1229">                }</a>
+<span class="sourceLineNo">1230</span><a id="line.1230">            }</a>
+<span class="sourceLineNo">1231</span><a id="line.1231">        }</a>
+<span class="sourceLineNo">1232</span><a id="line.1232">        return false;</a>
+<span class="sourceLineNo">1233</span><a id="line.1233">    }</a>
+<span class="sourceLineNo">1234</span><a id="line.1234"></a>
+<span class="sourceLineNo">1235</span><a id="line.1235">    protected boolean isPriority(URI uri) {</a>
+<span class="sourceLineNo">1236</span><a id="line.1236">        if (!priorityBackup) {</a>
+<span class="sourceLineNo">1237</span><a id="line.1237">            return false;</a>
+<span class="sourceLineNo">1238</span><a id="line.1238">        }</a>
+<span class="sourceLineNo">1239</span><a id="line.1239"></a>
+<span class="sourceLineNo">1240</span><a id="line.1240">        if (!priorityList.isEmpty()) {</a>
+<span class="sourceLineNo">1241</span><a id="line.1241">            for (URI priorityURI : priorityList) {</a>
+<span class="sourceLineNo">1242</span><a id="line.1242">                if (compareURIs(priorityURI, uri)) {</a>
+<span class="sourceLineNo">1243</span><a id="line.1243">                    return true;</a>
+<span class="sourceLineNo">1244</span><a id="line.1244">                }</a>
+<span class="sourceLineNo">1245</span><a id="line.1245">            }</a>
+<span class="sourceLineNo">1246</span><a id="line.1246"></a>
+<span class="sourceLineNo">1247</span><a id="line.1247">        } else if (!uris.isEmpty()) {</a>
+<span class="sourceLineNo">1248</span><a id="line.1248">            return compareURIs(uris.get(0), uri);</a>
+<span class="sourceLineNo">1249</span><a id="line.1249">        }</a>
+<span class="sourceLineNo">1250</span><a id="line.1250"></a>
+<span class="sourceLineNo">1251</span><a id="line.1251">        return false;</a>
+<span class="sourceLineNo">1252</span><a id="line.1252">    }</a>
+<span class="sourceLineNo">1253</span><a id="line.1253"></a>
+<span class="sourceLineNo">1254</span><a id="line.1254">    @Override</a>
+<span class="sourceLineNo">1255</span><a id="line.1255">    public boolean isDisposed() {</a>
+<span class="sourceLineNo">1256</span><a id="line.1256">        return disposed;</a>
+<span class="sourceLineNo">1257</span><a id="line.1257">    }</a>
+<span class="sourceLineNo">1258</span><a id="line.1258"></a>
+<span class="sourceLineNo">1259</span><a id="line.1259">    @Override</a>
+<span class="sourceLineNo">1260</span><a id="line.1260">    public boolean isConnected() {</a>
+<span class="sourceLineNo">1261</span><a id="line.1261">        return connectedTransport.get() != null;</a>
+<span class="sourceLineNo">1262</span><a id="line.1262">    }</a>
+<span class="sourceLineNo">1263</span><a id="line.1263"></a>
+<span class="sourceLineNo">1264</span><a id="line.1264">    @Override</a>
+<span class="sourceLineNo">1265</span><a id="line.1265">    public void reconnect(URI uri) throws IOException {</a>
+<span class="sourceLineNo">1266</span><a id="line.1266">        uris.clear();</a>
+<span class="sourceLineNo">1267</span><a id="line.1267">        doReconnect = true;</a>
+<span class="sourceLineNo">1268</span><a id="line.1268">        add(true, new URI[]{uri});</a>
+<span class="sourceLineNo">1269</span><a id="line.1269">    }</a>
+<span class="sourceLineNo">1270</span><a id="line.1270"></a>
+<span class="sourceLineNo">1271</span><a id="line.1271">    @Override</a>
+<span class="sourceLineNo">1272</span><a id="line.1272">    public boolean isReconnectSupported() {</a>
+<span class="sourceLineNo">1273</span><a id="line.1273">        return this.reconnectSupported;</a>
+<span class="sourceLineNo">1274</span><a id="line.1274">    }</a>
+<span class="sourceLineNo">1275</span><a id="line.1275"></a>
+<span class="sourceLineNo">1276</span><a id="line.1276">    public void setReconnectSupported(boolean value) {</a>
+<span class="sourceLineNo">1277</span><a id="line.1277">        this.reconnectSupported = value;</a>
+<span class="sourceLineNo">1278</span><a id="line.1278">    }</a>
+<span class="sourceLineNo">1279</span><a id="line.1279"></a>
+<span class="sourceLineNo">1280</span><a id="line.1280">    @Override</a>
+<span class="sourceLineNo">1281</span><a id="line.1281">    public boolean isUpdateURIsSupported() {</a>
+<span class="sourceLineNo">1282</span><a id="line.1282">        return this.updateURIsSupported;</a>
+<span class="sourceLineNo">1283</span><a id="line.1283">    }</a>
+<span class="sourceLineNo">1284</span><a id="line.1284"></a>
+<span class="sourceLineNo">1285</span><a id="line.1285">    public void setUpdateURIsSupported(boolean value) {</a>
+<span class="sourceLineNo">1286</span><a id="line.1286">        this.updateURIsSupported = value;</a>
+<span class="sourceLineNo">1287</span><a id="line.1287">    }</a>
+<span class="sourceLineNo">1288</span><a id="line.1288"></a>
+<span class="sourceLineNo">1289</span><a id="line.1289">    @Override</a>
+<span class="sourceLineNo">1290</span><a id="line.1290">    public void updateURIs(boolean rebalance, URI[] updatedURIs) throws IOException {</a>
+<span class="sourceLineNo">1291</span><a id="line.1291">        if (isUpdateURIsSupported()) {</a>
+<span class="sourceLineNo">1292</span><a id="line.1292">            HashSet&lt;URI&gt; copy = new HashSet&lt;URI&gt;();</a>
+<span class="sourceLineNo">1293</span><a id="line.1293">            synchronized (reconnectMutex) {</a>
+<span class="sourceLineNo">1294</span><a id="line.1294">                copy.addAll(this.updated);</a>
+<span class="sourceLineNo">1295</span><a id="line.1295">                updated.clear();</a>
+<span class="sourceLineNo">1296</span><a id="line.1296">                if (updatedURIs != null &amp;&amp; updatedURIs.length &gt; 0) {</a>
+<span class="sourceLineNo">1297</span><a id="line.1297">                    for (URI uri : updatedURIs) {</a>
+<span class="sourceLineNo">1298</span><a id="line.1298">                        if (uri != null &amp;&amp; !updated.contains(uri)) {</a>
+<span class="sourceLineNo">1299</span><a id="line.1299">                            updated.add(uri);</a>
+<span class="sourceLineNo">1300</span><a id="line.1300">                            if (failedConnectTransportURI != null &amp;&amp; failedConnectTransportURI.equals(uri)) {</a>
+<span class="sourceLineNo">1301</span><a id="line.1301">                                failedConnectTransportURI = null;</a>
+<span class="sourceLineNo">1302</span><a id="line.1302">                            }</a>
+<span class="sourceLineNo">1303</span><a id="line.1303">                        }</a>
+<span class="sourceLineNo">1304</span><a id="line.1304">                    }</a>
+<span class="sourceLineNo">1305</span><a id="line.1305">                }</a>
+<span class="sourceLineNo">1306</span><a id="line.1306">            }</a>
+<span class="sourceLineNo">1307</span><a id="line.1307">            if (!(copy.isEmpty() &amp;&amp; updated.isEmpty()) &amp;&amp; !copy.equals(new HashSet&lt;URI&gt;(updated))) {</a>
+<span class="sourceLineNo">1308</span><a id="line.1308">                buildBackups();</a>
+<span class="sourceLineNo">1309</span><a id="line.1309">                reconnect(rebalance);</a>
+<span class="sourceLineNo">1310</span><a id="line.1310">            }</a>
+<span class="sourceLineNo">1311</span><a id="line.1311">        }</a>
+<span class="sourceLineNo">1312</span><a id="line.1312">    }</a>
+<span class="sourceLineNo">1313</span><a id="line.1313"></a>
+<span class="sourceLineNo">1314</span><a id="line.1314">    /**</a>
+<span class="sourceLineNo">1315</span><a id="line.1315">     * @return the updateURIsURL</a>
+<span class="sourceLineNo">1316</span><a id="line.1316">     */</a>
+<span class="sourceLineNo">1317</span><a id="line.1317">    public String getUpdateURIsURL() {</a>
+<span class="sourceLineNo">1318</span><a id="line.1318">        return this.updateURIsURL;</a>
+<span class="sourceLineNo">1319</span><a id="line.1319">    }</a>
+<span class="sourceLineNo">1320</span><a id="line.1320"></a>
+<span class="sourceLineNo">1321</span><a id="line.1321">    /**</a>
+<span class="sourceLineNo">1322</span><a id="line.1322">     * @param updateURIsURL the updateURIsURL to set</a>
+<span class="sourceLineNo">1323</span><a id="line.1323">     */</a>
+<span class="sourceLineNo">1324</span><a id="line.1324">    public void setUpdateURIsURL(String updateURIsURL) {</a>
+<span class="sourceLineNo">1325</span><a id="line.1325">        this.updateURIsURL = updateURIsURL;</a>
+<span class="sourceLineNo">1326</span><a id="line.1326">    }</a>
+<span class="sourceLineNo">1327</span><a id="line.1327"></a>
+<span class="sourceLineNo">1328</span><a id="line.1328">    /**</a>
+<span class="sourceLineNo">1329</span><a id="line.1329">     * @return the rebalanceUpdateURIs</a>
+<span class="sourceLineNo">1330</span><a id="line.1330">     */</a>
+<span class="sourceLineNo">1331</span><a id="line.1331">    public boolean isRebalanceUpdateURIs() {</a>
+<span class="sourceLineNo">1332</span><a id="line.1332">        return this.rebalanceUpdateURIs;</a>
+<span class="sourceLineNo">1333</span><a id="line.1333">    }</a>
+<span class="sourceLineNo">1334</span><a id="line.1334"></a>
+<span class="sourceLineNo">1335</span><a id="line.1335">    /**</a>
+<span class="sourceLineNo">1336</span><a id="line.1336">     * @param rebalanceUpdateURIs the rebalanceUpdateURIs to set</a>
+<span class="sourceLineNo">1337</span><a id="line.1337">     */</a>
+<span class="sourceLineNo">1338</span><a id="line.1338">    public void setRebalanceUpdateURIs(boolean rebalanceUpdateURIs) {</a>
+<span class="sourceLineNo">1339</span><a id="line.1339">        this.rebalanceUpdateURIs = rebalanceUpdateURIs;</a>
+<span class="sourceLineNo">1340</span><a id="line.1340">    }</a>
+<span class="sourceLineNo">1341</span><a id="line.1341"></a>
+<span class="sourceLineNo">1342</span><a id="line.1342">    @Override</a>
+<span class="sourceLineNo">1343</span><a id="line.1343">    public int getReceiveCounter() {</a>
+<span class="sourceLineNo">1344</span><a id="line.1344">        Transport transport = connectedTransport.get();</a>
+<span class="sourceLineNo">1345</span><a id="line.1345">        if (transport == null) {</a>
+<span class="sourceLineNo">1346</span><a id="line.1346">            return 0;</a>
+<span class="sourceLineNo">1347</span><a id="line.1347">        }</a>
+<span class="sourceLineNo">1348</span><a id="line.1348">        return transport.getReceiveCounter();</a>
+<span class="sourceLineNo">1349</span><a id="line.1349">    }</a>
+<span class="sourceLineNo">1350</span><a id="line.1350"></a>
+<span class="sourceLineNo">1351</span><a id="line.1351">    public int getConnectFailures() {</a>
+<span class="sourceLineNo">1352</span><a id="line.1352">        return connectFailures;</a>
+<span class="sourceLineNo">1353</span><a id="line.1353">    }</a>
+<span class="sourceLineNo">1354</span><a id="line.1354"></a>
+<span class="sourceLineNo">1355</span><a id="line.1355">    public void connectionInterruptProcessingComplete(ConnectionId connectionId) {</a>
+<span class="sourceLineNo">1356</span><a id="line.1356">        synchronized (reconnectMutex) {</a>
+<span class="sourceLineNo">1357</span><a id="line.1357">            stateTracker.connectionInterruptProcessingComplete(this, connectionId);</a>
+<span class="sourceLineNo">1358</span><a id="line.1358">        }</a>
+<span class="sourceLineNo">1359</span><a id="line.1359">    }</a>
+<span class="sourceLineNo">1360</span><a id="line.1360"></a>
+<span class="sourceLineNo">1361</span><a id="line.1361">    public ConnectionStateTracker getStateTracker() {</a>
+<span class="sourceLineNo">1362</span><a id="line.1362">        return stateTracker;</a>
+<span class="sourceLineNo">1363</span><a id="line.1363">    }</a>
+<span class="sourceLineNo">1364</span><a id="line.1364"></a>
+<span class="sourceLineNo">1365</span><a id="line.1365">    public boolean isConnectedToPriority() {</a>
+<span class="sourceLineNo">1366</span><a id="line.1366">        return connectedToPriority;</a>
+<span class="sourceLineNo">1367</span><a id="line.1367">    }</a>
+<span class="sourceLineNo">1368</span><a id="line.1368"></a>
+<span class="sourceLineNo">1369</span><a id="line.1369">    private boolean contains(URI newURI) {</a>
+<span class="sourceLineNo">1370</span><a id="line.1370">        boolean result = false;</a>
+<span class="sourceLineNo">1371</span><a id="line.1371">        for (URI uri : uris) {</a>
+<span class="sourceLineNo">1372</span><a id="line.1372">            if (compareURIs(newURI, uri)) {</a>
+<span class="sourceLineNo">1373</span><a id="line.1373">                result = true;</a>
+<span class="sourceLineNo">1374</span><a id="line.1374">                break;</a>
+<span class="sourceLineNo">1375</span><a id="line.1375">            }</a>
+<span class="sourceLineNo">1376</span><a id="line.1376">        }</a>
+<span class="sourceLineNo">1377</span><a id="line.1377"></a>
+<span class="sourceLineNo">1378</span><a id="line.1378">        return result;</a>
+<span class="sourceLineNo">1379</span><a id="line.1379">    }</a>
+<span class="sourceLineNo">1380</span><a id="line.1380"></a>
+<span class="sourceLineNo">1381</span><a id="line.1381">    private boolean compareURIs(final URI first, final URI second) {</a>
+<span class="sourceLineNo">1382</span><a id="line.1382"></a>
+<span class="sourceLineNo">1383</span><a id="line.1383">        boolean result = false;</a>
+<span class="sourceLineNo">1384</span><a id="line.1384">        if (first == null || second == null) {</a>
+<span class="sourceLineNo">1385</span><a id="line.1385">            return result;</a>
+<span class="sourceLineNo">1386</span><a id="line.1386">        }</a>
+<span class="sourceLineNo">1387</span><a id="line.1387"></a>
+<span class="sourceLineNo">1388</span><a id="line.1388">        if (first.getPort() == second.getPort()) {</a>
+<span class="sourceLineNo">1389</span><a id="line.1389">            InetAddress firstAddr = null;</a>
+<span class="sourceLineNo">1390</span><a id="line.1390">            InetAddress secondAddr = null;</a>
+<span class="sourceLineNo">1391</span><a id="line.1391">            try {</a>
+<span class="sourceLineNo">1392</span><a id="line.1392">                firstAddr = InetAddress.getByName(first.getHost());</a>
+<span class="sourceLineNo">1393</span><a id="line.1393">                secondAddr = InetAddress.getByName(second.getHost());</a>
+<span class="sourceLineNo">1394</span><a id="line.1394"></a>
+<span class="sourceLineNo">1395</span><a id="line.1395">                if (firstAddr.equals(secondAddr)) {</a>
+<span class="sourceLineNo">1396</span><a id="line.1396">                    result = true;</a>
+<span class="sourceLineNo">1397</span><a id="line.1397">                }</a>
+<span class="sourceLineNo">1398</span><a id="line.1398"></a>
+<span class="sourceLineNo">1399</span><a id="line.1399">            } catch(IOException e) {</a>
+<span class="sourceLineNo">1400</span><a id="line.1400"></a>
+<span class="sourceLineNo">1401</span><a id="line.1401">                if (firstAddr == null) {</a>
+<span class="sourceLineNo">1402</span><a id="line.1402">                    LOG.error("Failed to Lookup INetAddress for URI[{}] : {}", first, e);</a>
+<span class="sourceLineNo">1403</span><a id="line.1403">                } else {</a>
+<span class="sourceLineNo">1404</span><a id="line.1404">                    LOG.error("Failed to Lookup INetAddress for URI[{}] : {}", second, e);</a>
+<span class="sourceLineNo">1405</span><a id="line.1405">                }</a>
+<span class="sourceLineNo">1406</span><a id="line.1406"></a>
+<span class="sourceLineNo">1407</span><a id="line.1407">                if (first.getHost().equalsIgnoreCase(second.getHost())) {</a>
+<span class="sourceLineNo">1408</span><a id="line.1408">                    result = true;</a>
+<span class="sourceLineNo">1409</span><a id="line.1409">                }</a>
+<span class="sourceLineNo">1410</span><a id="line.1410">            }</a>
+<span class="sourceLineNo">1411</span><a id="line.1411">        }</a>
+<span class="sourceLineNo">1412</span><a id="line.1412"></a>
+<span class="sourceLineNo">1413</span><a id="line.1413">        return result;</a>
+<span class="sourceLineNo">1414</span><a id="line.1414">    }</a>
+<span class="sourceLineNo">1415</span><a id="line.1415"></a>
+<span class="sourceLineNo">1416</span><a id="line.1416">    private InputStreamReader getURLStream(String path) throws IOException {</a>
+<span class="sourceLineNo">1417</span><a id="line.1417">        InputStreamReader result = null;</a>
+<span class="sourceLineNo">1418</span><a id="line.1418">        URL url = null;</a>
+<span class="sourceLineNo">1419</span><a id="line.1419">        try {</a>
+<span class="sourceLineNo">1420</span><a id="line.1420">            url = new URL(path);</a>
+<span class="sourceLineNo">1421</span><a id="line.1421">            result = new InputStreamReader(url.openStream());</a>
+<span class="sourceLineNo">1422</span><a id="line.1422">        } catch (MalformedURLException e) {</a>
+<span class="sourceLineNo">1423</span><a id="line.1423">            // ignore - it could be a path to a a local file</a>
+<span class="sourceLineNo">1424</span><a id="line.1424">        }</a>
+<span class="sourceLineNo">1425</span><a id="line.1425">        if (result == null) {</a>
+<span class="sourceLineNo">1426</span><a id="line.1426">            result = new FileReader(path);</a>
+<span class="sourceLineNo">1427</span><a id="line.1427">        }</a>
+<span class="sourceLineNo">1428</span><a id="line.1428">        return result;</a>
+<span class="sourceLineNo">1429</span><a id="line.1429">    }</a>
+<span class="sourceLineNo">1430</span><a id="line.1430"></a>
+<span class="sourceLineNo">1431</span><a id="line.1431">    private URI addExtraQueryOptions(URI uri) {</a>
+<span class="sourceLineNo">1432</span><a id="line.1432">        try {</a>
+<span class="sourceLineNo">1433</span><a id="line.1433">            if( nestedExtraQueryOptions!=null &amp;&amp; !nestedExtraQueryOptions.isEmpty() ) {</a>
+<span class="sourceLineNo">1434</span><a id="line.1434">                if( uri.getQuery() == null ) {</a>
+<span class="sourceLineNo">1435</span><a id="line.1435">                    uri = URISupport.createURIWithQuery(uri, nestedExtraQueryOptions);</a>
+<span class="sourceLineNo">1436</span><a id="line.1436">                } else {</a>
+<span class="sourceLineNo">1437</span><a id="line.1437">                    uri = URISupport.createURIWithQuery(uri, uri.getQuery()+"&amp;"+nestedExtraQueryOptions);</a>
+<span class="sourceLineNo">1438</span><a id="line.1438">                }</a>
+<span class="sourceLineNo">1439</span><a id="line.1439">            }</a>
+<span class="sourceLineNo">1440</span><a id="line.1440">        } catch (URISyntaxException e) {</a>
+<span class="sourceLineNo">1441</span><a id="line.1441">            throw new RuntimeException(e);</a>
+<span class="sourceLineNo">1442</span><a id="line.1442">        }</a>
+<span class="sourceLineNo">1443</span><a id="line.1443">        return uri;</a>
+<span class="sourceLineNo">1444</span><a id="line.1444">    }</a>
+<span class="sourceLineNo">1445</span><a id="line.1445"></a>
+<span class="sourceLineNo">1446</span><a id="line.1446">    public void setNestedExtraQueryOptions(String nestedExtraQueryOptions) {</a>
+<span class="sourceLineNo">1447</span><a id="line.1447">        this.nestedExtraQueryOptions = nestedExtraQueryOptions;</a>
+<span class="sourceLineNo">1448</span><a id="line.1448">    }</a>
+<span class="sourceLineNo">1449</span><a id="line.1449"></a>
+<span class="sourceLineNo">1450</span><a id="line.1450">    public int getWarnAfterReconnectAttempts() {</a>
+<span class="sourceLineNo">1451</span><a id="line.1451">        return warnAfterReconnectAttempts;</a>
+<span class="sourceLineNo">1452</span><a id="line.1452">    }</a>
+<span class="sourceLineNo">1453</span><a id="line.1453"></a>
+<span class="sourceLineNo">1454</span><a id="line.1454">    /**</a>
+<span class="sourceLineNo">1455</span><a id="line.1455">     * Sets the number of Connect / Reconnect attempts that must occur before a warn message</a>
+<span class="sourceLineNo">1456</span><a id="line.1456">     * is logged indicating that the transport is not connected.  This can be useful when the</a>
+<span class="sourceLineNo">1457</span><a id="line.1457">     * client is running inside some container or service as it give an indication of some</a>
+<span class="sourceLineNo">1458</span><a id="line.1458">     * problem with the client connection that might not otherwise be visible.  To disable the</a>
+<span class="sourceLineNo">1459</span><a id="line.1459">     * log messages this value should be set to a value @{code attempts &lt;= 0}</a>
+<span class="sourceLineNo">1460</span><a id="line.1460">     *</a>
+<span class="sourceLineNo">1461</span><a id="line.1461">     * @param warnAfterReconnectAttempts</a>
+<span class="sourceLineNo">1462</span><a id="line.1462">     *      The number of failed connection attempts that must happen before a warning is logged.</a>
+<span class="sourceLineNo">1463</span><a id="line.1463">     */</a>
+<span class="sourceLineNo">1464</span><a id="line.1464">    public void setWarnAfterReconnectAttempts(int warnAfterReconnectAttempts) {</a>
+<span class="sourceLineNo">1465</span><a id="line.1465">        this.warnAfterReconnectAttempts = warnAfterReconnectAttempts;</a>
+<span class="sourceLineNo">1466</span><a id="line.1466">    }</a>
+<span class="sourceLineNo">1467</span><a id="line.1467"></a>
+<span class="sourceLineNo">1468</span><a id="line.1468">    @Override</a>
+<span class="sourceLineNo">1469</span><a id="line.1469">    public X509Certificate[] getPeerCertificates() {</a>
+<span class="sourceLineNo">1470</span><a id="line.1470">        Transport transport = connectedTransport.get();</a>
+<span class="sourceLineNo">1471</span><a id="line.1471">        if (transport != null) {</a>
+<span class="sourceLineNo">1472</span><a id="line.1472">            return transport.getPeerCertificates();</a>
+<span class="sourceLineNo">1473</span><a id="line.1473">        } else {</a>
+<span class="sourceLineNo">1474</span><a id="line.1474">            return null;</a>
+<span class="sourceLineNo">1475</span><a id="line.1475">        }</a>
+<span class="sourceLineNo">1476</span><a id="line.1476">    }</a>
+<span class="sourceLineNo">1477</span><a id="line.1477"></a>
+<span class="sourceLineNo">1478</span><a id="line.1478">    @Override</a>
+<span class="sourceLineNo">1479</span><a id="line.1479">    public void setPeerCertificates(X509Certificate[] certificates) {</a>
+<span class="sourceLineNo">1480</span><a id="line.1480">    }</a>
+<span class="sourceLineNo">1481</span><a id="line.1481"></a>
+<span class="sourceLineNo">1482</span><a id="line.1482">    @Override</a>
+<span class="sourceLineNo">1483</span><a id="line.1483">    public WireFormat getWireFormat() {</a>
+<span class="sourceLineNo">1484</span><a id="line.1484">        Transport transport = connectedTransport.get();</a>
+<span class="sourceLineNo">1485</span><a id="line.1485">        if (transport != null) {</a>
+<span class="sourceLineNo">1486</span><a id="line.1486">            return transport.getWireFormat();</a>
+<span class="sourceLineNo">1487</span><a id="line.1487">        } else {</a>
+<span class="sourceLineNo">1488</span><a id="line.1488">            return null;</a>
+<span class="sourceLineNo">1489</span><a id="line.1489">        }</a>
+<span class="sourceLineNo">1490</span><a id="line.1490">    }</a>
+<span class="sourceLineNo">1491</span><a id="line.1491">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

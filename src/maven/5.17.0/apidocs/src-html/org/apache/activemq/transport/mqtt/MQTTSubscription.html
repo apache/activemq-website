@@ -1,0 +1,217 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.transport.mqtt;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.IOException;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.util.zip.DataFormatException;</a>
+<span class="sourceLineNo">021</span><a id="line.21"></a>
+<span class="sourceLineNo">022</span><a id="line.22">import javax.jms.JMSException;</a>
+<span class="sourceLineNo">023</span><a id="line.23"></a>
+<span class="sourceLineNo">024</span><a id="line.24">import org.apache.activemq.command.ActiveMQDestination;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import org.apache.activemq.command.ActiveMQMessage;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import org.apache.activemq.command.ConsumerInfo;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import org.apache.activemq.command.MessageAck;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import org.apache.activemq.command.MessageDispatch;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import org.fusesource.mqtt.client.QoS;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import org.fusesource.mqtt.codec.PUBLISH;</a>
+<span class="sourceLineNo">031</span><a id="line.31"></a>
+<span class="sourceLineNo">032</span><a id="line.32">/**</a>
+<span class="sourceLineNo">033</span><a id="line.33"> * Keeps track of the MQTT client subscription so that acking is correctly done.</a>
+<span class="sourceLineNo">034</span><a id="line.34"> */</a>
+<span class="sourceLineNo">035</span><a id="line.35">public class MQTTSubscription {</a>
+<span class="sourceLineNo">036</span><a id="line.36"></a>
+<span class="sourceLineNo">037</span><a id="line.37">    private final MQTTProtocolConverter protocolConverter;</a>
+<span class="sourceLineNo">038</span><a id="line.38"></a>
+<span class="sourceLineNo">039</span><a id="line.39">    private final ConsumerInfo consumerInfo;</a>
+<span class="sourceLineNo">040</span><a id="line.40">    private final String topicName;</a>
+<span class="sourceLineNo">041</span><a id="line.41">    private final QoS qos;</a>
+<span class="sourceLineNo">042</span><a id="line.42"></a>
+<span class="sourceLineNo">043</span><a id="line.43">    public MQTTSubscription(MQTTProtocolConverter protocolConverter, String topicName, QoS qos, ConsumerInfo consumerInfo) {</a>
+<span class="sourceLineNo">044</span><a id="line.44">        this.protocolConverter = protocolConverter;</a>
+<span class="sourceLineNo">045</span><a id="line.45">        this.consumerInfo = consumerInfo;</a>
+<span class="sourceLineNo">046</span><a id="line.46">        this.qos = qos;</a>
+<span class="sourceLineNo">047</span><a id="line.47">        this.topicName = topicName;</a>
+<span class="sourceLineNo">048</span><a id="line.48">    }</a>
+<span class="sourceLineNo">049</span><a id="line.49"></a>
+<span class="sourceLineNo">050</span><a id="line.50">    /**</a>
+<span class="sourceLineNo">051</span><a id="line.51">     * Create a {@link MessageAck} that will acknowledge the given {@link MessageDispatch}.</a>
+<span class="sourceLineNo">052</span><a id="line.52">     *</a>
+<span class="sourceLineNo">053</span><a id="line.53">     * @param md</a>
+<span class="sourceLineNo">054</span><a id="line.54">     *        the {@link MessageDispatch} to acknowledge.</a>
+<span class="sourceLineNo">055</span><a id="line.55">     *</a>
+<span class="sourceLineNo">056</span><a id="line.56">     * @return a new {@link MessageAck} command to acknowledge the message.</a>
+<span class="sourceLineNo">057</span><a id="line.57">     */</a>
+<span class="sourceLineNo">058</span><a id="line.58">    public MessageAck createMessageAck(MessageDispatch md) {</a>
+<span class="sourceLineNo">059</span><a id="line.59">        return new MessageAck(md, MessageAck.INDIVIDUAL_ACK_TYPE, 1);</a>
+<span class="sourceLineNo">060</span><a id="line.60">    }</a>
+<span class="sourceLineNo">061</span><a id="line.61"></a>
+<span class="sourceLineNo">062</span><a id="line.62">    /**</a>
+<span class="sourceLineNo">063</span><a id="line.63">     * Creates a PUBLISH command that can be sent to a remote client from an</a>
+<span class="sourceLineNo">064</span><a id="line.64">     * incoming {@link ActiveMQMessage} instance.</a>
+<span class="sourceLineNo">065</span><a id="line.65">     *</a>
+<span class="sourceLineNo">066</span><a id="line.66">     * @param message</a>
+<span class="sourceLineNo">067</span><a id="line.67">     *        the message to convert to a PUBLISH command.</a>
+<span class="sourceLineNo">068</span><a id="line.68">     *</a>
+<span class="sourceLineNo">069</span><a id="line.69">     * @return a new PUBLISH command that is populated from the {@link ActiveMQMessage}.</a>
+<span class="sourceLineNo">070</span><a id="line.70">     *</a>
+<span class="sourceLineNo">071</span><a id="line.71">     * @throws DataFormatException</a>
+<span class="sourceLineNo">072</span><a id="line.72">     * @throws IOException</a>
+<span class="sourceLineNo">073</span><a id="line.73">     * @throws JMSException</a>
+<span class="sourceLineNo">074</span><a id="line.74">     */</a>
+<span class="sourceLineNo">075</span><a id="line.75">    public PUBLISH createPublish(ActiveMQMessage message) throws DataFormatException, IOException, JMSException {</a>
+<span class="sourceLineNo">076</span><a id="line.76">        PUBLISH publish = protocolConverter.convertMessage(message);</a>
+<span class="sourceLineNo">077</span><a id="line.77">        if (publish.qos().ordinal() &gt; this.qos.ordinal()) {</a>
+<span class="sourceLineNo">078</span><a id="line.78">            publish.qos(this.qos);</a>
+<span class="sourceLineNo">079</span><a id="line.79">        }</a>
+<span class="sourceLineNo">080</span><a id="line.80">        switch (publish.qos()) {</a>
+<span class="sourceLineNo">081</span><a id="line.81">            case AT_LEAST_ONCE:</a>
+<span class="sourceLineNo">082</span><a id="line.82">            case EXACTLY_ONCE:</a>
+<span class="sourceLineNo">083</span><a id="line.83">                // set packet id, and optionally dup flag</a>
+<span class="sourceLineNo">084</span><a id="line.84">                protocolConverter.getPacketIdGenerator().setPacketId(protocolConverter.getClientId(), this, message, publish);</a>
+<span class="sourceLineNo">085</span><a id="line.85">            case AT_MOST_ONCE:</a>
+<span class="sourceLineNo">086</span><a id="line.86">        }</a>
+<span class="sourceLineNo">087</span><a id="line.87">        return publish;</a>
+<span class="sourceLineNo">088</span><a id="line.88">    }</a>
+<span class="sourceLineNo">089</span><a id="line.89"></a>
+<span class="sourceLineNo">090</span><a id="line.90">    /**</a>
+<span class="sourceLineNo">091</span><a id="line.91">     * Given a PUBLISH command determine if it will expect an ACK based on the</a>
+<span class="sourceLineNo">092</span><a id="line.92">     * QoS of the Publish command and the QoS of this subscription.</a>
+<span class="sourceLineNo">093</span><a id="line.93">     *</a>
+<span class="sourceLineNo">094</span><a id="line.94">     * @param publish</a>
+<span class="sourceLineNo">095</span><a id="line.95">     *        The publish command to inspect.</a>
+<span class="sourceLineNo">096</span><a id="line.96">     *</a>
+<span class="sourceLineNo">097</span><a id="line.97">     * @return true if the client will expect an PUBACK for this PUBLISH.</a>
+<span class="sourceLineNo">098</span><a id="line.98">     */</a>
+<span class="sourceLineNo">099</span><a id="line.99">    public boolean expectAck(PUBLISH publish) {</a>
+<span class="sourceLineNo">100</span><a id="line.100">        QoS publishQoS = publish.qos();</a>
+<span class="sourceLineNo">101</span><a id="line.101">        if (publishQoS.compareTo(this.qos) &gt; 0){</a>
+<span class="sourceLineNo">102</span><a id="line.102">            publishQoS = this.qos;</a>
+<span class="sourceLineNo">103</span><a id="line.103">        }</a>
+<span class="sourceLineNo">104</span><a id="line.104">        return !publishQoS.equals(QoS.AT_MOST_ONCE);</a>
+<span class="sourceLineNo">105</span><a id="line.105">    }</a>
+<span class="sourceLineNo">106</span><a id="line.106"></a>
+<span class="sourceLineNo">107</span><a id="line.107">    /**</a>
+<span class="sourceLineNo">108</span><a id="line.108">     * @returns the original topic name value the client used when subscribing.</a>
+<span class="sourceLineNo">109</span><a id="line.109">     */</a>
+<span class="sourceLineNo">110</span><a id="line.110">    public String getTopicName() {</a>
+<span class="sourceLineNo">111</span><a id="line.111">        return this.topicName;</a>
+<span class="sourceLineNo">112</span><a id="line.112">    }</a>
+<span class="sourceLineNo">113</span><a id="line.113"></a>
+<span class="sourceLineNo">114</span><a id="line.114">    /**</a>
+<span class="sourceLineNo">115</span><a id="line.115">     * The real {@link ActiveMQDestination} that this subscription is assigned.</a>
+<span class="sourceLineNo">116</span><a id="line.116">     *</a>
+<span class="sourceLineNo">117</span><a id="line.117">     * @return the real {@link ActiveMQDestination} assigned to this subscription.</a>
+<span class="sourceLineNo">118</span><a id="line.118">     */</a>
+<span class="sourceLineNo">119</span><a id="line.119">    public ActiveMQDestination getDestination() {</a>
+<span class="sourceLineNo">120</span><a id="line.120">        return consumerInfo.getDestination();</a>
+<span class="sourceLineNo">121</span><a id="line.121">    }</a>
+<span class="sourceLineNo">122</span><a id="line.122"></a>
+<span class="sourceLineNo">123</span><a id="line.123">    /**</a>
+<span class="sourceLineNo">124</span><a id="line.124">     * Gets the {@link ConsumerInfo} that describes the subscription sent to ActiveMQ.</a>
+<span class="sourceLineNo">125</span><a id="line.125">     *</a>
+<span class="sourceLineNo">126</span><a id="line.126">     * @return the {@link ConsumerInfo} used to create this subscription.</a>
+<span class="sourceLineNo">127</span><a id="line.127">     */</a>
+<span class="sourceLineNo">128</span><a id="line.128">    public ConsumerInfo getConsumerInfo() {</a>
+<span class="sourceLineNo">129</span><a id="line.129">        return consumerInfo;</a>
+<span class="sourceLineNo">130</span><a id="line.130">    }</a>
+<span class="sourceLineNo">131</span><a id="line.131"></a>
+<span class="sourceLineNo">132</span><a id="line.132">    /**</a>
+<span class="sourceLineNo">133</span><a id="line.133">     * @return the assigned QoS value for this subscription.</a>
+<span class="sourceLineNo">134</span><a id="line.134">     */</a>
+<span class="sourceLineNo">135</span><a id="line.135">    public QoS getQoS() {</a>
+<span class="sourceLineNo">136</span><a id="line.136">        return qos;</a>
+<span class="sourceLineNo">137</span><a id="line.137">    }</a>
+<span class="sourceLineNo">138</span><a id="line.138"></a>
+<span class="sourceLineNo">139</span><a id="line.139">    @Override</a>
+<span class="sourceLineNo">140</span><a id="line.140">    public String toString() {</a>
+<span class="sourceLineNo">141</span><a id="line.141">        return "MQTT Sub: topic[" + topicName + "] -&gt; [" + consumerInfo.getDestination() + "]";</a>
+<span class="sourceLineNo">142</span><a id="line.142">    }</a>
+<span class="sourceLineNo">143</span><a id="line.143">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

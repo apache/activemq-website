@@ -1,0 +1,537 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.store.kahadb.disk.util;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.DataInput;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.io.DataOutput;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.io.IOException;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.util.ArrayList;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.util.Iterator;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.List;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.util.NoSuchElementException;</a>
+<span class="sourceLineNo">026</span><a id="line.26"></a>
+<span class="sourceLineNo">027</span><a id="line.27">/**</a>
+<span class="sourceLineNo">028</span><a id="line.28"> * Keeps track of a added long values. Collapses ranges of numbers using a</a>
+<span class="sourceLineNo">029</span><a id="line.29"> * Sequence representation. Use to keep track of received message ids to find</a>
+<span class="sourceLineNo">030</span><a id="line.30"> * out if a message is duplicate or if there are any missing messages.</a>
+<span class="sourceLineNo">031</span><a id="line.31"> *</a>
+<span class="sourceLineNo">032</span><a id="line.32"> * @author chirino</a>
+<span class="sourceLineNo">033</span><a id="line.33"> */</a>
+<span class="sourceLineNo">034</span><a id="line.34">public class SequenceSet extends LinkedNodeList&lt;Sequence&gt; implements Iterable&lt;Long&gt; {</a>
+<span class="sourceLineNo">035</span><a id="line.35"></a>
+<span class="sourceLineNo">036</span><a id="line.36">    public static class Marshaller implements org.apache.activemq.store.kahadb.disk.util.Marshaller&lt;SequenceSet&gt; {</a>
+<span class="sourceLineNo">037</span><a id="line.37"></a>
+<span class="sourceLineNo">038</span><a id="line.38">        public static final Marshaller INSTANCE = new Marshaller();</a>
+<span class="sourceLineNo">039</span><a id="line.39"></a>
+<span class="sourceLineNo">040</span><a id="line.40">        public SequenceSet readPayload(DataInput in) throws IOException {</a>
+<span class="sourceLineNo">041</span><a id="line.41">            SequenceSet value = new SequenceSet();</a>
+<span class="sourceLineNo">042</span><a id="line.42">            int count = in.readInt();</a>
+<span class="sourceLineNo">043</span><a id="line.43">            for (int i = 0; i &lt; count; i++) {</a>
+<span class="sourceLineNo">044</span><a id="line.44">                if( in.readBoolean() ) {</a>
+<span class="sourceLineNo">045</span><a id="line.45">                    Sequence sequence = new Sequence(in.readLong(), in.readLong());</a>
+<span class="sourceLineNo">046</span><a id="line.46">                    value.addLast(sequence);</a>
+<span class="sourceLineNo">047</span><a id="line.47">                } else {</a>
+<span class="sourceLineNo">048</span><a id="line.48">                    Sequence sequence = new Sequence(in.readLong());</a>
+<span class="sourceLineNo">049</span><a id="line.49">                    value.addLast(sequence);</a>
+<span class="sourceLineNo">050</span><a id="line.50">                }</a>
+<span class="sourceLineNo">051</span><a id="line.51">            }</a>
+<span class="sourceLineNo">052</span><a id="line.52">            return value;</a>
+<span class="sourceLineNo">053</span><a id="line.53">        }</a>
+<span class="sourceLineNo">054</span><a id="line.54"></a>
+<span class="sourceLineNo">055</span><a id="line.55">        public void writePayload(SequenceSet value, DataOutput out) throws IOException {</a>
+<span class="sourceLineNo">056</span><a id="line.56">            out.writeInt(value.size());</a>
+<span class="sourceLineNo">057</span><a id="line.57">            Sequence sequence = value.getHead();</a>
+<span class="sourceLineNo">058</span><a id="line.58">            while (sequence != null ) {</a>
+<span class="sourceLineNo">059</span><a id="line.59">                if( sequence.range() &gt; 1 ) {</a>
+<span class="sourceLineNo">060</span><a id="line.60">                    out.writeBoolean(true);</a>
+<span class="sourceLineNo">061</span><a id="line.61">                    out.writeLong(sequence.first);</a>
+<span class="sourceLineNo">062</span><a id="line.62">                    out.writeLong(sequence.last);</a>
+<span class="sourceLineNo">063</span><a id="line.63">                } else {</a>
+<span class="sourceLineNo">064</span><a id="line.64">                    out.writeBoolean(false);</a>
+<span class="sourceLineNo">065</span><a id="line.65">                    out.writeLong(sequence.first);</a>
+<span class="sourceLineNo">066</span><a id="line.66">                }</a>
+<span class="sourceLineNo">067</span><a id="line.67">                sequence = sequence.getNext();</a>
+<span class="sourceLineNo">068</span><a id="line.68">            }</a>
+<span class="sourceLineNo">069</span><a id="line.69">        }</a>
+<span class="sourceLineNo">070</span><a id="line.70"></a>
+<span class="sourceLineNo">071</span><a id="line.71">        public int getFixedSize() {</a>
+<span class="sourceLineNo">072</span><a id="line.72">            return -1;</a>
+<span class="sourceLineNo">073</span><a id="line.73">        }</a>
+<span class="sourceLineNo">074</span><a id="line.74"></a>
+<span class="sourceLineNo">075</span><a id="line.75">        public SequenceSet deepCopy(SequenceSet value) {</a>
+<span class="sourceLineNo">076</span><a id="line.76">            SequenceSet rc = new SequenceSet();</a>
+<span class="sourceLineNo">077</span><a id="line.77">            Sequence sequence = value.getHead();</a>
+<span class="sourceLineNo">078</span><a id="line.78">            while (sequence != null ) {</a>
+<span class="sourceLineNo">079</span><a id="line.79">                rc.add(new Sequence(sequence.first, sequence.last));</a>
+<span class="sourceLineNo">080</span><a id="line.80">                sequence = sequence.getNext();</a>
+<span class="sourceLineNo">081</span><a id="line.81">            }</a>
+<span class="sourceLineNo">082</span><a id="line.82">            return rc;</a>
+<span class="sourceLineNo">083</span><a id="line.83">        }</a>
+<span class="sourceLineNo">084</span><a id="line.84"></a>
+<span class="sourceLineNo">085</span><a id="line.85">        public boolean isDeepCopySupported() {</a>
+<span class="sourceLineNo">086</span><a id="line.86">            return true;</a>
+<span class="sourceLineNo">087</span><a id="line.87">        }</a>
+<span class="sourceLineNo">088</span><a id="line.88">    }</a>
+<span class="sourceLineNo">089</span><a id="line.89"></a>
+<span class="sourceLineNo">090</span><a id="line.90">    public void add(Sequence value) {</a>
+<span class="sourceLineNo">091</span><a id="line.91">        // TODO we can probably optimize this a bit</a>
+<span class="sourceLineNo">092</span><a id="line.92">        for(long i=value.first; i&lt;value.last+1; i++) {</a>
+<span class="sourceLineNo">093</span><a id="line.93">            add(i);</a>
+<span class="sourceLineNo">094</span><a id="line.94">        }</a>
+<span class="sourceLineNo">095</span><a id="line.95">    }</a>
+<span class="sourceLineNo">096</span><a id="line.96"></a>
+<span class="sourceLineNo">097</span><a id="line.97">    public void merge(SequenceSet sequenceSet) {</a>
+<span class="sourceLineNo">098</span><a id="line.98">        Sequence node = sequenceSet.getHead();</a>
+<span class="sourceLineNo">099</span><a id="line.99"></a>
+<span class="sourceLineNo">100</span><a id="line.100">        while (node != null) {</a>
+<span class="sourceLineNo">101</span><a id="line.101">            add(node);</a>
+<span class="sourceLineNo">102</span><a id="line.102">            node = node.getNext();</a>
+<span class="sourceLineNo">103</span><a id="line.103">        }</a>
+<span class="sourceLineNo">104</span><a id="line.104">    }</a>
+<span class="sourceLineNo">105</span><a id="line.105"></a>
+<span class="sourceLineNo">106</span><a id="line.106">    public void remove(SequenceSet sequenceSet) {</a>
+<span class="sourceLineNo">107</span><a id="line.107">        Sequence node = sequenceSet.getHead();</a>
+<span class="sourceLineNo">108</span><a id="line.108"></a>
+<span class="sourceLineNo">109</span><a id="line.109">        while (node != null) {</a>
+<span class="sourceLineNo">110</span><a id="line.110">            remove(node);</a>
+<span class="sourceLineNo">111</span><a id="line.111">            node = node.getNext();</a>
+<span class="sourceLineNo">112</span><a id="line.112">        }</a>
+<span class="sourceLineNo">113</span><a id="line.113">    }</a>
+<span class="sourceLineNo">114</span><a id="line.114"></a>
+<span class="sourceLineNo">115</span><a id="line.115">    public void remove(Sequence value) {</a>
+<span class="sourceLineNo">116</span><a id="line.116">        for(long i=value.first; i&lt;value.last+1; i++) {</a>
+<span class="sourceLineNo">117</span><a id="line.117">            remove(i);</a>
+<span class="sourceLineNo">118</span><a id="line.118">        }</a>
+<span class="sourceLineNo">119</span><a id="line.119">    }</a>
+<span class="sourceLineNo">120</span><a id="line.120"></a>
+<span class="sourceLineNo">121</span><a id="line.121">    /**</a>
+<span class="sourceLineNo">122</span><a id="line.122">     *</a>
+<span class="sourceLineNo">123</span><a id="line.123">     * @param value</a>
+<span class="sourceLineNo">124</span><a id="line.124">     *            the value to add to the list</a>
+<span class="sourceLineNo">125</span><a id="line.125">     * @return false if the value was a duplicate.</a>
+<span class="sourceLineNo">126</span><a id="line.126">     */</a>
+<span class="sourceLineNo">127</span><a id="line.127">    public boolean add(long value) {</a>
+<span class="sourceLineNo">128</span><a id="line.128"></a>
+<span class="sourceLineNo">129</span><a id="line.129">        if (isEmpty()) {</a>
+<span class="sourceLineNo">130</span><a id="line.130">            addFirst(new Sequence(value));</a>
+<span class="sourceLineNo">131</span><a id="line.131">            return true;</a>
+<span class="sourceLineNo">132</span><a id="line.132">        }</a>
+<span class="sourceLineNo">133</span><a id="line.133"></a>
+<span class="sourceLineNo">134</span><a id="line.134">        // check for append</a>
+<span class="sourceLineNo">135</span><a id="line.135">        Sequence sequence = getTail();</a>
+<span class="sourceLineNo">136</span><a id="line.136">        if (sequence.isAdjacentToLast(value)) {</a>
+<span class="sourceLineNo">137</span><a id="line.137">            sequence.last = value;</a>
+<span class="sourceLineNo">138</span><a id="line.138">            return true;</a>
+<span class="sourceLineNo">139</span><a id="line.139">        }</a>
+<span class="sourceLineNo">140</span><a id="line.140"></a>
+<span class="sourceLineNo">141</span><a id="line.141">        // check if the value is greater than the bigger sequence value and if it's not adjacent to it</a>
+<span class="sourceLineNo">142</span><a id="line.142">        // in this case, we are sure that the value should be add to the tail of the sequence.</a>
+<span class="sourceLineNo">143</span><a id="line.143">        if (sequence.isBiggerButNotAdjacentToLast(value)) {</a>
+<span class="sourceLineNo">144</span><a id="line.144">            addLast(new Sequence(value));</a>
+<span class="sourceLineNo">145</span><a id="line.145">            return true;</a>
+<span class="sourceLineNo">146</span><a id="line.146">        }</a>
+<span class="sourceLineNo">147</span><a id="line.147"></a>
+<span class="sourceLineNo">148</span><a id="line.148">        sequence = getHead();</a>
+<span class="sourceLineNo">149</span><a id="line.149">        while (sequence != null) {</a>
+<span class="sourceLineNo">150</span><a id="line.150"></a>
+<span class="sourceLineNo">151</span><a id="line.151">            if (sequence.isAdjacentToLast(value)) {</a>
+<span class="sourceLineNo">152</span><a id="line.152">                // grow the sequence...</a>
+<span class="sourceLineNo">153</span><a id="line.153">                sequence.last = value;</a>
+<span class="sourceLineNo">154</span><a id="line.154">                // it might connect us to the next sequence..</a>
+<span class="sourceLineNo">155</span><a id="line.155">                if (sequence.getNext() != null) {</a>
+<span class="sourceLineNo">156</span><a id="line.156">                    Sequence next = sequence.getNext();</a>
+<span class="sourceLineNo">157</span><a id="line.157">                    if (next.isAdjacentToFirst(value)) {</a>
+<span class="sourceLineNo">158</span><a id="line.158">                        // Yep the sequence connected.. so join them.</a>
+<span class="sourceLineNo">159</span><a id="line.159">                        sequence.last = next.last;</a>
+<span class="sourceLineNo">160</span><a id="line.160">                        next.unlink();</a>
+<span class="sourceLineNo">161</span><a id="line.161">                    }</a>
+<span class="sourceLineNo">162</span><a id="line.162">                }</a>
+<span class="sourceLineNo">163</span><a id="line.163">                return true;</a>
+<span class="sourceLineNo">164</span><a id="line.164">            }</a>
+<span class="sourceLineNo">165</span><a id="line.165"></a>
+<span class="sourceLineNo">166</span><a id="line.166">            if (sequence.isAdjacentToFirst(value)) {</a>
+<span class="sourceLineNo">167</span><a id="line.167">                // grow the sequence...</a>
+<span class="sourceLineNo">168</span><a id="line.168">                sequence.first = value;</a>
+<span class="sourceLineNo">169</span><a id="line.169"></a>
+<span class="sourceLineNo">170</span><a id="line.170">                // it might connect us to the previous</a>
+<span class="sourceLineNo">171</span><a id="line.171">                if (sequence.getPrevious() != null) {</a>
+<span class="sourceLineNo">172</span><a id="line.172">                    Sequence prev = sequence.getPrevious();</a>
+<span class="sourceLineNo">173</span><a id="line.173">                    if (prev.isAdjacentToLast(value)) {</a>
+<span class="sourceLineNo">174</span><a id="line.174">                        // Yep the sequence connected.. so join them.</a>
+<span class="sourceLineNo">175</span><a id="line.175">                        sequence.first = prev.first;</a>
+<span class="sourceLineNo">176</span><a id="line.176">                        prev.unlink();</a>
+<span class="sourceLineNo">177</span><a id="line.177">                    }</a>
+<span class="sourceLineNo">178</span><a id="line.178">                }</a>
+<span class="sourceLineNo">179</span><a id="line.179">                return true;</a>
+<span class="sourceLineNo">180</span><a id="line.180">            }</a>
+<span class="sourceLineNo">181</span><a id="line.181"></a>
+<span class="sourceLineNo">182</span><a id="line.182">            // Did that value land before this sequence?</a>
+<span class="sourceLineNo">183</span><a id="line.183">            if (value &lt; sequence.first) {</a>
+<span class="sourceLineNo">184</span><a id="line.184">                // Then insert a new entry before this sequence item.</a>
+<span class="sourceLineNo">185</span><a id="line.185">                sequence.linkBefore(new Sequence(value));</a>
+<span class="sourceLineNo">186</span><a id="line.186">                return true;</a>
+<span class="sourceLineNo">187</span><a id="line.187">            }</a>
+<span class="sourceLineNo">188</span><a id="line.188"></a>
+<span class="sourceLineNo">189</span><a id="line.189">            // Did that value land within the sequence? The it's a duplicate.</a>
+<span class="sourceLineNo">190</span><a id="line.190">            if (sequence.contains(value)) {</a>
+<span class="sourceLineNo">191</span><a id="line.191">                return false;</a>
+<span class="sourceLineNo">192</span><a id="line.192">            }</a>
+<span class="sourceLineNo">193</span><a id="line.193"></a>
+<span class="sourceLineNo">194</span><a id="line.194">            sequence = sequence.getNext();</a>
+<span class="sourceLineNo">195</span><a id="line.195">        }</a>
+<span class="sourceLineNo">196</span><a id="line.196"></a>
+<span class="sourceLineNo">197</span><a id="line.197">        // Then the value is getting appended to the tail of the sequence.</a>
+<span class="sourceLineNo">198</span><a id="line.198">        addLast(new Sequence(value));</a>
+<span class="sourceLineNo">199</span><a id="line.199">        return true;</a>
+<span class="sourceLineNo">200</span><a id="line.200">    }</a>
+<span class="sourceLineNo">201</span><a id="line.201"></a>
+<span class="sourceLineNo">202</span><a id="line.202">    /**</a>
+<span class="sourceLineNo">203</span><a id="line.203">     * Removes the given value from the Sequence set, splitting a</a>
+<span class="sourceLineNo">204</span><a id="line.204">     * contained sequence if necessary.</a>
+<span class="sourceLineNo">205</span><a id="line.205">     *</a>
+<span class="sourceLineNo">206</span><a id="line.206">     * @param value</a>
+<span class="sourceLineNo">207</span><a id="line.207">     *          The value that should be removed from the SequenceSet.</a>
+<span class="sourceLineNo">208</span><a id="line.208">     *</a>
+<span class="sourceLineNo">209</span><a id="line.209">     * @return true if the value was removed from the set, false if there</a>
+<span class="sourceLineNo">210</span><a id="line.210">     *         was no sequence in the set that contained the given value.</a>
+<span class="sourceLineNo">211</span><a id="line.211">     */</a>
+<span class="sourceLineNo">212</span><a id="line.212">    public boolean remove(long value) {</a>
+<span class="sourceLineNo">213</span><a id="line.213">        Sequence sequence = getHead();</a>
+<span class="sourceLineNo">214</span><a id="line.214">        while (sequence != null ) {</a>
+<span class="sourceLineNo">215</span><a id="line.215">            if(sequence.contains(value)) {</a>
+<span class="sourceLineNo">216</span><a id="line.216">                if (sequence.range() == 1) {</a>
+<span class="sourceLineNo">217</span><a id="line.217">                    sequence.unlink();</a>
+<span class="sourceLineNo">218</span><a id="line.218">                    return true;</a>
+<span class="sourceLineNo">219</span><a id="line.219">                } else if (sequence.getFirst() == value) {</a>
+<span class="sourceLineNo">220</span><a id="line.220">                    sequence.setFirst(value+1);</a>
+<span class="sourceLineNo">221</span><a id="line.221">                    return true;</a>
+<span class="sourceLineNo">222</span><a id="line.222">                } else if (sequence.getLast() == value) {</a>
+<span class="sourceLineNo">223</span><a id="line.223">                    sequence.setLast(value-1);</a>
+<span class="sourceLineNo">224</span><a id="line.224">                    return true;</a>
+<span class="sourceLineNo">225</span><a id="line.225">                } else {</a>
+<span class="sourceLineNo">226</span><a id="line.226">                    sequence.linkBefore(new Sequence(sequence.first, value-1));</a>
+<span class="sourceLineNo">227</span><a id="line.227">                    sequence.linkAfter(new Sequence(value+1, sequence.last));</a>
+<span class="sourceLineNo">228</span><a id="line.228">                    sequence.unlink();</a>
+<span class="sourceLineNo">229</span><a id="line.229">                    return true;</a>
+<span class="sourceLineNo">230</span><a id="line.230">                }</a>
+<span class="sourceLineNo">231</span><a id="line.231">            }</a>
+<span class="sourceLineNo">232</span><a id="line.232"></a>
+<span class="sourceLineNo">233</span><a id="line.233">            sequence = sequence.getNext();</a>
+<span class="sourceLineNo">234</span><a id="line.234">        }</a>
+<span class="sourceLineNo">235</span><a id="line.235"></a>
+<span class="sourceLineNo">236</span><a id="line.236">        return false;</a>
+<span class="sourceLineNo">237</span><a id="line.237">    }</a>
+<span class="sourceLineNo">238</span><a id="line.238"></a>
+<span class="sourceLineNo">239</span><a id="line.239">    /**</a>
+<span class="sourceLineNo">240</span><a id="line.240">     * Removes and returns the first element from this list.</a>
+<span class="sourceLineNo">241</span><a id="line.241">     *</a>
+<span class="sourceLineNo">242</span><a id="line.242">     * @return the first element from this list.</a>
+<span class="sourceLineNo">243</span><a id="line.243">     * @throws NoSuchElementException if this list is empty.</a>
+<span class="sourceLineNo">244</span><a id="line.244">     */</a>
+<span class="sourceLineNo">245</span><a id="line.245">    public long removeFirst() {</a>
+<span class="sourceLineNo">246</span><a id="line.246">        if (isEmpty()) {</a>
+<span class="sourceLineNo">247</span><a id="line.247">            throw new NoSuchElementException();</a>
+<span class="sourceLineNo">248</span><a id="line.248">        }</a>
+<span class="sourceLineNo">249</span><a id="line.249"></a>
+<span class="sourceLineNo">250</span><a id="line.250">        Sequence rc = removeFirstSequence(1);</a>
+<span class="sourceLineNo">251</span><a id="line.251">        return rc.first;</a>
+<span class="sourceLineNo">252</span><a id="line.252">    }</a>
+<span class="sourceLineNo">253</span><a id="line.253"></a>
+<span class="sourceLineNo">254</span><a id="line.254">    /**</a>
+<span class="sourceLineNo">255</span><a id="line.255">     * Removes and returns the last sequence from this list.</a>
+<span class="sourceLineNo">256</span><a id="line.256">     *</a>
+<span class="sourceLineNo">257</span><a id="line.257">     * @return the last sequence from this list or null if the list is empty.</a>
+<span class="sourceLineNo">258</span><a id="line.258">     */</a>
+<span class="sourceLineNo">259</span><a id="line.259">    public Sequence removeLastSequence() {</a>
+<span class="sourceLineNo">260</span><a id="line.260">        if (isEmpty()) {</a>
+<span class="sourceLineNo">261</span><a id="line.261">            return null;</a>
+<span class="sourceLineNo">262</span><a id="line.262">        }</a>
+<span class="sourceLineNo">263</span><a id="line.263"></a>
+<span class="sourceLineNo">264</span><a id="line.264">        Sequence rc = getTail();</a>
+<span class="sourceLineNo">265</span><a id="line.265">        rc.unlink();</a>
+<span class="sourceLineNo">266</span><a id="line.266">        return rc;</a>
+<span class="sourceLineNo">267</span><a id="line.267">    }</a>
+<span class="sourceLineNo">268</span><a id="line.268"></a>
+<span class="sourceLineNo">269</span><a id="line.269">    /**</a>
+<span class="sourceLineNo">270</span><a id="line.270">     * Removes and returns the first sequence that is count range large.</a>
+<span class="sourceLineNo">271</span><a id="line.271">     *</a>
+<span class="sourceLineNo">272</span><a id="line.272">     * @return a sequence that is count range large, or null if no sequence is that large in the list.</a>
+<span class="sourceLineNo">273</span><a id="line.273">     */</a>
+<span class="sourceLineNo">274</span><a id="line.274">    public Sequence removeFirstSequence(long count) {</a>
+<span class="sourceLineNo">275</span><a id="line.275">        if (isEmpty()) {</a>
+<span class="sourceLineNo">276</span><a id="line.276">            return null;</a>
+<span class="sourceLineNo">277</span><a id="line.277">        }</a>
+<span class="sourceLineNo">278</span><a id="line.278"></a>
+<span class="sourceLineNo">279</span><a id="line.279">        Sequence sequence = getHead();</a>
+<span class="sourceLineNo">280</span><a id="line.280">        while (sequence != null ) {</a>
+<span class="sourceLineNo">281</span><a id="line.281">            if (sequence.range() == count ) {</a>
+<span class="sourceLineNo">282</span><a id="line.282">                sequence.unlink();</a>
+<span class="sourceLineNo">283</span><a id="line.283">                return sequence;</a>
+<span class="sourceLineNo">284</span><a id="line.284">            }</a>
+<span class="sourceLineNo">285</span><a id="line.285">            if (sequence.range() &gt; count ) {</a>
+<span class="sourceLineNo">286</span><a id="line.286">                Sequence rc = new Sequence(sequence.first, sequence.first+count-1);</a>
+<span class="sourceLineNo">287</span><a id="line.287">                sequence.first+=count;</a>
+<span class="sourceLineNo">288</span><a id="line.288">                return rc;</a>
+<span class="sourceLineNo">289</span><a id="line.289">            }</a>
+<span class="sourceLineNo">290</span><a id="line.290">            sequence = sequence.getNext();</a>
+<span class="sourceLineNo">291</span><a id="line.291">        }</a>
+<span class="sourceLineNo">292</span><a id="line.292">        return null;</a>
+<span class="sourceLineNo">293</span><a id="line.293">    }</a>
+<span class="sourceLineNo">294</span><a id="line.294"></a>
+<span class="sourceLineNo">295</span><a id="line.295">    /**</a>
+<span class="sourceLineNo">296</span><a id="line.296">     * @return all the id Sequences that are missing from this set that are not</a>
+<span class="sourceLineNo">297</span><a id="line.297">     *         in between the range provided.</a>
+<span class="sourceLineNo">298</span><a id="line.298">     */</a>
+<span class="sourceLineNo">299</span><a id="line.299">    public List&lt;Sequence&gt; getMissing(long first, long last) {</a>
+<span class="sourceLineNo">300</span><a id="line.300">        ArrayList&lt;Sequence&gt; rc = new ArrayList&lt;Sequence&gt;();</a>
+<span class="sourceLineNo">301</span><a id="line.301">        if (first &gt; last) {</a>
+<span class="sourceLineNo">302</span><a id="line.302">            throw new IllegalArgumentException("First cannot be more than last");</a>
+<span class="sourceLineNo">303</span><a id="line.303">        }</a>
+<span class="sourceLineNo">304</span><a id="line.304">        if (isEmpty()) {</a>
+<span class="sourceLineNo">305</span><a id="line.305">            // We are missing all the messages.</a>
+<span class="sourceLineNo">306</span><a id="line.306">            rc.add(new Sequence(first, last));</a>
+<span class="sourceLineNo">307</span><a id="line.307">            return rc;</a>
+<span class="sourceLineNo">308</span><a id="line.308">        }</a>
+<span class="sourceLineNo">309</span><a id="line.309"></a>
+<span class="sourceLineNo">310</span><a id="line.310">        Sequence sequence = getHead();</a>
+<span class="sourceLineNo">311</span><a id="line.311">        while (sequence != null &amp;&amp; first &lt;= last) {</a>
+<span class="sourceLineNo">312</span><a id="line.312">            if (sequence.contains(first)) {</a>
+<span class="sourceLineNo">313</span><a id="line.313">                first = sequence.last + 1;</a>
+<span class="sourceLineNo">314</span><a id="line.314">            } else {</a>
+<span class="sourceLineNo">315</span><a id="line.315">                if (first &lt; sequence.first) {</a>
+<span class="sourceLineNo">316</span><a id="line.316">                    if (last &lt; sequence.first) {</a>
+<span class="sourceLineNo">317</span><a id="line.317">                        rc.add(new Sequence(first, last));</a>
+<span class="sourceLineNo">318</span><a id="line.318">                        return rc;</a>
+<span class="sourceLineNo">319</span><a id="line.319">                    } else {</a>
+<span class="sourceLineNo">320</span><a id="line.320">                        rc.add(new Sequence(first, sequence.first - 1));</a>
+<span class="sourceLineNo">321</span><a id="line.321">                        first = sequence.last + 1;</a>
+<span class="sourceLineNo">322</span><a id="line.322">                    }</a>
+<span class="sourceLineNo">323</span><a id="line.323">                }</a>
+<span class="sourceLineNo">324</span><a id="line.324">            }</a>
+<span class="sourceLineNo">325</span><a id="line.325">            sequence = sequence.getNext();</a>
+<span class="sourceLineNo">326</span><a id="line.326">        }</a>
+<span class="sourceLineNo">327</span><a id="line.327"></a>
+<span class="sourceLineNo">328</span><a id="line.328">        if (first &lt;= last) {</a>
+<span class="sourceLineNo">329</span><a id="line.329">            rc.add(new Sequence(first, last));</a>
+<span class="sourceLineNo">330</span><a id="line.330">        }</a>
+<span class="sourceLineNo">331</span><a id="line.331">        return rc;</a>
+<span class="sourceLineNo">332</span><a id="line.332">    }</a>
+<span class="sourceLineNo">333</span><a id="line.333"></a>
+<span class="sourceLineNo">334</span><a id="line.334">    /**</a>
+<span class="sourceLineNo">335</span><a id="line.335">     * @return all the Sequence that are in this list</a>
+<span class="sourceLineNo">336</span><a id="line.336">     */</a>
+<span class="sourceLineNo">337</span><a id="line.337">    public List&lt;Sequence&gt; getReceived() {</a>
+<span class="sourceLineNo">338</span><a id="line.338">        ArrayList&lt;Sequence&gt; rc = new ArrayList&lt;Sequence&gt;(size());</a>
+<span class="sourceLineNo">339</span><a id="line.339">        Sequence sequence = getHead();</a>
+<span class="sourceLineNo">340</span><a id="line.340">        while (sequence != null) {</a>
+<span class="sourceLineNo">341</span><a id="line.341">            rc.add(new Sequence(sequence.first, sequence.last));</a>
+<span class="sourceLineNo">342</span><a id="line.342">            sequence = sequence.getNext();</a>
+<span class="sourceLineNo">343</span><a id="line.343">        }</a>
+<span class="sourceLineNo">344</span><a id="line.344">        return rc;</a>
+<span class="sourceLineNo">345</span><a id="line.345">    }</a>
+<span class="sourceLineNo">346</span><a id="line.346"></a>
+<span class="sourceLineNo">347</span><a id="line.347">    /**</a>
+<span class="sourceLineNo">348</span><a id="line.348">     * Returns true if the value given is contained within one of the</a>
+<span class="sourceLineNo">349</span><a id="line.349">     * sequences held in this set.</a>
+<span class="sourceLineNo">350</span><a id="line.350">     *</a>
+<span class="sourceLineNo">351</span><a id="line.351">     * @param value</a>
+<span class="sourceLineNo">352</span><a id="line.352">     *      The value to search for in the set.</a>
+<span class="sourceLineNo">353</span><a id="line.353">     *</a>
+<span class="sourceLineNo">354</span><a id="line.354">     * @return true if the value is contained in the set.</a>
+<span class="sourceLineNo">355</span><a id="line.355">     */</a>
+<span class="sourceLineNo">356</span><a id="line.356">    public boolean contains(long value) {</a>
+<span class="sourceLineNo">357</span><a id="line.357">        if (isEmpty()) {</a>
+<span class="sourceLineNo">358</span><a id="line.358">            return false;</a>
+<span class="sourceLineNo">359</span><a id="line.359">        }</a>
+<span class="sourceLineNo">360</span><a id="line.360"></a>
+<span class="sourceLineNo">361</span><a id="line.361">        Sequence sequence = getHead();</a>
+<span class="sourceLineNo">362</span><a id="line.362">        while (sequence != null) {</a>
+<span class="sourceLineNo">363</span><a id="line.363">            if (sequence.contains(value)) {</a>
+<span class="sourceLineNo">364</span><a id="line.364">                return true;</a>
+<span class="sourceLineNo">365</span><a id="line.365">            }</a>
+<span class="sourceLineNo">366</span><a id="line.366">            sequence = sequence.getNext();</a>
+<span class="sourceLineNo">367</span><a id="line.367">        }</a>
+<span class="sourceLineNo">368</span><a id="line.368"></a>
+<span class="sourceLineNo">369</span><a id="line.369">        return false;</a>
+<span class="sourceLineNo">370</span><a id="line.370">    }</a>
+<span class="sourceLineNo">371</span><a id="line.371"></a>
+<span class="sourceLineNo">372</span><a id="line.372">    public boolean contains(int first, int last) {</a>
+<span class="sourceLineNo">373</span><a id="line.373">        if (isEmpty()) {</a>
+<span class="sourceLineNo">374</span><a id="line.374">            return false;</a>
+<span class="sourceLineNo">375</span><a id="line.375">        }</a>
+<span class="sourceLineNo">376</span><a id="line.376">        Sequence sequence = getHead();</a>
+<span class="sourceLineNo">377</span><a id="line.377">        while (sequence != null) {</a>
+<span class="sourceLineNo">378</span><a id="line.378">            if (sequence.first &lt;= first &amp;&amp; first &lt;= sequence.last ) {</a>
+<span class="sourceLineNo">379</span><a id="line.379">                return last &lt;= sequence.last;</a>
+<span class="sourceLineNo">380</span><a id="line.380">            }</a>
+<span class="sourceLineNo">381</span><a id="line.381">            sequence = sequence.getNext();</a>
+<span class="sourceLineNo">382</span><a id="line.382">        }</a>
+<span class="sourceLineNo">383</span><a id="line.383">        return false;</a>
+<span class="sourceLineNo">384</span><a id="line.384">    }</a>
+<span class="sourceLineNo">385</span><a id="line.385"></a>
+<span class="sourceLineNo">386</span><a id="line.386">    public Sequence get(int value) {</a>
+<span class="sourceLineNo">387</span><a id="line.387">        if (!isEmpty()) {</a>
+<span class="sourceLineNo">388</span><a id="line.388">            Sequence sequence = getHead();</a>
+<span class="sourceLineNo">389</span><a id="line.389">            while (sequence != null) {</a>
+<span class="sourceLineNo">390</span><a id="line.390">                if (sequence.contains(value)) {</a>
+<span class="sourceLineNo">391</span><a id="line.391">                    return sequence;</a>
+<span class="sourceLineNo">392</span><a id="line.392">                }</a>
+<span class="sourceLineNo">393</span><a id="line.393">                sequence = sequence.getNext();</a>
+<span class="sourceLineNo">394</span><a id="line.394">            }</a>
+<span class="sourceLineNo">395</span><a id="line.395">        }</a>
+<span class="sourceLineNo">396</span><a id="line.396">        return null;</a>
+<span class="sourceLineNo">397</span><a id="line.397">    }</a>
+<span class="sourceLineNo">398</span><a id="line.398"></a>
+<span class="sourceLineNo">399</span><a id="line.399"></a>
+<span class="sourceLineNo">400</span><a id="line.400">    /**</a>
+<span class="sourceLineNo">401</span><a id="line.401">     * Computes the size of this Sequence by summing the values of all</a>
+<span class="sourceLineNo">402</span><a id="line.402">     * the contained sequences.</a>
+<span class="sourceLineNo">403</span><a id="line.403">     *</a>
+<span class="sourceLineNo">404</span><a id="line.404">     * @return the total number of values contained in this set if it</a>
+<span class="sourceLineNo">405</span><a id="line.405">     *         were to be iterated over like an array.</a>
+<span class="sourceLineNo">406</span><a id="line.406">     */</a>
+<span class="sourceLineNo">407</span><a id="line.407">    public long rangeSize() {</a>
+<span class="sourceLineNo">408</span><a id="line.408">        long result = 0;</a>
+<span class="sourceLineNo">409</span><a id="line.409">        Sequence sequence = getHead();</a>
+<span class="sourceLineNo">410</span><a id="line.410">        while (sequence != null) {</a>
+<span class="sourceLineNo">411</span><a id="line.411">            result += sequence.range();</a>
+<span class="sourceLineNo">412</span><a id="line.412">            sequence = sequence.getNext();</a>
+<span class="sourceLineNo">413</span><a id="line.413">        }</a>
+<span class="sourceLineNo">414</span><a id="line.414">        return result;</a>
+<span class="sourceLineNo">415</span><a id="line.415">    }</a>
+<span class="sourceLineNo">416</span><a id="line.416"></a>
+<span class="sourceLineNo">417</span><a id="line.417">    public Iterator&lt;Long&gt; iterator() {</a>
+<span class="sourceLineNo">418</span><a id="line.418">        return new SequenceIterator();</a>
+<span class="sourceLineNo">419</span><a id="line.419">    }</a>
+<span class="sourceLineNo">420</span><a id="line.420"></a>
+<span class="sourceLineNo">421</span><a id="line.421">    private class SequenceIterator implements Iterator&lt;Long&gt; {</a>
+<span class="sourceLineNo">422</span><a id="line.422"></a>
+<span class="sourceLineNo">423</span><a id="line.423">        private Sequence currentEntry;</a>
+<span class="sourceLineNo">424</span><a id="line.424">        private long lastReturned = -1;</a>
+<span class="sourceLineNo">425</span><a id="line.425"></a>
+<span class="sourceLineNo">426</span><a id="line.426">        public SequenceIterator() {</a>
+<span class="sourceLineNo">427</span><a id="line.427">            currentEntry = getHead();</a>
+<span class="sourceLineNo">428</span><a id="line.428">            if (currentEntry != null) {</a>
+<span class="sourceLineNo">429</span><a id="line.429">                lastReturned = currentEntry.first - 1;</a>
+<span class="sourceLineNo">430</span><a id="line.430">            }</a>
+<span class="sourceLineNo">431</span><a id="line.431">        }</a>
+<span class="sourceLineNo">432</span><a id="line.432"></a>
+<span class="sourceLineNo">433</span><a id="line.433">        public boolean hasNext() {</a>
+<span class="sourceLineNo">434</span><a id="line.434">            return currentEntry != null;</a>
+<span class="sourceLineNo">435</span><a id="line.435">        }</a>
+<span class="sourceLineNo">436</span><a id="line.436"></a>
+<span class="sourceLineNo">437</span><a id="line.437">        public Long next() {</a>
+<span class="sourceLineNo">438</span><a id="line.438">            if (currentEntry == null) {</a>
+<span class="sourceLineNo">439</span><a id="line.439">                throw new NoSuchElementException();</a>
+<span class="sourceLineNo">440</span><a id="line.440">            }</a>
+<span class="sourceLineNo">441</span><a id="line.441"></a>
+<span class="sourceLineNo">442</span><a id="line.442">            if(lastReturned &lt; currentEntry.first) {</a>
+<span class="sourceLineNo">443</span><a id="line.443">                lastReturned = currentEntry.first;</a>
+<span class="sourceLineNo">444</span><a id="line.444">                if (currentEntry.range() == 1) {</a>
+<span class="sourceLineNo">445</span><a id="line.445">                    currentEntry = currentEntry.getNext();</a>
+<span class="sourceLineNo">446</span><a id="line.446">                }</a>
+<span class="sourceLineNo">447</span><a id="line.447">            } else {</a>
+<span class="sourceLineNo">448</span><a id="line.448">                lastReturned++;</a>
+<span class="sourceLineNo">449</span><a id="line.449">                if (lastReturned == currentEntry.last) {</a>
+<span class="sourceLineNo">450</span><a id="line.450">                    currentEntry = currentEntry.getNext();</a>
+<span class="sourceLineNo">451</span><a id="line.451">                }</a>
+<span class="sourceLineNo">452</span><a id="line.452">            }</a>
+<span class="sourceLineNo">453</span><a id="line.453"></a>
+<span class="sourceLineNo">454</span><a id="line.454">            return lastReturned;</a>
+<span class="sourceLineNo">455</span><a id="line.455">        }</a>
+<span class="sourceLineNo">456</span><a id="line.456"></a>
+<span class="sourceLineNo">457</span><a id="line.457">        public void remove() {</a>
+<span class="sourceLineNo">458</span><a id="line.458">            throw new UnsupportedOperationException();</a>
+<span class="sourceLineNo">459</span><a id="line.459">        }</a>
+<span class="sourceLineNo">460</span><a id="line.460"></a>
+<span class="sourceLineNo">461</span><a id="line.461">    }</a>
+<span class="sourceLineNo">462</span><a id="line.462"></a>
+<span class="sourceLineNo">463</span><a id="line.463">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

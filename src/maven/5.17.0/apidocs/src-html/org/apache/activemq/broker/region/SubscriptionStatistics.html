@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17"></a>
+<span class="sourceLineNo">018</span><a id="line.18">package org.apache.activemq.broker.region;</a>
+<span class="sourceLineNo">019</span><a id="line.19"></a>
+<span class="sourceLineNo">020</span><a id="line.20">import org.apache.activemq.management.CountStatisticImpl;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import org.apache.activemq.management.SizeStatisticImpl;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import org.apache.activemq.management.StatsImpl;</a>
+<span class="sourceLineNo">023</span><a id="line.23"></a>
+<span class="sourceLineNo">024</span><a id="line.24">/**</a>
+<span class="sourceLineNo">025</span><a id="line.25"> * The J2EE Statistics for a Subsription.</a>
+<span class="sourceLineNo">026</span><a id="line.26"> */</a>
+<span class="sourceLineNo">027</span><a id="line.27">public class SubscriptionStatistics extends StatsImpl {</a>
+<span class="sourceLineNo">028</span><a id="line.28"></a>
+<span class="sourceLineNo">029</span><a id="line.29">    protected CountStatisticImpl consumedCount;</a>
+<span class="sourceLineNo">030</span><a id="line.30">    protected CountStatisticImpl enqueues;</a>
+<span class="sourceLineNo">031</span><a id="line.31">    protected CountStatisticImpl dequeues;</a>
+<span class="sourceLineNo">032</span><a id="line.32">    protected CountStatisticImpl dispatched;</a>
+<span class="sourceLineNo">033</span><a id="line.33">    protected SizeStatisticImpl inflightMessageSize;</a>
+<span class="sourceLineNo">034</span><a id="line.34"></a>
+<span class="sourceLineNo">035</span><a id="line.35"></a>
+<span class="sourceLineNo">036</span><a id="line.36">    public SubscriptionStatistics() {</a>
+<span class="sourceLineNo">037</span><a id="line.37">        this(true);</a>
+<span class="sourceLineNo">038</span><a id="line.38">    }</a>
+<span class="sourceLineNo">039</span><a id="line.39"></a>
+<span class="sourceLineNo">040</span><a id="line.40">    public SubscriptionStatistics(boolean enabled) {</a>
+<span class="sourceLineNo">041</span><a id="line.41"></a>
+<span class="sourceLineNo">042</span><a id="line.42">        consumedCount = new CountStatisticImpl("consumedCount", "The number of messages that have been consumed by the subscription");</a>
+<span class="sourceLineNo">043</span><a id="line.43">        enqueues = new CountStatisticImpl("enqueues", "The number of messages that have been sent to the subscription");</a>
+<span class="sourceLineNo">044</span><a id="line.44">        dispatched = new CountStatisticImpl("dispatched", "The number of messages that have been dispatched from the subscription");</a>
+<span class="sourceLineNo">045</span><a id="line.45">        dequeues = new CountStatisticImpl("dequeues", "The number of messages that have been acknowledged from the subscription");</a>
+<span class="sourceLineNo">046</span><a id="line.46">        inflightMessageSize = new SizeStatisticImpl("inflightMessageSize", "The size in bytes of messages dispatched but awaiting acknowledgement");</a>
+<span class="sourceLineNo">047</span><a id="line.47"></a>
+<span class="sourceLineNo">048</span><a id="line.48">        addStatistic("consumedCount", consumedCount);</a>
+<span class="sourceLineNo">049</span><a id="line.49">        addStatistic("enqueues", enqueues);</a>
+<span class="sourceLineNo">050</span><a id="line.50">        addStatistic("dispatched", dispatched);</a>
+<span class="sourceLineNo">051</span><a id="line.51">        addStatistic("dequeues", dequeues);</a>
+<span class="sourceLineNo">052</span><a id="line.52">        addStatistic("inflightMessageSize", inflightMessageSize);</a>
+<span class="sourceLineNo">053</span><a id="line.53"></a>
+<span class="sourceLineNo">054</span><a id="line.54">        this.setEnabled(enabled);</a>
+<span class="sourceLineNo">055</span><a id="line.55">    }</a>
+<span class="sourceLineNo">056</span><a id="line.56"></a>
+<span class="sourceLineNo">057</span><a id="line.57">    public CountStatisticImpl getConsumedCount() {</a>
+<span class="sourceLineNo">058</span><a id="line.58">        return consumedCount;</a>
+<span class="sourceLineNo">059</span><a id="line.59">    }</a>
+<span class="sourceLineNo">060</span><a id="line.60"></a>
+<span class="sourceLineNo">061</span><a id="line.61">    public CountStatisticImpl getEnqueues() {</a>
+<span class="sourceLineNo">062</span><a id="line.62">        return enqueues;</a>
+<span class="sourceLineNo">063</span><a id="line.63">    }</a>
+<span class="sourceLineNo">064</span><a id="line.64"></a>
+<span class="sourceLineNo">065</span><a id="line.65">    public CountStatisticImpl getDequeues() {</a>
+<span class="sourceLineNo">066</span><a id="line.66">        return dequeues;</a>
+<span class="sourceLineNo">067</span><a id="line.67">    }</a>
+<span class="sourceLineNo">068</span><a id="line.68"></a>
+<span class="sourceLineNo">069</span><a id="line.69">    public CountStatisticImpl getDispatched() {</a>
+<span class="sourceLineNo">070</span><a id="line.70">        return dispatched;</a>
+<span class="sourceLineNo">071</span><a id="line.71">    }</a>
+<span class="sourceLineNo">072</span><a id="line.72"></a>
+<span class="sourceLineNo">073</span><a id="line.73">    public SizeStatisticImpl getInflightMessageSize() {</a>
+<span class="sourceLineNo">074</span><a id="line.74">        return inflightMessageSize;</a>
+<span class="sourceLineNo">075</span><a id="line.75">    }</a>
+<span class="sourceLineNo">076</span><a id="line.76"></a>
+<span class="sourceLineNo">077</span><a id="line.77">    public void reset() {</a>
+<span class="sourceLineNo">078</span><a id="line.78">        if (this.isDoReset()) {</a>
+<span class="sourceLineNo">079</span><a id="line.79">            super.reset();</a>
+<span class="sourceLineNo">080</span><a id="line.80">            consumedCount.reset();</a>
+<span class="sourceLineNo">081</span><a id="line.81">            enqueues.reset();</a>
+<span class="sourceLineNo">082</span><a id="line.82">            dequeues.reset();</a>
+<span class="sourceLineNo">083</span><a id="line.83">            dispatched.reset();</a>
+<span class="sourceLineNo">084</span><a id="line.84">            inflightMessageSize.reset();</a>
+<span class="sourceLineNo">085</span><a id="line.85">        }</a>
+<span class="sourceLineNo">086</span><a id="line.86">    }</a>
+<span class="sourceLineNo">087</span><a id="line.87"></a>
+<span class="sourceLineNo">088</span><a id="line.88">    public void setEnabled(boolean enabled) {</a>
+<span class="sourceLineNo">089</span><a id="line.89">        super.setEnabled(enabled);</a>
+<span class="sourceLineNo">090</span><a id="line.90">        consumedCount.setEnabled(enabled);</a>
+<span class="sourceLineNo">091</span><a id="line.91">        enqueues.setEnabled(enabled);</a>
+<span class="sourceLineNo">092</span><a id="line.92">        dispatched.setEnabled(enabled);</a>
+<span class="sourceLineNo">093</span><a id="line.93">        dequeues.setEnabled(enabled);</a>
+<span class="sourceLineNo">094</span><a id="line.94">        inflightMessageSize.setEnabled(enabled);</a>
+<span class="sourceLineNo">095</span><a id="line.95">    }</a>
+<span class="sourceLineNo">096</span><a id="line.96"></a>
+<span class="sourceLineNo">097</span><a id="line.97">    public void setParent(SubscriptionStatistics parent) {</a>
+<span class="sourceLineNo">098</span><a id="line.98">        if (parent != null) {</a>
+<span class="sourceLineNo">099</span><a id="line.99">            consumedCount.setParent(parent.consumedCount);</a>
+<span class="sourceLineNo">100</span><a id="line.100">            enqueues.setParent(parent.enqueues);</a>
+<span class="sourceLineNo">101</span><a id="line.101">            dispatched.setParent(parent.dispatched);</a>
+<span class="sourceLineNo">102</span><a id="line.102">            dequeues.setParent(parent.dequeues);</a>
+<span class="sourceLineNo">103</span><a id="line.103">            inflightMessageSize.setParent(parent.inflightMessageSize);</a>
+<span class="sourceLineNo">104</span><a id="line.104">        } else {</a>
+<span class="sourceLineNo">105</span><a id="line.105">            consumedCount.setParent(null);</a>
+<span class="sourceLineNo">106</span><a id="line.106">            enqueues.setParent(null);</a>
+<span class="sourceLineNo">107</span><a id="line.107">            dispatched.setParent(null);</a>
+<span class="sourceLineNo">108</span><a id="line.108">            dequeues.setParent(null);</a>
+<span class="sourceLineNo">109</span><a id="line.109">            inflightMessageSize.setParent(null);</a>
+<span class="sourceLineNo">110</span><a id="line.110">        }</a>
+<span class="sourceLineNo">111</span><a id="line.111">    }</a>
+<span class="sourceLineNo">112</span><a id="line.112"></a>
+<span class="sourceLineNo">113</span><a id="line.113">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

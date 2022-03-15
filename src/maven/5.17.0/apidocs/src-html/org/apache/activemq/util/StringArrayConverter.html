@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.util;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.util.ArrayList;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.util.List;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.util.StringTokenizer;</a>
+<span class="sourceLineNo">022</span><a id="line.22"></a>
+<span class="sourceLineNo">023</span><a id="line.23">/**</a>
+<span class="sourceLineNo">024</span><a id="line.24"> * Class for converting to/from String[] to be used instead of a</a>
+<span class="sourceLineNo">025</span><a id="line.25"> * {@link java.beans.PropertyEditor} which otherwise causes</a>
+<span class="sourceLineNo">026</span><a id="line.26"> * memory leaks as the JDK {@link java.beans.PropertyEditorManager}</a>
+<span class="sourceLineNo">027</span><a id="line.27"> * is a static class and has strong references to classes, causing</a>
+<span class="sourceLineNo">028</span><a id="line.28"> * problems in hot-deployment environments.</a>
+<span class="sourceLineNo">029</span><a id="line.29"> */</a>
+<span class="sourceLineNo">030</span><a id="line.30">public class StringArrayConverter {</a>
+<span class="sourceLineNo">031</span><a id="line.31"></a>
+<span class="sourceLineNo">032</span><a id="line.32">    public static String[] convertToStringArray(Object value) {</a>
+<span class="sourceLineNo">033</span><a id="line.33">        if (value == null) {</a>
+<span class="sourceLineNo">034</span><a id="line.34">            return null;</a>
+<span class="sourceLineNo">035</span><a id="line.35">        }</a>
+<span class="sourceLineNo">036</span><a id="line.36"></a>
+<span class="sourceLineNo">037</span><a id="line.37">        String text = value.toString();</a>
+<span class="sourceLineNo">038</span><a id="line.38">        if (text == null || text.length() == 0) {</a>
+<span class="sourceLineNo">039</span><a id="line.39">            return null;</a>
+<span class="sourceLineNo">040</span><a id="line.40">        }</a>
+<span class="sourceLineNo">041</span><a id="line.41"></a>
+<span class="sourceLineNo">042</span><a id="line.42">        StringTokenizer stok = new StringTokenizer(text, ",");</a>
+<span class="sourceLineNo">043</span><a id="line.43">        final List&lt;String&gt; list = new ArrayList&lt;String&gt;();</a>
+<span class="sourceLineNo">044</span><a id="line.44"></a>
+<span class="sourceLineNo">045</span><a id="line.45">        while (stok.hasMoreTokens()) {</a>
+<span class="sourceLineNo">046</span><a id="line.46">            list.add(stok.nextToken());</a>
+<span class="sourceLineNo">047</span><a id="line.47">        }</a>
+<span class="sourceLineNo">048</span><a id="line.48"></a>
+<span class="sourceLineNo">049</span><a id="line.49">        String[] array = list.toArray(new String[list.size()]);</a>
+<span class="sourceLineNo">050</span><a id="line.50">        return array;</a>
+<span class="sourceLineNo">051</span><a id="line.51">    }</a>
+<span class="sourceLineNo">052</span><a id="line.52"></a>
+<span class="sourceLineNo">053</span><a id="line.53">    public static String convertToString(String[] value) {</a>
+<span class="sourceLineNo">054</span><a id="line.54">        if (value == null || value.length == 0) {</a>
+<span class="sourceLineNo">055</span><a id="line.55">            return null;</a>
+<span class="sourceLineNo">056</span><a id="line.56">        }</a>
+<span class="sourceLineNo">057</span><a id="line.57"></a>
+<span class="sourceLineNo">058</span><a id="line.58">        StringBuffer result = new StringBuffer(String.valueOf(value[0]));</a>
+<span class="sourceLineNo">059</span><a id="line.59">        for (int i = 1; i &lt; value.length; i++) {</a>
+<span class="sourceLineNo">060</span><a id="line.60">            result.append(",").append(value[i]);</a>
+<span class="sourceLineNo">061</span><a id="line.61">        }</a>
+<span class="sourceLineNo">062</span><a id="line.62"></a>
+<span class="sourceLineNo">063</span><a id="line.63">        return result.toString();</a>
+<span class="sourceLineNo">064</span><a id="line.64">    }</a>
+<span class="sourceLineNo">065</span><a id="line.65"></a>
+<span class="sourceLineNo">066</span><a id="line.66">}</a>
+<span class="sourceLineNo">067</span><a id="line.67"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

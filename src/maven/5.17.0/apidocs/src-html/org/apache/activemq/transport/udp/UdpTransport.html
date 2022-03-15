@@ -1,0 +1,562 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/*</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.transport.udp;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.EOFException;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.io.IOException;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.net.BindException;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.net.DatagramSocket;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.net.InetSocketAddress;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.net.SocketAddress;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.net.SocketException;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import java.net.URI;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import java.net.UnknownHostException;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import java.nio.channels.AsynchronousCloseException;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import java.nio.channels.DatagramChannel;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import java.security.cert.X509Certificate;</a>
+<span class="sourceLineNo">031</span><a id="line.31"></a>
+<span class="sourceLineNo">032</span><a id="line.32">import org.apache.activemq.Service;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import org.apache.activemq.command.Command;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import org.apache.activemq.command.Endpoint;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import org.apache.activemq.openwire.OpenWireFormat;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import org.apache.activemq.transport.Transport;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import org.apache.activemq.transport.TransportThreadSupport;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import org.apache.activemq.transport.reliable.ExceptionIfDroppedReplayStrategy;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import org.apache.activemq.transport.reliable.ReplayBuffer;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import org.apache.activemq.transport.reliable.ReplayStrategy;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import org.apache.activemq.transport.reliable.Replayer;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.apache.activemq.util.InetAddressUtil;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import org.apache.activemq.util.IntSequenceGenerator;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import org.apache.activemq.util.ServiceStopper;</a>
+<span class="sourceLineNo">045</span><a id="line.45">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">046</span><a id="line.46">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">047</span><a id="line.47"></a>
+<span class="sourceLineNo">048</span><a id="line.48">/**</a>
+<span class="sourceLineNo">049</span><a id="line.49"> * An implementation of the {@link Transport} interface using raw UDP</a>
+<span class="sourceLineNo">050</span><a id="line.50"> */</a>
+<span class="sourceLineNo">051</span><a id="line.51">public class UdpTransport extends TransportThreadSupport implements Transport, Service, Runnable {</a>
+<span class="sourceLineNo">052</span><a id="line.52"></a>
+<span class="sourceLineNo">053</span><a id="line.53">    private static final Logger LOG = LoggerFactory.getLogger(UdpTransport.class);</a>
+<span class="sourceLineNo">054</span><a id="line.54"></a>
+<span class="sourceLineNo">055</span><a id="line.55">    private static final int MAX_BIND_ATTEMPTS = 50;</a>
+<span class="sourceLineNo">056</span><a id="line.56">    private static final long BIND_ATTEMPT_DELAY = 100;</a>
+<span class="sourceLineNo">057</span><a id="line.57"></a>
+<span class="sourceLineNo">058</span><a id="line.58">    private CommandChannel commandChannel;</a>
+<span class="sourceLineNo">059</span><a id="line.59">    private OpenWireFormat wireFormat;</a>
+<span class="sourceLineNo">060</span><a id="line.60">    private ByteBufferPool bufferPool;</a>
+<span class="sourceLineNo">061</span><a id="line.61">    private ReplayStrategy replayStrategy = new ExceptionIfDroppedReplayStrategy();</a>
+<span class="sourceLineNo">062</span><a id="line.62">    private ReplayBuffer replayBuffer;</a>
+<span class="sourceLineNo">063</span><a id="line.63">    private int datagramSize = 4 * 1024;</a>
+<span class="sourceLineNo">064</span><a id="line.64">    private SocketAddress targetAddress;</a>
+<span class="sourceLineNo">065</span><a id="line.65">    private SocketAddress originalTargetAddress;</a>
+<span class="sourceLineNo">066</span><a id="line.66">    private DatagramChannel channel;</a>
+<span class="sourceLineNo">067</span><a id="line.67">    private boolean trace;</a>
+<span class="sourceLineNo">068</span><a id="line.68">    private boolean useLocalHost = false;</a>
+<span class="sourceLineNo">069</span><a id="line.69">    private int port;</a>
+<span class="sourceLineNo">070</span><a id="line.70">    private int minmumWireFormatVersion;</a>
+<span class="sourceLineNo">071</span><a id="line.71">    private String description;</a>
+<span class="sourceLineNo">072</span><a id="line.72">    private IntSequenceGenerator sequenceGenerator;</a>
+<span class="sourceLineNo">073</span><a id="line.73">    private boolean replayEnabled = true;</a>
+<span class="sourceLineNo">074</span><a id="line.74"></a>
+<span class="sourceLineNo">075</span><a id="line.75">    protected UdpTransport(OpenWireFormat wireFormat) throws IOException {</a>
+<span class="sourceLineNo">076</span><a id="line.76">        this.wireFormat = wireFormat;</a>
+<span class="sourceLineNo">077</span><a id="line.77">    }</a>
+<span class="sourceLineNo">078</span><a id="line.78"></a>
+<span class="sourceLineNo">079</span><a id="line.79">    public UdpTransport(OpenWireFormat wireFormat, URI remoteLocation) throws UnknownHostException, IOException {</a>
+<span class="sourceLineNo">080</span><a id="line.80">        this(wireFormat);</a>
+<span class="sourceLineNo">081</span><a id="line.81">        this.targetAddress = createAddress(remoteLocation);</a>
+<span class="sourceLineNo">082</span><a id="line.82">        description = remoteLocation.toString() + "@";</a>
+<span class="sourceLineNo">083</span><a id="line.83">    }</a>
+<span class="sourceLineNo">084</span><a id="line.84"></a>
+<span class="sourceLineNo">085</span><a id="line.85">    public UdpTransport(OpenWireFormat wireFormat, SocketAddress socketAddress) throws IOException {</a>
+<span class="sourceLineNo">086</span><a id="line.86">        this(wireFormat);</a>
+<span class="sourceLineNo">087</span><a id="line.87">        this.targetAddress = socketAddress;</a>
+<span class="sourceLineNo">088</span><a id="line.88">        this.description = getProtocolName() + "ServerConnection@";</a>
+<span class="sourceLineNo">089</span><a id="line.89">    }</a>
+<span class="sourceLineNo">090</span><a id="line.90"></a>
+<span class="sourceLineNo">091</span><a id="line.91">    /**</a>
+<span class="sourceLineNo">092</span><a id="line.92">     * Used by the server transport</a>
+<span class="sourceLineNo">093</span><a id="line.93">     */</a>
+<span class="sourceLineNo">094</span><a id="line.94">    public UdpTransport(OpenWireFormat wireFormat, int port) throws UnknownHostException, IOException {</a>
+<span class="sourceLineNo">095</span><a id="line.95">        this(wireFormat);</a>
+<span class="sourceLineNo">096</span><a id="line.96">        this.port = port;</a>
+<span class="sourceLineNo">097</span><a id="line.97">        this.targetAddress = null;</a>
+<span class="sourceLineNo">098</span><a id="line.98">        this.description = getProtocolName() + "Server@";</a>
+<span class="sourceLineNo">099</span><a id="line.99">    }</a>
+<span class="sourceLineNo">100</span><a id="line.100"></a>
+<span class="sourceLineNo">101</span><a id="line.101">    /**</a>
+<span class="sourceLineNo">102</span><a id="line.102">     * Creates a replayer for working with the reliable transport</a>
+<span class="sourceLineNo">103</span><a id="line.103">     */</a>
+<span class="sourceLineNo">104</span><a id="line.104">    public Replayer createReplayer() throws IOException {</a>
+<span class="sourceLineNo">105</span><a id="line.105">        if (replayEnabled) {</a>
+<span class="sourceLineNo">106</span><a id="line.106">            return getCommandChannel();</a>
+<span class="sourceLineNo">107</span><a id="line.107">        }</a>
+<span class="sourceLineNo">108</span><a id="line.108">        return null;</a>
+<span class="sourceLineNo">109</span><a id="line.109">    }</a>
+<span class="sourceLineNo">110</span><a id="line.110"></a>
+<span class="sourceLineNo">111</span><a id="line.111">    /**</a>
+<span class="sourceLineNo">112</span><a id="line.112">     * A one way asynchronous send</a>
+<span class="sourceLineNo">113</span><a id="line.113">     */</a>
+<span class="sourceLineNo">114</span><a id="line.114">    @Override</a>
+<span class="sourceLineNo">115</span><a id="line.115">    public void oneway(Object command) throws IOException {</a>
+<span class="sourceLineNo">116</span><a id="line.116">        oneway(command, targetAddress);</a>
+<span class="sourceLineNo">117</span><a id="line.117">    }</a>
+<span class="sourceLineNo">118</span><a id="line.118"></a>
+<span class="sourceLineNo">119</span><a id="line.119">    /**</a>
+<span class="sourceLineNo">120</span><a id="line.120">     * A one way asynchronous send to a given address</a>
+<span class="sourceLineNo">121</span><a id="line.121">     */</a>
+<span class="sourceLineNo">122</span><a id="line.122">    public void oneway(Object command, SocketAddress address) throws IOException {</a>
+<span class="sourceLineNo">123</span><a id="line.123">        if (LOG.isDebugEnabled()) {</a>
+<span class="sourceLineNo">124</span><a id="line.124">            LOG.debug("Sending oneway from: " + this + " to target: " + targetAddress + " command: " + command);</a>
+<span class="sourceLineNo">125</span><a id="line.125">        }</a>
+<span class="sourceLineNo">126</span><a id="line.126">        checkStarted();</a>
+<span class="sourceLineNo">127</span><a id="line.127">        commandChannel.write((Command)command, address);</a>
+<span class="sourceLineNo">128</span><a id="line.128">    }</a>
+<span class="sourceLineNo">129</span><a id="line.129"></a>
+<span class="sourceLineNo">130</span><a id="line.130">    /**</a>
+<span class="sourceLineNo">131</span><a id="line.131">     * @return pretty print of 'this'</a>
+<span class="sourceLineNo">132</span><a id="line.132">     */</a>
+<span class="sourceLineNo">133</span><a id="line.133">    @Override</a>
+<span class="sourceLineNo">134</span><a id="line.134">    public String toString() {</a>
+<span class="sourceLineNo">135</span><a id="line.135">        if (description != null) {</a>
+<span class="sourceLineNo">136</span><a id="line.136">            return description + port;</a>
+<span class="sourceLineNo">137</span><a id="line.137">        } else {</a>
+<span class="sourceLineNo">138</span><a id="line.138">            return getProtocolUriScheme() + targetAddress + "@" + port;</a>
+<span class="sourceLineNo">139</span><a id="line.139">        }</a>
+<span class="sourceLineNo">140</span><a id="line.140">    }</a>
+<span class="sourceLineNo">141</span><a id="line.141"></a>
+<span class="sourceLineNo">142</span><a id="line.142">    /**</a>
+<span class="sourceLineNo">143</span><a id="line.143">     * reads packets from a Socket</a>
+<span class="sourceLineNo">144</span><a id="line.144">     */</a>
+<span class="sourceLineNo">145</span><a id="line.145">    @Override</a>
+<span class="sourceLineNo">146</span><a id="line.146">    public void run() {</a>
+<span class="sourceLineNo">147</span><a id="line.147">        LOG.trace("Consumer thread starting for: " + toString());</a>
+<span class="sourceLineNo">148</span><a id="line.148">        while (!isStopped()) {</a>
+<span class="sourceLineNo">149</span><a id="line.149">            try {</a>
+<span class="sourceLineNo">150</span><a id="line.150">                Command command = commandChannel.read();</a>
+<span class="sourceLineNo">151</span><a id="line.151">                doConsume(command);</a>
+<span class="sourceLineNo">152</span><a id="line.152">            } catch (AsynchronousCloseException e) {</a>
+<span class="sourceLineNo">153</span><a id="line.153">                // DatagramChannel closed</a>
+<span class="sourceLineNo">154</span><a id="line.154">                try {</a>
+<span class="sourceLineNo">155</span><a id="line.155">                    stop();</a>
+<span class="sourceLineNo">156</span><a id="line.156">                } catch (Exception e2) {</a>
+<span class="sourceLineNo">157</span><a id="line.157">                    LOG.warn("Caught in: " + this + " while closing: " + e2 + ". Now Closed", e2);</a>
+<span class="sourceLineNo">158</span><a id="line.158">                }</a>
+<span class="sourceLineNo">159</span><a id="line.159">            } catch (SocketException e) {</a>
+<span class="sourceLineNo">160</span><a id="line.160">                // DatagramSocket closed</a>
+<span class="sourceLineNo">161</span><a id="line.161">                LOG.debug("Socket closed: " + e, e);</a>
+<span class="sourceLineNo">162</span><a id="line.162">                try {</a>
+<span class="sourceLineNo">163</span><a id="line.163">                    stop();</a>
+<span class="sourceLineNo">164</span><a id="line.164">                } catch (Exception e2) {</a>
+<span class="sourceLineNo">165</span><a id="line.165">                    LOG.warn("Caught in: " + this + " while closing: " + e2 + ". Now Closed", e2);</a>
+<span class="sourceLineNo">166</span><a id="line.166">                }</a>
+<span class="sourceLineNo">167</span><a id="line.167">            } catch (EOFException e) {</a>
+<span class="sourceLineNo">168</span><a id="line.168">                // DataInputStream closed</a>
+<span class="sourceLineNo">169</span><a id="line.169">                LOG.debug("Socket closed: " + e, e);</a>
+<span class="sourceLineNo">170</span><a id="line.170">                try {</a>
+<span class="sourceLineNo">171</span><a id="line.171">                    stop();</a>
+<span class="sourceLineNo">172</span><a id="line.172">                } catch (Exception e2) {</a>
+<span class="sourceLineNo">173</span><a id="line.173">                    LOG.warn("Caught in: " + this + " while closing: " + e2 + ". Now Closed", e2);</a>
+<span class="sourceLineNo">174</span><a id="line.174">                }</a>
+<span class="sourceLineNo">175</span><a id="line.175">            } catch (Exception e) {</a>
+<span class="sourceLineNo">176</span><a id="line.176">                try {</a>
+<span class="sourceLineNo">177</span><a id="line.177">                    stop();</a>
+<span class="sourceLineNo">178</span><a id="line.178">                } catch (Exception e2) {</a>
+<span class="sourceLineNo">179</span><a id="line.179">                    LOG.warn("Caught in: " + this + " while closing: " + e2 + ". Now Closed", e2);</a>
+<span class="sourceLineNo">180</span><a id="line.180">                }</a>
+<span class="sourceLineNo">181</span><a id="line.181">                if (e instanceof IOException) {</a>
+<span class="sourceLineNo">182</span><a id="line.182">                    onException((IOException)e);</a>
+<span class="sourceLineNo">183</span><a id="line.183">                } else {</a>
+<span class="sourceLineNo">184</span><a id="line.184">                    LOG.error("Caught: " + e, e);</a>
+<span class="sourceLineNo">185</span><a id="line.185">                    e.printStackTrace();</a>
+<span class="sourceLineNo">186</span><a id="line.186">                }</a>
+<span class="sourceLineNo">187</span><a id="line.187">            }</a>
+<span class="sourceLineNo">188</span><a id="line.188">        }</a>
+<span class="sourceLineNo">189</span><a id="line.189">    }</a>
+<span class="sourceLineNo">190</span><a id="line.190"></a>
+<span class="sourceLineNo">191</span><a id="line.191">    /**</a>
+<span class="sourceLineNo">192</span><a id="line.192">     * We have received the WireFormatInfo from the server on the actual channel</a>
+<span class="sourceLineNo">193</span><a id="line.193">     * we should use for all future communication with the server, so lets set</a>
+<span class="sourceLineNo">194</span><a id="line.194">     * the target to be the actual channel that the server has chosen for us to</a>
+<span class="sourceLineNo">195</span><a id="line.195">     * talk on.</a>
+<span class="sourceLineNo">196</span><a id="line.196">     */</a>
+<span class="sourceLineNo">197</span><a id="line.197">    public void setTargetEndpoint(Endpoint newTarget) {</a>
+<span class="sourceLineNo">198</span><a id="line.198">        if (newTarget instanceof DatagramEndpoint) {</a>
+<span class="sourceLineNo">199</span><a id="line.199">            DatagramEndpoint endpoint = (DatagramEndpoint)newTarget;</a>
+<span class="sourceLineNo">200</span><a id="line.200">            SocketAddress address = endpoint.getAddress();</a>
+<span class="sourceLineNo">201</span><a id="line.201">            if (address != null) {</a>
+<span class="sourceLineNo">202</span><a id="line.202">                if (originalTargetAddress == null) {</a>
+<span class="sourceLineNo">203</span><a id="line.203">                    originalTargetAddress = targetAddress;</a>
+<span class="sourceLineNo">204</span><a id="line.204">                }</a>
+<span class="sourceLineNo">205</span><a id="line.205">                targetAddress = address;</a>
+<span class="sourceLineNo">206</span><a id="line.206">                commandChannel.setTargetAddress(address);</a>
+<span class="sourceLineNo">207</span><a id="line.207">            }</a>
+<span class="sourceLineNo">208</span><a id="line.208">        }</a>
+<span class="sourceLineNo">209</span><a id="line.209">    }</a>
+<span class="sourceLineNo">210</span><a id="line.210"></a>
+<span class="sourceLineNo">211</span><a id="line.211">    // Properties</a>
+<span class="sourceLineNo">212</span><a id="line.212">    // -------------------------------------------------------------------------</a>
+<span class="sourceLineNo">213</span><a id="line.213">    public boolean isTrace() {</a>
+<span class="sourceLineNo">214</span><a id="line.214">        return trace;</a>
+<span class="sourceLineNo">215</span><a id="line.215">    }</a>
+<span class="sourceLineNo">216</span><a id="line.216"></a>
+<span class="sourceLineNo">217</span><a id="line.217">    public void setTrace(boolean trace) {</a>
+<span class="sourceLineNo">218</span><a id="line.218">        this.trace = trace;</a>
+<span class="sourceLineNo">219</span><a id="line.219">    }</a>
+<span class="sourceLineNo">220</span><a id="line.220"></a>
+<span class="sourceLineNo">221</span><a id="line.221">    public int getDatagramSize() {</a>
+<span class="sourceLineNo">222</span><a id="line.222">        return datagramSize;</a>
+<span class="sourceLineNo">223</span><a id="line.223">    }</a>
+<span class="sourceLineNo">224</span><a id="line.224"></a>
+<span class="sourceLineNo">225</span><a id="line.225">    public void setDatagramSize(int datagramSize) {</a>
+<span class="sourceLineNo">226</span><a id="line.226">        this.datagramSize = datagramSize;</a>
+<span class="sourceLineNo">227</span><a id="line.227">    }</a>
+<span class="sourceLineNo">228</span><a id="line.228"></a>
+<span class="sourceLineNo">229</span><a id="line.229">    public boolean isUseLocalHost() {</a>
+<span class="sourceLineNo">230</span><a id="line.230">        return useLocalHost;</a>
+<span class="sourceLineNo">231</span><a id="line.231">    }</a>
+<span class="sourceLineNo">232</span><a id="line.232"></a>
+<span class="sourceLineNo">233</span><a id="line.233">    /**</a>
+<span class="sourceLineNo">234</span><a id="line.234">     * Sets whether 'localhost' or the actual local host name should be used to</a>
+<span class="sourceLineNo">235</span><a id="line.235">     * make local connections. On some operating systems such as Macs its not</a>
+<span class="sourceLineNo">236</span><a id="line.236">     * possible to connect as the local host name so localhost is better.</a>
+<span class="sourceLineNo">237</span><a id="line.237">     */</a>
+<span class="sourceLineNo">238</span><a id="line.238">    public void setUseLocalHost(boolean useLocalHost) {</a>
+<span class="sourceLineNo">239</span><a id="line.239">        this.useLocalHost = useLocalHost;</a>
+<span class="sourceLineNo">240</span><a id="line.240">    }</a>
+<span class="sourceLineNo">241</span><a id="line.241"></a>
+<span class="sourceLineNo">242</span><a id="line.242">    public CommandChannel getCommandChannel() throws IOException {</a>
+<span class="sourceLineNo">243</span><a id="line.243">        if (commandChannel == null) {</a>
+<span class="sourceLineNo">244</span><a id="line.244">            commandChannel = createCommandChannel();</a>
+<span class="sourceLineNo">245</span><a id="line.245">        }</a>
+<span class="sourceLineNo">246</span><a id="line.246">        return commandChannel;</a>
+<span class="sourceLineNo">247</span><a id="line.247">    }</a>
+<span class="sourceLineNo">248</span><a id="line.248"></a>
+<span class="sourceLineNo">249</span><a id="line.249">    /**</a>
+<span class="sourceLineNo">250</span><a id="line.250">     * Sets the implementation of the command channel to use.</a>
+<span class="sourceLineNo">251</span><a id="line.251">     */</a>
+<span class="sourceLineNo">252</span><a id="line.252">    public void setCommandChannel(CommandDatagramChannel commandChannel) {</a>
+<span class="sourceLineNo">253</span><a id="line.253">        this.commandChannel = commandChannel;</a>
+<span class="sourceLineNo">254</span><a id="line.254">    }</a>
+<span class="sourceLineNo">255</span><a id="line.255"></a>
+<span class="sourceLineNo">256</span><a id="line.256">    public ReplayStrategy getReplayStrategy() {</a>
+<span class="sourceLineNo">257</span><a id="line.257">        return replayStrategy;</a>
+<span class="sourceLineNo">258</span><a id="line.258">    }</a>
+<span class="sourceLineNo">259</span><a id="line.259"></a>
+<span class="sourceLineNo">260</span><a id="line.260">    /**</a>
+<span class="sourceLineNo">261</span><a id="line.261">     * Sets the strategy used to replay missed datagrams</a>
+<span class="sourceLineNo">262</span><a id="line.262">     */</a>
+<span class="sourceLineNo">263</span><a id="line.263">    public void setReplayStrategy(ReplayStrategy replayStrategy) {</a>
+<span class="sourceLineNo">264</span><a id="line.264">        this.replayStrategy = replayStrategy;</a>
+<span class="sourceLineNo">265</span><a id="line.265">    }</a>
+<span class="sourceLineNo">266</span><a id="line.266"></a>
+<span class="sourceLineNo">267</span><a id="line.267">    public int getPort() {</a>
+<span class="sourceLineNo">268</span><a id="line.268">        return port;</a>
+<span class="sourceLineNo">269</span><a id="line.269">    }</a>
+<span class="sourceLineNo">270</span><a id="line.270"></a>
+<span class="sourceLineNo">271</span><a id="line.271">    /**</a>
+<span class="sourceLineNo">272</span><a id="line.272">     * Sets the port to connect on</a>
+<span class="sourceLineNo">273</span><a id="line.273">     */</a>
+<span class="sourceLineNo">274</span><a id="line.274">    public void setPort(int port) {</a>
+<span class="sourceLineNo">275</span><a id="line.275">        this.port = port;</a>
+<span class="sourceLineNo">276</span><a id="line.276">    }</a>
+<span class="sourceLineNo">277</span><a id="line.277"></a>
+<span class="sourceLineNo">278</span><a id="line.278">    public int getMinmumWireFormatVersion() {</a>
+<span class="sourceLineNo">279</span><a id="line.279">        return minmumWireFormatVersion;</a>
+<span class="sourceLineNo">280</span><a id="line.280">    }</a>
+<span class="sourceLineNo">281</span><a id="line.281"></a>
+<span class="sourceLineNo">282</span><a id="line.282">    public void setMinmumWireFormatVersion(int minmumWireFormatVersion) {</a>
+<span class="sourceLineNo">283</span><a id="line.283">        this.minmumWireFormatVersion = minmumWireFormatVersion;</a>
+<span class="sourceLineNo">284</span><a id="line.284">    }</a>
+<span class="sourceLineNo">285</span><a id="line.285"></a>
+<span class="sourceLineNo">286</span><a id="line.286">    public OpenWireFormat getWireFormat() {</a>
+<span class="sourceLineNo">287</span><a id="line.287">        return wireFormat;</a>
+<span class="sourceLineNo">288</span><a id="line.288">    }</a>
+<span class="sourceLineNo">289</span><a id="line.289"></a>
+<span class="sourceLineNo">290</span><a id="line.290">    public IntSequenceGenerator getSequenceGenerator() {</a>
+<span class="sourceLineNo">291</span><a id="line.291">        if (sequenceGenerator == null) {</a>
+<span class="sourceLineNo">292</span><a id="line.292">            sequenceGenerator = new IntSequenceGenerator();</a>
+<span class="sourceLineNo">293</span><a id="line.293">        }</a>
+<span class="sourceLineNo">294</span><a id="line.294">        return sequenceGenerator;</a>
+<span class="sourceLineNo">295</span><a id="line.295">    }</a>
+<span class="sourceLineNo">296</span><a id="line.296"></a>
+<span class="sourceLineNo">297</span><a id="line.297">    public void setSequenceGenerator(IntSequenceGenerator sequenceGenerator) {</a>
+<span class="sourceLineNo">298</span><a id="line.298">        this.sequenceGenerator = sequenceGenerator;</a>
+<span class="sourceLineNo">299</span><a id="line.299">    }</a>
+<span class="sourceLineNo">300</span><a id="line.300"></a>
+<span class="sourceLineNo">301</span><a id="line.301">    public boolean isReplayEnabled() {</a>
+<span class="sourceLineNo">302</span><a id="line.302">        return replayEnabled;</a>
+<span class="sourceLineNo">303</span><a id="line.303">    }</a>
+<span class="sourceLineNo">304</span><a id="line.304"></a>
+<span class="sourceLineNo">305</span><a id="line.305">    /**</a>
+<span class="sourceLineNo">306</span><a id="line.306">     * Sets whether or not replay should be enabled when using the reliable</a>
+<span class="sourceLineNo">307</span><a id="line.307">     * transport. i.e. should we maintain a buffer of messages that can be</a>
+<span class="sourceLineNo">308</span><a id="line.308">     * replayed?</a>
+<span class="sourceLineNo">309</span><a id="line.309">     */</a>
+<span class="sourceLineNo">310</span><a id="line.310">    public void setReplayEnabled(boolean replayEnabled) {</a>
+<span class="sourceLineNo">311</span><a id="line.311">        this.replayEnabled = replayEnabled;</a>
+<span class="sourceLineNo">312</span><a id="line.312">    }</a>
+<span class="sourceLineNo">313</span><a id="line.313"></a>
+<span class="sourceLineNo">314</span><a id="line.314">    public ByteBufferPool getBufferPool() {</a>
+<span class="sourceLineNo">315</span><a id="line.315">        if (bufferPool == null) {</a>
+<span class="sourceLineNo">316</span><a id="line.316">            bufferPool = new DefaultBufferPool();</a>
+<span class="sourceLineNo">317</span><a id="line.317">        }</a>
+<span class="sourceLineNo">318</span><a id="line.318">        return bufferPool;</a>
+<span class="sourceLineNo">319</span><a id="line.319">    }</a>
+<span class="sourceLineNo">320</span><a id="line.320"></a>
+<span class="sourceLineNo">321</span><a id="line.321">    public void setBufferPool(ByteBufferPool bufferPool) {</a>
+<span class="sourceLineNo">322</span><a id="line.322">        this.bufferPool = bufferPool;</a>
+<span class="sourceLineNo">323</span><a id="line.323">    }</a>
+<span class="sourceLineNo">324</span><a id="line.324"></a>
+<span class="sourceLineNo">325</span><a id="line.325">    public ReplayBuffer getReplayBuffer() {</a>
+<span class="sourceLineNo">326</span><a id="line.326">        return replayBuffer;</a>
+<span class="sourceLineNo">327</span><a id="line.327">    }</a>
+<span class="sourceLineNo">328</span><a id="line.328"></a>
+<span class="sourceLineNo">329</span><a id="line.329">    public void setReplayBuffer(ReplayBuffer replayBuffer) throws IOException {</a>
+<span class="sourceLineNo">330</span><a id="line.330">        this.replayBuffer = replayBuffer;</a>
+<span class="sourceLineNo">331</span><a id="line.331">        getCommandChannel().setReplayBuffer(replayBuffer);</a>
+<span class="sourceLineNo">332</span><a id="line.332">    }</a>
+<span class="sourceLineNo">333</span><a id="line.333"></a>
+<span class="sourceLineNo">334</span><a id="line.334">    // Implementation methods</a>
+<span class="sourceLineNo">335</span><a id="line.335">    // -------------------------------------------------------------------------</a>
+<span class="sourceLineNo">336</span><a id="line.336"></a>
+<span class="sourceLineNo">337</span><a id="line.337">    /**</a>
+<span class="sourceLineNo">338</span><a id="line.338">     * Creates an address from the given URI</a>
+<span class="sourceLineNo">339</span><a id="line.339">     */</a>
+<span class="sourceLineNo">340</span><a id="line.340">    protected InetSocketAddress createAddress(URI remoteLocation) throws UnknownHostException, IOException {</a>
+<span class="sourceLineNo">341</span><a id="line.341">        String host = resolveHostName(remoteLocation.getHost());</a>
+<span class="sourceLineNo">342</span><a id="line.342">        return new InetSocketAddress(host, remoteLocation.getPort());</a>
+<span class="sourceLineNo">343</span><a id="line.343">    }</a>
+<span class="sourceLineNo">344</span><a id="line.344"></a>
+<span class="sourceLineNo">345</span><a id="line.345">    protected String resolveHostName(String host) throws UnknownHostException {</a>
+<span class="sourceLineNo">346</span><a id="line.346">        String localName = InetAddressUtil.getLocalHostName();</a>
+<span class="sourceLineNo">347</span><a id="line.347">        if (localName != null &amp;&amp; isUseLocalHost()) {</a>
+<span class="sourceLineNo">348</span><a id="line.348">            if (localName.equals(host)) {</a>
+<span class="sourceLineNo">349</span><a id="line.349">                return "localhost";</a>
+<span class="sourceLineNo">350</span><a id="line.350">            }</a>
+<span class="sourceLineNo">351</span><a id="line.351">        }</a>
+<span class="sourceLineNo">352</span><a id="line.352">        return host;</a>
+<span class="sourceLineNo">353</span><a id="line.353">    }</a>
+<span class="sourceLineNo">354</span><a id="line.354"></a>
+<span class="sourceLineNo">355</span><a id="line.355">    @Override</a>
+<span class="sourceLineNo">356</span><a id="line.356">    protected void doStart() throws Exception {</a>
+<span class="sourceLineNo">357</span><a id="line.357">        getCommandChannel().start();</a>
+<span class="sourceLineNo">358</span><a id="line.358"></a>
+<span class="sourceLineNo">359</span><a id="line.359">        super.doStart();</a>
+<span class="sourceLineNo">360</span><a id="line.360">    }</a>
+<span class="sourceLineNo">361</span><a id="line.361"></a>
+<span class="sourceLineNo">362</span><a id="line.362">    protected CommandChannel createCommandChannel() throws IOException {</a>
+<span class="sourceLineNo">363</span><a id="line.363">        SocketAddress localAddress = createLocalAddress();</a>
+<span class="sourceLineNo">364</span><a id="line.364">        channel = DatagramChannel.open();</a>
+<span class="sourceLineNo">365</span><a id="line.365"></a>
+<span class="sourceLineNo">366</span><a id="line.366">        channel = connect(channel, targetAddress);</a>
+<span class="sourceLineNo">367</span><a id="line.367"></a>
+<span class="sourceLineNo">368</span><a id="line.368">        DatagramSocket socket = channel.socket();</a>
+<span class="sourceLineNo">369</span><a id="line.369">        bind(socket, localAddress);</a>
+<span class="sourceLineNo">370</span><a id="line.370">        if (port == 0) {</a>
+<span class="sourceLineNo">371</span><a id="line.371">            port = socket.getLocalPort();</a>
+<span class="sourceLineNo">372</span><a id="line.372">        }</a>
+<span class="sourceLineNo">373</span><a id="line.373"></a>
+<span class="sourceLineNo">374</span><a id="line.374">        return createCommandDatagramChannel();</a>
+<span class="sourceLineNo">375</span><a id="line.375">    }</a>
+<span class="sourceLineNo">376</span><a id="line.376"></a>
+<span class="sourceLineNo">377</span><a id="line.377">    protected CommandChannel createCommandDatagramChannel() {</a>
+<span class="sourceLineNo">378</span><a id="line.378">        return new CommandDatagramChannel(this, getWireFormat(), getDatagramSize(), getTargetAddress(), createDatagramHeaderMarshaller(), getChannel(), getBufferPool());</a>
+<span class="sourceLineNo">379</span><a id="line.379">    }</a>
+<span class="sourceLineNo">380</span><a id="line.380"></a>
+<span class="sourceLineNo">381</span><a id="line.381">    protected void bind(DatagramSocket socket, SocketAddress localAddress) throws IOException {</a>
+<span class="sourceLineNo">382</span><a id="line.382">        channel.configureBlocking(true);</a>
+<span class="sourceLineNo">383</span><a id="line.383"></a>
+<span class="sourceLineNo">384</span><a id="line.384">        if (LOG.isDebugEnabled()) {</a>
+<span class="sourceLineNo">385</span><a id="line.385">            LOG.debug("Binding to address: " + localAddress);</a>
+<span class="sourceLineNo">386</span><a id="line.386">        }</a>
+<span class="sourceLineNo">387</span><a id="line.387"></a>
+<span class="sourceLineNo">388</span><a id="line.388">        //</a>
+<span class="sourceLineNo">389</span><a id="line.389">        // We have noticed that on some platfoms like linux, after you close</a>
+<span class="sourceLineNo">390</span><a id="line.390">        // down</a>
+<span class="sourceLineNo">391</span><a id="line.391">        // a previously bound socket, it can take a little while before we can</a>
+<span class="sourceLineNo">392</span><a id="line.392">        // bind it again.</a>
+<span class="sourceLineNo">393</span><a id="line.393">        //</a>
+<span class="sourceLineNo">394</span><a id="line.394">        for (int i = 0; i &lt; MAX_BIND_ATTEMPTS; i++) {</a>
+<span class="sourceLineNo">395</span><a id="line.395">            try {</a>
+<span class="sourceLineNo">396</span><a id="line.396">                socket.bind(localAddress);</a>
+<span class="sourceLineNo">397</span><a id="line.397">                return;</a>
+<span class="sourceLineNo">398</span><a id="line.398">            } catch (BindException e) {</a>
+<span class="sourceLineNo">399</span><a id="line.399">                if (i + 1 == MAX_BIND_ATTEMPTS) {</a>
+<span class="sourceLineNo">400</span><a id="line.400">                    throw e;</a>
+<span class="sourceLineNo">401</span><a id="line.401">                }</a>
+<span class="sourceLineNo">402</span><a id="line.402">                try {</a>
+<span class="sourceLineNo">403</span><a id="line.403">                    Thread.sleep(BIND_ATTEMPT_DELAY);</a>
+<span class="sourceLineNo">404</span><a id="line.404">                } catch (InterruptedException e1) {</a>
+<span class="sourceLineNo">405</span><a id="line.405">                    Thread.currentThread().interrupt();</a>
+<span class="sourceLineNo">406</span><a id="line.406">                    throw e;</a>
+<span class="sourceLineNo">407</span><a id="line.407">                }</a>
+<span class="sourceLineNo">408</span><a id="line.408">            }</a>
+<span class="sourceLineNo">409</span><a id="line.409">        }</a>
+<span class="sourceLineNo">410</span><a id="line.410"></a>
+<span class="sourceLineNo">411</span><a id="line.411">    }</a>
+<span class="sourceLineNo">412</span><a id="line.412"></a>
+<span class="sourceLineNo">413</span><a id="line.413">    protected DatagramChannel connect(DatagramChannel channel, SocketAddress targetAddress2) throws IOException {</a>
+<span class="sourceLineNo">414</span><a id="line.414">        // TODO</a>
+<span class="sourceLineNo">415</span><a id="line.415">        // connect to default target address to avoid security checks each time</a>
+<span class="sourceLineNo">416</span><a id="line.416">        // channel = channel.connect(targetAddress);</a>
+<span class="sourceLineNo">417</span><a id="line.417"></a>
+<span class="sourceLineNo">418</span><a id="line.418">        return channel;</a>
+<span class="sourceLineNo">419</span><a id="line.419">    }</a>
+<span class="sourceLineNo">420</span><a id="line.420"></a>
+<span class="sourceLineNo">421</span><a id="line.421">    protected SocketAddress createLocalAddress() {</a>
+<span class="sourceLineNo">422</span><a id="line.422">        return new InetSocketAddress(port);</a>
+<span class="sourceLineNo">423</span><a id="line.423">    }</a>
+<span class="sourceLineNo">424</span><a id="line.424"></a>
+<span class="sourceLineNo">425</span><a id="line.425">    @Override</a>
+<span class="sourceLineNo">426</span><a id="line.426">    protected void doStop(ServiceStopper stopper) throws Exception {</a>
+<span class="sourceLineNo">427</span><a id="line.427">        if (channel != null) {</a>
+<span class="sourceLineNo">428</span><a id="line.428">            channel.close();</a>
+<span class="sourceLineNo">429</span><a id="line.429">        }</a>
+<span class="sourceLineNo">430</span><a id="line.430">    }</a>
+<span class="sourceLineNo">431</span><a id="line.431"></a>
+<span class="sourceLineNo">432</span><a id="line.432">    protected DatagramHeaderMarshaller createDatagramHeaderMarshaller() {</a>
+<span class="sourceLineNo">433</span><a id="line.433">        return new DatagramHeaderMarshaller();</a>
+<span class="sourceLineNo">434</span><a id="line.434">    }</a>
+<span class="sourceLineNo">435</span><a id="line.435"></a>
+<span class="sourceLineNo">436</span><a id="line.436">    protected String getProtocolName() {</a>
+<span class="sourceLineNo">437</span><a id="line.437">        return "Udp";</a>
+<span class="sourceLineNo">438</span><a id="line.438">    }</a>
+<span class="sourceLineNo">439</span><a id="line.439"></a>
+<span class="sourceLineNo">440</span><a id="line.440">    protected String getProtocolUriScheme() {</a>
+<span class="sourceLineNo">441</span><a id="line.441">        return "udp://";</a>
+<span class="sourceLineNo">442</span><a id="line.442">    }</a>
+<span class="sourceLineNo">443</span><a id="line.443"></a>
+<span class="sourceLineNo">444</span><a id="line.444">    protected SocketAddress getTargetAddress() {</a>
+<span class="sourceLineNo">445</span><a id="line.445">        return targetAddress;</a>
+<span class="sourceLineNo">446</span><a id="line.446">    }</a>
+<span class="sourceLineNo">447</span><a id="line.447"></a>
+<span class="sourceLineNo">448</span><a id="line.448">    protected DatagramChannel getChannel() {</a>
+<span class="sourceLineNo">449</span><a id="line.449">        return channel;</a>
+<span class="sourceLineNo">450</span><a id="line.450">    }</a>
+<span class="sourceLineNo">451</span><a id="line.451"></a>
+<span class="sourceLineNo">452</span><a id="line.452">    protected void setChannel(DatagramChannel channel) {</a>
+<span class="sourceLineNo">453</span><a id="line.453">        this.channel = channel;</a>
+<span class="sourceLineNo">454</span><a id="line.454">    }</a>
+<span class="sourceLineNo">455</span><a id="line.455"></a>
+<span class="sourceLineNo">456</span><a id="line.456">    public InetSocketAddress getLocalSocketAddress() {</a>
+<span class="sourceLineNo">457</span><a id="line.457">        if (channel == null) {</a>
+<span class="sourceLineNo">458</span><a id="line.458">            return null;</a>
+<span class="sourceLineNo">459</span><a id="line.459">        } else {</a>
+<span class="sourceLineNo">460</span><a id="line.460">            return (InetSocketAddress)channel.socket().getLocalSocketAddress();</a>
+<span class="sourceLineNo">461</span><a id="line.461">        }</a>
+<span class="sourceLineNo">462</span><a id="line.462">    }</a>
+<span class="sourceLineNo">463</span><a id="line.463"></a>
+<span class="sourceLineNo">464</span><a id="line.464">    @Override</a>
+<span class="sourceLineNo">465</span><a id="line.465">    public String getRemoteAddress() {</a>
+<span class="sourceLineNo">466</span><a id="line.466">        if (targetAddress != null) {</a>
+<span class="sourceLineNo">467</span><a id="line.467">            return "" + targetAddress;</a>
+<span class="sourceLineNo">468</span><a id="line.468">        }</a>
+<span class="sourceLineNo">469</span><a id="line.469">        return null;</a>
+<span class="sourceLineNo">470</span><a id="line.470">    }</a>
+<span class="sourceLineNo">471</span><a id="line.471"></a>
+<span class="sourceLineNo">472</span><a id="line.472">    @Override</a>
+<span class="sourceLineNo">473</span><a id="line.473">    public int getReceiveCounter() {</a>
+<span class="sourceLineNo">474</span><a id="line.474">        if (commandChannel == null) {</a>
+<span class="sourceLineNo">475</span><a id="line.475">            return 0;</a>
+<span class="sourceLineNo">476</span><a id="line.476">        }</a>
+<span class="sourceLineNo">477</span><a id="line.477">        return commandChannel.getReceiveCounter();</a>
+<span class="sourceLineNo">478</span><a id="line.478">    }</a>
+<span class="sourceLineNo">479</span><a id="line.479"></a>
+<span class="sourceLineNo">480</span><a id="line.480">    @Override</a>
+<span class="sourceLineNo">481</span><a id="line.481">    public X509Certificate[] getPeerCertificates() {</a>
+<span class="sourceLineNo">482</span><a id="line.482">        return null;</a>
+<span class="sourceLineNo">483</span><a id="line.483">    }</a>
+<span class="sourceLineNo">484</span><a id="line.484"></a>
+<span class="sourceLineNo">485</span><a id="line.485">    @Override</a>
+<span class="sourceLineNo">486</span><a id="line.486">    public void setPeerCertificates(X509Certificate[] certificates) {</a>
+<span class="sourceLineNo">487</span><a id="line.487">    }</a>
+<span class="sourceLineNo">488</span><a id="line.488">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

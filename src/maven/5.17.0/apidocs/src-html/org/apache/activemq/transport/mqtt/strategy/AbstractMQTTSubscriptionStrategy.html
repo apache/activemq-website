@@ -1,0 +1,393 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.transport.mqtt.strategy;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.IOException;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.util.ArrayList;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.util.Collections;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.util.HashSet;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.util.List;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.Set;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.util.concurrent.ConcurrentHashMap;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import java.util.concurrent.ConcurrentMap;</a>
+<span class="sourceLineNo">027</span><a id="line.27"></a>
+<span class="sourceLineNo">028</span><a id="line.28">import org.apache.activemq.broker.BrokerService;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import org.apache.activemq.broker.BrokerServiceAware;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import org.apache.activemq.broker.ConnectionContext;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import org.apache.activemq.broker.region.DurableTopicSubscription;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import org.apache.activemq.broker.region.PrefetchSubscription;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import org.apache.activemq.broker.region.RegionBroker;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import org.apache.activemq.broker.region.Subscription;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import org.apache.activemq.broker.region.TopicRegion;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import org.apache.activemq.broker.region.virtual.VirtualTopicInterceptor;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import org.apache.activemq.command.ActiveMQDestination;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import org.apache.activemq.command.ActiveMQTopic;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import org.apache.activemq.command.ConsumerId;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import org.apache.activemq.command.ConsumerInfo;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import org.apache.activemq.command.ExceptionResponse;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.apache.activemq.command.RemoveInfo;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import org.apache.activemq.command.RemoveSubscriptionInfo;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import org.apache.activemq.command.Response;</a>
+<span class="sourceLineNo">045</span><a id="line.45">import org.apache.activemq.command.SubscriptionInfo;</a>
+<span class="sourceLineNo">046</span><a id="line.46">import org.apache.activemq.transport.mqtt.MQTTProtocolConverter;</a>
+<span class="sourceLineNo">047</span><a id="line.47">import org.apache.activemq.transport.mqtt.MQTTProtocolException;</a>
+<span class="sourceLineNo">048</span><a id="line.48">import org.apache.activemq.transport.mqtt.MQTTProtocolSupport;</a>
+<span class="sourceLineNo">049</span><a id="line.49">import org.apache.activemq.transport.mqtt.MQTTSubscription;</a>
+<span class="sourceLineNo">050</span><a id="line.50">import org.apache.activemq.transport.mqtt.ResponseHandler;</a>
+<span class="sourceLineNo">051</span><a id="line.51">import org.apache.activemq.util.LongSequenceGenerator;</a>
+<span class="sourceLineNo">052</span><a id="line.52">import org.fusesource.mqtt.client.QoS;</a>
+<span class="sourceLineNo">053</span><a id="line.53">import org.fusesource.mqtt.client.Topic;</a>
+<span class="sourceLineNo">054</span><a id="line.54">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">055</span><a id="line.55">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">056</span><a id="line.56"></a>
+<span class="sourceLineNo">057</span><a id="line.57">/**</a>
+<span class="sourceLineNo">058</span><a id="line.58"> * Abstract implementation of the {@link MQTTSubscriptionStrategy} interface providing</a>
+<span class="sourceLineNo">059</span><a id="line.59"> * the base functionality that is common to most implementations.</a>
+<span class="sourceLineNo">060</span><a id="line.60"> */</a>
+<span class="sourceLineNo">061</span><a id="line.61">public abstract class AbstractMQTTSubscriptionStrategy implements MQTTSubscriptionStrategy, BrokerServiceAware {</a>
+<span class="sourceLineNo">062</span><a id="line.62"></a>
+<span class="sourceLineNo">063</span><a id="line.63">    private static final Logger LOG = LoggerFactory.getLogger(AbstractMQTTSubscriptionStrategy.class);</a>
+<span class="sourceLineNo">064</span><a id="line.64"></a>
+<span class="sourceLineNo">065</span><a id="line.65">    private static final byte SUBSCRIBE_ERROR = (byte) 0x80;</a>
+<span class="sourceLineNo">066</span><a id="line.66"></a>
+<span class="sourceLineNo">067</span><a id="line.67">    protected MQTTProtocolConverter protocol;</a>
+<span class="sourceLineNo">068</span><a id="line.68">    protected BrokerService brokerService;</a>
+<span class="sourceLineNo">069</span><a id="line.69"></a>
+<span class="sourceLineNo">070</span><a id="line.70">    protected final ConcurrentMap&lt;ConsumerId, MQTTSubscription&gt; subscriptionsByConsumerId = new ConcurrentHashMap&lt;ConsumerId, MQTTSubscription&gt;();</a>
+<span class="sourceLineNo">071</span><a id="line.71">    protected final ConcurrentMap&lt;String, MQTTSubscription&gt; mqttSubscriptionByTopic = new ConcurrentHashMap&lt;String, MQTTSubscription&gt;();</a>
+<span class="sourceLineNo">072</span><a id="line.72">    protected final Set&lt;String&gt; restoredDurableSubs = Collections.synchronizedSet(new HashSet&lt;String&gt;());</a>
+<span class="sourceLineNo">073</span><a id="line.73"></a>
+<span class="sourceLineNo">074</span><a id="line.74">    protected final LongSequenceGenerator consumerIdGenerator = new LongSequenceGenerator();</a>
+<span class="sourceLineNo">075</span><a id="line.75"></a>
+<span class="sourceLineNo">076</span><a id="line.76">    @Override</a>
+<span class="sourceLineNo">077</span><a id="line.77">    public void initialize(MQTTProtocolConverter protocol) throws MQTTProtocolException {</a>
+<span class="sourceLineNo">078</span><a id="line.78">        setProtocolConverter(protocol);</a>
+<span class="sourceLineNo">079</span><a id="line.79">    }</a>
+<span class="sourceLineNo">080</span><a id="line.80"></a>
+<span class="sourceLineNo">081</span><a id="line.81">    @Override</a>
+<span class="sourceLineNo">082</span><a id="line.82">    public void setBrokerService(BrokerService brokerService) {</a>
+<span class="sourceLineNo">083</span><a id="line.83">        this.brokerService = brokerService;</a>
+<span class="sourceLineNo">084</span><a id="line.84">    }</a>
+<span class="sourceLineNo">085</span><a id="line.85"></a>
+<span class="sourceLineNo">086</span><a id="line.86">    @Override</a>
+<span class="sourceLineNo">087</span><a id="line.87">    public void setProtocolConverter(MQTTProtocolConverter parent) {</a>
+<span class="sourceLineNo">088</span><a id="line.88">        this.protocol = parent;</a>
+<span class="sourceLineNo">089</span><a id="line.89">    }</a>
+<span class="sourceLineNo">090</span><a id="line.90"></a>
+<span class="sourceLineNo">091</span><a id="line.91">    @Override</a>
+<span class="sourceLineNo">092</span><a id="line.92">    public MQTTProtocolConverter getProtocolConverter() {</a>
+<span class="sourceLineNo">093</span><a id="line.93">        return protocol;</a>
+<span class="sourceLineNo">094</span><a id="line.94">    }</a>
+<span class="sourceLineNo">095</span><a id="line.95"></a>
+<span class="sourceLineNo">096</span><a id="line.96">    @Override</a>
+<span class="sourceLineNo">097</span><a id="line.97">    public byte onSubscribe(final Topic topic) throws MQTTProtocolException {</a>
+<span class="sourceLineNo">098</span><a id="line.98"></a>
+<span class="sourceLineNo">099</span><a id="line.99">        final String destinationName = topic.name().toString();</a>
+<span class="sourceLineNo">100</span><a id="line.100">        final QoS requestedQoS = topic.qos();</a>
+<span class="sourceLineNo">101</span><a id="line.101"></a>
+<span class="sourceLineNo">102</span><a id="line.102">        final MQTTSubscription mqttSubscription = mqttSubscriptionByTopic.get(destinationName);</a>
+<span class="sourceLineNo">103</span><a id="line.103">        if (mqttSubscription != null) {</a>
+<span class="sourceLineNo">104</span><a id="line.104">            if (requestedQoS != mqttSubscription.getQoS()) {</a>
+<span class="sourceLineNo">105</span><a id="line.105">                // remove old subscription as the QoS has changed</a>
+<span class="sourceLineNo">106</span><a id="line.106">                onUnSubscribe(destinationName);</a>
+<span class="sourceLineNo">107</span><a id="line.107">            } else {</a>
+<span class="sourceLineNo">108</span><a id="line.108">                try {</a>
+<span class="sourceLineNo">109</span><a id="line.109">                    onReSubscribe(mqttSubscription);</a>
+<span class="sourceLineNo">110</span><a id="line.110">                } catch (IOException e) {</a>
+<span class="sourceLineNo">111</span><a id="line.111">                    throw new MQTTProtocolException("Failed to find subscription strategy", true, e);</a>
+<span class="sourceLineNo">112</span><a id="line.112">                }</a>
+<span class="sourceLineNo">113</span><a id="line.113">                return (byte) requestedQoS.ordinal();</a>
+<span class="sourceLineNo">114</span><a id="line.114">            }</a>
+<span class="sourceLineNo">115</span><a id="line.115">        }</a>
+<span class="sourceLineNo">116</span><a id="line.116"></a>
+<span class="sourceLineNo">117</span><a id="line.117">        try {</a>
+<span class="sourceLineNo">118</span><a id="line.118">            return onSubscribe(destinationName, requestedQoS);</a>
+<span class="sourceLineNo">119</span><a id="line.119">        } catch (IOException e) {</a>
+<span class="sourceLineNo">120</span><a id="line.120">            throw new MQTTProtocolException("Failed while intercepting subscribe", true, e);</a>
+<span class="sourceLineNo">121</span><a id="line.121">        }</a>
+<span class="sourceLineNo">122</span><a id="line.122">    }</a>
+<span class="sourceLineNo">123</span><a id="line.123"></a>
+<span class="sourceLineNo">124</span><a id="line.124">    @Override</a>
+<span class="sourceLineNo">125</span><a id="line.125">    public void onReSubscribe(MQTTSubscription mqttSubscription) throws MQTTProtocolException {</a>
+<span class="sourceLineNo">126</span><a id="line.126">        String topicName = mqttSubscription.getTopicName();</a>
+<span class="sourceLineNo">127</span><a id="line.127"></a>
+<span class="sourceLineNo">128</span><a id="line.128">        // get TopicRegion</a>
+<span class="sourceLineNo">129</span><a id="line.129">        RegionBroker regionBroker;</a>
+<span class="sourceLineNo">130</span><a id="line.130">        try {</a>
+<span class="sourceLineNo">131</span><a id="line.131">            regionBroker = (RegionBroker) brokerService.getBroker().getAdaptor(RegionBroker.class);</a>
+<span class="sourceLineNo">132</span><a id="line.132">        } catch (Exception e) {</a>
+<span class="sourceLineNo">133</span><a id="line.133">            throw new MQTTProtocolException("Error subscribing to " + topicName + ": " + e.getMessage(), false, e);</a>
+<span class="sourceLineNo">134</span><a id="line.134">        }</a>
+<span class="sourceLineNo">135</span><a id="line.135">        final TopicRegion topicRegion = (TopicRegion) regionBroker.getTopicRegion();</a>
+<span class="sourceLineNo">136</span><a id="line.136"></a>
+<span class="sourceLineNo">137</span><a id="line.137">        final ConsumerInfo consumerInfo = mqttSubscription.getConsumerInfo();</a>
+<span class="sourceLineNo">138</span><a id="line.138">        final ConsumerId consumerId = consumerInfo.getConsumerId();</a>
+<span class="sourceLineNo">139</span><a id="line.139"></a>
+<span class="sourceLineNo">140</span><a id="line.140">        // use actual client id used to create connection to lookup connection</a>
+<span class="sourceLineNo">141</span><a id="line.141">        // context</a>
+<span class="sourceLineNo">142</span><a id="line.142">        String connectionInfoClientId = protocol.getClientId();</a>
+<span class="sourceLineNo">143</span><a id="line.143">        // for zero-byte client ids we used connection id</a>
+<span class="sourceLineNo">144</span><a id="line.144">        if (connectionInfoClientId == null || connectionInfoClientId.isEmpty()) {</a>
+<span class="sourceLineNo">145</span><a id="line.145">            connectionInfoClientId = protocol.getConnectionId().toString();</a>
+<span class="sourceLineNo">146</span><a id="line.146">        }</a>
+<span class="sourceLineNo">147</span><a id="line.147">        final ConnectionContext connectionContext = regionBroker.getConnectionContext(connectionInfoClientId);</a>
+<span class="sourceLineNo">148</span><a id="line.148"></a>
+<span class="sourceLineNo">149</span><a id="line.149">        // get all matching Topics</a>
+<span class="sourceLineNo">150</span><a id="line.150">        final Set&lt;org.apache.activemq.broker.region.Destination&gt; matchingDestinations =</a>
+<span class="sourceLineNo">151</span><a id="line.151">            topicRegion.getDestinations(mqttSubscription.getDestination());</a>
+<span class="sourceLineNo">152</span><a id="line.152">        for (org.apache.activemq.broker.region.Destination dest : matchingDestinations) {</a>
+<span class="sourceLineNo">153</span><a id="line.153"></a>
+<span class="sourceLineNo">154</span><a id="line.154">            // recover retroactive messages for matching subscription</a>
+<span class="sourceLineNo">155</span><a id="line.155">            for (Subscription subscription : dest.getConsumers()) {</a>
+<span class="sourceLineNo">156</span><a id="line.156">                if (subscription.getConsumerInfo().getConsumerId().equals(consumerId)) {</a>
+<span class="sourceLineNo">157</span><a id="line.157">                    try {</a>
+<span class="sourceLineNo">158</span><a id="line.158">                        if (dest instanceof org.apache.activemq.broker.region.Topic) {</a>
+<span class="sourceLineNo">159</span><a id="line.159">                            ((org.apache.activemq.broker.region.Topic) dest).recoverRetroactiveMessages(connectionContext, subscription);</a>
+<span class="sourceLineNo">160</span><a id="line.160">                        } else if (dest instanceof VirtualTopicInterceptor) {</a>
+<span class="sourceLineNo">161</span><a id="line.161">                            ((VirtualTopicInterceptor) dest).getTopic().recoverRetroactiveMessages(connectionContext, subscription);</a>
+<span class="sourceLineNo">162</span><a id="line.162">                        }</a>
+<span class="sourceLineNo">163</span><a id="line.163">                        if (subscription instanceof PrefetchSubscription) {</a>
+<span class="sourceLineNo">164</span><a id="line.164">                            // request dispatch for prefetch subs</a>
+<span class="sourceLineNo">165</span><a id="line.165">                            PrefetchSubscription prefetchSubscription = (PrefetchSubscription) subscription;</a>
+<span class="sourceLineNo">166</span><a id="line.166">                            prefetchSubscription.dispatchPending();</a>
+<span class="sourceLineNo">167</span><a id="line.167">                        }</a>
+<span class="sourceLineNo">168</span><a id="line.168">                    } catch (Exception e) {</a>
+<span class="sourceLineNo">169</span><a id="line.169">                        throw new MQTTProtocolException("Error recovering retained messages for " + dest.getName() + ": " + e.getMessage(), false, e);</a>
+<span class="sourceLineNo">170</span><a id="line.170">                    }</a>
+<span class="sourceLineNo">171</span><a id="line.171">                    break;</a>
+<span class="sourceLineNo">172</span><a id="line.172">                }</a>
+<span class="sourceLineNo">173</span><a id="line.173">            }</a>
+<span class="sourceLineNo">174</span><a id="line.174">        }</a>
+<span class="sourceLineNo">175</span><a id="line.175">    }</a>
+<span class="sourceLineNo">176</span><a id="line.176"></a>
+<span class="sourceLineNo">177</span><a id="line.177">    @Override</a>
+<span class="sourceLineNo">178</span><a id="line.178">    public ActiveMQDestination onSend(String topicName) {</a>
+<span class="sourceLineNo">179</span><a id="line.179">        return new ActiveMQTopic(topicName);</a>
+<span class="sourceLineNo">180</span><a id="line.180">    }</a>
+<span class="sourceLineNo">181</span><a id="line.181"></a>
+<span class="sourceLineNo">182</span><a id="line.182">    @Override</a>
+<span class="sourceLineNo">183</span><a id="line.183">    public String onSend(ActiveMQDestination destination) {</a>
+<span class="sourceLineNo">184</span><a id="line.184">        return destination.getPhysicalName();</a>
+<span class="sourceLineNo">185</span><a id="line.185">    }</a>
+<span class="sourceLineNo">186</span><a id="line.186"></a>
+<span class="sourceLineNo">187</span><a id="line.187">    @Override</a>
+<span class="sourceLineNo">188</span><a id="line.188">    public boolean isControlTopic(ActiveMQDestination destination) {</a>
+<span class="sourceLineNo">189</span><a id="line.189">        return destination.getPhysicalName().startsWith("$");</a>
+<span class="sourceLineNo">190</span><a id="line.190">    }</a>
+<span class="sourceLineNo">191</span><a id="line.191"></a>
+<span class="sourceLineNo">192</span><a id="line.192">    @Override</a>
+<span class="sourceLineNo">193</span><a id="line.193">    public MQTTSubscription getSubscription(ConsumerId consumerId) {</a>
+<span class="sourceLineNo">194</span><a id="line.194">        return subscriptionsByConsumerId.get(consumerId);</a>
+<span class="sourceLineNo">195</span><a id="line.195">    }</a>
+<span class="sourceLineNo">196</span><a id="line.196"></a>
+<span class="sourceLineNo">197</span><a id="line.197">    protected ConsumerId getNextConsumerId() {</a>
+<span class="sourceLineNo">198</span><a id="line.198">        return new ConsumerId(protocol.getSessionId(), consumerIdGenerator.getNextSequenceId());</a>
+<span class="sourceLineNo">199</span><a id="line.199">    }</a>
+<span class="sourceLineNo">200</span><a id="line.200"></a>
+<span class="sourceLineNo">201</span><a id="line.201">    protected byte doSubscribe(ConsumerInfo consumerInfo, final String topicName, final QoS qoS) throws MQTTProtocolException {</a>
+<span class="sourceLineNo">202</span><a id="line.202"></a>
+<span class="sourceLineNo">203</span><a id="line.203">        MQTTSubscription mqttSubscription = new MQTTSubscription(protocol, topicName, qoS, consumerInfo);</a>
+<span class="sourceLineNo">204</span><a id="line.204"></a>
+<span class="sourceLineNo">205</span><a id="line.205">        // optimistic add to local maps first to be able to handle commands in onActiveMQCommand</a>
+<span class="sourceLineNo">206</span><a id="line.206">        subscriptionsByConsumerId.put(consumerInfo.getConsumerId(), mqttSubscription);</a>
+<span class="sourceLineNo">207</span><a id="line.207">        mqttSubscriptionByTopic.put(topicName, mqttSubscription);</a>
+<span class="sourceLineNo">208</span><a id="line.208"></a>
+<span class="sourceLineNo">209</span><a id="line.209">        final byte[] qos = {-1};</a>
+<span class="sourceLineNo">210</span><a id="line.210">        protocol.sendToActiveMQ(consumerInfo, new ResponseHandler() {</a>
+<span class="sourceLineNo">211</span><a id="line.211">            @Override</a>
+<span class="sourceLineNo">212</span><a id="line.212">            public void onResponse(MQTTProtocolConverter converter, Response response) throws IOException {</a>
+<span class="sourceLineNo">213</span><a id="line.213">                // validate subscription request</a>
+<span class="sourceLineNo">214</span><a id="line.214">                if (response.isException()) {</a>
+<span class="sourceLineNo">215</span><a id="line.215">                    final Throwable throwable = ((ExceptionResponse) response).getException();</a>
+<span class="sourceLineNo">216</span><a id="line.216">                    LOG.warn("Error subscribing to {}", topicName, throwable);</a>
+<span class="sourceLineNo">217</span><a id="line.217">                    // version 3.1 don't supports silent fail</a>
+<span class="sourceLineNo">218</span><a id="line.218">                    // version 3.1.1 send "error" qos</a>
+<span class="sourceLineNo">219</span><a id="line.219">                    if (protocol.version == MQTTProtocolConverter.V3_1_1) {</a>
+<span class="sourceLineNo">220</span><a id="line.220">                        qos[0] = SUBSCRIBE_ERROR;</a>
+<span class="sourceLineNo">221</span><a id="line.221">                    } else {</a>
+<span class="sourceLineNo">222</span><a id="line.222">                        qos[0] = (byte) qoS.ordinal();</a>
+<span class="sourceLineNo">223</span><a id="line.223">                    }</a>
+<span class="sourceLineNo">224</span><a id="line.224">                } else {</a>
+<span class="sourceLineNo">225</span><a id="line.225">                    qos[0] = (byte) qoS.ordinal();</a>
+<span class="sourceLineNo">226</span><a id="line.226">                }</a>
+<span class="sourceLineNo">227</span><a id="line.227">            }</a>
+<span class="sourceLineNo">228</span><a id="line.228">        });</a>
+<span class="sourceLineNo">229</span><a id="line.229"></a>
+<span class="sourceLineNo">230</span><a id="line.230">        if (qos[0] == SUBSCRIBE_ERROR) {</a>
+<span class="sourceLineNo">231</span><a id="line.231">            // remove from local maps if subscribe failed</a>
+<span class="sourceLineNo">232</span><a id="line.232">            subscriptionsByConsumerId.remove(consumerInfo.getConsumerId());</a>
+<span class="sourceLineNo">233</span><a id="line.233">            mqttSubscriptionByTopic.remove(topicName);</a>
+<span class="sourceLineNo">234</span><a id="line.234">        }</a>
+<span class="sourceLineNo">235</span><a id="line.235"></a>
+<span class="sourceLineNo">236</span><a id="line.236">        return qos[0];</a>
+<span class="sourceLineNo">237</span><a id="line.237">    }</a>
+<span class="sourceLineNo">238</span><a id="line.238"></a>
+<span class="sourceLineNo">239</span><a id="line.239">    public void doUnSubscribe(MQTTSubscription subscription) {</a>
+<span class="sourceLineNo">240</span><a id="line.240">        mqttSubscriptionByTopic.remove(subscription.getTopicName());</a>
+<span class="sourceLineNo">241</span><a id="line.241">        ConsumerInfo info = subscription.getConsumerInfo();</a>
+<span class="sourceLineNo">242</span><a id="line.242">        if (info != null) {</a>
+<span class="sourceLineNo">243</span><a id="line.243">            subscriptionsByConsumerId.remove(info.getConsumerId());</a>
+<span class="sourceLineNo">244</span><a id="line.244"></a>
+<span class="sourceLineNo">245</span><a id="line.245">            RemoveInfo removeInfo = info.createRemoveCommand();</a>
+<span class="sourceLineNo">246</span><a id="line.246">            protocol.sendToActiveMQ(removeInfo, new ResponseHandler() {</a>
+<span class="sourceLineNo">247</span><a id="line.247">                @Override</a>
+<span class="sourceLineNo">248</span><a id="line.248">                public void onResponse(MQTTProtocolConverter converter, Response response) throws IOException {</a>
+<span class="sourceLineNo">249</span><a id="line.249">                    // ignore failures..</a>
+<span class="sourceLineNo">250</span><a id="line.250">                }</a>
+<span class="sourceLineNo">251</span><a id="line.251">            });</a>
+<span class="sourceLineNo">252</span><a id="line.252">        }</a>
+<span class="sourceLineNo">253</span><a id="line.253">    }</a>
+<span class="sourceLineNo">254</span><a id="line.254"></a>
+<span class="sourceLineNo">255</span><a id="line.255">    //----- Durable Subscription management methods --------------------------//</a>
+<span class="sourceLineNo">256</span><a id="line.256"></a>
+<span class="sourceLineNo">257</span><a id="line.257">    protected void deleteDurableSubs(List&lt;SubscriptionInfo&gt; subs) {</a>
+<span class="sourceLineNo">258</span><a id="line.258">        try {</a>
+<span class="sourceLineNo">259</span><a id="line.259">            for (SubscriptionInfo sub : subs) {</a>
+<span class="sourceLineNo">260</span><a id="line.260">                RemoveSubscriptionInfo rsi = new RemoveSubscriptionInfo();</a>
+<span class="sourceLineNo">261</span><a id="line.261">                rsi.setConnectionId(protocol.getConnectionId());</a>
+<span class="sourceLineNo">262</span><a id="line.262">                rsi.setSubscriptionName(sub.getSubcriptionName());</a>
+<span class="sourceLineNo">263</span><a id="line.263">                rsi.setClientId(sub.getClientId());</a>
+<span class="sourceLineNo">264</span><a id="line.264">                protocol.sendToActiveMQ(rsi, new ResponseHandler() {</a>
+<span class="sourceLineNo">265</span><a id="line.265">                    @Override</a>
+<span class="sourceLineNo">266</span><a id="line.266">                    public void onResponse(MQTTProtocolConverter converter, Response response) throws IOException {</a>
+<span class="sourceLineNo">267</span><a id="line.267">                        // ignore failures..</a>
+<span class="sourceLineNo">268</span><a id="line.268">                    }</a>
+<span class="sourceLineNo">269</span><a id="line.269">                });</a>
+<span class="sourceLineNo">270</span><a id="line.270">            }</a>
+<span class="sourceLineNo">271</span><a id="line.271">        } catch (Throwable e) {</a>
+<span class="sourceLineNo">272</span><a id="line.272">            LOG.warn("Could not delete the MQTT durable subs.", e);</a>
+<span class="sourceLineNo">273</span><a id="line.273">        }</a>
+<span class="sourceLineNo">274</span><a id="line.274">    }</a>
+<span class="sourceLineNo">275</span><a id="line.275"></a>
+<span class="sourceLineNo">276</span><a id="line.276">    protected void restoreDurableSubs(List&lt;SubscriptionInfo&gt; subs) {</a>
+<span class="sourceLineNo">277</span><a id="line.277">        try {</a>
+<span class="sourceLineNo">278</span><a id="line.278">            for (SubscriptionInfo sub : subs) {</a>
+<span class="sourceLineNo">279</span><a id="line.279">                String name = sub.getSubcriptionName();</a>
+<span class="sourceLineNo">280</span><a id="line.280">                String[] split = name.split(":", 2);</a>
+<span class="sourceLineNo">281</span><a id="line.281">                QoS qoS = QoS.valueOf(split[0]);</a>
+<span class="sourceLineNo">282</span><a id="line.282">                onSubscribe(new Topic(split[1], qoS));</a>
+<span class="sourceLineNo">283</span><a id="line.283">                // mark this durable subscription as restored by Broker</a>
+<span class="sourceLineNo">284</span><a id="line.284">                restoredDurableSubs.add(MQTTProtocolSupport.convertMQTTToActiveMQ(split[1]));</a>
+<span class="sourceLineNo">285</span><a id="line.285">            }</a>
+<span class="sourceLineNo">286</span><a id="line.286">        } catch (IOException e) {</a>
+<span class="sourceLineNo">287</span><a id="line.287">            LOG.warn("Could not restore the MQTT durable subs.", e);</a>
+<span class="sourceLineNo">288</span><a id="line.288">        }</a>
+<span class="sourceLineNo">289</span><a id="line.289">    }</a>
+<span class="sourceLineNo">290</span><a id="line.290"></a>
+<span class="sourceLineNo">291</span><a id="line.291">    protected List&lt;SubscriptionInfo&gt; lookupSubscription(String clientId) throws MQTTProtocolException {</a>
+<span class="sourceLineNo">292</span><a id="line.292">        List&lt;SubscriptionInfo&gt; result = new ArrayList&lt;SubscriptionInfo&gt;();</a>
+<span class="sourceLineNo">293</span><a id="line.293">        RegionBroker regionBroker;</a>
+<span class="sourceLineNo">294</span><a id="line.294"></a>
+<span class="sourceLineNo">295</span><a id="line.295">        try {</a>
+<span class="sourceLineNo">296</span><a id="line.296">            regionBroker = (RegionBroker) brokerService.getBroker().getAdaptor(RegionBroker.class);</a>
+<span class="sourceLineNo">297</span><a id="line.297">        } catch (Exception e) {</a>
+<span class="sourceLineNo">298</span><a id="line.298">            throw new MQTTProtocolException("Error recovering durable subscriptions: " + e.getMessage(), false, e);</a>
+<span class="sourceLineNo">299</span><a id="line.299">        }</a>
+<span class="sourceLineNo">300</span><a id="line.300"></a>
+<span class="sourceLineNo">301</span><a id="line.301">        final TopicRegion topicRegion = (TopicRegion) regionBroker.getTopicRegion();</a>
+<span class="sourceLineNo">302</span><a id="line.302">        List&lt;DurableTopicSubscription&gt; subscriptions = topicRegion.lookupSubscriptions(clientId);</a>
+<span class="sourceLineNo">303</span><a id="line.303">        if (subscriptions != null) {</a>
+<span class="sourceLineNo">304</span><a id="line.304">            for (DurableTopicSubscription subscription : subscriptions) {</a>
+<span class="sourceLineNo">305</span><a id="line.305">                LOG.debug("Recovered durable sub:{} on connect", subscription);</a>
+<span class="sourceLineNo">306</span><a id="line.306"></a>
+<span class="sourceLineNo">307</span><a id="line.307">                SubscriptionInfo info = new SubscriptionInfo();</a>
+<span class="sourceLineNo">308</span><a id="line.308"></a>
+<span class="sourceLineNo">309</span><a id="line.309">                info.setDestination(subscription.getActiveMQDestination());</a>
+<span class="sourceLineNo">310</span><a id="line.310">                info.setSubcriptionName(subscription.getSubscriptionKey().getSubscriptionName());</a>
+<span class="sourceLineNo">311</span><a id="line.311">                info.setClientId(clientId);</a>
+<span class="sourceLineNo">312</span><a id="line.312"></a>
+<span class="sourceLineNo">313</span><a id="line.313">                result.add(info);</a>
+<span class="sourceLineNo">314</span><a id="line.314">            }</a>
+<span class="sourceLineNo">315</span><a id="line.315">        }</a>
+<span class="sourceLineNo">316</span><a id="line.316"></a>
+<span class="sourceLineNo">317</span><a id="line.317">        return result;</a>
+<span class="sourceLineNo">318</span><a id="line.318">    }</a>
+<span class="sourceLineNo">319</span><a id="line.319">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

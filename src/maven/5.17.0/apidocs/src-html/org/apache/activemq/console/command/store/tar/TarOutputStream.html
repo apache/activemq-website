@@ -1,0 +1,430 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/*</a>
+<span class="sourceLineNo">002</span><a id="line.2"> *  Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> *  contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> *  this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> *  The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> *  (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> *  the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> *  Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> *  distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> *  See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> *  limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> *</a>
+<span class="sourceLineNo">017</span><a id="line.17"> */</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">/*</a>
+<span class="sourceLineNo">020</span><a id="line.20"> * This package is based on the work done by Timothy Gerard Endres</a>
+<span class="sourceLineNo">021</span><a id="line.21"> * (time@ice.com) to whom the Ant project is very grateful for his great code.</a>
+<span class="sourceLineNo">022</span><a id="line.22"> */</a>
+<span class="sourceLineNo">023</span><a id="line.23"></a>
+<span class="sourceLineNo">024</span><a id="line.24">package org.apache.activemq.console.command.store.tar;</a>
+<span class="sourceLineNo">025</span><a id="line.25"></a>
+<span class="sourceLineNo">026</span><a id="line.26">import java.io.FilterOutputStream;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import java.io.OutputStream;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import java.io.IOException;</a>
+<span class="sourceLineNo">029</span><a id="line.29"></a>
+<span class="sourceLineNo">030</span><a id="line.30">/**</a>
+<span class="sourceLineNo">031</span><a id="line.31"> * The TarOutputStream writes a UNIX tar archive as an OutputStream.</a>
+<span class="sourceLineNo">032</span><a id="line.32"> * Methods are provided to put entries, and then write their contents</a>
+<span class="sourceLineNo">033</span><a id="line.33"> * by writing to this stream using write().</a>
+<span class="sourceLineNo">034</span><a id="line.34"> *</a>
+<span class="sourceLineNo">035</span><a id="line.35"> */</a>
+<span class="sourceLineNo">036</span><a id="line.36">public class TarOutputStream extends FilterOutputStream {</a>
+<span class="sourceLineNo">037</span><a id="line.37">    /** Fail if a long file name is required in the archive. */</a>
+<span class="sourceLineNo">038</span><a id="line.38">    public static final int LONGFILE_ERROR = 0;</a>
+<span class="sourceLineNo">039</span><a id="line.39"></a>
+<span class="sourceLineNo">040</span><a id="line.40">    /** Long paths will be truncated in the archive. */</a>
+<span class="sourceLineNo">041</span><a id="line.41">    public static final int LONGFILE_TRUNCATE = 1;</a>
+<span class="sourceLineNo">042</span><a id="line.42"></a>
+<span class="sourceLineNo">043</span><a id="line.43">    /** GNU tar extensions are used to store long file names in the archive. */</a>
+<span class="sourceLineNo">044</span><a id="line.44">    public static final int LONGFILE_GNU = 2;</a>
+<span class="sourceLineNo">045</span><a id="line.45"></a>
+<span class="sourceLineNo">046</span><a id="line.46">    // CheckStyle:VisibilityModifier OFF - bc</a>
+<span class="sourceLineNo">047</span><a id="line.47">    protected boolean   debug;</a>
+<span class="sourceLineNo">048</span><a id="line.48">    protected long      currSize;</a>
+<span class="sourceLineNo">049</span><a id="line.49">    protected String    currName;</a>
+<span class="sourceLineNo">050</span><a id="line.50">    protected long      currBytes;</a>
+<span class="sourceLineNo">051</span><a id="line.51">    protected byte[]    oneBuf;</a>
+<span class="sourceLineNo">052</span><a id="line.52">    protected byte[]    recordBuf;</a>
+<span class="sourceLineNo">053</span><a id="line.53">    protected int       assemLen;</a>
+<span class="sourceLineNo">054</span><a id="line.54">    protected byte[]    assemBuf;</a>
+<span class="sourceLineNo">055</span><a id="line.55">    protected TarBuffer buffer;</a>
+<span class="sourceLineNo">056</span><a id="line.56">    protected int       longFileMode = LONGFILE_ERROR;</a>
+<span class="sourceLineNo">057</span><a id="line.57">    // CheckStyle:VisibilityModifier ON</a>
+<span class="sourceLineNo">058</span><a id="line.58"></a>
+<span class="sourceLineNo">059</span><a id="line.59">    private boolean closed = false;</a>
+<span class="sourceLineNo">060</span><a id="line.60"></a>
+<span class="sourceLineNo">061</span><a id="line.61">    /**</a>
+<span class="sourceLineNo">062</span><a id="line.62">     * Constructor for TarInputStream.</a>
+<span class="sourceLineNo">063</span><a id="line.63">     * @param os the output stream to use</a>
+<span class="sourceLineNo">064</span><a id="line.64">     */</a>
+<span class="sourceLineNo">065</span><a id="line.65">    public TarOutputStream(OutputStream os) {</a>
+<span class="sourceLineNo">066</span><a id="line.66">        this(os, TarBuffer.DEFAULT_BLKSIZE, TarBuffer.DEFAULT_RCDSIZE);</a>
+<span class="sourceLineNo">067</span><a id="line.67">    }</a>
+<span class="sourceLineNo">068</span><a id="line.68"></a>
+<span class="sourceLineNo">069</span><a id="line.69">    /**</a>
+<span class="sourceLineNo">070</span><a id="line.70">     * Constructor for TarInputStream.</a>
+<span class="sourceLineNo">071</span><a id="line.71">     * @param os the output stream to use</a>
+<span class="sourceLineNo">072</span><a id="line.72">     * @param blockSize the block size to use</a>
+<span class="sourceLineNo">073</span><a id="line.73">     */</a>
+<span class="sourceLineNo">074</span><a id="line.74">    public TarOutputStream(OutputStream os, int blockSize) {</a>
+<span class="sourceLineNo">075</span><a id="line.75">        this(os, blockSize, TarBuffer.DEFAULT_RCDSIZE);</a>
+<span class="sourceLineNo">076</span><a id="line.76">    }</a>
+<span class="sourceLineNo">077</span><a id="line.77"></a>
+<span class="sourceLineNo">078</span><a id="line.78">    /**</a>
+<span class="sourceLineNo">079</span><a id="line.79">     * Constructor for TarInputStream.</a>
+<span class="sourceLineNo">080</span><a id="line.80">     * @param os the output stream to use</a>
+<span class="sourceLineNo">081</span><a id="line.81">     * @param blockSize the block size to use</a>
+<span class="sourceLineNo">082</span><a id="line.82">     * @param recordSize the record size to use</a>
+<span class="sourceLineNo">083</span><a id="line.83">     */</a>
+<span class="sourceLineNo">084</span><a id="line.84">    public TarOutputStream(OutputStream os, int blockSize, int recordSize) {</a>
+<span class="sourceLineNo">085</span><a id="line.85">        super(os);</a>
+<span class="sourceLineNo">086</span><a id="line.86"></a>
+<span class="sourceLineNo">087</span><a id="line.87">        this.buffer = new TarBuffer(os, blockSize, recordSize);</a>
+<span class="sourceLineNo">088</span><a id="line.88">        this.debug = false;</a>
+<span class="sourceLineNo">089</span><a id="line.89">        this.assemLen = 0;</a>
+<span class="sourceLineNo">090</span><a id="line.90">        this.assemBuf = new byte[recordSize];</a>
+<span class="sourceLineNo">091</span><a id="line.91">        this.recordBuf = new byte[recordSize];</a>
+<span class="sourceLineNo">092</span><a id="line.92">        this.oneBuf = new byte[1];</a>
+<span class="sourceLineNo">093</span><a id="line.93">    }</a>
+<span class="sourceLineNo">094</span><a id="line.94"></a>
+<span class="sourceLineNo">095</span><a id="line.95">    /**</a>
+<span class="sourceLineNo">096</span><a id="line.96">     * Set the long file mode.</a>
+<span class="sourceLineNo">097</span><a id="line.97">     * This can be LONGFILE_ERROR(0), LONGFILE_TRUNCATE(1) or LONGFILE_GNU(2).</a>
+<span class="sourceLineNo">098</span><a id="line.98">     * This specifies the treatment of long file names (names &gt;= TarConstants.NAMELEN).</a>
+<span class="sourceLineNo">099</span><a id="line.99">     * Default is LONGFILE_ERROR.</a>
+<span class="sourceLineNo">100</span><a id="line.100">     * @param longFileMode the mode to use</a>
+<span class="sourceLineNo">101</span><a id="line.101">     */</a>
+<span class="sourceLineNo">102</span><a id="line.102">    public void setLongFileMode(int longFileMode) {</a>
+<span class="sourceLineNo">103</span><a id="line.103">        this.longFileMode = longFileMode;</a>
+<span class="sourceLineNo">104</span><a id="line.104">    }</a>
+<span class="sourceLineNo">105</span><a id="line.105"></a>
+<span class="sourceLineNo">106</span><a id="line.106"></a>
+<span class="sourceLineNo">107</span><a id="line.107">    /**</a>
+<span class="sourceLineNo">108</span><a id="line.108">     * Sets the debugging flag.</a>
+<span class="sourceLineNo">109</span><a id="line.109">     *</a>
+<span class="sourceLineNo">110</span><a id="line.110">     * @param debugF True to turn on debugging.</a>
+<span class="sourceLineNo">111</span><a id="line.111">     */</a>
+<span class="sourceLineNo">112</span><a id="line.112">    public void setDebug(boolean debugF) {</a>
+<span class="sourceLineNo">113</span><a id="line.113">        this.debug = debugF;</a>
+<span class="sourceLineNo">114</span><a id="line.114">    }</a>
+<span class="sourceLineNo">115</span><a id="line.115"></a>
+<span class="sourceLineNo">116</span><a id="line.116">    /**</a>
+<span class="sourceLineNo">117</span><a id="line.117">     * Sets the debugging flag in this stream's TarBuffer.</a>
+<span class="sourceLineNo">118</span><a id="line.118">     *</a>
+<span class="sourceLineNo">119</span><a id="line.119">     * @param debug True to turn on debugging.</a>
+<span class="sourceLineNo">120</span><a id="line.120">     */</a>
+<span class="sourceLineNo">121</span><a id="line.121">    public void setBufferDebug(boolean debug) {</a>
+<span class="sourceLineNo">122</span><a id="line.122">        buffer.setDebug(debug);</a>
+<span class="sourceLineNo">123</span><a id="line.123">    }</a>
+<span class="sourceLineNo">124</span><a id="line.124"></a>
+<span class="sourceLineNo">125</span><a id="line.125">    /**</a>
+<span class="sourceLineNo">126</span><a id="line.126">     * Ends the TAR archive without closing the underlying OutputStream.</a>
+<span class="sourceLineNo">127</span><a id="line.127">     * The result is that the two EOF records of nulls are written.</a>
+<span class="sourceLineNo">128</span><a id="line.128">     * @throws IOException on error</a>
+<span class="sourceLineNo">129</span><a id="line.129">     */</a>
+<span class="sourceLineNo">130</span><a id="line.130">    public void finish() throws IOException {</a>
+<span class="sourceLineNo">131</span><a id="line.131">        // See Bugzilla 28776 for a discussion on this</a>
+<span class="sourceLineNo">132</span><a id="line.132">        // http://issues.apache.org/bugzilla/show_bug.cgi?id=28776</a>
+<span class="sourceLineNo">133</span><a id="line.133">        writeEOFRecord();</a>
+<span class="sourceLineNo">134</span><a id="line.134">        writeEOFRecord();</a>
+<span class="sourceLineNo">135</span><a id="line.135">        buffer.flushBlock();</a>
+<span class="sourceLineNo">136</span><a id="line.136">    }</a>
+<span class="sourceLineNo">137</span><a id="line.137"></a>
+<span class="sourceLineNo">138</span><a id="line.138">    /**</a>
+<span class="sourceLineNo">139</span><a id="line.139">     * Ends the TAR archive and closes the underlying OutputStream.</a>
+<span class="sourceLineNo">140</span><a id="line.140">     * This means that finish() is called followed by calling the</a>
+<span class="sourceLineNo">141</span><a id="line.141">     * TarBuffer's close().</a>
+<span class="sourceLineNo">142</span><a id="line.142">     * @throws IOException on error</a>
+<span class="sourceLineNo">143</span><a id="line.143">     */</a>
+<span class="sourceLineNo">144</span><a id="line.144">    public void close() throws IOException {</a>
+<span class="sourceLineNo">145</span><a id="line.145">        if (!closed) {</a>
+<span class="sourceLineNo">146</span><a id="line.146">            finish();</a>
+<span class="sourceLineNo">147</span><a id="line.147">            buffer.close();</a>
+<span class="sourceLineNo">148</span><a id="line.148">            out.close();</a>
+<span class="sourceLineNo">149</span><a id="line.149">            closed = true;</a>
+<span class="sourceLineNo">150</span><a id="line.150">        }</a>
+<span class="sourceLineNo">151</span><a id="line.151">    }</a>
+<span class="sourceLineNo">152</span><a id="line.152"></a>
+<span class="sourceLineNo">153</span><a id="line.153">    /**</a>
+<span class="sourceLineNo">154</span><a id="line.154">     * Get the record size being used by this stream's TarBuffer.</a>
+<span class="sourceLineNo">155</span><a id="line.155">     *</a>
+<span class="sourceLineNo">156</span><a id="line.156">     * @return The TarBuffer record size.</a>
+<span class="sourceLineNo">157</span><a id="line.157">     */</a>
+<span class="sourceLineNo">158</span><a id="line.158">    public int getRecordSize() {</a>
+<span class="sourceLineNo">159</span><a id="line.159">        return buffer.getRecordSize();</a>
+<span class="sourceLineNo">160</span><a id="line.160">    }</a>
+<span class="sourceLineNo">161</span><a id="line.161"></a>
+<span class="sourceLineNo">162</span><a id="line.162">    /**</a>
+<span class="sourceLineNo">163</span><a id="line.163">     * Put an entry on the output stream. This writes the entry's</a>
+<span class="sourceLineNo">164</span><a id="line.164">     * header record and positions the output stream for writing</a>
+<span class="sourceLineNo">165</span><a id="line.165">     * the contents of the entry. Once this method is called, the</a>
+<span class="sourceLineNo">166</span><a id="line.166">     * stream is ready for calls to write() to write the entry's</a>
+<span class="sourceLineNo">167</span><a id="line.167">     * contents. Once the contents are written, closeEntry()</a>
+<span class="sourceLineNo">168</span><a id="line.168">     * &lt;B&gt;MUST&lt;/B&gt; be called to ensure that all buffered data</a>
+<span class="sourceLineNo">169</span><a id="line.169">     * is completely written to the output stream.</a>
+<span class="sourceLineNo">170</span><a id="line.170">     *</a>
+<span class="sourceLineNo">171</span><a id="line.171">     * @param entry The TarEntry to be written to the archive.</a>
+<span class="sourceLineNo">172</span><a id="line.172">     * @throws IOException on error</a>
+<span class="sourceLineNo">173</span><a id="line.173">     */</a>
+<span class="sourceLineNo">174</span><a id="line.174">    public void putNextEntry(TarEntry entry) throws IOException {</a>
+<span class="sourceLineNo">175</span><a id="line.175">        if (entry.getName().length() &gt;= TarConstants.NAMELEN) {</a>
+<span class="sourceLineNo">176</span><a id="line.176"></a>
+<span class="sourceLineNo">177</span><a id="line.177">            if (longFileMode == LONGFILE_GNU) {</a>
+<span class="sourceLineNo">178</span><a id="line.178">                // create a TarEntry for the LongLink, the contents</a>
+<span class="sourceLineNo">179</span><a id="line.179">                // of which are the entry's name</a>
+<span class="sourceLineNo">180</span><a id="line.180">                TarEntry longLinkEntry = new TarEntry(TarConstants.GNU_LONGLINK,</a>
+<span class="sourceLineNo">181</span><a id="line.181">                                                      TarConstants.LF_GNUTYPE_LONGNAME);</a>
+<span class="sourceLineNo">182</span><a id="line.182"></a>
+<span class="sourceLineNo">183</span><a id="line.183">                longLinkEntry.setSize(entry.getName().length() + 1);</a>
+<span class="sourceLineNo">184</span><a id="line.184">                putNextEntry(longLinkEntry);</a>
+<span class="sourceLineNo">185</span><a id="line.185">                write(entry.getName().getBytes());</a>
+<span class="sourceLineNo">186</span><a id="line.186">                write(0);</a>
+<span class="sourceLineNo">187</span><a id="line.187">                closeEntry();</a>
+<span class="sourceLineNo">188</span><a id="line.188">            } else if (longFileMode != LONGFILE_TRUNCATE) {</a>
+<span class="sourceLineNo">189</span><a id="line.189">                throw new RuntimeException("file name '" + entry.getName()</a>
+<span class="sourceLineNo">190</span><a id="line.190">                                             + "' is too long ( &gt; "</a>
+<span class="sourceLineNo">191</span><a id="line.191">                                             + TarConstants.NAMELEN + " bytes)");</a>
+<span class="sourceLineNo">192</span><a id="line.192">            }</a>
+<span class="sourceLineNo">193</span><a id="line.193">        }</a>
+<span class="sourceLineNo">194</span><a id="line.194"></a>
+<span class="sourceLineNo">195</span><a id="line.195">        entry.writeEntryHeader(recordBuf);</a>
+<span class="sourceLineNo">196</span><a id="line.196">        buffer.writeRecord(recordBuf);</a>
+<span class="sourceLineNo">197</span><a id="line.197"></a>
+<span class="sourceLineNo">198</span><a id="line.198">        currBytes = 0;</a>
+<span class="sourceLineNo">199</span><a id="line.199"></a>
+<span class="sourceLineNo">200</span><a id="line.200">        if (entry.isDirectory()) {</a>
+<span class="sourceLineNo">201</span><a id="line.201">            currSize = 0;</a>
+<span class="sourceLineNo">202</span><a id="line.202">        } else {</a>
+<span class="sourceLineNo">203</span><a id="line.203">            currSize = entry.getSize();</a>
+<span class="sourceLineNo">204</span><a id="line.204">        }</a>
+<span class="sourceLineNo">205</span><a id="line.205">        currName = entry.getName();</a>
+<span class="sourceLineNo">206</span><a id="line.206">    }</a>
+<span class="sourceLineNo">207</span><a id="line.207"></a>
+<span class="sourceLineNo">208</span><a id="line.208">    /**</a>
+<span class="sourceLineNo">209</span><a id="line.209">     * Close an entry. This method MUST be called for all file</a>
+<span class="sourceLineNo">210</span><a id="line.210">     * entries that contain data. The reason is that we must</a>
+<span class="sourceLineNo">211</span><a id="line.211">     * buffer data written to the stream in order to satisfy</a>
+<span class="sourceLineNo">212</span><a id="line.212">     * the buffer's record based writes. Thus, there may be</a>
+<span class="sourceLineNo">213</span><a id="line.213">     * data fragments still being assembled that must be written</a>
+<span class="sourceLineNo">214</span><a id="line.214">     * to the output stream before this entry is closed and the</a>
+<span class="sourceLineNo">215</span><a id="line.215">     * next entry written.</a>
+<span class="sourceLineNo">216</span><a id="line.216">     * @throws IOException on error</a>
+<span class="sourceLineNo">217</span><a id="line.217">     */</a>
+<span class="sourceLineNo">218</span><a id="line.218">    public void closeEntry() throws IOException {</a>
+<span class="sourceLineNo">219</span><a id="line.219">        if (assemLen &gt; 0) {</a>
+<span class="sourceLineNo">220</span><a id="line.220">            for (int i = assemLen; i &lt; assemBuf.length; ++i) {</a>
+<span class="sourceLineNo">221</span><a id="line.221">                assemBuf[i] = 0;</a>
+<span class="sourceLineNo">222</span><a id="line.222">            }</a>
+<span class="sourceLineNo">223</span><a id="line.223"></a>
+<span class="sourceLineNo">224</span><a id="line.224">            buffer.writeRecord(assemBuf);</a>
+<span class="sourceLineNo">225</span><a id="line.225"></a>
+<span class="sourceLineNo">226</span><a id="line.226">            currBytes += assemLen;</a>
+<span class="sourceLineNo">227</span><a id="line.227">            assemLen = 0;</a>
+<span class="sourceLineNo">228</span><a id="line.228">        }</a>
+<span class="sourceLineNo">229</span><a id="line.229"></a>
+<span class="sourceLineNo">230</span><a id="line.230">        if (currBytes &lt; currSize) {</a>
+<span class="sourceLineNo">231</span><a id="line.231">            throw new IOException("entry '" + currName + "' closed at '"</a>
+<span class="sourceLineNo">232</span><a id="line.232">                                  + currBytes</a>
+<span class="sourceLineNo">233</span><a id="line.233">                                  + "' before the '" + currSize</a>
+<span class="sourceLineNo">234</span><a id="line.234">                                  + "' bytes specified in the header were written");</a>
+<span class="sourceLineNo">235</span><a id="line.235">        }</a>
+<span class="sourceLineNo">236</span><a id="line.236">    }</a>
+<span class="sourceLineNo">237</span><a id="line.237"></a>
+<span class="sourceLineNo">238</span><a id="line.238">    /**</a>
+<span class="sourceLineNo">239</span><a id="line.239">     * Writes a byte to the current tar archive entry.</a>
+<span class="sourceLineNo">240</span><a id="line.240">     *</a>
+<span class="sourceLineNo">241</span><a id="line.241">     * This method simply calls read( byte[], int, int ).</a>
+<span class="sourceLineNo">242</span><a id="line.242">     *</a>
+<span class="sourceLineNo">243</span><a id="line.243">     * @param b The byte written.</a>
+<span class="sourceLineNo">244</span><a id="line.244">     * @throws IOException on error</a>
+<span class="sourceLineNo">245</span><a id="line.245">     */</a>
+<span class="sourceLineNo">246</span><a id="line.246">    public void write(int b) throws IOException {</a>
+<span class="sourceLineNo">247</span><a id="line.247">        oneBuf[0] = (byte) b;</a>
+<span class="sourceLineNo">248</span><a id="line.248"></a>
+<span class="sourceLineNo">249</span><a id="line.249">        write(oneBuf, 0, 1);</a>
+<span class="sourceLineNo">250</span><a id="line.250">    }</a>
+<span class="sourceLineNo">251</span><a id="line.251"></a>
+<span class="sourceLineNo">252</span><a id="line.252">    /**</a>
+<span class="sourceLineNo">253</span><a id="line.253">     * Writes bytes to the current tar archive entry.</a>
+<span class="sourceLineNo">254</span><a id="line.254">     *</a>
+<span class="sourceLineNo">255</span><a id="line.255">     * This method simply calls write( byte[], int, int ).</a>
+<span class="sourceLineNo">256</span><a id="line.256">     *</a>
+<span class="sourceLineNo">257</span><a id="line.257">     * @param wBuf The buffer to write to the archive.</a>
+<span class="sourceLineNo">258</span><a id="line.258">     * @throws IOException on error</a>
+<span class="sourceLineNo">259</span><a id="line.259">     */</a>
+<span class="sourceLineNo">260</span><a id="line.260">    public void write(byte[] wBuf) throws IOException {</a>
+<span class="sourceLineNo">261</span><a id="line.261">        write(wBuf, 0, wBuf.length);</a>
+<span class="sourceLineNo">262</span><a id="line.262">    }</a>
+<span class="sourceLineNo">263</span><a id="line.263"></a>
+<span class="sourceLineNo">264</span><a id="line.264">    /**</a>
+<span class="sourceLineNo">265</span><a id="line.265">     * Writes bytes to the current tar archive entry. This method</a>
+<span class="sourceLineNo">266</span><a id="line.266">     * is aware of the current entry and will throw an exception if</a>
+<span class="sourceLineNo">267</span><a id="line.267">     * you attempt to write bytes past the length specified for the</a>
+<span class="sourceLineNo">268</span><a id="line.268">     * current entry. The method is also (painfully) aware of the</a>
+<span class="sourceLineNo">269</span><a id="line.269">     * record buffering required by TarBuffer, and manages buffers</a>
+<span class="sourceLineNo">270</span><a id="line.270">     * that are not a multiple of recordsize in length, including</a>
+<span class="sourceLineNo">271</span><a id="line.271">     * assembling records from small buffers.</a>
+<span class="sourceLineNo">272</span><a id="line.272">     *</a>
+<span class="sourceLineNo">273</span><a id="line.273">     * @param wBuf The buffer to write to the archive.</a>
+<span class="sourceLineNo">274</span><a id="line.274">     * @param wOffset The offset in the buffer from which to get bytes.</a>
+<span class="sourceLineNo">275</span><a id="line.275">     * @param numToWrite The number of bytes to write.</a>
+<span class="sourceLineNo">276</span><a id="line.276">     * @throws IOException on error</a>
+<span class="sourceLineNo">277</span><a id="line.277">     */</a>
+<span class="sourceLineNo">278</span><a id="line.278">    public void write(byte[] wBuf, int wOffset, int numToWrite) throws IOException {</a>
+<span class="sourceLineNo">279</span><a id="line.279">        if ((currBytes + numToWrite) &gt; currSize) {</a>
+<span class="sourceLineNo">280</span><a id="line.280">            throw new IOException("request to write '" + numToWrite</a>
+<span class="sourceLineNo">281</span><a id="line.281">                                  + "' bytes exceeds size in header of '"</a>
+<span class="sourceLineNo">282</span><a id="line.282">                                  + currSize + "' bytes for entry '"</a>
+<span class="sourceLineNo">283</span><a id="line.283">                                  + currName + "'");</a>
+<span class="sourceLineNo">284</span><a id="line.284"></a>
+<span class="sourceLineNo">285</span><a id="line.285">            //</a>
+<span class="sourceLineNo">286</span><a id="line.286">            // We have to deal with assembly!!!</a>
+<span class="sourceLineNo">287</span><a id="line.287">            // The programmer can be writing little 32 byte chunks for all</a>
+<span class="sourceLineNo">288</span><a id="line.288">            // we know, and we must assemble complete records for writing.</a>
+<span class="sourceLineNo">289</span><a id="line.289">            // REVIEW Maybe this should be in TarBuffer? Could that help to</a>
+<span class="sourceLineNo">290</span><a id="line.290">            // eliminate some of the buffer copying.</a>
+<span class="sourceLineNo">291</span><a id="line.291">            //</a>
+<span class="sourceLineNo">292</span><a id="line.292">        }</a>
+<span class="sourceLineNo">293</span><a id="line.293"></a>
+<span class="sourceLineNo">294</span><a id="line.294">        if (assemLen &gt; 0) {</a>
+<span class="sourceLineNo">295</span><a id="line.295">            if ((assemLen + numToWrite) &gt;= recordBuf.length) {</a>
+<span class="sourceLineNo">296</span><a id="line.296">                int aLen = recordBuf.length - assemLen;</a>
+<span class="sourceLineNo">297</span><a id="line.297"></a>
+<span class="sourceLineNo">298</span><a id="line.298">                System.arraycopy(assemBuf, 0, recordBuf, 0,</a>
+<span class="sourceLineNo">299</span><a id="line.299">                                 assemLen);</a>
+<span class="sourceLineNo">300</span><a id="line.300">                System.arraycopy(wBuf, wOffset, recordBuf,</a>
+<span class="sourceLineNo">301</span><a id="line.301">                                 assemLen, aLen);</a>
+<span class="sourceLineNo">302</span><a id="line.302">                buffer.writeRecord(recordBuf);</a>
+<span class="sourceLineNo">303</span><a id="line.303"></a>
+<span class="sourceLineNo">304</span><a id="line.304">                currBytes += recordBuf.length;</a>
+<span class="sourceLineNo">305</span><a id="line.305">                wOffset += aLen;</a>
+<span class="sourceLineNo">306</span><a id="line.306">                numToWrite -= aLen;</a>
+<span class="sourceLineNo">307</span><a id="line.307">                assemLen = 0;</a>
+<span class="sourceLineNo">308</span><a id="line.308">            } else {</a>
+<span class="sourceLineNo">309</span><a id="line.309">                System.arraycopy(wBuf, wOffset, assemBuf, assemLen,</a>
+<span class="sourceLineNo">310</span><a id="line.310">                                 numToWrite);</a>
+<span class="sourceLineNo">311</span><a id="line.311"></a>
+<span class="sourceLineNo">312</span><a id="line.312">                wOffset += numToWrite;</a>
+<span class="sourceLineNo">313</span><a id="line.313">                assemLen += numToWrite;</a>
+<span class="sourceLineNo">314</span><a id="line.314">                numToWrite = 0;</a>
+<span class="sourceLineNo">315</span><a id="line.315">            }</a>
+<span class="sourceLineNo">316</span><a id="line.316">        }</a>
+<span class="sourceLineNo">317</span><a id="line.317"></a>
+<span class="sourceLineNo">318</span><a id="line.318">        //</a>
+<span class="sourceLineNo">319</span><a id="line.319">        // When we get here we have EITHER:</a>
+<span class="sourceLineNo">320</span><a id="line.320">        // o An empty "assemble" buffer.</a>
+<span class="sourceLineNo">321</span><a id="line.321">        // o No bytes to write (numToWrite == 0)</a>
+<span class="sourceLineNo">322</span><a id="line.322">        //</a>
+<span class="sourceLineNo">323</span><a id="line.323">        while (numToWrite &gt; 0) {</a>
+<span class="sourceLineNo">324</span><a id="line.324">            if (numToWrite &lt; recordBuf.length) {</a>
+<span class="sourceLineNo">325</span><a id="line.325">                System.arraycopy(wBuf, wOffset, assemBuf, assemLen,</a>
+<span class="sourceLineNo">326</span><a id="line.326">                                 numToWrite);</a>
+<span class="sourceLineNo">327</span><a id="line.327"></a>
+<span class="sourceLineNo">328</span><a id="line.328">                assemLen += numToWrite;</a>
+<span class="sourceLineNo">329</span><a id="line.329"></a>
+<span class="sourceLineNo">330</span><a id="line.330">                break;</a>
+<span class="sourceLineNo">331</span><a id="line.331">            }</a>
+<span class="sourceLineNo">332</span><a id="line.332"></a>
+<span class="sourceLineNo">333</span><a id="line.333">            buffer.writeRecord(wBuf, wOffset);</a>
+<span class="sourceLineNo">334</span><a id="line.334"></a>
+<span class="sourceLineNo">335</span><a id="line.335">            int num = recordBuf.length;</a>
+<span class="sourceLineNo">336</span><a id="line.336"></a>
+<span class="sourceLineNo">337</span><a id="line.337">            currBytes += num;</a>
+<span class="sourceLineNo">338</span><a id="line.338">            numToWrite -= num;</a>
+<span class="sourceLineNo">339</span><a id="line.339">            wOffset += num;</a>
+<span class="sourceLineNo">340</span><a id="line.340">        }</a>
+<span class="sourceLineNo">341</span><a id="line.341">    }</a>
+<span class="sourceLineNo">342</span><a id="line.342"></a>
+<span class="sourceLineNo">343</span><a id="line.343">    /**</a>
+<span class="sourceLineNo">344</span><a id="line.344">     * Write an EOF (end of archive) record to the tar archive.</a>
+<span class="sourceLineNo">345</span><a id="line.345">     * An EOF record consists of a record of all zeros.</a>
+<span class="sourceLineNo">346</span><a id="line.346">     */</a>
+<span class="sourceLineNo">347</span><a id="line.347">    private void writeEOFRecord() throws IOException {</a>
+<span class="sourceLineNo">348</span><a id="line.348">        for (int i = 0; i &lt; recordBuf.length; ++i) {</a>
+<span class="sourceLineNo">349</span><a id="line.349">            recordBuf[i] = 0;</a>
+<span class="sourceLineNo">350</span><a id="line.350">        }</a>
+<span class="sourceLineNo">351</span><a id="line.351"></a>
+<span class="sourceLineNo">352</span><a id="line.352">        buffer.writeRecord(recordBuf);</a>
+<span class="sourceLineNo">353</span><a id="line.353">    }</a>
+<span class="sourceLineNo">354</span><a id="line.354">}</a>
+<span class="sourceLineNo">355</span><a id="line.355"></a>
+<span class="sourceLineNo">356</span><a id="line.356"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

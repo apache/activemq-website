@@ -1,0 +1,619 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/*</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.broker.region.cursors;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.IOException;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.util.ArrayList;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.util.Iterator;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.util.LinkedList;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.util.List;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.concurrent.atomic.AtomicBoolean;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.util.concurrent.atomic.AtomicLong;</a>
+<span class="sourceLineNo">026</span><a id="line.26"></a>
+<span class="sourceLineNo">027</span><a id="line.27">import org.apache.activemq.broker.Broker;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import org.apache.activemq.broker.ConnectionContext;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import org.apache.activemq.broker.region.Destination;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import org.apache.activemq.broker.region.IndirectMessageReference;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import org.apache.activemq.broker.region.MessageReference;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import org.apache.activemq.broker.region.QueueMessageReference;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import org.apache.activemq.command.Message;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import org.apache.activemq.openwire.OpenWireFormat;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import org.apache.activemq.store.PList;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import org.apache.activemq.store.PListEntry;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import org.apache.activemq.store.PListStore;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import org.apache.activemq.usage.SystemUsage;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import org.apache.activemq.usage.Usage;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import org.apache.activemq.usage.UsageListener;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import org.apache.activemq.util.ByteSequence;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.apache.activemq.wireformat.WireFormat;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">045</span><a id="line.45"></a>
+<span class="sourceLineNo">046</span><a id="line.46">/**</a>
+<span class="sourceLineNo">047</span><a id="line.47"> * persist pending messages pending message (messages awaiting dispatch to a</a>
+<span class="sourceLineNo">048</span><a id="line.48"> * consumer) cursor</a>
+<span class="sourceLineNo">049</span><a id="line.49"> */</a>
+<span class="sourceLineNo">050</span><a id="line.50">public class FilePendingMessageCursor extends AbstractPendingMessageCursor implements UsageListener {</a>
+<span class="sourceLineNo">051</span><a id="line.51"></a>
+<span class="sourceLineNo">052</span><a id="line.52">    static final Logger LOG = LoggerFactory.getLogger(FilePendingMessageCursor.class);</a>
+<span class="sourceLineNo">053</span><a id="line.53"></a>
+<span class="sourceLineNo">054</span><a id="line.54">    private static final AtomicLong NAME_COUNT = new AtomicLong();</a>
+<span class="sourceLineNo">055</span><a id="line.55"></a>
+<span class="sourceLineNo">056</span><a id="line.56">    protected Broker broker;</a>
+<span class="sourceLineNo">057</span><a id="line.57">    private final PListStore store;</a>
+<span class="sourceLineNo">058</span><a id="line.58">    private final String name;</a>
+<span class="sourceLineNo">059</span><a id="line.59">    private PendingList memoryList;</a>
+<span class="sourceLineNo">060</span><a id="line.60">    private PList diskList;</a>
+<span class="sourceLineNo">061</span><a id="line.61">    private Iterator&lt;MessageReference&gt; iter;</a>
+<span class="sourceLineNo">062</span><a id="line.62">    private Destination regionDestination;</a>
+<span class="sourceLineNo">063</span><a id="line.63">    private boolean iterating;</a>
+<span class="sourceLineNo">064</span><a id="line.64">    private boolean flushRequired;</a>
+<span class="sourceLineNo">065</span><a id="line.65">    private final AtomicBoolean started = new AtomicBoolean();</a>
+<span class="sourceLineNo">066</span><a id="line.66">    private final WireFormat wireFormat = new OpenWireFormat();</a>
+<span class="sourceLineNo">067</span><a id="line.67"></a>
+<span class="sourceLineNo">068</span><a id="line.68">    /**</a>
+<span class="sourceLineNo">069</span><a id="line.69">     * @param broker</a>
+<span class="sourceLineNo">070</span><a id="line.70">     * @param name</a>
+<span class="sourceLineNo">071</span><a id="line.71">     * @param prioritizedMessages</a>
+<span class="sourceLineNo">072</span><a id="line.72">     */</a>
+<span class="sourceLineNo">073</span><a id="line.73">    public FilePendingMessageCursor(Broker broker, String name, boolean prioritizedMessages) {</a>
+<span class="sourceLineNo">074</span><a id="line.74">        super(prioritizedMessages);</a>
+<span class="sourceLineNo">075</span><a id="line.75">        if (this.prioritizedMessages) {</a>
+<span class="sourceLineNo">076</span><a id="line.76">            this.memoryList = new PrioritizedPendingList();</a>
+<span class="sourceLineNo">077</span><a id="line.77">        } else {</a>
+<span class="sourceLineNo">078</span><a id="line.78">            this.memoryList = new OrderedPendingList();</a>
+<span class="sourceLineNo">079</span><a id="line.79">        }</a>
+<span class="sourceLineNo">080</span><a id="line.80">        this.broker = broker;</a>
+<span class="sourceLineNo">081</span><a id="line.81">        // the store can be null if the BrokerService has persistence</a>
+<span class="sourceLineNo">082</span><a id="line.82">        // turned off</a>
+<span class="sourceLineNo">083</span><a id="line.83">        this.store = broker.getTempDataStore();</a>
+<span class="sourceLineNo">084</span><a id="line.84">        this.name = NAME_COUNT.incrementAndGet() + "_" + name;</a>
+<span class="sourceLineNo">085</span><a id="line.85">    }</a>
+<span class="sourceLineNo">086</span><a id="line.86"></a>
+<span class="sourceLineNo">087</span><a id="line.87">    @Override</a>
+<span class="sourceLineNo">088</span><a id="line.88">    public void start() throws Exception {</a>
+<span class="sourceLineNo">089</span><a id="line.89">        if (started.compareAndSet(false, true)) {</a>
+<span class="sourceLineNo">090</span><a id="line.90">            if( this.broker != null) {</a>
+<span class="sourceLineNo">091</span><a id="line.91">                wireFormat.setVersion(this.broker.getBrokerService().getStoreOpenWireVersion());</a>
+<span class="sourceLineNo">092</span><a id="line.92">            }</a>
+<span class="sourceLineNo">093</span><a id="line.93">            super.start();</a>
+<span class="sourceLineNo">094</span><a id="line.94">            if (systemUsage != null) {</a>
+<span class="sourceLineNo">095</span><a id="line.95">                systemUsage.getMemoryUsage().addUsageListener(this);</a>
+<span class="sourceLineNo">096</span><a id="line.96">            }</a>
+<span class="sourceLineNo">097</span><a id="line.97">        }</a>
+<span class="sourceLineNo">098</span><a id="line.98">    }</a>
+<span class="sourceLineNo">099</span><a id="line.99"></a>
+<span class="sourceLineNo">100</span><a id="line.100">    @Override</a>
+<span class="sourceLineNo">101</span><a id="line.101">    public void stop() throws Exception {</a>
+<span class="sourceLineNo">102</span><a id="line.102">        if (started.compareAndSet(true, false)) {</a>
+<span class="sourceLineNo">103</span><a id="line.103">            super.stop();</a>
+<span class="sourceLineNo">104</span><a id="line.104">            if (systemUsage != null) {</a>
+<span class="sourceLineNo">105</span><a id="line.105">                systemUsage.getMemoryUsage().removeUsageListener(this);</a>
+<span class="sourceLineNo">106</span><a id="line.106">            }</a>
+<span class="sourceLineNo">107</span><a id="line.107">        }</a>
+<span class="sourceLineNo">108</span><a id="line.108">    }</a>
+<span class="sourceLineNo">109</span><a id="line.109"></a>
+<span class="sourceLineNo">110</span><a id="line.110">    /**</a>
+<span class="sourceLineNo">111</span><a id="line.111">     * @return true if there are no pending messages</a>
+<span class="sourceLineNo">112</span><a id="line.112">     */</a>
+<span class="sourceLineNo">113</span><a id="line.113">    @Override</a>
+<span class="sourceLineNo">114</span><a id="line.114">    public synchronized boolean isEmpty() {</a>
+<span class="sourceLineNo">115</span><a id="line.115">        if (memoryList.isEmpty() &amp;&amp; isDiskListEmpty()) {</a>
+<span class="sourceLineNo">116</span><a id="line.116">            return true;</a>
+<span class="sourceLineNo">117</span><a id="line.117">        }</a>
+<span class="sourceLineNo">118</span><a id="line.118">        for (Iterator&lt;MessageReference&gt; iterator = memoryList.iterator(); iterator.hasNext();) {</a>
+<span class="sourceLineNo">119</span><a id="line.119">            MessageReference node = iterator.next();</a>
+<span class="sourceLineNo">120</span><a id="line.120">            if (node == QueueMessageReference.NULL_MESSAGE) {</a>
+<span class="sourceLineNo">121</span><a id="line.121">                continue;</a>
+<span class="sourceLineNo">122</span><a id="line.122">            }</a>
+<span class="sourceLineNo">123</span><a id="line.123">            if (!node.isDropped()) {</a>
+<span class="sourceLineNo">124</span><a id="line.124">                return false;</a>
+<span class="sourceLineNo">125</span><a id="line.125">            }</a>
+<span class="sourceLineNo">126</span><a id="line.126">            // We can remove dropped references.</a>
+<span class="sourceLineNo">127</span><a id="line.127">            iterator.remove();</a>
+<span class="sourceLineNo">128</span><a id="line.128">        }</a>
+<span class="sourceLineNo">129</span><a id="line.129">        return isDiskListEmpty();</a>
+<span class="sourceLineNo">130</span><a id="line.130">    }</a>
+<span class="sourceLineNo">131</span><a id="line.131"></a>
+<span class="sourceLineNo">132</span><a id="line.132">    /**</a>
+<span class="sourceLineNo">133</span><a id="line.133">     * reset the cursor</a>
+<span class="sourceLineNo">134</span><a id="line.134">     */</a>
+<span class="sourceLineNo">135</span><a id="line.135">    @Override</a>
+<span class="sourceLineNo">136</span><a id="line.136">    public synchronized void reset() {</a>
+<span class="sourceLineNo">137</span><a id="line.137">        iterating = true;</a>
+<span class="sourceLineNo">138</span><a id="line.138">        last = null;</a>
+<span class="sourceLineNo">139</span><a id="line.139">        if (isDiskListEmpty()) {</a>
+<span class="sourceLineNo">140</span><a id="line.140">            this.iter = this.memoryList.iterator();</a>
+<span class="sourceLineNo">141</span><a id="line.141">        } else {</a>
+<span class="sourceLineNo">142</span><a id="line.142">            this.iter = new DiskIterator();</a>
+<span class="sourceLineNo">143</span><a id="line.143">        }</a>
+<span class="sourceLineNo">144</span><a id="line.144">    }</a>
+<span class="sourceLineNo">145</span><a id="line.145"></a>
+<span class="sourceLineNo">146</span><a id="line.146">    @Override</a>
+<span class="sourceLineNo">147</span><a id="line.147">    public synchronized void release() {</a>
+<span class="sourceLineNo">148</span><a id="line.148">        iterating = false;</a>
+<span class="sourceLineNo">149</span><a id="line.149">        if (iter instanceof DiskIterator) {</a>
+<span class="sourceLineNo">150</span><a id="line.150">           ((DiskIterator)iter).release();</a>
+<span class="sourceLineNo">151</span><a id="line.151">        };</a>
+<span class="sourceLineNo">152</span><a id="line.152">        if (flushRequired) {</a>
+<span class="sourceLineNo">153</span><a id="line.153">            flushRequired = false;</a>
+<span class="sourceLineNo">154</span><a id="line.154">            if (!hasSpace()) {</a>
+<span class="sourceLineNo">155</span><a id="line.155">                flushToDisk();</a>
+<span class="sourceLineNo">156</span><a id="line.156">            }</a>
+<span class="sourceLineNo">157</span><a id="line.157">        }</a>
+<span class="sourceLineNo">158</span><a id="line.158">        // ensure any memory ref is released</a>
+<span class="sourceLineNo">159</span><a id="line.159">        iter = null;</a>
+<span class="sourceLineNo">160</span><a id="line.160">    }</a>
+<span class="sourceLineNo">161</span><a id="line.161"></a>
+<span class="sourceLineNo">162</span><a id="line.162">    @Override</a>
+<span class="sourceLineNo">163</span><a id="line.163">    public synchronized void destroy() throws Exception {</a>
+<span class="sourceLineNo">164</span><a id="line.164">        stop();</a>
+<span class="sourceLineNo">165</span><a id="line.165">        for (Iterator&lt;MessageReference&gt; i = memoryList.iterator(); i.hasNext();) {</a>
+<span class="sourceLineNo">166</span><a id="line.166">            MessageReference node = i.next();</a>
+<span class="sourceLineNo">167</span><a id="line.167">            node.decrementReferenceCount();</a>
+<span class="sourceLineNo">168</span><a id="line.168">        }</a>
+<span class="sourceLineNo">169</span><a id="line.169">        memoryList.clear();</a>
+<span class="sourceLineNo">170</span><a id="line.170">        destroyDiskList();</a>
+<span class="sourceLineNo">171</span><a id="line.171">    }</a>
+<span class="sourceLineNo">172</span><a id="line.172"></a>
+<span class="sourceLineNo">173</span><a id="line.173">    private void destroyDiskList() throws Exception {</a>
+<span class="sourceLineNo">174</span><a id="line.174">        if (diskList != null) {</a>
+<span class="sourceLineNo">175</span><a id="line.175">            store.removePList(name);</a>
+<span class="sourceLineNo">176</span><a id="line.176">            diskList = null;</a>
+<span class="sourceLineNo">177</span><a id="line.177">        }</a>
+<span class="sourceLineNo">178</span><a id="line.178">    }</a>
+<span class="sourceLineNo">179</span><a id="line.179"></a>
+<span class="sourceLineNo">180</span><a id="line.180">    @Override</a>
+<span class="sourceLineNo">181</span><a id="line.181">    public synchronized LinkedList&lt;MessageReference&gt; pageInList(int maxItems) {</a>
+<span class="sourceLineNo">182</span><a id="line.182">        LinkedList&lt;MessageReference&gt; result = new LinkedList&lt;MessageReference&gt;();</a>
+<span class="sourceLineNo">183</span><a id="line.183">        int count = 0;</a>
+<span class="sourceLineNo">184</span><a id="line.184">        for (Iterator&lt;MessageReference&gt; i = memoryList.iterator(); i.hasNext() &amp;&amp; count &lt; maxItems;) {</a>
+<span class="sourceLineNo">185</span><a id="line.185">            MessageReference ref = i.next();</a>
+<span class="sourceLineNo">186</span><a id="line.186">            ref.incrementReferenceCount();</a>
+<span class="sourceLineNo">187</span><a id="line.187">            result.add(ref);</a>
+<span class="sourceLineNo">188</span><a id="line.188">            count++;</a>
+<span class="sourceLineNo">189</span><a id="line.189">        }</a>
+<span class="sourceLineNo">190</span><a id="line.190">        if (count &lt; maxItems &amp;&amp; !isDiskListEmpty()) {</a>
+<span class="sourceLineNo">191</span><a id="line.191">            for (Iterator&lt;MessageReference&gt; i = new DiskIterator(); i.hasNext() &amp;&amp; count &lt; maxItems;) {</a>
+<span class="sourceLineNo">192</span><a id="line.192">                Message message = (Message) i.next();</a>
+<span class="sourceLineNo">193</span><a id="line.193">                message.setRegionDestination(regionDestination);</a>
+<span class="sourceLineNo">194</span><a id="line.194">                message.setMemoryUsage(this.getSystemUsage().getMemoryUsage());</a>
+<span class="sourceLineNo">195</span><a id="line.195">                message.incrementReferenceCount();</a>
+<span class="sourceLineNo">196</span><a id="line.196">                result.add(message);</a>
+<span class="sourceLineNo">197</span><a id="line.197">                count++;</a>
+<span class="sourceLineNo">198</span><a id="line.198">            }</a>
+<span class="sourceLineNo">199</span><a id="line.199">        }</a>
+<span class="sourceLineNo">200</span><a id="line.200">        return result;</a>
+<span class="sourceLineNo">201</span><a id="line.201">    }</a>
+<span class="sourceLineNo">202</span><a id="line.202"></a>
+<span class="sourceLineNo">203</span><a id="line.203">    /**</a>
+<span class="sourceLineNo">204</span><a id="line.204">     * add message to await dispatch</a>
+<span class="sourceLineNo">205</span><a id="line.205">     *</a>
+<span class="sourceLineNo">206</span><a id="line.206">     * @param node</a>
+<span class="sourceLineNo">207</span><a id="line.207">     * @throws Exception</a>
+<span class="sourceLineNo">208</span><a id="line.208">     */</a>
+<span class="sourceLineNo">209</span><a id="line.209">    @Override</a>
+<span class="sourceLineNo">210</span><a id="line.210">    public synchronized boolean tryAddMessageLast(MessageReference node, long maxWaitTime) throws Exception {</a>
+<span class="sourceLineNo">211</span><a id="line.211">        if (!node.isExpired()) {</a>
+<span class="sourceLineNo">212</span><a id="line.212">            try {</a>
+<span class="sourceLineNo">213</span><a id="line.213">                regionDestination = (Destination) node.getMessage().getRegionDestination();</a>
+<span class="sourceLineNo">214</span><a id="line.214">                if (isDiskListEmpty()) {</a>
+<span class="sourceLineNo">215</span><a id="line.215">                    if (hasSpace() || this.store == null) {</a>
+<span class="sourceLineNo">216</span><a id="line.216">                        memoryList.addMessageLast(node);</a>
+<span class="sourceLineNo">217</span><a id="line.217">                        node.incrementReferenceCount();</a>
+<span class="sourceLineNo">218</span><a id="line.218">                        setCacheEnabled(true);</a>
+<span class="sourceLineNo">219</span><a id="line.219">                        return true;</a>
+<span class="sourceLineNo">220</span><a id="line.220">                    }</a>
+<span class="sourceLineNo">221</span><a id="line.221">                }</a>
+<span class="sourceLineNo">222</span><a id="line.222">                if (!hasSpace()) {</a>
+<span class="sourceLineNo">223</span><a id="line.223">                    if (isDiskListEmpty()) {</a>
+<span class="sourceLineNo">224</span><a id="line.224">                        expireOldMessages();</a>
+<span class="sourceLineNo">225</span><a id="line.225">                        if (hasSpace()) {</a>
+<span class="sourceLineNo">226</span><a id="line.226">                            memoryList.addMessageLast(node);</a>
+<span class="sourceLineNo">227</span><a id="line.227">                            node.incrementReferenceCount();</a>
+<span class="sourceLineNo">228</span><a id="line.228">                            return true;</a>
+<span class="sourceLineNo">229</span><a id="line.229">                        } else {</a>
+<span class="sourceLineNo">230</span><a id="line.230">                            flushToDisk();</a>
+<span class="sourceLineNo">231</span><a id="line.231">                        }</a>
+<span class="sourceLineNo">232</span><a id="line.232">                    }</a>
+<span class="sourceLineNo">233</span><a id="line.233">                }</a>
+<span class="sourceLineNo">234</span><a id="line.234">                if (systemUsage.getTempUsage().waitForSpace(maxWaitTime)) {</a>
+<span class="sourceLineNo">235</span><a id="line.235">                    ByteSequence bs = getByteSequence(node.getMessage());</a>
+<span class="sourceLineNo">236</span><a id="line.236">                    getDiskList().addLast(node.getMessageId().toString(), bs);</a>
+<span class="sourceLineNo">237</span><a id="line.237">                    return true;</a>
+<span class="sourceLineNo">238</span><a id="line.238">                }</a>
+<span class="sourceLineNo">239</span><a id="line.239">                return false;</a>
+<span class="sourceLineNo">240</span><a id="line.240"></a>
+<span class="sourceLineNo">241</span><a id="line.241">            } catch (Exception e) {</a>
+<span class="sourceLineNo">242</span><a id="line.242">                LOG.error("Caught an Exception adding a message: {} first to FilePendingMessageCursor ", node, e);</a>
+<span class="sourceLineNo">243</span><a id="line.243">                throw new RuntimeException(e);</a>
+<span class="sourceLineNo">244</span><a id="line.244">            }</a>
+<span class="sourceLineNo">245</span><a id="line.245">        } else {</a>
+<span class="sourceLineNo">246</span><a id="line.246">            discardExpiredMessage(node);</a>
+<span class="sourceLineNo">247</span><a id="line.247">        }</a>
+<span class="sourceLineNo">248</span><a id="line.248">        //message expired</a>
+<span class="sourceLineNo">249</span><a id="line.249">        return true;</a>
+<span class="sourceLineNo">250</span><a id="line.250">    }</a>
+<span class="sourceLineNo">251</span><a id="line.251"></a>
+<span class="sourceLineNo">252</span><a id="line.252">    /**</a>
+<span class="sourceLineNo">253</span><a id="line.253">     * add message to await dispatch</a>
+<span class="sourceLineNo">254</span><a id="line.254">     *</a>
+<span class="sourceLineNo">255</span><a id="line.255">     * @param node</a>
+<span class="sourceLineNo">256</span><a id="line.256">     */</a>
+<span class="sourceLineNo">257</span><a id="line.257">    @Override</a>
+<span class="sourceLineNo">258</span><a id="line.258">    public synchronized void addMessageFirst(MessageReference node) {</a>
+<span class="sourceLineNo">259</span><a id="line.259">        if (!node.isExpired()) {</a>
+<span class="sourceLineNo">260</span><a id="line.260">            try {</a>
+<span class="sourceLineNo">261</span><a id="line.261">                regionDestination = (Destination) node.getMessage().getRegionDestination();</a>
+<span class="sourceLineNo">262</span><a id="line.262">                if (isDiskListEmpty()) {</a>
+<span class="sourceLineNo">263</span><a id="line.263">                    if (hasSpace()) {</a>
+<span class="sourceLineNo">264</span><a id="line.264">                        memoryList.addMessageFirst(node);</a>
+<span class="sourceLineNo">265</span><a id="line.265">                        node.incrementReferenceCount();</a>
+<span class="sourceLineNo">266</span><a id="line.266">                        setCacheEnabled(true);</a>
+<span class="sourceLineNo">267</span><a id="line.267">                        return;</a>
+<span class="sourceLineNo">268</span><a id="line.268">                    }</a>
+<span class="sourceLineNo">269</span><a id="line.269">                }</a>
+<span class="sourceLineNo">270</span><a id="line.270">                if (!hasSpace()) {</a>
+<span class="sourceLineNo">271</span><a id="line.271">                    if (isDiskListEmpty()) {</a>
+<span class="sourceLineNo">272</span><a id="line.272">                        expireOldMessages();</a>
+<span class="sourceLineNo">273</span><a id="line.273">                        if (hasSpace()) {</a>
+<span class="sourceLineNo">274</span><a id="line.274">                            memoryList.addMessageFirst(node);</a>
+<span class="sourceLineNo">275</span><a id="line.275">                            node.incrementReferenceCount();</a>
+<span class="sourceLineNo">276</span><a id="line.276">                            return;</a>
+<span class="sourceLineNo">277</span><a id="line.277">                        } else {</a>
+<span class="sourceLineNo">278</span><a id="line.278">                            flushToDisk();</a>
+<span class="sourceLineNo">279</span><a id="line.279">                        }</a>
+<span class="sourceLineNo">280</span><a id="line.280">                    }</a>
+<span class="sourceLineNo">281</span><a id="line.281">                }</a>
+<span class="sourceLineNo">282</span><a id="line.282">                systemUsage.getTempUsage().waitForSpace();</a>
+<span class="sourceLineNo">283</span><a id="line.283">                node.decrementReferenceCount();</a>
+<span class="sourceLineNo">284</span><a id="line.284">                ByteSequence bs = getByteSequence(node.getMessage());</a>
+<span class="sourceLineNo">285</span><a id="line.285">                Object locator = getDiskList().addFirst(node.getMessageId().toString(), bs);</a>
+<span class="sourceLineNo">286</span><a id="line.286">                node.getMessageId().setPlistLocator(locator);</a>
+<span class="sourceLineNo">287</span><a id="line.287"></a>
+<span class="sourceLineNo">288</span><a id="line.288">            } catch (Exception e) {</a>
+<span class="sourceLineNo">289</span><a id="line.289">                LOG.error("Caught an Exception adding a message: {} first to FilePendingMessageCursor ", node, e);</a>
+<span class="sourceLineNo">290</span><a id="line.290">                throw new RuntimeException(e);</a>
+<span class="sourceLineNo">291</span><a id="line.291">            }</a>
+<span class="sourceLineNo">292</span><a id="line.292">        } else {</a>
+<span class="sourceLineNo">293</span><a id="line.293">            discardExpiredMessage(node);</a>
+<span class="sourceLineNo">294</span><a id="line.294">        }</a>
+<span class="sourceLineNo">295</span><a id="line.295">    }</a>
+<span class="sourceLineNo">296</span><a id="line.296"></a>
+<span class="sourceLineNo">297</span><a id="line.297">    /**</a>
+<span class="sourceLineNo">298</span><a id="line.298">     * @return true if there pending messages to dispatch</a>
+<span class="sourceLineNo">299</span><a id="line.299">     */</a>
+<span class="sourceLineNo">300</span><a id="line.300">    @Override</a>
+<span class="sourceLineNo">301</span><a id="line.301">    public synchronized boolean hasNext() {</a>
+<span class="sourceLineNo">302</span><a id="line.302">        return iter.hasNext();</a>
+<span class="sourceLineNo">303</span><a id="line.303">    }</a>
+<span class="sourceLineNo">304</span><a id="line.304"></a>
+<span class="sourceLineNo">305</span><a id="line.305">    /**</a>
+<span class="sourceLineNo">306</span><a id="line.306">     * @return the next pending message</a>
+<span class="sourceLineNo">307</span><a id="line.307">     */</a>
+<span class="sourceLineNo">308</span><a id="line.308">    @Override</a>
+<span class="sourceLineNo">309</span><a id="line.309">    public synchronized MessageReference next() {</a>
+<span class="sourceLineNo">310</span><a id="line.310">        MessageReference reference = iter.next();</a>
+<span class="sourceLineNo">311</span><a id="line.311">        last = reference;</a>
+<span class="sourceLineNo">312</span><a id="line.312">        if (!isDiskListEmpty()) {</a>
+<span class="sourceLineNo">313</span><a id="line.313">            // got from disk</a>
+<span class="sourceLineNo">314</span><a id="line.314">            reference.getMessage().setRegionDestination(regionDestination);</a>
+<span class="sourceLineNo">315</span><a id="line.315">            reference.getMessage().setMemoryUsage(this.getSystemUsage().getMemoryUsage());</a>
+<span class="sourceLineNo">316</span><a id="line.316">        }</a>
+<span class="sourceLineNo">317</span><a id="line.317">        reference.incrementReferenceCount();</a>
+<span class="sourceLineNo">318</span><a id="line.318">        return reference;</a>
+<span class="sourceLineNo">319</span><a id="line.319">    }</a>
+<span class="sourceLineNo">320</span><a id="line.320"></a>
+<span class="sourceLineNo">321</span><a id="line.321">    /**</a>
+<span class="sourceLineNo">322</span><a id="line.322">     * remove the message at the cursor position</a>
+<span class="sourceLineNo">323</span><a id="line.323">     */</a>
+<span class="sourceLineNo">324</span><a id="line.324">    @Override</a>
+<span class="sourceLineNo">325</span><a id="line.325">    public synchronized void remove() {</a>
+<span class="sourceLineNo">326</span><a id="line.326">        iter.remove();</a>
+<span class="sourceLineNo">327</span><a id="line.327">        if (last != null) {</a>
+<span class="sourceLineNo">328</span><a id="line.328">            last.decrementReferenceCount();</a>
+<span class="sourceLineNo">329</span><a id="line.329">        }</a>
+<span class="sourceLineNo">330</span><a id="line.330">    }</a>
+<span class="sourceLineNo">331</span><a id="line.331"></a>
+<span class="sourceLineNo">332</span><a id="line.332">    /**</a>
+<span class="sourceLineNo">333</span><a id="line.333">     * @param node</a>
+<span class="sourceLineNo">334</span><a id="line.334">     * @see org.apache.activemq.broker.region.cursors.AbstractPendingMessageCursor#remove(org.apache.activemq.broker.region.MessageReference)</a>
+<span class="sourceLineNo">335</span><a id="line.335">     */</a>
+<span class="sourceLineNo">336</span><a id="line.336">    @Override</a>
+<span class="sourceLineNo">337</span><a id="line.337">    public synchronized void remove(MessageReference node) {</a>
+<span class="sourceLineNo">338</span><a id="line.338">        if (memoryList.remove(node) != null) {</a>
+<span class="sourceLineNo">339</span><a id="line.339">            node.decrementReferenceCount();</a>
+<span class="sourceLineNo">340</span><a id="line.340">        }</a>
+<span class="sourceLineNo">341</span><a id="line.341">        if (!isDiskListEmpty()) {</a>
+<span class="sourceLineNo">342</span><a id="line.342">            try {</a>
+<span class="sourceLineNo">343</span><a id="line.343">                getDiskList().remove(node.getMessageId().getPlistLocator());</a>
+<span class="sourceLineNo">344</span><a id="line.344">            } catch (IOException e) {</a>
+<span class="sourceLineNo">345</span><a id="line.345">                throw new RuntimeException(e);</a>
+<span class="sourceLineNo">346</span><a id="line.346">            }</a>
+<span class="sourceLineNo">347</span><a id="line.347">        }</a>
+<span class="sourceLineNo">348</span><a id="line.348">    }</a>
+<span class="sourceLineNo">349</span><a id="line.349"></a>
+<span class="sourceLineNo">350</span><a id="line.350">    /**</a>
+<span class="sourceLineNo">351</span><a id="line.351">     * @return the number of pending messages</a>
+<span class="sourceLineNo">352</span><a id="line.352">     */</a>
+<span class="sourceLineNo">353</span><a id="line.353">    @Override</a>
+<span class="sourceLineNo">354</span><a id="line.354">    public synchronized int size() {</a>
+<span class="sourceLineNo">355</span><a id="line.355">        return memoryList.size() + (isDiskListEmpty() ? 0 : (int)getDiskList().size());</a>
+<span class="sourceLineNo">356</span><a id="line.356">    }</a>
+<span class="sourceLineNo">357</span><a id="line.357"></a>
+<span class="sourceLineNo">358</span><a id="line.358">    @Override</a>
+<span class="sourceLineNo">359</span><a id="line.359">    public synchronized long messageSize() {</a>
+<span class="sourceLineNo">360</span><a id="line.360">        return memoryList.messageSize() + (isDiskListEmpty() ? 0 : getDiskList().messageSize());</a>
+<span class="sourceLineNo">361</span><a id="line.361">    }</a>
+<span class="sourceLineNo">362</span><a id="line.362"></a>
+<span class="sourceLineNo">363</span><a id="line.363">    /**</a>
+<span class="sourceLineNo">364</span><a id="line.364">     * clear all pending messages</a>
+<span class="sourceLineNo">365</span><a id="line.365">     */</a>
+<span class="sourceLineNo">366</span><a id="line.366">    @Override</a>
+<span class="sourceLineNo">367</span><a id="line.367">    public synchronized void clear() {</a>
+<span class="sourceLineNo">368</span><a id="line.368">        memoryList.clear();</a>
+<span class="sourceLineNo">369</span><a id="line.369">        if (!isDiskListEmpty()) {</a>
+<span class="sourceLineNo">370</span><a id="line.370">            try {</a>
+<span class="sourceLineNo">371</span><a id="line.371">                getDiskList().destroy();</a>
+<span class="sourceLineNo">372</span><a id="line.372">            } catch (IOException e) {</a>
+<span class="sourceLineNo">373</span><a id="line.373">                throw new RuntimeException(e);</a>
+<span class="sourceLineNo">374</span><a id="line.374">            }</a>
+<span class="sourceLineNo">375</span><a id="line.375">        }</a>
+<span class="sourceLineNo">376</span><a id="line.376">        last = null;</a>
+<span class="sourceLineNo">377</span><a id="line.377">    }</a>
+<span class="sourceLineNo">378</span><a id="line.378"></a>
+<span class="sourceLineNo">379</span><a id="line.379">    @Override</a>
+<span class="sourceLineNo">380</span><a id="line.380">    public synchronized boolean isFull() {</a>
+<span class="sourceLineNo">381</span><a id="line.381">        return super.isFull() || (!isDiskListEmpty() &amp;&amp; systemUsage != null &amp;&amp; systemUsage.getTempUsage().isFull());</a>
+<span class="sourceLineNo">382</span><a id="line.382">    }</a>
+<span class="sourceLineNo">383</span><a id="line.383"></a>
+<span class="sourceLineNo">384</span><a id="line.384">    @Override</a>
+<span class="sourceLineNo">385</span><a id="line.385">    public boolean hasMessagesBufferedToDeliver() {</a>
+<span class="sourceLineNo">386</span><a id="line.386">        return !isEmpty();</a>
+<span class="sourceLineNo">387</span><a id="line.387">    }</a>
+<span class="sourceLineNo">388</span><a id="line.388"></a>
+<span class="sourceLineNo">389</span><a id="line.389">    @Override</a>
+<span class="sourceLineNo">390</span><a id="line.390">    public void setSystemUsage(SystemUsage usageManager) {</a>
+<span class="sourceLineNo">391</span><a id="line.391">        super.setSystemUsage(usageManager);</a>
+<span class="sourceLineNo">392</span><a id="line.392">    }</a>
+<span class="sourceLineNo">393</span><a id="line.393"></a>
+<span class="sourceLineNo">394</span><a id="line.394">    @Override</a>
+<span class="sourceLineNo">395</span><a id="line.395">    public void onUsageChanged(Usage usage, int oldPercentUsage, int newPercentUsage) {</a>
+<span class="sourceLineNo">396</span><a id="line.396">        if (newPercentUsage &gt;= getMemoryUsageHighWaterMark()) {</a>
+<span class="sourceLineNo">397</span><a id="line.397">            List&lt;MessageReference&gt; expiredMessages = null;</a>
+<span class="sourceLineNo">398</span><a id="line.398">            synchronized (this) {</a>
+<span class="sourceLineNo">399</span><a id="line.399">                if (!flushRequired &amp;&amp; size() != 0) {</a>
+<span class="sourceLineNo">400</span><a id="line.400">                    flushRequired =true;</a>
+<span class="sourceLineNo">401</span><a id="line.401">                    if (!iterating) {</a>
+<span class="sourceLineNo">402</span><a id="line.402">                        expiredMessages = expireOldMessages();</a>
+<span class="sourceLineNo">403</span><a id="line.403">                        if (!hasSpace()) {</a>
+<span class="sourceLineNo">404</span><a id="line.404">                            flushToDisk();</a>
+<span class="sourceLineNo">405</span><a id="line.405">                            flushRequired = false;</a>
+<span class="sourceLineNo">406</span><a id="line.406">                        }</a>
+<span class="sourceLineNo">407</span><a id="line.407">                    }</a>
+<span class="sourceLineNo">408</span><a id="line.408">                }</a>
+<span class="sourceLineNo">409</span><a id="line.409">            }</a>
+<span class="sourceLineNo">410</span><a id="line.410"></a>
+<span class="sourceLineNo">411</span><a id="line.411">            if (expiredMessages != null) {</a>
+<span class="sourceLineNo">412</span><a id="line.412">                for (MessageReference node : expiredMessages) {</a>
+<span class="sourceLineNo">413</span><a id="line.413">                    discardExpiredMessage(node);</a>
+<span class="sourceLineNo">414</span><a id="line.414">                }</a>
+<span class="sourceLineNo">415</span><a id="line.415">            }</a>
+<span class="sourceLineNo">416</span><a id="line.416">        }</a>
+<span class="sourceLineNo">417</span><a id="line.417">    }</a>
+<span class="sourceLineNo">418</span><a id="line.418"></a>
+<span class="sourceLineNo">419</span><a id="line.419">    @Override</a>
+<span class="sourceLineNo">420</span><a id="line.420">    public boolean isTransient() {</a>
+<span class="sourceLineNo">421</span><a id="line.421">        return true;</a>
+<span class="sourceLineNo">422</span><a id="line.422">    }</a>
+<span class="sourceLineNo">423</span><a id="line.423"></a>
+<span class="sourceLineNo">424</span><a id="line.424">    private synchronized List&lt;MessageReference&gt; expireOldMessages() {</a>
+<span class="sourceLineNo">425</span><a id="line.425">        List&lt;MessageReference&gt; expired = new ArrayList&lt;MessageReference&gt;();</a>
+<span class="sourceLineNo">426</span><a id="line.426">        if (!memoryList.isEmpty()) {</a>
+<span class="sourceLineNo">427</span><a id="line.427">            for (Iterator&lt;MessageReference&gt; iterator = memoryList.iterator(); iterator.hasNext();) {</a>
+<span class="sourceLineNo">428</span><a id="line.428">                MessageReference node = iterator.next();</a>
+<span class="sourceLineNo">429</span><a id="line.429">                if (node.isExpired()) {</a>
+<span class="sourceLineNo">430</span><a id="line.430">                    node.decrementReferenceCount();</a>
+<span class="sourceLineNo">431</span><a id="line.431">                    expired.add(node);</a>
+<span class="sourceLineNo">432</span><a id="line.432">                    iterator.remove();</a>
+<span class="sourceLineNo">433</span><a id="line.433">                }</a>
+<span class="sourceLineNo">434</span><a id="line.434">            }</a>
+<span class="sourceLineNo">435</span><a id="line.435">        }</a>
+<span class="sourceLineNo">436</span><a id="line.436"></a>
+<span class="sourceLineNo">437</span><a id="line.437">        return expired;</a>
+<span class="sourceLineNo">438</span><a id="line.438">    }</a>
+<span class="sourceLineNo">439</span><a id="line.439"></a>
+<span class="sourceLineNo">440</span><a id="line.440">    protected synchronized void flushToDisk() {</a>
+<span class="sourceLineNo">441</span><a id="line.441">        if (!memoryList.isEmpty() &amp;&amp; store != null) {</a>
+<span class="sourceLineNo">442</span><a id="line.442">            long start = 0;</a>
+<span class="sourceLineNo">443</span><a id="line.443">            if (LOG.isTraceEnabled()) {</a>
+<span class="sourceLineNo">444</span><a id="line.444">                start = System.currentTimeMillis();</a>
+<span class="sourceLineNo">445</span><a id="line.445">                LOG.trace("{}, flushToDisk() mem list size: {} {}",</a>
+<span class="sourceLineNo">446</span><a id="line.446">                        name, memoryList.size(),</a>
+<span class="sourceLineNo">447</span><a id="line.447">                        (systemUsage != null ? systemUsage.getMemoryUsage() : ""));</a>
+<span class="sourceLineNo">448</span><a id="line.448">            }</a>
+<span class="sourceLineNo">449</span><a id="line.449">            for (Iterator&lt;MessageReference&gt; iterator = memoryList.iterator(); iterator.hasNext();) {</a>
+<span class="sourceLineNo">450</span><a id="line.450">                MessageReference node = iterator.next();</a>
+<span class="sourceLineNo">451</span><a id="line.451">                node.decrementReferenceCount();</a>
+<span class="sourceLineNo">452</span><a id="line.452">                ByteSequence bs;</a>
+<span class="sourceLineNo">453</span><a id="line.453">                try {</a>
+<span class="sourceLineNo">454</span><a id="line.454">                    bs = getByteSequence(node.getMessage());</a>
+<span class="sourceLineNo">455</span><a id="line.455">                    getDiskList().addLast(node.getMessageId().toString(), bs);</a>
+<span class="sourceLineNo">456</span><a id="line.456">                } catch (IOException e) {</a>
+<span class="sourceLineNo">457</span><a id="line.457">                    LOG.error("Failed to write to disk list", e);</a>
+<span class="sourceLineNo">458</span><a id="line.458">                    throw new RuntimeException(e);</a>
+<span class="sourceLineNo">459</span><a id="line.459">                }</a>
+<span class="sourceLineNo">460</span><a id="line.460"></a>
+<span class="sourceLineNo">461</span><a id="line.461">            }</a>
+<span class="sourceLineNo">462</span><a id="line.462">            memoryList.clear();</a>
+<span class="sourceLineNo">463</span><a id="line.463">            setCacheEnabled(false);</a>
+<span class="sourceLineNo">464</span><a id="line.464">            LOG.trace("{}, flushToDisk() done - {} ms {}",</a>
+<span class="sourceLineNo">465</span><a id="line.465">                    name,</a>
+<span class="sourceLineNo">466</span><a id="line.466">                    (System.currentTimeMillis() - start),</a>
+<span class="sourceLineNo">467</span><a id="line.467">                    (systemUsage != null ? systemUsage.getMemoryUsage() : ""));</a>
+<span class="sourceLineNo">468</span><a id="line.468">        }</a>
+<span class="sourceLineNo">469</span><a id="line.469">    }</a>
+<span class="sourceLineNo">470</span><a id="line.470"></a>
+<span class="sourceLineNo">471</span><a id="line.471">    protected boolean isDiskListEmpty() {</a>
+<span class="sourceLineNo">472</span><a id="line.472">        return diskList == null || diskList.isEmpty();</a>
+<span class="sourceLineNo">473</span><a id="line.473">    }</a>
+<span class="sourceLineNo">474</span><a id="line.474"></a>
+<span class="sourceLineNo">475</span><a id="line.475">    public PList getDiskList() {</a>
+<span class="sourceLineNo">476</span><a id="line.476">        if (diskList == null) {</a>
+<span class="sourceLineNo">477</span><a id="line.477">            try {</a>
+<span class="sourceLineNo">478</span><a id="line.478">                diskList = store.getPList(name);</a>
+<span class="sourceLineNo">479</span><a id="line.479">            } catch (Exception e) {</a>
+<span class="sourceLineNo">480</span><a id="line.480">                LOG.error("Caught an IO Exception getting the DiskList {}", name, e);</a>
+<span class="sourceLineNo">481</span><a id="line.481">                throw new RuntimeException(e);</a>
+<span class="sourceLineNo">482</span><a id="line.482">            }</a>
+<span class="sourceLineNo">483</span><a id="line.483">        }</a>
+<span class="sourceLineNo">484</span><a id="line.484">        return diskList;</a>
+<span class="sourceLineNo">485</span><a id="line.485">    }</a>
+<span class="sourceLineNo">486</span><a id="line.486"></a>
+<span class="sourceLineNo">487</span><a id="line.487">    private void discardExpiredMessage(MessageReference reference) {</a>
+<span class="sourceLineNo">488</span><a id="line.488">        LOG.debug("Discarding expired message {}", reference);</a>
+<span class="sourceLineNo">489</span><a id="line.489">        if (reference.isExpired() &amp;&amp; broker.isExpired(reference)) {</a>
+<span class="sourceLineNo">490</span><a id="line.490">            ConnectionContext context = new ConnectionContext();</a>
+<span class="sourceLineNo">491</span><a id="line.491">            context.setBroker(broker);</a>
+<span class="sourceLineNo">492</span><a id="line.492">            ((Destination)reference.getRegionDestination()).messageExpired(context, null, new IndirectMessageReference(reference.getMessage()));</a>
+<span class="sourceLineNo">493</span><a id="line.493">        }</a>
+<span class="sourceLineNo">494</span><a id="line.494">    }</a>
+<span class="sourceLineNo">495</span><a id="line.495"></a>
+<span class="sourceLineNo">496</span><a id="line.496">    protected ByteSequence getByteSequence(Message message) throws IOException {</a>
+<span class="sourceLineNo">497</span><a id="line.497">        org.apache.activemq.util.ByteSequence packet = wireFormat.marshal(message);</a>
+<span class="sourceLineNo">498</span><a id="line.498">        return new ByteSequence(packet.data, packet.offset, packet.length);</a>
+<span class="sourceLineNo">499</span><a id="line.499">    }</a>
+<span class="sourceLineNo">500</span><a id="line.500"></a>
+<span class="sourceLineNo">501</span><a id="line.501">    protected Message getMessage(ByteSequence bs) throws IOException {</a>
+<span class="sourceLineNo">502</span><a id="line.502">        org.apache.activemq.util.ByteSequence packet = new org.apache.activemq.util.ByteSequence(bs.getData(), bs</a>
+<span class="sourceLineNo">503</span><a id="line.503">                .getOffset(), bs.getLength());</a>
+<span class="sourceLineNo">504</span><a id="line.504">        return (Message) this.wireFormat.unmarshal(packet);</a>
+<span class="sourceLineNo">505</span><a id="line.505"></a>
+<span class="sourceLineNo">506</span><a id="line.506">    }</a>
+<span class="sourceLineNo">507</span><a id="line.507"></a>
+<span class="sourceLineNo">508</span><a id="line.508">    final class DiskIterator implements Iterator&lt;MessageReference&gt; {</a>
+<span class="sourceLineNo">509</span><a id="line.509">        private final PList.PListIterator iterator;</a>
+<span class="sourceLineNo">510</span><a id="line.510">        DiskIterator() {</a>
+<span class="sourceLineNo">511</span><a id="line.511">            try {</a>
+<span class="sourceLineNo">512</span><a id="line.512">                iterator = getDiskList().iterator();</a>
+<span class="sourceLineNo">513</span><a id="line.513">            } catch (Exception e) {</a>
+<span class="sourceLineNo">514</span><a id="line.514">                throw new RuntimeException(e);</a>
+<span class="sourceLineNo">515</span><a id="line.515">            }</a>
+<span class="sourceLineNo">516</span><a id="line.516">        }</a>
+<span class="sourceLineNo">517</span><a id="line.517"></a>
+<span class="sourceLineNo">518</span><a id="line.518">        @Override</a>
+<span class="sourceLineNo">519</span><a id="line.519">        public boolean hasNext() {</a>
+<span class="sourceLineNo">520</span><a id="line.520">            return iterator.hasNext();</a>
+<span class="sourceLineNo">521</span><a id="line.521">        }</a>
+<span class="sourceLineNo">522</span><a id="line.522"></a>
+<span class="sourceLineNo">523</span><a id="line.523">        @Override</a>
+<span class="sourceLineNo">524</span><a id="line.524">        public MessageReference next() {</a>
+<span class="sourceLineNo">525</span><a id="line.525">            try {</a>
+<span class="sourceLineNo">526</span><a id="line.526">                PListEntry entry = iterator.next();</a>
+<span class="sourceLineNo">527</span><a id="line.527">                Message message = getMessage(entry.getByteSequence());</a>
+<span class="sourceLineNo">528</span><a id="line.528">                message.getMessageId().setPlistLocator(entry.getLocator());</a>
+<span class="sourceLineNo">529</span><a id="line.529">                return message;</a>
+<span class="sourceLineNo">530</span><a id="line.530">            } catch (IOException e) {</a>
+<span class="sourceLineNo">531</span><a id="line.531">                LOG.error("I/O error", e);</a>
+<span class="sourceLineNo">532</span><a id="line.532">                throw new RuntimeException(e);</a>
+<span class="sourceLineNo">533</span><a id="line.533">            }</a>
+<span class="sourceLineNo">534</span><a id="line.534">        }</a>
+<span class="sourceLineNo">535</span><a id="line.535"></a>
+<span class="sourceLineNo">536</span><a id="line.536">        @Override</a>
+<span class="sourceLineNo">537</span><a id="line.537">        public void remove() {</a>
+<span class="sourceLineNo">538</span><a id="line.538">            iterator.remove();</a>
+<span class="sourceLineNo">539</span><a id="line.539">        }</a>
+<span class="sourceLineNo">540</span><a id="line.540"></a>
+<span class="sourceLineNo">541</span><a id="line.541">        public void release() {</a>
+<span class="sourceLineNo">542</span><a id="line.542">            iterator.release();</a>
+<span class="sourceLineNo">543</span><a id="line.543">        }</a>
+<span class="sourceLineNo">544</span><a id="line.544">    }</a>
+<span class="sourceLineNo">545</span><a id="line.545">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

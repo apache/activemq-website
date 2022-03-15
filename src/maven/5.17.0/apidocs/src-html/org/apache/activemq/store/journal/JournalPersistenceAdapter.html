@@ -1,0 +1,886 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.store.journal;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.File;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.io.IOException;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.util.ArrayList;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.util.HashSet;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.util.Iterator;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.Set;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.util.concurrent.Callable;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import java.util.concurrent.ConcurrentHashMap;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import java.util.concurrent.ConcurrentMap;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import java.util.concurrent.CountDownLatch;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import java.util.concurrent.FutureTask;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import java.util.concurrent.LinkedBlockingQueue;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import java.util.concurrent.ThreadFactory;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import java.util.concurrent.ThreadPoolExecutor;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import java.util.concurrent.TimeUnit;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import java.util.concurrent.atomic.AtomicBoolean;</a>
+<span class="sourceLineNo">035</span><a id="line.35"></a>
+<span class="sourceLineNo">036</span><a id="line.36">import org.apache.activeio.journal.InvalidRecordLocationException;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import org.apache.activeio.journal.Journal;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import org.apache.activeio.journal.JournalEventListener;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import org.apache.activeio.journal.RecordLocation;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import org.apache.activeio.packet.ByteArrayPacket;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import org.apache.activeio.packet.Packet;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.apache.activemq.broker.BrokerService;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import org.apache.activemq.broker.BrokerServiceAware;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import org.apache.activemq.broker.ConnectionContext;</a>
+<span class="sourceLineNo">045</span><a id="line.45">import org.apache.activemq.broker.scheduler.JobSchedulerStore;</a>
+<span class="sourceLineNo">046</span><a id="line.46">import org.apache.activemq.command.ActiveMQDestination;</a>
+<span class="sourceLineNo">047</span><a id="line.47">import org.apache.activemq.command.ActiveMQQueue;</a>
+<span class="sourceLineNo">048</span><a id="line.48">import org.apache.activemq.command.ActiveMQTopic;</a>
+<span class="sourceLineNo">049</span><a id="line.49">import org.apache.activemq.command.DataStructure;</a>
+<span class="sourceLineNo">050</span><a id="line.50">import org.apache.activemq.command.JournalQueueAck;</a>
+<span class="sourceLineNo">051</span><a id="line.51">import org.apache.activemq.command.JournalTopicAck;</a>
+<span class="sourceLineNo">052</span><a id="line.52">import org.apache.activemq.command.JournalTrace;</a>
+<span class="sourceLineNo">053</span><a id="line.53">import org.apache.activemq.command.JournalTransaction;</a>
+<span class="sourceLineNo">054</span><a id="line.54">import org.apache.activemq.command.Message;</a>
+<span class="sourceLineNo">055</span><a id="line.55">import org.apache.activemq.command.MessageAck;</a>
+<span class="sourceLineNo">056</span><a id="line.56">import org.apache.activemq.command.ProducerId;</a>
+<span class="sourceLineNo">057</span><a id="line.57">import org.apache.activemq.filter.NonCachedMessageEvaluationContext;</a>
+<span class="sourceLineNo">058</span><a id="line.58">import org.apache.activemq.openwire.OpenWireFormat;</a>
+<span class="sourceLineNo">059</span><a id="line.59">import org.apache.activemq.store.MessageStore;</a>
+<span class="sourceLineNo">060</span><a id="line.60">import org.apache.activemq.store.PersistenceAdapter;</a>
+<span class="sourceLineNo">061</span><a id="line.61">import org.apache.activemq.store.TopicMessageStore;</a>
+<span class="sourceLineNo">062</span><a id="line.62">import org.apache.activemq.store.TransactionStore;</a>
+<span class="sourceLineNo">063</span><a id="line.63">import org.apache.activemq.store.jdbc.JDBCPersistenceAdapter;</a>
+<span class="sourceLineNo">064</span><a id="line.64">import org.apache.activemq.store.journal.JournalTransactionStore.Tx;</a>
+<span class="sourceLineNo">065</span><a id="line.65">import org.apache.activemq.store.journal.JournalTransactionStore.TxOperation;</a>
+<span class="sourceLineNo">066</span><a id="line.66">import org.apache.activemq.thread.Scheduler;</a>
+<span class="sourceLineNo">067</span><a id="line.67">import org.apache.activemq.thread.Task;</a>
+<span class="sourceLineNo">068</span><a id="line.68">import org.apache.activemq.thread.TaskRunner;</a>
+<span class="sourceLineNo">069</span><a id="line.69">import org.apache.activemq.thread.TaskRunnerFactory;</a>
+<span class="sourceLineNo">070</span><a id="line.70">import org.apache.activemq.usage.SystemUsage;</a>
+<span class="sourceLineNo">071</span><a id="line.71">import org.apache.activemq.usage.Usage;</a>
+<span class="sourceLineNo">072</span><a id="line.72">import org.apache.activemq.usage.UsageListener;</a>
+<span class="sourceLineNo">073</span><a id="line.73">import org.apache.activemq.util.ByteSequence;</a>
+<span class="sourceLineNo">074</span><a id="line.74">import org.apache.activemq.util.IOExceptionSupport;</a>
+<span class="sourceLineNo">075</span><a id="line.75">import org.apache.activemq.util.ThreadPoolUtils;</a>
+<span class="sourceLineNo">076</span><a id="line.76">import org.apache.activemq.wireformat.WireFormat;</a>
+<span class="sourceLineNo">077</span><a id="line.77">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">078</span><a id="line.78">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">079</span><a id="line.79"></a>
+<span class="sourceLineNo">080</span><a id="line.80">/**</a>
+<span class="sourceLineNo">081</span><a id="line.81"> * An implementation of {@link PersistenceAdapter} designed for use with a</a>
+<span class="sourceLineNo">082</span><a id="line.82"> * {@link Journal} and then check pointing asynchronously on a timeout with some</a>
+<span class="sourceLineNo">083</span><a id="line.83"> * other long term persistent storage.</a>
+<span class="sourceLineNo">084</span><a id="line.84"> *</a>
+<span class="sourceLineNo">085</span><a id="line.85"> * @org.apache.xbean.XBean</a>
+<span class="sourceLineNo">086</span><a id="line.86"> *</a>
+<span class="sourceLineNo">087</span><a id="line.87"> */</a>
+<span class="sourceLineNo">088</span><a id="line.88">public class JournalPersistenceAdapter implements PersistenceAdapter, JournalEventListener, UsageListener, BrokerServiceAware {</a>
+<span class="sourceLineNo">089</span><a id="line.89"></a>
+<span class="sourceLineNo">090</span><a id="line.90">    private BrokerService brokerService;</a>
+<span class="sourceLineNo">091</span><a id="line.91"></a>
+<span class="sourceLineNo">092</span><a id="line.92">    protected Scheduler scheduler;</a>
+<span class="sourceLineNo">093</span><a id="line.93">    private static final Logger LOG = LoggerFactory.getLogger(JournalPersistenceAdapter.class);</a>
+<span class="sourceLineNo">094</span><a id="line.94"></a>
+<span class="sourceLineNo">095</span><a id="line.95">    private Journal journal;</a>
+<span class="sourceLineNo">096</span><a id="line.96">    private PersistenceAdapter longTermPersistence;</a>
+<span class="sourceLineNo">097</span><a id="line.97"></a>
+<span class="sourceLineNo">098</span><a id="line.98">    private final WireFormat wireFormat = new OpenWireFormat();</a>
+<span class="sourceLineNo">099</span><a id="line.99"></a>
+<span class="sourceLineNo">100</span><a id="line.100">    private final ConcurrentMap&lt;ActiveMQQueue, JournalMessageStore&gt; queues = new ConcurrentHashMap&lt;ActiveMQQueue, JournalMessageStore&gt;();</a>
+<span class="sourceLineNo">101</span><a id="line.101">    private final ConcurrentMap&lt;ActiveMQTopic, JournalTopicMessageStore&gt; topics = new ConcurrentHashMap&lt;ActiveMQTopic, JournalTopicMessageStore&gt;();</a>
+<span class="sourceLineNo">102</span><a id="line.102"></a>
+<span class="sourceLineNo">103</span><a id="line.103">    private SystemUsage usageManager;</a>
+<span class="sourceLineNo">104</span><a id="line.104">    private long checkpointInterval = 1000 * 60 * 5;</a>
+<span class="sourceLineNo">105</span><a id="line.105">    private long lastCheckpointRequest = System.currentTimeMillis();</a>
+<span class="sourceLineNo">106</span><a id="line.106">    private long lastCleanup = System.currentTimeMillis();</a>
+<span class="sourceLineNo">107</span><a id="line.107">    private int maxCheckpointWorkers = 10;</a>
+<span class="sourceLineNo">108</span><a id="line.108">    private int maxCheckpointMessageAddSize = 1024 * 1024;</a>
+<span class="sourceLineNo">109</span><a id="line.109"></a>
+<span class="sourceLineNo">110</span><a id="line.110">    private final JournalTransactionStore transactionStore = new JournalTransactionStore(this);</a>
+<span class="sourceLineNo">111</span><a id="line.111">    private ThreadPoolExecutor checkpointExecutor;</a>
+<span class="sourceLineNo">112</span><a id="line.112"></a>
+<span class="sourceLineNo">113</span><a id="line.113">    private TaskRunner checkpointTask;</a>
+<span class="sourceLineNo">114</span><a id="line.114">    private CountDownLatch nextCheckpointCountDownLatch = new CountDownLatch(1);</a>
+<span class="sourceLineNo">115</span><a id="line.115">    private boolean fullCheckPoint;</a>
+<span class="sourceLineNo">116</span><a id="line.116"></a>
+<span class="sourceLineNo">117</span><a id="line.117">    private final AtomicBoolean started = new AtomicBoolean(false);</a>
+<span class="sourceLineNo">118</span><a id="line.118"></a>
+<span class="sourceLineNo">119</span><a id="line.119">    private final Runnable periodicCheckpointTask = createPeriodicCheckpointTask();</a>
+<span class="sourceLineNo">120</span><a id="line.120"></a>
+<span class="sourceLineNo">121</span><a id="line.121">    private TaskRunnerFactory taskRunnerFactory;</a>
+<span class="sourceLineNo">122</span><a id="line.122">    private File directory;</a>
+<span class="sourceLineNo">123</span><a id="line.123"></a>
+<span class="sourceLineNo">124</span><a id="line.124">    public JournalPersistenceAdapter() {</a>
+<span class="sourceLineNo">125</span><a id="line.125">    }</a>
+<span class="sourceLineNo">126</span><a id="line.126"></a>
+<span class="sourceLineNo">127</span><a id="line.127">    public JournalPersistenceAdapter(Journal journal, PersistenceAdapter longTermPersistence, TaskRunnerFactory taskRunnerFactory) throws IOException {</a>
+<span class="sourceLineNo">128</span><a id="line.128">        setJournal(journal);</a>
+<span class="sourceLineNo">129</span><a id="line.129">        setTaskRunnerFactory(taskRunnerFactory);</a>
+<span class="sourceLineNo">130</span><a id="line.130">        setPersistenceAdapter(longTermPersistence);</a>
+<span class="sourceLineNo">131</span><a id="line.131">    }</a>
+<span class="sourceLineNo">132</span><a id="line.132"></a>
+<span class="sourceLineNo">133</span><a id="line.133">    public void setTaskRunnerFactory(TaskRunnerFactory taskRunnerFactory) {</a>
+<span class="sourceLineNo">134</span><a id="line.134">        this.taskRunnerFactory = taskRunnerFactory;</a>
+<span class="sourceLineNo">135</span><a id="line.135">    }</a>
+<span class="sourceLineNo">136</span><a id="line.136"></a>
+<span class="sourceLineNo">137</span><a id="line.137">    public void setJournal(Journal journal) {</a>
+<span class="sourceLineNo">138</span><a id="line.138">        this.journal = journal;</a>
+<span class="sourceLineNo">139</span><a id="line.139">        journal.setJournalEventListener(this);</a>
+<span class="sourceLineNo">140</span><a id="line.140">    }</a>
+<span class="sourceLineNo">141</span><a id="line.141"></a>
+<span class="sourceLineNo">142</span><a id="line.142">    public void setPersistenceAdapter(PersistenceAdapter longTermPersistence) {</a>
+<span class="sourceLineNo">143</span><a id="line.143">        this.longTermPersistence = longTermPersistence;</a>
+<span class="sourceLineNo">144</span><a id="line.144">    }</a>
+<span class="sourceLineNo">145</span><a id="line.145"></a>
+<span class="sourceLineNo">146</span><a id="line.146">    final Runnable createPeriodicCheckpointTask() {</a>
+<span class="sourceLineNo">147</span><a id="line.147">        return new Runnable() {</a>
+<span class="sourceLineNo">148</span><a id="line.148">            @Override</a>
+<span class="sourceLineNo">149</span><a id="line.149">            public void run() {</a>
+<span class="sourceLineNo">150</span><a id="line.150">                long lastTime = 0;</a>
+<span class="sourceLineNo">151</span><a id="line.151">                synchronized (this) {</a>
+<span class="sourceLineNo">152</span><a id="line.152">                    lastTime = lastCheckpointRequest;</a>
+<span class="sourceLineNo">153</span><a id="line.153">                }</a>
+<span class="sourceLineNo">154</span><a id="line.154">                if (System.currentTimeMillis() &gt; lastTime + checkpointInterval) {</a>
+<span class="sourceLineNo">155</span><a id="line.155">                    checkpoint(false, true);</a>
+<span class="sourceLineNo">156</span><a id="line.156">                }</a>
+<span class="sourceLineNo">157</span><a id="line.157">            }</a>
+<span class="sourceLineNo">158</span><a id="line.158">        };</a>
+<span class="sourceLineNo">159</span><a id="line.159">    }</a>
+<span class="sourceLineNo">160</span><a id="line.160"></a>
+<span class="sourceLineNo">161</span><a id="line.161">    /**</a>
+<span class="sourceLineNo">162</span><a id="line.162">     * @param usageManager The UsageManager that is controlling the</a>
+<span class="sourceLineNo">163</span><a id="line.163">     *                destination's memory usage.</a>
+<span class="sourceLineNo">164</span><a id="line.164">     */</a>
+<span class="sourceLineNo">165</span><a id="line.165">    @Override</a>
+<span class="sourceLineNo">166</span><a id="line.166">    public void setUsageManager(SystemUsage usageManager) {</a>
+<span class="sourceLineNo">167</span><a id="line.167">        this.usageManager = usageManager;</a>
+<span class="sourceLineNo">168</span><a id="line.168">        longTermPersistence.setUsageManager(usageManager);</a>
+<span class="sourceLineNo">169</span><a id="line.169">    }</a>
+<span class="sourceLineNo">170</span><a id="line.170"></a>
+<span class="sourceLineNo">171</span><a id="line.171">    @Override</a>
+<span class="sourceLineNo">172</span><a id="line.172">    public Set&lt;ActiveMQDestination&gt; getDestinations() {</a>
+<span class="sourceLineNo">173</span><a id="line.173">        Set&lt;ActiveMQDestination&gt; destinations = new HashSet&lt;ActiveMQDestination&gt;(longTermPersistence.getDestinations());</a>
+<span class="sourceLineNo">174</span><a id="line.174">        destinations.addAll(queues.keySet());</a>
+<span class="sourceLineNo">175</span><a id="line.175">        destinations.addAll(topics.keySet());</a>
+<span class="sourceLineNo">176</span><a id="line.176">        return destinations;</a>
+<span class="sourceLineNo">177</span><a id="line.177">    }</a>
+<span class="sourceLineNo">178</span><a id="line.178"></a>
+<span class="sourceLineNo">179</span><a id="line.179">    private MessageStore createMessageStore(ActiveMQDestination destination) throws IOException {</a>
+<span class="sourceLineNo">180</span><a id="line.180">        if (destination.isQueue()) {</a>
+<span class="sourceLineNo">181</span><a id="line.181">            return createQueueMessageStore((ActiveMQQueue)destination);</a>
+<span class="sourceLineNo">182</span><a id="line.182">        } else {</a>
+<span class="sourceLineNo">183</span><a id="line.183">            return createTopicMessageStore((ActiveMQTopic)destination);</a>
+<span class="sourceLineNo">184</span><a id="line.184">        }</a>
+<span class="sourceLineNo">185</span><a id="line.185">    }</a>
+<span class="sourceLineNo">186</span><a id="line.186"></a>
+<span class="sourceLineNo">187</span><a id="line.187">    @Override</a>
+<span class="sourceLineNo">188</span><a id="line.188">    public MessageStore createQueueMessageStore(ActiveMQQueue destination) throws IOException {</a>
+<span class="sourceLineNo">189</span><a id="line.189">        JournalMessageStore store = queues.get(destination);</a>
+<span class="sourceLineNo">190</span><a id="line.190">        if (store == null) {</a>
+<span class="sourceLineNo">191</span><a id="line.191">            MessageStore checkpointStore = longTermPersistence.createQueueMessageStore(destination);</a>
+<span class="sourceLineNo">192</span><a id="line.192">            store = new JournalMessageStore(this, checkpointStore, destination);</a>
+<span class="sourceLineNo">193</span><a id="line.193">            queues.put(destination, store);</a>
+<span class="sourceLineNo">194</span><a id="line.194">        }</a>
+<span class="sourceLineNo">195</span><a id="line.195">        return store;</a>
+<span class="sourceLineNo">196</span><a id="line.196">    }</a>
+<span class="sourceLineNo">197</span><a id="line.197"></a>
+<span class="sourceLineNo">198</span><a id="line.198">    @Override</a>
+<span class="sourceLineNo">199</span><a id="line.199">    public TopicMessageStore createTopicMessageStore(ActiveMQTopic destinationName) throws IOException {</a>
+<span class="sourceLineNo">200</span><a id="line.200">        JournalTopicMessageStore store = topics.get(destinationName);</a>
+<span class="sourceLineNo">201</span><a id="line.201">        if (store == null) {</a>
+<span class="sourceLineNo">202</span><a id="line.202">            TopicMessageStore checkpointStore = longTermPersistence.createTopicMessageStore(destinationName);</a>
+<span class="sourceLineNo">203</span><a id="line.203">            store = new JournalTopicMessageStore(this, checkpointStore, destinationName);</a>
+<span class="sourceLineNo">204</span><a id="line.204">            topics.put(destinationName, store);</a>
+<span class="sourceLineNo">205</span><a id="line.205">        }</a>
+<span class="sourceLineNo">206</span><a id="line.206">        return store;</a>
+<span class="sourceLineNo">207</span><a id="line.207">    }</a>
+<span class="sourceLineNo">208</span><a id="line.208"></a>
+<span class="sourceLineNo">209</span><a id="line.209">    /**</a>
+<span class="sourceLineNo">210</span><a id="line.210">     * Cleanup method to remove any state associated with the given destination</a>
+<span class="sourceLineNo">211</span><a id="line.211">     *</a>
+<span class="sourceLineNo">212</span><a id="line.212">     * @param destination Destination to forget</a>
+<span class="sourceLineNo">213</span><a id="line.213">     */</a>
+<span class="sourceLineNo">214</span><a id="line.214">    @Override</a>
+<span class="sourceLineNo">215</span><a id="line.215">    public void removeQueueMessageStore(ActiveMQQueue destination) {</a>
+<span class="sourceLineNo">216</span><a id="line.216">        queues.remove(destination);</a>
+<span class="sourceLineNo">217</span><a id="line.217">    }</a>
+<span class="sourceLineNo">218</span><a id="line.218"></a>
+<span class="sourceLineNo">219</span><a id="line.219">    /**</a>
+<span class="sourceLineNo">220</span><a id="line.220">     * Cleanup method to remove any state associated with the given destination</a>
+<span class="sourceLineNo">221</span><a id="line.221">     *</a>
+<span class="sourceLineNo">222</span><a id="line.222">     * @param destination Destination to forget</a>
+<span class="sourceLineNo">223</span><a id="line.223">     */</a>
+<span class="sourceLineNo">224</span><a id="line.224">    @Override</a>
+<span class="sourceLineNo">225</span><a id="line.225">    public void removeTopicMessageStore(ActiveMQTopic destination) {</a>
+<span class="sourceLineNo">226</span><a id="line.226">        topics.remove(destination);</a>
+<span class="sourceLineNo">227</span><a id="line.227">    }</a>
+<span class="sourceLineNo">228</span><a id="line.228"></a>
+<span class="sourceLineNo">229</span><a id="line.229">    @Override</a>
+<span class="sourceLineNo">230</span><a id="line.230">    public TransactionStore createTransactionStore() throws IOException {</a>
+<span class="sourceLineNo">231</span><a id="line.231">        return transactionStore;</a>
+<span class="sourceLineNo">232</span><a id="line.232">    }</a>
+<span class="sourceLineNo">233</span><a id="line.233"></a>
+<span class="sourceLineNo">234</span><a id="line.234">    @Override</a>
+<span class="sourceLineNo">235</span><a id="line.235">    public long getLastMessageBrokerSequenceId() throws IOException {</a>
+<span class="sourceLineNo">236</span><a id="line.236">        return longTermPersistence.getLastMessageBrokerSequenceId();</a>
+<span class="sourceLineNo">237</span><a id="line.237">    }</a>
+<span class="sourceLineNo">238</span><a id="line.238"></a>
+<span class="sourceLineNo">239</span><a id="line.239">    @Override</a>
+<span class="sourceLineNo">240</span><a id="line.240">    public void beginTransaction(ConnectionContext context) throws IOException {</a>
+<span class="sourceLineNo">241</span><a id="line.241">        longTermPersistence.beginTransaction(context);</a>
+<span class="sourceLineNo">242</span><a id="line.242">    }</a>
+<span class="sourceLineNo">243</span><a id="line.243"></a>
+<span class="sourceLineNo">244</span><a id="line.244">    @Override</a>
+<span class="sourceLineNo">245</span><a id="line.245">    public void commitTransaction(ConnectionContext context) throws IOException {</a>
+<span class="sourceLineNo">246</span><a id="line.246">        longTermPersistence.commitTransaction(context);</a>
+<span class="sourceLineNo">247</span><a id="line.247">    }</a>
+<span class="sourceLineNo">248</span><a id="line.248"></a>
+<span class="sourceLineNo">249</span><a id="line.249">    @Override</a>
+<span class="sourceLineNo">250</span><a id="line.250">    public void rollbackTransaction(ConnectionContext context) throws IOException {</a>
+<span class="sourceLineNo">251</span><a id="line.251">        longTermPersistence.rollbackTransaction(context);</a>
+<span class="sourceLineNo">252</span><a id="line.252">    }</a>
+<span class="sourceLineNo">253</span><a id="line.253"></a>
+<span class="sourceLineNo">254</span><a id="line.254">    @Override</a>
+<span class="sourceLineNo">255</span><a id="line.255">    public synchronized void start() throws Exception {</a>
+<span class="sourceLineNo">256</span><a id="line.256">        if (!started.compareAndSet(false, true)) {</a>
+<span class="sourceLineNo">257</span><a id="line.257">            return;</a>
+<span class="sourceLineNo">258</span><a id="line.258">        }</a>
+<span class="sourceLineNo">259</span><a id="line.259"></a>
+<span class="sourceLineNo">260</span><a id="line.260">        if( brokerService!=null ) {</a>
+<span class="sourceLineNo">261</span><a id="line.261">          wireFormat.setVersion(brokerService.getStoreOpenWireVersion());</a>
+<span class="sourceLineNo">262</span><a id="line.262">        }</a>
+<span class="sourceLineNo">263</span><a id="line.263"></a>
+<span class="sourceLineNo">264</span><a id="line.264">        checkpointTask = taskRunnerFactory.createTaskRunner(new Task() {</a>
+<span class="sourceLineNo">265</span><a id="line.265">            @Override</a>
+<span class="sourceLineNo">266</span><a id="line.266">            public boolean iterate() {</a>
+<span class="sourceLineNo">267</span><a id="line.267">                return doCheckpoint();</a>
+<span class="sourceLineNo">268</span><a id="line.268">            }</a>
+<span class="sourceLineNo">269</span><a id="line.269">        }, "ActiveMQ Journal Checkpoint Worker");</a>
+<span class="sourceLineNo">270</span><a id="line.270"></a>
+<span class="sourceLineNo">271</span><a id="line.271">        checkpointExecutor = new ThreadPoolExecutor(maxCheckpointWorkers, maxCheckpointWorkers, 30, TimeUnit.SECONDS, new LinkedBlockingQueue&lt;Runnable&gt;(), new ThreadFactory() {</a>
+<span class="sourceLineNo">272</span><a id="line.272">            @Override</a>
+<span class="sourceLineNo">273</span><a id="line.273">            public Thread newThread(Runnable runable) {</a>
+<span class="sourceLineNo">274</span><a id="line.274">                Thread t = new Thread(runable, "Journal checkpoint worker");</a>
+<span class="sourceLineNo">275</span><a id="line.275">                t.setPriority(7);</a>
+<span class="sourceLineNo">276</span><a id="line.276">                return t;</a>
+<span class="sourceLineNo">277</span><a id="line.277">            }</a>
+<span class="sourceLineNo">278</span><a id="line.278">        });</a>
+<span class="sourceLineNo">279</span><a id="line.279">        // checkpointExecutor.allowCoreThreadTimeOut(true);</a>
+<span class="sourceLineNo">280</span><a id="line.280"></a>
+<span class="sourceLineNo">281</span><a id="line.281">        this.usageManager.getMemoryUsage().addUsageListener(this);</a>
+<span class="sourceLineNo">282</span><a id="line.282"></a>
+<span class="sourceLineNo">283</span><a id="line.283">        if (longTermPersistence instanceof JDBCPersistenceAdapter) {</a>
+<span class="sourceLineNo">284</span><a id="line.284">            // Disabled periodic clean up as it deadlocks with the checkpoint</a>
+<span class="sourceLineNo">285</span><a id="line.285">            // operations.</a>
+<span class="sourceLineNo">286</span><a id="line.286">            ((JDBCPersistenceAdapter)longTermPersistence).setCleanupPeriod(0);</a>
+<span class="sourceLineNo">287</span><a id="line.287">        }</a>
+<span class="sourceLineNo">288</span><a id="line.288"></a>
+<span class="sourceLineNo">289</span><a id="line.289">        longTermPersistence.start();</a>
+<span class="sourceLineNo">290</span><a id="line.290">        createTransactionStore();</a>
+<span class="sourceLineNo">291</span><a id="line.291">        recover();</a>
+<span class="sourceLineNo">292</span><a id="line.292"></a>
+<span class="sourceLineNo">293</span><a id="line.293">        // Do a checkpoint periodically.</a>
+<span class="sourceLineNo">294</span><a id="line.294">        this.scheduler = new Scheduler("Journal Scheduler");</a>
+<span class="sourceLineNo">295</span><a id="line.295">        this.scheduler.start();</a>
+<span class="sourceLineNo">296</span><a id="line.296">        this.scheduler.executePeriodically(periodicCheckpointTask, checkpointInterval / 10);</a>
+<span class="sourceLineNo">297</span><a id="line.297"></a>
+<span class="sourceLineNo">298</span><a id="line.298">    }</a>
+<span class="sourceLineNo">299</span><a id="line.299"></a>
+<span class="sourceLineNo">300</span><a id="line.300">    @Override</a>
+<span class="sourceLineNo">301</span><a id="line.301">    public void stop() throws Exception {</a>
+<span class="sourceLineNo">302</span><a id="line.302"></a>
+<span class="sourceLineNo">303</span><a id="line.303">        this.usageManager.getMemoryUsage().removeUsageListener(this);</a>
+<span class="sourceLineNo">304</span><a id="line.304">        if (!started.compareAndSet(true, false)) {</a>
+<span class="sourceLineNo">305</span><a id="line.305">            return;</a>
+<span class="sourceLineNo">306</span><a id="line.306">        }</a>
+<span class="sourceLineNo">307</span><a id="line.307"></a>
+<span class="sourceLineNo">308</span><a id="line.308">        this.scheduler.cancel(periodicCheckpointTask);</a>
+<span class="sourceLineNo">309</span><a id="line.309">        this.scheduler.stop();</a>
+<span class="sourceLineNo">310</span><a id="line.310"></a>
+<span class="sourceLineNo">311</span><a id="line.311">        // Take one final checkpoint and stop checkpoint processing.</a>
+<span class="sourceLineNo">312</span><a id="line.312">        checkpoint(true, true);</a>
+<span class="sourceLineNo">313</span><a id="line.313">        checkpointTask.shutdown();</a>
+<span class="sourceLineNo">314</span><a id="line.314">        ThreadPoolUtils.shutdown(checkpointExecutor);</a>
+<span class="sourceLineNo">315</span><a id="line.315">        checkpointExecutor = null;</a>
+<span class="sourceLineNo">316</span><a id="line.316"></a>
+<span class="sourceLineNo">317</span><a id="line.317">        queues.clear();</a>
+<span class="sourceLineNo">318</span><a id="line.318">        topics.clear();</a>
+<span class="sourceLineNo">319</span><a id="line.319"></a>
+<span class="sourceLineNo">320</span><a id="line.320">        IOException firstException = null;</a>
+<span class="sourceLineNo">321</span><a id="line.321">        try {</a>
+<span class="sourceLineNo">322</span><a id="line.322">            journal.close();</a>
+<span class="sourceLineNo">323</span><a id="line.323">        } catch (Exception e) {</a>
+<span class="sourceLineNo">324</span><a id="line.324">            firstException = IOExceptionSupport.create("Failed to close journals: " + e, e);</a>
+<span class="sourceLineNo">325</span><a id="line.325">        }</a>
+<span class="sourceLineNo">326</span><a id="line.326">        longTermPersistence.stop();</a>
+<span class="sourceLineNo">327</span><a id="line.327"></a>
+<span class="sourceLineNo">328</span><a id="line.328">        if (firstException != null) {</a>
+<span class="sourceLineNo">329</span><a id="line.329">            throw firstException;</a>
+<span class="sourceLineNo">330</span><a id="line.330">        }</a>
+<span class="sourceLineNo">331</span><a id="line.331">    }</a>
+<span class="sourceLineNo">332</span><a id="line.332"></a>
+<span class="sourceLineNo">333</span><a id="line.333">    // Properties</a>
+<span class="sourceLineNo">334</span><a id="line.334">    // -------------------------------------------------------------------------</a>
+<span class="sourceLineNo">335</span><a id="line.335">    public PersistenceAdapter getLongTermPersistence() {</a>
+<span class="sourceLineNo">336</span><a id="line.336">        return longTermPersistence;</a>
+<span class="sourceLineNo">337</span><a id="line.337">    }</a>
+<span class="sourceLineNo">338</span><a id="line.338"></a>
+<span class="sourceLineNo">339</span><a id="line.339">    /**</a>
+<span class="sourceLineNo">340</span><a id="line.340">     * @return Returns the wireFormat.</a>
+<span class="sourceLineNo">341</span><a id="line.341">     */</a>
+<span class="sourceLineNo">342</span><a id="line.342">    public WireFormat getWireFormat() {</a>
+<span class="sourceLineNo">343</span><a id="line.343">        return wireFormat;</a>
+<span class="sourceLineNo">344</span><a id="line.344">    }</a>
+<span class="sourceLineNo">345</span><a id="line.345"></a>
+<span class="sourceLineNo">346</span><a id="line.346">    // Implementation methods</a>
+<span class="sourceLineNo">347</span><a id="line.347">    // -------------------------------------------------------------------------</a>
+<span class="sourceLineNo">348</span><a id="line.348"></a>
+<span class="sourceLineNo">349</span><a id="line.349">    /**</a>
+<span class="sourceLineNo">350</span><a id="line.350">     * The Journal give us a call back so that we can move old data out of the</a>
+<span class="sourceLineNo">351</span><a id="line.351">     * journal. Taking a checkpoint does this for us.</a>
+<span class="sourceLineNo">352</span><a id="line.352">     *</a>
+<span class="sourceLineNo">353</span><a id="line.353">     * @see org.apache.activemq.journal.JournalEventListener#overflowNotification(org.apache.activemq.journal.RecordLocation)</a>
+<span class="sourceLineNo">354</span><a id="line.354">     */</a>
+<span class="sourceLineNo">355</span><a id="line.355">    @Override</a>
+<span class="sourceLineNo">356</span><a id="line.356">    public void overflowNotification(RecordLocation safeLocation) {</a>
+<span class="sourceLineNo">357</span><a id="line.357">        checkpoint(false, true);</a>
+<span class="sourceLineNo">358</span><a id="line.358">    }</a>
+<span class="sourceLineNo">359</span><a id="line.359"></a>
+<span class="sourceLineNo">360</span><a id="line.360">    /**</a>
+<span class="sourceLineNo">361</span><a id="line.361">     * When we checkpoint we move all the journalled data to long term storage.</a>
+<span class="sourceLineNo">362</span><a id="line.362">     *</a>
+<span class="sourceLineNo">363</span><a id="line.363">     */</a>
+<span class="sourceLineNo">364</span><a id="line.364">    public void checkpoint(boolean sync, boolean fullCheckpoint) {</a>
+<span class="sourceLineNo">365</span><a id="line.365">        try {</a>
+<span class="sourceLineNo">366</span><a id="line.366">            if (journal == null) {</a>
+<span class="sourceLineNo">367</span><a id="line.367">                throw new IllegalStateException("Journal is closed.");</a>
+<span class="sourceLineNo">368</span><a id="line.368">            }</a>
+<span class="sourceLineNo">369</span><a id="line.369"></a>
+<span class="sourceLineNo">370</span><a id="line.370">            long now = System.currentTimeMillis();</a>
+<span class="sourceLineNo">371</span><a id="line.371">            CountDownLatch latch = null;</a>
+<span class="sourceLineNo">372</span><a id="line.372">            synchronized (this) {</a>
+<span class="sourceLineNo">373</span><a id="line.373">                latch = nextCheckpointCountDownLatch;</a>
+<span class="sourceLineNo">374</span><a id="line.374">                lastCheckpointRequest = now;</a>
+<span class="sourceLineNo">375</span><a id="line.375">                if (fullCheckpoint) {</a>
+<span class="sourceLineNo">376</span><a id="line.376">                    this.fullCheckPoint = true;</a>
+<span class="sourceLineNo">377</span><a id="line.377">                }</a>
+<span class="sourceLineNo">378</span><a id="line.378">            }</a>
+<span class="sourceLineNo">379</span><a id="line.379"></a>
+<span class="sourceLineNo">380</span><a id="line.380">            checkpointTask.wakeup();</a>
+<span class="sourceLineNo">381</span><a id="line.381"></a>
+<span class="sourceLineNo">382</span><a id="line.382">            if (sync) {</a>
+<span class="sourceLineNo">383</span><a id="line.383">                LOG.debug("Waking for checkpoint to complete.");</a>
+<span class="sourceLineNo">384</span><a id="line.384">                latch.await();</a>
+<span class="sourceLineNo">385</span><a id="line.385">            }</a>
+<span class="sourceLineNo">386</span><a id="line.386">        } catch (InterruptedException e) {</a>
+<span class="sourceLineNo">387</span><a id="line.387">            Thread.currentThread().interrupt();</a>
+<span class="sourceLineNo">388</span><a id="line.388">            LOG.warn("Request to start checkpoint failed: " + e, e);</a>
+<span class="sourceLineNo">389</span><a id="line.389">        }</a>
+<span class="sourceLineNo">390</span><a id="line.390">    }</a>
+<span class="sourceLineNo">391</span><a id="line.391"></a>
+<span class="sourceLineNo">392</span><a id="line.392">    @Override</a>
+<span class="sourceLineNo">393</span><a id="line.393">    public void checkpoint(boolean sync) {</a>
+<span class="sourceLineNo">394</span><a id="line.394">        checkpoint(sync, sync);</a>
+<span class="sourceLineNo">395</span><a id="line.395">    }</a>
+<span class="sourceLineNo">396</span><a id="line.396"></a>
+<span class="sourceLineNo">397</span><a id="line.397">    /**</a>
+<span class="sourceLineNo">398</span><a id="line.398">     * This does the actual checkpoint.</a>
+<span class="sourceLineNo">399</span><a id="line.399">     *</a>
+<span class="sourceLineNo">400</span><a id="line.400">     * @return</a>
+<span class="sourceLineNo">401</span><a id="line.401">     */</a>
+<span class="sourceLineNo">402</span><a id="line.402">    public boolean doCheckpoint() {</a>
+<span class="sourceLineNo">403</span><a id="line.403">        CountDownLatch latch = null;</a>
+<span class="sourceLineNo">404</span><a id="line.404">        boolean fullCheckpoint;</a>
+<span class="sourceLineNo">405</span><a id="line.405">        synchronized (this) {</a>
+<span class="sourceLineNo">406</span><a id="line.406">            latch = nextCheckpointCountDownLatch;</a>
+<span class="sourceLineNo">407</span><a id="line.407">            nextCheckpointCountDownLatch = new CountDownLatch(1);</a>
+<span class="sourceLineNo">408</span><a id="line.408">            fullCheckpoint = this.fullCheckPoint;</a>
+<span class="sourceLineNo">409</span><a id="line.409">            this.fullCheckPoint = false;</a>
+<span class="sourceLineNo">410</span><a id="line.410">        }</a>
+<span class="sourceLineNo">411</span><a id="line.411">        try {</a>
+<span class="sourceLineNo">412</span><a id="line.412"></a>
+<span class="sourceLineNo">413</span><a id="line.413">            LOG.debug("Checkpoint started.");</a>
+<span class="sourceLineNo">414</span><a id="line.414">            RecordLocation newMark = null;</a>
+<span class="sourceLineNo">415</span><a id="line.415"></a>
+<span class="sourceLineNo">416</span><a id="line.416">            ArrayList&lt;FutureTask&lt;RecordLocation&gt;&gt; futureTasks = new ArrayList&lt;FutureTask&lt;RecordLocation&gt;&gt;(queues.size() + topics.size());</a>
+<span class="sourceLineNo">417</span><a id="line.417"></a>
+<span class="sourceLineNo">418</span><a id="line.418">            //</a>
+<span class="sourceLineNo">419</span><a id="line.419">            // We do many partial checkpoints (fullCheckpoint==false) to move</a>
+<span class="sourceLineNo">420</span><a id="line.420">            // topic messages</a>
+<span class="sourceLineNo">421</span><a id="line.421">            // to long term store as soon as possible.</a>
+<span class="sourceLineNo">422</span><a id="line.422">            //</a>
+<span class="sourceLineNo">423</span><a id="line.423">            // We want to avoid doing that for queue messages since removes the</a>
+<span class="sourceLineNo">424</span><a id="line.424">            // come in the same</a>
+<span class="sourceLineNo">425</span><a id="line.425">            // checkpoint cycle will nullify the previous message add.</a>
+<span class="sourceLineNo">426</span><a id="line.426">            // Therefore, we only</a>
+<span class="sourceLineNo">427</span><a id="line.427">            // checkpoint queues on the fullCheckpoint cycles.</a>
+<span class="sourceLineNo">428</span><a id="line.428">            //</a>
+<span class="sourceLineNo">429</span><a id="line.429">            if (fullCheckpoint) {</a>
+<span class="sourceLineNo">430</span><a id="line.430">                Iterator&lt;JournalMessageStore&gt; iterator = queues.values().iterator();</a>
+<span class="sourceLineNo">431</span><a id="line.431">                while (iterator.hasNext()) {</a>
+<span class="sourceLineNo">432</span><a id="line.432">                    try {</a>
+<span class="sourceLineNo">433</span><a id="line.433">                        final JournalMessageStore ms = iterator.next();</a>
+<span class="sourceLineNo">434</span><a id="line.434">                        FutureTask&lt;RecordLocation&gt; task = new FutureTask&lt;RecordLocation&gt;(new Callable&lt;RecordLocation&gt;() {</a>
+<span class="sourceLineNo">435</span><a id="line.435">                            @Override</a>
+<span class="sourceLineNo">436</span><a id="line.436">                            public RecordLocation call() throws Exception {</a>
+<span class="sourceLineNo">437</span><a id="line.437">                                return ms.checkpoint();</a>
+<span class="sourceLineNo">438</span><a id="line.438">                            }</a>
+<span class="sourceLineNo">439</span><a id="line.439">                        });</a>
+<span class="sourceLineNo">440</span><a id="line.440">                        futureTasks.add(task);</a>
+<span class="sourceLineNo">441</span><a id="line.441">                        checkpointExecutor.execute(task);</a>
+<span class="sourceLineNo">442</span><a id="line.442">                    } catch (Exception e) {</a>
+<span class="sourceLineNo">443</span><a id="line.443">                        LOG.error("Failed to checkpoint a message store: " + e, e);</a>
+<span class="sourceLineNo">444</span><a id="line.444">                    }</a>
+<span class="sourceLineNo">445</span><a id="line.445">                }</a>
+<span class="sourceLineNo">446</span><a id="line.446">            }</a>
+<span class="sourceLineNo">447</span><a id="line.447"></a>
+<span class="sourceLineNo">448</span><a id="line.448">            Iterator&lt;JournalTopicMessageStore&gt; iterator = topics.values().iterator();</a>
+<span class="sourceLineNo">449</span><a id="line.449">            while (iterator.hasNext()) {</a>
+<span class="sourceLineNo">450</span><a id="line.450">                try {</a>
+<span class="sourceLineNo">451</span><a id="line.451">                    final JournalTopicMessageStore ms = iterator.next();</a>
+<span class="sourceLineNo">452</span><a id="line.452">                    FutureTask&lt;RecordLocation&gt; task = new FutureTask&lt;RecordLocation&gt;(new Callable&lt;RecordLocation&gt;() {</a>
+<span class="sourceLineNo">453</span><a id="line.453">                        @Override</a>
+<span class="sourceLineNo">454</span><a id="line.454">                        public RecordLocation call() throws Exception {</a>
+<span class="sourceLineNo">455</span><a id="line.455">                            return ms.checkpoint();</a>
+<span class="sourceLineNo">456</span><a id="line.456">                        }</a>
+<span class="sourceLineNo">457</span><a id="line.457">                    });</a>
+<span class="sourceLineNo">458</span><a id="line.458">                    futureTasks.add(task);</a>
+<span class="sourceLineNo">459</span><a id="line.459">                    checkpointExecutor.execute(task);</a>
+<span class="sourceLineNo">460</span><a id="line.460">                } catch (Exception e) {</a>
+<span class="sourceLineNo">461</span><a id="line.461">                    LOG.error("Failed to checkpoint a message store: " + e, e);</a>
+<span class="sourceLineNo">462</span><a id="line.462">                }</a>
+<span class="sourceLineNo">463</span><a id="line.463">            }</a>
+<span class="sourceLineNo">464</span><a id="line.464"></a>
+<span class="sourceLineNo">465</span><a id="line.465">            try {</a>
+<span class="sourceLineNo">466</span><a id="line.466">                for (Iterator&lt;FutureTask&lt;RecordLocation&gt;&gt; iter = futureTasks.iterator(); iter.hasNext();) {</a>
+<span class="sourceLineNo">467</span><a id="line.467">                    FutureTask&lt;RecordLocation&gt; ft = iter.next();</a>
+<span class="sourceLineNo">468</span><a id="line.468">                    RecordLocation mark = ft.get();</a>
+<span class="sourceLineNo">469</span><a id="line.469">                    // We only set a newMark on full checkpoints.</a>
+<span class="sourceLineNo">470</span><a id="line.470">                    if (fullCheckpoint) {</a>
+<span class="sourceLineNo">471</span><a id="line.471">                        if (mark != null &amp;&amp; (newMark == null || newMark.compareTo(mark) &lt; 0)) {</a>
+<span class="sourceLineNo">472</span><a id="line.472">                            newMark = mark;</a>
+<span class="sourceLineNo">473</span><a id="line.473">                        }</a>
+<span class="sourceLineNo">474</span><a id="line.474">                    }</a>
+<span class="sourceLineNo">475</span><a id="line.475">                }</a>
+<span class="sourceLineNo">476</span><a id="line.476">            } catch (Throwable e) {</a>
+<span class="sourceLineNo">477</span><a id="line.477">                LOG.error("Failed to checkpoint a message store: " + e, e);</a>
+<span class="sourceLineNo">478</span><a id="line.478">            }</a>
+<span class="sourceLineNo">479</span><a id="line.479"></a>
+<span class="sourceLineNo">480</span><a id="line.480">            if (fullCheckpoint) {</a>
+<span class="sourceLineNo">481</span><a id="line.481">                try {</a>
+<span class="sourceLineNo">482</span><a id="line.482">                    if (newMark != null) {</a>
+<span class="sourceLineNo">483</span><a id="line.483">                        LOG.debug("Marking journal at: " + newMark);</a>
+<span class="sourceLineNo">484</span><a id="line.484">                        journal.setMark(newMark, true);</a>
+<span class="sourceLineNo">485</span><a id="line.485">                    }</a>
+<span class="sourceLineNo">486</span><a id="line.486">                } catch (Exception e) {</a>
+<span class="sourceLineNo">487</span><a id="line.487">                    LOG.error("Failed to mark the Journal: " + e, e);</a>
+<span class="sourceLineNo">488</span><a id="line.488">                }</a>
+<span class="sourceLineNo">489</span><a id="line.489"></a>
+<span class="sourceLineNo">490</span><a id="line.490">                if (longTermPersistence instanceof JDBCPersistenceAdapter) {</a>
+<span class="sourceLineNo">491</span><a id="line.491">                    // We may be check pointing more often than the</a>
+<span class="sourceLineNo">492</span><a id="line.492">                    // checkpointInterval if under high use</a>
+<span class="sourceLineNo">493</span><a id="line.493">                    // But we don't want to clean up the db that often.</a>
+<span class="sourceLineNo">494</span><a id="line.494">                    long now = System.currentTimeMillis();</a>
+<span class="sourceLineNo">495</span><a id="line.495">                    if (now &gt; lastCleanup + checkpointInterval) {</a>
+<span class="sourceLineNo">496</span><a id="line.496">                        lastCleanup = now;</a>
+<span class="sourceLineNo">497</span><a id="line.497">                        ((JDBCPersistenceAdapter)longTermPersistence).cleanup();</a>
+<span class="sourceLineNo">498</span><a id="line.498">                    }</a>
+<span class="sourceLineNo">499</span><a id="line.499">                }</a>
+<span class="sourceLineNo">500</span><a id="line.500">            }</a>
+<span class="sourceLineNo">501</span><a id="line.501"></a>
+<span class="sourceLineNo">502</span><a id="line.502">            LOG.debug("Checkpoint done.");</a>
+<span class="sourceLineNo">503</span><a id="line.503">        } finally {</a>
+<span class="sourceLineNo">504</span><a id="line.504">            latch.countDown();</a>
+<span class="sourceLineNo">505</span><a id="line.505">        }</a>
+<span class="sourceLineNo">506</span><a id="line.506">        synchronized (this) {</a>
+<span class="sourceLineNo">507</span><a id="line.507">            return this.fullCheckPoint;</a>
+<span class="sourceLineNo">508</span><a id="line.508">        }</a>
+<span class="sourceLineNo">509</span><a id="line.509"></a>
+<span class="sourceLineNo">510</span><a id="line.510">    }</a>
+<span class="sourceLineNo">511</span><a id="line.511"></a>
+<span class="sourceLineNo">512</span><a id="line.512">    /**</a>
+<span class="sourceLineNo">513</span><a id="line.513">     * @param location</a>
+<span class="sourceLineNo">514</span><a id="line.514">     * @return</a>
+<span class="sourceLineNo">515</span><a id="line.515">     * @throws IOException</a>
+<span class="sourceLineNo">516</span><a id="line.516">     */</a>
+<span class="sourceLineNo">517</span><a id="line.517">    public DataStructure readCommand(RecordLocation location) throws IOException {</a>
+<span class="sourceLineNo">518</span><a id="line.518">        try {</a>
+<span class="sourceLineNo">519</span><a id="line.519">            Packet packet = journal.read(location);</a>
+<span class="sourceLineNo">520</span><a id="line.520">            return (DataStructure)wireFormat.unmarshal(toByteSequence(packet));</a>
+<span class="sourceLineNo">521</span><a id="line.521">        } catch (InvalidRecordLocationException e) {</a>
+<span class="sourceLineNo">522</span><a id="line.522">            throw createReadException(location, e);</a>
+<span class="sourceLineNo">523</span><a id="line.523">        } catch (IOException e) {</a>
+<span class="sourceLineNo">524</span><a id="line.524">            throw createReadException(location, e);</a>
+<span class="sourceLineNo">525</span><a id="line.525">        }</a>
+<span class="sourceLineNo">526</span><a id="line.526">    }</a>
+<span class="sourceLineNo">527</span><a id="line.527"></a>
+<span class="sourceLineNo">528</span><a id="line.528">    /**</a>
+<span class="sourceLineNo">529</span><a id="line.529">     * Move all the messages that were in the journal into long term storage. We</a>
+<span class="sourceLineNo">530</span><a id="line.530">     * just replay and do a checkpoint.</a>
+<span class="sourceLineNo">531</span><a id="line.531">     *</a>
+<span class="sourceLineNo">532</span><a id="line.532">     * @throws IOException</a>
+<span class="sourceLineNo">533</span><a id="line.533">     * @throws IOException</a>
+<span class="sourceLineNo">534</span><a id="line.534">     * @throws InvalidRecordLocationException</a>
+<span class="sourceLineNo">535</span><a id="line.535">     * @throws IllegalStateException</a>
+<span class="sourceLineNo">536</span><a id="line.536">     */</a>
+<span class="sourceLineNo">537</span><a id="line.537">    private void recover() throws IllegalStateException, InvalidRecordLocationException, IOException, IOException {</a>
+<span class="sourceLineNo">538</span><a id="line.538"></a>
+<span class="sourceLineNo">539</span><a id="line.539">        RecordLocation pos = null;</a>
+<span class="sourceLineNo">540</span><a id="line.540">        int transactionCounter = 0;</a>
+<span class="sourceLineNo">541</span><a id="line.541"></a>
+<span class="sourceLineNo">542</span><a id="line.542">        LOG.info("Journal Recovery Started from: " + journal);</a>
+<span class="sourceLineNo">543</span><a id="line.543">        ConnectionContext context = new ConnectionContext(new NonCachedMessageEvaluationContext());</a>
+<span class="sourceLineNo">544</span><a id="line.544"></a>
+<span class="sourceLineNo">545</span><a id="line.545">        // While we have records in the journal.</a>
+<span class="sourceLineNo">546</span><a id="line.546">        while ((pos = journal.getNextRecordLocation(pos)) != null) {</a>
+<span class="sourceLineNo">547</span><a id="line.547">            Packet data = journal.read(pos);</a>
+<span class="sourceLineNo">548</span><a id="line.548">            DataStructure c = (DataStructure)wireFormat.unmarshal(toByteSequence(data));</a>
+<span class="sourceLineNo">549</span><a id="line.549"></a>
+<span class="sourceLineNo">550</span><a id="line.550">            if (c instanceof Message) {</a>
+<span class="sourceLineNo">551</span><a id="line.551">                Message message = (Message)c;</a>
+<span class="sourceLineNo">552</span><a id="line.552">                JournalMessageStore store = (JournalMessageStore)createMessageStore(message.getDestination());</a>
+<span class="sourceLineNo">553</span><a id="line.553">                if (message.isInTransaction()) {</a>
+<span class="sourceLineNo">554</span><a id="line.554">                    transactionStore.addMessage(store, message, pos);</a>
+<span class="sourceLineNo">555</span><a id="line.555">                } else {</a>
+<span class="sourceLineNo">556</span><a id="line.556">                    store.replayAddMessage(context, message);</a>
+<span class="sourceLineNo">557</span><a id="line.557">                    transactionCounter++;</a>
+<span class="sourceLineNo">558</span><a id="line.558">                }</a>
+<span class="sourceLineNo">559</span><a id="line.559">            } else {</a>
+<span class="sourceLineNo">560</span><a id="line.560">                switch (c.getDataStructureType()) {</a>
+<span class="sourceLineNo">561</span><a id="line.561">                case JournalQueueAck.DATA_STRUCTURE_TYPE: {</a>
+<span class="sourceLineNo">562</span><a id="line.562">                    JournalQueueAck command = (JournalQueueAck)c;</a>
+<span class="sourceLineNo">563</span><a id="line.563">                    JournalMessageStore store = (JournalMessageStore)createMessageStore(command.getDestination());</a>
+<span class="sourceLineNo">564</span><a id="line.564">                    if (command.getMessageAck().isInTransaction()) {</a>
+<span class="sourceLineNo">565</span><a id="line.565">                        transactionStore.removeMessage(store, command.getMessageAck(), pos);</a>
+<span class="sourceLineNo">566</span><a id="line.566">                    } else {</a>
+<span class="sourceLineNo">567</span><a id="line.567">                        store.replayRemoveMessage(context, command.getMessageAck());</a>
+<span class="sourceLineNo">568</span><a id="line.568">                        transactionCounter++;</a>
+<span class="sourceLineNo">569</span><a id="line.569">                    }</a>
+<span class="sourceLineNo">570</span><a id="line.570">                }</a>
+<span class="sourceLineNo">571</span><a id="line.571">                    break;</a>
+<span class="sourceLineNo">572</span><a id="line.572">                case JournalTopicAck.DATA_STRUCTURE_TYPE: {</a>
+<span class="sourceLineNo">573</span><a id="line.573">                    JournalTopicAck command = (JournalTopicAck)c;</a>
+<span class="sourceLineNo">574</span><a id="line.574">                    JournalTopicMessageStore store = (JournalTopicMessageStore)createMessageStore(command.getDestination());</a>
+<span class="sourceLineNo">575</span><a id="line.575">                    if (command.getTransactionId() != null) {</a>
+<span class="sourceLineNo">576</span><a id="line.576">                        transactionStore.acknowledge(store, command, pos);</a>
+<span class="sourceLineNo">577</span><a id="line.577">                    } else {</a>
+<span class="sourceLineNo">578</span><a id="line.578">                        store.replayAcknowledge(context, command.getClientId(), command.getSubscritionName(), command.getMessageId());</a>
+<span class="sourceLineNo">579</span><a id="line.579">                        transactionCounter++;</a>
+<span class="sourceLineNo">580</span><a id="line.580">                    }</a>
+<span class="sourceLineNo">581</span><a id="line.581">                }</a>
+<span class="sourceLineNo">582</span><a id="line.582">                    break;</a>
+<span class="sourceLineNo">583</span><a id="line.583">                case JournalTransaction.DATA_STRUCTURE_TYPE: {</a>
+<span class="sourceLineNo">584</span><a id="line.584">                    JournalTransaction command = (JournalTransaction)c;</a>
+<span class="sourceLineNo">585</span><a id="line.585">                    try {</a>
+<span class="sourceLineNo">586</span><a id="line.586">                        // Try to replay the packet.</a>
+<span class="sourceLineNo">587</span><a id="line.587">                        switch (command.getType()) {</a>
+<span class="sourceLineNo">588</span><a id="line.588">                        case JournalTransaction.XA_PREPARE:</a>
+<span class="sourceLineNo">589</span><a id="line.589">                            transactionStore.replayPrepare(command.getTransactionId());</a>
+<span class="sourceLineNo">590</span><a id="line.590">                            break;</a>
+<span class="sourceLineNo">591</span><a id="line.591">                        case JournalTransaction.XA_COMMIT:</a>
+<span class="sourceLineNo">592</span><a id="line.592">                        case JournalTransaction.LOCAL_COMMIT:</a>
+<span class="sourceLineNo">593</span><a id="line.593">                            Tx tx = transactionStore.replayCommit(command.getTransactionId(), command.getWasPrepared());</a>
+<span class="sourceLineNo">594</span><a id="line.594">                            if (tx == null) {</a>
+<span class="sourceLineNo">595</span><a id="line.595">                                break; // We may be trying to replay a commit</a>
+<span class="sourceLineNo">596</span><a id="line.596">                            }</a>
+<span class="sourceLineNo">597</span><a id="line.597">                            // that</a>
+<span class="sourceLineNo">598</span><a id="line.598">                            // was already committed.</a>
+<span class="sourceLineNo">599</span><a id="line.599"></a>
+<span class="sourceLineNo">600</span><a id="line.600">                            // Replay the committed operations.</a>
+<span class="sourceLineNo">601</span><a id="line.601">                            tx.getOperations();</a>
+<span class="sourceLineNo">602</span><a id="line.602">                            for (Iterator iter = tx.getOperations().iterator(); iter.hasNext();) {</a>
+<span class="sourceLineNo">603</span><a id="line.603">                                TxOperation op = (TxOperation)iter.next();</a>
+<span class="sourceLineNo">604</span><a id="line.604">                                if (op.operationType == TxOperation.ADD_OPERATION_TYPE) {</a>
+<span class="sourceLineNo">605</span><a id="line.605">                                    op.store.replayAddMessage(context, (Message)op.data);</a>
+<span class="sourceLineNo">606</span><a id="line.606">                                }</a>
+<span class="sourceLineNo">607</span><a id="line.607">                                if (op.operationType == TxOperation.REMOVE_OPERATION_TYPE) {</a>
+<span class="sourceLineNo">608</span><a id="line.608">                                    op.store.replayRemoveMessage(context, (MessageAck)op.data);</a>
+<span class="sourceLineNo">609</span><a id="line.609">                                }</a>
+<span class="sourceLineNo">610</span><a id="line.610">                                if (op.operationType == TxOperation.ACK_OPERATION_TYPE) {</a>
+<span class="sourceLineNo">611</span><a id="line.611">                                    JournalTopicAck ack = (JournalTopicAck)op.data;</a>
+<span class="sourceLineNo">612</span><a id="line.612">                                    ((JournalTopicMessageStore)op.store).replayAcknowledge(context, ack.getClientId(), ack.getSubscritionName(), ack.getMessageId());</a>
+<span class="sourceLineNo">613</span><a id="line.613">                                }</a>
+<span class="sourceLineNo">614</span><a id="line.614">                            }</a>
+<span class="sourceLineNo">615</span><a id="line.615">                            transactionCounter++;</a>
+<span class="sourceLineNo">616</span><a id="line.616">                            break;</a>
+<span class="sourceLineNo">617</span><a id="line.617">                        case JournalTransaction.LOCAL_ROLLBACK:</a>
+<span class="sourceLineNo">618</span><a id="line.618">                        case JournalTransaction.XA_ROLLBACK:</a>
+<span class="sourceLineNo">619</span><a id="line.619">                            transactionStore.replayRollback(command.getTransactionId());</a>
+<span class="sourceLineNo">620</span><a id="line.620">                            break;</a>
+<span class="sourceLineNo">621</span><a id="line.621">                        default:</a>
+<span class="sourceLineNo">622</span><a id="line.622">                            throw new IOException("Invalid journal command type: " + command.getType());</a>
+<span class="sourceLineNo">623</span><a id="line.623">                        }</a>
+<span class="sourceLineNo">624</span><a id="line.624">                    } catch (IOException e) {</a>
+<span class="sourceLineNo">625</span><a id="line.625">                        LOG.error("Recovery Failure: Could not replay: " + c + ", reason: " + e, e);</a>
+<span class="sourceLineNo">626</span><a id="line.626">                    }</a>
+<span class="sourceLineNo">627</span><a id="line.627">                }</a>
+<span class="sourceLineNo">628</span><a id="line.628">                    break;</a>
+<span class="sourceLineNo">629</span><a id="line.629">                case JournalTrace.DATA_STRUCTURE_TYPE:</a>
+<span class="sourceLineNo">630</span><a id="line.630">                    JournalTrace trace = (JournalTrace)c;</a>
+<span class="sourceLineNo">631</span><a id="line.631">                    LOG.debug("TRACE Entry: " + trace.getMessage());</a>
+<span class="sourceLineNo">632</span><a id="line.632">                    break;</a>
+<span class="sourceLineNo">633</span><a id="line.633">                default:</a>
+<span class="sourceLineNo">634</span><a id="line.634">                    LOG.error("Unknown type of record in transaction log which will be discarded: " + c);</a>
+<span class="sourceLineNo">635</span><a id="line.635">                }</a>
+<span class="sourceLineNo">636</span><a id="line.636">            }</a>
+<span class="sourceLineNo">637</span><a id="line.637">        }</a>
+<span class="sourceLineNo">638</span><a id="line.638"></a>
+<span class="sourceLineNo">639</span><a id="line.639">        RecordLocation location = writeTraceMessage("RECOVERED", true);</a>
+<span class="sourceLineNo">640</span><a id="line.640">        journal.setMark(location, true);</a>
+<span class="sourceLineNo">641</span><a id="line.641"></a>
+<span class="sourceLineNo">642</span><a id="line.642">        LOG.info("Journal Recovered: " + transactionCounter + " message(s) in transactions recovered.");</a>
+<span class="sourceLineNo">643</span><a id="line.643">    }</a>
+<span class="sourceLineNo">644</span><a id="line.644"></a>
+<span class="sourceLineNo">645</span><a id="line.645">    private IOException createReadException(RecordLocation location, Exception e) {</a>
+<span class="sourceLineNo">646</span><a id="line.646">        return IOExceptionSupport.create("Failed to read to journal for: " + location + ". Reason: " + e, e);</a>
+<span class="sourceLineNo">647</span><a id="line.647">    }</a>
+<span class="sourceLineNo">648</span><a id="line.648"></a>
+<span class="sourceLineNo">649</span><a id="line.649">    protected IOException createWriteException(DataStructure packet, Exception e) {</a>
+<span class="sourceLineNo">650</span><a id="line.650">        return IOExceptionSupport.create("Failed to write to journal for: " + packet + ". Reason: " + e, e);</a>
+<span class="sourceLineNo">651</span><a id="line.651">    }</a>
+<span class="sourceLineNo">652</span><a id="line.652"></a>
+<span class="sourceLineNo">653</span><a id="line.653">    protected IOException createWriteException(String command, Exception e) {</a>
+<span class="sourceLineNo">654</span><a id="line.654">        return IOExceptionSupport.create("Failed to write to journal for command: " + command + ". Reason: " + e, e);</a>
+<span class="sourceLineNo">655</span><a id="line.655">    }</a>
+<span class="sourceLineNo">656</span><a id="line.656"></a>
+<span class="sourceLineNo">657</span><a id="line.657">    protected IOException createRecoveryFailedException(Exception e) {</a>
+<span class="sourceLineNo">658</span><a id="line.658">        return IOExceptionSupport.create("Failed to recover from journal. Reason: " + e, e);</a>
+<span class="sourceLineNo">659</span><a id="line.659">    }</a>
+<span class="sourceLineNo">660</span><a id="line.660"></a>
+<span class="sourceLineNo">661</span><a id="line.661">    /**</a>
+<span class="sourceLineNo">662</span><a id="line.662">     * @param command</a>
+<span class="sourceLineNo">663</span><a id="line.663">     * @param sync</a>
+<span class="sourceLineNo">664</span><a id="line.664">     * @return</a>
+<span class="sourceLineNo">665</span><a id="line.665">     * @throws IOException</a>
+<span class="sourceLineNo">666</span><a id="line.666">     */</a>
+<span class="sourceLineNo">667</span><a id="line.667">    public RecordLocation writeCommand(DataStructure command, boolean sync) throws IOException {</a>
+<span class="sourceLineNo">668</span><a id="line.668">        if (started.get()) {</a>
+<span class="sourceLineNo">669</span><a id="line.669">            try {</a>
+<span class="sourceLineNo">670</span><a id="line.670">                return journal.write(toPacket(wireFormat.marshal(command)), sync);</a>
+<span class="sourceLineNo">671</span><a id="line.671">            } catch (IOException ioe) {</a>
+<span class="sourceLineNo">672</span><a id="line.672">                LOG.error("Cannot write to the journal", ioe);</a>
+<span class="sourceLineNo">673</span><a id="line.673">                brokerService.handleIOException(ioe);</a>
+<span class="sourceLineNo">674</span><a id="line.674">                throw ioe;</a>
+<span class="sourceLineNo">675</span><a id="line.675">            }</a>
+<span class="sourceLineNo">676</span><a id="line.676">        }</a>
+<span class="sourceLineNo">677</span><a id="line.677">        throw new IOException("closed");</a>
+<span class="sourceLineNo">678</span><a id="line.678">    }</a>
+<span class="sourceLineNo">679</span><a id="line.679"></a>
+<span class="sourceLineNo">680</span><a id="line.680">    private RecordLocation writeTraceMessage(String message, boolean sync) throws IOException {</a>
+<span class="sourceLineNo">681</span><a id="line.681">        JournalTrace trace = new JournalTrace();</a>
+<span class="sourceLineNo">682</span><a id="line.682">        trace.setMessage(message);</a>
+<span class="sourceLineNo">683</span><a id="line.683">        return writeCommand(trace, sync);</a>
+<span class="sourceLineNo">684</span><a id="line.684">    }</a>
+<span class="sourceLineNo">685</span><a id="line.685"></a>
+<span class="sourceLineNo">686</span><a id="line.686">    @Override</a>
+<span class="sourceLineNo">687</span><a id="line.687">    public void onUsageChanged(Usage usage, int oldPercentUsage, int newPercentUsage) {</a>
+<span class="sourceLineNo">688</span><a id="line.688">        newPercentUsage = (newPercentUsage / 10) * 10;</a>
+<span class="sourceLineNo">689</span><a id="line.689">        oldPercentUsage = (oldPercentUsage / 10) * 10;</a>
+<span class="sourceLineNo">690</span><a id="line.690">        if (newPercentUsage &gt;= 70 &amp;&amp; oldPercentUsage &lt; newPercentUsage) {</a>
+<span class="sourceLineNo">691</span><a id="line.691">            boolean sync = newPercentUsage &gt;= 90;</a>
+<span class="sourceLineNo">692</span><a id="line.692">            checkpoint(sync, true);</a>
+<span class="sourceLineNo">693</span><a id="line.693">        }</a>
+<span class="sourceLineNo">694</span><a id="line.694">    }</a>
+<span class="sourceLineNo">695</span><a id="line.695"></a>
+<span class="sourceLineNo">696</span><a id="line.696">    public JournalTransactionStore getTransactionStore() {</a>
+<span class="sourceLineNo">697</span><a id="line.697">        return transactionStore;</a>
+<span class="sourceLineNo">698</span><a id="line.698">    }</a>
+<span class="sourceLineNo">699</span><a id="line.699"></a>
+<span class="sourceLineNo">700</span><a id="line.700">    @Override</a>
+<span class="sourceLineNo">701</span><a id="line.701">    public void deleteAllMessages() throws IOException {</a>
+<span class="sourceLineNo">702</span><a id="line.702">        try {</a>
+<span class="sourceLineNo">703</span><a id="line.703">            JournalTrace trace = new JournalTrace();</a>
+<span class="sourceLineNo">704</span><a id="line.704">            trace.setMessage("DELETED");</a>
+<span class="sourceLineNo">705</span><a id="line.705">            RecordLocation location = journal.write(toPacket(wireFormat.marshal(trace)), false);</a>
+<span class="sourceLineNo">706</span><a id="line.706">            journal.setMark(location, true);</a>
+<span class="sourceLineNo">707</span><a id="line.707">            LOG.info("Journal deleted: ");</a>
+<span class="sourceLineNo">708</span><a id="line.708">        } catch (IOException e) {</a>
+<span class="sourceLineNo">709</span><a id="line.709">            throw e;</a>
+<span class="sourceLineNo">710</span><a id="line.710">        } catch (Throwable e) {</a>
+<span class="sourceLineNo">711</span><a id="line.711">            throw IOExceptionSupport.create(e);</a>
+<span class="sourceLineNo">712</span><a id="line.712">        }</a>
+<span class="sourceLineNo">713</span><a id="line.713">        longTermPersistence.deleteAllMessages();</a>
+<span class="sourceLineNo">714</span><a id="line.714">    }</a>
+<span class="sourceLineNo">715</span><a id="line.715"></a>
+<span class="sourceLineNo">716</span><a id="line.716">    public SystemUsage getUsageManager() {</a>
+<span class="sourceLineNo">717</span><a id="line.717">        return usageManager;</a>
+<span class="sourceLineNo">718</span><a id="line.718">    }</a>
+<span class="sourceLineNo">719</span><a id="line.719"></a>
+<span class="sourceLineNo">720</span><a id="line.720">    public int getMaxCheckpointMessageAddSize() {</a>
+<span class="sourceLineNo">721</span><a id="line.721">        return maxCheckpointMessageAddSize;</a>
+<span class="sourceLineNo">722</span><a id="line.722">    }</a>
+<span class="sourceLineNo">723</span><a id="line.723"></a>
+<span class="sourceLineNo">724</span><a id="line.724">    public void setMaxCheckpointMessageAddSize(int maxCheckpointMessageAddSize) {</a>
+<span class="sourceLineNo">725</span><a id="line.725">        this.maxCheckpointMessageAddSize = maxCheckpointMessageAddSize;</a>
+<span class="sourceLineNo">726</span><a id="line.726">    }</a>
+<span class="sourceLineNo">727</span><a id="line.727"></a>
+<span class="sourceLineNo">728</span><a id="line.728">    public int getMaxCheckpointWorkers() {</a>
+<span class="sourceLineNo">729</span><a id="line.729">        return maxCheckpointWorkers;</a>
+<span class="sourceLineNo">730</span><a id="line.730">    }</a>
+<span class="sourceLineNo">731</span><a id="line.731"></a>
+<span class="sourceLineNo">732</span><a id="line.732">    public void setMaxCheckpointWorkers(int maxCheckpointWorkers) {</a>
+<span class="sourceLineNo">733</span><a id="line.733">        this.maxCheckpointWorkers = maxCheckpointWorkers;</a>
+<span class="sourceLineNo">734</span><a id="line.734">    }</a>
+<span class="sourceLineNo">735</span><a id="line.735"></a>
+<span class="sourceLineNo">736</span><a id="line.736">    public long getCheckpointInterval() {</a>
+<span class="sourceLineNo">737</span><a id="line.737">        return checkpointInterval;</a>
+<span class="sourceLineNo">738</span><a id="line.738">    }</a>
+<span class="sourceLineNo">739</span><a id="line.739"></a>
+<span class="sourceLineNo">740</span><a id="line.740">    public void setCheckpointInterval(long checkpointInterval) {</a>
+<span class="sourceLineNo">741</span><a id="line.741">        this.checkpointInterval = checkpointInterval;</a>
+<span class="sourceLineNo">742</span><a id="line.742">    }</a>
+<span class="sourceLineNo">743</span><a id="line.743"></a>
+<span class="sourceLineNo">744</span><a id="line.744">    public boolean isUseExternalMessageReferences() {</a>
+<span class="sourceLineNo">745</span><a id="line.745">        return false;</a>
+<span class="sourceLineNo">746</span><a id="line.746">    }</a>
+<span class="sourceLineNo">747</span><a id="line.747"></a>
+<span class="sourceLineNo">748</span><a id="line.748">    public void setUseExternalMessageReferences(boolean enable) {</a>
+<span class="sourceLineNo">749</span><a id="line.749">        if (enable) {</a>
+<span class="sourceLineNo">750</span><a id="line.750">            throw new IllegalArgumentException("The journal does not support message references.");</a>
+<span class="sourceLineNo">751</span><a id="line.751">        }</a>
+<span class="sourceLineNo">752</span><a id="line.752">    }</a>
+<span class="sourceLineNo">753</span><a id="line.753"></a>
+<span class="sourceLineNo">754</span><a id="line.754">    public Packet toPacket(ByteSequence sequence) {</a>
+<span class="sourceLineNo">755</span><a id="line.755">        return new ByteArrayPacket(new org.apache.activeio.packet.ByteSequence(sequence.data, sequence.offset, sequence.length));</a>
+<span class="sourceLineNo">756</span><a id="line.756">    }</a>
+<span class="sourceLineNo">757</span><a id="line.757"></a>
+<span class="sourceLineNo">758</span><a id="line.758">    public ByteSequence toByteSequence(Packet packet) {</a>
+<span class="sourceLineNo">759</span><a id="line.759">        org.apache.activeio.packet.ByteSequence sequence = packet.asByteSequence();</a>
+<span class="sourceLineNo">760</span><a id="line.760">        return new ByteSequence(sequence.getData(), sequence.getOffset(), sequence.getLength());</a>
+<span class="sourceLineNo">761</span><a id="line.761">    }</a>
+<span class="sourceLineNo">762</span><a id="line.762"></a>
+<span class="sourceLineNo">763</span><a id="line.763">    @Override</a>
+<span class="sourceLineNo">764</span><a id="line.764">    public void setBrokerName(String brokerName) {</a>
+<span class="sourceLineNo">765</span><a id="line.765">        longTermPersistence.setBrokerName(brokerName);</a>
+<span class="sourceLineNo">766</span><a id="line.766">    }</a>
+<span class="sourceLineNo">767</span><a id="line.767"></a>
+<span class="sourceLineNo">768</span><a id="line.768">    @Override</a>
+<span class="sourceLineNo">769</span><a id="line.769">    public String toString() {</a>
+<span class="sourceLineNo">770</span><a id="line.770">        return "JournalPersistenceAdapter(" + longTermPersistence + ")";</a>
+<span class="sourceLineNo">771</span><a id="line.771">    }</a>
+<span class="sourceLineNo">772</span><a id="line.772"></a>
+<span class="sourceLineNo">773</span><a id="line.773">    @Override</a>
+<span class="sourceLineNo">774</span><a id="line.774">    public void setDirectory(File dir) {</a>
+<span class="sourceLineNo">775</span><a id="line.775">        this.directory=dir;</a>
+<span class="sourceLineNo">776</span><a id="line.776">    }</a>
+<span class="sourceLineNo">777</span><a id="line.777"></a>
+<span class="sourceLineNo">778</span><a id="line.778">    @Override</a>
+<span class="sourceLineNo">779</span><a id="line.779">    public File getDirectory(){</a>
+<span class="sourceLineNo">780</span><a id="line.780">        return directory;</a>
+<span class="sourceLineNo">781</span><a id="line.781">    }</a>
+<span class="sourceLineNo">782</span><a id="line.782"></a>
+<span class="sourceLineNo">783</span><a id="line.783">    @Override</a>
+<span class="sourceLineNo">784</span><a id="line.784">    public long size(){</a>
+<span class="sourceLineNo">785</span><a id="line.785">        return 0;</a>
+<span class="sourceLineNo">786</span><a id="line.786">    }</a>
+<span class="sourceLineNo">787</span><a id="line.787"></a>
+<span class="sourceLineNo">788</span><a id="line.788">    @Override</a>
+<span class="sourceLineNo">789</span><a id="line.789">    public void setBrokerService(BrokerService brokerService) {</a>
+<span class="sourceLineNo">790</span><a id="line.790">        this.brokerService = brokerService;</a>
+<span class="sourceLineNo">791</span><a id="line.791">        PersistenceAdapter pa = getLongTermPersistence();</a>
+<span class="sourceLineNo">792</span><a id="line.792">        if( pa instanceof BrokerServiceAware ) {</a>
+<span class="sourceLineNo">793</span><a id="line.793">            ((BrokerServiceAware)pa).setBrokerService(brokerService);</a>
+<span class="sourceLineNo">794</span><a id="line.794">        }</a>
+<span class="sourceLineNo">795</span><a id="line.795">    }</a>
+<span class="sourceLineNo">796</span><a id="line.796"></a>
+<span class="sourceLineNo">797</span><a id="line.797">    @Override</a>
+<span class="sourceLineNo">798</span><a id="line.798">    public long getLastProducerSequenceId(ProducerId id) {</a>
+<span class="sourceLineNo">799</span><a id="line.799">        return -1;</a>
+<span class="sourceLineNo">800</span><a id="line.800">    }</a>
+<span class="sourceLineNo">801</span><a id="line.801"></a>
+<span class="sourceLineNo">802</span><a id="line.802">    @Override</a>
+<span class="sourceLineNo">803</span><a id="line.803">    public void allowIOResumption() {</a>
+<span class="sourceLineNo">804</span><a id="line.804">        longTermPersistence.allowIOResumption();</a>
+<span class="sourceLineNo">805</span><a id="line.805">    }</a>
+<span class="sourceLineNo">806</span><a id="line.806"></a>
+<span class="sourceLineNo">807</span><a id="line.807">    @Override</a>
+<span class="sourceLineNo">808</span><a id="line.808">    public JobSchedulerStore createJobSchedulerStore() throws IOException, UnsupportedOperationException {</a>
+<span class="sourceLineNo">809</span><a id="line.809">        return longTermPersistence.createJobSchedulerStore();</a>
+<span class="sourceLineNo">810</span><a id="line.810">    }</a>
+<span class="sourceLineNo">811</span><a id="line.811"></a>
+<span class="sourceLineNo">812</span><a id="line.812">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

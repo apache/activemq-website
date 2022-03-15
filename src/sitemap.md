@@ -399,6 +399,7 @@ Features
         *   [Runtime Configuration](runtime-configuration)
     *   [New Features in 5.11](new-features-in-511)
     *   [New Features in 5.13](new-features-in-513)
+    *   [New Features in 5.17](new-features-in-517)
     *   [New Features in 6.0](new-features-in-60)
 *   [Performance](performance)
     *   [ActiveMQ Performance Module Users Manual](activemq-performance-module-users-manual)

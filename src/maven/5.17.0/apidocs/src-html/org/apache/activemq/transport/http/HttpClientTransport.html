@@ -1,0 +1,497 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.transport.http;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.DataInputStream;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.io.IOException;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.io.InterruptedIOException;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.net.URI;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.security.cert.X509Certificate;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.zip.GZIPInputStream;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.util.zip.GZIPOutputStream;</a>
+<span class="sourceLineNo">026</span><a id="line.26"></a>
+<span class="sourceLineNo">027</span><a id="line.27">import org.apache.activemq.command.ShutdownInfo;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import org.apache.activemq.transport.FutureResponse;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import org.apache.activemq.transport.util.TextWireFormat;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import org.apache.activemq.util.ByteArrayOutputStream;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import org.apache.activemq.util.IOExceptionSupport;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import org.apache.activemq.util.IdGenerator;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import org.apache.activemq.util.ServiceStopper;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import org.apache.activemq.wireformat.WireFormat;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import org.apache.http.Header;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import org.apache.http.HttpHost;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import org.apache.http.HttpRequest;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import org.apache.http.HttpRequestInterceptor;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import org.apache.http.HttpResponse;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import org.apache.http.HttpStatus;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import org.apache.http.auth.AuthScope;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.apache.http.auth.UsernamePasswordCredentials;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import org.apache.http.client.CredentialsProvider;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import org.apache.http.client.HttpClient;</a>
+<span class="sourceLineNo">045</span><a id="line.45">import org.apache.http.client.HttpResponseException;</a>
+<span class="sourceLineNo">046</span><a id="line.46">import org.apache.http.client.ResponseHandler;</a>
+<span class="sourceLineNo">047</span><a id="line.47">import org.apache.http.client.config.CookieSpecs;</a>
+<span class="sourceLineNo">048</span><a id="line.48">import org.apache.http.client.config.RequestConfig;</a>
+<span class="sourceLineNo">049</span><a id="line.49">import org.apache.http.client.methods.HttpGet;</a>
+<span class="sourceLineNo">050</span><a id="line.50">import org.apache.http.client.methods.HttpHead;</a>
+<span class="sourceLineNo">051</span><a id="line.51">import org.apache.http.client.methods.HttpOptions;</a>
+<span class="sourceLineNo">052</span><a id="line.52">import org.apache.http.client.methods.HttpPost;</a>
+<span class="sourceLineNo">053</span><a id="line.53">import org.apache.http.conn.HttpClientConnectionManager;</a>
+<span class="sourceLineNo">054</span><a id="line.54">import org.apache.http.entity.ByteArrayEntity;</a>
+<span class="sourceLineNo">055</span><a id="line.55">import org.apache.http.impl.client.BasicCredentialsProvider;</a>
+<span class="sourceLineNo">056</span><a id="line.56">import org.apache.http.impl.client.BasicResponseHandler;</a>
+<span class="sourceLineNo">057</span><a id="line.57">import org.apache.http.impl.client.HttpClientBuilder;</a>
+<span class="sourceLineNo">058</span><a id="line.58">import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;</a>
+<span class="sourceLineNo">059</span><a id="line.59">import org.apache.http.message.AbstractHttpMessage;</a>
+<span class="sourceLineNo">060</span><a id="line.60">import org.apache.http.protocol.HttpContext;</a>
+<span class="sourceLineNo">061</span><a id="line.61">import org.apache.http.util.EntityUtils;</a>
+<span class="sourceLineNo">062</span><a id="line.62">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">063</span><a id="line.63">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">064</span><a id="line.64"></a>
+<span class="sourceLineNo">065</span><a id="line.65">/**</a>
+<span class="sourceLineNo">066</span><a id="line.66"> * A HTTP {@link org.apache.activemq.transport.Transport} which uses the</a>
+<span class="sourceLineNo">067</span><a id="line.67"> * &lt;a href="http://hc.apache.org/index.html"&gt;Apache HTTP Client&lt;/a&gt;</a>
+<span class="sourceLineNo">068</span><a id="line.68"> * library</a>
+<span class="sourceLineNo">069</span><a id="line.69"> */</a>
+<span class="sourceLineNo">070</span><a id="line.70">public class HttpClientTransport extends HttpTransportSupport {</a>
+<span class="sourceLineNo">071</span><a id="line.71"></a>
+<span class="sourceLineNo">072</span><a id="line.72">    public static final int MAX_CLIENT_TIMEOUT = 90000;</a>
+<span class="sourceLineNo">073</span><a id="line.73">    private static final Logger LOG = LoggerFactory.getLogger(HttpClientTransport.class);</a>
+<span class="sourceLineNo">074</span><a id="line.74">    private static final IdGenerator CLIENT_ID_GENERATOR = new IdGenerator();</a>
+<span class="sourceLineNo">075</span><a id="line.75"></a>
+<span class="sourceLineNo">076</span><a id="line.76">    private HttpClient sendHttpClient;</a>
+<span class="sourceLineNo">077</span><a id="line.77">    private HttpClient receiveHttpClient;</a>
+<span class="sourceLineNo">078</span><a id="line.78"></a>
+<span class="sourceLineNo">079</span><a id="line.79">    private final String clientID = CLIENT_ID_GENERATOR.generateId();</a>
+<span class="sourceLineNo">080</span><a id="line.80">    private boolean trace;</a>
+<span class="sourceLineNo">081</span><a id="line.81">    private HttpGet httpMethod;</a>
+<span class="sourceLineNo">082</span><a id="line.82">    private volatile int receiveCounter;</a>
+<span class="sourceLineNo">083</span><a id="line.83"></a>
+<span class="sourceLineNo">084</span><a id="line.84">    private int soTimeout = MAX_CLIENT_TIMEOUT;</a>
+<span class="sourceLineNo">085</span><a id="line.85"></a>
+<span class="sourceLineNo">086</span><a id="line.86">    private boolean useCompression = false;</a>
+<span class="sourceLineNo">087</span><a id="line.87">    protected boolean canSendCompressed = false;</a>
+<span class="sourceLineNo">088</span><a id="line.88">    private int minSendAsCompressedSize = 0;</a>
+<span class="sourceLineNo">089</span><a id="line.89"></a>
+<span class="sourceLineNo">090</span><a id="line.90">    public HttpClientTransport(TextWireFormat wireFormat, URI remoteUrl) {</a>
+<span class="sourceLineNo">091</span><a id="line.91">        super(wireFormat, remoteUrl);</a>
+<span class="sourceLineNo">092</span><a id="line.92">    }</a>
+<span class="sourceLineNo">093</span><a id="line.93"></a>
+<span class="sourceLineNo">094</span><a id="line.94">    public FutureResponse asyncRequest(Object command) throws IOException {</a>
+<span class="sourceLineNo">095</span><a id="line.95">        return null;</a>
+<span class="sourceLineNo">096</span><a id="line.96">    }</a>
+<span class="sourceLineNo">097</span><a id="line.97"></a>
+<span class="sourceLineNo">098</span><a id="line.98">    @Override</a>
+<span class="sourceLineNo">099</span><a id="line.99">    public void oneway(Object command) throws IOException {</a>
+<span class="sourceLineNo">100</span><a id="line.100"></a>
+<span class="sourceLineNo">101</span><a id="line.101">        if (isStopped()) {</a>
+<span class="sourceLineNo">102</span><a id="line.102">            throw new IOException("stopped.");</a>
+<span class="sourceLineNo">103</span><a id="line.103">        }</a>
+<span class="sourceLineNo">104</span><a id="line.104">        HttpPost httpMethod = new HttpPost(getRemoteUrl().toString());</a>
+<span class="sourceLineNo">105</span><a id="line.105">        configureMethod(httpMethod);</a>
+<span class="sourceLineNo">106</span><a id="line.106">        String data = getTextWireFormat().marshalText(command);</a>
+<span class="sourceLineNo">107</span><a id="line.107">        byte[] bytes = data.getBytes("UTF-8");</a>
+<span class="sourceLineNo">108</span><a id="line.108">        if (useCompression &amp;&amp; canSendCompressed &amp;&amp; bytes.length &gt; minSendAsCompressedSize) {</a>
+<span class="sourceLineNo">109</span><a id="line.109">            ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();</a>
+<span class="sourceLineNo">110</span><a id="line.110">            GZIPOutputStream stream = new GZIPOutputStream(bytesOut);</a>
+<span class="sourceLineNo">111</span><a id="line.111">            stream.write(bytes);</a>
+<span class="sourceLineNo">112</span><a id="line.112">            stream.close();</a>
+<span class="sourceLineNo">113</span><a id="line.113">            httpMethod.addHeader("Content-Type", "application/x-gzip");</a>
+<span class="sourceLineNo">114</span><a id="line.114">            if (LOG.isTraceEnabled()) {</a>
+<span class="sourceLineNo">115</span><a id="line.115">                LOG.trace("Sending compressed, size = " + bytes.length + ", compressed size = " + bytesOut.size());</a>
+<span class="sourceLineNo">116</span><a id="line.116">            }</a>
+<span class="sourceLineNo">117</span><a id="line.117">            bytes = bytesOut.toByteArray();</a>
+<span class="sourceLineNo">118</span><a id="line.118">        }</a>
+<span class="sourceLineNo">119</span><a id="line.119">        ByteArrayEntity entity = new ByteArrayEntity(bytes);</a>
+<span class="sourceLineNo">120</span><a id="line.120">        httpMethod.setEntity(entity);</a>
+<span class="sourceLineNo">121</span><a id="line.121"></a>
+<span class="sourceLineNo">122</span><a id="line.122">        HttpClient client = null;</a>
+<span class="sourceLineNo">123</span><a id="line.123">        HttpResponse answer = null;</a>
+<span class="sourceLineNo">124</span><a id="line.124">        try {</a>
+<span class="sourceLineNo">125</span><a id="line.125">            client = getSendHttpClient();</a>
+<span class="sourceLineNo">126</span><a id="line.126">            answer = client.execute(httpMethod);</a>
+<span class="sourceLineNo">127</span><a id="line.127">            int status = answer.getStatusLine().getStatusCode();</a>
+<span class="sourceLineNo">128</span><a id="line.128">            if (status != HttpStatus.SC_OK) {</a>
+<span class="sourceLineNo">129</span><a id="line.129">                throw new IOException("Failed to post command: " + command + " as response was: " + answer);</a>
+<span class="sourceLineNo">130</span><a id="line.130">            }</a>
+<span class="sourceLineNo">131</span><a id="line.131">            if (command instanceof ShutdownInfo) {</a>
+<span class="sourceLineNo">132</span><a id="line.132">                try {</a>
+<span class="sourceLineNo">133</span><a id="line.133">                    stop();</a>
+<span class="sourceLineNo">134</span><a id="line.134">                } catch (Exception e) {</a>
+<span class="sourceLineNo">135</span><a id="line.135">                    LOG.warn("Error trying to stop HTTP client: "+ e, e);</a>
+<span class="sourceLineNo">136</span><a id="line.136">                }</a>
+<span class="sourceLineNo">137</span><a id="line.137">            }</a>
+<span class="sourceLineNo">138</span><a id="line.138">        } catch (IOException e) {</a>
+<span class="sourceLineNo">139</span><a id="line.139">            throw IOExceptionSupport.create("Could not post command: " + command + " due to: " + e, e);</a>
+<span class="sourceLineNo">140</span><a id="line.140">        } finally {</a>
+<span class="sourceLineNo">141</span><a id="line.141">            if (answer != null) {</a>
+<span class="sourceLineNo">142</span><a id="line.142">                EntityUtils.consume(answer.getEntity());</a>
+<span class="sourceLineNo">143</span><a id="line.143">            }</a>
+<span class="sourceLineNo">144</span><a id="line.144">        }</a>
+<span class="sourceLineNo">145</span><a id="line.145">    }</a>
+<span class="sourceLineNo">146</span><a id="line.146"></a>
+<span class="sourceLineNo">147</span><a id="line.147">    @Override</a>
+<span class="sourceLineNo">148</span><a id="line.148">    public Object request(Object command) throws IOException {</a>
+<span class="sourceLineNo">149</span><a id="line.149">        return null;</a>
+<span class="sourceLineNo">150</span><a id="line.150">    }</a>
+<span class="sourceLineNo">151</span><a id="line.151"></a>
+<span class="sourceLineNo">152</span><a id="line.152">    private DataInputStream createDataInputStream(HttpResponse answer) throws IOException {</a>
+<span class="sourceLineNo">153</span><a id="line.153">        Header encoding = answer.getEntity().getContentEncoding();</a>
+<span class="sourceLineNo">154</span><a id="line.154">        if (encoding != null &amp;&amp; "gzip".equalsIgnoreCase(encoding.getValue())) {</a>
+<span class="sourceLineNo">155</span><a id="line.155">            return new DataInputStream(new GZIPInputStream(answer.getEntity().getContent()));</a>
+<span class="sourceLineNo">156</span><a id="line.156">        } else {</a>
+<span class="sourceLineNo">157</span><a id="line.157">            return new DataInputStream(answer.getEntity().getContent());</a>
+<span class="sourceLineNo">158</span><a id="line.158">        }</a>
+<span class="sourceLineNo">159</span><a id="line.159">    }</a>
+<span class="sourceLineNo">160</span><a id="line.160"></a>
+<span class="sourceLineNo">161</span><a id="line.161">    @Override</a>
+<span class="sourceLineNo">162</span><a id="line.162">    public void run() {</a>
+<span class="sourceLineNo">163</span><a id="line.163"></a>
+<span class="sourceLineNo">164</span><a id="line.164">        if (LOG.isTraceEnabled()) {</a>
+<span class="sourceLineNo">165</span><a id="line.165">            LOG.trace("HTTP GET consumer thread starting: " + this);</a>
+<span class="sourceLineNo">166</span><a id="line.166">        }</a>
+<span class="sourceLineNo">167</span><a id="line.167">        HttpClient httpClient = getReceiveHttpClient();</a>
+<span class="sourceLineNo">168</span><a id="line.168">        URI remoteUrl = getRemoteUrl();</a>
+<span class="sourceLineNo">169</span><a id="line.169"></a>
+<span class="sourceLineNo">170</span><a id="line.170">        while (!isStopped() &amp;&amp; !isStopping()) {</a>
+<span class="sourceLineNo">171</span><a id="line.171"></a>
+<span class="sourceLineNo">172</span><a id="line.172">            httpMethod = new HttpGet(remoteUrl.toString());</a>
+<span class="sourceLineNo">173</span><a id="line.173">            configureMethod(httpMethod);</a>
+<span class="sourceLineNo">174</span><a id="line.174">            HttpResponse answer = null;</a>
+<span class="sourceLineNo">175</span><a id="line.175"></a>
+<span class="sourceLineNo">176</span><a id="line.176">            try {</a>
+<span class="sourceLineNo">177</span><a id="line.177">                answer = httpClient.execute(httpMethod);</a>
+<span class="sourceLineNo">178</span><a id="line.178">                int status = answer.getStatusLine().getStatusCode();</a>
+<span class="sourceLineNo">179</span><a id="line.179">                if (status != HttpStatus.SC_OK) {</a>
+<span class="sourceLineNo">180</span><a id="line.180">                    if (status == HttpStatus.SC_REQUEST_TIMEOUT) {</a>
+<span class="sourceLineNo">181</span><a id="line.181">                        LOG.debug("GET timed out");</a>
+<span class="sourceLineNo">182</span><a id="line.182">                        try {</a>
+<span class="sourceLineNo">183</span><a id="line.183">                            Thread.sleep(1000);</a>
+<span class="sourceLineNo">184</span><a id="line.184">                        } catch (InterruptedException e) {</a>
+<span class="sourceLineNo">185</span><a id="line.185">                            onException(new InterruptedIOException());</a>
+<span class="sourceLineNo">186</span><a id="line.186">                            Thread.currentThread().interrupt();</a>
+<span class="sourceLineNo">187</span><a id="line.187">                            break;</a>
+<span class="sourceLineNo">188</span><a id="line.188">                        }</a>
+<span class="sourceLineNo">189</span><a id="line.189">                    } else {</a>
+<span class="sourceLineNo">190</span><a id="line.190">                        onException(new IOException("Failed to perform GET on: " + remoteUrl + " as response was: " + answer));</a>
+<span class="sourceLineNo">191</span><a id="line.191">                        break;</a>
+<span class="sourceLineNo">192</span><a id="line.192">                    }</a>
+<span class="sourceLineNo">193</span><a id="line.193">                } else {</a>
+<span class="sourceLineNo">194</span><a id="line.194">                    receiveCounter++;</a>
+<span class="sourceLineNo">195</span><a id="line.195">                    DataInputStream stream = createDataInputStream(answer);</a>
+<span class="sourceLineNo">196</span><a id="line.196">                    Object command = getTextWireFormat().unmarshal(stream);</a>
+<span class="sourceLineNo">197</span><a id="line.197">                    if (command == null) {</a>
+<span class="sourceLineNo">198</span><a id="line.198">                        LOG.debug("Received null command from url: " + remoteUrl);</a>
+<span class="sourceLineNo">199</span><a id="line.199">                    } else {</a>
+<span class="sourceLineNo">200</span><a id="line.200">                        doConsume(command);</a>
+<span class="sourceLineNo">201</span><a id="line.201">                    }</a>
+<span class="sourceLineNo">202</span><a id="line.202">                    stream.close();</a>
+<span class="sourceLineNo">203</span><a id="line.203">                }</a>
+<span class="sourceLineNo">204</span><a id="line.204">            } catch (Exception e) { // handle RuntimeException from unmarshal</a>
+<span class="sourceLineNo">205</span><a id="line.205">                onException(IOExceptionSupport.create("Failed to perform GET on: " + remoteUrl + " Reason: " + e.getMessage(), e));</a>
+<span class="sourceLineNo">206</span><a id="line.206">                break;</a>
+<span class="sourceLineNo">207</span><a id="line.207">            } finally {</a>
+<span class="sourceLineNo">208</span><a id="line.208">                if (answer != null) {</a>
+<span class="sourceLineNo">209</span><a id="line.209">                    try {</a>
+<span class="sourceLineNo">210</span><a id="line.210">                        EntityUtils.consume(answer.getEntity());</a>
+<span class="sourceLineNo">211</span><a id="line.211">                    } catch (IOException e) {</a>
+<span class="sourceLineNo">212</span><a id="line.212">                    }</a>
+<span class="sourceLineNo">213</span><a id="line.213">                }</a>
+<span class="sourceLineNo">214</span><a id="line.214">            }</a>
+<span class="sourceLineNo">215</span><a id="line.215">        }</a>
+<span class="sourceLineNo">216</span><a id="line.216">    }</a>
+<span class="sourceLineNo">217</span><a id="line.217"></a>
+<span class="sourceLineNo">218</span><a id="line.218">    // Properties</a>
+<span class="sourceLineNo">219</span><a id="line.219">    // -------------------------------------------------------------------------</a>
+<span class="sourceLineNo">220</span><a id="line.220">    public HttpClient getSendHttpClient() {</a>
+<span class="sourceLineNo">221</span><a id="line.221">        if (sendHttpClient == null) {</a>
+<span class="sourceLineNo">222</span><a id="line.222">            sendHttpClient = createHttpClient();</a>
+<span class="sourceLineNo">223</span><a id="line.223">        }</a>
+<span class="sourceLineNo">224</span><a id="line.224">        return sendHttpClient;</a>
+<span class="sourceLineNo">225</span><a id="line.225">    }</a>
+<span class="sourceLineNo">226</span><a id="line.226"></a>
+<span class="sourceLineNo">227</span><a id="line.227">    public void setSendHttpClient(HttpClient sendHttpClient) {</a>
+<span class="sourceLineNo">228</span><a id="line.228">        this.sendHttpClient = sendHttpClient;</a>
+<span class="sourceLineNo">229</span><a id="line.229">    }</a>
+<span class="sourceLineNo">230</span><a id="line.230"></a>
+<span class="sourceLineNo">231</span><a id="line.231">    public HttpClient getReceiveHttpClient() {</a>
+<span class="sourceLineNo">232</span><a id="line.232">        if (receiveHttpClient == null) {</a>
+<span class="sourceLineNo">233</span><a id="line.233">            receiveHttpClient = createHttpClient();</a>
+<span class="sourceLineNo">234</span><a id="line.234">        }</a>
+<span class="sourceLineNo">235</span><a id="line.235">        return receiveHttpClient;</a>
+<span class="sourceLineNo">236</span><a id="line.236">    }</a>
+<span class="sourceLineNo">237</span><a id="line.237"></a>
+<span class="sourceLineNo">238</span><a id="line.238">    public void setReceiveHttpClient(HttpClient receiveHttpClient) {</a>
+<span class="sourceLineNo">239</span><a id="line.239">        this.receiveHttpClient = receiveHttpClient;</a>
+<span class="sourceLineNo">240</span><a id="line.240">    }</a>
+<span class="sourceLineNo">241</span><a id="line.241"></a>
+<span class="sourceLineNo">242</span><a id="line.242">    // Implementation methods</a>
+<span class="sourceLineNo">243</span><a id="line.243">    // -------------------------------------------------------------------------</a>
+<span class="sourceLineNo">244</span><a id="line.244">    @Override</a>
+<span class="sourceLineNo">245</span><a id="line.245">    protected void doStart() throws Exception {</a>
+<span class="sourceLineNo">246</span><a id="line.246"></a>
+<span class="sourceLineNo">247</span><a id="line.247">        if (LOG.isTraceEnabled()) {</a>
+<span class="sourceLineNo">248</span><a id="line.248">            LOG.trace("HTTP GET consumer thread starting: " + this);</a>
+<span class="sourceLineNo">249</span><a id="line.249">        }</a>
+<span class="sourceLineNo">250</span><a id="line.250">        HttpClient httpClient = getReceiveHttpClient();</a>
+<span class="sourceLineNo">251</span><a id="line.251">        URI remoteUrl = getRemoteUrl();</a>
+<span class="sourceLineNo">252</span><a id="line.252"></a>
+<span class="sourceLineNo">253</span><a id="line.253">        HttpHead httpMethod = new HttpHead(remoteUrl.toString());</a>
+<span class="sourceLineNo">254</span><a id="line.254">        configureMethod(httpMethod);</a>
+<span class="sourceLineNo">255</span><a id="line.255"></a>
+<span class="sourceLineNo">256</span><a id="line.256">        // Request the options from the server so we can find out if the broker we are</a>
+<span class="sourceLineNo">257</span><a id="line.257">        // talking to supports GZip compressed content.  If so and useCompression is on</a>
+<span class="sourceLineNo">258</span><a id="line.258">        // then we can compress our POST data, otherwise we must send it uncompressed to</a>
+<span class="sourceLineNo">259</span><a id="line.259">        // ensure backwards compatibility.</a>
+<span class="sourceLineNo">260</span><a id="line.260">        HttpOptions optionsMethod = new HttpOptions(remoteUrl.toString());</a>
+<span class="sourceLineNo">261</span><a id="line.261">        ResponseHandler&lt;String&gt; handler = new BasicResponseHandler() {</a>
+<span class="sourceLineNo">262</span><a id="line.262">            @Override</a>
+<span class="sourceLineNo">263</span><a id="line.263">            public String handleResponse(HttpResponse response) throws HttpResponseException, IOException {</a>
+<span class="sourceLineNo">264</span><a id="line.264"></a>
+<span class="sourceLineNo">265</span><a id="line.265">                for(Header header : response.getAllHeaders()) {</a>
+<span class="sourceLineNo">266</span><a id="line.266">                    if (header.getName().equals("Accepts-Encoding") &amp;&amp; header.getValue().contains("gzip")) {</a>
+<span class="sourceLineNo">267</span><a id="line.267">                        LOG.info("Broker Servlet supports GZip compression.");</a>
+<span class="sourceLineNo">268</span><a id="line.268">                        canSendCompressed = true;</a>
+<span class="sourceLineNo">269</span><a id="line.269">                        break;</a>
+<span class="sourceLineNo">270</span><a id="line.270">                    }</a>
+<span class="sourceLineNo">271</span><a id="line.271">                }</a>
+<span class="sourceLineNo">272</span><a id="line.272"></a>
+<span class="sourceLineNo">273</span><a id="line.273">                return super.handleResponse(response);</a>
+<span class="sourceLineNo">274</span><a id="line.274">            }</a>
+<span class="sourceLineNo">275</span><a id="line.275">        };</a>
+<span class="sourceLineNo">276</span><a id="line.276"></a>
+<span class="sourceLineNo">277</span><a id="line.277">        try {</a>
+<span class="sourceLineNo">278</span><a id="line.278">            httpClient.execute(httpMethod, new BasicResponseHandler());</a>
+<span class="sourceLineNo">279</span><a id="line.279">            httpClient.execute(optionsMethod, handler);</a>
+<span class="sourceLineNo">280</span><a id="line.280">        } catch(Exception e) {</a>
+<span class="sourceLineNo">281</span><a id="line.281">            LOG.trace("Error on start: ", e);</a>
+<span class="sourceLineNo">282</span><a id="line.282">            throw new IOException("Failed to perform GET on: " + remoteUrl + " as response was: " + e.getMessage());</a>
+<span class="sourceLineNo">283</span><a id="line.283">        }</a>
+<span class="sourceLineNo">284</span><a id="line.284"></a>
+<span class="sourceLineNo">285</span><a id="line.285">        super.doStart();</a>
+<span class="sourceLineNo">286</span><a id="line.286">    }</a>
+<span class="sourceLineNo">287</span><a id="line.287"></a>
+<span class="sourceLineNo">288</span><a id="line.288">    @Override</a>
+<span class="sourceLineNo">289</span><a id="line.289">    protected void doStop(ServiceStopper stopper) throws Exception {</a>
+<span class="sourceLineNo">290</span><a id="line.290">        if (httpMethod != null) {</a>
+<span class="sourceLineNo">291</span><a id="line.291">            // In some versions of the JVM a race between the httpMethod and the completion</a>
+<span class="sourceLineNo">292</span><a id="line.292">            // of the method when using HTTPS can lead to a deadlock.  This hack attempts to</a>
+<span class="sourceLineNo">293</span><a id="line.293">            // detect that and interrupt the thread that's locked so that they can complete</a>
+<span class="sourceLineNo">294</span><a id="line.294">            // on another attempt.</a>
+<span class="sourceLineNo">295</span><a id="line.295">            for (int i = 0; i &lt; 3; ++i) {</a>
+<span class="sourceLineNo">296</span><a id="line.296">                Thread abortThread = new Thread(new Runnable() {</a>
+<span class="sourceLineNo">297</span><a id="line.297"></a>
+<span class="sourceLineNo">298</span><a id="line.298">                    @Override</a>
+<span class="sourceLineNo">299</span><a id="line.299">                    public void run() {</a>
+<span class="sourceLineNo">300</span><a id="line.300">                        try {</a>
+<span class="sourceLineNo">301</span><a id="line.301">                            httpMethod.abort();</a>
+<span class="sourceLineNo">302</span><a id="line.302">                        } catch (Exception e) {</a>
+<span class="sourceLineNo">303</span><a id="line.303">                        }</a>
+<span class="sourceLineNo">304</span><a id="line.304">                    }</a>
+<span class="sourceLineNo">305</span><a id="line.305">                });</a>
+<span class="sourceLineNo">306</span><a id="line.306"></a>
+<span class="sourceLineNo">307</span><a id="line.307">                abortThread.start();</a>
+<span class="sourceLineNo">308</span><a id="line.308">                abortThread.join(2000);</a>
+<span class="sourceLineNo">309</span><a id="line.309">                if (abortThread.isAlive() &amp;&amp; !httpMethod.isAborted()) {</a>
+<span class="sourceLineNo">310</span><a id="line.310">                    abortThread.interrupt();</a>
+<span class="sourceLineNo">311</span><a id="line.311">                }</a>
+<span class="sourceLineNo">312</span><a id="line.312">            }</a>
+<span class="sourceLineNo">313</span><a id="line.313">        }</a>
+<span class="sourceLineNo">314</span><a id="line.314">    }</a>
+<span class="sourceLineNo">315</span><a id="line.315"></a>
+<span class="sourceLineNo">316</span><a id="line.316">    protected HttpClient createHttpClient() {</a>
+<span class="sourceLineNo">317</span><a id="line.317">        HttpClientBuilder clientBuilder = HttpClientBuilder.create();</a>
+<span class="sourceLineNo">318</span><a id="line.318">        clientBuilder.setConnectionManager(createClientConnectionManager());</a>
+<span class="sourceLineNo">319</span><a id="line.319">        if (useCompression) {</a>
+<span class="sourceLineNo">320</span><a id="line.320">            clientBuilder.addInterceptorLast(new HttpRequestInterceptor() {</a>
+<span class="sourceLineNo">321</span><a id="line.321">                @Override</a>
+<span class="sourceLineNo">322</span><a id="line.322">                public void process(HttpRequest request, HttpContext context) {</a>
+<span class="sourceLineNo">323</span><a id="line.323">                    // We expect to received a compression response that we un-gzip</a>
+<span class="sourceLineNo">324</span><a id="line.324">                    request.addHeader("Accept-Encoding", "gzip");</a>
+<span class="sourceLineNo">325</span><a id="line.325">                }</a>
+<span class="sourceLineNo">326</span><a id="line.326">            });</a>
+<span class="sourceLineNo">327</span><a id="line.327">        }</a>
+<span class="sourceLineNo">328</span><a id="line.328"></a>
+<span class="sourceLineNo">329</span><a id="line.329">        RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();</a>
+<span class="sourceLineNo">330</span><a id="line.330">        if (getProxyHost() != null) {</a>
+<span class="sourceLineNo">331</span><a id="line.331">            HttpHost proxy = new HttpHost(getProxyHost(), getProxyPort());</a>
+<span class="sourceLineNo">332</span><a id="line.332">            requestConfigBuilder.setProxy(proxy);</a>
+<span class="sourceLineNo">333</span><a id="line.333"></a>
+<span class="sourceLineNo">334</span><a id="line.334">            if (getProxyUser() != null &amp;&amp; getProxyPassword() != null) {</a>
+<span class="sourceLineNo">335</span><a id="line.335">                CredentialsProvider credentialsProvider = new BasicCredentialsProvider();</a>
+<span class="sourceLineNo">336</span><a id="line.336">                credentialsProvider.setCredentials(</a>
+<span class="sourceLineNo">337</span><a id="line.337">                    new AuthScope(getProxyHost(), getProxyPort()),</a>
+<span class="sourceLineNo">338</span><a id="line.338">                    new UsernamePasswordCredentials(getProxyUser(), getProxyPassword()));</a>
+<span class="sourceLineNo">339</span><a id="line.339">                clientBuilder.setDefaultCredentialsProvider(credentialsProvider);</a>
+<span class="sourceLineNo">340</span><a id="line.340">            }</a>
+<span class="sourceLineNo">341</span><a id="line.341">        }</a>
+<span class="sourceLineNo">342</span><a id="line.342"></a>
+<span class="sourceLineNo">343</span><a id="line.343">        requestConfigBuilder.setSocketTimeout(soTimeout);</a>
+<span class="sourceLineNo">344</span><a id="line.344">        requestConfigBuilder.setCookieSpec(CookieSpecs.DEFAULT);</a>
+<span class="sourceLineNo">345</span><a id="line.345">        clientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());</a>
+<span class="sourceLineNo">346</span><a id="line.346"></a>
+<span class="sourceLineNo">347</span><a id="line.347">        return clientBuilder.build();</a>
+<span class="sourceLineNo">348</span><a id="line.348">    }</a>
+<span class="sourceLineNo">349</span><a id="line.349"></a>
+<span class="sourceLineNo">350</span><a id="line.350">    protected HttpClientConnectionManager createClientConnectionManager() {</a>
+<span class="sourceLineNo">351</span><a id="line.351">        return new PoolingHttpClientConnectionManager();</a>
+<span class="sourceLineNo">352</span><a id="line.352">    }</a>
+<span class="sourceLineNo">353</span><a id="line.353"></a>
+<span class="sourceLineNo">354</span><a id="line.354">    protected void configureMethod(AbstractHttpMessage method) {</a>
+<span class="sourceLineNo">355</span><a id="line.355">        method.setHeader("clientID", clientID);</a>
+<span class="sourceLineNo">356</span><a id="line.356">    }</a>
+<span class="sourceLineNo">357</span><a id="line.357"></a>
+<span class="sourceLineNo">358</span><a id="line.358">    public boolean isTrace() {</a>
+<span class="sourceLineNo">359</span><a id="line.359">        return trace;</a>
+<span class="sourceLineNo">360</span><a id="line.360">    }</a>
+<span class="sourceLineNo">361</span><a id="line.361"></a>
+<span class="sourceLineNo">362</span><a id="line.362">    public void setTrace(boolean trace) {</a>
+<span class="sourceLineNo">363</span><a id="line.363">        this.trace = trace;</a>
+<span class="sourceLineNo">364</span><a id="line.364">    }</a>
+<span class="sourceLineNo">365</span><a id="line.365"></a>
+<span class="sourceLineNo">366</span><a id="line.366">    @Override</a>
+<span class="sourceLineNo">367</span><a id="line.367">    public int getReceiveCounter() {</a>
+<span class="sourceLineNo">368</span><a id="line.368">        return receiveCounter;</a>
+<span class="sourceLineNo">369</span><a id="line.369">    }</a>
+<span class="sourceLineNo">370</span><a id="line.370"></a>
+<span class="sourceLineNo">371</span><a id="line.371">    public int getSoTimeout() {</a>
+<span class="sourceLineNo">372</span><a id="line.372">        return soTimeout;</a>
+<span class="sourceLineNo">373</span><a id="line.373">    }</a>
+<span class="sourceLineNo">374</span><a id="line.374"></a>
+<span class="sourceLineNo">375</span><a id="line.375">    public void setSoTimeout(int soTimeout) {</a>
+<span class="sourceLineNo">376</span><a id="line.376">        this.soTimeout = soTimeout;</a>
+<span class="sourceLineNo">377</span><a id="line.377">    }</a>
+<span class="sourceLineNo">378</span><a id="line.378"></a>
+<span class="sourceLineNo">379</span><a id="line.379">    public void setUseCompression(boolean useCompression) {</a>
+<span class="sourceLineNo">380</span><a id="line.380">        this.useCompression = useCompression;</a>
+<span class="sourceLineNo">381</span><a id="line.381">    }</a>
+<span class="sourceLineNo">382</span><a id="line.382"></a>
+<span class="sourceLineNo">383</span><a id="line.383">    public boolean isUseCompression() {</a>
+<span class="sourceLineNo">384</span><a id="line.384">        return this.useCompression;</a>
+<span class="sourceLineNo">385</span><a id="line.385">    }</a>
+<span class="sourceLineNo">386</span><a id="line.386"></a>
+<span class="sourceLineNo">387</span><a id="line.387">    public int getMinSendAsCompressedSize() {</a>
+<span class="sourceLineNo">388</span><a id="line.388">        return minSendAsCompressedSize;</a>
+<span class="sourceLineNo">389</span><a id="line.389">    }</a>
+<span class="sourceLineNo">390</span><a id="line.390"></a>
+<span class="sourceLineNo">391</span><a id="line.391">    /**</a>
+<span class="sourceLineNo">392</span><a id="line.392">     * Sets the minimum size that must be exceeded on a send before compression is used if</a>
+<span class="sourceLineNo">393</span><a id="line.393">     * the useCompression option is specified.  For very small payloads compression can be</a>
+<span class="sourceLineNo">394</span><a id="line.394">     * inefficient compared to the transmission size savings.</a>
+<span class="sourceLineNo">395</span><a id="line.395">     *</a>
+<span class="sourceLineNo">396</span><a id="line.396">     * Default value is 0.</a>
+<span class="sourceLineNo">397</span><a id="line.397">     *</a>
+<span class="sourceLineNo">398</span><a id="line.398">     * @param minSendAsCompressedSize</a>
+<span class="sourceLineNo">399</span><a id="line.399">     */</a>
+<span class="sourceLineNo">400</span><a id="line.400">    public void setMinSendAsCompressedSize(int minSendAsCompressedSize) {</a>
+<span class="sourceLineNo">401</span><a id="line.401">        this.minSendAsCompressedSize = minSendAsCompressedSize;</a>
+<span class="sourceLineNo">402</span><a id="line.402">    }</a>
+<span class="sourceLineNo">403</span><a id="line.403"></a>
+<span class="sourceLineNo">404</span><a id="line.404">    @Override</a>
+<span class="sourceLineNo">405</span><a id="line.405">    public X509Certificate[] getPeerCertificates() {</a>
+<span class="sourceLineNo">406</span><a id="line.406">        return null;</a>
+<span class="sourceLineNo">407</span><a id="line.407">    }</a>
+<span class="sourceLineNo">408</span><a id="line.408"></a>
+<span class="sourceLineNo">409</span><a id="line.409">    @Override</a>
+<span class="sourceLineNo">410</span><a id="line.410">    public void setPeerCertificates(X509Certificate[] certificates) {</a>
+<span class="sourceLineNo">411</span><a id="line.411">    }</a>
+<span class="sourceLineNo">412</span><a id="line.412"></a>
+<span class="sourceLineNo">413</span><a id="line.413">    @Override</a>
+<span class="sourceLineNo">414</span><a id="line.414">    public WireFormat getWireFormat() {</a>
+<span class="sourceLineNo">415</span><a id="line.415">        return getTextWireFormat();</a>
+<span class="sourceLineNo">416</span><a id="line.416">    }</a>
+<span class="sourceLineNo">417</span><a id="line.417"></a>
+<span class="sourceLineNo">418</span><a id="line.418">    @Override</a>
+<span class="sourceLineNo">419</span><a id="line.419">    protected String getSystemPropertyPrefix() {</a>
+<span class="sourceLineNo">420</span><a id="line.420">        return "http.";</a>
+<span class="sourceLineNo">421</span><a id="line.421">    }</a>
+<span class="sourceLineNo">422</span><a id="line.422"></a>
+<span class="sourceLineNo">423</span><a id="line.423">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

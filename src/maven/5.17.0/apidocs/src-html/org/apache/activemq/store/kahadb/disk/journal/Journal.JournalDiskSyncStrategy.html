@@ -1,0 +1,1288 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.store.kahadb.disk.journal;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.EOFException;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.io.File;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.io.FileNotFoundException;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.io.FilenameFilter;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.io.IOException;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.io.RandomAccessFile;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.io.UnsupportedEncodingException;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import java.nio.ByteBuffer;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import java.nio.channels.ClosedByInterruptException;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import java.nio.channels.FileChannel;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import java.util.Collections;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import java.util.HashMap;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import java.util.Iterator;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import java.util.LinkedHashMap;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import java.util.LinkedList;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import java.util.Map;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import java.util.Set;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import java.util.TreeMap;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import java.util.concurrent.ConcurrentHashMap;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import java.util.concurrent.Executors;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import java.util.concurrent.Future;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import java.util.concurrent.ScheduledExecutorService;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import java.util.concurrent.ScheduledFuture;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import java.util.concurrent.ThreadFactory;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import java.util.concurrent.TimeUnit;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import java.util.concurrent.atomic.AtomicLong;</a>
+<span class="sourceLineNo">045</span><a id="line.45">import java.util.concurrent.atomic.AtomicReference;</a>
+<span class="sourceLineNo">046</span><a id="line.46">import java.util.zip.Adler32;</a>
+<span class="sourceLineNo">047</span><a id="line.47">import java.util.zip.Checksum;</a>
+<span class="sourceLineNo">048</span><a id="line.48"></a>
+<span class="sourceLineNo">049</span><a id="line.49">import org.apache.activemq.store.kahadb.disk.util.LinkedNode;</a>
+<span class="sourceLineNo">050</span><a id="line.50">import org.apache.activemq.store.kahadb.disk.util.LinkedNodeList;</a>
+<span class="sourceLineNo">051</span><a id="line.51">import org.apache.activemq.store.kahadb.disk.util.Sequence;</a>
+<span class="sourceLineNo">052</span><a id="line.52">import org.apache.activemq.util.ByteSequence;</a>
+<span class="sourceLineNo">053</span><a id="line.53">import org.apache.activemq.util.DataByteArrayInputStream;</a>
+<span class="sourceLineNo">054</span><a id="line.54">import org.apache.activemq.util.DataByteArrayOutputStream;</a>
+<span class="sourceLineNo">055</span><a id="line.55">import org.apache.activemq.util.IOHelper;</a>
+<span class="sourceLineNo">056</span><a id="line.56">import org.apache.activemq.util.RecoverableRandomAccessFile;</a>
+<span class="sourceLineNo">057</span><a id="line.57">import org.apache.activemq.util.ThreadPoolUtils;</a>
+<span class="sourceLineNo">058</span><a id="line.58">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">059</span><a id="line.59">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">060</span><a id="line.60"></a>
+<span class="sourceLineNo">061</span><a id="line.61">/**</a>
+<span class="sourceLineNo">062</span><a id="line.62"> * Manages DataFiles</a>
+<span class="sourceLineNo">063</span><a id="line.63"> */</a>
+<span class="sourceLineNo">064</span><a id="line.64">public class Journal {</a>
+<span class="sourceLineNo">065</span><a id="line.65">    public static final String CALLER_BUFFER_APPENDER = "org.apache.kahadb.journal.CALLER_BUFFER_APPENDER";</a>
+<span class="sourceLineNo">066</span><a id="line.66">    public static final boolean callerBufferAppender = Boolean.parseBoolean(System.getProperty(CALLER_BUFFER_APPENDER, "false"));</a>
+<span class="sourceLineNo">067</span><a id="line.67"></a>
+<span class="sourceLineNo">068</span><a id="line.68">    private static final int PREALLOC_CHUNK_SIZE = 1024*1024;</a>
+<span class="sourceLineNo">069</span><a id="line.69"></a>
+<span class="sourceLineNo">070</span><a id="line.70">    // ITEM_HEAD_SPACE = length + type+ reserved space + SOR</a>
+<span class="sourceLineNo">071</span><a id="line.71">    public static final int RECORD_HEAD_SPACE = 4 + 1;</a>
+<span class="sourceLineNo">072</span><a id="line.72"></a>
+<span class="sourceLineNo">073</span><a id="line.73">    public static final byte USER_RECORD_TYPE = 1;</a>
+<span class="sourceLineNo">074</span><a id="line.74">    public static final byte BATCH_CONTROL_RECORD_TYPE = 2;</a>
+<span class="sourceLineNo">075</span><a id="line.75">    // Batch Control Item holds a 4 byte size of the batch and a 8 byte checksum of the batch.</a>
+<span class="sourceLineNo">076</span><a id="line.76">    public static final byte[] BATCH_CONTROL_RECORD_MAGIC = bytes("WRITE BATCH");</a>
+<span class="sourceLineNo">077</span><a id="line.77">    public static final int BATCH_CONTROL_RECORD_SIZE = RECORD_HEAD_SPACE + BATCH_CONTROL_RECORD_MAGIC.length + 4 + 8;</a>
+<span class="sourceLineNo">078</span><a id="line.78">    public static final byte[] BATCH_CONTROL_RECORD_HEADER = createBatchControlRecordHeader();</a>
+<span class="sourceLineNo">079</span><a id="line.79">    public static final byte[] EMPTY_BATCH_CONTROL_RECORD = createEmptyBatchControlRecordHeader();</a>
+<span class="sourceLineNo">080</span><a id="line.80">    public static final int EOF_INT = ByteBuffer.wrap(new byte[]{'-', 'q', 'M', 'a'}).getInt();</a>
+<span class="sourceLineNo">081</span><a id="line.81">    public static final byte EOF_EOT = '4';</a>
+<span class="sourceLineNo">082</span><a id="line.82">    public static final byte[] EOF_RECORD = createEofBatchAndLocationRecord();</a>
+<span class="sourceLineNo">083</span><a id="line.83"></a>
+<span class="sourceLineNo">084</span><a id="line.84">    private ScheduledExecutorService scheduler;</a>
+<span class="sourceLineNo">085</span><a id="line.85"></a>
+<span class="sourceLineNo">086</span><a id="line.86">    // tackle corruption when checksum is disabled or corrupt with zeros, minimize data loss</a>
+<span class="sourceLineNo">087</span><a id="line.87">    public void corruptRecoveryLocation(Location recoveryPosition) throws IOException {</a>
+<span class="sourceLineNo">088</span><a id="line.88">        DataFile dataFile = getDataFile(recoveryPosition);</a>
+<span class="sourceLineNo">089</span><a id="line.89">        // with corruption on recovery we have no faith in the content - slip to the next batch record or eof</a>
+<span class="sourceLineNo">090</span><a id="line.90">        DataFileAccessor reader = accessorPool.openDataFileAccessor(dataFile);</a>
+<span class="sourceLineNo">091</span><a id="line.91">        try {</a>
+<span class="sourceLineNo">092</span><a id="line.92">            RandomAccessFile randomAccessFile = reader.getRaf().getRaf();</a>
+<span class="sourceLineNo">093</span><a id="line.93">            randomAccessFile.seek(recoveryPosition.getOffset() + 1);</a>
+<span class="sourceLineNo">094</span><a id="line.94">            byte[] data = new byte[getWriteBatchSize()];</a>
+<span class="sourceLineNo">095</span><a id="line.95">            ByteSequence bs = new ByteSequence(data, 0, randomAccessFile.read(data));</a>
+<span class="sourceLineNo">096</span><a id="line.96">            int nextOffset = 0;</a>
+<span class="sourceLineNo">097</span><a id="line.97">            if (findNextBatchRecord(bs, randomAccessFile) &gt;= 0) {</a>
+<span class="sourceLineNo">098</span><a id="line.98">                nextOffset = Math.toIntExact(randomAccessFile.getFilePointer() - bs.remaining());</a>
+<span class="sourceLineNo">099</span><a id="line.99">            } else {</a>
+<span class="sourceLineNo">100</span><a id="line.100">                nextOffset = Math.toIntExact(randomAccessFile.length());</a>
+<span class="sourceLineNo">101</span><a id="line.101">            }</a>
+<span class="sourceLineNo">102</span><a id="line.102">            Sequence sequence = new Sequence(recoveryPosition.getOffset(), nextOffset - 1);</a>
+<span class="sourceLineNo">103</span><a id="line.103">            LOG.warn("Corrupt journal records found in '{}' between offsets: {}", dataFile.getFile(), sequence);</a>
+<span class="sourceLineNo">104</span><a id="line.104"></a>
+<span class="sourceLineNo">105</span><a id="line.105">            // skip corruption on getNextLocation</a>
+<span class="sourceLineNo">106</span><a id="line.106">            recoveryPosition.setOffset(nextOffset);</a>
+<span class="sourceLineNo">107</span><a id="line.107">            recoveryPosition.setSize(-1);</a>
+<span class="sourceLineNo">108</span><a id="line.108"></a>
+<span class="sourceLineNo">109</span><a id="line.109">            dataFile.corruptedBlocks.add(sequence);</a>
+<span class="sourceLineNo">110</span><a id="line.110">        } catch (IOException e) {</a>
+<span class="sourceLineNo">111</span><a id="line.111">        } finally {</a>
+<span class="sourceLineNo">112</span><a id="line.112">            accessorPool.closeDataFileAccessor(reader);</a>
+<span class="sourceLineNo">113</span><a id="line.113">        }</a>
+<span class="sourceLineNo">114</span><a id="line.114">    }</a>
+<span class="sourceLineNo">115</span><a id="line.115"></a>
+<span class="sourceLineNo">116</span><a id="line.116">    public DataFileAccessorPool getAccessorPool() {</a>
+<span class="sourceLineNo">117</span><a id="line.117">        return accessorPool;</a>
+<span class="sourceLineNo">118</span><a id="line.118">    }</a>
+<span class="sourceLineNo">119</span><a id="line.119"></a>
+<span class="sourceLineNo">120</span><a id="line.120">    public void allowIOResumption() {</a>
+<span class="sourceLineNo">121</span><a id="line.121">        if (appender instanceof DataFileAppender) {</a>
+<span class="sourceLineNo">122</span><a id="line.122">            DataFileAppender dataFileAppender = (DataFileAppender)appender;</a>
+<span class="sourceLineNo">123</span><a id="line.123">            dataFileAppender.shutdown = false;</a>
+<span class="sourceLineNo">124</span><a id="line.124">        }</a>
+<span class="sourceLineNo">125</span><a id="line.125">    }</a>
+<span class="sourceLineNo">126</span><a id="line.126"></a>
+<span class="sourceLineNo">127</span><a id="line.127">    public void setCleanupInterval(long cleanupInterval) {</a>
+<span class="sourceLineNo">128</span><a id="line.128">        this.cleanupInterval = cleanupInterval;</a>
+<span class="sourceLineNo">129</span><a id="line.129">    }</a>
+<span class="sourceLineNo">130</span><a id="line.130"></a>
+<span class="sourceLineNo">131</span><a id="line.131">    public long getCleanupInterval() {</a>
+<span class="sourceLineNo">132</span><a id="line.132">        return cleanupInterval;</a>
+<span class="sourceLineNo">133</span><a id="line.133">    }</a>
+<span class="sourceLineNo">134</span><a id="line.134"></a>
+<span class="sourceLineNo">135</span><a id="line.135">    public enum PreallocationStrategy {</a>
+<span class="sourceLineNo">136</span><a id="line.136">        SPARSE_FILE,</a>
+<span class="sourceLineNo">137</span><a id="line.137">        OS_KERNEL_COPY,</a>
+<span class="sourceLineNo">138</span><a id="line.138">        ZEROS,</a>
+<span class="sourceLineNo">139</span><a id="line.139">        CHUNKED_ZEROS;</a>
+<span class="sourceLineNo">140</span><a id="line.140">    }</a>
+<span class="sourceLineNo">141</span><a id="line.141"></a>
+<span class="sourceLineNo">142</span><a id="line.142">    public enum PreallocationScope {</a>
+<span class="sourceLineNo">143</span><a id="line.143">        ENTIRE_JOURNAL,</a>
+<span class="sourceLineNo">144</span><a id="line.144">        ENTIRE_JOURNAL_ASYNC,</a>
+<span class="sourceLineNo">145</span><a id="line.145">        NONE;</a>
+<span class="sourceLineNo">146</span><a id="line.146">    }</a>
+<span class="sourceLineNo">147</span><a id="line.147"></a>
+<span class="sourceLineNo">148</span><a id="line.148">    public enum JournalDiskSyncStrategy {</a>
+<span class="sourceLineNo">149</span><a id="line.149">        ALWAYS,</a>
+<span class="sourceLineNo">150</span><a id="line.150">        PERIODIC,</a>
+<span class="sourceLineNo">151</span><a id="line.151">        NEVER;</a>
+<span class="sourceLineNo">152</span><a id="line.152">    }</a>
+<span class="sourceLineNo">153</span><a id="line.153"></a>
+<span class="sourceLineNo">154</span><a id="line.154">    private static byte[] createBatchControlRecordHeader() {</a>
+<span class="sourceLineNo">155</span><a id="line.155">        try (DataByteArrayOutputStream os = new DataByteArrayOutputStream();) {</a>
+<span class="sourceLineNo">156</span><a id="line.156">            os.writeInt(BATCH_CONTROL_RECORD_SIZE);</a>
+<span class="sourceLineNo">157</span><a id="line.157">            os.writeByte(BATCH_CONTROL_RECORD_TYPE);</a>
+<span class="sourceLineNo">158</span><a id="line.158">            os.write(BATCH_CONTROL_RECORD_MAGIC);</a>
+<span class="sourceLineNo">159</span><a id="line.159">            ByteSequence sequence = os.toByteSequence();</a>
+<span class="sourceLineNo">160</span><a id="line.160">            sequence.compact();</a>
+<span class="sourceLineNo">161</span><a id="line.161">            return sequence.getData();</a>
+<span class="sourceLineNo">162</span><a id="line.162">        } catch (IOException e) {</a>
+<span class="sourceLineNo">163</span><a id="line.163">            throw new RuntimeException("Could not create batch control record header.", e);</a>
+<span class="sourceLineNo">164</span><a id="line.164">        }</a>
+<span class="sourceLineNo">165</span><a id="line.165">    }</a>
+<span class="sourceLineNo">166</span><a id="line.166"></a>
+<span class="sourceLineNo">167</span><a id="line.167">    private static byte[] createEmptyBatchControlRecordHeader() {</a>
+<span class="sourceLineNo">168</span><a id="line.168">        try (DataByteArrayOutputStream os = new DataByteArrayOutputStream();) {</a>
+<span class="sourceLineNo">169</span><a id="line.169">            os.writeInt(BATCH_CONTROL_RECORD_SIZE);</a>
+<span class="sourceLineNo">170</span><a id="line.170">            os.writeByte(BATCH_CONTROL_RECORD_TYPE);</a>
+<span class="sourceLineNo">171</span><a id="line.171">            os.write(BATCH_CONTROL_RECORD_MAGIC);</a>
+<span class="sourceLineNo">172</span><a id="line.172">            os.writeInt(0);</a>
+<span class="sourceLineNo">173</span><a id="line.173">            os.writeLong(0l);</a>
+<span class="sourceLineNo">174</span><a id="line.174">            ByteSequence sequence = os.toByteSequence();</a>
+<span class="sourceLineNo">175</span><a id="line.175">            sequence.compact();</a>
+<span class="sourceLineNo">176</span><a id="line.176">            return sequence.getData();</a>
+<span class="sourceLineNo">177</span><a id="line.177">        } catch (IOException e) {</a>
+<span class="sourceLineNo">178</span><a id="line.178">            throw new RuntimeException("Could not create empty batch control record header.", e);</a>
+<span class="sourceLineNo">179</span><a id="line.179">        }</a>
+<span class="sourceLineNo">180</span><a id="line.180">    }</a>
+<span class="sourceLineNo">181</span><a id="line.181"></a>
+<span class="sourceLineNo">182</span><a id="line.182">    private static byte[] createEofBatchAndLocationRecord() {</a>
+<span class="sourceLineNo">183</span><a id="line.183">        try (DataByteArrayOutputStream os = new DataByteArrayOutputStream();) {</a>
+<span class="sourceLineNo">184</span><a id="line.184">            os.writeInt(EOF_INT);</a>
+<span class="sourceLineNo">185</span><a id="line.185">            os.writeByte(EOF_EOT);</a>
+<span class="sourceLineNo">186</span><a id="line.186">            ByteSequence sequence = os.toByteSequence();</a>
+<span class="sourceLineNo">187</span><a id="line.187">            sequence.compact();</a>
+<span class="sourceLineNo">188</span><a id="line.188">            return sequence.getData();</a>
+<span class="sourceLineNo">189</span><a id="line.189">        } catch (IOException e) {</a>
+<span class="sourceLineNo">190</span><a id="line.190">            throw new RuntimeException("Could not create eof header.", e);</a>
+<span class="sourceLineNo">191</span><a id="line.191">        }</a>
+<span class="sourceLineNo">192</span><a id="line.192">    }</a>
+<span class="sourceLineNo">193</span><a id="line.193"></a>
+<span class="sourceLineNo">194</span><a id="line.194">    public static final String DEFAULT_DIRECTORY = ".";</a>
+<span class="sourceLineNo">195</span><a id="line.195">    public static final String DEFAULT_ARCHIVE_DIRECTORY = "data-archive";</a>
+<span class="sourceLineNo">196</span><a id="line.196">    public static final String DEFAULT_FILE_PREFIX = "db-";</a>
+<span class="sourceLineNo">197</span><a id="line.197">    public static final String DEFAULT_FILE_SUFFIX = ".log";</a>
+<span class="sourceLineNo">198</span><a id="line.198">    public static final int DEFAULT_MAX_FILE_LENGTH = 1024 * 1024 * 32;</a>
+<span class="sourceLineNo">199</span><a id="line.199">    public static final int DEFAULT_CLEANUP_INTERVAL = 1000 * 30;</a>
+<span class="sourceLineNo">200</span><a id="line.200">    public static final int DEFAULT_MAX_WRITE_BATCH_SIZE = 1024 * 1024 * 4;</a>
+<span class="sourceLineNo">201</span><a id="line.201"></a>
+<span class="sourceLineNo">202</span><a id="line.202">    private static final Logger LOG = LoggerFactory.getLogger(Journal.class);</a>
+<span class="sourceLineNo">203</span><a id="line.203"></a>
+<span class="sourceLineNo">204</span><a id="line.204">    protected final Map&lt;WriteKey, WriteCommand&gt; inflightWrites = new ConcurrentHashMap&lt;WriteKey, WriteCommand&gt;();</a>
+<span class="sourceLineNo">205</span><a id="line.205"></a>
+<span class="sourceLineNo">206</span><a id="line.206">    protected File directory = new File(DEFAULT_DIRECTORY);</a>
+<span class="sourceLineNo">207</span><a id="line.207">    protected File directoryArchive;</a>
+<span class="sourceLineNo">208</span><a id="line.208">    private boolean directoryArchiveOverridden = false;</a>
+<span class="sourceLineNo">209</span><a id="line.209"></a>
+<span class="sourceLineNo">210</span><a id="line.210">    protected String filePrefix = DEFAULT_FILE_PREFIX;</a>
+<span class="sourceLineNo">211</span><a id="line.211">    protected String fileSuffix = DEFAULT_FILE_SUFFIX;</a>
+<span class="sourceLineNo">212</span><a id="line.212">    protected boolean started;</a>
+<span class="sourceLineNo">213</span><a id="line.213"></a>
+<span class="sourceLineNo">214</span><a id="line.214">    protected int maxFileLength = DEFAULT_MAX_FILE_LENGTH;</a>
+<span class="sourceLineNo">215</span><a id="line.215">    protected int writeBatchSize = DEFAULT_MAX_WRITE_BATCH_SIZE;</a>
+<span class="sourceLineNo">216</span><a id="line.216"></a>
+<span class="sourceLineNo">217</span><a id="line.217">    protected FileAppender appender;</a>
+<span class="sourceLineNo">218</span><a id="line.218">    protected DataFileAccessorPool accessorPool;</a>
+<span class="sourceLineNo">219</span><a id="line.219"></a>
+<span class="sourceLineNo">220</span><a id="line.220">    protected Map&lt;Integer, DataFile&gt; fileMap = new HashMap&lt;Integer, DataFile&gt;();</a>
+<span class="sourceLineNo">221</span><a id="line.221">    protected Map&lt;File, DataFile&gt; fileByFileMap = new LinkedHashMap&lt;File, DataFile&gt;();</a>
+<span class="sourceLineNo">222</span><a id="line.222">    protected LinkedNodeList&lt;DataFile&gt; dataFiles = new LinkedNodeList&lt;DataFile&gt;();</a>
+<span class="sourceLineNo">223</span><a id="line.223"></a>
+<span class="sourceLineNo">224</span><a id="line.224">    protected final AtomicReference&lt;Location&gt; lastAppendLocation = new AtomicReference&lt;Location&gt;();</a>
+<span class="sourceLineNo">225</span><a id="line.225">    protected ScheduledFuture cleanupTask;</a>
+<span class="sourceLineNo">226</span><a id="line.226">    protected AtomicLong totalLength = new AtomicLong();</a>
+<span class="sourceLineNo">227</span><a id="line.227">    protected boolean archiveDataLogs;</a>
+<span class="sourceLineNo">228</span><a id="line.228">    private ReplicationTarget replicationTarget;</a>
+<span class="sourceLineNo">229</span><a id="line.229">    protected boolean checksum;</a>
+<span class="sourceLineNo">230</span><a id="line.230">    protected boolean checkForCorruptionOnStartup;</a>
+<span class="sourceLineNo">231</span><a id="line.231">    protected boolean enableAsyncDiskSync = true;</a>
+<span class="sourceLineNo">232</span><a id="line.232">    private int nextDataFileId = 1;</a>
+<span class="sourceLineNo">233</span><a id="line.233">    private Object dataFileIdLock = new Object();</a>
+<span class="sourceLineNo">234</span><a id="line.234">    private final AtomicReference&lt;DataFile&gt; currentDataFile = new AtomicReference&lt;&gt;(null);</a>
+<span class="sourceLineNo">235</span><a id="line.235">    private volatile DataFile nextDataFile;</a>
+<span class="sourceLineNo">236</span><a id="line.236"></a>
+<span class="sourceLineNo">237</span><a id="line.237">    protected PreallocationScope preallocationScope = PreallocationScope.ENTIRE_JOURNAL;</a>
+<span class="sourceLineNo">238</span><a id="line.238">    protected PreallocationStrategy preallocationStrategy = PreallocationStrategy.SPARSE_FILE;</a>
+<span class="sourceLineNo">239</span><a id="line.239">    private File osKernelCopyTemplateFile = null;</a>
+<span class="sourceLineNo">240</span><a id="line.240">    private ByteBuffer preAllocateDirectBuffer = null;</a>
+<span class="sourceLineNo">241</span><a id="line.241">    private long cleanupInterval = DEFAULT_CLEANUP_INTERVAL;</a>
+<span class="sourceLineNo">242</span><a id="line.242"></a>
+<span class="sourceLineNo">243</span><a id="line.243">    protected JournalDiskSyncStrategy journalDiskSyncStrategy = JournalDiskSyncStrategy.ALWAYS;</a>
+<span class="sourceLineNo">244</span><a id="line.244"></a>
+<span class="sourceLineNo">245</span><a id="line.245">    public interface DataFileRemovedListener {</a>
+<span class="sourceLineNo">246</span><a id="line.246">        void fileRemoved(DataFile datafile);</a>
+<span class="sourceLineNo">247</span><a id="line.247">    }</a>
+<span class="sourceLineNo">248</span><a id="line.248"></a>
+<span class="sourceLineNo">249</span><a id="line.249">    private DataFileRemovedListener dataFileRemovedListener;</a>
+<span class="sourceLineNo">250</span><a id="line.250"></a>
+<span class="sourceLineNo">251</span><a id="line.251">    public synchronized void start() throws IOException {</a>
+<span class="sourceLineNo">252</span><a id="line.252">        if (started) {</a>
+<span class="sourceLineNo">253</span><a id="line.253">            return;</a>
+<span class="sourceLineNo">254</span><a id="line.254">        }</a>
+<span class="sourceLineNo">255</span><a id="line.255"></a>
+<span class="sourceLineNo">256</span><a id="line.256">        long start = System.currentTimeMillis();</a>
+<span class="sourceLineNo">257</span><a id="line.257">        accessorPool = new DataFileAccessorPool(this);</a>
+<span class="sourceLineNo">258</span><a id="line.258">        started = true;</a>
+<span class="sourceLineNo">259</span><a id="line.259"></a>
+<span class="sourceLineNo">260</span><a id="line.260">        appender = callerBufferAppender ? new CallerBufferingDataFileAppender(this) : new DataFileAppender(this);</a>
+<span class="sourceLineNo">261</span><a id="line.261"></a>
+<span class="sourceLineNo">262</span><a id="line.262">        File[] files = directory.listFiles(new FilenameFilter() {</a>
+<span class="sourceLineNo">263</span><a id="line.263">            @Override</a>
+<span class="sourceLineNo">264</span><a id="line.264">            public boolean accept(File dir, String n) {</a>
+<span class="sourceLineNo">265</span><a id="line.265">                return dir.equals(directory) &amp;&amp; n.startsWith(filePrefix) &amp;&amp; n.endsWith(fileSuffix);</a>
+<span class="sourceLineNo">266</span><a id="line.266">            }</a>
+<span class="sourceLineNo">267</span><a id="line.267">        });</a>
+<span class="sourceLineNo">268</span><a id="line.268"></a>
+<span class="sourceLineNo">269</span><a id="line.269">        if (files != null) {</a>
+<span class="sourceLineNo">270</span><a id="line.270">            for (File file : files) {</a>
+<span class="sourceLineNo">271</span><a id="line.271">                try {</a>
+<span class="sourceLineNo">272</span><a id="line.272">                    String n = file.getName();</a>
+<span class="sourceLineNo">273</span><a id="line.273">                    String numStr = n.substring(filePrefix.length(), n.length()-fileSuffix.length());</a>
+<span class="sourceLineNo">274</span><a id="line.274">                    int num = Integer.parseInt(numStr);</a>
+<span class="sourceLineNo">275</span><a id="line.275">                    DataFile dataFile = new DataFile(file, num);</a>
+<span class="sourceLineNo">276</span><a id="line.276">                    fileMap.put(dataFile.getDataFileId(), dataFile);</a>
+<span class="sourceLineNo">277</span><a id="line.277">                    totalLength.addAndGet(dataFile.getLength());</a>
+<span class="sourceLineNo">278</span><a id="line.278">                } catch (NumberFormatException e) {</a>
+<span class="sourceLineNo">279</span><a id="line.279">                    // Ignore file that do not match the pattern.</a>
+<span class="sourceLineNo">280</span><a id="line.280">                }</a>
+<span class="sourceLineNo">281</span><a id="line.281">            }</a>
+<span class="sourceLineNo">282</span><a id="line.282"></a>
+<span class="sourceLineNo">283</span><a id="line.283">            // Sort the list so that we can link the DataFiles together in the</a>
+<span class="sourceLineNo">284</span><a id="line.284">            // right order.</a>
+<span class="sourceLineNo">285</span><a id="line.285">            LinkedList&lt;DataFile&gt; l = new LinkedList&lt;&gt;(fileMap.values());</a>
+<span class="sourceLineNo">286</span><a id="line.286">            Collections.sort(l);</a>
+<span class="sourceLineNo">287</span><a id="line.287">            for (DataFile df : l) {</a>
+<span class="sourceLineNo">288</span><a id="line.288">                if (df.getLength() == 0) {</a>
+<span class="sourceLineNo">289</span><a id="line.289">                    // possibly the result of a previous failed write</a>
+<span class="sourceLineNo">290</span><a id="line.290">                    LOG.info("ignoring zero length, partially initialised journal data file: " + df);</a>
+<span class="sourceLineNo">291</span><a id="line.291">                    continue;</a>
+<span class="sourceLineNo">292</span><a id="line.292">                } else if (l.getLast().equals(df) &amp;&amp; isUnusedPreallocated(df)) {</a>
+<span class="sourceLineNo">293</span><a id="line.293">                    continue;</a>
+<span class="sourceLineNo">294</span><a id="line.294">                }</a>
+<span class="sourceLineNo">295</span><a id="line.295">                dataFiles.addLast(df);</a>
+<span class="sourceLineNo">296</span><a id="line.296">                fileByFileMap.put(df.getFile(), df);</a>
+<span class="sourceLineNo">297</span><a id="line.297"></a>
+<span class="sourceLineNo">298</span><a id="line.298">                if( isCheckForCorruptionOnStartup() ) {</a>
+<span class="sourceLineNo">299</span><a id="line.299">                    lastAppendLocation.set(recoveryCheck(df));</a>
+<span class="sourceLineNo">300</span><a id="line.300">                }</a>
+<span class="sourceLineNo">301</span><a id="line.301">            }</a>
+<span class="sourceLineNo">302</span><a id="line.302">        }</a>
+<span class="sourceLineNo">303</span><a id="line.303"></a>
+<span class="sourceLineNo">304</span><a id="line.304">        if (preallocationScope != PreallocationScope.NONE) {</a>
+<span class="sourceLineNo">305</span><a id="line.305">            switch (preallocationStrategy) {</a>
+<span class="sourceLineNo">306</span><a id="line.306">                case SPARSE_FILE:</a>
+<span class="sourceLineNo">307</span><a id="line.307">                    break;</a>
+<span class="sourceLineNo">308</span><a id="line.308">                case OS_KERNEL_COPY: {</a>
+<span class="sourceLineNo">309</span><a id="line.309">                    osKernelCopyTemplateFile = createJournalTemplateFile();</a>
+<span class="sourceLineNo">310</span><a id="line.310">                }</a>
+<span class="sourceLineNo">311</span><a id="line.311">                break;</a>
+<span class="sourceLineNo">312</span><a id="line.312">                case CHUNKED_ZEROS: {</a>
+<span class="sourceLineNo">313</span><a id="line.313">                    preAllocateDirectBuffer = allocateDirectBuffer(PREALLOC_CHUNK_SIZE);</a>
+<span class="sourceLineNo">314</span><a id="line.314">                }</a>
+<span class="sourceLineNo">315</span><a id="line.315">                break;</a>
+<span class="sourceLineNo">316</span><a id="line.316">                case ZEROS: {</a>
+<span class="sourceLineNo">317</span><a id="line.317">                    preAllocateDirectBuffer = allocateDirectBuffer(getMaxFileLength());</a>
+<span class="sourceLineNo">318</span><a id="line.318">                }</a>
+<span class="sourceLineNo">319</span><a id="line.319">                break;</a>
+<span class="sourceLineNo">320</span><a id="line.320">            }</a>
+<span class="sourceLineNo">321</span><a id="line.321">        }</a>
+<span class="sourceLineNo">322</span><a id="line.322">        scheduler = Executors.newScheduledThreadPool(1, new ThreadFactory() {</a>
+<span class="sourceLineNo">323</span><a id="line.323">            @Override</a>
+<span class="sourceLineNo">324</span><a id="line.324">            public Thread newThread(Runnable r) {</a>
+<span class="sourceLineNo">325</span><a id="line.325">                Thread schedulerThread = new Thread(r);</a>
+<span class="sourceLineNo">326</span><a id="line.326">                schedulerThread.setName("ActiveMQ Journal Scheduled executor");</a>
+<span class="sourceLineNo">327</span><a id="line.327">                schedulerThread.setDaemon(true);</a>
+<span class="sourceLineNo">328</span><a id="line.328">                return schedulerThread;</a>
+<span class="sourceLineNo">329</span><a id="line.329">            }</a>
+<span class="sourceLineNo">330</span><a id="line.330">        });</a>
+<span class="sourceLineNo">331</span><a id="line.331"></a>
+<span class="sourceLineNo">332</span><a id="line.332">        // init current write file</a>
+<span class="sourceLineNo">333</span><a id="line.333">        if (dataFiles.isEmpty()) {</a>
+<span class="sourceLineNo">334</span><a id="line.334">            nextDataFileId = 1;</a>
+<span class="sourceLineNo">335</span><a id="line.335">            rotateWriteFile();</a>
+<span class="sourceLineNo">336</span><a id="line.336">        } else {</a>
+<span class="sourceLineNo">337</span><a id="line.337">            currentDataFile.set(dataFiles.getTail());</a>
+<span class="sourceLineNo">338</span><a id="line.338">            nextDataFileId = currentDataFile.get().dataFileId + 1;</a>
+<span class="sourceLineNo">339</span><a id="line.339">        }</a>
+<span class="sourceLineNo">340</span><a id="line.340"></a>
+<span class="sourceLineNo">341</span><a id="line.341">        if( lastAppendLocation.get()==null ) {</a>
+<span class="sourceLineNo">342</span><a id="line.342">            DataFile df = dataFiles.getTail();</a>
+<span class="sourceLineNo">343</span><a id="line.343">            lastAppendLocation.set(recoveryCheck(df));</a>
+<span class="sourceLineNo">344</span><a id="line.344">        }</a>
+<span class="sourceLineNo">345</span><a id="line.345"></a>
+<span class="sourceLineNo">346</span><a id="line.346">        // ensure we don't report unused space of last journal file in size metric</a>
+<span class="sourceLineNo">347</span><a id="line.347">        int lastFileLength = dataFiles.getTail().getLength();</a>
+<span class="sourceLineNo">348</span><a id="line.348">        if (totalLength.get() &gt; lastFileLength &amp;&amp; lastAppendLocation.get().getOffset() &gt; 0) {</a>
+<span class="sourceLineNo">349</span><a id="line.349">            totalLength.addAndGet(lastAppendLocation.get().getOffset() - lastFileLength);</a>
+<span class="sourceLineNo">350</span><a id="line.350">        }</a>
+<span class="sourceLineNo">351</span><a id="line.351"></a>
+<span class="sourceLineNo">352</span><a id="line.352">        cleanupTask = scheduler.scheduleAtFixedRate(new Runnable() {</a>
+<span class="sourceLineNo">353</span><a id="line.353">            @Override</a>
+<span class="sourceLineNo">354</span><a id="line.354">            public void run() {</a>
+<span class="sourceLineNo">355</span><a id="line.355">                cleanup();</a>
+<span class="sourceLineNo">356</span><a id="line.356">            }</a>
+<span class="sourceLineNo">357</span><a id="line.357">        }, cleanupInterval, cleanupInterval, TimeUnit.MILLISECONDS);</a>
+<span class="sourceLineNo">358</span><a id="line.358"></a>
+<span class="sourceLineNo">359</span><a id="line.359">        long end = System.currentTimeMillis();</a>
+<span class="sourceLineNo">360</span><a id="line.360">        LOG.trace("Startup took: "+(end-start)+" ms");</a>
+<span class="sourceLineNo">361</span><a id="line.361">    }</a>
+<span class="sourceLineNo">362</span><a id="line.362"></a>
+<span class="sourceLineNo">363</span><a id="line.363">    private ByteBuffer allocateDirectBuffer(int size) {</a>
+<span class="sourceLineNo">364</span><a id="line.364">        ByteBuffer buffer = ByteBuffer.allocateDirect(size);</a>
+<span class="sourceLineNo">365</span><a id="line.365">        buffer.put(EOF_RECORD);</a>
+<span class="sourceLineNo">366</span><a id="line.366">        return buffer;</a>
+<span class="sourceLineNo">367</span><a id="line.367">    }</a>
+<span class="sourceLineNo">368</span><a id="line.368"></a>
+<span class="sourceLineNo">369</span><a id="line.369">    public void preallocateEntireJournalDataFile(RecoverableRandomAccessFile file) {</a>
+<span class="sourceLineNo">370</span><a id="line.370"></a>
+<span class="sourceLineNo">371</span><a id="line.371">        if (PreallocationScope.NONE != preallocationScope) {</a>
+<span class="sourceLineNo">372</span><a id="line.372"></a>
+<span class="sourceLineNo">373</span><a id="line.373">            try {</a>
+<span class="sourceLineNo">374</span><a id="line.374">                if (PreallocationStrategy.OS_KERNEL_COPY == preallocationStrategy) {</a>
+<span class="sourceLineNo">375</span><a id="line.375">                    doPreallocationKernelCopy(file);</a>
+<span class="sourceLineNo">376</span><a id="line.376">                } else if (PreallocationStrategy.ZEROS == preallocationStrategy) {</a>
+<span class="sourceLineNo">377</span><a id="line.377">                    doPreallocationZeros(file);</a>
+<span class="sourceLineNo">378</span><a id="line.378">                } else if (PreallocationStrategy.CHUNKED_ZEROS == preallocationStrategy) {</a>
+<span class="sourceLineNo">379</span><a id="line.379">                    doPreallocationChunkedZeros(file);</a>
+<span class="sourceLineNo">380</span><a id="line.380">                } else {</a>
+<span class="sourceLineNo">381</span><a id="line.381">                    doPreallocationSparseFile(file);</a>
+<span class="sourceLineNo">382</span><a id="line.382">                }</a>
+<span class="sourceLineNo">383</span><a id="line.383">            } catch (Throwable continueWithNoPrealloc) {</a>
+<span class="sourceLineNo">384</span><a id="line.384">                // error on preallocation is non fatal, and we don't want to leak the journal handle</a>
+<span class="sourceLineNo">385</span><a id="line.385">                LOG.error("cound not preallocate journal data file", continueWithNoPrealloc);</a>
+<span class="sourceLineNo">386</span><a id="line.386">            }</a>
+<span class="sourceLineNo">387</span><a id="line.387">        }</a>
+<span class="sourceLineNo">388</span><a id="line.388">    }</a>
+<span class="sourceLineNo">389</span><a id="line.389"></a>
+<span class="sourceLineNo">390</span><a id="line.390">    private void doPreallocationSparseFile(RecoverableRandomAccessFile file) {</a>
+<span class="sourceLineNo">391</span><a id="line.391">        final ByteBuffer journalEof = ByteBuffer.wrap(EOF_RECORD);</a>
+<span class="sourceLineNo">392</span><a id="line.392">        try {</a>
+<span class="sourceLineNo">393</span><a id="line.393">            FileChannel channel = file.getChannel();</a>
+<span class="sourceLineNo">394</span><a id="line.394">            channel.position(0);</a>
+<span class="sourceLineNo">395</span><a id="line.395">            channel.write(journalEof);</a>
+<span class="sourceLineNo">396</span><a id="line.396">            channel.position(maxFileLength - 5);</a>
+<span class="sourceLineNo">397</span><a id="line.397">            journalEof.rewind();</a>
+<span class="sourceLineNo">398</span><a id="line.398">            channel.write(journalEof);</a>
+<span class="sourceLineNo">399</span><a id="line.399">            channel.force(false);</a>
+<span class="sourceLineNo">400</span><a id="line.400">            channel.position(0);</a>
+<span class="sourceLineNo">401</span><a id="line.401">        } catch (ClosedByInterruptException ignored) {</a>
+<span class="sourceLineNo">402</span><a id="line.402">            LOG.trace("Could not preallocate journal file with sparse file", ignored);</a>
+<span class="sourceLineNo">403</span><a id="line.403">        } catch (IOException e) {</a>
+<span class="sourceLineNo">404</span><a id="line.404">            LOG.error("Could not preallocate journal file with sparse file", e);</a>
+<span class="sourceLineNo">405</span><a id="line.405">        }</a>
+<span class="sourceLineNo">406</span><a id="line.406">    }</a>
+<span class="sourceLineNo">407</span><a id="line.407"></a>
+<span class="sourceLineNo">408</span><a id="line.408">    private void doPreallocationZeros(RecoverableRandomAccessFile file) {</a>
+<span class="sourceLineNo">409</span><a id="line.409">        preAllocateDirectBuffer.rewind();</a>
+<span class="sourceLineNo">410</span><a id="line.410">        try {</a>
+<span class="sourceLineNo">411</span><a id="line.411">            FileChannel channel = file.getChannel();</a>
+<span class="sourceLineNo">412</span><a id="line.412">            channel.write(preAllocateDirectBuffer);</a>
+<span class="sourceLineNo">413</span><a id="line.413">            channel.force(false);</a>
+<span class="sourceLineNo">414</span><a id="line.414">            channel.position(0);</a>
+<span class="sourceLineNo">415</span><a id="line.415">        } catch (ClosedByInterruptException ignored) {</a>
+<span class="sourceLineNo">416</span><a id="line.416">            LOG.trace("Could not preallocate journal file with zeros", ignored);</a>
+<span class="sourceLineNo">417</span><a id="line.417">        } catch (IOException e) {</a>
+<span class="sourceLineNo">418</span><a id="line.418">            LOG.error("Could not preallocate journal file with zeros", e);</a>
+<span class="sourceLineNo">419</span><a id="line.419">        }</a>
+<span class="sourceLineNo">420</span><a id="line.420">    }</a>
+<span class="sourceLineNo">421</span><a id="line.421"></a>
+<span class="sourceLineNo">422</span><a id="line.422">    private void doPreallocationKernelCopy(RecoverableRandomAccessFile file) {</a>
+<span class="sourceLineNo">423</span><a id="line.423">        try (RandomAccessFile templateRaf = new RandomAccessFile(osKernelCopyTemplateFile, "rw");){</a>
+<span class="sourceLineNo">424</span><a id="line.424">            templateRaf.getChannel().transferTo(0, getMaxFileLength(), file.getChannel());</a>
+<span class="sourceLineNo">425</span><a id="line.425">        } catch (ClosedByInterruptException ignored) {</a>
+<span class="sourceLineNo">426</span><a id="line.426">            LOG.trace("Could not preallocate journal file with kernel copy", ignored);</a>
+<span class="sourceLineNo">427</span><a id="line.427">        } catch (FileNotFoundException e) {</a>
+<span class="sourceLineNo">428</span><a id="line.428">            LOG.error("Could not find the template file on disk at " + osKernelCopyTemplateFile.getAbsolutePath(), e);</a>
+<span class="sourceLineNo">429</span><a id="line.429">        } catch (IOException e) {</a>
+<span class="sourceLineNo">430</span><a id="line.430">            LOG.error("Could not transfer the template file to journal, transferFile=" + osKernelCopyTemplateFile.getAbsolutePath(), e);</a>
+<span class="sourceLineNo">431</span><a id="line.431">        }</a>
+<span class="sourceLineNo">432</span><a id="line.432">    }</a>
+<span class="sourceLineNo">433</span><a id="line.433"></a>
+<span class="sourceLineNo">434</span><a id="line.434">    private File createJournalTemplateFile() {</a>
+<span class="sourceLineNo">435</span><a id="line.435">        String fileName = "db-log.template";</a>
+<span class="sourceLineNo">436</span><a id="line.436">        File rc = new File(directory, fileName);</a>
+<span class="sourceLineNo">437</span><a id="line.437">        try (RandomAccessFile templateRaf = new RandomAccessFile(rc, "rw");) {</a>
+<span class="sourceLineNo">438</span><a id="line.438">            templateRaf.getChannel().write(ByteBuffer.wrap(EOF_RECORD));</a>
+<span class="sourceLineNo">439</span><a id="line.439">            templateRaf.setLength(maxFileLength);</a>
+<span class="sourceLineNo">440</span><a id="line.440">            templateRaf.getChannel().force(true);</a>
+<span class="sourceLineNo">441</span><a id="line.441">        } catch (FileNotFoundException e) {</a>
+<span class="sourceLineNo">442</span><a id="line.442">            LOG.error("Could not find the template file on disk at " + osKernelCopyTemplateFile.getAbsolutePath(), e);</a>
+<span class="sourceLineNo">443</span><a id="line.443">        } catch (IOException e) {</a>
+<span class="sourceLineNo">444</span><a id="line.444">            LOG.error("Could not transfer the template file to journal, transferFile=" + osKernelCopyTemplateFile.getAbsolutePath(), e);</a>
+<span class="sourceLineNo">445</span><a id="line.445">        }</a>
+<span class="sourceLineNo">446</span><a id="line.446">        return rc;</a>
+<span class="sourceLineNo">447</span><a id="line.447">    }</a>
+<span class="sourceLineNo">448</span><a id="line.448"></a>
+<span class="sourceLineNo">449</span><a id="line.449">    private void doPreallocationChunkedZeros(RecoverableRandomAccessFile file) {</a>
+<span class="sourceLineNo">450</span><a id="line.450">        preAllocateDirectBuffer.limit(preAllocateDirectBuffer.capacity());</a>
+<span class="sourceLineNo">451</span><a id="line.451">        preAllocateDirectBuffer.rewind();</a>
+<span class="sourceLineNo">452</span><a id="line.452">        try {</a>
+<span class="sourceLineNo">453</span><a id="line.453">            FileChannel channel = file.getChannel();</a>
+<span class="sourceLineNo">454</span><a id="line.454"></a>
+<span class="sourceLineNo">455</span><a id="line.455">            int remLen = maxFileLength;</a>
+<span class="sourceLineNo">456</span><a id="line.456">            while (remLen &gt; 0) {</a>
+<span class="sourceLineNo">457</span><a id="line.457">                if (remLen &lt; preAllocateDirectBuffer.remaining()) {</a>
+<span class="sourceLineNo">458</span><a id="line.458">                    preAllocateDirectBuffer.limit(remLen);</a>
+<span class="sourceLineNo">459</span><a id="line.459">                }</a>
+<span class="sourceLineNo">460</span><a id="line.460">                int writeLen = channel.write(preAllocateDirectBuffer);</a>
+<span class="sourceLineNo">461</span><a id="line.461">                remLen -= writeLen;</a>
+<span class="sourceLineNo">462</span><a id="line.462">                preAllocateDirectBuffer.rewind();</a>
+<span class="sourceLineNo">463</span><a id="line.463">            }</a>
+<span class="sourceLineNo">464</span><a id="line.464"></a>
+<span class="sourceLineNo">465</span><a id="line.465">            channel.force(false);</a>
+<span class="sourceLineNo">466</span><a id="line.466">            channel.position(0);</a>
+<span class="sourceLineNo">467</span><a id="line.467">        } catch (ClosedByInterruptException ignored) {</a>
+<span class="sourceLineNo">468</span><a id="line.468">            LOG.trace("Could not preallocate journal file with zeros", ignored);</a>
+<span class="sourceLineNo">469</span><a id="line.469">        } catch (IOException e) {</a>
+<span class="sourceLineNo">470</span><a id="line.470">            LOG.error("Could not preallocate journal file with zeros! Will continue without preallocation", e);</a>
+<span class="sourceLineNo">471</span><a id="line.471">        }</a>
+<span class="sourceLineNo">472</span><a id="line.472">    }</a>
+<span class="sourceLineNo">473</span><a id="line.473"></a>
+<span class="sourceLineNo">474</span><a id="line.474">    private static byte[] bytes(String string) {</a>
+<span class="sourceLineNo">475</span><a id="line.475">        try {</a>
+<span class="sourceLineNo">476</span><a id="line.476">            return string.getBytes("UTF-8");</a>
+<span class="sourceLineNo">477</span><a id="line.477">        } catch (UnsupportedEncodingException e) {</a>
+<span class="sourceLineNo">478</span><a id="line.478">            throw new RuntimeException(e);</a>
+<span class="sourceLineNo">479</span><a id="line.479">        }</a>
+<span class="sourceLineNo">480</span><a id="line.480">    }</a>
+<span class="sourceLineNo">481</span><a id="line.481"></a>
+<span class="sourceLineNo">482</span><a id="line.482">    public boolean isUnusedPreallocated(DataFile dataFile) throws IOException {</a>
+<span class="sourceLineNo">483</span><a id="line.483">        if (preallocationScope == PreallocationScope.ENTIRE_JOURNAL_ASYNC) {</a>
+<span class="sourceLineNo">484</span><a id="line.484">            DataFileAccessor reader = accessorPool.openDataFileAccessor(dataFile);</a>
+<span class="sourceLineNo">485</span><a id="line.485">            try {</a>
+<span class="sourceLineNo">486</span><a id="line.486">                byte[] firstFewBytes = new byte[BATCH_CONTROL_RECORD_HEADER.length];</a>
+<span class="sourceLineNo">487</span><a id="line.487">                reader.readFully(0, firstFewBytes);</a>
+<span class="sourceLineNo">488</span><a id="line.488">                ByteSequence bs = new ByteSequence(firstFewBytes);</a>
+<span class="sourceLineNo">489</span><a id="line.489">                return bs.startsWith(EOF_RECORD);</a>
+<span class="sourceLineNo">490</span><a id="line.490">            } catch (Exception ignored) {</a>
+<span class="sourceLineNo">491</span><a id="line.491">            } finally {</a>
+<span class="sourceLineNo">492</span><a id="line.492">                accessorPool.closeDataFileAccessor(reader);</a>
+<span class="sourceLineNo">493</span><a id="line.493">            }</a>
+<span class="sourceLineNo">494</span><a id="line.494">        }</a>
+<span class="sourceLineNo">495</span><a id="line.495">        return false;</a>
+<span class="sourceLineNo">496</span><a id="line.496">    }</a>
+<span class="sourceLineNo">497</span><a id="line.497"></a>
+<span class="sourceLineNo">498</span><a id="line.498">    protected Location recoveryCheck(DataFile dataFile) throws IOException {</a>
+<span class="sourceLineNo">499</span><a id="line.499">        Location location = new Location();</a>
+<span class="sourceLineNo">500</span><a id="line.500">        location.setDataFileId(dataFile.getDataFileId());</a>
+<span class="sourceLineNo">501</span><a id="line.501">        location.setOffset(0);</a>
+<span class="sourceLineNo">502</span><a id="line.502"></a>
+<span class="sourceLineNo">503</span><a id="line.503">        DataFileAccessor reader = accessorPool.openDataFileAccessor(dataFile);</a>
+<span class="sourceLineNo">504</span><a id="line.504">        try {</a>
+<span class="sourceLineNo">505</span><a id="line.505">            RandomAccessFile randomAccessFile = reader.getRaf().getRaf();</a>
+<span class="sourceLineNo">506</span><a id="line.506">            randomAccessFile.seek(0);</a>
+<span class="sourceLineNo">507</span><a id="line.507">            final long totalFileLength = randomAccessFile.length();</a>
+<span class="sourceLineNo">508</span><a id="line.508">            byte[] data = new byte[getWriteBatchSize()];</a>
+<span class="sourceLineNo">509</span><a id="line.509">            ByteSequence bs = new ByteSequence(data, 0, randomAccessFile.read(data));</a>
+<span class="sourceLineNo">510</span><a id="line.510"></a>
+<span class="sourceLineNo">511</span><a id="line.511">            while (true) {</a>
+<span class="sourceLineNo">512</span><a id="line.512">                int size = checkBatchRecord(bs, randomAccessFile);</a>
+<span class="sourceLineNo">513</span><a id="line.513">                if (size &gt; 0 &amp;&amp; location.getOffset() + BATCH_CONTROL_RECORD_SIZE + size &lt;= totalFileLength) {</a>
+<span class="sourceLineNo">514</span><a id="line.514">                    location.setOffset(location.getOffset() + BATCH_CONTROL_RECORD_SIZE + size);</a>
+<span class="sourceLineNo">515</span><a id="line.515">                } else if (size == 0 &amp;&amp; location.getOffset() + EOF_RECORD.length + size &lt;= totalFileLength) {</a>
+<span class="sourceLineNo">516</span><a id="line.516">                    // eof batch record</a>
+<span class="sourceLineNo">517</span><a id="line.517">                    break;</a>
+<span class="sourceLineNo">518</span><a id="line.518">                } else  {</a>
+<span class="sourceLineNo">519</span><a id="line.519">                    // track corruption and skip if possible</a>
+<span class="sourceLineNo">520</span><a id="line.520">                    Sequence sequence = new Sequence(location.getOffset());</a>
+<span class="sourceLineNo">521</span><a id="line.521">                    if (findNextBatchRecord(bs, randomAccessFile) &gt;= 0) {</a>
+<span class="sourceLineNo">522</span><a id="line.522">                        int nextOffset = Math.toIntExact(randomAccessFile.getFilePointer() - bs.remaining());</a>
+<span class="sourceLineNo">523</span><a id="line.523">                        sequence.setLast(nextOffset - 1);</a>
+<span class="sourceLineNo">524</span><a id="line.524">                        dataFile.corruptedBlocks.add(sequence);</a>
+<span class="sourceLineNo">525</span><a id="line.525">                        LOG.warn("Corrupt journal records found in '{}' between offsets: {}", dataFile.getFile(), sequence);</a>
+<span class="sourceLineNo">526</span><a id="line.526">                        location.setOffset(nextOffset);</a>
+<span class="sourceLineNo">527</span><a id="line.527">                    } else {</a>
+<span class="sourceLineNo">528</span><a id="line.528">                        // corruption to eof, don't loose track of this corruption, don't truncate</a>
+<span class="sourceLineNo">529</span><a id="line.529">                        sequence.setLast(Math.toIntExact(randomAccessFile.getFilePointer()));</a>
+<span class="sourceLineNo">530</span><a id="line.530">                        dataFile.corruptedBlocks.add(sequence);</a>
+<span class="sourceLineNo">531</span><a id="line.531">                        LOG.warn("Corrupt journal records found in '{}' from offset: {} to EOF", dataFile.getFile(), sequence);</a>
+<span class="sourceLineNo">532</span><a id="line.532">                        break;</a>
+<span class="sourceLineNo">533</span><a id="line.533">                    }</a>
+<span class="sourceLineNo">534</span><a id="line.534">                }</a>
+<span class="sourceLineNo">535</span><a id="line.535">            }</a>
+<span class="sourceLineNo">536</span><a id="line.536"></a>
+<span class="sourceLineNo">537</span><a id="line.537">        } catch (IOException e) {</a>
+<span class="sourceLineNo">538</span><a id="line.538">            LOG.trace("exception on recovery check of: " + dataFile + ", at " + location, e);</a>
+<span class="sourceLineNo">539</span><a id="line.539">        } finally {</a>
+<span class="sourceLineNo">540</span><a id="line.540">            accessorPool.closeDataFileAccessor(reader);</a>
+<span class="sourceLineNo">541</span><a id="line.541">        }</a>
+<span class="sourceLineNo">542</span><a id="line.542"></a>
+<span class="sourceLineNo">543</span><a id="line.543">        int existingLen = dataFile.getLength();</a>
+<span class="sourceLineNo">544</span><a id="line.544">        dataFile.setLength(location.getOffset());</a>
+<span class="sourceLineNo">545</span><a id="line.545">        if (existingLen &gt; dataFile.getLength()) {</a>
+<span class="sourceLineNo">546</span><a id="line.546">            totalLength.addAndGet(dataFile.getLength() - existingLen);</a>
+<span class="sourceLineNo">547</span><a id="line.547">        }</a>
+<span class="sourceLineNo">548</span><a id="line.548">        return location;</a>
+<span class="sourceLineNo">549</span><a id="line.549">    }</a>
+<span class="sourceLineNo">550</span><a id="line.550"></a>
+<span class="sourceLineNo">551</span><a id="line.551">    private int findNextBatchRecord(ByteSequence bs, RandomAccessFile reader) throws IOException {</a>
+<span class="sourceLineNo">552</span><a id="line.552">        final ByteSequence header = new ByteSequence(BATCH_CONTROL_RECORD_HEADER);</a>
+<span class="sourceLineNo">553</span><a id="line.553">        int pos = 0;</a>
+<span class="sourceLineNo">554</span><a id="line.554">        while (true) {</a>
+<span class="sourceLineNo">555</span><a id="line.555">            pos = bs.indexOf(header, 0);</a>
+<span class="sourceLineNo">556</span><a id="line.556">            if (pos &gt;= 0) {</a>
+<span class="sourceLineNo">557</span><a id="line.557">                bs.setOffset(bs.offset + pos);</a>
+<span class="sourceLineNo">558</span><a id="line.558">                return pos;</a>
+<span class="sourceLineNo">559</span><a id="line.559">            } else {</a>
+<span class="sourceLineNo">560</span><a id="line.560">                // need to load the next data chunck in..</a>
+<span class="sourceLineNo">561</span><a id="line.561">                if (bs.length != bs.data.length) {</a>
+<span class="sourceLineNo">562</span><a id="line.562">                    // If we had a short read then we were at EOF</a>
+<span class="sourceLineNo">563</span><a id="line.563">                    return -1;</a>
+<span class="sourceLineNo">564</span><a id="line.564">                }</a>
+<span class="sourceLineNo">565</span><a id="line.565">                bs.setOffset(bs.length - BATCH_CONTROL_RECORD_HEADER.length);</a>
+<span class="sourceLineNo">566</span><a id="line.566">                bs.reset();</a>
+<span class="sourceLineNo">567</span><a id="line.567">                bs.setLength(bs.length + reader.read(bs.data, bs.length, bs.data.length - BATCH_CONTROL_RECORD_HEADER.length));</a>
+<span class="sourceLineNo">568</span><a id="line.568">            }</a>
+<span class="sourceLineNo">569</span><a id="line.569">        }</a>
+<span class="sourceLineNo">570</span><a id="line.570">    }</a>
+<span class="sourceLineNo">571</span><a id="line.571"></a>
+<span class="sourceLineNo">572</span><a id="line.572">    private int checkBatchRecord(ByteSequence bs, RandomAccessFile reader) throws IOException {</a>
+<span class="sourceLineNo">573</span><a id="line.573">        ensureAvailable(bs, reader, EOF_RECORD.length);</a>
+<span class="sourceLineNo">574</span><a id="line.574">        if (bs.startsWith(EOF_RECORD)) {</a>
+<span class="sourceLineNo">575</span><a id="line.575">            return 0; // eof</a>
+<span class="sourceLineNo">576</span><a id="line.576">        }</a>
+<span class="sourceLineNo">577</span><a id="line.577">        ensureAvailable(bs, reader, BATCH_CONTROL_RECORD_SIZE);</a>
+<span class="sourceLineNo">578</span><a id="line.578">        try (DataByteArrayInputStream controlIs = new DataByteArrayInputStream(bs)) {</a>
+<span class="sourceLineNo">579</span><a id="line.579"></a>
+<span class="sourceLineNo">580</span><a id="line.580">            // Assert that it's a batch record.</a>
+<span class="sourceLineNo">581</span><a id="line.581">            for (int i = 0; i &lt; BATCH_CONTROL_RECORD_HEADER.length; i++) {</a>
+<span class="sourceLineNo">582</span><a id="line.582">                if (controlIs.readByte() != BATCH_CONTROL_RECORD_HEADER[i]) {</a>
+<span class="sourceLineNo">583</span><a id="line.583">                    return -1;</a>
+<span class="sourceLineNo">584</span><a id="line.584">                }</a>
+<span class="sourceLineNo">585</span><a id="line.585">            }</a>
+<span class="sourceLineNo">586</span><a id="line.586"></a>
+<span class="sourceLineNo">587</span><a id="line.587">            int size = controlIs.readInt();</a>
+<span class="sourceLineNo">588</span><a id="line.588">            if (size &lt; 0 || size &gt; Integer.MAX_VALUE - (BATCH_CONTROL_RECORD_SIZE + EOF_RECORD.length)) {</a>
+<span class="sourceLineNo">589</span><a id="line.589">                return -2;</a>
+<span class="sourceLineNo">590</span><a id="line.590">            }</a>
+<span class="sourceLineNo">591</span><a id="line.591"></a>
+<span class="sourceLineNo">592</span><a id="line.592">            long expectedChecksum = controlIs.readLong();</a>
+<span class="sourceLineNo">593</span><a id="line.593">            Checksum checksum = null;</a>
+<span class="sourceLineNo">594</span><a id="line.594">            if (isChecksum() &amp;&amp; expectedChecksum &gt; 0) {</a>
+<span class="sourceLineNo">595</span><a id="line.595">                checksum = new Adler32();</a>
+<span class="sourceLineNo">596</span><a id="line.596">            }</a>
+<span class="sourceLineNo">597</span><a id="line.597"></a>
+<span class="sourceLineNo">598</span><a id="line.598">            // revert to bs to consume data</a>
+<span class="sourceLineNo">599</span><a id="line.599">            bs.setOffset(controlIs.position());</a>
+<span class="sourceLineNo">600</span><a id="line.600">            int toRead = size;</a>
+<span class="sourceLineNo">601</span><a id="line.601">            while (toRead &gt; 0) {</a>
+<span class="sourceLineNo">602</span><a id="line.602">                if (bs.remaining() &gt;= toRead) {</a>
+<span class="sourceLineNo">603</span><a id="line.603">                    if (checksum != null) {</a>
+<span class="sourceLineNo">604</span><a id="line.604">                        checksum.update(bs.getData(), bs.getOffset(), toRead);</a>
+<span class="sourceLineNo">605</span><a id="line.605">                    }</a>
+<span class="sourceLineNo">606</span><a id="line.606">                    bs.setOffset(bs.offset + toRead);</a>
+<span class="sourceLineNo">607</span><a id="line.607">                    toRead = 0;</a>
+<span class="sourceLineNo">608</span><a id="line.608">                } else {</a>
+<span class="sourceLineNo">609</span><a id="line.609">                    if (bs.length != bs.data.length) {</a>
+<span class="sourceLineNo">610</span><a id="line.610">                        // buffer exhausted</a>
+<span class="sourceLineNo">611</span><a id="line.611">                        return  -3;</a>
+<span class="sourceLineNo">612</span><a id="line.612">                    }</a>
+<span class="sourceLineNo">613</span><a id="line.613"></a>
+<span class="sourceLineNo">614</span><a id="line.614">                    toRead -= bs.remaining();</a>
+<span class="sourceLineNo">615</span><a id="line.615">                    if (checksum != null) {</a>
+<span class="sourceLineNo">616</span><a id="line.616">                        checksum.update(bs.getData(), bs.getOffset(), bs.remaining());</a>
+<span class="sourceLineNo">617</span><a id="line.617">                    }</a>
+<span class="sourceLineNo">618</span><a id="line.618">                    bs.setLength(reader.read(bs.data));</a>
+<span class="sourceLineNo">619</span><a id="line.619">                    bs.setOffset(0);</a>
+<span class="sourceLineNo">620</span><a id="line.620">                }</a>
+<span class="sourceLineNo">621</span><a id="line.621">            }</a>
+<span class="sourceLineNo">622</span><a id="line.622">            if (checksum != null &amp;&amp; expectedChecksum != checksum.getValue()) {</a>
+<span class="sourceLineNo">623</span><a id="line.623">                return -4;</a>
+<span class="sourceLineNo">624</span><a id="line.624">            }</a>
+<span class="sourceLineNo">625</span><a id="line.625"></a>
+<span class="sourceLineNo">626</span><a id="line.626">            return size;</a>
+<span class="sourceLineNo">627</span><a id="line.627">        }</a>
+<span class="sourceLineNo">628</span><a id="line.628">    }</a>
+<span class="sourceLineNo">629</span><a id="line.629"></a>
+<span class="sourceLineNo">630</span><a id="line.630">    private void ensureAvailable(ByteSequence bs, RandomAccessFile reader, int required) throws IOException {</a>
+<span class="sourceLineNo">631</span><a id="line.631">        if (bs.remaining() &lt; required) {</a>
+<span class="sourceLineNo">632</span><a id="line.632">            bs.reset();</a>
+<span class="sourceLineNo">633</span><a id="line.633">            int read = reader.read(bs.data, bs.length, bs.data.length - bs.length);</a>
+<span class="sourceLineNo">634</span><a id="line.634">            if (read &lt; 0) {</a>
+<span class="sourceLineNo">635</span><a id="line.635">                if (bs.remaining() == 0) {</a>
+<span class="sourceLineNo">636</span><a id="line.636">                    throw new EOFException("request for " + required + " bytes reached EOF");</a>
+<span class="sourceLineNo">637</span><a id="line.637">                }</a>
+<span class="sourceLineNo">638</span><a id="line.638">            }</a>
+<span class="sourceLineNo">639</span><a id="line.639">            bs.setLength(bs.length + read);</a>
+<span class="sourceLineNo">640</span><a id="line.640">        }</a>
+<span class="sourceLineNo">641</span><a id="line.641">    }</a>
+<span class="sourceLineNo">642</span><a id="line.642"></a>
+<span class="sourceLineNo">643</span><a id="line.643">    void addToTotalLength(int size) {</a>
+<span class="sourceLineNo">644</span><a id="line.644">        totalLength.addAndGet(size);</a>
+<span class="sourceLineNo">645</span><a id="line.645">    }</a>
+<span class="sourceLineNo">646</span><a id="line.646"></a>
+<span class="sourceLineNo">647</span><a id="line.647">    public long length() {</a>
+<span class="sourceLineNo">648</span><a id="line.648">        return totalLength.get();</a>
+<span class="sourceLineNo">649</span><a id="line.649">    }</a>
+<span class="sourceLineNo">650</span><a id="line.650"></a>
+<span class="sourceLineNo">651</span><a id="line.651">    public void rotateWriteFile() throws IOException {</a>
+<span class="sourceLineNo">652</span><a id="line.652">       synchronized (dataFileIdLock) {</a>
+<span class="sourceLineNo">653</span><a id="line.653">            DataFile dataFile = nextDataFile;</a>
+<span class="sourceLineNo">654</span><a id="line.654">            if (dataFile == null) {</a>
+<span class="sourceLineNo">655</span><a id="line.655">                dataFile = newDataFile();</a>
+<span class="sourceLineNo">656</span><a id="line.656">            }</a>
+<span class="sourceLineNo">657</span><a id="line.657">            synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">658</span><a id="line.658">                fileMap.put(dataFile.getDataFileId(), dataFile);</a>
+<span class="sourceLineNo">659</span><a id="line.659">                fileByFileMap.put(dataFile.getFile(), dataFile);</a>
+<span class="sourceLineNo">660</span><a id="line.660">                dataFiles.addLast(dataFile);</a>
+<span class="sourceLineNo">661</span><a id="line.661">                currentDataFile.set(dataFile);</a>
+<span class="sourceLineNo">662</span><a id="line.662">            }</a>
+<span class="sourceLineNo">663</span><a id="line.663">            nextDataFile = null;</a>
+<span class="sourceLineNo">664</span><a id="line.664">        }</a>
+<span class="sourceLineNo">665</span><a id="line.665">        if (PreallocationScope.ENTIRE_JOURNAL_ASYNC == preallocationScope) {</a>
+<span class="sourceLineNo">666</span><a id="line.666">            preAllocateNextDataFileFuture = scheduler.submit(preAllocateNextDataFileTask);</a>
+<span class="sourceLineNo">667</span><a id="line.667">        }</a>
+<span class="sourceLineNo">668</span><a id="line.668">    }</a>
+<span class="sourceLineNo">669</span><a id="line.669"></a>
+<span class="sourceLineNo">670</span><a id="line.670">    private Runnable preAllocateNextDataFileTask = new Runnable() {</a>
+<span class="sourceLineNo">671</span><a id="line.671">        @Override</a>
+<span class="sourceLineNo">672</span><a id="line.672">        public void run() {</a>
+<span class="sourceLineNo">673</span><a id="line.673">            if (nextDataFile == null) {</a>
+<span class="sourceLineNo">674</span><a id="line.674">                synchronized (dataFileIdLock){</a>
+<span class="sourceLineNo">675</span><a id="line.675">                    try {</a>
+<span class="sourceLineNo">676</span><a id="line.676">                        nextDataFile = newDataFile();</a>
+<span class="sourceLineNo">677</span><a id="line.677">                    } catch (IOException e) {</a>
+<span class="sourceLineNo">678</span><a id="line.678">                        LOG.warn("Failed to proactively allocate data file", e);</a>
+<span class="sourceLineNo">679</span><a id="line.679">                    }</a>
+<span class="sourceLineNo">680</span><a id="line.680">                }</a>
+<span class="sourceLineNo">681</span><a id="line.681">            }</a>
+<span class="sourceLineNo">682</span><a id="line.682">        }</a>
+<span class="sourceLineNo">683</span><a id="line.683">    };</a>
+<span class="sourceLineNo">684</span><a id="line.684"></a>
+<span class="sourceLineNo">685</span><a id="line.685">    private volatile Future preAllocateNextDataFileFuture;</a>
+<span class="sourceLineNo">686</span><a id="line.686"></a>
+<span class="sourceLineNo">687</span><a id="line.687">    private DataFile newDataFile() throws IOException {</a>
+<span class="sourceLineNo">688</span><a id="line.688">        int nextNum = nextDataFileId++;</a>
+<span class="sourceLineNo">689</span><a id="line.689">        File file = getFile(nextNum);</a>
+<span class="sourceLineNo">690</span><a id="line.690">        DataFile nextWriteFile = new DataFile(file, nextNum);</a>
+<span class="sourceLineNo">691</span><a id="line.691">        preallocateEntireJournalDataFile(nextWriteFile.appendRandomAccessFile());</a>
+<span class="sourceLineNo">692</span><a id="line.692">        return nextWriteFile;</a>
+<span class="sourceLineNo">693</span><a id="line.693">    }</a>
+<span class="sourceLineNo">694</span><a id="line.694"></a>
+<span class="sourceLineNo">695</span><a id="line.695"></a>
+<span class="sourceLineNo">696</span><a id="line.696">    public DataFile reserveDataFile() {</a>
+<span class="sourceLineNo">697</span><a id="line.697">        synchronized (dataFileIdLock) {</a>
+<span class="sourceLineNo">698</span><a id="line.698">            int nextNum = nextDataFileId++;</a>
+<span class="sourceLineNo">699</span><a id="line.699">            File file = getFile(nextNum);</a>
+<span class="sourceLineNo">700</span><a id="line.700">            DataFile reservedDataFile = new DataFile(file, nextNum);</a>
+<span class="sourceLineNo">701</span><a id="line.701">            synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">702</span><a id="line.702">                fileMap.put(reservedDataFile.getDataFileId(), reservedDataFile);</a>
+<span class="sourceLineNo">703</span><a id="line.703">                fileByFileMap.put(file, reservedDataFile);</a>
+<span class="sourceLineNo">704</span><a id="line.704">                if (dataFiles.isEmpty()) {</a>
+<span class="sourceLineNo">705</span><a id="line.705">                    dataFiles.addLast(reservedDataFile);</a>
+<span class="sourceLineNo">706</span><a id="line.706">                } else {</a>
+<span class="sourceLineNo">707</span><a id="line.707">                    dataFiles.getTail().linkBefore(reservedDataFile);</a>
+<span class="sourceLineNo">708</span><a id="line.708">                }</a>
+<span class="sourceLineNo">709</span><a id="line.709">            }</a>
+<span class="sourceLineNo">710</span><a id="line.710">            return reservedDataFile;</a>
+<span class="sourceLineNo">711</span><a id="line.711">        }</a>
+<span class="sourceLineNo">712</span><a id="line.712">    }</a>
+<span class="sourceLineNo">713</span><a id="line.713"></a>
+<span class="sourceLineNo">714</span><a id="line.714">    public File getFile(int nextNum) {</a>
+<span class="sourceLineNo">715</span><a id="line.715">        String fileName = filePrefix + nextNum + fileSuffix;</a>
+<span class="sourceLineNo">716</span><a id="line.716">        File file = new File(directory, fileName);</a>
+<span class="sourceLineNo">717</span><a id="line.717">        return file;</a>
+<span class="sourceLineNo">718</span><a id="line.718">    }</a>
+<span class="sourceLineNo">719</span><a id="line.719"></a>
+<span class="sourceLineNo">720</span><a id="line.720">    DataFile getDataFile(Location item) throws IOException {</a>
+<span class="sourceLineNo">721</span><a id="line.721">        Integer key = Integer.valueOf(item.getDataFileId());</a>
+<span class="sourceLineNo">722</span><a id="line.722">        DataFile dataFile = null;</a>
+<span class="sourceLineNo">723</span><a id="line.723">        synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">724</span><a id="line.724">            dataFile = fileMap.get(key);</a>
+<span class="sourceLineNo">725</span><a id="line.725">        }</a>
+<span class="sourceLineNo">726</span><a id="line.726">        if (dataFile == null) {</a>
+<span class="sourceLineNo">727</span><a id="line.727">            LOG.error("Looking for key " + key + " but not found in fileMap: " + fileMap);</a>
+<span class="sourceLineNo">728</span><a id="line.728">            throw new IOException("Could not locate data file " + getFile(item.getDataFileId()));</a>
+<span class="sourceLineNo">729</span><a id="line.729">        }</a>
+<span class="sourceLineNo">730</span><a id="line.730">        return dataFile;</a>
+<span class="sourceLineNo">731</span><a id="line.731">    }</a>
+<span class="sourceLineNo">732</span><a id="line.732"></a>
+<span class="sourceLineNo">733</span><a id="line.733">    public void close() throws IOException {</a>
+<span class="sourceLineNo">734</span><a id="line.734">        synchronized (this) {</a>
+<span class="sourceLineNo">735</span><a id="line.735">            if (!started) {</a>
+<span class="sourceLineNo">736</span><a id="line.736">                return;</a>
+<span class="sourceLineNo">737</span><a id="line.737">            }</a>
+<span class="sourceLineNo">738</span><a id="line.738">            cleanupTask.cancel(true);</a>
+<span class="sourceLineNo">739</span><a id="line.739">            if (preAllocateNextDataFileFuture != null) {</a>
+<span class="sourceLineNo">740</span><a id="line.740">                preAllocateNextDataFileFuture.cancel(true);</a>
+<span class="sourceLineNo">741</span><a id="line.741">            }</a>
+<span class="sourceLineNo">742</span><a id="line.742">            ThreadPoolUtils.shutdownGraceful(scheduler, 4000);</a>
+<span class="sourceLineNo">743</span><a id="line.743">            accessorPool.close();</a>
+<span class="sourceLineNo">744</span><a id="line.744">        }</a>
+<span class="sourceLineNo">745</span><a id="line.745">        // the appender can be calling back to to the journal blocking a close AMQ-5620</a>
+<span class="sourceLineNo">746</span><a id="line.746">        appender.close();</a>
+<span class="sourceLineNo">747</span><a id="line.747">        synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">748</span><a id="line.748">            fileMap.clear();</a>
+<span class="sourceLineNo">749</span><a id="line.749">            fileByFileMap.clear();</a>
+<span class="sourceLineNo">750</span><a id="line.750">            dataFiles.clear();</a>
+<span class="sourceLineNo">751</span><a id="line.751">            lastAppendLocation.set(null);</a>
+<span class="sourceLineNo">752</span><a id="line.752">            started = false;</a>
+<span class="sourceLineNo">753</span><a id="line.753">        }</a>
+<span class="sourceLineNo">754</span><a id="line.754">    }</a>
+<span class="sourceLineNo">755</span><a id="line.755"></a>
+<span class="sourceLineNo">756</span><a id="line.756">    public synchronized void cleanup() {</a>
+<span class="sourceLineNo">757</span><a id="line.757">        if (accessorPool != null) {</a>
+<span class="sourceLineNo">758</span><a id="line.758">            accessorPool.disposeUnused();</a>
+<span class="sourceLineNo">759</span><a id="line.759">        }</a>
+<span class="sourceLineNo">760</span><a id="line.760">    }</a>
+<span class="sourceLineNo">761</span><a id="line.761"></a>
+<span class="sourceLineNo">762</span><a id="line.762">    public synchronized boolean delete() throws IOException {</a>
+<span class="sourceLineNo">763</span><a id="line.763"></a>
+<span class="sourceLineNo">764</span><a id="line.764">        // Close all open file handles...</a>
+<span class="sourceLineNo">765</span><a id="line.765">        appender.close();</a>
+<span class="sourceLineNo">766</span><a id="line.766">        accessorPool.close();</a>
+<span class="sourceLineNo">767</span><a id="line.767"></a>
+<span class="sourceLineNo">768</span><a id="line.768">        boolean result = true;</a>
+<span class="sourceLineNo">769</span><a id="line.769">        for (Iterator&lt;DataFile&gt; i = fileMap.values().iterator(); i.hasNext();) {</a>
+<span class="sourceLineNo">770</span><a id="line.770">            DataFile dataFile = i.next();</a>
+<span class="sourceLineNo">771</span><a id="line.771">            result &amp;= dataFile.delete();</a>
+<span class="sourceLineNo">772</span><a id="line.772">        }</a>
+<span class="sourceLineNo">773</span><a id="line.773"></a>
+<span class="sourceLineNo">774</span><a id="line.774">        if (preAllocateNextDataFileFuture != null) {</a>
+<span class="sourceLineNo">775</span><a id="line.775">            preAllocateNextDataFileFuture.cancel(true);</a>
+<span class="sourceLineNo">776</span><a id="line.776">        }</a>
+<span class="sourceLineNo">777</span><a id="line.777">        synchronized (dataFileIdLock) {</a>
+<span class="sourceLineNo">778</span><a id="line.778">            if (nextDataFile != null) {</a>
+<span class="sourceLineNo">779</span><a id="line.779">                nextDataFile.delete();</a>
+<span class="sourceLineNo">780</span><a id="line.780">                nextDataFile = null;</a>
+<span class="sourceLineNo">781</span><a id="line.781">            }</a>
+<span class="sourceLineNo">782</span><a id="line.782">        }</a>
+<span class="sourceLineNo">783</span><a id="line.783"></a>
+<span class="sourceLineNo">784</span><a id="line.784">        totalLength.set(0);</a>
+<span class="sourceLineNo">785</span><a id="line.785">        synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">786</span><a id="line.786">            fileMap.clear();</a>
+<span class="sourceLineNo">787</span><a id="line.787">            fileByFileMap.clear();</a>
+<span class="sourceLineNo">788</span><a id="line.788">            lastAppendLocation.set(null);</a>
+<span class="sourceLineNo">789</span><a id="line.789">            dataFiles = new LinkedNodeList&lt;DataFile&gt;();</a>
+<span class="sourceLineNo">790</span><a id="line.790">        }</a>
+<span class="sourceLineNo">791</span><a id="line.791">        // reopen open file handles...</a>
+<span class="sourceLineNo">792</span><a id="line.792">        accessorPool = new DataFileAccessorPool(this);</a>
+<span class="sourceLineNo">793</span><a id="line.793">        appender = new DataFileAppender(this);</a>
+<span class="sourceLineNo">794</span><a id="line.794">        return result;</a>
+<span class="sourceLineNo">795</span><a id="line.795">    }</a>
+<span class="sourceLineNo">796</span><a id="line.796"></a>
+<span class="sourceLineNo">797</span><a id="line.797">    public void removeDataFiles(Set&lt;Integer&gt; files) throws IOException {</a>
+<span class="sourceLineNo">798</span><a id="line.798">        for (Integer key : files) {</a>
+<span class="sourceLineNo">799</span><a id="line.799">            // Can't remove the data file (or subsequent files) that is currently being written to.</a>
+<span class="sourceLineNo">800</span><a id="line.800">            if (key &gt;= lastAppendLocation.get().getDataFileId()) {</a>
+<span class="sourceLineNo">801</span><a id="line.801">                continue;</a>
+<span class="sourceLineNo">802</span><a id="line.802">            }</a>
+<span class="sourceLineNo">803</span><a id="line.803">            DataFile dataFile = null;</a>
+<span class="sourceLineNo">804</span><a id="line.804">            synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">805</span><a id="line.805">                dataFile = fileMap.remove(key);</a>
+<span class="sourceLineNo">806</span><a id="line.806">                if (dataFile != null) {</a>
+<span class="sourceLineNo">807</span><a id="line.807">                    fileByFileMap.remove(dataFile.getFile());</a>
+<span class="sourceLineNo">808</span><a id="line.808">                    dataFile.unlink();</a>
+<span class="sourceLineNo">809</span><a id="line.809">                }</a>
+<span class="sourceLineNo">810</span><a id="line.810">            }</a>
+<span class="sourceLineNo">811</span><a id="line.811">            if (dataFile != null) {</a>
+<span class="sourceLineNo">812</span><a id="line.812">                forceRemoveDataFile(dataFile);</a>
+<span class="sourceLineNo">813</span><a id="line.813">            }</a>
+<span class="sourceLineNo">814</span><a id="line.814">        }</a>
+<span class="sourceLineNo">815</span><a id="line.815">    }</a>
+<span class="sourceLineNo">816</span><a id="line.816"></a>
+<span class="sourceLineNo">817</span><a id="line.817">    private void forceRemoveDataFile(DataFile dataFile) throws IOException {</a>
+<span class="sourceLineNo">818</span><a id="line.818">        accessorPool.disposeDataFileAccessors(dataFile);</a>
+<span class="sourceLineNo">819</span><a id="line.819">        totalLength.addAndGet(-dataFile.getLength());</a>
+<span class="sourceLineNo">820</span><a id="line.820">        if (archiveDataLogs) {</a>
+<span class="sourceLineNo">821</span><a id="line.821">            File directoryArchive = getDirectoryArchive();</a>
+<span class="sourceLineNo">822</span><a id="line.822">            if (directoryArchive.exists()) {</a>
+<span class="sourceLineNo">823</span><a id="line.823">                LOG.debug("Archive directory exists: {}", directoryArchive);</a>
+<span class="sourceLineNo">824</span><a id="line.824">            } else {</a>
+<span class="sourceLineNo">825</span><a id="line.825">                if (directoryArchive.isAbsolute())</a>
+<span class="sourceLineNo">826</span><a id="line.826">                if (LOG.isDebugEnabled()) {</a>
+<span class="sourceLineNo">827</span><a id="line.827">                    LOG.debug("Archive directory [{}] does not exist - creating it now",</a>
+<span class="sourceLineNo">828</span><a id="line.828">                            directoryArchive.getAbsolutePath());</a>
+<span class="sourceLineNo">829</span><a id="line.829">                }</a>
+<span class="sourceLineNo">830</span><a id="line.830">                IOHelper.mkdirs(directoryArchive);</a>
+<span class="sourceLineNo">831</span><a id="line.831">            }</a>
+<span class="sourceLineNo">832</span><a id="line.832">            LOG.debug("Moving data file {} to {} ", dataFile, directoryArchive.getCanonicalPath());</a>
+<span class="sourceLineNo">833</span><a id="line.833">            dataFile.move(directoryArchive);</a>
+<span class="sourceLineNo">834</span><a id="line.834">            LOG.debug("Successfully moved data file");</a>
+<span class="sourceLineNo">835</span><a id="line.835">        } else {</a>
+<span class="sourceLineNo">836</span><a id="line.836">            LOG.debug("Deleting data file: {}", dataFile);</a>
+<span class="sourceLineNo">837</span><a id="line.837">            if (dataFile.delete()) {</a>
+<span class="sourceLineNo">838</span><a id="line.838">                LOG.debug("Discarded data file: {}", dataFile);</a>
+<span class="sourceLineNo">839</span><a id="line.839">            } else {</a>
+<span class="sourceLineNo">840</span><a id="line.840">                LOG.warn("Failed to discard data file : {}", dataFile.getFile());</a>
+<span class="sourceLineNo">841</span><a id="line.841">            }</a>
+<span class="sourceLineNo">842</span><a id="line.842">        }</a>
+<span class="sourceLineNo">843</span><a id="line.843">        if (dataFileRemovedListener != null) {</a>
+<span class="sourceLineNo">844</span><a id="line.844">            dataFileRemovedListener.fileRemoved(dataFile);</a>
+<span class="sourceLineNo">845</span><a id="line.845">        }</a>
+<span class="sourceLineNo">846</span><a id="line.846">    }</a>
+<span class="sourceLineNo">847</span><a id="line.847"></a>
+<span class="sourceLineNo">848</span><a id="line.848">    /**</a>
+<span class="sourceLineNo">849</span><a id="line.849">     * @return the maxFileLength</a>
+<span class="sourceLineNo">850</span><a id="line.850">     */</a>
+<span class="sourceLineNo">851</span><a id="line.851">    public int getMaxFileLength() {</a>
+<span class="sourceLineNo">852</span><a id="line.852">        return maxFileLength;</a>
+<span class="sourceLineNo">853</span><a id="line.853">    }</a>
+<span class="sourceLineNo">854</span><a id="line.854"></a>
+<span class="sourceLineNo">855</span><a id="line.855">    /**</a>
+<span class="sourceLineNo">856</span><a id="line.856">     * @param maxFileLength the maxFileLength to set</a>
+<span class="sourceLineNo">857</span><a id="line.857">     */</a>
+<span class="sourceLineNo">858</span><a id="line.858">    public void setMaxFileLength(int maxFileLength) {</a>
+<span class="sourceLineNo">859</span><a id="line.859">        this.maxFileLength = maxFileLength;</a>
+<span class="sourceLineNo">860</span><a id="line.860">    }</a>
+<span class="sourceLineNo">861</span><a id="line.861"></a>
+<span class="sourceLineNo">862</span><a id="line.862">    @Override</a>
+<span class="sourceLineNo">863</span><a id="line.863">    public String toString() {</a>
+<span class="sourceLineNo">864</span><a id="line.864">        return directory.toString();</a>
+<span class="sourceLineNo">865</span><a id="line.865">    }</a>
+<span class="sourceLineNo">866</span><a id="line.866"></a>
+<span class="sourceLineNo">867</span><a id="line.867">    public Location getNextLocation(Location location) throws IOException, IllegalStateException {</a>
+<span class="sourceLineNo">868</span><a id="line.868">        return getNextLocation(location, null);</a>
+<span class="sourceLineNo">869</span><a id="line.869">    }</a>
+<span class="sourceLineNo">870</span><a id="line.870"></a>
+<span class="sourceLineNo">871</span><a id="line.871">    public Location getNextLocation(Location location, Location limit) throws IOException, IllegalStateException {</a>
+<span class="sourceLineNo">872</span><a id="line.872">        Location cur = null;</a>
+<span class="sourceLineNo">873</span><a id="line.873">        while (true) {</a>
+<span class="sourceLineNo">874</span><a id="line.874">            if (cur == null) {</a>
+<span class="sourceLineNo">875</span><a id="line.875">                if (location == null) {</a>
+<span class="sourceLineNo">876</span><a id="line.876">                    DataFile head = null;</a>
+<span class="sourceLineNo">877</span><a id="line.877">                    synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">878</span><a id="line.878">                        head = dataFiles.getHead();</a>
+<span class="sourceLineNo">879</span><a id="line.879">                    }</a>
+<span class="sourceLineNo">880</span><a id="line.880">                    if (head == null) {</a>
+<span class="sourceLineNo">881</span><a id="line.881">                        return null;</a>
+<span class="sourceLineNo">882</span><a id="line.882">                    }</a>
+<span class="sourceLineNo">883</span><a id="line.883">                    cur = new Location();</a>
+<span class="sourceLineNo">884</span><a id="line.884">                    cur.setDataFileId(head.getDataFileId());</a>
+<span class="sourceLineNo">885</span><a id="line.885">                    cur.setOffset(0);</a>
+<span class="sourceLineNo">886</span><a id="line.886">                } else {</a>
+<span class="sourceLineNo">887</span><a id="line.887">                    // Set to the next offset..</a>
+<span class="sourceLineNo">888</span><a id="line.888">                    if (location.getSize() == -1) {</a>
+<span class="sourceLineNo">889</span><a id="line.889">                        cur = new Location(location);</a>
+<span class="sourceLineNo">890</span><a id="line.890">                    } else {</a>
+<span class="sourceLineNo">891</span><a id="line.891">                        cur = new Location(location);</a>
+<span class="sourceLineNo">892</span><a id="line.892">                        cur.setOffset(location.getOffset() + location.getSize());</a>
+<span class="sourceLineNo">893</span><a id="line.893">                    }</a>
+<span class="sourceLineNo">894</span><a id="line.894">                }</a>
+<span class="sourceLineNo">895</span><a id="line.895">            } else {</a>
+<span class="sourceLineNo">896</span><a id="line.896">                cur.setOffset(cur.getOffset() + cur.getSize());</a>
+<span class="sourceLineNo">897</span><a id="line.897">            }</a>
+<span class="sourceLineNo">898</span><a id="line.898"></a>
+<span class="sourceLineNo">899</span><a id="line.899">            DataFile dataFile = getDataFile(cur);</a>
+<span class="sourceLineNo">900</span><a id="line.900"></a>
+<span class="sourceLineNo">901</span><a id="line.901">            // Did it go into the next file??</a>
+<span class="sourceLineNo">902</span><a id="line.902">            if (dataFile.getLength() &lt;= cur.getOffset()) {</a>
+<span class="sourceLineNo">903</span><a id="line.903">                synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">904</span><a id="line.904">                    dataFile = dataFile.getNext();</a>
+<span class="sourceLineNo">905</span><a id="line.905">                }</a>
+<span class="sourceLineNo">906</span><a id="line.906">                if (dataFile == null) {</a>
+<span class="sourceLineNo">907</span><a id="line.907">                    return null;</a>
+<span class="sourceLineNo">908</span><a id="line.908">                } else {</a>
+<span class="sourceLineNo">909</span><a id="line.909">                    cur.setDataFileId(dataFile.getDataFileId().intValue());</a>
+<span class="sourceLineNo">910</span><a id="line.910">                    cur.setOffset(0);</a>
+<span class="sourceLineNo">911</span><a id="line.911">                    if (limit != null &amp;&amp; cur.compareTo(limit) &gt;= 0) {</a>
+<span class="sourceLineNo">912</span><a id="line.912">                        LOG.trace("reached limit: {} at: {}", limit, cur);</a>
+<span class="sourceLineNo">913</span><a id="line.913">                        return null;</a>
+<span class="sourceLineNo">914</span><a id="line.914">                    }</a>
+<span class="sourceLineNo">915</span><a id="line.915">                }</a>
+<span class="sourceLineNo">916</span><a id="line.916">            }</a>
+<span class="sourceLineNo">917</span><a id="line.917"></a>
+<span class="sourceLineNo">918</span><a id="line.918">            // Load in location size and type.</a>
+<span class="sourceLineNo">919</span><a id="line.919">            DataFileAccessor reader = accessorPool.openDataFileAccessor(dataFile);</a>
+<span class="sourceLineNo">920</span><a id="line.920">            try {</a>
+<span class="sourceLineNo">921</span><a id="line.921">                reader.readLocationDetails(cur);</a>
+<span class="sourceLineNo">922</span><a id="line.922">            } catch (EOFException eof) {</a>
+<span class="sourceLineNo">923</span><a id="line.923">                LOG.trace("EOF on next: " + location + ", cur: " + cur);</a>
+<span class="sourceLineNo">924</span><a id="line.924">                throw eof;</a>
+<span class="sourceLineNo">925</span><a id="line.925">            } finally {</a>
+<span class="sourceLineNo">926</span><a id="line.926">                accessorPool.closeDataFileAccessor(reader);</a>
+<span class="sourceLineNo">927</span><a id="line.927">            }</a>
+<span class="sourceLineNo">928</span><a id="line.928"></a>
+<span class="sourceLineNo">929</span><a id="line.929">            Sequence corruptedRange = dataFile.corruptedBlocks.get(cur.getOffset());</a>
+<span class="sourceLineNo">930</span><a id="line.930">            if (corruptedRange != null) {</a>
+<span class="sourceLineNo">931</span><a id="line.931">                // skip corruption</a>
+<span class="sourceLineNo">932</span><a id="line.932">                cur.setSize((int) corruptedRange.range());</a>
+<span class="sourceLineNo">933</span><a id="line.933">            } else if (cur.getSize() == EOF_INT &amp;&amp; cur.getType() == EOF_EOT ||</a>
+<span class="sourceLineNo">934</span><a id="line.934">                    (cur.getType() == 0 &amp;&amp; cur.getSize() == 0)) {</a>
+<span class="sourceLineNo">935</span><a id="line.935">                // eof - jump to next datafile</a>
+<span class="sourceLineNo">936</span><a id="line.936">                // EOF_INT and EOF_EOT replace 0,0 - we need to react to both for</a>
+<span class="sourceLineNo">937</span><a id="line.937">                // replay of existing journals</a>
+<span class="sourceLineNo">938</span><a id="line.938">                // possibly journal is larger than maxFileLength after config change</a>
+<span class="sourceLineNo">939</span><a id="line.939">                cur.setSize(EOF_RECORD.length);</a>
+<span class="sourceLineNo">940</span><a id="line.940">                cur.setOffset(Math.max(maxFileLength, dataFile.getLength()));</a>
+<span class="sourceLineNo">941</span><a id="line.941">            } else if (cur.getType() == USER_RECORD_TYPE) {</a>
+<span class="sourceLineNo">942</span><a id="line.942">                // Only return user records.</a>
+<span class="sourceLineNo">943</span><a id="line.943">                return cur;</a>
+<span class="sourceLineNo">944</span><a id="line.944">            }</a>
+<span class="sourceLineNo">945</span><a id="line.945">        }</a>
+<span class="sourceLineNo">946</span><a id="line.946">    }</a>
+<span class="sourceLineNo">947</span><a id="line.947"></a>
+<span class="sourceLineNo">948</span><a id="line.948">    public ByteSequence read(Location location) throws IOException, IllegalStateException {</a>
+<span class="sourceLineNo">949</span><a id="line.949">        DataFile dataFile = getDataFile(location);</a>
+<span class="sourceLineNo">950</span><a id="line.950">        DataFileAccessor reader = accessorPool.openDataFileAccessor(dataFile);</a>
+<span class="sourceLineNo">951</span><a id="line.951">        ByteSequence rc = null;</a>
+<span class="sourceLineNo">952</span><a id="line.952">        try {</a>
+<span class="sourceLineNo">953</span><a id="line.953">            rc = reader.readRecord(location);</a>
+<span class="sourceLineNo">954</span><a id="line.954">        } finally {</a>
+<span class="sourceLineNo">955</span><a id="line.955">            accessorPool.closeDataFileAccessor(reader);</a>
+<span class="sourceLineNo">956</span><a id="line.956">        }</a>
+<span class="sourceLineNo">957</span><a id="line.957">        return rc;</a>
+<span class="sourceLineNo">958</span><a id="line.958">    }</a>
+<span class="sourceLineNo">959</span><a id="line.959"></a>
+<span class="sourceLineNo">960</span><a id="line.960">    public Location write(ByteSequence data, boolean sync) throws IOException, IllegalStateException {</a>
+<span class="sourceLineNo">961</span><a id="line.961">        Location loc = appender.storeItem(data, Location.USER_TYPE, sync);</a>
+<span class="sourceLineNo">962</span><a id="line.962">        return loc;</a>
+<span class="sourceLineNo">963</span><a id="line.963">    }</a>
+<span class="sourceLineNo">964</span><a id="line.964"></a>
+<span class="sourceLineNo">965</span><a id="line.965">    public Location write(ByteSequence data, Runnable onComplete) throws IOException, IllegalStateException {</a>
+<span class="sourceLineNo">966</span><a id="line.966">        Location loc = appender.storeItem(data, Location.USER_TYPE, onComplete);</a>
+<span class="sourceLineNo">967</span><a id="line.967">        return loc;</a>
+<span class="sourceLineNo">968</span><a id="line.968">    }</a>
+<span class="sourceLineNo">969</span><a id="line.969"></a>
+<span class="sourceLineNo">970</span><a id="line.970">    public void update(Location location, ByteSequence data, boolean sync) throws IOException {</a>
+<span class="sourceLineNo">971</span><a id="line.971">        DataFile dataFile = getDataFile(location);</a>
+<span class="sourceLineNo">972</span><a id="line.972">        DataFileAccessor updater = accessorPool.openDataFileAccessor(dataFile);</a>
+<span class="sourceLineNo">973</span><a id="line.973">        try {</a>
+<span class="sourceLineNo">974</span><a id="line.974">            updater.updateRecord(location, data, sync);</a>
+<span class="sourceLineNo">975</span><a id="line.975">        } finally {</a>
+<span class="sourceLineNo">976</span><a id="line.976">            accessorPool.closeDataFileAccessor(updater);</a>
+<span class="sourceLineNo">977</span><a id="line.977">        }</a>
+<span class="sourceLineNo">978</span><a id="line.978">    }</a>
+<span class="sourceLineNo">979</span><a id="line.979"></a>
+<span class="sourceLineNo">980</span><a id="line.980">    public PreallocationStrategy getPreallocationStrategy() {</a>
+<span class="sourceLineNo">981</span><a id="line.981">        return preallocationStrategy;</a>
+<span class="sourceLineNo">982</span><a id="line.982">    }</a>
+<span class="sourceLineNo">983</span><a id="line.983"></a>
+<span class="sourceLineNo">984</span><a id="line.984">    public void setPreallocationStrategy(PreallocationStrategy preallocationStrategy) {</a>
+<span class="sourceLineNo">985</span><a id="line.985">        this.preallocationStrategy = preallocationStrategy;</a>
+<span class="sourceLineNo">986</span><a id="line.986">    }</a>
+<span class="sourceLineNo">987</span><a id="line.987"></a>
+<span class="sourceLineNo">988</span><a id="line.988">    public PreallocationScope getPreallocationScope() {</a>
+<span class="sourceLineNo">989</span><a id="line.989">        return preallocationScope;</a>
+<span class="sourceLineNo">990</span><a id="line.990">    }</a>
+<span class="sourceLineNo">991</span><a id="line.991"></a>
+<span class="sourceLineNo">992</span><a id="line.992">    public void setPreallocationScope(PreallocationScope preallocationScope) {</a>
+<span class="sourceLineNo">993</span><a id="line.993">        this.preallocationScope = preallocationScope;</a>
+<span class="sourceLineNo">994</span><a id="line.994">    }</a>
+<span class="sourceLineNo">995</span><a id="line.995"></a>
+<span class="sourceLineNo">996</span><a id="line.996">    public File getDirectory() {</a>
+<span class="sourceLineNo">997</span><a id="line.997">        return directory;</a>
+<span class="sourceLineNo">998</span><a id="line.998">    }</a>
+<span class="sourceLineNo">999</span><a id="line.999"></a>
+<span class="sourceLineNo">1000</span><a id="line.1000">    public void setDirectory(File directory) {</a>
+<span class="sourceLineNo">1001</span><a id="line.1001">        this.directory = directory;</a>
+<span class="sourceLineNo">1002</span><a id="line.1002">    }</a>
+<span class="sourceLineNo">1003</span><a id="line.1003"></a>
+<span class="sourceLineNo">1004</span><a id="line.1004">    public String getFilePrefix() {</a>
+<span class="sourceLineNo">1005</span><a id="line.1005">        return filePrefix;</a>
+<span class="sourceLineNo">1006</span><a id="line.1006">    }</a>
+<span class="sourceLineNo">1007</span><a id="line.1007"></a>
+<span class="sourceLineNo">1008</span><a id="line.1008">    public void setFilePrefix(String filePrefix) {</a>
+<span class="sourceLineNo">1009</span><a id="line.1009">        this.filePrefix = filePrefix;</a>
+<span class="sourceLineNo">1010</span><a id="line.1010">    }</a>
+<span class="sourceLineNo">1011</span><a id="line.1011"></a>
+<span class="sourceLineNo">1012</span><a id="line.1012">    public Map&lt;WriteKey, WriteCommand&gt; getInflightWrites() {</a>
+<span class="sourceLineNo">1013</span><a id="line.1013">        return inflightWrites;</a>
+<span class="sourceLineNo">1014</span><a id="line.1014">    }</a>
+<span class="sourceLineNo">1015</span><a id="line.1015"></a>
+<span class="sourceLineNo">1016</span><a id="line.1016">    public Location getLastAppendLocation() {</a>
+<span class="sourceLineNo">1017</span><a id="line.1017">        return lastAppendLocation.get();</a>
+<span class="sourceLineNo">1018</span><a id="line.1018">    }</a>
+<span class="sourceLineNo">1019</span><a id="line.1019"></a>
+<span class="sourceLineNo">1020</span><a id="line.1020">    public void setLastAppendLocation(Location lastSyncedLocation) {</a>
+<span class="sourceLineNo">1021</span><a id="line.1021">        this.lastAppendLocation.set(lastSyncedLocation);</a>
+<span class="sourceLineNo">1022</span><a id="line.1022">    }</a>
+<span class="sourceLineNo">1023</span><a id="line.1023"></a>
+<span class="sourceLineNo">1024</span><a id="line.1024">    public File getDirectoryArchive() {</a>
+<span class="sourceLineNo">1025</span><a id="line.1025">        if (!directoryArchiveOverridden &amp;&amp; (directoryArchive == null)) {</a>
+<span class="sourceLineNo">1026</span><a id="line.1026">            // create the directoryArchive relative to the journal location</a>
+<span class="sourceLineNo">1027</span><a id="line.1027">            directoryArchive = new File(directory.getAbsolutePath() +</a>
+<span class="sourceLineNo">1028</span><a id="line.1028">                    File.separator + DEFAULT_ARCHIVE_DIRECTORY);</a>
+<span class="sourceLineNo">1029</span><a id="line.1029">        }</a>
+<span class="sourceLineNo">1030</span><a id="line.1030">        return directoryArchive;</a>
+<span class="sourceLineNo">1031</span><a id="line.1031">    }</a>
+<span class="sourceLineNo">1032</span><a id="line.1032"></a>
+<span class="sourceLineNo">1033</span><a id="line.1033">    public void setDirectoryArchive(File directoryArchive) {</a>
+<span class="sourceLineNo">1034</span><a id="line.1034">        directoryArchiveOverridden = true;</a>
+<span class="sourceLineNo">1035</span><a id="line.1035">        this.directoryArchive = directoryArchive;</a>
+<span class="sourceLineNo">1036</span><a id="line.1036">    }</a>
+<span class="sourceLineNo">1037</span><a id="line.1037"></a>
+<span class="sourceLineNo">1038</span><a id="line.1038">    public boolean isArchiveDataLogs() {</a>
+<span class="sourceLineNo">1039</span><a id="line.1039">        return archiveDataLogs;</a>
+<span class="sourceLineNo">1040</span><a id="line.1040">    }</a>
+<span class="sourceLineNo">1041</span><a id="line.1041"></a>
+<span class="sourceLineNo">1042</span><a id="line.1042">    public void setArchiveDataLogs(boolean archiveDataLogs) {</a>
+<span class="sourceLineNo">1043</span><a id="line.1043">        this.archiveDataLogs = archiveDataLogs;</a>
+<span class="sourceLineNo">1044</span><a id="line.1044">    }</a>
+<span class="sourceLineNo">1045</span><a id="line.1045"></a>
+<span class="sourceLineNo">1046</span><a id="line.1046">    public DataFile getDataFileById(int dataFileId) {</a>
+<span class="sourceLineNo">1047</span><a id="line.1047">        synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">1048</span><a id="line.1048">            return fileMap.get(Integer.valueOf(dataFileId));</a>
+<span class="sourceLineNo">1049</span><a id="line.1049">        }</a>
+<span class="sourceLineNo">1050</span><a id="line.1050">    }</a>
+<span class="sourceLineNo">1051</span><a id="line.1051"></a>
+<span class="sourceLineNo">1052</span><a id="line.1052">    public DataFile getCurrentDataFile(int capacity) throws IOException {</a>
+<span class="sourceLineNo">1053</span><a id="line.1053">        //First just acquire the currentDataFile lock and return if no rotation needed</a>
+<span class="sourceLineNo">1054</span><a id="line.1054">        synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">1055</span><a id="line.1055">            if (currentDataFile.get().getLength() + capacity &lt; maxFileLength) {</a>
+<span class="sourceLineNo">1056</span><a id="line.1056">                return currentDataFile.get();</a>
+<span class="sourceLineNo">1057</span><a id="line.1057">            }</a>
+<span class="sourceLineNo">1058</span><a id="line.1058">        }</a>
+<span class="sourceLineNo">1059</span><a id="line.1059"></a>
+<span class="sourceLineNo">1060</span><a id="line.1060">        //AMQ-6545 - if rotation needed, acquire dataFileIdLock first to prevent deadlocks</a>
+<span class="sourceLineNo">1061</span><a id="line.1061">        //then re-check if rotation is needed</a>
+<span class="sourceLineNo">1062</span><a id="line.1062">        synchronized (dataFileIdLock) {</a>
+<span class="sourceLineNo">1063</span><a id="line.1063">            synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">1064</span><a id="line.1064">                if (currentDataFile.get().getLength() + capacity &gt;= maxFileLength) {</a>
+<span class="sourceLineNo">1065</span><a id="line.1065">                    rotateWriteFile();</a>
+<span class="sourceLineNo">1066</span><a id="line.1066">                }</a>
+<span class="sourceLineNo">1067</span><a id="line.1067">                return currentDataFile.get();</a>
+<span class="sourceLineNo">1068</span><a id="line.1068">            }</a>
+<span class="sourceLineNo">1069</span><a id="line.1069">        }</a>
+<span class="sourceLineNo">1070</span><a id="line.1070">    }</a>
+<span class="sourceLineNo">1071</span><a id="line.1071"></a>
+<span class="sourceLineNo">1072</span><a id="line.1072">    public Integer getCurrentDataFileId() {</a>
+<span class="sourceLineNo">1073</span><a id="line.1073">        synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">1074</span><a id="line.1074">            return currentDataFile.get().getDataFileId();</a>
+<span class="sourceLineNo">1075</span><a id="line.1075">        }</a>
+<span class="sourceLineNo">1076</span><a id="line.1076">    }</a>
+<span class="sourceLineNo">1077</span><a id="line.1077"></a>
+<span class="sourceLineNo">1078</span><a id="line.1078">    /**</a>
+<span class="sourceLineNo">1079</span><a id="line.1079">     * Get a set of files - only valid after start()</a>
+<span class="sourceLineNo">1080</span><a id="line.1080">     *</a>
+<span class="sourceLineNo">1081</span><a id="line.1081">     * @return files currently being used</a>
+<span class="sourceLineNo">1082</span><a id="line.1082">     */</a>
+<span class="sourceLineNo">1083</span><a id="line.1083">    public Set&lt;File&gt; getFiles() {</a>
+<span class="sourceLineNo">1084</span><a id="line.1084">        synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">1085</span><a id="line.1085">            return fileByFileMap.keySet();</a>
+<span class="sourceLineNo">1086</span><a id="line.1086">        }</a>
+<span class="sourceLineNo">1087</span><a id="line.1087">    }</a>
+<span class="sourceLineNo">1088</span><a id="line.1088"></a>
+<span class="sourceLineNo">1089</span><a id="line.1089">    public Map&lt;Integer, DataFile&gt; getFileMap() {</a>
+<span class="sourceLineNo">1090</span><a id="line.1090">        synchronized (currentDataFile) {</a>
+<span class="sourceLineNo">1091</span><a id="line.1091">            return new TreeMap&lt;Integer, DataFile&gt;(fileMap);</a>
+<span class="sourceLineNo">1092</span><a id="line.1092">        }</a>
+<span class="sourceLineNo">1093</span><a id="line.1093">    }</a>
+<span class="sourceLineNo">1094</span><a id="line.1094"></a>
+<span class="sourceLineNo">1095</span><a id="line.1095">    public long getDiskSize() {</a>
+<span class="sourceLineNo">1096</span><a id="line.1096">        return totalLength.get();</a>
+<span class="sourceLineNo">1097</span><a id="line.1097">    }</a>
+<span class="sourceLineNo">1098</span><a id="line.1098"></a>
+<span class="sourceLineNo">1099</span><a id="line.1099">    public void setReplicationTarget(ReplicationTarget replicationTarget) {</a>
+<span class="sourceLineNo">1100</span><a id="line.1100">        this.replicationTarget = replicationTarget;</a>
+<span class="sourceLineNo">1101</span><a id="line.1101">    }</a>
+<span class="sourceLineNo">1102</span><a id="line.1102"></a>
+<span class="sourceLineNo">1103</span><a id="line.1103">    public ReplicationTarget getReplicationTarget() {</a>
+<span class="sourceLineNo">1104</span><a id="line.1104">        return replicationTarget;</a>
+<span class="sourceLineNo">1105</span><a id="line.1105">    }</a>
+<span class="sourceLineNo">1106</span><a id="line.1106"></a>
+<span class="sourceLineNo">1107</span><a id="line.1107">    public String getFileSuffix() {</a>
+<span class="sourceLineNo">1108</span><a id="line.1108">        return fileSuffix;</a>
+<span class="sourceLineNo">1109</span><a id="line.1109">    }</a>
+<span class="sourceLineNo">1110</span><a id="line.1110"></a>
+<span class="sourceLineNo">1111</span><a id="line.1111">    public void setFileSuffix(String fileSuffix) {</a>
+<span class="sourceLineNo">1112</span><a id="line.1112">        this.fileSuffix = fileSuffix;</a>
+<span class="sourceLineNo">1113</span><a id="line.1113">    }</a>
+<span class="sourceLineNo">1114</span><a id="line.1114"></a>
+<span class="sourceLineNo">1115</span><a id="line.1115">    public boolean isChecksum() {</a>
+<span class="sourceLineNo">1116</span><a id="line.1116">        return checksum;</a>
+<span class="sourceLineNo">1117</span><a id="line.1117">    }</a>
+<span class="sourceLineNo">1118</span><a id="line.1118"></a>
+<span class="sourceLineNo">1119</span><a id="line.1119">    public void setChecksum(boolean checksumWrites) {</a>
+<span class="sourceLineNo">1120</span><a id="line.1120">        this.checksum = checksumWrites;</a>
+<span class="sourceLineNo">1121</span><a id="line.1121">    }</a>
+<span class="sourceLineNo">1122</span><a id="line.1122"></a>
+<span class="sourceLineNo">1123</span><a id="line.1123">    public boolean isCheckForCorruptionOnStartup() {</a>
+<span class="sourceLineNo">1124</span><a id="line.1124">        return checkForCorruptionOnStartup;</a>
+<span class="sourceLineNo">1125</span><a id="line.1125">    }</a>
+<span class="sourceLineNo">1126</span><a id="line.1126"></a>
+<span class="sourceLineNo">1127</span><a id="line.1127">    public void setCheckForCorruptionOnStartup(boolean checkForCorruptionOnStartup) {</a>
+<span class="sourceLineNo">1128</span><a id="line.1128">        this.checkForCorruptionOnStartup = checkForCorruptionOnStartup;</a>
+<span class="sourceLineNo">1129</span><a id="line.1129">    }</a>
+<span class="sourceLineNo">1130</span><a id="line.1130"></a>
+<span class="sourceLineNo">1131</span><a id="line.1131">    public void setWriteBatchSize(int writeBatchSize) {</a>
+<span class="sourceLineNo">1132</span><a id="line.1132">        this.writeBatchSize = writeBatchSize;</a>
+<span class="sourceLineNo">1133</span><a id="line.1133">    }</a>
+<span class="sourceLineNo">1134</span><a id="line.1134"></a>
+<span class="sourceLineNo">1135</span><a id="line.1135">    public int getWriteBatchSize() {</a>
+<span class="sourceLineNo">1136</span><a id="line.1136">        return writeBatchSize;</a>
+<span class="sourceLineNo">1137</span><a id="line.1137">    }</a>
+<span class="sourceLineNo">1138</span><a id="line.1138"></a>
+<span class="sourceLineNo">1139</span><a id="line.1139">    public void setSizeAccumulator(AtomicLong storeSizeAccumulator) {</a>
+<span class="sourceLineNo">1140</span><a id="line.1140">       this.totalLength = storeSizeAccumulator;</a>
+<span class="sourceLineNo">1141</span><a id="line.1141">    }</a>
+<span class="sourceLineNo">1142</span><a id="line.1142"></a>
+<span class="sourceLineNo">1143</span><a id="line.1143">    public void setEnableAsyncDiskSync(boolean val) {</a>
+<span class="sourceLineNo">1144</span><a id="line.1144">        this.enableAsyncDiskSync = val;</a>
+<span class="sourceLineNo">1145</span><a id="line.1145">    }</a>
+<span class="sourceLineNo">1146</span><a id="line.1146"></a>
+<span class="sourceLineNo">1147</span><a id="line.1147">    public boolean isEnableAsyncDiskSync() {</a>
+<span class="sourceLineNo">1148</span><a id="line.1148">        return enableAsyncDiskSync;</a>
+<span class="sourceLineNo">1149</span><a id="line.1149">    }</a>
+<span class="sourceLineNo">1150</span><a id="line.1150"></a>
+<span class="sourceLineNo">1151</span><a id="line.1151">    public JournalDiskSyncStrategy getJournalDiskSyncStrategy() {</a>
+<span class="sourceLineNo">1152</span><a id="line.1152">        return journalDiskSyncStrategy;</a>
+<span class="sourceLineNo">1153</span><a id="line.1153">    }</a>
+<span class="sourceLineNo">1154</span><a id="line.1154"></a>
+<span class="sourceLineNo">1155</span><a id="line.1155">    public void setJournalDiskSyncStrategy(JournalDiskSyncStrategy journalDiskSyncStrategy) {</a>
+<span class="sourceLineNo">1156</span><a id="line.1156">        this.journalDiskSyncStrategy = journalDiskSyncStrategy;</a>
+<span class="sourceLineNo">1157</span><a id="line.1157">    }</a>
+<span class="sourceLineNo">1158</span><a id="line.1158"></a>
+<span class="sourceLineNo">1159</span><a id="line.1159">    public boolean isJournalDiskSyncPeriodic() {</a>
+<span class="sourceLineNo">1160</span><a id="line.1160">        return JournalDiskSyncStrategy.PERIODIC.equals(journalDiskSyncStrategy);</a>
+<span class="sourceLineNo">1161</span><a id="line.1161">    }</a>
+<span class="sourceLineNo">1162</span><a id="line.1162"></a>
+<span class="sourceLineNo">1163</span><a id="line.1163">    public void setDataFileRemovedListener(DataFileRemovedListener dataFileRemovedListener) {</a>
+<span class="sourceLineNo">1164</span><a id="line.1164">        this.dataFileRemovedListener = dataFileRemovedListener;</a>
+<span class="sourceLineNo">1165</span><a id="line.1165">    }</a>
+<span class="sourceLineNo">1166</span><a id="line.1166"></a>
+<span class="sourceLineNo">1167</span><a id="line.1167">    public static class WriteCommand extends LinkedNode&lt;WriteCommand&gt; {</a>
+<span class="sourceLineNo">1168</span><a id="line.1168">        public final Location location;</a>
+<span class="sourceLineNo">1169</span><a id="line.1169">        public final ByteSequence data;</a>
+<span class="sourceLineNo">1170</span><a id="line.1170">        final boolean sync;</a>
+<span class="sourceLineNo">1171</span><a id="line.1171">        public final Runnable onComplete;</a>
+<span class="sourceLineNo">1172</span><a id="line.1172"></a>
+<span class="sourceLineNo">1173</span><a id="line.1173">        public WriteCommand(Location location, ByteSequence data, boolean sync) {</a>
+<span class="sourceLineNo">1174</span><a id="line.1174">            this.location = location;</a>
+<span class="sourceLineNo">1175</span><a id="line.1175">            this.data = data;</a>
+<span class="sourceLineNo">1176</span><a id="line.1176">            this.sync = sync;</a>
+<span class="sourceLineNo">1177</span><a id="line.1177">            this.onComplete = null;</a>
+<span class="sourceLineNo">1178</span><a id="line.1178">        }</a>
+<span class="sourceLineNo">1179</span><a id="line.1179"></a>
+<span class="sourceLineNo">1180</span><a id="line.1180">        public WriteCommand(Location location, ByteSequence data, Runnable onComplete) {</a>
+<span class="sourceLineNo">1181</span><a id="line.1181">            this.location = location;</a>
+<span class="sourceLineNo">1182</span><a id="line.1182">            this.data = data;</a>
+<span class="sourceLineNo">1183</span><a id="line.1183">            this.onComplete = onComplete;</a>
+<span class="sourceLineNo">1184</span><a id="line.1184">            this.sync = false;</a>
+<span class="sourceLineNo">1185</span><a id="line.1185">        }</a>
+<span class="sourceLineNo">1186</span><a id="line.1186">    }</a>
+<span class="sourceLineNo">1187</span><a id="line.1187"></a>
+<span class="sourceLineNo">1188</span><a id="line.1188">    public static class WriteKey {</a>
+<span class="sourceLineNo">1189</span><a id="line.1189">        private final int file;</a>
+<span class="sourceLineNo">1190</span><a id="line.1190">        private final long offset;</a>
+<span class="sourceLineNo">1191</span><a id="line.1191">        private final int hash;</a>
+<span class="sourceLineNo">1192</span><a id="line.1192"></a>
+<span class="sourceLineNo">1193</span><a id="line.1193">        public WriteKey(Location item) {</a>
+<span class="sourceLineNo">1194</span><a id="line.1194">            file = item.getDataFileId();</a>
+<span class="sourceLineNo">1195</span><a id="line.1195">            offset = item.getOffset();</a>
+<span class="sourceLineNo">1196</span><a id="line.1196">            // TODO: see if we can build a better hash</a>
+<span class="sourceLineNo">1197</span><a id="line.1197">            hash = (int)(file ^ offset);</a>
+<span class="sourceLineNo">1198</span><a id="line.1198">        }</a>
+<span class="sourceLineNo">1199</span><a id="line.1199"></a>
+<span class="sourceLineNo">1200</span><a id="line.1200">        @Override</a>
+<span class="sourceLineNo">1201</span><a id="line.1201">        public int hashCode() {</a>
+<span class="sourceLineNo">1202</span><a id="line.1202">            return hash;</a>
+<span class="sourceLineNo">1203</span><a id="line.1203">        }</a>
+<span class="sourceLineNo">1204</span><a id="line.1204"></a>
+<span class="sourceLineNo">1205</span><a id="line.1205">        @Override</a>
+<span class="sourceLineNo">1206</span><a id="line.1206">        public boolean equals(Object obj) {</a>
+<span class="sourceLineNo">1207</span><a id="line.1207">            if (obj instanceof WriteKey) {</a>
+<span class="sourceLineNo">1208</span><a id="line.1208">                WriteKey di = (WriteKey)obj;</a>
+<span class="sourceLineNo">1209</span><a id="line.1209">                return di.file == file &amp;&amp; di.offset == offset;</a>
+<span class="sourceLineNo">1210</span><a id="line.1210">            }</a>
+<span class="sourceLineNo">1211</span><a id="line.1211">            return false;</a>
+<span class="sourceLineNo">1212</span><a id="line.1212">        }</a>
+<span class="sourceLineNo">1213</span><a id="line.1213">    }</a>
+<span class="sourceLineNo">1214</span><a id="line.1214">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

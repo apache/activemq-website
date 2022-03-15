@@ -1,0 +1,336 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.plugin;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.IOException;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.util.ArrayList;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.util.Date;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.util.Properties;</a>
+<span class="sourceLineNo">023</span><a id="line.23"></a>
+<span class="sourceLineNo">024</span><a id="line.24">import javax.management.JMException;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import javax.management.ObjectName;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import javax.xml.XMLConstants;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import javax.xml.bind.JAXBContext;</a>
+<span class="sourceLineNo">028</span><a id="line.28">import javax.xml.bind.JAXBElement;</a>
+<span class="sourceLineNo">029</span><a id="line.29">import javax.xml.bind.JAXBException;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import javax.xml.bind.Unmarshaller;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import javax.xml.parsers.DocumentBuilder;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import javax.xml.parsers.DocumentBuilderFactory;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import javax.xml.parsers.ParserConfigurationException;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import javax.xml.transform.Source;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import javax.xml.transform.stream.StreamSource;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import javax.xml.validation.Schema;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import javax.xml.validation.SchemaFactory;</a>
+<span class="sourceLineNo">038</span><a id="line.38"></a>
+<span class="sourceLineNo">039</span><a id="line.39">import org.apache.activemq.broker.Broker;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import org.apache.activemq.broker.BrokerContext;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import org.apache.activemq.broker.jmx.ManagementContext;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.apache.activemq.plugin.jmx.RuntimeConfigurationView;</a>
+<span class="sourceLineNo">043</span><a id="line.43">import org.apache.activemq.schema.core.DtoBroker;</a>
+<span class="sourceLineNo">044</span><a id="line.44">import org.apache.activemq.spring.Utils;</a>
+<span class="sourceLineNo">045</span><a id="line.45">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">046</span><a id="line.46">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">047</span><a id="line.47">import org.springframework.core.io.Resource;</a>
+<span class="sourceLineNo">048</span><a id="line.48">import org.w3c.dom.Document;</a>
+<span class="sourceLineNo">049</span><a id="line.49">import org.w3c.dom.Node;</a>
+<span class="sourceLineNo">050</span><a id="line.50">import org.xml.sax.SAXException;</a>
+<span class="sourceLineNo">051</span><a id="line.51"></a>
+<span class="sourceLineNo">052</span><a id="line.52">public class RuntimeConfigurationBroker extends AbstractRuntimeConfigurationBroker {</a>
+<span class="sourceLineNo">053</span><a id="line.53"></a>
+<span class="sourceLineNo">054</span><a id="line.54">    public static final Logger LOG = LoggerFactory.getLogger(RuntimeConfigurationBroker.class);</a>
+<span class="sourceLineNo">055</span><a id="line.55">    public static final String objectNamePropsAppendage = ",service=RuntimeConfiguration,name=Plugin";</a>
+<span class="sourceLineNo">056</span><a id="line.56">    PropertiesPlaceHolderUtil placeHolderUtil = null;</a>
+<span class="sourceLineNo">057</span><a id="line.57">    private long checkPeriod;</a>
+<span class="sourceLineNo">058</span><a id="line.58">    private long lastModified = -1;</a>
+<span class="sourceLineNo">059</span><a id="line.59">    private Resource configToMonitor;</a>
+<span class="sourceLineNo">060</span><a id="line.60">    private DtoBroker currentConfiguration;</a>
+<span class="sourceLineNo">061</span><a id="line.61">    private Schema schema;</a>
+<span class="sourceLineNo">062</span><a id="line.62"></a>
+<span class="sourceLineNo">063</span><a id="line.63">    public RuntimeConfigurationBroker(Broker next) {</a>
+<span class="sourceLineNo">064</span><a id="line.64">        super(next);</a>
+<span class="sourceLineNo">065</span><a id="line.65">    }</a>
+<span class="sourceLineNo">066</span><a id="line.66"></a>
+<span class="sourceLineNo">067</span><a id="line.67">    @Override</a>
+<span class="sourceLineNo">068</span><a id="line.68">    public void start() throws Exception {</a>
+<span class="sourceLineNo">069</span><a id="line.69">        super.start();</a>
+<span class="sourceLineNo">070</span><a id="line.70">        try {</a>
+<span class="sourceLineNo">071</span><a id="line.71">            BrokerContext brokerContext = next.getBrokerService().getBrokerContext();</a>
+<span class="sourceLineNo">072</span><a id="line.72">            if (brokerContext != null) {</a>
+<span class="sourceLineNo">073</span><a id="line.73">                configToMonitor = Utils.resourceFromString(brokerContext.getConfigurationUrl());</a>
+<span class="sourceLineNo">074</span><a id="line.74">                info("Configuration " + configToMonitor);</a>
+<span class="sourceLineNo">075</span><a id="line.75">            } else {</a>
+<span class="sourceLineNo">076</span><a id="line.76">                LOG.error("Null BrokerContext; impossible to determine configuration url resource from broker, updates cannot be tracked");</a>
+<span class="sourceLineNo">077</span><a id="line.77">            }</a>
+<span class="sourceLineNo">078</span><a id="line.78">        } catch (Exception error) {</a>
+<span class="sourceLineNo">079</span><a id="line.79">            LOG.error("failed to determine configuration url resource from broker, updates cannot be tracked", error);</a>
+<span class="sourceLineNo">080</span><a id="line.80">        }</a>
+<span class="sourceLineNo">081</span><a id="line.81"></a>
+<span class="sourceLineNo">082</span><a id="line.82">        currentConfiguration = loadConfiguration(configToMonitor);</a>
+<span class="sourceLineNo">083</span><a id="line.83">        monitorModification(configToMonitor);</a>
+<span class="sourceLineNo">084</span><a id="line.84">        registerMbean();</a>
+<span class="sourceLineNo">085</span><a id="line.85">    }</a>
+<span class="sourceLineNo">086</span><a id="line.86"></a>
+<span class="sourceLineNo">087</span><a id="line.87">    @Override</a>
+<span class="sourceLineNo">088</span><a id="line.88">    protected void registerMbean() {</a>
+<span class="sourceLineNo">089</span><a id="line.89">        if (getBrokerService().isUseJmx()) {</a>
+<span class="sourceLineNo">090</span><a id="line.90">            ManagementContext managementContext = getBrokerService().getManagementContext();</a>
+<span class="sourceLineNo">091</span><a id="line.91">            try {</a>
+<span class="sourceLineNo">092</span><a id="line.92">                objectName = new ObjectName(getBrokerService().getBrokerObjectName().toString() + objectNamePropsAppendage);</a>
+<span class="sourceLineNo">093</span><a id="line.93">                managementContext.registerMBean(new RuntimeConfigurationView(this), objectName);</a>
+<span class="sourceLineNo">094</span><a id="line.94">            } catch (Exception ignored) {</a>
+<span class="sourceLineNo">095</span><a id="line.95">                LOG.debug("failed to register RuntimeConfigurationMBean", ignored);</a>
+<span class="sourceLineNo">096</span><a id="line.96">            }</a>
+<span class="sourceLineNo">097</span><a id="line.97">        }</a>
+<span class="sourceLineNo">098</span><a id="line.98">    }</a>
+<span class="sourceLineNo">099</span><a id="line.99"></a>
+<span class="sourceLineNo">100</span><a id="line.100">    @Override</a>
+<span class="sourceLineNo">101</span><a id="line.101">    protected void unregisterMbean() {</a>
+<span class="sourceLineNo">102</span><a id="line.102">        if (objectName != null) {</a>
+<span class="sourceLineNo">103</span><a id="line.103">            try {</a>
+<span class="sourceLineNo">104</span><a id="line.104">                getBrokerService().getManagementContext().unregisterMBean(objectName);</a>
+<span class="sourceLineNo">105</span><a id="line.105">            } catch (JMException ignored) {</a>
+<span class="sourceLineNo">106</span><a id="line.106">            }</a>
+<span class="sourceLineNo">107</span><a id="line.107">        }</a>
+<span class="sourceLineNo">108</span><a id="line.108">    }</a>
+<span class="sourceLineNo">109</span><a id="line.109"></a>
+<span class="sourceLineNo">110</span><a id="line.110">    public String updateNow() {</a>
+<span class="sourceLineNo">111</span><a id="line.111">        LOG.info("Manual configuration update triggered");</a>
+<span class="sourceLineNo">112</span><a id="line.112">        infoString = "";</a>
+<span class="sourceLineNo">113</span><a id="line.113">        applyModifications(configToMonitor);</a>
+<span class="sourceLineNo">114</span><a id="line.114">        String result = infoString;</a>
+<span class="sourceLineNo">115</span><a id="line.115">        infoString = null;</a>
+<span class="sourceLineNo">116</span><a id="line.116">        return result;</a>
+<span class="sourceLineNo">117</span><a id="line.117">    }</a>
+<span class="sourceLineNo">118</span><a id="line.118"></a>
+<span class="sourceLineNo">119</span><a id="line.119">    private void monitorModification(final Resource configToMonitor) {</a>
+<span class="sourceLineNo">120</span><a id="line.120">        monitorTask = new Runnable() {</a>
+<span class="sourceLineNo">121</span><a id="line.121">            @Override</a>
+<span class="sourceLineNo">122</span><a id="line.122">            public void run() {</a>
+<span class="sourceLineNo">123</span><a id="line.123">                try {</a>
+<span class="sourceLineNo">124</span><a id="line.124">                    if (configToMonitor.lastModified() &gt; lastModified) {</a>
+<span class="sourceLineNo">125</span><a id="line.125">                        applyModifications(configToMonitor);</a>
+<span class="sourceLineNo">126</span><a id="line.126">                    }</a>
+<span class="sourceLineNo">127</span><a id="line.127">                } catch (Throwable e) {</a>
+<span class="sourceLineNo">128</span><a id="line.128">                    LOG.error("Failed to determine lastModified time on configuration: " + configToMonitor, e);</a>
+<span class="sourceLineNo">129</span><a id="line.129">                }</a>
+<span class="sourceLineNo">130</span><a id="line.130">            }</a>
+<span class="sourceLineNo">131</span><a id="line.131">        };</a>
+<span class="sourceLineNo">132</span><a id="line.132">        if (lastModified &gt; 0 &amp;&amp; checkPeriod &gt; 0) {</a>
+<span class="sourceLineNo">133</span><a id="line.133">            this.getBrokerService().getScheduler().executePeriodically(monitorTask, checkPeriod);</a>
+<span class="sourceLineNo">134</span><a id="line.134">            info("Monitoring for updates (every " + checkPeriod + "millis) : " + configToMonitor + ", lastUpdate: " + new Date(lastModified));</a>
+<span class="sourceLineNo">135</span><a id="line.135">        }</a>
+<span class="sourceLineNo">136</span><a id="line.136">    }</a>
+<span class="sourceLineNo">137</span><a id="line.137"></a>
+<span class="sourceLineNo">138</span><a id="line.138"></a>
+<span class="sourceLineNo">139</span><a id="line.139"></a>
+<span class="sourceLineNo">140</span><a id="line.140">    private void applyModifications(Resource configToMonitor) {</a>
+<span class="sourceLineNo">141</span><a id="line.141">        DtoBroker changed = loadConfiguration(configToMonitor);</a>
+<span class="sourceLineNo">142</span><a id="line.142">        if (changed != null &amp;&amp; !currentConfiguration.equals(changed)) {</a>
+<span class="sourceLineNo">143</span><a id="line.143">            LOG.info("change in " + configToMonitor + " at: " + new Date(lastModified));</a>
+<span class="sourceLineNo">144</span><a id="line.144">            LOG.debug("current:" + filterPasswords(currentConfiguration));</a>
+<span class="sourceLineNo">145</span><a id="line.145">            LOG.debug("new    :" + filterPasswords(changed));</a>
+<span class="sourceLineNo">146</span><a id="line.146">            processSelectiveChanges(currentConfiguration, changed);</a>
+<span class="sourceLineNo">147</span><a id="line.147">            currentConfiguration = changed;</a>
+<span class="sourceLineNo">148</span><a id="line.148">        } else {</a>
+<span class="sourceLineNo">149</span><a id="line.149">            info("No material change to configuration in " + configToMonitor + " at: " + new Date(lastModified));</a>
+<span class="sourceLineNo">150</span><a id="line.150">        }</a>
+<span class="sourceLineNo">151</span><a id="line.151">    }</a>
+<span class="sourceLineNo">152</span><a id="line.152"></a>
+<span class="sourceLineNo">153</span><a id="line.153">    private void processSelectiveChanges(DtoBroker currentConfiguration, DtoBroker modifiedConfiguration) {</a>
+<span class="sourceLineNo">154</span><a id="line.154"></a>
+<span class="sourceLineNo">155</span><a id="line.155">        for (Class upDatable : new Class[]{</a>
+<span class="sourceLineNo">156</span><a id="line.156">                DtoBroker.DestinationPolicy.class,</a>
+<span class="sourceLineNo">157</span><a id="line.157">                DtoBroker.NetworkConnectors.class,</a>
+<span class="sourceLineNo">158</span><a id="line.158">                DtoBroker.DestinationInterceptors.class,</a>
+<span class="sourceLineNo">159</span><a id="line.159">                DtoBroker.Plugins.class,</a>
+<span class="sourceLineNo">160</span><a id="line.160">                DtoBroker.Destinations.class}) {</a>
+<span class="sourceLineNo">161</span><a id="line.161">            processChanges(currentConfiguration, modifiedConfiguration, upDatable);</a>
+<span class="sourceLineNo">162</span><a id="line.162">        }</a>
+<span class="sourceLineNo">163</span><a id="line.163">    }</a>
+<span class="sourceLineNo">164</span><a id="line.164"></a>
+<span class="sourceLineNo">165</span><a id="line.165">    private void processChanges(DtoBroker currentConfiguration, DtoBroker modifiedConfiguration, Class upDatable) {</a>
+<span class="sourceLineNo">166</span><a id="line.166">        ConfigurationProcessor processor = ProcessorFactory.createProcessor(this, upDatable);</a>
+<span class="sourceLineNo">167</span><a id="line.167">        processor.processChanges(currentConfiguration, modifiedConfiguration);</a>
+<span class="sourceLineNo">168</span><a id="line.168">    }</a>
+<span class="sourceLineNo">169</span><a id="line.169"></a>
+<span class="sourceLineNo">170</span><a id="line.170"></a>
+<span class="sourceLineNo">171</span><a id="line.171"></a>
+<span class="sourceLineNo">172</span><a id="line.172">    private DtoBroker loadConfiguration(Resource configToMonitor) {</a>
+<span class="sourceLineNo">173</span><a id="line.173">        DtoBroker jaxbConfig = null;</a>
+<span class="sourceLineNo">174</span><a id="line.174">        if (configToMonitor != null) {</a>
+<span class="sourceLineNo">175</span><a id="line.175">            try {</a>
+<span class="sourceLineNo">176</span><a id="line.176">                JAXBContext context = JAXBContext.newInstance(DtoBroker.class);</a>
+<span class="sourceLineNo">177</span><a id="line.177">                Unmarshaller unMarshaller = context.createUnmarshaller();</a>
+<span class="sourceLineNo">178</span><a id="line.178">                unMarshaller.setSchema(getSchema());</a>
+<span class="sourceLineNo">179</span><a id="line.179"></a>
+<span class="sourceLineNo">180</span><a id="line.180">                // skip beans and pull out the broker node to validate</a>
+<span class="sourceLineNo">181</span><a id="line.181">                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();</a>
+<span class="sourceLineNo">182</span><a id="line.182">                dbf.setNamespaceAware(true);</a>
+<span class="sourceLineNo">183</span><a id="line.183">                dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);</a>
+<span class="sourceLineNo">184</span><a id="line.184">                dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);</a>
+<span class="sourceLineNo">185</span><a id="line.185"></a>
+<span class="sourceLineNo">186</span><a id="line.186">                DocumentBuilder db = dbf.newDocumentBuilder();</a>
+<span class="sourceLineNo">187</span><a id="line.187">                Document doc = db.parse(configToMonitor.getInputStream());</a>
+<span class="sourceLineNo">188</span><a id="line.188">                Node brokerRootNode = doc.getElementsByTagNameNS("*","broker").item(0);</a>
+<span class="sourceLineNo">189</span><a id="line.189"></a>
+<span class="sourceLineNo">190</span><a id="line.190">                if (brokerRootNode != null) {</a>
+<span class="sourceLineNo">191</span><a id="line.191"></a>
+<span class="sourceLineNo">192</span><a id="line.192">                    JAXBElement&lt;DtoBroker&gt; brokerJAXBElement =</a>
+<span class="sourceLineNo">193</span><a id="line.193">                            unMarshaller.unmarshal(brokerRootNode, DtoBroker.class);</a>
+<span class="sourceLineNo">194</span><a id="line.194">                    jaxbConfig = brokerJAXBElement.getValue();</a>
+<span class="sourceLineNo">195</span><a id="line.195"></a>
+<span class="sourceLineNo">196</span><a id="line.196">                    // if we can parse we can track mods</a>
+<span class="sourceLineNo">197</span><a id="line.197">                    lastModified = configToMonitor.lastModified();</a>
+<span class="sourceLineNo">198</span><a id="line.198"></a>
+<span class="sourceLineNo">199</span><a id="line.199">                    loadPropertiesPlaceHolderSupport(doc);</a>
+<span class="sourceLineNo">200</span><a id="line.200"></a>
+<span class="sourceLineNo">201</span><a id="line.201">                } else {</a>
+<span class="sourceLineNo">202</span><a id="line.202">                    info("Failed to find 'broker' element by tag in: " + configToMonitor);</a>
+<span class="sourceLineNo">203</span><a id="line.203">                }</a>
+<span class="sourceLineNo">204</span><a id="line.204"></a>
+<span class="sourceLineNo">205</span><a id="line.205">            } catch (IOException e) {</a>
+<span class="sourceLineNo">206</span><a id="line.206">                info("Failed to access: " + configToMonitor, e);</a>
+<span class="sourceLineNo">207</span><a id="line.207">            } catch (JAXBException e) {</a>
+<span class="sourceLineNo">208</span><a id="line.208">                info("Failed to parse: " + configToMonitor, e);</a>
+<span class="sourceLineNo">209</span><a id="line.209">            } catch (ParserConfigurationException e) {</a>
+<span class="sourceLineNo">210</span><a id="line.210">                info("Failed to document parse: " + configToMonitor, e);</a>
+<span class="sourceLineNo">211</span><a id="line.211">            } catch (SAXException e) {</a>
+<span class="sourceLineNo">212</span><a id="line.212">                info("Failed to find broker element in: " + configToMonitor, e);</a>
+<span class="sourceLineNo">213</span><a id="line.213">            } catch (Exception e) {</a>
+<span class="sourceLineNo">214</span><a id="line.214">                info("Unexpected exception during load of: " + configToMonitor, e);</a>
+<span class="sourceLineNo">215</span><a id="line.215">            }</a>
+<span class="sourceLineNo">216</span><a id="line.216">        }</a>
+<span class="sourceLineNo">217</span><a id="line.217">        return jaxbConfig;</a>
+<span class="sourceLineNo">218</span><a id="line.218">    }</a>
+<span class="sourceLineNo">219</span><a id="line.219"></a>
+<span class="sourceLineNo">220</span><a id="line.220">    private void loadPropertiesPlaceHolderSupport(Document doc) {</a>
+<span class="sourceLineNo">221</span><a id="line.221">        BrokerContext brokerContext = getBrokerService().getBrokerContext();</a>
+<span class="sourceLineNo">222</span><a id="line.222">        if (brokerContext != null) {</a>
+<span class="sourceLineNo">223</span><a id="line.223">            Properties initialProperties = new Properties(System.getProperties());</a>
+<span class="sourceLineNo">224</span><a id="line.224">            placeHolderUtil = new PropertiesPlaceHolderUtil(initialProperties);</a>
+<span class="sourceLineNo">225</span><a id="line.225">            placeHolderUtil.mergeProperties(doc, initialProperties, brokerContext);</a>
+<span class="sourceLineNo">226</span><a id="line.226">        }</a>
+<span class="sourceLineNo">227</span><a id="line.227">    }</a>
+<span class="sourceLineNo">228</span><a id="line.228"></a>
+<span class="sourceLineNo">229</span><a id="line.229">    private Schema getSchema() throws SAXException, IOException {</a>
+<span class="sourceLineNo">230</span><a id="line.230">        if (schema == null) {</a>
+<span class="sourceLineNo">231</span><a id="line.231">            SchemaFactory schemaFactory = SchemaFactory.newInstance(</a>
+<span class="sourceLineNo">232</span><a id="line.232">                    XMLConstants.W3C_XML_SCHEMA_NS_URI);</a>
+<span class="sourceLineNo">233</span><a id="line.233"></a>
+<span class="sourceLineNo">234</span><a id="line.234">            ArrayList&lt;StreamSource&gt; schemas = new ArrayList&lt;StreamSource&gt;();</a>
+<span class="sourceLineNo">235</span><a id="line.235">            schemas.add(new StreamSource(getClass().getResource("/activemq.xsd").toExternalForm()));</a>
+<span class="sourceLineNo">236</span><a id="line.236">            if (getClass().getResource("/org/springframework/beans/factory/xml/spring-beans-3.0.xsd") != null) {</a>
+<span class="sourceLineNo">237</span><a id="line.237">                schemas.add(new StreamSource(getClass().getResource("/org/springframework/beans/factory/xml/spring-beans-3.0.xsd").toExternalForm()));</a>
+<span class="sourceLineNo">238</span><a id="line.238">            } else {</a>
+<span class="sourceLineNo">239</span><a id="line.239">                schemas.add(new StreamSource(getClass().getResource("/org/springframework/beans/factory/xml/spring-beans.xsd").toExternalForm()));</a>
+<span class="sourceLineNo">240</span><a id="line.240">            }</a>
+<span class="sourceLineNo">241</span><a id="line.241">            schema = schemaFactory.newSchema(schemas.toArray(new Source[]{}));</a>
+<span class="sourceLineNo">242</span><a id="line.242">        }</a>
+<span class="sourceLineNo">243</span><a id="line.243">        return schema;</a>
+<span class="sourceLineNo">244</span><a id="line.244">    }</a>
+<span class="sourceLineNo">245</span><a id="line.245"></a>
+<span class="sourceLineNo">246</span><a id="line.246">    public long getLastModified() {</a>
+<span class="sourceLineNo">247</span><a id="line.247">        return lastModified;</a>
+<span class="sourceLineNo">248</span><a id="line.248">    }</a>
+<span class="sourceLineNo">249</span><a id="line.249"></a>
+<span class="sourceLineNo">250</span><a id="line.250">    public Resource getConfigToMonitor() {</a>
+<span class="sourceLineNo">251</span><a id="line.251">        return configToMonitor;</a>
+<span class="sourceLineNo">252</span><a id="line.252">    }</a>
+<span class="sourceLineNo">253</span><a id="line.253"></a>
+<span class="sourceLineNo">254</span><a id="line.254">    public long getCheckPeriod() {</a>
+<span class="sourceLineNo">255</span><a id="line.255">        return checkPeriod;</a>
+<span class="sourceLineNo">256</span><a id="line.256">    }</a>
+<span class="sourceLineNo">257</span><a id="line.257"></a>
+<span class="sourceLineNo">258</span><a id="line.258">    public void setCheckPeriod(long checkPeriod) {</a>
+<span class="sourceLineNo">259</span><a id="line.259">        this.checkPeriod = checkPeriod;</a>
+<span class="sourceLineNo">260</span><a id="line.260">    }</a>
+<span class="sourceLineNo">261</span><a id="line.261"></a>
+<span class="sourceLineNo">262</span><a id="line.262">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

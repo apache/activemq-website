@@ -1,0 +1,346 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">/**</a>
+<span class="sourceLineNo">002</span><a id="line.2"> * Licensed to the Apache Software Foundation (ASF) under one or more</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * contributor license agreements.  See the NOTICE file distributed with</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * this work for additional information regarding copyright ownership.</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * The ASF licenses this file to You under the Apache License, Version 2.0</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * (the "License"); you may not use this file except in compliance with</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * the License.  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * limitations under the License.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> */</a>
+<span class="sourceLineNo">017</span><a id="line.17">package org.apache.activemq.network;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import java.io.IOException;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import java.net.URI;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.net.URISyntaxException;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.util.Iterator;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.util.Map;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.concurrent.ConcurrentHashMap;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.util.concurrent.ConcurrentMap;</a>
+<span class="sourceLineNo">026</span><a id="line.26"></a>
+<span class="sourceLineNo">027</span><a id="line.27">import javax.management.ObjectName;</a>
+<span class="sourceLineNo">028</span><a id="line.28"></a>
+<span class="sourceLineNo">029</span><a id="line.29">import org.apache.activemq.broker.BrokerService;</a>
+<span class="sourceLineNo">030</span><a id="line.30">import org.apache.activemq.broker.SslContext;</a>
+<span class="sourceLineNo">031</span><a id="line.31">import org.apache.activemq.command.DiscoveryEvent;</a>
+<span class="sourceLineNo">032</span><a id="line.32">import org.apache.activemq.transport.Transport;</a>
+<span class="sourceLineNo">033</span><a id="line.33">import org.apache.activemq.transport.TransportFactory;</a>
+<span class="sourceLineNo">034</span><a id="line.34">import org.apache.activemq.transport.discovery.DiscoveryAgent;</a>
+<span class="sourceLineNo">035</span><a id="line.35">import org.apache.activemq.transport.discovery.DiscoveryAgentFactory;</a>
+<span class="sourceLineNo">036</span><a id="line.36">import org.apache.activemq.transport.discovery.DiscoveryListener;</a>
+<span class="sourceLineNo">037</span><a id="line.37">import org.apache.activemq.util.IntrospectionSupport;</a>
+<span class="sourceLineNo">038</span><a id="line.38">import org.apache.activemq.util.ServiceStopper;</a>
+<span class="sourceLineNo">039</span><a id="line.39">import org.apache.activemq.util.ServiceSupport;</a>
+<span class="sourceLineNo">040</span><a id="line.40">import org.apache.activemq.util.URISupport;</a>
+<span class="sourceLineNo">041</span><a id="line.41">import org.slf4j.Logger;</a>
+<span class="sourceLineNo">042</span><a id="line.42">import org.slf4j.LoggerFactory;</a>
+<span class="sourceLineNo">043</span><a id="line.43"></a>
+<span class="sourceLineNo">044</span><a id="line.44">/**</a>
+<span class="sourceLineNo">045</span><a id="line.45"> * A network connector which uses a discovery agent to detect the remote brokers</a>
+<span class="sourceLineNo">046</span><a id="line.46"> * available and setup a connection to each available remote broker</a>
+<span class="sourceLineNo">047</span><a id="line.47"> *</a>
+<span class="sourceLineNo">048</span><a id="line.48"> * @org.apache.xbean.XBean element="networkConnector"</a>
+<span class="sourceLineNo">049</span><a id="line.49"> *</a>
+<span class="sourceLineNo">050</span><a id="line.50"> */</a>
+<span class="sourceLineNo">051</span><a id="line.51">public class DiscoveryNetworkConnector extends NetworkConnector implements DiscoveryListener {</a>
+<span class="sourceLineNo">052</span><a id="line.52">    private static final Logger LOG = LoggerFactory.getLogger(DiscoveryNetworkConnector.class);</a>
+<span class="sourceLineNo">053</span><a id="line.53"></a>
+<span class="sourceLineNo">054</span><a id="line.54">    private DiscoveryAgent discoveryAgent;</a>
+<span class="sourceLineNo">055</span><a id="line.55">    private Map&lt;String, String&gt; parameters;</a>
+<span class="sourceLineNo">056</span><a id="line.56">    private final ConcurrentMap&lt;URI, DiscoveryEvent&gt; activeEvents = new ConcurrentHashMap&lt;URI, DiscoveryEvent&gt;();</a>
+<span class="sourceLineNo">057</span><a id="line.57">    private URI discoveryUri;</a>
+<span class="sourceLineNo">058</span><a id="line.58">    public DiscoveryNetworkConnector() {</a>
+<span class="sourceLineNo">059</span><a id="line.59">    }</a>
+<span class="sourceLineNo">060</span><a id="line.60"></a>
+<span class="sourceLineNo">061</span><a id="line.61">    public DiscoveryNetworkConnector(URI discoveryURI) throws IOException {</a>
+<span class="sourceLineNo">062</span><a id="line.62">        setUri(discoveryURI);</a>
+<span class="sourceLineNo">063</span><a id="line.63">    }</a>
+<span class="sourceLineNo">064</span><a id="line.64"></a>
+<span class="sourceLineNo">065</span><a id="line.65">    public void setUri(URI discoveryURI) throws IOException {</a>
+<span class="sourceLineNo">066</span><a id="line.66">        this.discoveryUri = discoveryURI;</a>
+<span class="sourceLineNo">067</span><a id="line.67">        setDiscoveryAgent(DiscoveryAgentFactory.createDiscoveryAgent(discoveryURI));</a>
+<span class="sourceLineNo">068</span><a id="line.68">        try {</a>
+<span class="sourceLineNo">069</span><a id="line.69">            parameters = URISupport.parseParameters(discoveryURI);</a>
+<span class="sourceLineNo">070</span><a id="line.70">            // allow discovery agent to grab it's parameters</a>
+<span class="sourceLineNo">071</span><a id="line.71">            IntrospectionSupport.setProperties(getDiscoveryAgent(), parameters);</a>
+<span class="sourceLineNo">072</span><a id="line.72">        } catch (URISyntaxException e) {</a>
+<span class="sourceLineNo">073</span><a id="line.73">            LOG.warn("failed to parse query parameters from discoveryURI: {}", discoveryURI, e);</a>
+<span class="sourceLineNo">074</span><a id="line.74">        }</a>
+<span class="sourceLineNo">075</span><a id="line.75">    }</a>
+<span class="sourceLineNo">076</span><a id="line.76"></a>
+<span class="sourceLineNo">077</span><a id="line.77">    public URI getUri() {</a>
+<span class="sourceLineNo">078</span><a id="line.78">        return discoveryUri;</a>
+<span class="sourceLineNo">079</span><a id="line.79">    }</a>
+<span class="sourceLineNo">080</span><a id="line.80"></a>
+<span class="sourceLineNo">081</span><a id="line.81">    @Override</a>
+<span class="sourceLineNo">082</span><a id="line.82">    public void onServiceAdd(DiscoveryEvent event) {</a>
+<span class="sourceLineNo">083</span><a id="line.83">        // Ignore events once we start stopping.</a>
+<span class="sourceLineNo">084</span><a id="line.84">        if (serviceSupport.isStopped() || serviceSupport.isStopping()) {</a>
+<span class="sourceLineNo">085</span><a id="line.85">            return;</a>
+<span class="sourceLineNo">086</span><a id="line.86">        }</a>
+<span class="sourceLineNo">087</span><a id="line.87">        String url = event.getServiceName();</a>
+<span class="sourceLineNo">088</span><a id="line.88">        if (url != null) {</a>
+<span class="sourceLineNo">089</span><a id="line.89">            URI uri;</a>
+<span class="sourceLineNo">090</span><a id="line.90">            try {</a>
+<span class="sourceLineNo">091</span><a id="line.91">                uri = new URI(url);</a>
+<span class="sourceLineNo">092</span><a id="line.92">            } catch (URISyntaxException e) {</a>
+<span class="sourceLineNo">093</span><a id="line.93">                LOG.warn("Could not connect to remote URI: {} due to bad URI syntax: ", url, e);</a>
+<span class="sourceLineNo">094</span><a id="line.94">                return;</a>
+<span class="sourceLineNo">095</span><a id="line.95">            }</a>
+<span class="sourceLineNo">096</span><a id="line.96"></a>
+<span class="sourceLineNo">097</span><a id="line.97">            if (localURI.equals(uri)) {</a>
+<span class="sourceLineNo">098</span><a id="line.98">                LOG.debug("not connecting loopback: {}", uri);</a>
+<span class="sourceLineNo">099</span><a id="line.99">                return;</a>
+<span class="sourceLineNo">100</span><a id="line.100">            }</a>
+<span class="sourceLineNo">101</span><a id="line.101"></a>
+<span class="sourceLineNo">102</span><a id="line.102">            if (connectionFilter != null &amp;&amp; !connectionFilter.connectTo(uri)) {</a>
+<span class="sourceLineNo">103</span><a id="line.103">                LOG.debug("connectionFilter disallows connection to: {}", uri);</a>
+<span class="sourceLineNo">104</span><a id="line.104">                return;</a>
+<span class="sourceLineNo">105</span><a id="line.105">            }</a>
+<span class="sourceLineNo">106</span><a id="line.106"></a>
+<span class="sourceLineNo">107</span><a id="line.107">            // Should we try to connect to that URI?</a>
+<span class="sourceLineNo">108</span><a id="line.108">            if (activeEvents.putIfAbsent(uri, event) != null) {</a>
+<span class="sourceLineNo">109</span><a id="line.109">                LOG.debug("Discovery agent generated a duplicate onServiceAdd event for: {}", uri);</a>
+<span class="sourceLineNo">110</span><a id="line.110">                return;</a>
+<span class="sourceLineNo">111</span><a id="line.111">            }</a>
+<span class="sourceLineNo">112</span><a id="line.112"></a>
+<span class="sourceLineNo">113</span><a id="line.113">            URI connectUri = uri;</a>
+<span class="sourceLineNo">114</span><a id="line.114">            try {</a>
+<span class="sourceLineNo">115</span><a id="line.115">                connectUri = URISupport.applyParameters(connectUri, parameters, DISCOVERED_OPTION_PREFIX);</a>
+<span class="sourceLineNo">116</span><a id="line.116">            } catch (URISyntaxException e) {</a>
+<span class="sourceLineNo">117</span><a id="line.117">                LOG.warn("could not apply query parameters: {} to: {}",parameters, connectUri, e);</a>
+<span class="sourceLineNo">118</span><a id="line.118">            }</a>
+<span class="sourceLineNo">119</span><a id="line.119"></a>
+<span class="sourceLineNo">120</span><a id="line.120">            LOG.info("Establishing network connection from {} to {}", localURI, connectUri);</a>
+<span class="sourceLineNo">121</span><a id="line.121"></a>
+<span class="sourceLineNo">122</span><a id="line.122">            Transport remoteTransport;</a>
+<span class="sourceLineNo">123</span><a id="line.123">            Transport localTransport;</a>
+<span class="sourceLineNo">124</span><a id="line.124">            try {</a>
+<span class="sourceLineNo">125</span><a id="line.125">                // Allows the transport to access the broker's ssl configuration.</a>
+<span class="sourceLineNo">126</span><a id="line.126">                if (getSslContext() != null) {</a>
+<span class="sourceLineNo">127</span><a id="line.127">                    SslContext.setCurrentSslContext(getSslContext());</a>
+<span class="sourceLineNo">128</span><a id="line.128">                } else {</a>
+<span class="sourceLineNo">129</span><a id="line.129">                    SslContext.setCurrentSslContext(getBrokerService().getSslContext());</a>
+<span class="sourceLineNo">130</span><a id="line.130">                }</a>
+<span class="sourceLineNo">131</span><a id="line.131">                try {</a>
+<span class="sourceLineNo">132</span><a id="line.132">                    remoteTransport = TransportFactory.connect(connectUri);</a>
+<span class="sourceLineNo">133</span><a id="line.133">                } catch (Exception e) {</a>
+<span class="sourceLineNo">134</span><a id="line.134">                    LOG.warn("Could not connect to remote URI: {}: {}", connectUri, e.getMessage());</a>
+<span class="sourceLineNo">135</span><a id="line.135">                    LOG.debug("Connection failure exception: ", e);</a>
+<span class="sourceLineNo">136</span><a id="line.136">                    try {</a>
+<span class="sourceLineNo">137</span><a id="line.137">                        discoveryAgent.serviceFailed(event);</a>
+<span class="sourceLineNo">138</span><a id="line.138">                    } catch (IOException e1) {</a>
+<span class="sourceLineNo">139</span><a id="line.139">                        LOG.debug("Failure while handling create remote transport failure event: {}", e1.getMessage(), e1);</a>
+<span class="sourceLineNo">140</span><a id="line.140">                    }</a>
+<span class="sourceLineNo">141</span><a id="line.141">                    return;</a>
+<span class="sourceLineNo">142</span><a id="line.142">                }</a>
+<span class="sourceLineNo">143</span><a id="line.143">                try {</a>
+<span class="sourceLineNo">144</span><a id="line.144">                    localTransport = createLocalTransport();</a>
+<span class="sourceLineNo">145</span><a id="line.145">                } catch (Exception e) {</a>
+<span class="sourceLineNo">146</span><a id="line.146">                    ServiceSupport.dispose(remoteTransport);</a>
+<span class="sourceLineNo">147</span><a id="line.147">                    LOG.warn("Could not connect to local URI: {}: {}", localURI, e.getMessage());</a>
+<span class="sourceLineNo">148</span><a id="line.148">                    LOG.debug("Connection failure exception: ", e);</a>
+<span class="sourceLineNo">149</span><a id="line.149"></a>
+<span class="sourceLineNo">150</span><a id="line.150">                    try {</a>
+<span class="sourceLineNo">151</span><a id="line.151">                        discoveryAgent.serviceFailed(event);</a>
+<span class="sourceLineNo">152</span><a id="line.152">                    } catch (IOException e1) {</a>
+<span class="sourceLineNo">153</span><a id="line.153">                        LOG.debug("Failure while handling create local transport failure event: {}", e1.getMessage(), e1);</a>
+<span class="sourceLineNo">154</span><a id="line.154">                    }</a>
+<span class="sourceLineNo">155</span><a id="line.155">                    return;</a>
+<span class="sourceLineNo">156</span><a id="line.156">                }</a>
+<span class="sourceLineNo">157</span><a id="line.157">            } finally {</a>
+<span class="sourceLineNo">158</span><a id="line.158">                SslContext.setCurrentSslContext(null);</a>
+<span class="sourceLineNo">159</span><a id="line.159">            }</a>
+<span class="sourceLineNo">160</span><a id="line.160">            NetworkBridge bridge = createBridge(localTransport, remoteTransport, event);</a>
+<span class="sourceLineNo">161</span><a id="line.161">            try {</a>
+<span class="sourceLineNo">162</span><a id="line.162">                synchronized (bridges) {</a>
+<span class="sourceLineNo">163</span><a id="line.163">                    bridges.put(uri, bridge);</a>
+<span class="sourceLineNo">164</span><a id="line.164">                }</a>
+<span class="sourceLineNo">165</span><a id="line.165">                bridge.start();</a>
+<span class="sourceLineNo">166</span><a id="line.166">            } catch (Exception e) {</a>
+<span class="sourceLineNo">167</span><a id="line.167">                ServiceSupport.dispose(localTransport);</a>
+<span class="sourceLineNo">168</span><a id="line.168">                ServiceSupport.dispose(remoteTransport);</a>
+<span class="sourceLineNo">169</span><a id="line.169">                LOG.warn("Could not start network bridge between: {} and: {} due to: {}", localURI, uri, e.getMessage());</a>
+<span class="sourceLineNo">170</span><a id="line.170">                LOG.debug("Start failure exception: ", e);</a>
+<span class="sourceLineNo">171</span><a id="line.171">                try {</a>
+<span class="sourceLineNo">172</span><a id="line.172">                    // Will remove bridge and active event.</a>
+<span class="sourceLineNo">173</span><a id="line.173">                    discoveryAgent.serviceFailed(event);</a>
+<span class="sourceLineNo">174</span><a id="line.174">                } catch (IOException e1) {</a>
+<span class="sourceLineNo">175</span><a id="line.175">                    LOG.debug("Discovery agent failure while handling failure event: {}", e1.getMessage(), e1);</a>
+<span class="sourceLineNo">176</span><a id="line.176">                }</a>
+<span class="sourceLineNo">177</span><a id="line.177">            }</a>
+<span class="sourceLineNo">178</span><a id="line.178">        }</a>
+<span class="sourceLineNo">179</span><a id="line.179">    }</a>
+<span class="sourceLineNo">180</span><a id="line.180"></a>
+<span class="sourceLineNo">181</span><a id="line.181">    @Override</a>
+<span class="sourceLineNo">182</span><a id="line.182">    public void onServiceRemove(DiscoveryEvent event) {</a>
+<span class="sourceLineNo">183</span><a id="line.183">        String url = event.getServiceName();</a>
+<span class="sourceLineNo">184</span><a id="line.184">        if (url != null) {</a>
+<span class="sourceLineNo">185</span><a id="line.185">            URI uri;</a>
+<span class="sourceLineNo">186</span><a id="line.186">            try {</a>
+<span class="sourceLineNo">187</span><a id="line.187">                uri = new URI(url);</a>
+<span class="sourceLineNo">188</span><a id="line.188">            } catch (URISyntaxException e) {</a>
+<span class="sourceLineNo">189</span><a id="line.189">                LOG.warn("Could not connect to remote URI: {} due to bad URI syntax: ", url, e);</a>
+<span class="sourceLineNo">190</span><a id="line.190">                return;</a>
+<span class="sourceLineNo">191</span><a id="line.191">            }</a>
+<span class="sourceLineNo">192</span><a id="line.192"></a>
+<span class="sourceLineNo">193</span><a id="line.193">            // Only remove bridge if this is the active discovery event for the URL.</a>
+<span class="sourceLineNo">194</span><a id="line.194">            if (activeEvents.remove(uri, event)) {</a>
+<span class="sourceLineNo">195</span><a id="line.195">                synchronized (bridges) {</a>
+<span class="sourceLineNo">196</span><a id="line.196">                    bridges.remove(uri);</a>
+<span class="sourceLineNo">197</span><a id="line.197">                }</a>
+<span class="sourceLineNo">198</span><a id="line.198">            }</a>
+<span class="sourceLineNo">199</span><a id="line.199">        }</a>
+<span class="sourceLineNo">200</span><a id="line.200">    }</a>
+<span class="sourceLineNo">201</span><a id="line.201"></a>
+<span class="sourceLineNo">202</span><a id="line.202">    public DiscoveryAgent getDiscoveryAgent() {</a>
+<span class="sourceLineNo">203</span><a id="line.203">        return discoveryAgent;</a>
+<span class="sourceLineNo">204</span><a id="line.204">    }</a>
+<span class="sourceLineNo">205</span><a id="line.205"></a>
+<span class="sourceLineNo">206</span><a id="line.206">    public void setDiscoveryAgent(DiscoveryAgent discoveryAgent) {</a>
+<span class="sourceLineNo">207</span><a id="line.207">        this.discoveryAgent = discoveryAgent;</a>
+<span class="sourceLineNo">208</span><a id="line.208">        if (discoveryAgent != null) {</a>
+<span class="sourceLineNo">209</span><a id="line.209">            this.discoveryAgent.setDiscoveryListener(this);</a>
+<span class="sourceLineNo">210</span><a id="line.210">        }</a>
+<span class="sourceLineNo">211</span><a id="line.211">    }</a>
+<span class="sourceLineNo">212</span><a id="line.212"></a>
+<span class="sourceLineNo">213</span><a id="line.213">    @Override</a>
+<span class="sourceLineNo">214</span><a id="line.214">    protected void handleStart() throws Exception {</a>
+<span class="sourceLineNo">215</span><a id="line.215">        if (discoveryAgent == null) {</a>
+<span class="sourceLineNo">216</span><a id="line.216">            throw new IllegalStateException("You must configure the 'discoveryAgent' property");</a>
+<span class="sourceLineNo">217</span><a id="line.217">        }</a>
+<span class="sourceLineNo">218</span><a id="line.218">        this.discoveryAgent.start();</a>
+<span class="sourceLineNo">219</span><a id="line.219">        super.handleStart();</a>
+<span class="sourceLineNo">220</span><a id="line.220">    }</a>
+<span class="sourceLineNo">221</span><a id="line.221"></a>
+<span class="sourceLineNo">222</span><a id="line.222">    @Override</a>
+<span class="sourceLineNo">223</span><a id="line.223">    protected void handleStop(ServiceStopper stopper) throws Exception {</a>
+<span class="sourceLineNo">224</span><a id="line.224">        for (Iterator&lt;NetworkBridge&gt; i = bridges.values().iterator(); i.hasNext();) {</a>
+<span class="sourceLineNo">225</span><a id="line.225">            NetworkBridge bridge = i.next();</a>
+<span class="sourceLineNo">226</span><a id="line.226">            try {</a>
+<span class="sourceLineNo">227</span><a id="line.227">                bridge.stop();</a>
+<span class="sourceLineNo">228</span><a id="line.228">            } catch (Exception e) {</a>
+<span class="sourceLineNo">229</span><a id="line.229">                stopper.onException(this, e);</a>
+<span class="sourceLineNo">230</span><a id="line.230">            }</a>
+<span class="sourceLineNo">231</span><a id="line.231">        }</a>
+<span class="sourceLineNo">232</span><a id="line.232">        bridges.clear();</a>
+<span class="sourceLineNo">233</span><a id="line.233">        activeEvents.clear();</a>
+<span class="sourceLineNo">234</span><a id="line.234">        try {</a>
+<span class="sourceLineNo">235</span><a id="line.235">            this.discoveryAgent.stop();</a>
+<span class="sourceLineNo">236</span><a id="line.236">        } catch (Exception e) {</a>
+<span class="sourceLineNo">237</span><a id="line.237">            stopper.onException(this, e);</a>
+<span class="sourceLineNo">238</span><a id="line.238">        }</a>
+<span class="sourceLineNo">239</span><a id="line.239"></a>
+<span class="sourceLineNo">240</span><a id="line.240">        super.handleStop(stopper);</a>
+<span class="sourceLineNo">241</span><a id="line.241">    }</a>
+<span class="sourceLineNo">242</span><a id="line.242"></a>
+<span class="sourceLineNo">243</span><a id="line.243">    protected NetworkBridge createBridge(Transport localTransport, Transport remoteTransport, final DiscoveryEvent event) {</a>
+<span class="sourceLineNo">244</span><a id="line.244">        class DiscoverNetworkBridgeListener extends MBeanNetworkListener {</a>
+<span class="sourceLineNo">245</span><a id="line.245"></a>
+<span class="sourceLineNo">246</span><a id="line.246">            public DiscoverNetworkBridgeListener(BrokerService brokerService, ObjectName connectorName) {</a>
+<span class="sourceLineNo">247</span><a id="line.247">                super(brokerService, DiscoveryNetworkConnector.this, connectorName);</a>
+<span class="sourceLineNo">248</span><a id="line.248">            }</a>
+<span class="sourceLineNo">249</span><a id="line.249"></a>
+<span class="sourceLineNo">250</span><a id="line.250">            @Override</a>
+<span class="sourceLineNo">251</span><a id="line.251">            public void bridgeFailed() {</a>
+<span class="sourceLineNo">252</span><a id="line.252">                if (!serviceSupport.isStopped()) {</a>
+<span class="sourceLineNo">253</span><a id="line.253">                    try {</a>
+<span class="sourceLineNo">254</span><a id="line.254">                        discoveryAgent.serviceFailed(event);</a>
+<span class="sourceLineNo">255</span><a id="line.255">                    } catch (IOException e) {</a>
+<span class="sourceLineNo">256</span><a id="line.256">                    }</a>
+<span class="sourceLineNo">257</span><a id="line.257">                }</a>
+<span class="sourceLineNo">258</span><a id="line.258"></a>
+<span class="sourceLineNo">259</span><a id="line.259">            }</a>
+<span class="sourceLineNo">260</span><a id="line.260">        }</a>
+<span class="sourceLineNo">261</span><a id="line.261">        NetworkBridgeListener listener = new DiscoverNetworkBridgeListener(getBrokerService(), getObjectName());</a>
+<span class="sourceLineNo">262</span><a id="line.262"></a>
+<span class="sourceLineNo">263</span><a id="line.263">        DemandForwardingBridge result = getBridgeFactory().createNetworkBridge(this, localTransport, remoteTransport, listener);</a>
+<span class="sourceLineNo">264</span><a id="line.264">        result.setBrokerService(getBrokerService());</a>
+<span class="sourceLineNo">265</span><a id="line.265">        return configureBridge(result);</a>
+<span class="sourceLineNo">266</span><a id="line.266">    }</a>
+<span class="sourceLineNo">267</span><a id="line.267"></a>
+<span class="sourceLineNo">268</span><a id="line.268">    @Override</a>
+<span class="sourceLineNo">269</span><a id="line.269">    public String toString() {</a>
+<span class="sourceLineNo">270</span><a id="line.270">        return "DiscoveryNetworkConnector:" + getName() + ":" + getBrokerService();</a>
+<span class="sourceLineNo">271</span><a id="line.271">    }</a>
+<span class="sourceLineNo">272</span><a id="line.272">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>
