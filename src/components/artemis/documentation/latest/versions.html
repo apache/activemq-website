@@ -1308,6 +1308,31 @@ chapter in addition to any version-specific upgrade instructions outlined here.<
 </ul>
 </li>
 </ul>
+<h2 id="2210">2.21.0</h2>
+<p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12351083&amp;projectId=12315920" target="_blank">Full release notes</a>.</p>
+<p>Highlights:</p>
+<ul>
+<li><a href="mqtt.html">MQTT 5</a> is now supported.</li>
+<li>A new set of <a href="perf-tools.html">performance tools</a> are now available to evaluate
+throughput and Response Under Load performance of Artemis</li>
+<li>Diverts now support <a href="diverts.html#composite-divert">multiple addresses</a></li>
+<li><a href="config-reload.html">Runtime configuration reloading</a> now supports bridges.</li>
+<li><a href="paging.html#paging-mode">Paging</a> can now be configured by message count.</li>
+</ul>
+<h4 id="upgrading-from-older-versions">Upgrading from older versions</h4>
+<p>Due to XML schema changes to correct an inaccurate domain name 2 files will need to
+be updated:</p>
+<ol>
+<li><code>etc/bootstrap.xml</code></li>
+<li><code>etc/management.xml</code></li>
+</ol>
+<p>In both files change the XML namespace from <code>activemq.org</code> to <code>activemq.apache.org</code>,
+e.g. in <code>bootsrap.xml</code> use:q:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.apache.org/schema&quot;</span>&gt;</span>
+</code></pre>
+<p>And in <code>management.xml</code> use:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">management-context</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.apache.org/schema&quot;</span>&gt;</span>
+</code></pre>
 <h2 id="2200">2.20.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12350581&amp;projectId=12315920" target="_blank">Full release notes</a>.</p>
 <p>Highlights:</p>
