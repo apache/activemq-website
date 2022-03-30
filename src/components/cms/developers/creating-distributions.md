@@ -18,7 +18,9 @@ Under the source dir, we just drop the archive files (*.zip, *.tar.gz, *.zip.asc
 
 The links on our download pages reference an apache CGI script to handle the mirrors. This is a quick and dirty way of doing this, but it works until we come up with a better way. An example usage of the link is the url below:
 
-[https://dlcdn.apache.org/activemq/activemq-cpp/source/activemq-cpp-1.1-src.zip](https://dlcdn.apache.org/activemq/activemq-cpp/source/activemq-cpp-1.1-src.zip)
+[http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/source/activemq-cpp-1.1-src.zip](http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/source/activemq-cpp-1.1-src.zip)
+
+The cgi script "closer.cgi" takes a file resource relative to www/www.apache.org/dist and generates a download page for it with the list of mirrors.
 
 To see this in action, go to the amq-cpp 1.1 download page here: [activemq-cpp-11-release.md](../../download/11-release)
 
@@ -60,9 +62,9 @@ The page [ActiveMQ-CPP product version number](Index/Overview/Download/ActiveMQ-
     ````
 *   Copy the distribution files to **/www/www.apache.org/dist/activemq/activemq-cpp/source** on minotaur.
 *   Wait 24 hours for the mirrors to be updated with the distribution.
-*   Update the links on the download page to reference your distribution through the CGI script. This simply means that you precede the file names with the path [https://dlcdn.apache.org/activemq/activemq-cpp/source/](https://dlcdn.apache.org/activemq/activemq-cpp/source/).
+*   Update the links on the download page to reference your distribution through the CGI script. This simply means that you precede the file names with the path [http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/source/](http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/source/).
     ```
-    i.e. https://dlcdn.apache.org/activemq/activemq-cpp/source/activemq-cpp-1.1-src.zip
+    i.e. http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/source/activemq-cpp-1.1-src.zip
     ```
 *   Generate the Doxygen API and place it under /www/activemq.apache.org/cms/api_docs.
 *   Add the link to the release API to the [API](Index/Site/NavigationIndex/Site/Navigation/Index/Site/Navigation/api.md) page.
