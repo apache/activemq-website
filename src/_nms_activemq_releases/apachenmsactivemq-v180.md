@@ -19,18 +19,8 @@ Refer to the API for this release [here](../../../nms-api)
 Download Here
 -------------
 
-Description|Download Link|PGP Signature File|Version
----|---|---|---
-Apache.NMS.ActiveMQ Source code|[Apache.NMS.ActiveMQ-1.8.0-src.zip ](https://archive.apache.org/dist/activemq/apache-nms-activemq/1.8.0/Apache.NMS.ActiveMQ-1.8.0-src.zip)|[Apache.NMS.ActiveMQ-1.8.0-src.zip.asc](https://archive.apache.org/dist/activemq/apache-nms-activemq/1.8.0/Apache.NMS.ActiveMQ-1.8.0-src.zip.asc)|1.8.0
-Apache.NMS.ActiveMQ Binary Assemblies|[Apache.NMS.ActiveMQ-1.8.0-bin.zip](https://archive.apache.org/dist/activemq/apache-nms-activemq/1.8.0/Apache.NMS.ActiveMQ-1.8.0-bin.zip)|[Apache.NMS.ActiveMQ-1.8.0-bin.zip.asc](https://archive.apache.org/dist/activemq/apache-nms-activemq/1.8.0/Apache.NMS.ActiveMQ-1.8.0-bin.zip.asc)|1.8.0
-
-Git Tag Checkout
-----------------
-
-```
-git clone https://gitbox.apache.org/repos/asf/activemq-nms-openwire.git
-git checkout tags/1.8.0
-```
+Apache.NMS.ActiveMQ Source code|[Apache.NMS.ActiveMQ-1.8.0-src.zip ](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-activemq/1.8.0/Apache.NMS.ActiveMQ-1.8.0-src.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-activemq/1.8.0/Apache.NMS.ActiveMQ-1.8.0-src.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-activemq/1.8.0/Apache.NMS.ActiveMQ-1.8.0-src.zip.asc)
+Apache.NMS.ActiveMQ Binary Assemblies|[Apache.NMS.ActiveMQ-1.8.0-bin.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-activemq/1.8.0/Apache.NMS.ActiveMQ-1.8.0-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-activemq/1.8.0/Apache.NMS.ActiveMQ-1.8.0-bin.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-activemq/1.8.0/Apache.NMS.ActiveMQ-1.8.0-bin.zip.asc)
 
 Changelog
 ---------

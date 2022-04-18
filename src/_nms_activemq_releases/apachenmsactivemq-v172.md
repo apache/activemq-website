@@ -18,15 +18,9 @@ Refer to the API for this release [here](../../../nms-api)
 Download Here
 -------------
 
-Description|Download Link|PGP Signature File|Version
----|---|---|---
-Apache.NMS.ActiveMQ Source code|[Apache.NMS.ActiveMQ-1.7.2-src.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms/1.7.0/Apache.NMS.ActiveMQ-1.7.2-src.zip)|[Apache.NMS.ActiveMQ-1.7.2-src.zip.asc](http://www.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS.ActiveMQ-1.7.2-src.zip.asc)|1.7.2.4108
-Apache.NMS.ActiveMQ Binary Assemblies|[Apache.NMS.ActiveMQ-1.7.2-bin.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms/1.7.0/Apache.NMS.ActiveMQ-1.7.2-bin.zip)|[Apache.NMS.ActiveMQ-1.7.2-bin.zip.asc](http://www.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS.ActiveMQ-1.7.2-bin.zip.asc)|1.7.2.4108
+Apache.NMS.ActiveMQ Source code|[Apache.NMS.ActiveMQ-1.7.2-src.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms/1.7.0/Apache.NMS.ActiveMQ-1.7.2-src.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS.ActiveMQ-1.7.2-src.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS.ActiveMQ-1.7.2-src.zip.asc)
+Apache.NMS.ActiveMQ Binary Assemblies|[Apache.NMS.ActiveMQ-1.7.2-bin.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms/1.7.0/Apache.NMS.ActiveMQ-1.7.2-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS.ActiveMQ-1.7.2-bin.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS.ActiveMQ-1.7.2-bin.zip.asc)
 
-SVN Tag Checkout
-----------------
-
-svn co [https://svn.apache.org/repos/asf/activemq/activemq-dotnet/Apache.NMS.ActiveMQ/tags/1.7.2/](https://svn.apache.org/repos/asf/activemq/activemq-dotnet/Apache.NMS.ActiveMQ/tags/1.7.2/)
 
 Changelog
 ---------

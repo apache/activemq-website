@@ -14,19 +14,11 @@ This release brings NMS 2.0 support.
 
 ##### Download Here
 
-|Description|Download Link|PGP Signature File|Version|
-|---|---|---|---|
-|Apache.NMS Source code|[Apache.NMS-2.0.0-src.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-src.zip)|[Apache.NMS-2.0.0-src.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-src.zip.asc)|2.0.0|
-|Apache.NMS Binary Assemblies|[Apache.NMS-2.0.0-bin.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-bin.zip)|[Apache.NMS-2.0.0-bin.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-bin.zip.asc)|2.0.0|
-|Apache.NMS Nuget Package|[Apache.NMS.2.0.0.nupkg](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/2.0.0/Apache.NMS.2.0.0.nupkg)|[Apache.NMS.2.0.0.nupkg.asc](http://www.apache.org/dist/activemq/apache-nms-api/2.0.0/Apache.NMS.2.0.0.nupkg.asc)|2.0.0|
-|Apache.NMS Documentation |[Apache.NMS-2.0.0-docs.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-docs.zip)|[Apache.NMS-2.0.0-docs.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-docs.zip.asc)|2.0.0|
+|Apache.NMS Source code|[Apache.NMS-2.0.0-src.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-src.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-src.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-src.zip.asc)
+|Apache.NMS Binary Assemblies|[Apache.NMS-2.0.0-bin.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-bin.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-bin.zip.asc)
+|Apache.NMS Nuget Package|[Apache.NMS.2.0.0.nupkg](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-api/2.0.0/Apache.NMS.2.0.0.nupkg&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-api/2.0.0/Apache.NMS.2.0.0.nupkg.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-api/2.0.0/Apache.NMS.2.0.0.nupkg.asc)
+|Apache.NMS Documentation |[Apache.NMS-2.0.0-docs.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-docs.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-docs.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-api/2.0.0/Apache.NMS-2.0.0-docs.zip.asc)
 
-
-##### Git Tag Checkout
-```
-git clone https://github.com/apache/activemq-nms-api.git
-git checkout tags/2.0.0
-```
 
 ##### Changelog
 
@@ -43,19 +35,11 @@ This is a major release of the NMS API which adds .net standard 2.0 support, it 
 
 ##### Download Here
 
-|Description|Download Link|PGP Signature File|Version|
-|---|---|---|---|
-|Apache.NMS Source code|[Apache.NMS-1.8.0-src.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-src.zip)|[Apache.NMS-1.8.0-src.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-src.zip.asc)|1.8.0|
-|Apache.NMS Binary Assemblies|[Apache.NMS-1.8.0-bin.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-bin.zip)|[Apache.NMS-1.8.0-bin.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-bin.zip.asc)|1.8.0|
-|Apache.NMS Nuget Package|[Apache.NMS.1.8.0.nupkg](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/1.8.0/Apache.NMS.1.8.0.nupkg)|[Apache.NMS.1.8.0.nupkg.asc](http://www.apache.org/dist/activemq/apache-nms-api/1.8.0/Apache.NMS.1.8.0.nupkg.asc)|1.8.0|
-|Apache.NMS Documentation |[Apache.NMS-1.8.0-docs.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-docs.zip)|[Apache.NMS-1.8.0-docs.zip.asc](http://www.apache.org/dist/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-docs.zip.asc)|1.8.0|
+|Apache.NMS Source code|[Apache.NMS-1.8.0-src.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-src.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-src.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-src.zip.asc)
+|Apache.NMS Binary Assemblies|[Apache.NMS-1.8.0-bin.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-bin.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-bin.zip.asc)
+|Apache.NMS Nuget Package|[Apache.NMS.1.8.0.nupkg](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-api/1.8.0/Apache.NMS.1.8.0.nupkg&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-api/1.8.0/Apache.NMS.1.8.0.nupkg.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-api/1.8.0/Apache.NMS.1.8.0.nupkg.asc)
+|Apache.NMS Documentation |[Apache.NMS-1.8.0-docs.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-docs.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-docs.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-api/1.8.0/Apache.NMS-1.8.0-docs.zip.asc)
 
-
-##### Git Tag Checkout
-```
-git clone https://gitbox.apache.org/repos/asf/activemq-nms-api.git
-git checkout tags/1.8.0
-```
 
 ##### Changelog
 
@@ -78,15 +62,9 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 
 ##### Download Here
 
-|Description|Download Link|PGP Signature File|Version|
-|---|---|---|---|
-|Apache.NMS Source code|[Apache.NMS-1.7.1-src.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip)|[Apache.NMS-1.7.1-src.zip.asc](http://www.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip.asc)|1.7.1.3894|
-|Apache.NMS Binary Assemblies|[Apache.NMS-1.7.1-bin.zip](http://www.apache.org/dyn/closer.lua/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-bin.zip)|[Apache.NMS-1.7.1-bin.zip.asc](http://www.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-bin.zip.asc)|1.7.1.3894|
+|Apache.NMS Source code|[Apache.NMS-1.7.1-src.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip.asc)
+|Apache.NMS Binary Assemblies|[Apache.NMS-1.7.1-bin.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-bin.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip.asc)
 
-##### SVN Tag Checkout
-```
-svn co https://svn.apache.org/repos/asf/activemq/activemq-dotnet/Apache.NMS/tags/1.7.1/
-```
 ##### Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311201&styleName=Html&version=12329541)  
@@ -115,10 +93,6 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 |Apache.NMS Source code|[Apache.NMS-1.7.0-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.0-src.zip)|[Apache.NMS-1.7.0-src.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.0-src.zip.asc)|1.7.0.3635|
 |Apache.NMS Binary Assemblies|[Apache.NMS-1.7.0-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.0-bin.zip)|[Apache.NMS-1.7.0-bin.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.0-bin.zip.asc)|1.7.0.3635|
 
-##### SVN Tag Checkout
-```
-svn co https://svn.apache.org/repos/asf/activemq/activemq-dotnet/Apache.NMS/tags/1.7.0/
-```
 ##### Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311201&styleName=Html&version=12325350)
@@ -147,10 +121,6 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 |Apache.NMS Source code|[Apache.NMS-1.6.0-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.6.0/Apache.NMS-1.6.0-src.zip)|[Apache.NMS-1.6.0-src.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.6.0/Apache.NMS-1.6.0-src.zip.asc)|1.6.0.3061|
 |Apache.NMS Binary Assemblies|[Apache.NMS-1.6.0-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.6.0/Apache.NMS-1.6.0-bin.zip)|[Apache.NMS-1.6.0-bin.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.6.0/Apache.NMS-1.6.0-bin.zip.asc)|1.6.0.3061|
 
-##### SVN Tag Checkout
-```
-svn co https://svn.apache.org/repos/asf/activemq/activemq-dotnet/Apache.NMS/tags/1.6.0/
-```
 ##### Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311201&styleName=Html&version=12315987)
@@ -179,10 +149,6 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 |Apache.NMS Source code|[Apache.NMS-1.5.1-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.5.0/Apache.NMS-1.5.1-src.zip)|[Apache.NMS-1.5.1-src.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.5.0/Apache.NMS-1.5.1-src.zip.asc)|1.5.1.2739|
 |Apache.NMS Binary Assemblies|[Apache.NMS-1.5.1-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.5.0/Apache.NMS-1.5.1-bin.zip)|[Apache.NMS-1.5.1-bin.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.5.0/Apache.NMS-1.5.1-bin.zip.asc)|1.5.1.2739|
 
-##### SVN Tag Checkout
-```
-svn co https://svn.apache.org/repos/asf/activemq/activemq-dotnet/Apache.NMS/tags/1.5.1/
-```
 ##### Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311201&styleName=Html&version=12315640)
@@ -211,10 +177,6 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 |Apache.NMS Source code|[Apache.NMS-1.5.0-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.5.0/Apache.NMS-1.5.0-src.zip)|[Apache.NMS-1.5.0-src.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.5.0/Apache.NMS-1.5.0-src.zip.asc)|1.5.0.2194|
 |Apache.NMS Binary Assemblies|[Apache.NMS-1.5.0-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.5.0/Apache.NMS-1.5.0-bin.zip)|[Apache.NMS-1.5.0-bin.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.5.0/Apache.NMS-1.5.0-bin.zip.asc)|1.5.0.2194|
 
-##### SVN Tag Checkout
-```
-svn co https://svn.apache.org/repos/asf/activemq/activemq-dotnet/Apache.NMS/tags/1.5.0/
-```
 ##### Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311201&styleName=Html&version=12315640)
@@ -245,10 +207,6 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 |Apache.NMS Source code|[Apache.NMS-1.4.0-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.4.0/Apache.NMS-1.4.0-src.zip)|[Apache.NMS-1.4.0-src.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.4.0/Apache.NMS-1.4.0-src.zip.asc)|1.4.0.2075|
 |Apache.NMS Binary Assemblies|[Apache.NMS-1.4.0-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.4.0/Apache.NMS-1.4.0-bin.zip)|[Apache.NMS-1.4.0-bin.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.4.0/Apache.NMS-1.4.0-bin.zip.asc)|1.4.0.2075|
 
-##### SVN Tag Checkout
-```
-svn co https://svn.apache.org/repos/asf/activemq/activemq-dotnet/Apache.NMS/tags/1.4.0/
-```
 ##### Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=11010&styleName=Html&version=12188)
@@ -274,13 +232,9 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 
 |Description|Download Link|PGP Signature File|Version|
 |---|---|---|---|
-|Apache.NMS Source code|[Apache.NMS-1.3.0-src.zip](http://archive.apache.org/dist/activemq/apache-nms/1.3.0/Apache.NMS-1.3.0-src.zip)|[Apache.NMS-1.3.0-src.zip.asc](http://archive.apache.org/dist/activemq/apache-nms/1.3.0/Apache.NMS-1.3.0-src.zip.asc)|1.3.0.1959|
-|Apache.NMS Binary Assemblies|[Apache.NMS-1.3.0-bin.zip](http://archive.apache.org/dist/activemq/apache-nms/1.3.0/Apache.NMS-1.3.0-bin.zip)|[Apache.NMS-1.3.0-bin.zip.asc](http://archive.apache.org/dist/activemq/apache-nms/1.3.0/Apache.NMS-1.3.0-bin.zip.asc)|1.3.0.1959|
+|Apache.NMS Source code|[Apache.NMS-1.3.0-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.3.0/Apache.NMS-1.3.0-src.zip)|[Apache.NMS-1.3.0-src.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.3.0/Apache.NMS-1.3.0-src.zip.asc)|1.3.0.1959|
+|Apache.NMS Binary Assemblies|[Apache.NMS-1.3.0-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.3.0/Apache.NMS-1.3.0-bin.zip)|[Apache.NMS-1.3.0-bin.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.3.0/Apache.NMS-1.3.0-bin.zip.asc)|1.3.0.1959|
 
-##### SVN Tag Checkout
-```
-svn co https://svn.apache.org/repos/asf/activemq/activemq-dotnet/Apache.NMS/tags/1.3.0/
-```
 ##### Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=11010&styleName=Html&version=12150)
@@ -314,10 +268,6 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 |Apache.NMS Source code|[Apache.NMS-1.2.0-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.2.0/Apache.NMS-1.2.0-src.zip)|[Apache.NMS-1.2.0-src.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.2.0/Apache.NMS-1.2.0-src.zip.asc)|1.2.0.1836|
 |Apache.NMS Binary Assemblies|[Apache.NMS-1.2.0-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.2.0/Apache.NMS-1.2.0-bin.zip)|[Apache.NMS-1.2.0-bin.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.2.0/Apache.NMS-1.2.0-bin.zip.asc)|1.2.0.1836|
 
-##### SVN Tag Checkout
-```
-svn co https://svn.apache.org/repos/asf/activemq/activemq-dotnet/Apache.NMS/tags/1.2.0/
-```
 ##### Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=11010&styleName=Html&version=11815)
@@ -345,10 +295,6 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 |Apache.NMS Source code|[Apache.NMS-1.1.0-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.1.0/Apache.NMS-1.1.0-src.zip)|[Apache.NMS-1.1.0-src.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.1.0/Apache.NMS-1.1.0-src.zip.asc)|1.1.0.1642|
 |Apache.NMS Binary Assemblies|[Apache.NMS-1.1.0-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.1.0/Apache.NMS-1.1.0-bin.zip)|[Apache.NMS-1.1.0-bin.zip.asc](https://archive.apache.org/dist/activemq/apache-nms/1.1.0/Apache.NMS-1.1.0-bin.zip.asc)|1.1.0.1642|
 
-##### SVN Tag Checkout
-```
-svn co https://svn.apache.org/repos/asf/activemq/activemq-net/Apache.NMS/tags/1.1.0/
-```
 ##### Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=11010&styleName=Html&version=11814)
