@@ -62,8 +62,8 @@ Refer to the API for this release [here](nms-Index/Site/NavigationIndex/Site/Nav
 
 ##### Download Here
 
-|Apache.NMS Source code|[Apache.NMS-1.7.1-src.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip.asc)
-|Apache.NMS Binary Assemblies|[Apache.NMS-1.7.1-bin.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-bin.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip.asc)
+|Apache.NMS Source code|[Apache.NMS-1.7.1-src.zip](https://archive.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip)|[SHA512](https://archive.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip.sha512)|[PGP Signature](https://archive.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip.asc)
+|Apache.NMS Binary Assemblies|[Apache.NMS-1.7.1-bin.zip](https://archive.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-bin.zip)|[SHA512](https://archive.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-bin.zip.sha512)|[PGP Signature](https://archive.apache.org/dist/activemq/apache-nms/1.7.0/Apache.NMS-1.7.1-src.zip.asc)
 
 ##### Changelog
 
