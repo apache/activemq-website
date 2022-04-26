@@ -53,7 +53,7 @@ Note that making a topic virtual does add a small CPU overhead when sending mess
 
 Option|Default|Description
 ---|---|---
-selectorAwae|false|only messages that match one of the existing subscribers are actually dispatched. Using this option prevents the build up of unmatched messages when selectors are used by exclusive consumers
+selectorAware|false|only messages that match one of the existing subscribers are actually dispatched. Using this option prevents the build up of unmatched messages when selectors are used by exclusive consumers
 local|false|when true, don't fan out messages that were received over a network
 concurrentSend|false|when true, use an executor to fanout such that sends occur in parallel. This allows the journal to batch writes which will reduce disk io (5.12)
 transactedSend|false|when true, use a transaction for fanout sends such that there is a single disk sync. A local broker transaction will be created if there is no client transaction (5.13)
