@@ -5,7 +5,7 @@ title-class: page-title-activemq5
 type: activemq5
 ---
 
- [Using ActiveMQ](using-activemq) > [Configuring Transports](configuring-transports)> [ActiveMQ Connection URIs](activemq-connection-uris] > [Failover Transport Reference ](failover-transport-reference)
+[Using ActiveMQ](using-activemq) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-connection-uris) > [Failover Transport Reference](failover-transport-reference)
 
 ### The Failover Transport
 
