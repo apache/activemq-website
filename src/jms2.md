@@ -36,3 +36,9 @@ JIRA|Status|Target Version|Completed Version|Feature|Notes
 [AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | | TBD | | XA Connection methods | Updated methods when using XA Transactions
 [AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | | TBD | | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions
 
+### Feature notes
+
+JMS Object|Feature|Notes
+---|---|---
+JMSProducer | disableMessageID | ActiveMQ does not support the optional feature of disabling MessageID
+
