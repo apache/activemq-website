@@ -2094,33 +2094,10 @@ module in the login.config file:</p>
 <code>org.apache.activemq.artemis.spi.core.security.jaas.TextFileCertificateLoginModule</code>
 login module. The options supported by this login module are as follows:</p>
 <ul>
-<li><p><code>debug</code> - boolean flag; if true, enable debugging; this is used only for testing or debugging; normally,
-it should be set to <code>false</code>, or omitted; default is <code>false</code></p>
+<li><p><code>debug</code> - boolean flag; if true, enable debugging; this is used only for
+testing or debugging; normally, it should be set to <code>false</code>, or omitted;
+default is <code>false</code></p>
 </li>
-<li><p><code>org.apache.activemq.jaas.textfiledn.user</code> - specifies the location of the user properties file (relative to the
- directory containing the login configuration file).</p>
-</li>
-<li><p><code>org.apache.activemq.jaas.textfiledn.role</code> - specifies the location of the role properties file (relative to the
-directory containing the login configuration file).</p>
-</li>
-<li><p><code>reload</code> - boolean flag; whether or not to reload the properties files when a modification occurs; default is <code>false</code></p>
-</li>
-</ul>
-<p>In the context of the certificate login module, the <code>users.properties</code> file consists of a list of properties of the form,
-<code>UserName=StringifiedSubjectDN</code> or <code>UserName=/SubjectDNRegExp/</code>. For example, to define the users, <code>system</code>, <code>user</code> and
-<code>guest</code> as well as a <code>hosts</code> user matching several DNs, you could create a file like the following:</p>
-<pre><code>system=CN=system,O=Progress,C=US
-user=CN=humble user,O=Progress,C=US
-guest=CN=anon,O=Progress,C=DE
-hosts=/CN=host\\d+\\.acme\\.com,O=Acme,C=UK/
-</code></pre><p>Note that the backslash character has to be escaped because it has a special treatment in properties files.</p>
-<p>Each username is mapped to a subject DN, encoded as a string (where the string encoding is specified by RFC 2253). For
-example, the system username is mapped to the <code>CN=system,O=Progress,C=US</code> subject DN. When performing authentication,
-the plug-in extracts the subject DN from the received certificate, converts it to the standard string format, and
-compares it with the subject DNs in the <code>users.properties</code> file by testing for string equality. Consequently, you must
-be careful to ensure that the subject DNs appearing in the <code>users.properties</code> file are an exact match for the subject
-DNs extracted from the user certificates.</p>
-<ul>
 <li><p><code>org.apache.activemq.jaas.textfiledn.user</code> - specifies the location of the
 user properties file (relative to the directory containing the login
 configuration file).</p>
@@ -2134,13 +2111,17 @@ modification occurs; default is <code>false</code></p>
 </li>
 </ul>
 <p>In the context of the certificate login module, the <code>users.properties</code> file
-consists of a list of properties of the form, <code>UserName=StringifiedSubjectDN</code>.
-For example, to define the users, system, user, and guest, you could create a
-file like the following:</p>
+consists of a list of properties of the form, <code>UserName=StringifiedSubjectDN</code>
+or <code>UserName=/SubjectDNRegExp/</code>. For example, to define the users, <code>system</code>,
+<code>user</code> and <code>guest</code> as well as a <code>hosts</code> user matching several DNs, you could
+create a file like the following:</p>
 <pre><code class="lang-properties">system=CN=system,O=Progress,C=US
 user=CN=humble user,O=Progress,C=US
 guest=CN=anon,O=Progress,C=DE
+hosts=/CN=host\\d+\\.acme\\.com,O=Acme,C=UK/
 </code></pre>
+<p>Note that the backslash character has to be escaped because it has a special
+treatment in properties files.</p>
 <p>Each username is mapped to a subject DN, encoded as a string (where the string
 encoding is specified by RFC 2253). For example, the system username is mapped
 to the <code>CN=system,O=Progress,C=US</code> subject DN. When performing authentication,
@@ -2690,7 +2671,7 @@ parameter and indicate which domain from your <code>login.config</code> to use, 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.50","depth":1,"next":{"title":"Masking Passwords","level":"1.51","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.49","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2022-03-22T17:52:56.500Z","type":"markdown"},"gitbook":{"version":"3.7.1","time":"2022-03-22T18:05:27.352Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.50","depth":1,"next":{"title":"Masking Passwords","level":"1.51","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.49","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.22.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2022-04-28T00:19:10.497Z","type":"markdown"},"gitbook":{"version":"3.7.1","time":"2022-04-28T00:19:11.365Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
