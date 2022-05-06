@@ -16,7 +16,7 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
         {% if release.version contains current_release %}
 #### ActiveMQ {{release.version}} ({{release.release_date | date_to_string: "ordinal", "US"}})
 [Release Notes]({{ release.release_notes }}) | [Release Page]({{release.url}}) | [Documentation](../documentation) | Java compatibility: **{{release.java_version}}**
-{% if release.version contains "5.16.5" %}
+{% if release.version contains "5.16." %}
 
 **NOTE**: This is the last planned 5.16.x release. Users should upgrade to the current 5.17.x stream for ongoing releases.
 {% endif %}
