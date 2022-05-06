@@ -5,7 +5,7 @@ title-class: page-title-artemis
 type: artemis
 ---
 
-A complete list of JIRAs for the 2.22.0 release can be found  * [here]https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12351488&styleName=Html&projectId=12315920&Create=Create)
+A complete list of JIRAs for the 2.22.0 release can be found  * [here](https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12351488&styleName=Html&projectId=12315920&Create=Create)
 
 A list of commits can be found  * [here](commit-report-2.22.0).
 
