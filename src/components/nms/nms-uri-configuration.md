@@ -19,12 +19,5 @@ Click on the provider name to visit the URI configuration documentation for your
 
 |Option Name|Description|
 |---|---|
-|[amqp](providers/aqmp/uri-configuration)|Use the Apache.NMS.AMQP Provider to talk to ActiveMQ 5.x, ActiveMQ Artemis or any other AMQP 1.0 compliant Broker.|
+|[amqp](providers/amqp/uri-configuration)|Use the Apache.NMS.AMQP Provider to talk to ActiveMQ 5.x, ActiveMQ Artemis or any other AMQP 1.0 compliant Broker.|
 |[activemq (openwire)](providers/activemq/uri-configuration)|Use the NMS.ActiveMQ Provider to talk to an ActiveMQ Broker that supports openwire.|
-|[stomp](providers/stomp/uri-configuration)|Use the NMS.Stomp Provider to talk to an Stomp Broker ActivemMQ Broker supports the Stomp protocol natively.|
-|ems|Use the NMS.EMS Provider to talk to a TIBCO Broker.|
-|msmq|Use the NMS.MSMQ Provider to talk to a Microsoft Messaging (MSMQ) Broker.|
-|wcf|Use the NMS.WCF Provider to support a Windows Communication Foundation (WCF) endpoint connection for connecting to a back-end broker.|
-|xms|Use the NMS.XMS Provider to talk to an IBM MQSerios Broker. This provider is currently not implemented.|
-
-

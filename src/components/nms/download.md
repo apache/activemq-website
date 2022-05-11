@@ -9,7 +9,3 @@ type: nms
 * Providers
   * [AMQP](providers/amqp/downloads)
   * [ActiveMQ (OpenWire)](providers/activemq/downloads)
-  * [STOMP](providers/stomp/downloads)
-  * [MSMQ](providers/msmq/downloads)
-  * [EMS](providers/ems/downloads)
-  * [WCF](providers/wcf/downloads)
