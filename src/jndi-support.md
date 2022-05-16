@@ -34,7 +34,7 @@ You can edit the `jndi.properties` file to configure the `ActiveMQConnectionFac
 
 ### ActiveMQ JNDI Tutorial
 
-This is a quick one page tutorial on how to setup and use JNDI to create a connection to ActiveMQ. The first thing is ActiveMQ does not provide a full JNDI server. This means JMS clients need to use properties files to create a JNDI `IntialContextFactory`. If you need an example properties file, you can look the source distribution [https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/resources/jndi.properties](https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/resources/jndi.properties). Before we proceed, here are the properties.
+This is a quick one page tutorial on how to setup and use JNDI to create a connection to ActiveMQ. The first thing is ActiveMQ does not provide a full JNDI server. This means JMS clients need to use properties files to create a JNDI `IntialContextFactory`. If you need an example properties file, you can look the source distribution [https://github.com/apache/activemq/blob/main/activemq-unit-tests/src/test/resources/jndi.properties](https://github.com/apache/activemq/blob/main/activemq-unit-tests/src/test/resources/jndi.properties). Before we proceed, here are the properties.
 
 Name|Value
 `java.naming.factory.initial`|`org.apache.activemq.jndi.ActiveMQInitialContextFactory`

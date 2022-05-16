@@ -46,12 +46,12 @@ Checking out from the Github Repo
 
 git clone [https://github.com/apache/activemq-artemis](https://github.com/apache/activemq-artemis)
 
-**Committers:** Please follow the instructions for properly configuring the [Instructions for Core Contributors/Hacking Guide](https://github.com/apache/activemq-artemis/blob/master/docs/hacking-guide/enSUMMARY)
+**Committers:** Please follow the instructions for properly configuring the [Instructions for Core Contributors/Hacking Guide](https://github.com/apache/activemq-artemis/blob/main/docs/hacking-guide/enSUMMARY)
 
 **Contributors:** Please create a [pull request](https://github.com/apache/activemq-artemis) to contribute changes to the source code. 
 
 Building the code
 -----------------
 
-To then build the code, take a look at [Building the distribution](https://github.com/apache/activemq-artemis/blob/master/docs/hacking-guide/enDevelopers/Developers/building)
+To then build the code, take a look at [Building the distribution](https://github.com/apache/activemq-artemis/blob/main/docs/hacking-guide/enDevelopers/Developers/building)
 

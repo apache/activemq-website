@@ -9,6 +9,8 @@ redirect_from:
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.2.0 Release](activemq-520-release)
 
+{% include inclusive-terminology-notice.html %}
+
 <div class="alert alert-warning">
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
@@ -24,12 +26,12 @@ New Features in 5.2
 
 The new features and enhancements in this release include:
 
-*   [Additional advisory messages](Message FeaturesFeatures/Message Features/Features/Message Features/advisory-message) for messages delivered/consumed fast producers/slow consumers, Usage limits, Slaves become masters etc.
+*   [Additional advisory messages](Message FeaturesFeatures/Message Features/Features/Message Features/advisory-message) for messages delivered/consumed fast producers/slow consumers, Usage limits, Passive brokers become Active brokers etc.
 *   Enhanced ssl context configuration through spring/xbean
 *   New individual acknowledge mode for message consumption
 *   Ability to configure the automatic discarding of the items being sent to the dead letter queue
 *   Ability to limit the maximum number of connections to a Broker
-*   Ability to configure [separate lock](https://issues.apache.org/activemq/browse/AMQ-1244) Datasource for JDBC Master slave.
+*   Ability to configure [separate lock](https://issues.apache.org/activemq/browse/AMQ-1244) Datasource for JDBC Active Passive.
 *   activemq-camel and activemq-connection-pool now have their own modules, no longer in activemq-core
 *   The default [ActiveMQConnectionFactory](http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) brokerUrl now uses the [failover transport](failover-transport-reference).
 *   Uses Apache Camel [1.5](http://activemq.apache.org/camel/camel-150-release.html).

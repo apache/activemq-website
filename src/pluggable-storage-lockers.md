@@ -7,7 +7,9 @@ type: activemq5
 
  [Features](features) > [Persistence](persistence) > [Pluggable storage lockers](pluggable-storage-lockers)
 
-As of the 5.7.0 release of ActiveMQ the choice of storage locking mechanism, as used by a persistence adapter, has been made pluggable. This feature is only meaningful to brokers configured in a shared storage master/slave topology. Prior to release 5.7.0 the storage locking mechanism (and thus master election) was dictated by the choice of persistence adapter. With the KahaDB persistence adapter, for example, the storage locking mechanism was based on a shared file lock. Similarly, the JDBC persistence adapter used a database backed storage lock.
+{% include inclusive-terminology-notice.html %}
+
+As of the 5.7.0 release of ActiveMQ the choice of storage locking mechanism, as used by a persistence adapter, has been made pluggable. This feature is only meaningful to brokers configured in a shared storage active/passive topology. Prior to release 5.7.0 the storage locking mechanism (and thus active broker election) was dictated by the choice of persistence adapter. With the KahaDB persistence adapter, for example, the storage locking mechanism was based on a shared file lock. Similarly, the JDBC persistence adapter used a database backed storage lock.
 
 Now that the choice of storage locker is divorced from that of the persistence adapter one can mix and match combinations of the two. Storage locker pluggability is made possible by the [Locker](https://fisheye6.atlassian.com/browse/activemq/trunk/activemq-broker/src/main/java/org/apache/activemq/broker/Locker.java?hb=true) interface that all pluggable lockers must implement. This interface makes it easy to implement a custom storage locker that meets local requirements.
 
@@ -21,7 +23,7 @@ Every locker must implement the [Locker](https://fisheye6.atlassian.com/browse/a
 Property Name|Default Value|Description
 ---|---|---
 `lockAcquireSleepInterval`|`10000`|The polling interval (in milliseconds) between lock acquire attempts.
-`failIfLocked`|`false`|Should the broker start fail if the lock is not immediately available. When `true` slave brokers will not start.
+`failIfLocked`|`false`|Should the broker start fail if the lock is not immediately available. When `true` passive brokers will not start.
 
 Persistence Adapters
 --------------------
@@ -39,7 +41,7 @@ Existing Lockers
 
 ### Shared File Locker
 
-The Shared File Locker is the default locker for the KahaDB persistence adapter. It locks a file to ensure that only the broker holding the lock (the master) is granted access to the message store.
+The Shared File Locker is the default locker for the KahaDB persistence adapter. It locks a file to ensure that only the broker holding the lock (the active broker) is granted access to the message store.
 
 #### Example:
 ```
@@ -56,11 +58,11 @@ The `lockKeepAlivePeriod` attribute is not applicable to versions of ActiveMQ o
 
 > Consequences of lockKeepAlivePeriod = 0
 > 
-> For this locker `lockKeepAlivePeriod` should be greater than `0`.This period is the frequency with which the master broker makes lock keep alive calls.
+> For this locker `lockKeepAlivePeriod` should be greater than `0`.This period is the frequency with which the active broker makes lock keep alive calls.
 > 
-> When `lockKeepAlivePeriod = 0` slave brokers are still unable to obtain the file lock. However, if some third party modifies the lock file (either modification or deletion) the master broker will not detect the change. Therefore a slave broker's next attempt (per its configured `lockAcquireSleepInterval`) to obtain the file lock will succeed. When this happens there will be two master brokers in the cluster. _This situation will result in message store corruption_!
+> When `lockKeepAlivePeriod = 0` passive brokers are still unable to obtain the file lock. However, if some third party modifies the lock file (either modification or deletion) the active broker will not detect the change. Therefore a passive broker's next attempt (per its configured `lockAcquireSleepInterval`) to obtain the file lock will succeed. When this happens there will be two active brokers in the cluster. _This situation will result in message store corruption_!
 > 
-> When `lockKeepAlivePeriod` is greater than `0`, the master broker will make a lock keep alive call every `lockKeepAlivePeriod` milliseconds. Therefore the master broker will detect any lock file changes when it makes its next keep alive call. Upon detecting said change the master broker will demote itself to a slave broker.
+> When `lockKeepAlivePeriod` is greater than `0`, the active broker will make a lock keep alive call every `lockKeepAlivePeriod` milliseconds. Therefore the active broker will detect any lock file changes when it makes its next keep alive call. Upon detecting said change the active broker will demote itself to a passive broker.
 
 > Note that as of ActiveMQ 5.9.0 the KahaDB persistence adapter can also use the Lease Database Locker (see below).
 
@@ -83,11 +85,11 @@ The Database Locker uses its `keepAlive` method to ensure the broker still hold
 
 This locker opens a JDBC transaction against a database table (`activemq_lock`) that lasts as long as the broker remains alive. This locks the entire table and prevents another broker from accessing the store. In most cases this will be a fairly long running JDBC transaction which occupies resources on the database over time.
 
-A problem with this locker can arise when the master broker crashes or loses its connection to the database causing the lock to remain in the database until the database responds to the half closed socket connection via a TCP timeout. The database lock expiry requirement can prevent the slave from starting some time. In addition, if the database supports failover, and the connection is dropped in the event of a replica failover, that JDBC transaction will be rolled back. The broker sees this as a failure. Both master and slave brokes will again compete for a lock.
+A problem with this locker can arise when the active broker crashes or loses its connection to the database causing the lock to remain in the database until the database responds to the half closed socket connection via a TCP timeout. The database lock expiry requirement can prevent the passive broker from starting some time. In addition, if the database supports failover, and the connection is dropped in the event of a replica failover, that JDBC transaction will be rolled back. The broker sees this as a failure. Both active and passive brokes will again compete for a lock.
 
 ### Lease Database Locker
 
-The Lease Database Locker was created to solve the shortcomings of the Database Locker. The Lease Database Locker does not open a long running JDBC transaction. Instead it lets the master broker acquire a lock that's valid for a fixed (usually short) duration after which it expires. To retain the lock the master broker must periodically extend the lock's lease before it expires. Simultaneously the slave broker checks periodically to see if the lease has expired. If, for whatever reason, the master broker fails to update its lease on the lock the slave will take ownership of the lock becoming the new master in the process. The leased lock can survive a DB replica failover.
+The Lease Database Locker was created to solve the shortcomings of the Database Locker. The Lease Database Locker does not open a long running JDBC transaction. Instead it lets the active broker acquire a lock that's valid for a fixed (usually short) duration after which it expires. To retain the lock the active broker must periodically extend the lock's lease before it expires. Simultaneously the passive broker checks periodically to see if the lease has expired. If, for whatever reason, the active broker fails to update its lease on the lock the passive broker will take ownership of the lock becoming the new active broker in the process. The leased lock can survive a DB replica failover.
 
 #### Example:
 ```
@@ -100,11 +102,11 @@ The Lease Database Locker was created to solve the shortcomings of the Database 
 </persistenceAdapter>
 ```
 
-In order for this mechanism to work correctly, each broker in a master/slave(s) cluster must have a unique value for the `brokerName` attribute as defined on the `<broker/>` tag. Alternatively, use unique values for the `leaseHolderId` attribute on the `<lease-database-locker/>` tag as this value is used to create a lease lock definition.
+In order for this mechanism to work correctly, each broker in a active/passive(s) cluster must have a unique value for the `brokerName` attribute as defined on the `<broker/>` tag. Alternatively, use unique values for the `leaseHolderId` attribute on the `<lease-database-locker/>` tag as this value is used to create a lease lock definition.
 
-The lease based lock is acquired by blocking at startup. It is then retained for a period whose duration (in ms) is given by the `lockKeepAlivePeriod` attribute. To retain the lock the master broker periodically extends its lease by `lockAcquireSleepInterval` milliseconds each time. In theory, therefore, the master broker is always (`lockAcquireSleepInterval - lockKeepAlivePeriod`) ahead of the slave broker with regard to the lease. It is imperative that `lockAcquireSleepInterval > lockKeepAlivePeriod`, to ensure the lease is always current. As of ActiveMQ 5.9.0 a warning message is logged if this condition is not met.
+The lease based lock is acquired by blocking at startup. It is then retained for a period whose duration (in ms) is given by the `lockKeepAlivePeriod` attribute. To retain the lock the active broker periodically extends its lease by `lockAcquireSleepInterval` milliseconds each time. In theory, therefore, the active broker is always (`lockAcquireSleepInterval - lockKeepAlivePeriod`) ahead of the passive broker with regard to the lease. It is imperative that `lockAcquireSleepInterval > lockKeepAlivePeriod`, to ensure the lease is always current. As of ActiveMQ 5.9.0 a warning message is logged if this condition is not met.
 
-In the simplest case, the clocks between master and slave must be in sync for this solution to work properly. If the clocks cannot be in sync, the locker can use the system time from the database CURRENT TIME and adjust the timeouts in accordance with their local variance from the DB system time. If `maxAllowableDiffFromDBTime` is greater than zero the local periods will be adjusted by any delta that exceeds `maxAllowableDiffFromDBTime`.
+In the simplest case, the clocks between active and passive brokers must be in sync for this solution to work properly. If the clocks cannot be in sync, the locker can use the system time from the database CURRENT TIME and adjust the timeouts in accordance with their local variance from the DB system time. If `maxAllowableDiffFromDBTime` is greater than zero the local periods will be adjusted by any delta that exceeds `maxAllowableDiffFromDBTime`.
 
 > It is important to know if the default rules your JDBC driver uses for converting `TIME` values are JDBC compliant. If you're using MySQL, for example, the driver's JDBC URL should contain `useJDBCCompliantTimezoneShift=true` to ensure that `TIME` value conversion is JDBC compliant. If not the locker could report a large time difference when it compares the retrieved lease expiration time against the current system time. Consult your JDBC driver's documentation for more details.
 

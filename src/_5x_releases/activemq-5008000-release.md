@@ -9,6 +9,8 @@ redirect_from:
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.8.0 Release](activemq-580-release)
 
+{% include inclusive-terminology-notice.html %}
+
 <div class="alert alert-warning">
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
@@ -20,7 +22,7 @@ Apache ActiveMQ 5.8.0 resolves [160 issues](https://issues.apache.org/jira/secur
 *   management via [REST](ProtocolsConnectivity/Protocols/Connectivity/Protocols/rest) with [jolokia](http://www.jolokia.org/) jmx to http bridge
 *   Includes [Apache Camel 2.10.3](http://camel.apache.org/camel-2103-release.html)
 *   Java 7 support (compiled with jdk6 and validated with jdk7)
-*   [Pure Master Slave](pure-master-slave) no longer supported
+*   [Pure Active Passive](pure-active-passive) no longer supported
 
 There are some changes in 5.8 that may require some code change
 

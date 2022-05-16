@@ -7,9 +7,11 @@ type: activemq5
 
  [Features](features) > [New Features](new-features) > [Changes in 4.0](changes-in-40)
 
+{% include inclusive-terminology-notice.html %}
+
 ### New Features in 4.0
 
-*   [MasterSlave](masterslave) provides support for continuous availability and fault tolerance of brokers to be able to handle catastrophic hardware failure and not loose a message (or get duplicates).
+*   [ActivePassive](activepassive) provides support for continuous availability and fault tolerance of brokers to be able to handle catastrophic hardware failure and not loose a message (or get duplicates).
 *   A new [Exclusive Consumer](exclusive-consumer) feature allows you to pin message processing to a single consumer in a cluser of consumers.
 *   A new [Message Groups](message-groups) feaure allows you load balance messages accross a set of consumers but also garantee the message order for messages within a message group.
 *   A new [Total Ordering](total-ordering) feature to allow all consumers on a topic to see messages in the same order.

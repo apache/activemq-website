@@ -7,6 +7,8 @@ type: activemq5
 
 [Community](community) > [Books](books)
 
+{% include inclusive-terminology-notice.html %}
+
 Books
 =====
 
@@ -47,5 +49,5 @@ Learn how to use messaging technologies to build responsive and resilient applic
 
 ### Apache ActiveMQ Reference Guide Kit
 
-The TTM's "[Apache ActiveMQ Reference Guide](http://www.ttmsolutions.com/Apache_Software/ActiveMQ_Reference_Guide.php)" (PDF book) provides information to learn how to implement, deploy, administer, and tune Apache ActiveMQ. The Reference Guide includes details on how to work with ActiveMQ components, connectors, client/broker configuration, master/slave configuration, administration, logging, performance tuning and advanced features.
+The TTM's "[Apache ActiveMQ Reference Guide](http://www.ttmsolutions.com/Apache_Software/ActiveMQ_Reference_Guide.php)" (PDF book) provides information to learn how to implement, deploy, administer, and tune Apache ActiveMQ. The Reference Guide includes details on how to work with ActiveMQ components, connectors, client/broker configuration, active/passive configuration, administration, logging, performance tuning and advanced features.
 

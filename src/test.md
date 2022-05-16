@@ -7,6 +7,8 @@ type: activemq5
 
 [Features](features) > [Persistence](persistence) > [Kaha Persistence](kaha-Features/persistence) > [TEST](Persistence/Kaha Persistence/test)
 
+{% include inclusive-terminology-notice.html %}
+
 [Download](download.md "Download") | [JavaDocs](http://activemq.apache.org/maven/5.7.0/activemq-core/apidocs/) [More...](javadocs.md "JavaDocs") | [Source](source.md "Source") | [Forums](discussion-forums.md "Discussion Forums") | [Support](support.md "Support")
 
 TEST BLOG![](https://cwiki.apache.org/confluence/images/icons/emoticons/check.gif)
@@ -58,7 +60,7 @@ TEST BLOG![](https://cwiki.apache.org/confluence/images/icons/emoticons/check.gi
 *   [Enterprise Integration Patterns](enterprise-integration-patterns.md "Enterprise Integration Patterns")
 *   [JMX](jmx.md "JMX")
 *   [JMS to JMS Bridge](ConnectivityConnectivity/Connectivity/jms-to-jms-bridge.md "JMS to JMS Bridge")
-*   [MasterSlave](ClusteringFeatures/Clustering/Features/Clustering/masterslave.md "MasterSlave")
+*   [ActivePassive](ClusteringFeatures/Clustering/Features/Clustering/activepassive.md "ActivePassive")
 *   [Message Groups](message-groups.md "Message Groups")
 *   [Networks of Brokers](Clustering/networks-of-brokers.md "Networks of Brokers")
 *   [Performance](performance.md "Performance")
