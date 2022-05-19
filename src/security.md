@@ -170,7 +170,6 @@ A new/better ldap authorization module is available since 5.6. See [Cached LDAP 
     ```
     LdapConfiguration { 
        org.apache.activemq.jaas.LDAPLoginModule required 
-       debug=true 
        initialContextFactory=com.sun.jndi.ldap.LdapCtxFactory 
        connectionURL="ldap://ldap.acme.com:389" 
        connectionUsername="cn=mqbroker,ou=Services,dc=acme,dc=com" 
