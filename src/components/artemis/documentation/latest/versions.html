@@ -1326,12 +1326,12 @@ throughput and Response Under Load performance of Artemis</li>
 <li><a href="paging.html#paging-mode">Paging</a> can now be configured by message count.</li>
 </ul>
 <h4 id="upgrading-from-older-versions">Upgrading from older versions</h4>
-<p>Due to XML schema changes to correct an inaccurate domain name 2 files will need to
+<ol>
+<li><p>Due to XML schema changes to correct an inaccurate domain name 2 files will need to
 be updated:</p>
 <ol>
 <li><code>etc/bootstrap.xml</code></li>
-<li><code>etc/management.xml</code></li>
-</ol>
+<li><p><code>etc/management.xml</code></p>
 <p>In both files change the XML namespace from <code>activemq.org</code> to <code>activemq.apache.org</code>,
 e.g. in <code>bootsrap.xml</code> use:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">broker</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.apache.org/schema&quot;</span>&gt;</span>
@@ -1339,6 +1339,19 @@ e.g. in <code>bootsrap.xml</code> use:</p>
 <p>And in <code>management.xml</code> use:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">management-context</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://activemq.apache.org/schema&quot;</span>&gt;</span>
 </code></pre>
+</li>
+</ol>
+</li>
+<li><p><strong>If you&apos;re using <a href="persistence.html#jdbc-persistence">JDBC persistence</a></strong> then due
+to the changes in <a href="https://issues.apache.org/jira/browse/ARTEMIS-3679" target="_blank">ARTEMIS-3679</a>
+you&apos;ll need to update your database. The column <code>HOLDER_EXPIRATION_TIME</code> on the
+<code>NODE_MANAGER_STORE</code>changed from a <code>TIMESTAMP</code> to a <code>BIGINT</code> (or <code>NUMBER(19)</code> on
+Oracle). You will have to stop any broker that is accessing that table and either
+drop it or execute the proper <code>ALTER TABLE</code> statement for your database. If you
+drop the table then it will be automatically recreated when broker restarts and
+repopulated with a new, auto-generated node ID.</p>
+</li>
+</ol>
 <h2 id="2200">2.20.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12350581&amp;projectId=12315920" target="_blank">Full release notes</a>.</p>
 <p>Highlights:</p>
