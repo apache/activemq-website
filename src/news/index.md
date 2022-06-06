@@ -20,6 +20,10 @@ type: main
 
 {% if document.collection contains "artemis" %}
 [Read More]({{site.baseurl}}/components/artemis/download/)
+{% elsif document.collection contains "nms_api" %}
+[Read More]({{site.baseurl}}/components/nms/nms-api-downloads)
+{% elsif document.collection contains "nms_amqp" %}
+[Read More]({{site.baseurl}}/components/nms/providers/amqp/downloads/)
 {% else %}
 [Read More]({{document.url}})
 {% endif %}
