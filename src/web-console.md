@@ -104,5 +104,3 @@ External Project|Description
 ---|---
 [hawtio](http://hawt.io/)|hawtio is an open source HTML5 web application for visualising, managing, tracing and debugging Camel routes & endpoints, ActiveMQ brokers, JMX, OSGi and logging. Here is a [blog entry](http://www.bennet-schulz.com/2016/07/apache-activemq-and-hawtio.html) how to install hawtio as web console for ActiveMQ.
 [RHQ](http://www.jboss.org/rhq)|RHQ is an open source operational monitoring tool which has support for Apache Camel (along with other Apache projects like Tomcat, httpd, ActiveMQ etc)
-[Hermes JMS](http://www.hermesjms.com/confluence/display/HJMS/Home)|HermesJMS is an extensible console that helps you interact with JMS providers making it simple to publish and edit messages, browse or seach queues and topics, copy messages around and delete them.
-

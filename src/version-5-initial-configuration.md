@@ -74,7 +74,6 @@ Additional resources
 ### Related open source projects
 
 *   [Apache Geronimo](http://geronimo.apache.org/)
-*   [Hermes JMS](http://www.hermesjms.com/)
 *   [Jencks](http://jencks.org/) is a Spring JCA container allowing you to use connection & thread & POJO pooling for consuming JMS in highly concurrent servers
 *   [Lingo](http://lingo.codehaus.org/) is a Spring/POJO remoting layer for JMS. It allows you to reuse all the power of JMS from your POJOs without using any of the JMS APIs directly
 *   [Spring](http://www.springframework.org/)

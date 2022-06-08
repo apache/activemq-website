@@ -15,5 +15,4 @@ type: activemq5
 * [Apache TomEE](http://openejb.apache.org) ActiveMQ is the default JMS provider.
 * [Eclipse](http://www.eclipse.org/) is integrating ActiveMQ into the real time editing features for team development
 * [Mule](https://www.mulesoft.com/) is an Enterprise Service Bus (ESB) messaging framework. It is a scalable, highly distributable object broker that can seamlessly handle interactions with services and applications using disparate transport and messaging technologies.
-* [Hermes](https://sourceforge.net/projects/hermesjms/) is a Swing application that allows you to interact with JMS providers. Hermes will work with any JMS enabled transport making it easy to browse or seach queues and topics, copy (via drag and drop) messages and delete them.
 
