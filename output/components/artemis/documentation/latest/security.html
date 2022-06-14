@@ -2317,8 +2317,14 @@ manager <em>may</em> still may have a couple of advantages depending on your use
 <p>All user &amp; role data is stored in the bindings journal (or bindings table if
 using JDBC). The advantage here is that in a live/backup use-case any user
 management performed on the live broker will be reflected on the backup upon
-failover. Typically LDAP would be employed for this kind of use-case, but not
-everyone wants or is able to administer an independent LDAP server.</p>
+failover.</p>
+<p>Typically LDAP would be employed for this kind of use-case, but not everyone
+wants or is able to administer an independent LDAP server. One significant
+benefit of LDAP is that user data can be shared between multiple live brokers.
+However, this is not possible with the <code>ActiveMQBasicSecurityManager</code> or, in fact,
+any other configuration potentially available out of the box. Nevertheless,
+if you just want to share user data between a single live/backup pair then the
+basic security manager may be a good fit for you.</p>
 <p>User management is provided by the broker&apos;s management API. This includes the
 ability to add, list, update, and remove users &amp; roles. As with all management
 functions, this is available via JMX, management messages, HTTP (via Jolokia),
@@ -2332,7 +2338,9 @@ go through the basic security manager. Management messages will also go through
 the basic security manager.</p>
 <h4 id="configuration">Configuration</h4>
 <p>The configuration for the <code>ActiveMQBasicSecurityManager</code> happens in
-<code>bootstrap.xml</code> just like it does for all security manager implementations.</p>
+<code>bootstrap.xml</code> just like it does for all security manager implementations.
+Start by removing <code>&lt;jaas-security /&gt;</code> section and add <code>&lt;security-manager /&gt;</code>
+configuration as described below.</p>
 <p>The <code>ActiveMQBasicSecurityManager</code> requires some special configuration for the
 following reasons:</p>
 <ul>
@@ -2345,10 +2353,10 @@ manually </li>
 <code>ActiveMQBasicSecurityManager</code> and was started from scratch then no clients
 would be able to connect because there would be no users &amp; roles configured.
 However, in order to configure users &amp; roles one would need to use the 
-management API which would require the proper credentials. It&apos;s a catch-22.
-Therefore, it is possible to configure &quot;bootstrap&quot; credentials that will be
-automatically created when the broker starts. There are properties to define
-either:</p>
+management API which would require the proper credentials. It&apos;s a <a href="https://en.wikipedia.org/wiki/Catch-22_(logic" target="_blank">catch-22</a>)
+problem. Therefore, it is essential to configure &quot;bootstrap&quot; credentials that
+will be automatically created when the broker starts. There are properties
+to define either:</p>
 <ul>
 <li>a single user whose credentials can then be used to add other users </li>
 <li>properties files from which to load users &amp; roles in bulk</li>
@@ -2415,8 +2423,11 @@ address. For example if you&apos;ve specified a <code>bootstrapUser</code> then 
 </code></pre>
 <blockquote>
 <p><strong>Note:</strong></p>
-<p>Any <code>bootstrap</code> credentials will be set <strong>whenever</strong> you start the broker no 
-matter what changes may have been made to them at runtime previously.</p>
+<p>Any <code>bootstrap</code> credentials will be reset <strong>whenever</strong> you start the broker
+no matter what changes may have been made to them at runtime previously, so
+depending on your use-case you should decide if you want to leave <code>bootstrap</code>
+configuration permanent or if you want to remove it after initial
+configuration.</p>
 </blockquote>
 <h2 id="mapping-external-roles">Mapping external roles</h2>
 <p>Roles from external authentication providers (i.e. LDAP) can be mapped to internally used roles. The is done through role-mapping entries in the security-settings block:</p>
@@ -2671,7 +2682,7 @@ parameter and indicate which domain from your <code>login.config</code> to use, 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.50","depth":1,"next":{"title":"Masking Passwords","level":"1.51","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.49","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.22.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2022-04-28T00:19:10.497Z","type":"markdown"},"gitbook":{"version":"3.7.1","time":"2022-04-28T00:19:11.365Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.50","depth":1,"next":{"title":"Masking Passwords","level":"1.51","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.49","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.23.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2022-06-14T17:44:56.159Z","type":"markdown"},"gitbook":{"version":"3.7.1","time":"2022-06-14T17:44:57.011Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
