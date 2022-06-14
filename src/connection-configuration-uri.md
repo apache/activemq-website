@@ -48,6 +48,7 @@ Option Name|Default Value|Description
 `useCompression`|`false`|Enables the use of compression on the message's body.
 `useRetroactiveConsumer`|`false`|Sets whether or not retroactive consumers are enabled. Retroactive consumers allow non-durable topic subscribers to receive old messages that were published before the non-durable subscriber started.
 `warnAboutUnstartedConnectionTimeout`|`500`|The timeout, in milliseconds, from the time of connection creation to when a warning is generated if the connection is not properly started via [Connection.start()](http://java.sun.com/j2ee/1.4/docs/api/javax/jms/Connection.html#start()) and a message is received by a consumer. It is a very common gotcha to forget to [start the connection and then wonder why no messages are delivered](i-am-not-receiving-any-messages-what-is-wrong) so this option makes the default case to create a warning if the user forgets. To disable the warning just set the value to `< 0`.
+`nonBlockingRedelivery`|`false`|Whether or not message redelivery (and any related delays) will block the delivery of other messages. Setting to `true` will allow messages to be delivered out of order.
 
 ### Nested Options
 
