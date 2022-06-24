@@ -11,12 +11,12 @@ A list of commits can be found  * [here](commit-report-2.23.1).
 
 **Note**: This release requires use of Java 11 or above.
 
-#Bug
+# Bug
  * [ARTEMIS-3305] - compatibility tests dont work on Java 16+
  * [ARTEMIS-3856] - Failed to change channel state to ReadyForWriting : java.util.ConcurrentModificationException
 
-#Test
+# Test
  * [ARTEMIS-3854] - tests using reflection to get process pid fail on Java 17
 
-#Task
+# Task
  * [ARTEMIS-3842] - artemis-selector module still references a JDK8

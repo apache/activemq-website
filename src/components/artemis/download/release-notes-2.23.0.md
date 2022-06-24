@@ -11,7 +11,7 @@ A list of commits can be found  * [here](commit-report-2.23.0).
 
 **Note**: This release requires use of Java 11 or above.
 
-#Bug
+# Bug
  * [ARTEMIS-3376] - help text for "artemis address --no-anycast/--no-multicast" is incorrect
  * [ARTEMIS-3810] - XID Resumes on already Active Transactions should not throw any error
  * [ARTEMIS-3811] - QueueBinding type will clash with cluster connections
@@ -27,11 +27,11 @@ A list of commits can be found  * [here](commit-report-2.23.0).
  * [ARTEMIS-3848] - High cpu usage on ReadWrite locks
  * [ARTEMIS-3853] - Ping command for IPv6 is wrong on Windows
  
-#New Feature
+# New Feature
  * [ARTEMIS-3700] - Provide JakartaEE 10 artefacts and support
  * [ARTEMIS-3817] - Management schedulePageCleanup operation on AddressControl
 
-#Improvement
+# Improvement
  * [ARTEMIS-3759] - Allow for Mirroring (Broker Connections) to specify a specific set of addresses to send events, as is done for a cluster connection
  * [ARTEMIS-3770] - Refactor MQTT handling of client ID
  * [ARTEMIS-3807] - Simplify Message Redistributor avoiding races
@@ -41,7 +41,7 @@ A list of commits can be found  * [here](commit-report-2.23.0).
  * [ARTEMIS-3825] - Improve print-data to recognize queues that do not exist
  * [ARTEMIS-3835] - Deprecate addressesSettings configuration attribute with double plural in place of addressSettings
 
-#Dependency upgrade
+# Dependency upgrade
  * [ARTEMIS-3806] - Upgrade logging dependencies
  * [ARTEMIS-3812] - Upgrade Micrometer
  * [ARTEMIS-3814] - Update to ActiveMQ 5.17.1

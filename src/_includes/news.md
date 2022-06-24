@@ -1,7 +1,7 @@
 {% assign releases = site.documents %} {% assign releases = releases | sort: "release_date" | reverse %}
  <div class="row align-middle">
 {% assign i = 0 %}
-<div class="card-group">
+<div class="card-group w-100">
 {% for release in releases %} {% if i > 2 %} {% break %} {% endif %}
 <div class="card card-grey-small">
 <div class="card-body ml-0 p-2">
