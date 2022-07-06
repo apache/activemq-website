@@ -100,43 +100,57 @@
 
 <h4 id="configuration-syntax">Configuration Syntax</h4>
 
-<p>`ssl://hostname:port?transportOptions**</p>
+<p><strong>ssl://hostname:port?transportOptions</strong></p>
 
 <h4 id="transport-options">Transport Options</h4>
 
 <p>The configuration options from <a href="tcp-transport-reference">TCP</a> are relevant.</p>
 
 <h4 id="example-uri">Example URI</h4>
-
-<p>ssl://localhost:61616?trace=false</p>
-
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssl://localhost:61616?trace=false
+</code></pre></div></div>
 <h4 id="sslserversocket-options">SSLServerSocket options</h4>
 
 <p>From version 5.4 any <a href="http://java.sun.com/j2se/1.4.2/docs/api/javax/net/ssl/SSLServerSocket.html">SSLServerSocket</a> option may be set on a TransportConnection via <strong>?transport.XXX</strong>, for example:</p>
-
-<p>ssl://localhost:61616?transport.enabledCipherSuites=SSL_RSA_WITH_RC4_128_SHA,SSL_DH_anon_WITH_3DES_EDE_CBC_SHA
-ssl://localhost:61616?transport.needClientAuth=true</p>
-
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssl://localhost:61616?transport.enabledCipherSuites=SSL_RSA_WITH_RC4_128_SHA,SSL_DH_anon_WITH_3DES_EDE_CBC_SHA
+ssl://localhost:61616?transport.needClientAuth=true
+</code></pre></div></div>
 <h4 id="client-configuration">Client configuration</h4>
 
-<p>JMS clients can simply use the <a href="http://activemq.apache.org/maven/5.9.0/apidocs/org/apache/activemq/ActiveMQSslConnectionFactory.html">ActiveMQSslConnectionFactory</a> together with an ssl:// broker url as the following Spring configuration illustrates</p>
+<p>JMS clients can simply use the <a href="http://activemq.apache.org/maven/5.9.0/apidocs/org/apache/activemq/ActiveMQSslConnectionFactory.html">ActiveMQSslConnectionFactory</a> together with an <code class="language-plaintext highlighter-rouge">ssl://</code> broker url as the following Spring configuration illustrates</p>
 
-<bean id="AMQJMSConnectionFactory" class="org.apache.activemq.ActiveMQSslConnectionFactory">
-  <property name="trustStore" value="/path/to/truststore.ts" />
-  <property name="trustStorePassword" value="password" />
-  <property name="keyStore" value="/path/to/keystore.ks" />
-  <property name="keyStorePassword" value="password" />
-  <property name="brokerURL" value="ssl://localhost:61616" />
-  <property name="userName" value="admin" /> 
-  <property name="password" value="admin" />
-</bean>
-
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"AMQJMSConnectionFactory"</span> <span class="na">class=</span><span class="s">"org.apache.activemq.ActiveMQSslConnectionFactory"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"trustStore"</span> <span class="na">value=</span><span class="s">"/path/to/truststore.ts"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"trustStorePassword"</span> <span class="na">value=</span><span class="s">"password"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"keyStore"</span> <span class="na">value=</span><span class="s">"/path/to/keystore.ks"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"keyStorePassword"</span> <span class="na">value=</span><span class="s">"password"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"brokerURL"</span> <span class="na">value=</span><span class="s">"ssl://localhost:61616"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"userName"</span> <span class="na">value=</span><span class="s">"admin"</span> <span class="nt">/&gt;</span> 
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"password"</span> <span class="na">value=</span><span class="s">"admin"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span> 
+</code></pre></div></div>
 <p>Unless the broker’s SSL transport is configured for transport.needClientAuth=true, the client won’t need a keystore but requires a truststore in order to validate the broker’s certificate.</p>
 
 <p>Similar to the broker transport configuration you can pass on SSL transport options using <strong>?socket.XXX</strong>, such as</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssl://localhost:61616?socket.enabledCipherSuites=SSL_RSA_WITH_RC4_128_SHA,SSL_DH_anon_WITH_3DES_EDE_CBC_SHA
+</code></pre></div></div>
+<h4 id="hostname-validation-starting-with-version-5156">Hostname Validation (Starting with version 5.15.6)</h4>
 
-<p>ssl://localhost:61616?socket.enabledCipherSuites=SSL_RSA_WITH_RC4_128_SHA,SSL_DH_anon_WITH_3DES_EDE_CBC_SHA</p>
+<p>From version 5.15.6 ActiveMQ now supports TLS Hostname validation. This has been enabled by default for the ActiveMQ client and is off by default on the broker. To configure:</p>
 
+<h4 id="server-side-configuration-of-hostname-validation">Server side configuration of hostname validation</h4>
+
+<p>The default for the server side is to disable Hostname validation and this can be configured with ?transport.verifyHostName.  This is only relevant for 2-way SSL and will cause the client’s CN of their certificate to be compared to their hostname to verify they match, e.g.:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssl://localhost:61616?transport.verifyHostName=true
+</code></pre></div></div>
+<h4 id="client-side-configuration-of-hostname-validation">Client side configuration of hostname validation</h4>
+
+<p>The default for the ActiveMQ client is to enable Hostname validation and this can be configured with <code class="language-plaintext highlighter-rouge">?socket.verifyHostName</code> or simply <code class="language-plaintext highlighter-rouge">?verifyHostName</code> with no prefix. This will cause the CN of the server certificate to be compared to the server hostname to verify they match, e.g.:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssl://localhost:61616?socket.verifyHostName=false
+</code></pre></div></div>
+<p>or:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssl://localhost:61616?verifyHostName=false
+</code></pre></div></div>
 <h4 id="other-links">Other Links</h4>
 
 <ul>
@@ -144,24 +158,16 @@ ssl://localhost:61616?transport.needClientAuth=true</p>
 </ul>
 
 <p>You can also turn on SSL debug informations this way by adding:</p>
-
-<p>-Djavax.net.debug=ssl</p>
-
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-Djavax.net.debug=ssl
+</code></pre></div></div>
 <p>this way you can see what goes wrong and why you get connections closed.</p>
 
-<p>“Be careful with multicast discovery”</p>
+<h4 id="be-careful-with-multicast-discovery">Be careful with multicast discovery</h4>
 
 <p>If your XML configuration file contains the following and you wish to use SSL</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   &lt;networkConnector uri="multicast://default"/&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;networkConnector</span> <span class="na">uri=</span><span class="s">"multicast://default"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
-
-<p>Then you will currently need to comment that out.<br />
-The reason is to prevent ActiveMQ atempting to connect to itself - if you do this with a self-signed<br />
-certificate, you will get a constant spam of certificate_unknown<br />
-stacktraces to the console, as the broker is not configured with the<br />
-truststore,</p>
-
+<p>Then you will currently need to comment that out. The reason is to prevent ActiveMQ atempting to connect to itself - if you do this with a self-signed certificate, you will get a constant spam of certificate_unknown stacktraces to the console, as the broker is not configured with the truststore.</p>
 
       </div>
     </div>
