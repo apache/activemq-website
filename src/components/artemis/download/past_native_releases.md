@@ -5,11 +5,13 @@ title-class: page-title-artemis
 type: artemis
 ---
 
-These are older releases for the libaio native component. For current releases, please see the [download](./) page.
+<div class="alert alert-warning">
+  These are older releases for the libaio native component. For current releases, please see the <a href="{{site.baseurl}}/components/artemis/download/native_download" class="alert-link">download page</a>.
+</div>
 
-The keys file for verifying the release can be obtained [here](https://downloads.apache.org/activemq/KEYS)
+For any releases not shown here, check the [archive](https://archive.apache.org/dist/activemq/activemq-artemis-native/).
 
-For any releases not shown here, check the [archive](https://archive.apache.org/dist/activemq/activemq-artemis/).
+It is important to [verify the integrity]({{site.baseurl}}/components/artemis/download#verify-the-integrity-of-downloads) of the files you download.
 
 #### ActiveMQ Artemis Native Layer 1.0.1  (Oct 24, 2019)
 
