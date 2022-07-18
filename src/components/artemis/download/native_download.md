@@ -9,11 +9,11 @@ For broker downloads, see the main [download](./) page. This is the current sour
 
 It is important to [verify the integrity](#verify-the-integrity-of-downloads) of the files you download.
 
-#### ActiveMQ Artemis Native Layer 1.0.2  (June  22, 2020)
+#### ActiveMQ Artemis Native Layer 2.0.0  (July  18th, 2022)
 
-[Release Notes](release-notes-native-1.0.2)
+[Release Notes](release-notes-native-2.0.0)
 
-Source Distribution:|[apache-artemis-native-1.0.2-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.asc)|
+Source Distribution:|[apache-artemis-native-2.0.0-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-native/2.0.0/activemq-artemis-native-2.0.0-source-release.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis-native/2.0.0/activemq-artemis-native-2.0.0-source-release.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis-native/2.0.0/activemq-artemis-native-2.0.0-source-release.zip.asc)|
 
 This is the native layer used by ActiveMQ Artemis for storage. The main broker binary archive [downloads](./) already include a pre-compiled version of this component.
 <br/>
