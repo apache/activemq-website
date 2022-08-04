@@ -2,12 +2,12 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Configuration Reference · ActiveMQ Artemis Documentation</title>
         <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Configuration Reference · ActiveMQ Artemis Documentation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.7.1">
+        <meta name="generator" content="GitBook 3.2.3">
         
         
         
@@ -384,6 +384,38 @@
                 </a>
             
 
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.19.1" data-path="client-classpath-jms.html">
+            
+                <a href="client-classpath-jms.html">
+            
+                    
+                    JMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.19.2" data-path="client-classpath-jakarta.html">
+            
+                <a href="client-classpath-jakarta.html">
+            
+                    
+                    Jakarta
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
             
         </li>
     
@@ -1413,6 +1445,11 @@ will actually be used when the broker is running.</p>
 <td>n/a</td>
 </tr>
 <tr>
+<td><a href="amqp-broker-connections.html">broker-connections</a></td>
+<td><a href="#amqp-connection-type">a list of amqp-connection</a></td>
+<td>n/a</td>
+</tr>
+<tr>
 <td><a href="broker-plugins.html">broker-plugins</a></td>
 <td><a href="#broker-plugin-type">a list of broker-plugins</a></td>
 <td>n/a</td>
@@ -1743,7 +1780,7 @@ will actually be used when the broker is running.</p>
 <td>n/a</td>
 </tr>
 <tr>
-<td><a href>resolveProtocols</a></td>
+<td><a href="">resolveProtocols</a></td>
 <td>Use <a href="https://docs.oracle.com/javase/tutorial/ext/basics/spi.html" target="_blank">ServiceLoader</a> to load protocol modules.</td>
 <td><code>true</code></td>
 </tr>
@@ -1965,7 +2002,7 @@ will actually be used when the broker is running.</p>
 <td>-1</td>
 </tr>
 <tr>
-<td><a href>max-size-bytes-reject-threshold</a></td>
+<td><a href="">max-size-bytes-reject-threshold</a></td>
 <td>Used with <code>BLOCK</code>, the max size an address can reach before messages are rejected; works in combination with <code>max-size-bytes</code> <strong>for AMQP clients only</strong>.</td>
 <td>-1</td>
 </tr>
@@ -1973,11 +2010,6 @@ will actually be used when the broker is running.</p>
 <td><a href="paging.html">page-size-bytes</a></td>
 <td>Size of each file on page</td>
 <td>10485760</td>
-</tr>
-<tr>
-<td><a href="paging.html">page-max-cache-size</a></td>
-<td>Maximum number of files cached from paging</td>
-<td>5</td>
 </tr>
 <tr>
 <td><a href="address-model.html">address-full-policy</a></td>
@@ -2125,7 +2157,7 @@ will actually be used when the broker is running.</p>
 <td><code>OFF</code></td>
 </tr>
 <tr>
-<td><a href>management-browse-page-size</a></td>
+<td><a href="">management-browse-page-size</a></td>
 <td>Number of messages a management resource can browse</td>
 <td>200</td>
 </tr>
@@ -2462,7 +2494,7 @@ will actually be used when the broker is running.</p>
 <td>Name of a JGroups Channel. If specified, the server uses the named channel for discovery.</td>
 </tr>
 <tr>
-<td><a href>refresh-timeout</a></td>
+<td><a href="">refresh-timeout</a></td>
 <td>Period the discovery group waits after receiving the last broadcast from a particular server before removing that servers connector pair entry from its list. Default=10000</td>
 </tr>
 <tr>
@@ -2759,6 +2791,48 @@ will actually be used when the broker is running.</p>
 </tr>
 </tbody>
 </table>
+<h2 id="amqp-connection-type">amqp-connection type</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="amqp-broker-connections.html#amqp-server-connections">uri</a></td>
+<td>AMQP broker connection URI (required)</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><a href="amqp-broker-connections.html#amqp-server-connections">name</a></td>
+<td>A unique name</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><a href="amqp-broker-connections.html#amqp-server-connections">user</a></td>
+<td>Broker authentication user (optional)</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><a href="amqp-broker-connections.html#amqp-server-connections">password</a></td>
+<td>Broker authentication password (optional)</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><a href="amqp-broker-connections.html#amqp-server-connections">reconnect-attempts</a></td>
+<td>How many attempts should be made to reconnect after failure.</td>
+<td>-1 (infinite)</td>
+</tr>
+<tr>
+<td><a href="amqp-broker-connections.html#amqp-server-connections">auto-start</a></td>
+<td>Broker connection starts automatically with broker</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -2802,7 +2876,7 @@ will actually be used when the broker is running.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Configuration Reference","level":"1.82","depth":1,"next":{"title":"Restart Sequence","level":"1.83","depth":1,"path":"restart-sequence.md","ref":"restart-sequence.md","articles":[]},"previous":{"title":"Performance Tools","level":"1.81","depth":1,"path":"perf-tools.md","ref":"perf-tools.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.23.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"configuration-index.md","mtime":"2022-06-14T17:44:56.083Z","type":"markdown"},"gitbook":{"version":"3.7.1","time":"2022-06-14T17:44:57.011Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Configuration Reference","level":"1.82","depth":1,"next":{"title":"Restart Sequence","level":"1.83","depth":1,"path":"restart-sequence.md","ref":"restart-sequence.md","articles":[]},"previous":{"title":"Performance Tools","level":"1.81","depth":1,"path":"perf-tools.md","ref":"perf-tools.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.24.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"configuration-index.md","mtime":"2022-08-04T18:58:37.851Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-08-04T18:59:40.180Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
@@ -2825,6 +2899,10 @@ will actually be used when the broker is running.</p>
     
         
         <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
         
     
         

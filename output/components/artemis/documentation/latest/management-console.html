@@ -2,12 +2,12 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Management Console · ActiveMQ Artemis Documentation</title>
         <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Management Console · ActiveMQ Artemis Documentation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.7.1">
+        <meta name="generator" content="GitBook 3.2.3">
         
         
         
@@ -384,6 +384,38 @@
                 </a>
             
 
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.19.1" data-path="client-classpath-jms.html">
+            
+                <a href="client-classpath-jms.html">
+            
+                    
+                    JMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.19.2" data-path="client-classpath-jakarta.html">
+            
+                <a href="client-classpath-jakarta.html">
+            
+                    
+                    Jakarta
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
             
         </li>
     
@@ -1300,7 +1332,7 @@
 <p>Apache ActiveMQ Artemis ships by default with a management console. It is powered by <a href="http://hawt.io" target="_blank">Hawt.io</a>.</p>
 <p>Its purpose is to expose the <a href="management.html" title="Management API">Management API</a> via a user friendly web ui. </p>
 <h2 id="login">Login</h2>
-<p>To access the management console use a browser and go to the URL <a href>http://localhost:8161/console</a>.</p>
+<p>To access the management console use a browser and go to the URL <a href="">http://localhost:8161/console</a>.</p>
 <p>A login screen will be presented, if your broker is secure, you will need to use a user with admin role, if it is unsecure simply enter any user/password.</p>
 <p><img src="images/console-login.png" alt="ActiveMQ Artemis Console Login"></p>
 <h2 id="security">Security</h2>
@@ -1330,8 +1362,6 @@ to &apos;localhost&apos;, pay particular attention to the &apos;CORS&apos; restr
 <ul>
 <li><p><code>Artemis</code> This is the core tab for Apache ActiveMQ Artemis specific functionality. The rest of this document will focus on this.</p>
 </li>
-<li><p><code>Connect</code> This allows you to connect to a remote broker from the same console.</p>
-</li>
 <li><p><code>Dashboard</code> Here you can create and save graphs and tables of metrics available via JMX, a default jvm health dashboard is provided. </p>
 </li>
 <li><p><code>JMX</code> This exposes the raw Jolokia JMX so you can browse/access all the JMX endpoints exposed by the JVM.</p>
@@ -1339,6 +1369,7 @@ to &apos;localhost&apos;, pay particular attention to the &apos;CORS&apos; restr
 <li><p><code>Threads</code> This allows you to monitor the thread usage and their state.</p>
 </li>
 </ul>
+<p>In previous versions there was a &quot;Connect&quot; tab which could be used to connect to a remote broker from the same console. This was disabled by default for security purposes, but it can be enabled again by removing <code>-Dhawtio.disableProxy=true</code> from <code>artemis.profile</code> (or <code>artemis.profile.cmd</code> on Windows).</p>
 <p>You can install further hawtio plugins if you wish to have further functionality.</p>
 <h2 id="artemis-tab">Artemis Tab</h2>
 <p>Click <code>Artemis</code> in the left navigation bar to see the Artemis specific plugin. (The Artemis tab won&apos;t appear if there is no broker in this JVM).  The Artemis plugin works very much the same as the JMX plugin however with a focus on interacting with an Artemis broker.</p>
@@ -1357,7 +1388,17 @@ to &apos;localhost&apos;, pay particular attention to the &apos;CORS&apos; restr
 <p>To create a new queue click on the address you want to bind the queue to and click on the create tab.</p>
 <p>Once you have created a queue you should be able to <strong>Send</strong> a message to it or <strong>Browse</strong> it or view the  <strong>Attributes</strong> or <strong>Charts</strong>. Simply click on the queue in th ejmx tree and click on the appropriate tab.</p>
 <p>You can also see a graphical view of all brokers, addresses, queues and their consumers using the <strong>Diagram</strong> tab. </p>
-
+<h3 id="status-logging">Status Logging</h3>
+<p>When the broker starts it will detect the presence of the web console and log
+status information, e.g.:</p>
+<pre><code>INFO  [org.apache.activemq.artemis] AMQ241002: Artemis Jolokia REST API available at http://localhost:8161/console/jolokia
+INFO  [org.apache.activemq.artemis] AMQ241004: Artemis Console available at http://localhost:8161/console
+</code></pre><p>The web console is detected by inspecting the value of the <code>&lt;display-name&gt;</code> tag
+in the war file&apos;s <code>WEB-INF/web.xml</code> descriptor. By default it looks for
+<code>hawtio</code>. However, if this value is changed for any reason the broker can look
+for this new value by setting the following system property</p>
+<pre><code>-Dorg.apache.activemq.artemis.webConsoleDisplayName=newValue
+</code></pre>
                                 
                                 </section>
                             
@@ -1400,7 +1441,7 @@ to &apos;localhost&apos;, pay particular attention to the &apos;CORS&apos; restr
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Management Console","level":"1.48","depth":1,"next":{"title":"Metrics","level":"1.49","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"previous":{"title":"Management","level":"1.47","depth":1,"path":"management.md","ref":"management.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.23.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"management-console.md","mtime":"2022-06-14T17:44:56.144Z","type":"markdown"},"gitbook":{"version":"3.7.1","time":"2022-06-14T17:44:57.011Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Management Console","level":"1.48","depth":1,"next":{"title":"Metrics","level":"1.49","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"previous":{"title":"Management","level":"1.47","depth":1,"path":"management.md","ref":"management.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.24.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"management-console.md","mtime":"2022-08-04T18:58:37.943Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-08-04T18:59:40.180Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
@@ -1423,6 +1464,10 @@ to &apos;localhost&apos;, pay particular attention to the &apos;CORS&apos; restr
     
         
         <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
         
     
         
