@@ -2,12 +2,12 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Paging · ActiveMQ Artemis Documentation</title>
         <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Paging · ActiveMQ Artemis Documentation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.7.1">
+        <meta name="generator" content="GitBook 3.2.3">
         
         
         
@@ -384,6 +384,38 @@
                 </a>
             
 
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.19.1" data-path="client-classpath-jms.html">
+            
+                <a href="client-classpath-jms.html">
+            
+                    
+                    JMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.19.2" data-path="client-classpath-jakarta.html">
+            
+                <a href="client-classpath-jakarta.html">
+            
+                    
+                    Jakarta
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
             
         </li>
     
@@ -1398,14 +1430,21 @@ configured <code>address-full-policy</code>.</p>
 <td><code>PAGE</code></td>
 </tr>
 <tr>
-<td><code>page-max-cache-size</code></td>
-<td>The system will keep up to <code>page-max-cache-size</code> page files in memory to optimize IO during paging navigation.</td>
-<td>5</td>
+<td><code>max-read-page-messages</code></td>
+<td>how many message can be read from paging into the Queue whenever more messages are needed. The system wtill stop reading if `max-read-page-bytes hits the limit first.</td>
+<td>1000</td>
+</tr>
+<tr>
+<td><code>max-read-page-bytes</code></td>
+<td>how much memory the messages read from paging can take on the Queue whenever more messages are needed. The system will stop reading if <code>max-read-page-messages</code> hits the limit first.</td>
+<td>2 * page-size-bytes</td>
 </tr>
 </tbody>
 </table>
 <h3 id="max-size-bytes-and-max-size-messages-simultaneous-usage">max-size-bytes and max-size-messages simultaneous usage</h3>
 <p>It is possible to define max-size-messages (as the maximum number of messages) and max-messages-size (as the max number of estimated memory used by the address) concurrently. The configured policy will start based on the first value to reach its mark.</p>
+<h4 id="maximum-read-from-page">Maximum read from page</h4>
+<p><code>max-read-page-messages</code> and <code>max-read-page-bytes</code> are used to control messaging reading from paged file into the Queue. The broker will add messages on the Queue until either <code>max-read-page-meessages</code> or <code>max-read-page-bytes</code> reaches the limit.</p>
 <h2 id="global-max-size">Global Max Size</h2>
 <p>Beyond the <code>max-size-bytes</code> on the address you can also set the global-max-size
 on the main configuration. If you set <code>max-size-bytes</code> = <code>-1</code> on paging the
@@ -1470,6 +1509,10 @@ and the connection for those clients dropped).</p>
 <code>page-sync-timeout</code> in nanoseconds. When using NIO journal, by default has
 the same value of <code>journal-buffer-timeout</code>. When using ASYNCIO, the default
 should be <code>3333333</code>.</p>
+<h2 id="memory-usage-from-paged-messages">Memory usage from Paged Messages.</h2>
+<p>The system should keep at least one paged file in memory caching ahead reading messages. 
+Also every active subscription could keep one paged file in memory. 
+So, if your system has too many queues it is recommended to minimize the page-size.</p>
 <h2 id="example">Example</h2>
 <p>See the <a href="examples.html#paging">Paging Example</a> which shows how to use paging with 
 Apache ActiveMQ Artemis.</p>
@@ -1516,7 +1559,7 @@ Apache ActiveMQ Artemis.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Paging","level":"1.37","depth":1,"next":{"title":"Scheduled Messages","level":"1.38","depth":1,"path":"scheduled-messages.md","ref":"scheduled-messages.md","articles":[]},"previous":{"title":"Large Messages","level":"1.36","depth":1,"path":"large-messages.md","ref":"large-messages.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.23.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"paging.md","mtime":"2022-06-14T17:44:56.151Z","type":"markdown"},"gitbook":{"version":"3.7.1","time":"2022-06-14T17:44:57.011Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Paging","level":"1.37","depth":1,"next":{"title":"Scheduled Messages","level":"1.38","depth":1,"path":"scheduled-messages.md","ref":"scheduled-messages.md","articles":[]},"previous":{"title":"Large Messages","level":"1.36","depth":1,"path":"large-messages.md","ref":"large-messages.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.24.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"paging.md","mtime":"2022-08-04T18:58:37.949Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-08-04T18:59:40.180Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
@@ -1539,6 +1582,10 @@ Apache ActiveMQ Artemis.</p>
     
         
         <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
         
     
         
