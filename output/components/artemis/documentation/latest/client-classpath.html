@@ -1329,25 +1329,15 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="the-client-classpath">The Client Classpath</h1>
-<p>Apache ActiveMQ Artemis requires just a single jar on the <em>client classpath</em>.</p>
-<blockquote>
-<p><strong>Warning</strong></p>
-<p>The client jar mentioned here can be found in the <code>lib/client</code> directory of
-the Apache ActiveMQ Artemis distribution.  Be sure you only use the jar from
-the correct version of the release, you <em>must not</em> mix and match versions of
-jars from different Apache ActiveMQ Artemis versions. Mixing and matching
-different jar versions may cause subtle errors and failures to occur.</p>
-</blockquote>
-<h2 id="maven-packages">Maven Packages</h2>
-<p>The best way to define a client dependency to your java application is through a maven dependency declaration.</p>
-<p>There are two packages you can choose from, org.apache.activemq:artemis-jms-client or org.apache.activemq:artemis-jakarta-client for both JMS and Jakarta APIs.</p>
-<p>Say you define artemis-version as &apos;2.24.0&apos;:</p>
+<h2 id="maven-dependencies">Maven dependencies</h2>
+<p>The recommended way to define a client dependency for your java application is through a Maven dependency declaration.</p>
+<p>There are two dependencies you can choose from, <code>org.apache.activemq:artemis-jms-client</code> for JMS 2.0 or <code>org.apache.activemq:artemis-jakarta-client</code> for Jakarta Messaging 3.x.</p>
 <p>For JMS:</p>
 <pre><code class="lang-xml">...
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.activemq<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>artemis-jms-client<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>${artemis-version}<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.24.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
 ...
 </code></pre>
@@ -1356,28 +1346,28 @@ different jar versions may cause subtle errors and failures to occur.</p>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.activemq<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>artemis-jakarta-client<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>${artemis-version}<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.24.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
 ...
 </code></pre>
-<h2 id="all-clients">All clients</h2>
-<p>Even though it is highly recommend using maven, in case this is not a possibility the all inclusive jars could be used. </p>
-<p>These jars will be available under ./lib/client on the main distribution:</p>
+<h2 id="individual-client-dependencies">Individual client dependencies</h2>
+<p>If you dont wish to use a build tool such as Maven which manages the dependencies for you, you may also choose to add the specific dependency jars to your classpath, which are all included under ./lib on the main distribution.</p>
+<p>For more information of the clients individual dependencies, see:</p>
 <ul>
-<li>artemis-jakarta-client-all-2.24.0.jar</li>
-<li>artemis-jms-client-all-2.24.0.jar</li>
+<li><a href="client-classpath-jms.html">JMS client dependencies</a></li>
+<li><a href="client-classpath-jakarta.html">Jakarta client dependencies</a></li>
+</ul>
+<h2 id="repackaged--all-clients">Repackaged &apos;-all&apos; clients</h2>
+<p>Even though it is highly recommend using maven, in cases this isnt a possibility and neither is using the individual dependencies detailed above, the all-inclusive repackaged jar could be used.</p>
+<p>These jars are available under <code>./lib/client</code> on the main distribution (or also as linked at Maven Central):</p>
+<ul>
+<li><a href="https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-jms-client-all/2.24.0/" target="_blank">artemis-jms-client-all-2.24.0.jar</a></li>
+<li><a href="https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-jakarta-client-all/2.24.0/" target="_blank">artemis-jakarta-client-all-2.24.0.jar</a></li>
 </ul>
 <p>Whether you are using JMS or just the Core API simply add the
-<code>artemis-jms-client-all.jar</code> from the <code>lib/client</code> directory to your client
-classpath. </p>
-<p><strong>Warning:</strong>These jars will include all the <a href="client-classpath-jms.html">client&apos;s dependencies</a>. Be careful with mixing other jars in your application as they may clash with other.</p>
-<h2 id="individual-dependencies">Individual dependencies</h2>
-<p>You may also choose to use the jars individually as they are all included under ./lib on the main distribution.</p>
-<p>For more information:</p>
-<ul>
-<li><a href="client-classpath-jms.html">client jms dependencies</a></li>
-<li><a href="client-classpath-jakarta.html">client jakarta dependencies</a></li>
-</ul>
+<code>artemis-jms-client-all</code> jar from the <code>lib/client</code> directory to your client
+classpath. For Jakarta Messaging add the <code>artemis-jakarta-client-all</code> jar instead.</p>
+<p><strong>Warning:</strong>These repackaged jars include all the <a href="client-classpath-jms.html">client&apos;s dependencies</a>. Be careful with mixing other components jars in your application as they may clash with each other.</p>
 
                                 
                                 </section>
@@ -1421,7 +1411,7 @@ classpath. </p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"The Client Classpath","level":"1.19","depth":1,"next":{"title":"JMS","level":"1.19.1","depth":2,"path":"client-classpath-jms.md","ref":"client-classpath-jms.md","articles":[]},"previous":{"title":"Using JMS","level":"1.18","depth":1,"path":"using-jms.md","ref":"using-jms.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.24.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"client-classpath.md","mtime":"2022-08-04T18:58:37.847Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-08-04T18:59:40.180Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"The Client Classpath","level":"1.19","depth":1,"next":{"title":"JMS","level":"1.19.1","depth":2,"path":"client-classpath-jms.md","ref":"client-classpath-jms.md","articles":[]},"previous":{"title":"Using JMS","level":"1.18","depth":1,"path":"using-jms.md","ref":"using-jms.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.24.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"client-classpath.md","mtime":"2022-08-08T16:17:30.783Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-08-08T16:18:17.607Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
