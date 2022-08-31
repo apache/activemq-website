@@ -8,7 +8,10 @@ type: main
 
 Apache ActiveMQ's [Project Management Committee (PMC)](https://www.apache.org/dev/pmc) is required to [report on ActiveMQ's health and status](https://www.apache.org/foundation/board/reporting) quarterly to the Apache Board of Directors. The current ActiveMQ reporting schedule is: January, April, July, October.
 
-**2019**|[January](2019-01)
+**2022**|[January](2022-01), [April](2022-04), [July](2022-07), [October](2022-10)
+**2021**|[January](2021-01), [April](2021-04), [July](2021-07), [October](2021-10)
+**2020**|[January](2020-01), [April](2020-04), [July](2020-07), [October](2020-10)
+**2019**|[January](2019-01), [April](2019-04), [July](2019-07), [October](2019-10)
 **2018**|[January](2018-01), [April](2018-04), [July](2018-07), [October](2018-10)
 **2017**|[January](2017-01), [April](2017-04), [July](2017-07), [October](2017-10)
 **2016**|[February](2016-02), [April](2016-04), [May](2016-05), [July](2016-07), [October](2016-10)
