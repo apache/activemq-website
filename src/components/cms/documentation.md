@@ -20,6 +20,8 @@ Read more in the dedicated [CMS API overview](overview).
 
 *   [ActiveMQ-CPP 3.9.x](api_docs/activemqcpp-3.9.0/html/)
 *   [ActiveMQ-CPP 3.6.x](api_docs/activemqcpp-3.6.0/html/)
+*   [ActiveMQ-CPP 3.4.x](api_docs/activemqcpp-3.4.0/html/)
+*   [ActiveMQ-CPP 3.3.x](api_docs/activemqcpp-3.3.0/html/)
 
 ### Connectivity
 
