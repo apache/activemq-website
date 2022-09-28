@@ -1088,20 +1088,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.69" data-path="rest.html">
-            
-                <a href="rest.html">
-            
-                    
-                    REST Interface
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.70" data-path="embedding-activemq.html">
+        <li class="chapter " data-level="1.69" data-path="embedding-activemq.html">
             
                 <a href="embedding-activemq.html">
             
@@ -1114,7 +1101,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.71" data-path="karaf.html">
+        <li class="chapter " data-level="1.70" data-path="karaf.html">
             
                 <a href="karaf.html">
             
@@ -1127,7 +1114,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.72" data-path="tomcat.html">
+        <li class="chapter " data-level="1.71" data-path="tomcat.html">
             
                 <a href="tomcat.html">
             
@@ -1140,7 +1127,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.73" data-path="spring-integration.html">
+        <li class="chapter " data-level="1.72" data-path="spring-integration.html">
             
                 <a href="spring-integration.html">
             
@@ -1153,7 +1140,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.74" data-path="cdi-integration.html">
+        <li class="chapter " data-level="1.73" data-path="cdi-integration.html">
             
                 <a href="cdi-integration.html">
             
@@ -1166,7 +1153,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.75" data-path="intercepting-operations.html">
+        <li class="chapter " data-level="1.74" data-path="intercepting-operations.html">
             
                 <a href="intercepting-operations.html">
             
@@ -1179,7 +1166,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.76" data-path="data-tools.html">
+        <li class="chapter " data-level="1.75" data-path="data-tools.html">
             
                 <a href="data-tools.html">
             
@@ -1192,7 +1179,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.77" data-path="activation-tools.html">
+        <li class="chapter " data-level="1.76" data-path="activation-tools.html">
             
                 <a href="activation-tools.html">
             
@@ -1205,7 +1192,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.78" data-path="maven-plugin.html">
+        <li class="chapter " data-level="1.77" data-path="maven-plugin.html">
             
                 <a href="maven-plugin.html">
             
@@ -1218,7 +1205,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.79" data-path="unit-testing.html">
+        <li class="chapter " data-level="1.78" data-path="unit-testing.html">
             
                 <a href="unit-testing.html">
             
@@ -1231,7 +1218,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.80" data-path="perf-tuning.html">
+        <li class="chapter " data-level="1.79" data-path="perf-tuning.html">
             
                 <a href="perf-tuning.html">
             
@@ -1244,7 +1231,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.81" data-path="perf-tools.html">
+        <li class="chapter " data-level="1.80" data-path="perf-tools.html">
             
                 <a href="perf-tools.html">
             
@@ -1257,7 +1244,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.82" data-path="configuration-index.html">
+        <li class="chapter " data-level="1.81" data-path="configuration-index.html">
             
                 <a href="configuration-index.html">
             
@@ -1270,7 +1257,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.83" data-path="restart-sequence.html">
+        <li class="chapter " data-level="1.82" data-path="restart-sequence.html">
             
                 <a href="restart-sequence.html">
             
@@ -1766,12 +1753,25 @@ Artemis.</p>
 HTTP agent deployed as a web application. Jolokia is a remote JMX-over-HTTP
 bridge that exposes MBeans. For a full guide as to how to use it refer to
 <a href="https://jolokia.org/documentation.html" target="_blank">Jolokia Documentation</a>, however a
-simple example to query the broker&apos;s version would be to use a browser and go
-to the URL
-<a href="">http://username:password@localhost:8161/console/jolokia/read/org.apache.activemq.artemis:broker=&quot;0.0.0.0&quot;/Version</a>.</p>
-<p>This would give you back something like the following:</p>
-<pre><code>{&quot;request&quot;:{&quot;mbean&quot;:&quot;org.apache.activemq.artemis:broker=\&quot;0.0.0.0\&quot;&quot;,&quot;attribute&quot;:&quot;Version&quot;,&quot;type&quot;:&quot;read&quot;},&quot;value&quot;:&quot;2.0.0-SNAPSHOT&quot;,&quot;timestamp&quot;:1487017918,&quot;status&quot;:200}
-</code></pre><h3 id="jmx-and-the-web-console">JMX and the Web Console</h3>
+simple example to query the broker&apos;s version would be to use a <code>curl</code> command
+like this:</p>
+<pre><code>curl -v -H &quot;Origin: http://localhost&quot; -u myUser:myPass http://localhost:8161/console/jolokia/read/org.apache.activemq.artemis:broker=\&quot;0.0.0.0\&quot;/Active
+</code></pre><p>By default it&apos;s necessary to pass the <code>Origin</code> header due to the CORS checking
+which is configured in <code>etc/jolokia-access.xml</code>.</p>
+<p>Such a <code>curl</code> command would give you back something like the following (after
+formatting):</p>
+<pre><code class="lang-json">{
+  <span class="hljs-string">&quot;request&quot;</span>: {
+    <span class="hljs-string">&quot;mbean&quot;</span>: <span class="hljs-string">&quot;org.apache.activemq.artemis:broker=\&quot;0.0.0.0\&quot;&quot;</span>,
+    <span class="hljs-string">&quot;attribute&quot;</span>: <span class="hljs-string">&quot;Version&quot;</span>,
+    <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;read&quot;</span>
+  },
+  <span class="hljs-string">&quot;value&quot;</span>: <span class="hljs-string">&quot;2.24.0&quot;</span>,
+  <span class="hljs-string">&quot;timestamp&quot;</span>: <span class="hljs-number">1663086398</span>,
+  <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-number">200</span>
+}
+</code></pre>
+<h3 id="jmx-and-the-web-console">JMX and the Web Console</h3>
 <p>The web console that ships with Artemis uses Jolokia under the covers which in
 turn uses JMX. This will use the authentication configuration in the
 <code>management.xml</code> file as described in the previous section. This means that
@@ -2158,7 +2158,7 @@ to use message counters to retrieve information on a queue.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Management","level":"1.47","depth":1,"next":{"title":"Management Console","level":"1.48","depth":1,"path":"management-console.md","ref":"management-console.md","articles":[]},"previous":{"title":"Extra Acknowledge Modes","level":"1.46","depth":1,"path":"pre-acknowledge.md","ref":"pre-acknowledge.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.25.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"management.md","mtime":"2022-09-08T21:39:40.227Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-09-08T21:44:41.385Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Management","level":"1.47","depth":1,"next":{"title":"Management Console","level":"1.48","depth":1,"path":"management-console.md","ref":"management-console.md","articles":[]},"previous":{"title":"Extra Acknowledge Modes","level":"1.46","depth":1,"path":"pre-acknowledge.md","ref":"pre-acknowledge.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.26.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"management.md","mtime":"2022-09-28T13:55:44.729Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-09-28T13:57:02.517Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

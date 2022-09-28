@@ -1088,20 +1088,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.69" data-path="rest.html">
-            
-                <a href="rest.html">
-            
-                    
-                    REST Interface
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.70" data-path="embedding-activemq.html">
+        <li class="chapter " data-level="1.69" data-path="embedding-activemq.html">
             
                 <a href="embedding-activemq.html">
             
@@ -1114,7 +1101,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.71" data-path="karaf.html">
+        <li class="chapter " data-level="1.70" data-path="karaf.html">
             
                 <a href="karaf.html">
             
@@ -1127,7 +1114,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.72" data-path="tomcat.html">
+        <li class="chapter " data-level="1.71" data-path="tomcat.html">
             
                 <a href="tomcat.html">
             
@@ -1140,7 +1127,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.73" data-path="spring-integration.html">
+        <li class="chapter " data-level="1.72" data-path="spring-integration.html">
             
                 <a href="spring-integration.html">
             
@@ -1153,7 +1140,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.74" data-path="cdi-integration.html">
+        <li class="chapter " data-level="1.73" data-path="cdi-integration.html">
             
                 <a href="cdi-integration.html">
             
@@ -1166,7 +1153,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.75" data-path="intercepting-operations.html">
+        <li class="chapter " data-level="1.74" data-path="intercepting-operations.html">
             
                 <a href="intercepting-operations.html">
             
@@ -1179,7 +1166,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.76" data-path="data-tools.html">
+        <li class="chapter " data-level="1.75" data-path="data-tools.html">
             
                 <a href="data-tools.html">
             
@@ -1192,7 +1179,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.77" data-path="activation-tools.html">
+        <li class="chapter " data-level="1.76" data-path="activation-tools.html">
             
                 <a href="activation-tools.html">
             
@@ -1205,7 +1192,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.78" data-path="maven-plugin.html">
+        <li class="chapter " data-level="1.77" data-path="maven-plugin.html">
             
                 <a href="maven-plugin.html">
             
@@ -1218,7 +1205,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.79" data-path="unit-testing.html">
+        <li class="chapter " data-level="1.78" data-path="unit-testing.html">
             
                 <a href="unit-testing.html">
             
@@ -1231,7 +1218,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.80" data-path="perf-tuning.html">
+        <li class="chapter " data-level="1.79" data-path="perf-tuning.html">
             
                 <a href="perf-tuning.html">
             
@@ -1244,7 +1231,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.81" data-path="perf-tools.html">
+        <li class="chapter " data-level="1.80" data-path="perf-tools.html">
             
                 <a href="perf-tools.html">
             
@@ -1257,7 +1244,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.82" data-path="configuration-index.html">
+        <li class="chapter active" data-level="1.81" data-path="configuration-index.html">
             
                 <a href="configuration-index.html">
             
@@ -1270,7 +1257,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.83" data-path="restart-sequence.html">
+        <li class="chapter " data-level="1.82" data-path="restart-sequence.html">
             
                 <a href="restart-sequence.html">
             
@@ -1367,6 +1354,31 @@ trigger a reload of <code>broker.xml</code> and all its included files.</li>
 </code></pre><p>You can also change the prefix through the <code>broker.xml</code> by setting:</p>
 <pre><code>&lt;system-property-prefix&gt;yourprefix&lt;/system-property-prefix&gt;
 </code></pre><p>This is to help you customize artemis on embedded systems.</p>
+<h3 id="broker-properties">Broker properties</h3>
+<p>Broker properties extends the use of properties to allow updates and additions to the broker configuration after
+any xml has been parsed. In the absence of any broker.xml, the hard coded defaults can be modified.
+Internally, any xml configuration is applied to a java bean style configuration object. Typically, there are
+setters for each of the xml attributes. However, for properties, the naming convention changes from &apos;a-b&apos; to &apos;aB&apos; to
+reflect the camelCase java naming convention.</p>
+<p>Collections need some special treatment to allow additions and reference. We utilise the name attribute of configuration
+entities to find existing entries and when populating new entities, we set the name to match the requested key.</p>
+<p>For example, a properties file containing:</p>
+<pre><code>securityEnabled=false
+acceptorConfigurations.tcp.factoryClassName=org.apache.activemq.artemis.core.remoting.impl.netty.NettyAcceptorFactory
+acceptorConfigurations.tcp.params.HOST=localhost
+acceptorConfigurations.tcp.params.PORT=61616
+</code></pre><p>would:
+1) disable RBAC security checks
+2) add or modify an acceptor named &quot;tcp&quot; that will use Netty
+3) set the acceptor named &quot;tcp&quot; &apos;HOST&apos; parameter to localhost
+4) set the acceptor named &quot;tcp&quot; &apos;PORT&apos; parameter to 61616</p>
+<p>The configuration properties are low level, lower level than xml, however it is very powerful; any accessible attribute of the
+internal <code>org.apache.activemq.artemis.core.config.impl.ConfigurationImpl</code> objects can be modified.</p>
+<p>With great power one must take great care!</p>
+<p>The <code>artemis run</code> command script supports <code>--properties &lt;properties file url&gt;</code>, where a properties file can be configured.</p>
+<p><em>Note</em>: one shortcoming of this method of configuration is that any property that does not match is ignored with no fanfare.
+Enable debug logging for <code>org.apache.activemq.artemis.core.config.impl.ConfigurationImpl</code> to get more insight.</p>
+<p>There are a growing number of examples of what can be explicitly configured in this way in the <a href="https://github.com/apache/activemq-artemis/blob/065bfe14f532858f2c2a20b0afb1a226b08ce013/artemis-server/src/test/java/org/apache/activemq/artemis/core/config/impl/ConfigurationImplTest.java#L675" target="_blank">unit test</a>.</p>
 <h2 id="the-core-configuration">The core configuration</h2>
 <p>This describes the root of the XML configuration. You will see here also multiple sub-types listed.
 For example on the main config you will have bridges and at the <a href="#bridge-type">list of bridge</a> type we will describe the properties for that configuration.</p>
@@ -2876,7 +2888,7 @@ will actually be used when the broker is running.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Configuration Reference","level":"1.82","depth":1,"next":{"title":"Restart Sequence","level":"1.83","depth":1,"path":"restart-sequence.md","ref":"restart-sequence.md","articles":[]},"previous":{"title":"Performance Tools","level":"1.81","depth":1,"path":"perf-tools.md","ref":"perf-tools.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.25.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"configuration-index.md","mtime":"2022-09-08T21:39:40.158Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-09-08T21:44:41.385Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Configuration Reference","level":"1.81","depth":1,"next":{"title":"Restart Sequence","level":"1.82","depth":1,"path":"restart-sequence.md","ref":"restart-sequence.md","articles":[]},"previous":{"title":"Performance Tools","level":"1.80","depth":1,"path":"perf-tools.md","ref":"perf-tools.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.26.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"configuration-index.md","mtime":"2022-09-28T13:55:44.661Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-09-28T13:57:02.517Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
