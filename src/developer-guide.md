@@ -15,7 +15,6 @@ The following documents might be interesting
 *   [Release Guide](release-guide)
 *   [Design Documents](design-documents)
 *   [Changes in 4.0](New Features/changes-in-40)
-*   [Apache ActiveMQ Board Reports](apache-activemq-board-reports)
 *   [Maven SNAPSHOT Repository in your POM](maven-snapshot-repository-in-your-pom)
 
 ### Code walkthrough
