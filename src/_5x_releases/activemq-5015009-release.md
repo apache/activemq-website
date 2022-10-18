@@ -95,4 +95,4 @@ For a more detailed view of new features and bug fixes, see the [release notes]
 
 > This release affects applications using ObjectMessages. Please refer to [objectmessage](objectmessage) and jira-issue [AMQ-6013](https://issues.apache.org/jira/browse/AMQ-6013) for more information.
 
-Also see the previous [ActiveMQ 5.15.0 Release](activemq-5150-release)
+Also see the previous [ActiveMQ 5.15.8 Release](activemq-5158-release)
