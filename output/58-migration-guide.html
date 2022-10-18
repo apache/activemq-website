@@ -99,20 +99,49 @@
 <ol>
   <li>New modules may effect your maven pom dependencies<br />
 <code class="language-plaintext highlighter-rouge">activemq-core</code> has been replaced with <code class="language-plaintext highlighter-rouge">activemq-client</code> and <code class="language-plaintext highlighter-rouge">activemq-broker</code>. The various message stores have their own activemq-xx-store module. The uber module <code class="language-plaintext highlighter-rouge">activemq-all</code> remains.</li>
-  <li>
-    <p>Changed JMX Mbean ObjectNames will effect scripts or tools that directly reference Mbean names<br />
+  <li>Changed JMX Mbean ObjectNames will effect scripts or tools that directly reference Mbean names<br />
 All mbeans now share the type=Broker attribute, which gives them containment. In this way, consumers hang off of destinations, which hang off the broker.<br />
-The different Mbean types are identified by the presence of specific identifiers in their ObjectNames. The mapping from old to new ObjectName is as follows:</p>
+The different Mbean types are identified by the presence of specific identifiers in their ObjectNames. The mapping from old to new ObjectName is as follows:</li>
+</ol>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Type|Old Name|New Name
----|---|---
-Broker|Type=Broker|type=Broker
-Destination|Type=Queue\|Topic,Destination=&lt;destination identifier&gt;|type=Broker,destinationType=Queue\|Topic,destinationName=&lt;destination identifier&gt;
-Connector|Type=Connector|type=Broker,connector=clientConnectors
-NetworkConnector|Type=NetworkConnector|type=Broker,connector=networkConnectors
-Connection|Type=Connection|type=Broker,connector=*,connectionViewType=remoteAddress\|clientId
-</code></pre></div>    </div>
-  </li>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Old Name</th>
+      <th>New Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Broker</td>
+      <td>Type=Broker</td>
+      <td>type=Broker</td>
+    </tr>
+    <tr>
+      <td>Destination</td>
+      <td>Type=Queue|Topic,Destination=<destination identifier=""></destination></td>
+      <td>type=Broker,destinationType=Queue|Topic,destinationName=<destination identifier=""></destination></td>
+    </tr>
+    <tr>
+      <td>Connector</td>
+      <td>Type=Connector</td>
+      <td>type=Broker,connector=clientConnectors</td>
+    </tr>
+    <tr>
+      <td>NetworkConnector</td>
+      <td>Type=NetworkConnector</td>
+      <td>type=Broker,connector=networkConnectors</td>
+    </tr>
+    <tr>
+      <td>Connection</td>
+      <td>Type=Connection</td>
+      <td>type=Broker,connector=*,connectionViewType=remoteAddress|clientId</td>
+    </tr>
+  </tbody>
+</table>
+
+<ol>
   <li>OSGi integration has changed. The full details are at <a href="osgi-integration.html">OSGi Integration</a>. In summary:
     <ol>
       <li>There is a single uber OSGI bundle</li>
