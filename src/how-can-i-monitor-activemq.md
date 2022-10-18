@@ -32,6 +32,7 @@ In ActiveMQ 4.x you can monitor the broker to see what destinations are being us
 *   [iTKO LISA Test](http://www.itko.com/products/jms.jsp)
 *   [Geronimo Administration Console](https://cwiki.apache.org/GMOxDOC11/geronimo-administration-console.html#GeronimoAdministrationConsole-JMSServer) (JMS Resources)
 *   [Media Driver Integrated Console](https://mediadriver.com/software/) can manage and monitor ActiveMQ, IBM MQ and Tibco EMS
+*   [New Relic ActiveMQ Integration](https://newrelic.com/instant-observability/activemq) Get real-time Apache ActiveMQ performance metrics with New Relic APM.
 
 ### See Also
 
