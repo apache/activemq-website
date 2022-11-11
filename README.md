@@ -49,7 +49,7 @@ If for some reason you need to clear the metadata/cache used to support the buil
 There is a `./clean.sh` helper script provided that does the above.
 
 Note there is also a `./serve_subset.sh` helper script. This uses additional configuration from `_config_subset_excludes.yml` to omit building
-older release content that doesnt typically change, significantly improving responsiveness while working on additions not affecting those areas.
+larger content like javadocs and older release content that doesnt typically change, significantly improving responsiveness while working on additions not affecting those areas.
 It works best when starting without existing full _site output, which can be cleaned out as noted above.
 
 Contributing to the site
