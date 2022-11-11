@@ -12,13 +12,13 @@ The documentation is available in several formats, click on the relevant version
 *   [EPUB](latest/book.epub)
 *   [MOBI](latest/book.mobi)
 
-#### Hacking Guide
-
-*   [HTML](./hacking-guide)
-*   [PDF](./hacking-guide/book.pdf)
+The user manuals for earlier versions are also available on the [previous docs](previous_docs) page.
 
 #### API
 
 *   [HTML](javadocs/javadoc-latest)
 
-#### [Previous Versions](previous_docs)
+#### Hacking Guide
+
+*   [HTML](./hacking-guide)
+*   [PDF](./hacking-guide/book.pdf)
