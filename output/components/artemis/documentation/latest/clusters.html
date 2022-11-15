@@ -3,11 +3,10 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <title>Clusters · ActiveMQ Artemis Documentation</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="generator" content="HonKit 4.0.4">
         
         
         
@@ -17,7 +16,7 @@
     
             
                 
-                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                <link rel="stylesheet" href="gitbook/@honkit/honkit-plugin-highlight/website.css">
                 
             
                 
@@ -66,7 +65,7 @@
     </head>
     <body>
         
-<div class="book">
+<div class="book honkit-cloak">
     <div class="book-summary">
         
             
@@ -1276,8 +1275,8 @@
     <li class="divider"></li>
 
     <li>
-        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
-            Published with GitBook
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            Published with HonKit
         </a>
     </li>
 </ul>
@@ -1475,56 +1474,38 @@ one set can be specified in a broadcast group configuration. Don&apos;t mix
 them!</p>
 </blockquote>
 <p>The following is an example of a JGroups file</p>
-<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">config</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;urn:org:jgroups&quot;</span>
-        <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-        <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;urn:org:jgroups http://www.jgroups.org/schema/JGroups-3.0.xsd&quot;</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">TCP</span> <span class="hljs-attr">loopback</span>=<span class="hljs-string">&quot;true&quot;</span>
-      <span class="hljs-attr">recv_buf_size</span>=<span class="hljs-string">&quot;20000000&quot;</span>
-      <span class="hljs-attr">send_buf_size</span>=<span class="hljs-string">&quot;640000&quot;</span>
-      <span class="hljs-attr">discard_incompatible_packets</span>=<span class="hljs-string">&quot;true&quot;</span>
-      <span class="hljs-attr">max_bundle_size</span>=<span class="hljs-string">&quot;64000&quot;</span>
-      <span class="hljs-attr">max_bundle_timeout</span>=<span class="hljs-string">&quot;30&quot;</span>
-      <span class="hljs-attr">enable_bundling</span>=<span class="hljs-string">&quot;true&quot;</span>
-      <span class="hljs-attr">use_send_queues</span>=<span class="hljs-string">&quot;false&quot;</span>
-      <span class="hljs-attr">sock_conn_timeout</span>=<span class="hljs-string">&quot;300&quot;</span>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">config</span> <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+        <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;urn:org:jgroups&quot;</span>
+        <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;urn:org:jgroups http://www.jgroups.org/schema/jgroups.xsd&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">TCP</span> <span class="hljs-attr">bind_addr</span>=<span class="hljs-string">&quot;${jgroups.bind_addr:site_local}&quot;</span>
+       <span class="hljs-attr">bind_port</span>=<span class="hljs-string">&quot;${jgroups.bind_port:7800}&quot;</span>
+       <span class="hljs-attr">external_addr</span>=<span class="hljs-string">&quot;${jgroups.external_addr}&quot;</span>
+       <span class="hljs-attr">external_port</span>=<span class="hljs-string">&quot;${jgroups.external_port}&quot;</span>
+       <span class="hljs-attr">thread_pool.min_threads</span>=<span class="hljs-string">&quot;0&quot;</span>
+       <span class="hljs-attr">thread_pool.max_threads</span>=<span class="hljs-string">&quot;200&quot;</span>
+       <span class="hljs-attr">thread_pool.keep_alive_time</span>=<span class="hljs-string">&quot;30000&quot;</span>/&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">RED</span>/&gt;</span>
 
-      <span class="hljs-attr">thread_pool.enabled</span>=<span class="hljs-string">&quot;true&quot;</span>
-      <span class="hljs-attr">thread_pool.min_threads</span>=<span class="hljs-string">&quot;1&quot;</span>
-      <span class="hljs-attr">thread_pool.max_threads</span>=<span class="hljs-string">&quot;10&quot;</span>
-      <span class="hljs-attr">thread_pool.keep_alive_time</span>=<span class="hljs-string">&quot;5000&quot;</span>
-      <span class="hljs-attr">thread_pool.queue_enabled</span>=<span class="hljs-string">&quot;false&quot;</span>
-      <span class="hljs-attr">thread_pool.queue_max_size</span>=<span class="hljs-string">&quot;100&quot;</span>
-      <span class="hljs-attr">thread_pool.rejection_policy</span>=<span class="hljs-string">&quot;run&quot;</span>
-
-      <span class="hljs-attr">oob_thread_pool.enabled</span>=<span class="hljs-string">&quot;true&quot;</span>
-      <span class="hljs-attr">oob_thread_pool.min_threads</span>=<span class="hljs-string">&quot;1&quot;</span>
-      <span class="hljs-attr">oob_thread_pool.max_threads</span>=<span class="hljs-string">&quot;8&quot;</span>
-      <span class="hljs-attr">oob_thread_pool.keep_alive_time</span>=<span class="hljs-string">&quot;5000&quot;</span>
-      <span class="hljs-attr">oob_thread_pool.queue_enabled</span>=<span class="hljs-string">&quot;false&quot;</span>
-      <span class="hljs-attr">oob_thread_pool.queue_max_size</span>=<span class="hljs-string">&quot;100&quot;</span>
-      <span class="hljs-attr">oob_thread_pool.rejection_policy</span>=<span class="hljs-string">&quot;run&quot;</span>/&gt;</span>
-
-   <span class="hljs-tag">&lt;<span class="hljs-name">FILE_PING</span> <span class="hljs-attr">location</span>=<span class="hljs-string">&quot;../file.ping.dir&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">MERGE2</span> <span class="hljs-attr">max_interval</span>=<span class="hljs-string">&quot;30000&quot;</span>
-      <span class="hljs-attr">min_interval</span>=<span class="hljs-string">&quot;10000&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">FD_SOCK</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">FD</span> <span class="hljs-attr">timeout</span>=<span class="hljs-string">&quot;10000&quot;</span> <span class="hljs-attr">max_tries</span>=<span class="hljs-string">&quot;5&quot;</span> /&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">VERIFY_SUSPECT</span> <span class="hljs-attr">timeout</span>=<span class="hljs-string">&quot;1500&quot;</span>  /&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">BARRIER</span> /&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">pbcast.NAKACK</span>
-      <span class="hljs-attr">use_mcast_xmit</span>=<span class="hljs-string">&quot;false&quot;</span>
-      <span class="hljs-attr">retransmit_timeout</span>=<span class="hljs-string">&quot;300,600,1200,2400,4800&quot;</span>
-      <span class="hljs-attr">discard_delivered_msgs</span>=<span class="hljs-string">&quot;true&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">UNICAST</span> <span class="hljs-attr">timeout</span>=<span class="hljs-string">&quot;300,600,1200&quot;</span> /&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">pbcast.STABLE</span> <span class="hljs-attr">stability_delay</span>=<span class="hljs-string">&quot;1000&quot;</span> <span class="hljs-attr">desired_avg_gossip</span>=<span class="hljs-string">&quot;50000&quot;</span>
-      <span class="hljs-attr">max_bytes</span>=<span class="hljs-string">&quot;400000&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">pbcast.GMS</span> <span class="hljs-attr">print_local_addr</span>=<span class="hljs-string">&quot;true&quot;</span> <span class="hljs-attr">join_timeout</span>=<span class="hljs-string">&quot;3000&quot;</span>
-      <span class="hljs-attr">view_bundling</span>=<span class="hljs-string">&quot;true&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">FC</span> <span class="hljs-attr">max_credits</span>=<span class="hljs-string">&quot;2000000&quot;</span>
-      <span class="hljs-attr">min_threshold</span>=<span class="hljs-string">&quot;0.10&quot;</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">FRAG2</span> <span class="hljs-attr">frag_size</span>=<span class="hljs-string">&quot;60000&quot;</span>  /&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">pbcast.STATE_TRANSFER</span>/&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">pbcast.FLUSH</span> <span class="hljs-attr">timeout</span>=<span class="hljs-string">&quot;0&quot;</span>/&gt;</span>
+  <span class="hljs-comment">&lt;!-- a location that can be found by both server&apos;s running --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">FILE_PING</span> <span class="hljs-attr">location</span>=<span class="hljs-string">&quot;../file.ping.dir&quot;</span>/&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">MERGE3</span>  <span class="hljs-attr">min_interval</span>=<span class="hljs-string">&quot;10000&quot;</span>
+           <span class="hljs-attr">max_interval</span>=<span class="hljs-string">&quot;30000&quot;</span>/&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">FD_SOCK2</span>/&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">FD_ALL3</span> <span class="hljs-attr">timeout</span>=<span class="hljs-string">&quot;40000&quot;</span> <span class="hljs-attr">interval</span>=<span class="hljs-string">&quot;5000&quot;</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">VERIFY_SUSPECT2</span> <span class="hljs-attr">timeout</span>=<span class="hljs-string">&quot;1500&quot;</span>  /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">BARRIER</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">pbcast.NAKACK2</span> <span class="hljs-attr">use_mcast_xmit</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">UNICAST3</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">pbcast.STABLE</span> <span class="hljs-attr">desired_avg_gossip</span>=<span class="hljs-string">&quot;50000&quot;</span>
+                 <span class="hljs-attr">max_bytes</span>=<span class="hljs-string">&quot;4M&quot;</span>/&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">pbcast.GMS</span> <span class="hljs-attr">print_local_addr</span>=<span class="hljs-string">&quot;true&quot;</span> <span class="hljs-attr">join_timeout</span>=<span class="hljs-string">&quot;2000&quot;</span>/&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">UFC</span> <span class="hljs-attr">max_credits</span>=<span class="hljs-string">&quot;2M&quot;</span>
+       <span class="hljs-attr">min_threshold</span>=<span class="hljs-string">&quot;0.4&quot;</span>/&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">MFC</span> <span class="hljs-attr">max_credits</span>=<span class="hljs-string">&quot;2M&quot;</span>
+       <span class="hljs-attr">min_threshold</span>=<span class="hljs-string">&quot;0.4&quot;</span>/&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">FRAG2</span> <span class="hljs-attr">frag_size</span>=<span class="hljs-string">&quot;60K&quot;</span>  /&gt;</span>
+  <span class="hljs-comment">&lt;!--RSVP resend_interval=&quot;2000&quot; timeout=&quot;10000&quot;/--&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">pbcast.STATE_TRANSFER</span>/&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">config</span>&gt;</span>
 </code></pre>
 <p>As it shows, the file content defines a jgroups protocol stacks. If you
@@ -2220,12 +2201,56 @@ lost.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Clusters","level":"1.60","depth":1,"next":{"title":"Federation","level":"1.61","depth":1,"path":"federation.md","ref":"federation.md","articles":[{"title":"Address Federation","level":"1.61.1","depth":2,"path":"federation-address.md","ref":"federation-address.md","articles":[]},{"title":"Queue Federation","level":"1.61.2","depth":2,"path":"federation-queue.md","ref":"federation-queue.md","articles":[]}]},"previous":{"title":"Duplicate Message Detection","level":"1.59","depth":1,"path":"duplicate-detection.md","ref":"duplicate-detection.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.26.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"clusters.md","mtime":"2022-09-28T13:55:44.659Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-09-28T13:57:02.517Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Clusters","level":"1.60","depth":1,"next":{"title":"Federation","level":"1.61","depth":1,"path":"federation.md","ref":"federation.md","articles":[{"title":"Address Federation","level":"1.61.1","depth":2,"path":"federation-address.md","ref":"federation-address.md","articles":[]},{"title":"Queue Federation","level":"1.61.2","depth":2,"path":"federation-queue.md","ref":"federation-queue.md","articles":[]}]},"previous":{"title":"Duplicate Message Detection","level":"1.59","depth":1,"path":"duplicate-detection.md","ref":"duplicate-detection.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.27.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"clusters.md","mtime":"2022-11-15T03:26:49.403Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2022-11-15T03:26:49.822Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
 
         
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
     <script src="gitbook/gitbook.js"></script>
     <script src="gitbook/theme.js"></script>
     
@@ -2243,10 +2268,6 @@ lost.</p>
     
         
         <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
-        
-    
-        
-        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
         
     
         

@@ -3,11 +3,10 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <title>Configuration Reload · ActiveMQ Artemis Documentation</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="generator" content="HonKit 4.0.4">
         
         
         
@@ -17,7 +16,7 @@
     
             
                 
-                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                <link rel="stylesheet" href="gitbook/@honkit/honkit-plugin-highlight/website.css">
                 
             
                 
@@ -66,7 +65,7 @@
     </head>
     <body>
         
-<div class="book">
+<div class="book honkit-cloak">
     <div class="book-summary">
         
             
@@ -1276,8 +1275,8 @@
     <li class="divider"></li>
 
     <li>
-        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
-            Published with GitBook
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            Published with HonKit
         </a>
     </li>
 </ul>
@@ -1319,6 +1318,9 @@
 <p>The system will perform a periodic check on the configuration files, configured
 by <code>configuration-file-refresh-period</code>, with the default at <code>5000</code>, in
 milliseconds. These checks can be disabled by specifying <code>-1</code>.</p>
+<p>Note that the Log4J2 configuration has its own reload mechanism, configured via its own
+log4j2.properties file. See <a href="logging.html#configuration-reload">Logging configuration reload</a>
+for more detail.</p>
 <p>Once the configuration file is changed (broker.xml) the following modules will
 be reloaded automatically:</p>
 <ul>
@@ -1330,31 +1332,37 @@ be reloaded automatically:</p>
 </ul>
 <p>If using <a href="configuration-index.html#modularising-broker.xml">modulised broker.xml</a> ensure you also read <a href="configuration-index.html#reloading-modular-configuration-files">Reloading modular configuration files</a></p>
 <p><strong>Note:</strong></p>
-<p>Deletion of Address&apos;s Queue&apos;s and diverts not auto created is controlled by Address Settings</p>
+<p>Addresses, queues and diverts can be removed automatically when removed from
+the configuration:</p>
 <ul>
-<li><p>config-delete-addresses</p>
+<li><p><code>config-delete-addresses</code></p>
 <ul>
-<li>OFF (DEFAULT) - will not remove upon config reload.</li>
-<li>FORCE - will remove the address and its queues upon config reload, even if messages remains, losing the messages in the address &amp; queues.</li>
+<li><code>OFF</code> (default) - will not remove the address upon config reload.
+Messages left in the attached queues will be left intact.</li>
+<li><code>FORCE</code> - will remove the address and its queues upon config reload.
+Messages left in the attached queues will be <strong>lost</strong>.</li>
 </ul>
 </li>
-<li><p>config-delete-queues</p>
+<li><p><code>config-delete-queues</code></p>
 <ul>
-<li>OFF (DEFAULT) - will not remove upon config reload.</li>
-<li>FORCE - will remove the queue upon config reload, even if messages remains, losing the messages in the queue.</li>
+<li><code>OFF</code> (default) - will not remove the queues upon config reload.
+Messages left in the queues will be left intact.</li>
+<li><code>FORCE</code> - will remove the queues.
+Messages left in the queues will be <strong>lost</strong>.</li>
 </ul>
 </li>
-<li><p>config-delete-diverts</p>
+<li><p><code>config-delete-diverts</code></p>
 <ul>
-<li>OFF (DEFAULT) - will not remove upon config reload.</li>
-<li>FORCE - will remove the queue upon config reload, even if messages remains, losing the messages in the queue.</li>
+<li><code>OFF</code> (default) - will not remove the diverts upon config reload.</li>
+<li><code>FORCE</code> - will remove the diverts upon config reload.</li>
 </ul>
 </li>
 </ul>
-<p>By default both settings are OFF as such address &amp; queues won&apos;t be removed upon
-reload, given the risk of losing messages.</p>
-<p>When OFF You may execute explicit CLI or Management operations to remove
-address &amp; queues.</p>
+<p>By default, all settings are <code>OFF</code>, so that addresses, queues and diverts
+aren&apos;t removed upon configuration reload, reducing the risk of losing
+messages.</p>
+<p>Addresses, queues and diverts no longer present in the configuration file can
+be removed manually via the web interface, CLI, or JMX management operations.</p>
 <h2 id="reloadable-parameters">Reloadable Parameters</h2>
 <p>The broker configuration file has 2 main parts, <code>&lt;core&gt;</code> and <code>&lt;jms&gt;</code>. Some of
 the parameters in the 2 parts are monitored and, if modified, reloaded into the
@@ -1364,7 +1372,7 @@ use <code>&lt;core&gt;</code> configuration entities.</p>
 <blockquote>
 <p><strong>Note:</strong></p>
 <p>Most parameters reloaded take effect immediately after reloading. However
-there are some that won&#x2019;t take any effect unless you restarting the broker.
+there are some that won’t take any effect unless you restarting the broker.
 Such parameters are specifically indicated in the following text.</p>
 </blockquote>
 <h3 id="core"><code>&lt;core&gt;</code></h3>
@@ -1377,16 +1385,16 @@ Such parameters are specifically indicated in the following text.</p>
 <ul>
 <li><p>The <code>match</code> attribute</p>
 <p>This attribute defines the address for which the security-setting is
-defined. It can take wildcards such as &#x2018;#&#x2019; and &#x2018;*&#x2019;.</p>
+defined. It can take wildcards such as ‘#’ and ‘*’.</p>
 </li>
 <li><p>The <code>&lt;permission&gt;</code> sub-elements</p>
 </li>
 </ul>
 <p>Each <code>&lt;security-setting&gt;</code> can have a list of <code>&lt;permission&gt;</code> elements, each
 of which defines a specific permission-roles mapping.  Each permission has 2
-attributes &#x2018;type&#x2019; and &#x2018;roles&#x2019;. The &#x2018;type&#x2019; attribute defines the type of
-operation allowed, the &#x2018;roles&#x2019; defines which roles are allowed to perform such
-operation. Refer to the user&#x2019;s manual for a list of operations that can be
+attributes ‘type’ and ‘roles’. The ‘type’ attribute defines the type of
+operation allowed, the ‘roles’ defines which roles are allowed to perform such
+operation. Refer to the user’s manual for a list of operations that can be
 defined.</p>
 <blockquote>
 <p><strong>Note:</strong></p>
@@ -1397,7 +1405,7 @@ security-sensitive operation.</p>
 </blockquote>
 <p>Below lists the effects of adding, deleting and updating of an
 element/attribute within the <code>&lt;security-settings&gt;</code> element, whether a change
-can be done or can&#x2019;t be done.</p>
+can be done or can’t be done.</p>
 <table>
 <thead>
 <tr>
@@ -1442,7 +1450,7 @@ can be done or can&#x2019;t be done.</p>
 <td>attribute <code>roles</code></td>
 <td>N/A*</td>
 <td>X*</td>
-<td>Changing the &#x2018;roles&#x2019; value means updating the permission&#x2019;s allowed roles to the running broker</td>
+<td>Changing the ‘roles’ value means updating the permission’s allowed roles to the running broker</td>
 </tr>
 </tbody>
 </table>
@@ -1460,7 +1468,7 @@ can be done or can&#x2019;t be done.</p>
 broker. It contains a list of <code>&lt;address-setting&gt;</code> elements.</p>
 <ul>
 <li><p><code>&lt;address-setting&gt;</code> element</p>
-<p>Each address-setting element has a &#x2018;match&#x2019; attribute that defines an address
+<p>Each address-setting element has a ‘match’ attribute that defines an address
 pattern for which this address-setting is defined. It also has a list of
 sub-elements used to define the properties of a matching address.</p>
 <blockquote>
@@ -1474,7 +1482,7 @@ created is controlled by parameter <code>config-delete-addresses</code> and
 </ul>
 <p>Below lists the effects of adding, deleting and updating of an
 element/attribute within the address-settings element, whether a change can be
-done or can&#x2019;t be done.</p>
+done or can’t be done.</p>
 <table>
 <thead>
 <tr>
@@ -1674,7 +1682,7 @@ done or can&#x2019;t be done.</p>
 </tbody>
 </table>
 <h4 id="diverts"><code>&lt;diverts&gt;</code></h4>
-<p>All <code>&lt;divert&gt;</code> elements will be reloaded. Each <code>&lt;divert&gt;</code> element has a &#x2018;name&#x2019;
+<p>All <code>&lt;divert&gt;</code> elements will be reloaded. Each <code>&lt;divert&gt;</code> element has a ‘name’
 and several sub-elements that defines the properties of a divert.</p>
 <blockquote>
 <p><strong>Note:</strong></p>
@@ -1682,7 +1690,7 @@ and several sub-elements that defines the properties of a divert.</p>
 </blockquote>
 <p>Below lists the effects of adding, deleting and updating of an
 element/attribute within the diverts element, whether a change can be done or
-can&#x2019;t be done.</p>
+can’t be done.</p>
 <table>
 <thead>
 <tr>
@@ -1771,7 +1779,7 @@ is controlled by parameter <code>config-delete-addresses</code> and
 </blockquote>
 <p>Below lists the effects of adding, deleting and updating of an
 element/attribute within the <code>&lt;addresses&gt;</code> element, whether a change can be
-done or can&#x2019;t be done.</p>
+done or can’t be done.</p>
 <table>
 <thead>
 <tr>
@@ -1840,7 +1848,7 @@ is controlled by parameter <code>config-delete-addresses</code> and
 </blockquote>
 <p>Below lists the effects of adding, deleting and updating of an
 element/attribute within the <code>&lt;queue&gt;</code> element, and whether a change can be
-done or can&#x2019;t be done.</p>
+done or can’t be done.</p>
 <table>
 <thead>
 <tr>
@@ -2012,12 +2020,56 @@ done or can&#x2019;t be done.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Configuration Reload","level":"1.26","depth":1,"next":{"title":"Detecting Dead Connections","level":"1.27","depth":1,"path":"connection-ttl.md","ref":"connection-ttl.md","articles":[]},"previous":{"title":"Configuring Transports","level":"1.25","depth":1,"path":"configuring-transports.md","ref":"configuring-transports.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.26.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"config-reload.md","mtime":"2022-09-28T13:55:44.660Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-09-28T13:57:02.517Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Configuration Reload","level":"1.26","depth":1,"next":{"title":"Detecting Dead Connections","level":"1.27","depth":1,"path":"connection-ttl.md","ref":"connection-ttl.md","articles":[]},"previous":{"title":"Configuring Transports","level":"1.25","depth":1,"path":"configuring-transports.md","ref":"configuring-transports.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.27.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"config-reload.md","mtime":"2022-11-15T03:26:49.403Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2022-11-15T03:26:49.822Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
 
         
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
     <script src="gitbook/gitbook.js"></script>
     <script src="gitbook/theme.js"></script>
     
@@ -2035,10 +2087,6 @@ done or can&#x2019;t be done.</p>
     
         
         <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
-        
-    
-        
-        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
         
     
         
