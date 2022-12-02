@@ -3,10 +3,11 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <title>Performance Tools · ActiveMQ Artemis Documentation</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="HonKit 4.0.4">
+        <meta name="generator" content="GitBook 3.2.3">
         
         
         
@@ -16,7 +17,7 @@
     
             
                 
-                <link rel="stylesheet" href="gitbook/@honkit/honkit-plugin-highlight/website.css">
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
                 
             
                 
@@ -65,7 +66,7 @@
     </head>
     <body>
         
-<div class="book honkit-cloak">
+<div class="book">
     <div class="book-summary">
         
             
@@ -1275,8 +1276,8 @@
     <li class="divider"></li>
 
     <li>
-        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
-            Published with HonKit
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
         </a>
     </li>
 </ul>
@@ -1331,7 +1332,7 @@ but can be used as building blocks to produce one. They are also quite useful on
 <li>running producers and consumers on different machines </li>
 <li>...</li>
 </ul>
-<p>The examples below (running on a <code>64 bit Linux 5.14 with Intel® Core™ i7-9850H CPU @ 2.60GHz × 12 with Turbo Boost disabled, 32 GB of RAM and SSD</code>) 
+<p>The examples below (running on a <code>64 bit Linux 5.14 with Intel&#xAE; Core&#x2122; i7-9850H CPU @ 2.60GHz &#xD7; 12 with Turbo Boost disabled, 32 GB of RAM and SSD</code>) 
 show different use cases of increasing complexity. As they progress, some internal architectural details of the tool and the configuration options supported, are explored.</p>
 <blockquote>
 <p><strong>Note:</strong><br>The tools can run both from within the broker instance&apos;s folder or
@@ -1554,7 +1555,7 @@ to understand what&apos;s the source of the delay.<br>Let&apos;s show it with an
 </code></pre>
 <p>The whole <code>perf client</code> all-out throughput command would be:</p>
 <pre><code class="lang-bash"><span class="hljs-comment"># same as in the previous cases</span>
-./artemis perf client --warmup 20 --max-pending 100 --s
+./artemis perf client --warmup 20 --max-pending 100 -<span class="hljs-_">-s</span>
 how-latency --url tcp://localhost:61616?confirmationWindowSize=20000 --consumer-url tcp://localhost:61616 \
 --producers 3 --consumers 2 --num-destinations 10 --durable --persistent topic://DURABLE_TOPIC 
 <span class="hljs-comment"># this last part above is new</span>
@@ -1569,7 +1570,7 @@ and subscriptions names (as required by the <a href="https://jakarta.ee/specific
 ClientID still requires users to specify Client ID prefixes with <code>--clientID &lt;Client ID prefix&gt;</code> and takes care to unsubscribe the consumers on test completion.</p>
 <p>The complete commands now looks like:</p>
 <pre><code class="lang-bash">./artemis perf client --warmup 20 --max-pending 100 --show-latency --url tcp://localhost:61616?confirmationWindowSize=20000 --consumer-url tcp://localhost:61616 \
---producers 3 --consumers 2 --num-destinations 10 --durable --persistent topic://DURABLE_TOPIC --clientID test_id
+--producers 3 --consumers 2 --num-destinations 10 --durable --persistent topic://DURABLE_TOPIC --clientID <span class="hljs-built_in">test</span>_id
 <span class="hljs-comment"># after few seconds</span>
 --- warmup <span class="hljs-literal">false</span> 
 --- sent:         74842 msg/sec 
@@ -1591,7 +1592,7 @@ ClientID still requires users to specify Client ID prefixes with <code>--clientI
 <p>Results shows that <code>tranfer time</code> isn&apos;t queuing up, meaning that subscribers are capable to keep-up with the producers: hence a reasonable
 rate to test could be ~80% of the perceived <code>sent</code> rate ie <code>--rate 60000</code>:</p>
 <pre><code class="lang-bash">./artemis perf client --warmup 20 --max-pending 100 --show-latency --url tcp://localhost:61616?confirmationWindowSize=20000 --consumer-url tcp://localhost:61616 \
---producers 3 --consumers 2 --num-destinations 10 --durable --persistent topic://DURABLE_TOPIC --clientID test_id \
+--producers 3 --consumers 2 --num-destinations 10 --durable --persistent topic://DURABLE_TOPIC --clientID <span class="hljs-built_in">test</span>_id \
 --rate 60000
 <span class="hljs-comment"># after many seconds while running</span>
 --- warmup <span class="hljs-literal">false</span> 
@@ -1611,7 +1612,7 @@ threads, adding </p>
 </code></pre>
 <p>By using two producers threads, the command now looks like:</p>
 <pre><code class="lang-bash">./artemis perf client --warmup 20 --max-pending 100 --show-latency --url tcp://localhost:61616?confirmationWindowSize=20000 --consumer-url tcp://localhost:61616 \
---producers 3 --consumers 2 --num-destinations 10 --durable --persistent topic://DURABLE_TOPIC --clientID test_id \
+--producers 3 --consumers 2 --num-destinations 10 --durable --persistent topic://DURABLE_TOPIC --clientID <span class="hljs-built_in">test</span>_id \
 --rate 60000 --threads 2
 <span class="hljs-comment"># after few seconds warming up....</span>
 --- warmup <span class="hljs-literal">false</span> 
@@ -1667,56 +1668,12 @@ threads, adding </p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Performance Tools","level":"1.80","depth":1,"next":{"title":"Configuration Reference","level":"1.81","depth":1,"path":"configuration-index.md","ref":"configuration-index.md","articles":[]},"previous":{"title":"Troubleshooting and Performance Tuning","level":"1.79","depth":1,"path":"perf-tuning.md","ref":"perf-tuning.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.27.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"perf-tools.md","mtime":"2022-11-15T03:26:49.415Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2022-11-15T03:26:49.822Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Performance Tools","level":"1.80","depth":1,"next":{"title":"Configuration Reference","level":"1.81","depth":1,"path":"configuration-index.md","ref":"configuration-index.md","articles":[]},"previous":{"title":"Troubleshooting and Performance Tuning","level":"1.79","depth":1,"path":"perf-tuning.md","ref":"perf-tuning.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.27.1","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"perf-tools.md","mtime":"2022-12-02T02:51:16.376Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-12-02T02:52:27.462Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
 
         
-    <noscript>
-        <style>
-            .honkit-cloak {
-                display: block !important;
-            }
-        </style>
-    </noscript>
-    <script>
-        // Restore sidebar state as critical path for prevent layout shift
-        function __init__getSidebarState(defaultValue){
-            var baseKey = "";
-            var key = baseKey + ":sidebar";
-            try {
-                var value = localStorage[key];
-                if (value === undefined) {
-                    return defaultValue;
-                }
-                var parsed = JSON.parse(value);
-                return parsed == null ? defaultValue : parsed;
-            } catch (e) {
-                return defaultValue;
-            }
-        }
-        function __init__restoreLastSidebarState() {
-            var isMobile = window.matchMedia("(max-width: 600px)").matches;
-            if (isMobile) {
-                // Init last state if not mobile
-                return;
-            }
-            var sidebarState = __init__getSidebarState(true);
-            var book = document.querySelector(".book");
-            // Show sidebar if it enabled
-            if (sidebarState && book) {
-                book.classList.add("without-animation", "with-summary");
-            }
-        }
-
-        try {
-            __init__restoreLastSidebarState();
-        } finally {
-            var book = document.querySelector(".book");
-            book.classList.remove("honkit-cloak");
-        }
-    </script>
     <script src="gitbook/gitbook.js"></script>
     <script src="gitbook/theme.js"></script>
     
@@ -1734,6 +1691,10 @@ threads, adding </p>
     
         
         <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
         
     
         
