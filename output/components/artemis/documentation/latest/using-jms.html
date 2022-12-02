@@ -3,10 +3,11 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <title>Using JMS · ActiveMQ Artemis Documentation</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="HonKit 4.0.4">
+        <meta name="generator" content="GitBook 3.2.3">
         
         
         
@@ -16,7 +17,7 @@
     
             
                 
-                <link rel="stylesheet" href="gitbook/@honkit/honkit-plugin-highlight/website.css">
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
                 
             
                 
@@ -65,7 +66,7 @@
     </head>
     <body>
         
-<div class="book honkit-cloak">
+<div class="book">
     <div class="book-summary">
         
             
@@ -1275,8 +1276,8 @@
     <li class="divider"></li>
 
     <li>
-        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
-            Published with HonKit
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
         </a>
     </li>
 </ul>
@@ -1368,8 +1369,8 @@ many other configuration parameters.</p>
 <p>Here&apos;s a simple example of the JNDI context environment for a client looking up
 a connection factory to access an <em>embedded</em> instance of Apache ActiveMQ
 Artemis:</p>
-<pre><code class="lang-properties"><span class="hljs-meta">java.naming.factory.initial</span>=<span class="hljs-string">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
-<span class="hljs-meta">connectionFactory.invmConnectionFactory</span>=<span class="hljs-string">vm://0</span>
+<pre><code class="lang-properties">java.naming.factory.initial=org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory
+connectionFactory.invmConnectionFactory=vm://0
 </code></pre>
 <p>In this instance we have created a connection factory that is bound to
 <code>invmConnectionFactory</code>, any entry with prefix <code>connectionFactory.</code> will create
@@ -1378,10 +1379,10 @@ a connection factory.</p>
 particular JVM. In that situation each server would typically have an InVM
 acceptor with a unique server-ID. A client using JMS and JNDI can account for
 this by specifying a connction factory for each server, like so:</p>
-<pre><code class="lang-properties"><span class="hljs-meta">java.naming.factory.initial</span>=<span class="hljs-string">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
-<span class="hljs-meta">connectionFactory.invmConnectionFactory0</span>=<span class="hljs-string">vm://0</span>
-<span class="hljs-meta">connectionFactory.invmConnectionFactory1</span>=<span class="hljs-string">vm://1</span>
-<span class="hljs-meta">connectionFactory.invmConnectionFactory2</span>=<span class="hljs-string">vm://2</span>
+<pre><code class="lang-properties">java.naming.factory.initial=org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory
+connectionFactory.invmConnectionFactory0=vm://0
+connectionFactory.invmConnectionFactory1=vm://1
+connectionFactory.invmConnectionFactory2=vm://2
 </code></pre>
 <p>Here is a list of all the supported URL schemes:</p>
 <ul>
@@ -1394,8 +1395,8 @@ this by specifying a connction factory for each server, like so:</p>
 commonly connect across a network a remote broker. Here&apos;s a simple example of a
 client configuring a connection factory to connect to a remote broker running
 on myhost:5445:</p>
-<pre><code class="lang-properties"><span class="hljs-meta">java.naming.factory.initial</span>=<span class="hljs-string">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
-<span class="hljs-meta">connectionFactory.ConnectionFactory</span>=<span class="hljs-string">tcp://myhost:5445</span>
+<pre><code class="lang-properties">java.naming.factory.initial=org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory
+connectionFactory.ConnectionFactory=tcp://myhost:5445
 </code></pre>
 <p>In the example above the client is using the <code>tcp</code> scheme for the provider URL.
 A client may also specify multiple comma-delimited host:port combinations in
@@ -1462,8 +1463,8 @@ just like with <code>udp</code>.</p>
 <p>The default type for the default connection factory is of type
 <code>javax.jms.ConnectionFactory</code>or <code>jakarta.jms.ConnectionFactory</code> depending on the
 client you&apos;re using.  This can be changed by setting the type like so</p>
-<pre><code class="lang-properties"><span class="hljs-meta">java.naming.factory.initial</span>=<span class="hljs-string">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
-<span class="hljs-meta">java.naming.provider.url</span>=<span class="hljs-string">tcp://localhost:5445?type=CF</span>
+<pre><code class="lang-properties">java.naming.factory.initial=org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory
+java.naming.provider.url=tcp://localhost:5445?type=CF
 </code></pre>
 <p>In this example it is still set to the default, below shows a list of types
 that can be set.</p>
@@ -1517,9 +1518,9 @@ example, if the server had a JMS queue configured like so:</p>
 </code></pre>
 <p>And if the client wanted to bind this queue to &quot;queues/OrderQueue&quot; then the
 JNDI properties would be configured like so:</p>
-<pre><code class="lang-properties"><span class="hljs-meta">java.naming.factory.initial</span>=<span class="hljs-string">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
-<span class="hljs-meta">java.naming.provider.url</span>=<span class="hljs-string">tcp://myhost:5445</span>
-<span class="hljs-meta">queue.queues/OrderQueue</span>=<span class="hljs-string">OrderQueue</span>
+<pre><code class="lang-properties">java.naming.factory.initial=org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory
+java.naming.provider.url=tcp://myhost:5445
+queue.queues/OrderQueue=OrderQueue
 </code></pre>
 <p>It is also possible to look-up JMS destinations which haven&apos;t been configured
 explicitly in the JNDI context environment. This is possible using
@@ -1716,56 +1717,12 @@ reduce the calls to the broker.  This should not be used if destinations
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Using JMS","level":"1.18","depth":1,"next":{"title":"The Client Classpath","level":"1.19","depth":1,"path":"client-classpath.md","ref":"client-classpath.md","articles":[{"title":"JMS","level":"1.19.1","depth":2,"path":"client-classpath-jms.md","ref":"client-classpath-jms.md","articles":[]},{"title":"Jakarta","level":"1.19.2","depth":2,"path":"client-classpath-jakarta.md","ref":"client-classpath-jakarta.md","articles":[]}]},"previous":{"title":"Mapping JMS Concepts to the Core API","level":"1.17","depth":1,"path":"jms-core-mapping.md","ref":"jms-core-mapping.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.27.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"using-jms.md","mtime":"2022-11-15T03:26:49.419Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2022-11-15T03:26:49.822Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Using JMS","level":"1.18","depth":1,"next":{"title":"The Client Classpath","level":"1.19","depth":1,"path":"client-classpath.md","ref":"client-classpath.md","articles":[{"title":"JMS","level":"1.19.1","depth":2,"path":"client-classpath-jms.md","ref":"client-classpath-jms.md","articles":[]},{"title":"Jakarta","level":"1.19.2","depth":2,"path":"client-classpath-jakarta.md","ref":"client-classpath-jakarta.md","articles":[]}]},"previous":{"title":"Mapping JMS Concepts to the Core API","level":"1.17","depth":1,"path":"jms-core-mapping.md","ref":"jms-core-mapping.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.27.1","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"using-jms.md","mtime":"2022-12-02T02:51:16.389Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-12-02T02:52:27.462Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
 
         
-    <noscript>
-        <style>
-            .honkit-cloak {
-                display: block !important;
-            }
-        </style>
-    </noscript>
-    <script>
-        // Restore sidebar state as critical path for prevent layout shift
-        function __init__getSidebarState(defaultValue){
-            var baseKey = "";
-            var key = baseKey + ":sidebar";
-            try {
-                var value = localStorage[key];
-                if (value === undefined) {
-                    return defaultValue;
-                }
-                var parsed = JSON.parse(value);
-                return parsed == null ? defaultValue : parsed;
-            } catch (e) {
-                return defaultValue;
-            }
-        }
-        function __init__restoreLastSidebarState() {
-            var isMobile = window.matchMedia("(max-width: 600px)").matches;
-            if (isMobile) {
-                // Init last state if not mobile
-                return;
-            }
-            var sidebarState = __init__getSidebarState(true);
-            var book = document.querySelector(".book");
-            // Show sidebar if it enabled
-            if (sidebarState && book) {
-                book.classList.add("without-animation", "with-summary");
-            }
-        }
-
-        try {
-            __init__restoreLastSidebarState();
-        } finally {
-            var book = document.querySelector(".book");
-            book.classList.remove("honkit-cloak");
-        }
-    </script>
     <script src="gitbook/gitbook.js"></script>
     <script src="gitbook/theme.js"></script>
     
@@ -1783,6 +1740,10 @@ reduce the calls to the broker.  This should not be used if destinations
     
         
         <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
         
     
         
