@@ -10,8 +10,8 @@ Whenever you are reporting a problem please be sure to include as much informati
 
 * Which version of the component are you using on which Java platform?
 * Any particular application/web server or container being used? If so what version?
-* Stack traces generally really help! If in doubt include the whole thing. Fften exceptions get wrapped in other exceptions and the exception right near the bottom explains the actual error, not the first few lines at the top. It's very easy for us to skim-read past unnecessary parts of a stack trace.
-* Log output can be useful too; sometimes enabling `DEBUG` logging can help.
+* Stack traces generally really help! If in doubt include the whole thing. Often exceptions get wrapped in other exceptions and the exception right near the bottom explains the actual error, not the first few lines at the top.
+* Log output can be useful too. Sometimes enabling `DEBUG` logging can help.
 * Your code & configuration files are often useful.
 
 We can help you much quicker if you try the following:
@@ -29,7 +29,12 @@ We can help you much quicker if you try the following:
 
 #### Using the issue tracker
 
-Before you can raise an issue in the issue tracker you need to [create an account](https://issues.apache.org/jira/secure/Signup!default.jspa).
+Before you can raise an issue in the issue tracker you need to create an account. However, due to an influx of false Jira accounts creating a flood of spam tickets [public signups for issue tracker accounts was disabled](https://infra.apache.org/blog/jira-public-signup-disabled.html) in November 2022. Therefore, in order to create an account please send an email to private@activemq.apache.org and include the following:
+ - Email address
+ - Preferred username (all lower-case, no punctuation, hypens, etc. - [a-z0-9])
+ - Alternate username (in case the preferred one is already in use)
+ - Display name (if it is different from the username)
+ - A really simple description of why you want an account (e.g. "I want to report a bug about an exception when sending a message")
 
 If you want to be the "assignee" of an issue you need to be in the list of `activemq-developers` on the issue tracker. To join the group please mail the [dev mailing list](mailto:dev@activemq.apache.org) with the email address you used to register with the issue tracker and we'll add you to the group.
 
