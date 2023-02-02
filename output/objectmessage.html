@@ -114,47 +114,50 @@
 
 <ul>
   <li>The <code class="language-plaintext highlighter-rouge">setTrustedPackages()</code> method allows you to set the list of trusted packages you want to be to unserialize, like
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
-factory.setTrustedPackages(new ArrayList(Arrays.asList("org.apache.activemq.test,org.apache.camel.test".split(","))));
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ActiveMQConnectionFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQConnectionFactory</span><span class="o">(</span><span class="s">"tcp://localhost:61616"</span><span class="o">);</span>
+<span class="n">factory</span><span class="o">.</span><span class="na">setTrustedPackages</span><span class="o">(</span><span class="k">new</span> <span class="nc">ArrayList</span><span class="o">(</span><span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">"org.apache.activemq.test,org.apache.camel.test"</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">","</span><span class="o">))));</span>
 </code></pre></div>    </div>
   </li>
   <li>The <code class="language-plaintext highlighter-rouge">setTrustAllPackages()</code> allows you to turn off security check and trust all classes. It’s useful for testing purposes.
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
-factory.setTrustAllPackages(true);
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ActiveMQConnectionFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQConnectionFactory</span><span class="o">(</span><span class="s">"tcp://localhost:61616"</span><span class="o">);</span>
+<span class="n">factory</span><span class="o">.</span><span class="na">setTrustAllPackages</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
 </code></pre></div>    </div>
-    <p>You can set the same properties in Camel context like:
-```</p>
+    <p>You can set the same properties in Camel context like:</p>
   </li>
 </ul>
-<bean id="connectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
-    <property name="brokerURL" value="tcp://localhost:61616" />
-    <property name="trustedPackages">
-        <list>
-            <value>org.apache.activemq.test</value>
-            <value>org.apache.camel.test</value>
-        </list>
-    </property>
-</bean>
-<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
-    <property name="connectionFactory" ref="connectionFactory" />
-</bean>
-<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
-    <property name="configuration" ref="jmsConfig" />
-</bean>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>or
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"connectionFactory"</span> <span class="na">class=</span><span class="s">"org.apache.activemq.spring.ActiveMQConnectionFactory"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"brokerURL"</span> <span class="na">value=</span><span class="s">"tcp://localhost:61616"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"trustedPackages"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;list&gt;</span>
+            <span class="nt">&lt;value&gt;</span>org.apache.activemq.test<span class="nt">&lt;/value&gt;</span>
+            <span class="nt">&lt;value&gt;</span>org.apache.camel.test<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/list&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"jmsConfig"</span> <span class="na">class=</span><span class="s">"org.apache.camel.component.jms.JmsConfiguration"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"connectionFactory"</span> <span class="na">ref=</span><span class="s">"connectionFactory"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"activemq"</span> <span class="na">class=</span><span class="s">"org.apache.activemq.camel.component.ActiveMQComponent"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"configuration"</span> <span class="na">ref=</span><span class="s">"jmsConfig"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
 </code></pre></div></div>
-<bean id="connectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
-    <property name="brokerURL" value="tcp://localhost:61616" />
-<property name="trustAllPackages" value="true" />
-</bean>
-<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
-    <property name="connectionFactory" ref="connectionFactory" />
-</bean>
-<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
-    <property name="configuration" ref="jmsConfig" />
-</bean>
-<p>```
-This configuration will override system properties if they are set.</p>
+
+<p>or</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"connectionFactory"</span> <span class="na">class=</span><span class="s">"org.apache.activemq.spring.ActiveMQConnectionFactory"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"brokerURL"</span> <span class="na">value=</span><span class="s">"tcp://localhost:61616"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"trustAllPackages"</span> <span class="na">value=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"jmsConfig"</span> <span class="na">class=</span><span class="s">"org.apache.camel.component.jms.JmsConfiguration"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"connectionFactory"</span> <span class="na">ref=</span><span class="s">"connectionFactory"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"activemq"</span> <span class="na">class=</span><span class="s">"org.apache.activemq.camel.component.ActiveMQComponent"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"configuration"</span> <span class="na">ref=</span><span class="s">"jmsConfig"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div>
+
+<p>This configuration will override system properties if they are set.</p>
 
 
       </div>
