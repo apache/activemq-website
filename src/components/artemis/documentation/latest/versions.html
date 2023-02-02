@@ -1270,6 +1270,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.83" data-path="resource-adapter.html">
+            
+                <a href="resource-adapter.html">
+            
+                    
+                    Resource Adapter
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
 
@@ -1326,6 +1339,30 @@
 chapter in addition to any version-specific upgrade instructions outlined here.</li>
 </ul>
 </li>
+</ul>
+<h2 id="2280">2.28.0</h2>
+<p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12352523&amp;projectId=12315920" target="_blank">Full release notes</a></p>
+<p>Highlights:</p>
+<ul>
+<li>Bug Fixes and improvements as usual</li>
+<li><a href="https://issues.apache.org/jira/browse/ARTEMIS-4136" target="_blank">ARTEMIS-4136</a> Mirror sync replication<ul>
+<li>Mirror now has an option to set sync=true. Blocking operations from clients will wait a round trip on the mirror.</li>
+</ul>
+</li>
+<li><a href="https://issues.apache.org/jira/browse/ARTEMIS-4065" target="_blank">ARTEMIS-4065</a> Paging Counter Journal Records were removed<ul>
+<li>We don&apos;t store page counters records on the journal any longer what should simplify operation and improve performance.</li>
+</ul>
+</li>
+</ul>
+<h4 id="upgrading-from-older-versions">Upgrading from older versions</h4>
+<ul>
+<li>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-3871" target="_blank">ARTEMIS-3871</a> the naming pattern used for MQTT <em>shared</em>
+subscription queues has changed. Previously the subscription queue was named according to the subscription name
+provided in the MQTT <code>SUBSCRIBE</code> packet. However, MQTT allows the same name to be used across multiple subscriptions
+whereas queues in the broker must be named uniquely. Now the subscription queue will be named according to the
+subscription name and topic name so that all subscription queue names will be unique. Before upgrading please ensure
+all MQTT shared subscriptions are empty. When the subscribers reconnect they will get a new subscription queue. If
+they are not empty you can move the messages to the new subscription queue administratively.</li>
 </ul>
 <h2 id="2271">2.27.1</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12352610&amp;projectId=12315920" target="_blank">Full release notes</a></p>
@@ -1391,7 +1428,11 @@ is available <a href="02-27-00-scripts-profiles.diff">here</a> for *nix or <a hr
 <ol>
 <li>We removed the *-all clients from ./lib/client in the assembly as part of <a href="https://issues.apache.org/jira/browse/ARTEMIS-4006" target="_blank">ARTEMIS-4006</a>. If you use these libraries they can be found at Maven Central, please refer to the <a href="client-classpath.html">client class path documentation</a> for more information.</li>
 <li>We removed ActiveMQ-Artemis rest as part of 2.26.0. If you still require activemq rest you can still have access to its latest version at <a href="https://mvnrepository.com/artifact/org.apache.activemq.rest/artemis-rest/2.25.0" target="_blank">Maven central</a>. You can still follow the steps on Rest from any <a href="https://activemq.apache.org/components/artemis/documentation/2.25.0/rest.html" target="_blank">previous documentation</a>, however you should stop using the module as it will not be maintained any more.</li>
-<li>We removed web content from distribution and redirected to the console web requests with the root target as part of  <a href="https://issues.apache.org/jira/browse/ARTEMIS-3980" target="_blank">ARTEMIS-3980</a>. If you used to customize the index page or to add custom content in the web folder please refer to the <a href="web-server.html">web-server documentation</a> for more information on disabling the redirect and enabling the web content.</li>
+<li>We removed web content from distribution and redirected to the console web requests with the root target as part of <a href="https://issues.apache.org/jira/browse/ARTEMIS-3980" target="_blank">ARTEMIS-3980</a>. To enable new redirect behaviour on current instances you have to update <code>bootstrap.xml</code>. Change:<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>&gt;</span>
+</code></pre>
+to:<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span> <span class="hljs-attr">rootRedirectLocation</span>=<span class="hljs-string">&quot;console&quot;</span>&gt;</span>
+</code></pre>
+If you used to customize the index page or to add custom content in the web folder please refer to the <a href="web-server.html">web-server documentation</a> for more information on disabling the redirect and enabling the web content.</li>
 </ol>
 <h2 id="2250">2.25.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12352143&amp;projectId=12315920" target="_blank">Full release notes</a></p>
@@ -2143,7 +2184,7 @@ production.</li>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.27.1","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2022-12-02T02:51:16.391Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-12-02T02:52:27.462Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2023-02-03T20:07:27.802Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

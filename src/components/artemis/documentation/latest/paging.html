@@ -1270,6 +1270,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.83" data-path="resource-adapter.html">
+            
+                <a href="resource-adapter.html">
+            
+                    
+                    Resource Adapter
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
 
@@ -1372,6 +1385,9 @@ matching addresses is limited to max-size-bytes. Use <a href="#global-max-size">
       <span class="hljs-tag">&lt;<span class="hljs-name">max-size-messages</span>&gt;</span>1000<span class="hljs-tag">&lt;/<span class="hljs-name">max-size-messages</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">page-size-bytes</span>&gt;</span>10485760<span class="hljs-tag">&lt;/<span class="hljs-name">page-size-bytes</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">address-full-policy</span>&gt;</span>PAGE<span class="hljs-tag">&lt;/<span class="hljs-name">address-full-policy</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">page-limit-bytes</span>&gt;</span>10G<span class="hljs-tag">&lt;/<span class="hljs-name">page-limit-bytes</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">page-limit-messages</span>&gt;</span>1000000<span class="hljs-tag">&lt;/<span class="hljs-name">page-limit-messages</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">page-full-policy</span>&gt;</span>FAIL<span class="hljs-tag">&lt;/<span class="hljs-name">page-full-policy</span>&gt;</span>
    <span class="hljs-tag">&lt;/<span class="hljs-name">address-setting</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">address-settings</span>&gt;</span>
 </code></pre>
@@ -1425,6 +1441,21 @@ configured <code>address-full-policy</code>.</p>
 <td><code>max-read-page-bytes</code></td>
 <td>how much memory the messages read from paging can take on the Queue whenever more messages are needed. The system will stop reading if <code>max-read-page-messages</code> hits the limit first.</td>
 <td>2 * page-size-bytes</td>
+</tr>
+<tr>
+<td><code>page-limit-bytes</code></td>
+<td>After entering page mode, how much data would the system allow incoming. Notice this will be internally converted as number of pages.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>page-limit-messages</code></td>
+<td>After entering page mode, how many messages would the system allow incoming on paging.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>page-full-policy</code></td>
+<td>Valid results are DROP or FAIL. This tells what to do if the system is reaching <code>page-limit-bytes</code> or <code>page-limit-messages</code> after paging</td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -1501,6 +1532,10 @@ should be <code>3333333</code>.</p>
 <p>The system should keep at least one paged file in memory caching ahead reading messages. 
 Also every active subscription could keep one paged file in memory. 
 So, if your system has too many queues it is recommended to minimize the page-size.</p>
+<h2 id="page-limits-and-page-full-policy">Page Limits and Page Full Policy</h2>
+<p>Since version <code>2.28.0</code> is possible to configure limits on how much data is paged. This is to avoid a single destination using the entire disk in case their consumers are gone.</p>
+<p>You can configure either <code>page-limit-bytes</code> or <code>page-limit-messages</code>, along with <code>page-full-policy</code> on the address settings limiting how much data will be recorded in paging.</p>
+<p>If you configure <code>page-full-policy</code> as DROP, messages will be simplify dropped while the clients will not get any exceptions, while if you configured FAIL the producers will receive a JMS Exception for the error condition.</p>
 <h2 id="example">Example</h2>
 <p>See the <a href="examples.html#paging">Paging Example</a> which shows how to use paging with 
 Apache ActiveMQ Artemis.</p>
@@ -1547,7 +1582,7 @@ Apache ActiveMQ Artemis.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Paging","level":"1.37","depth":1,"next":{"title":"Scheduled Messages","level":"1.38","depth":1,"path":"scheduled-messages.md","ref":"scheduled-messages.md","articles":[]},"previous":{"title":"Large Messages","level":"1.36","depth":1,"path":"large-messages.md","ref":"large-messages.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.27.1","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"paging.md","mtime":"2022-12-02T02:51:16.375Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-12-02T02:52:27.462Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Paging","level":"1.37","depth":1,"next":{"title":"Scheduled Messages","level":"1.38","depth":1,"path":"scheduled-messages.md","ref":"scheduled-messages.md","articles":[]},"previous":{"title":"Large Messages","level":"1.36","depth":1,"path":"large-messages.md","ref":"large-messages.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"paging.md","mtime":"2023-02-03T20:07:27.785Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
