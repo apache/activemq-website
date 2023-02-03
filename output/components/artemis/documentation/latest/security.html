@@ -1270,6 +1270,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.83" data-path="resource-adapter.html">
+            
+                <a href="resource-adapter.html">
+            
+                    
+                    Resource Adapter
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
 
@@ -1570,6 +1583,17 @@ permission. The default value is <code>write</code>.</p>
 <li><p><code>enableListener</code>. Whether or not to enable a listener that will automatically
 receive updates made in the LDAP server and update the broker&apos;s authorization
 configuration in real-time. The default value is <code>true</code>.</p>
+<p>Some LDAP servers (e.g. OpenLDAP) don&apos;t support the &quot;persistent search&quot;
+feature which allows the &quot;listener&quot; functionality to work. For these servers
+set the <code>refreshInterval</code> to a value greater than <code>0</code>.</p>
+</li>
+<li><p><code>refreshInterval</code>. How long to wait (in seconds) before refreshing the
+security settings from the LDAP server. This can be used for LDAP servers
+which don&apos;t support the &quot;persistent search&quot; feature needed for use with
+<code>enableListener</code> (e.g. OpenLDAP). Default is <code>0</code> (i.e. no refresh).</p>
+<p>Keep in mind that this can be a potentially expensive operation based on how
+often the refresh is configured and how large the data set is so take care
+in how <code>refreshInterval</code> is configured.</p>
 </li>
 <li><p><code>mapAdminToManage</code>. Whether or not to map the legacy <code>admin</code> permission to the
 <code>manage</code> permission. See details of the mapping semantics below. The default
@@ -2052,6 +2076,15 @@ the special string, <code>{0}</code>, is substituted by the role name as extract
 previous role search. This option must always be set to enable role expansion
 because it has no default value. Example value: <code>(member={0})</code>.</p>
 </li>
+<li><p><code>noCacheExceptions</code> - comma separated list of class names of exceptions which 
+may thrown during communication with the LDAP server; default is empty.
+Typically any failure to authenticate will be stored in the authentication cache
+so that the underlying security data store (e.g. LDAP) is spared any unnecessary
+traffic. However, in cases where the failure is, for example, due to a temporary
+network outage and the <code>security-invalidation-interval</code> is relatively high this
+can be problematic. Users can enumerate any relevant exceptions which the cache 
+should ignore (e.g. <code>java.net.ConnectException</code>) to avoid any such problems.</p>
+</li>
 <li><p><code>debug</code> - boolean flag; if <code>true</code>, enable debugging; this is used only for
 testing or debugging; normally, it should be set to <code>false</code>, or omitted;
 default is <code>false</code></p>
@@ -2233,6 +2266,33 @@ do role mapping for the kerberos identity.</p>
     ;
 </code></pre><p>The simplest way to make the login configuration available to JAAS is to add
 the directory containing the file, <code>login.config</code>, to your CLASSPATH.</p>
+<h4 id="kubernetesloginmodule">KubernetesLoginModule</h4>
+<p>The Kubernetes login module enables you to perform authentication and authorization
+by validating the <code>Bearer</code> token against the Kubernetes API. The authentication is done
+by submitting a <code>TokenReview</code> request that the Kubernetes cluster validates. The response will
+tell whether the user is authenticated and the associated username. It is implemented by <code>org.apache.activemq.artemis.spi.core.security.jaas.KubernetesLoginModule</code>.</p>
+<ul>
+<li><p><code>org.apache.activemq.jaas.kubernetes.role</code> - the path to the file which
+contains user and role mapping</p>
+</li>
+<li><p><code>reload</code> - boolean flag; whether or not to reload the properties files when a
+modification occurs; default is <code>false</code></p>
+</li>
+<li><p><code>debug</code> - boolean flag; if <code>true</code>, enable debugging; this is used only for
+testing or debugging; normally, it should be set to <code>false</code>, or omitted;
+default is <code>false</code></p>
+</li>
+</ul>
+<p>The login module must be allowed to query such Rest API. For that, it will use the available
+token under <code>/var/run/secrets/kubernetes.io/serviceaccount/token</code>. Besides, in order to trust the
+connection the client will use the <code>ca.crt</code> file existing in the same folder. These two files will
+be mounted in the container. The service account running the KubernetesLoginModule must
+be allowed to <code>create::TokenReview</code>. The <code>system:auth-delegator</code> role is typically use for
+that purpose.</p>
+<p>The <code>k8s-roles.properties</code> file consists of a list of properties of the form, <code>Role=UserList</code>, where <code>UserList</code> is a comma-separated list of users. For example, to define the roles admins, users, and guests, you could create a file like the following:</p>
+<pre><code class="lang-properties">admins=system:serviceaccounts:example-ns:admin-sa
+users=system:serviceaccounts:other-ns:test-sa
+</code></pre>
 <h3 id="scram-sha-sasl-mechanism">SCRAM-SHA SASL Mechanism</h3>
 <p>SCRAM (Salted Challenge Response Authentication Mechanism) is an authentication mechanism that can establish mutual
 authentication using passwords. Apache ActiveMQ Artemis supports SCRAM-SHA-256 and SCRAM-SHA-512 SASL mechanisms to provide authentication for AMQP connections.</p>
@@ -2680,7 +2740,7 @@ parameter and indicate which domain from your <code>login.config</code> to use, 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.50","depth":1,"next":{"title":"Masking Passwords","level":"1.51","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.49","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.27.1","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2022-12-02T02:51:16.382Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-12-02T02:52:27.462Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.50","depth":1,"next":{"title":"Masking Passwords","level":"1.51","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.49","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2023-02-03T20:07:27.793Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
