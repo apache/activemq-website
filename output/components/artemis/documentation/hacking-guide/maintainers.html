@@ -286,7 +286,7 @@ confident that the changes that are being committed will not break the build.</p
 <p>What does it mean to be reasonably confident? If the developer has run the same maven commands that the pull-request
 builds are running they can be reasonably confident. Currently the <a href="https://builds.apache.org/job/ActiveMQ-Artemis-PR-Build/" target="_blank">PR build</a>
 runs this command:</p>
-<pre><code>mvn -Pfast-tests -Pextra-tests install
+<pre><code>mvn -Pfast-tests install
 </code></pre><p>However, if the changes are significant, touches a wide area of code, or even if the developer just wants a second
 opinion they are encouraged to engage other members of the community to obtain an additional review prior to pushing.
 This can easily be done via a pull request on GitHub, a patch file attached to an email or JIRA, commit to a branch
@@ -339,18 +339,18 @@ if you choose. Just be sure to edit all references to the remote repo name so it
 <li><p>Checkout the pull request you wish to review</p>
 <pre><code> $ git checkout pr/105 -B 105
 </code></pre></li>
-<li><p>Rebase the branch against master, so the merge would happen at the top of the current master</p>
-<pre><code> $ git pull --rebase apache master
+<li><p>Rebase the branch against main, so the merge would happen at the top of the current main</p>
+<pre><code> $ git pull --rebase apache main
 </code></pre></li>
-<li><p>Once you&apos;ve reviewed the change and are ready to merge checkout <code>master</code>.</p>
-<pre><code> $ git checkout master
+<li><p>Once you&apos;ve reviewed the change and are ready to merge checkout <code>main</code>.</p>
+<pre><code> $ git checkout main
 </code></pre></li>
-<li><p>Ensure you are up to date on your master also.</p>
-<pre><code> $ git pull --rebase apache master
+<li><p>Ensure you are up to date on your main also.</p>
+<pre><code> $ git pull --rebase apache main
 </code></pre></li>
-<li><p>We actually recommend checking out master again, to make sure you wouldn&apos;t add any extra commits by accident:</p>
+<li><p>We actually recommend checking out main again, to make sure you wouldn&apos;t add any extra commits by accident:</p>
 <pre><code> $ git fetch apache
- $ git checkout apache/master -B master
+ $ git checkout apache/main -B main
 </code></pre></li>
 <li><p>Create a new merge commit from the pull-request. IMPORTANT: The commit message here should be something like: &quot;This
 closes #105&quot; where &quot;105&quot; is the pull request ID.  The &quot;#105&quot; shows up as a link in the GitHub UI for navigating to
@@ -359,7 +359,7 @@ to eventual rebases.</p>
 <pre><code> $ git merge --no-ff 105 -m &quot;This closes #105&quot;
 </code></pre></li>
 <li><p>Push to the canonical Apache repo.</p>
-<pre><code> $ git push apache master
+<pre><code> $ git push apache main
 </code></pre></li>
 </ol>
 <h2 id="using-the-automated-script">Using the automated script</h2>
@@ -376,31 +376,31 @@ the merging process. This will execute the exact steps described on this previou
 $  ./scripts/merge-PR.sh 175 ARTEMIS-229 address on Security Interface
 </code></pre><p>The previous example was taken from a real case that generated this <a href="https://github.com/apache/activemq-artemis/commit/e85bb3ca4a75b0f1dfbe717ff90b34309e2de794" target="_blank">merge commit on #175</a>.</p>
 <ul>
-<li>After this you can push to the canonical Apache repo.<pre><code>$ git push apache master
+<li>After this you can push to the canonical Apache repo.<pre><code>$ git push apache main
 </code></pre></li>
 </ul>
 <h2 id="use-a-separate-branch-for-your-changes">Use a separate branch for your changes</h2>
-<p>It is recommended that you work away from master for two reasons:</p>
+<p>It is recommended that you work away from main for two reasons:</p>
 <ol>
 <li><p>When you send a PR, your PR branch could be rebased during the process and your commit ID changed. You might
 get unexpected conflicts while rebasing your old branch.</p>
 </li>
 <li><p>You could end up pushing things upstream that you didn&apos;t intend to. Minimize your risks by working on a branch
-away from master.</p>
+away from main.</p>
 </li>
 </ol>
 <h2 id="notes">Notes:</h2>
 <p>The GitHub mirror repository (i.e. <code>upstream</code>) is cloning the canonical Apache repository.  Because of this there may be
 a slight delay between when a commit is pushed to the Apache repo and when that commit is reflected in the GitHub mirror.
 This may cause some difficulty when trying to push a PR to <code>apache</code> that has been merged on the out-of-date GitHub mirror.
-You can wait for the mirror to update before performing the steps above or you can change your local master branch to
-track the master branch on the canonical Apache repository rather than the master branch on the GitHub mirror:</p>
-<pre><code>$ git branch master -u apache/master
+You can wait for the mirror to update before performing the steps above or you can change your local main branch to
+track the main branch on the canonical Apache repository rather than the main branch on the GitHub mirror:</p>
+<pre><code>$ git branch main -u apache/main
 </code></pre><p>Where <code>apache</code> points to the canonical Apache repository.</p>
-<p>If you&apos;d like your local master branch to always track <code>upstream/master</code> (i.e. the GitHub mirror) then another way to
-achieve this is to add another branch that tracks <code>apache/master</code> and push from that branch e.g.</p>
-<pre><code>$ git checkout master
-$ git branch apache_master --track apache/master
+<p>If you&apos;d like your local main branch to always track <code>upstream/main</code> (i.e. the GitHub mirror) then another way to
+achieve this is to add another branch that tracks <code>apache/main</code> and push from that branch e.g.</p>
+<pre><code>$ git checkout main
+$ git branch apache_main --track apache/main
 $ git pull
 $ git merge --no-ff pr/105
 $ git push
@@ -447,7 +447,7 @@ $ git push
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Notes for Maintainers","level":"1.10","depth":1,"next":{"title":"History","level":"1.11","depth":1,"path":"history.md","ref":"history.md","articles":[]},"previous":{"title":"Validating releases","level":"1.9","depth":1,"path":"validating-releases.md","ref":"validating-releases.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis Hacking Guide"},"file":{"path":"maintainers.md","mtime":"2020-08-24T11:33:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-24T13:56:17.837Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Notes for Maintainers","level":"1.10","depth":1,"next":{"title":"History","level":"1.11","depth":1,"path":"history.md","ref":"history.md","articles":[]},"previous":{"title":"Validating releases","level":"1.9","depth":1,"path":"validating-releases.md","ref":"validating-releases.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis Hacking Guide"},"file":{"path":"maintainers.md","mtime":"2023-02-06T15:25:02.966Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-06T15:27:36.320Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
