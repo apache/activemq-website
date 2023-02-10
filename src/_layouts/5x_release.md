@@ -27,7 +27,7 @@ ActiveMQ {{page.version}} Release
 {% endunless %}
 {% if isCurrentRelease and page.version contains "5.16." %}
 <div class="alert alert-warning">
-  NOTE: This is the last planned 5.16.x release. Users should upgrade to the current 5.17.x stream for ongoing releases. See the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
+  NOTE: This is the last planned 5.16.x release. As first announced in May 2022, users should upgrade for ongoing releases. See the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 {% endif %}
 
