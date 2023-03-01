@@ -40,7 +40,7 @@ type: activemq5
     failover:tcp://host1:port1,tcp://host2:port2
     ```
 *   The configuration options of transports have changed. See [ActiveMQ Connection URIs](activemq-connection-uris) for a detailed guide of of all the options.
-*   The spring package has gone; we now use [XBean](http://xbean.org) to configure ActiveMQ. See the org.activemq.xbean.BrokerFactoryBean if you want a factory bean to use in regular spring instead of the org.activemq.spring.BrokerFactoryBean. See [Configuring Brokers](configuring-brokers) for more information on the new XML syntax.
+*   The spring package has gone; we now use [XBean](https://geronimo.apache.org/xbean/) to configure ActiveMQ. See the org.activemq.xbean.BrokerFactoryBean if you want a factory bean to use in regular spring instead of the org.activemq.spring.BrokerFactoryBean. See [Configuring Brokers](configuring-brokers) for more information on the new XML syntax.
 *   ActiveMQTopic and ActiveMQQueue are now in the org.activemq.command package.
 *   If you were creating a broker in Java code, the BrokerContainer has been replaced with BrokerService which is easier to use now.
 *   The connection URL options have changed slightly to provided more persise configuration options of the transport and wireformat and to allow validation of the options.

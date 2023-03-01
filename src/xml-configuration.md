@@ -14,7 +14,7 @@ We support an XML deployment descriptor for configuring the ActiveMQ Message Bro
 *   [persistence providers](persistence) & locations
 *   custom message containers (such as last image caching etc)
 
-So we decided that using XML would make this configuration much easier. From version 4.0 onwards we use [XBean](http://xbean.org/) to perform the XML configuration.
+So we decided that using XML would make this configuration much easier. From version 4.0 onwards we use [XBean](https://geronimo.apache.org/xbean/) to perform the XML configuration.
 
 For details of the XML see the [Xml Reference](xml-reference)
 
