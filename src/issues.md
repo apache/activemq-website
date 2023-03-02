@@ -29,14 +29,9 @@ We can help you much quicker if you try the following:
 
 #### Using the issue tracker
 
-Before you can raise an issue in the issue tracker you need to create an account. However, due to an influx of false Jira accounts creating a flood of spam tickets [public signups for issue tracker accounts was disabled](https://infra.apache.org/blog/jira-public-signup-disabled.html) in November 2022. Therefore, in order to create an account please send an email to [jira-requests@activemq.apache.org](mailto:jira-requests@activemq.apache.org) and include the following:
- - Email address
- - Preferred username (all lower-case, no punctuation, hypens, etc. - [a-z0-9])
- - Alternate username (in case the preferred one is already in use)
- - Display name (if it is different from the username)
- - A really simple description of why you want an account (e.g. "I want to report a bug about an exception when sending a message")
+Before you can raise an issue in the issue tracker you need to [create an account](https://selfserve.apache.org/jira-account.html).
 
-If you want to be the "assignee" of an issue you need to be in the list of `activemq-developers` on the issue tracker. To join the group please mail the [jira-requests mailing list](mailto:jira-requests@activemq.apache.org) with the email address you used to register with the issue tracker and we'll add you to the group.
+If you want to be the "assignee" of an issue you need to be in the list of `activemq-developers` on the issue tracker. To join the group please mail the [dev mailing list](mailto:dev@activemq.apache.org) with the email address you used to register with the issue tracker and we'll add you to the group.
 
 #### Contributing Your Own Fixes
 
