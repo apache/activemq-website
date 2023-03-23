@@ -75,7 +75,6 @@ Additional Resources
 
 *   [Apache Camel](http://camel.apache.org)
 *   [Apache Geronimo](http://geronimo.apache.org/)
-*   [Hermes JMS](http://www.hermesjms.com/)
 *   [Stomp](http://stomp.github.com/) is an open wire protocol (similar to HTTP) for communicating with MOMs from different languages. It has clients for languages like C, C#, Python, Perl, Ruby etc.
-*   [XBean](http://xbean.org/) is used as the default XML configuration mechanism for ActiveMQ
+*   [XBean](https://geronimo.apache.org/xbean/) is used as the default XML configuration mechanism for ActiveMQ
 

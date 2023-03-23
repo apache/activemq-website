@@ -7,6 +7,9 @@ type: nms
 
 Description|Release Date|NMS API Rev
 ---|---|---
+[Apache.NMS.ActiveMQ v2.1.0](apachenmsactivemq-v210)|03/12/2023|v2.1.0
+[Apache.NMS.ActiveMQ v2.0.1](apachenmsactivemq-v201)|02/14/2023|v2.0.1
+[Apache.NMS.ActiveMQ v2.0.0](apachenmsactivemq-v200)|07/07/2022|v2.0.0
 [Apache.NMS.ActiveMQ v1.8.0](apachenmsactivemq-v180)|01/03/2021|v1.8.0
 [Apache.NMS.ActiveMQ v1.7.2](apachenmsactivemq-v172)|04/07/2016|v1.7.2
 [Apache.NMS.ActiveMQ v1.7.1](apachenmsactivemq-v171)|10/05/2015|v1.7.1

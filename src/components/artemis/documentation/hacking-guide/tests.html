@@ -290,20 +290,32 @@
 <p>The broker is comprised of POJOs so it&apos;s simple to configure and run a broker instance and test particular functionality.
 Even complex test-cases involving multiple clustered brokers are relatively easy to write. Almost every test in the 
 test-suite follows this pattern - configure broker, start broker, test functionality, stop broker.</p>
-<p>The test-suite uses JUnit to manage test execution and life-cycle.  Most tests extend <a href="https://github.com/apache/activemq-artemis/blob/master/artemis-server/src/test/java/org/apache/activemq/artemis/tests/util/ActiveMQTestBase.java" target="_blank"><code>org.apache.activemq.artemis.tests.util.ActiveMQTestBase</code></a>
+<p>The test-suite uses JUnit to manage test execution and life-cycle.  Most tests extend <a href="https://github.com/apache/activemq-artemis/blob/main/artemis-server/src/test/java/org/apache/activemq/artemis/tests/util/ActiveMQTestBase.java" target="_blank"><code>org.apache.activemq.artemis.tests.util.ActiveMQTestBase</code></a>
 which contains JUnit setup and tear-down methods as well as a wealth of utility functions to configure, start, manage,
 and stop brokers as well as perform other common tasks.</p>
-<p>Check out <a href="https://github.com/apache/activemq-artemis/blob/master/tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/SimpleTest.java" target="_blank"><code>org.apache.activemq.artemis.tests.integration.SimpleTest</code></a>.
+<p>Check out <a href="https://github.com/apache/activemq-artemis/blob/main/tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/SimpleTest.java" target="_blank"><code>org.apache.activemq.artemis.tests.integration.SimpleTest</code></a>.
 It&apos;s a very simple test-case that extends <code>org.apache.activemq.artemis.tests.util.ActiveMQTestBase</code> and uses its methods
 to configure a server, run a test, and then <code>super.tearDown()</code> cleans it up once the test completes. The test-case 
 includes comments to explain everything. As the name implies, this is a simple test-case that demonstrates the most basic
 functionality of the test-suite. A simple test like this takes less than a second to run on modern hardware.</p>
 <p>Although <code>org.apache.activemq.artemis.tests.integration.SimpleTest</code> is simple it could be simpler still by extending
-<a href="https://github.com/apache/activemq-artemis/blob/master/artemis-server/src/test/java/org/apache/activemq/artemis/tests/util/SingleServerTestBase.java" target="_blank"><code>org.apache.activemq.artemis.tests.util.SingleServerTestBase</code></a>.
+<a href="https://github.com/apache/activemq-artemis/blob/main/artemis-server/src/test/java/org/apache/activemq/artemis/tests/util/SingleServerTestBase.java" target="_blank"><code>org.apache.activemq.artemis.tests.util.SingleServerTestBase</code></a>.
 This class does all the setup of a simple server automatically and provides the test-case with a <code>ServerLocator</code>, 
-<code>ClientSessionFactory</code>, and <code>ClientSession</code> instance. <a href="https://github.com/apache/activemq-artemis/blob/master//tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/SingleServerSimpleTest.java" target="_blank"><code>org.apache.activemq.artemis.tests.integration.SingleServerSimpleTest</code></a>
+<code>ClientSessionFactory</code>, and <code>ClientSession</code> instance. <a href="https://github.com/apache/activemq-artemis/blob/main//tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/SingleServerSimpleTest.java" target="_blank"><code>org.apache.activemq.artemis.tests.integration.SingleServerSimpleTest</code></a>
 is an example based on <code>org.apache.activemq.artemis.tests.integration.SimpleTest</code> but extends <code>org.apache.activemq.artemis.tests.util.SingleServerTestBase</code>
 which eliminates all the setup and class variables which are provided by <code>SingleServerTestBase</code> itself.</p>
+<h2 id="writing-web-tests">Writing Web Tests</h2>
+<p>The broker has a web console based on <a href="https://github.com/hawtio/hawtio" target="_blank">hawtio</a> and the <code>smoke-tests</code> are used to test it.
+For instance, the <a href="https://github.com/apache/activemq-artemis/blob/main/tests/smoke-tests/src/test/java/org/apache/activemq/artemis/tests/smoke/console/ConsoleTest.java" target="_blank">ConsoleTest</a>
+checks the web console using the <a href="https://github.com/SeleniumHQ/selenium" target="_blank">selenium framework</a>.
+The tests can be executed using a remote server, local browsers or <a href="https://www.testcontainers.org/modules/webdriver_containers" target="_blank">testcontainers</a>.
+To use a remote server set the <code>webdriver.remote.server</code> property with the URL
+of the server, ie -Dwebdriver.remote.server=<a href="http://localhost:4444/wd/hub" target="_blank">http://localhost:4444/wd/hub</a>
+To use your local Google Chrome browser download the <a href="https://chromedriver.chromium.org/" target="_blank">WebDriver for Chrome</a> and set
+the <code>webdriver.chrome.driver</code> property with the WebDriver path, ie <code>-Dwebdriver.chrome.driver=/home/artemis/chromedriver_linux64/chromedriver</code>.
+To use your local Firefox browser download the <a href="https://github.com/mozilla/geckodriver/" target="_blank">WebDriver for Firefox</a> and set
+the <code>webdriver.gecko.driver</code> property with the WebDriver path, ie <code>-Dwebdriver.gecko.driver=/home/artemis/geckodriver-linux64/geckodriver</code>.
+To use <a href="https://www.testcontainers.org/modules/webdriver_containers" target="_blank">testcontainers</a> install docker.</p>
 <h2 id="keys-for-writing-good-tests">Keys for writing good tests</h2>
 <h3 id="use-logdebug">Use log.debug</h3>
 <ul>
@@ -311,7 +323,7 @@ which eliminates all the setup and class variables which are provided by <code>S
 </ul>
 <p>On your classes, import the following:</p>
 <pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyTest</span> </span>{
-     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> org.jboss.logging.Logger log = org.jboss.logging.Logger.getLogger($CLASS_NAME$.class);
+     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger($CLASS_NAME$.class);
 
      <span class="hljs-meta">@Test</span>
      <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test</span><span class="hljs-params">()</span> </span>{
@@ -327,7 +339,7 @@ which eliminates all the setup and class variables which are provided by <code>S
 <p>An important task for any test-case is to clean up all the resources it creates when it runs. This includes the server
 instance itself and any resources created to connect to it (e.g. instances of <code>ServerLocator</code>, <code>ClientSessionFactory</code>,
 <code>ClientSession</code>, etc.). This task is typically completed in the test&apos;s <code>tearDown()</code> method.  However, <code>ActiveMQTestBase</code> 
-(and other classes which extend it) simplifies this process. As <a href="https://github.com/apache/activemq-artemis/blob/master/tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/SimpleTest.java" target="_blank"><code>org.apache.activemq.artemis.tests.integration.SimpleTest</code></a>
+(and other classes which extend it) simplifies this process. As <a href="https://github.com/apache/activemq-artemis/blob/main/tests/integration-tests/src/test/java/org/apache/activemq/artemis/tests/integration/SimpleTest.java" target="_blank"><code>org.apache.activemq.artemis.tests.integration.SimpleTest</code></a>
 demonstrates, there are several methods you can use when creating your test which will ensure proper clean up <em>automatically</em>
 when the test is torn down. These include:</p>
 <ul>
@@ -394,7 +406,7 @@ testing infrastructure to test your particular case.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Tests","level":"1.6","depth":1,"next":{"title":"Code coverage report","level":"1.7","depth":1,"path":"code-coverage-report.md","ref":"code-coverage-report.md","articles":[]},"previous":{"title":"Building","level":"1.5","depth":1,"path":"building.md","ref":"building.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis Hacking Guide"},"file":{"path":"tests.md","mtime":"2020-08-24T11:33:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-24T13:56:17.837Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Tests","level":"1.6","depth":1,"next":{"title":"Code coverage report","level":"1.7","depth":1,"path":"code-coverage-report.md","ref":"code-coverage-report.md","articles":[]},"previous":{"title":"Building","level":"1.5","depth":1,"path":"building.md","ref":"building.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis Hacking Guide"},"file":{"path":"tests.md","mtime":"2023-02-06T15:25:02.966Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-06T15:27:36.320Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

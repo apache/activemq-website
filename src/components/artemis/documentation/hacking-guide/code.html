@@ -342,7 +342,8 @@ example:</p>
 <li><p>Make the changes and commit one or more times</p>
 <pre><code>  $ git commit
 </code></pre><p><a name="commitMessageDetails"></a> When you commit your changes you will need to supply a commit message. We follow the
- 50/72 git commit message format. An ActiveMQ Artemis commit message should be formatted in the following manner:</p>
+ 50/72 git commit message format as recommended in the <a href="https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project" target="_blank">official Git book</a>.
+ An ActiveMQ Artemis commit message should be formatted in the following manner:</p>
 <ol>
 <li>Add the first line with the summary, using maximum 50 characters. Start the summary with the jira key (ARTEMIS-XXX)
 followed by a brief description of the change. Use the prefix <code>NO-JIRA</code> only for a very small insignificant change,
@@ -362,16 +363,16 @@ should be wrapped at 72 characters.</li>
 </code></pre></li>
 <li><p>Occasionally you&apos;ll want to push your commit(s) to GitHub for safe-keeping and/or sharing with others.</p>
 <pre><code>  git push origin my_cool_feature  
-</code></pre><p>Note that git push references the branch you are pushing and defaults to <code>master</code>, not your working branch.</p>
+</code></pre><p>Note that git push references the branch you are pushing and defaults to <code>main</code>, not your working branch.</p>
 </li>
 <li><p>Discuss your planned changes (if you want feedback)</p>
 <p>On mailing list - <a href="http://activemq.apache.org/mailing-lists.html" target="_blank">http://activemq.apache.org/mailing-lists.html</a>
 On IRC - irc://irc.freenode.org/apache-activemq or <a href="https://webchat.freenode.net/?channels=apache-activemq" target="_blank">https://webchat.freenode.net/?channels=apache-activemq</a></p>
 </li>
-<li><p>Once you&apos;re finished coding your feature/fix then rebase your branch against the latest master (applies your patches 
-on top of master)</p>
+<li><p>Once you&apos;re finished coding your feature/fix then rebase your branch against the latest main (applies your patches 
+on top of main)</p>
 <pre><code>  git fetch upstream  
-  git rebase -i upstream/master  
+  git rebase -i upstream/main  
   # if you have conflicts fix them and rerun rebase  
   # The -f, forces the push, alters history, see note below  
   git push -f origin my_cool_feature
@@ -388,14 +389,14 @@ history (and thus, they will then need to rebase on top of your branch once you 
 <li>An email will automatically be sent to the ActiveMQ developer list.</li>
 <li>As part of the review you may see an automated test run comment on your request.</li>
 <li>After review a maintainer will merge your PR into the canonical git repository at which point those changes will 
-be synced with the GitHub mirror repository (i.e. your <code>master</code>) and your PR will be closed by the <code>asfgit</code> bot.</li>
+be synced with the GitHub mirror repository (i.e. your <code>main</code>) and your PR will be closed by the <code>asfgit</code> bot.</li>
 </ol>
 </li>
 </ol>
 <h2 id="other-common-tasks">Other common tasks</h2>
 <ol>
 <li><p>Pulling updates from upstream</p>
-<pre><code> $ git pull --rebase upstream master
+<pre><code> $ git pull --rebase upstream main
 </code></pre><p>(<code>--rebase</code> will automatically move your local commits, if any, on top of the latest branch you pull from; you can leave
 it off if you do not have any local commits).</p>
 <p>One last option, which some prefer, is to avoid using pull altogether, and just use fetch + rebase (this is of course
@@ -411,7 +412,7 @@ more typing). For example:</p>
  Writing objects: 100% (100/100), 10.67 KiB, done.  
  Total 100 (delta 47), reused 100 (delta 47)  
  To git@github.com:&lt;your-user-name&gt;/apache-artemis.git  
-    3382570..1fa25df  master -&gt; master
+    3382570..1fa25df  main -&gt; main
 </code></pre><p>You might need to say -f to force the changes.</p>
 </li>
 </ol>
@@ -468,7 +469,7 @@ section of the top level pom).  This allows ActiveMQ Artemis developers to keep 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Working with the Code","level":"1.3","depth":1,"next":{"title":"IDE Integration","level":"1.4","depth":1,"path":"ide.md","ref":"ide.md","articles":[]},"previous":{"title":"Legal Notice","level":"1.2","depth":1,"path":"notice.md","ref":"notice.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis Hacking Guide"},"file":{"path":"code.md","mtime":"2020-08-24T11:33:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-24T13:56:17.837Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Working with the Code","level":"1.3","depth":1,"next":{"title":"IDE Integration","level":"1.4","depth":1,"path":"ide.md","ref":"ide.md","articles":[]},"previous":{"title":"Legal Notice","level":"1.2","depth":1,"path":"notice.md","ref":"notice.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis Hacking Guide"},"file":{"path":"code.md","mtime":"2023-02-06T15:25:02.963Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-06T15:27:36.320Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

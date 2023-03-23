@@ -74,10 +74,9 @@ Additional resources
 ### Related open source projects
 
 *   [Apache Geronimo](http://geronimo.apache.org/)
-*   [Hermes JMS](http://www.hermesjms.com/)
 *   [Jencks](http://jencks.org/) is a Spring JCA container allowing you to use connection & thread & POJO pooling for consuming JMS in highly concurrent servers
 *   [Lingo](http://lingo.codehaus.org/) is a Spring/POJO remoting layer for JMS. It allows you to reuse all the power of JMS from your POJOs without using any of the JMS APIs directly
 *   [Spring](http://www.springframework.org/)
 *   [Stomp](http://stomp.codehaus.org/) is an open wire protocol (similar to HTTP) for communicating with MOMs from different languages. It has clients for languages like C, C#, Python, Perl, Ruby etc.
-*   [XBean](http://xbean.org/) is used as the default XML configuration mechanism for ActiveMQ
+*   [XBean](https://geronimo.apache.org/xbean/) is used as the default XML configuration mechanism for ActiveMQ
 

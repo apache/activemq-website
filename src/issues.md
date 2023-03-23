@@ -10,8 +10,8 @@ Whenever you are reporting a problem please be sure to include as much informati
 
 * Which version of the component are you using on which Java platform?
 * Any particular application/web server or container being used? If so what version?
-* Stack traces generally really help! If in doubt include the whole thing. Fften exceptions get wrapped in other exceptions and the exception right near the bottom explains the actual error, not the first few lines at the top. It's very easy for us to skim-read past unnecessary parts of a stack trace.
-* Log output can be useful too; sometimes enabling `DEBUG` logging can help.
+* Stack traces generally really help! If in doubt include the whole thing. Often exceptions get wrapped in other exceptions and the exception right near the bottom explains the actual error, not the first few lines at the top.
+* Log output can be useful too. Sometimes enabling `DEBUG` logging can help.
 * Your code & configuration files are often useful.
 
 We can help you much quicker if you try the following:
@@ -29,7 +29,7 @@ We can help you much quicker if you try the following:
 
 #### Using the issue tracker
 
-Before you can raise an issue in the issue tracker you need to [create an account](https://issues.apache.org/jira/secure/Signup!default.jspa).
+Before you can raise an issue in the issue tracker you need to [create an account](https://selfserve.apache.org/jira-account.html).
 
 If you want to be the "assignee" of an issue you need to be in the list of `activemq-developers` on the issue tracker. To join the group please mail the [dev mailing list](mailto:dev@activemq.apache.org) with the email address you used to register with the issue tracker and we'll add you to the group.
 

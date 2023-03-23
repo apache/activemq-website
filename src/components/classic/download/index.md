@@ -16,9 +16,11 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
         {% if release.version contains current_release %}
 #### ActiveMQ {{release.version}} ({{release.release_date | date_to_string: "ordinal", "US"}})
 [Release Notes]({{ release.release_notes }}) | [Release Page]({{release.url}}) | [Documentation](../documentation) | Java compatibility: **{{release.java_version}}**
-{% if release.version contains "5.15." %}
+{% if release.version contains "5.16." %}
 
-**NOTE**: This is the last planned 5.15.x release. Users should upgrade to the current 5.16.x stream for ongoing releases.
+<div class="alert alert-warning">
+NOTE: This is the last planned 5.16.x release. As originally announced in May 2022, users should upgrade for ongoing releases.
+</div>
 {% endif %}
 
 Windows|[apache-activemq-{{release.version}}-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.asc)

@@ -7,7 +7,7 @@ type: artemis
 
 A complete list of JIRAs for the 1.5.1 release can be found at the
 [Apache ActiveMQ Artemis project
-JIRA](https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12338661&styleName=Html&projectId=12315920&Create=Create%22)
+JIRA](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&version=12338661)
 
 Bug Fixes:
 

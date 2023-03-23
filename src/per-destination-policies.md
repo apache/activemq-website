@@ -33,6 +33,7 @@ Common Property|Default|Description
 `storeUsageHighWaterMark`|`100`|The percentage (%) threshold of the `<systemUsage>/<storeUsage>` store limit which when exceeded causes a producer send to block.
 `useCache`|`true`|If `true` persistent messages are cached for fast retrieval from store.
 `usePrefetchExtension`  |`true`|The prefetch extension is used when a message is delivered but not ACK'ed, such that the broker can dispatch another message, e.g., `prefetch == 0`, the idea being that there will always be prefetch number of messages pending. It also allows a transaction batch to exceed the prefetch value.
+`sendDuplicateFromStoreToDLQ` |`false`|(v5.17.0) If `true`, will send a copy of message to DLQ when duplicateFromStore condition is detected. Before v5.17.0, the default behavior was `true`
 `sendFailIfNoSpace`|`false`|(v5.16.0) If `true`, will cause a send to fail with a `javax.jms.ResourceAllocationException` when the destination has reached is resource limits (memory or storage)
 `sendFailIfNoSpaceAfterTimeout`|`0`|(v5.16.0) If `> 0`, will cause a send to fail with a `javax.jms.ResourceAllocationException` when the destination resource limits (memory or storage) remain exhausted for the configured duration in milliseconds
 

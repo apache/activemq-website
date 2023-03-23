@@ -63,7 +63,7 @@ setOriginalDestination|true|when true, the destination on the forwarded message 
 VirtualSelectorCacheBrokerPlugin
 --------------------------------
 
-When selectorAware=true, only active consumers are condidered for selector matching. If consumers disconnect and reconnect they will miss messages. The intent of selectorAware=true is to not have messages build up. The virtualSelectorCacheBrokerPlugin provides a cache that tracks the selectors associated with a destination by a consumers such that they can apply in the absense of that consumer. In this way the just the selected messages build up. The existing set of selectors can be persisted such that it can be recovered on restart. the plugin is applied in the normal way to the plugins section.
+When selectorAware=true, only active consumers are considered for selector matching. If consumers disconnect and reconnect they will miss messages. The intent of selectorAware=true is to not have messages build up. The virtualSelectorCacheBrokerPlugin provides a cache that tracks the selectors associated with a destination by a consumers such that they can apply in the absense of that consumer. In this way the just the selected messages build up. The existing set of selectors can be persisted such that it can be recovered on restart. the plugin is applied in the normal way to the plugins section.
 Code Block
 
 ```

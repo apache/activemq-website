@@ -14,7 +14,7 @@ type: activemq5
 *   persistence providers & locations TODO: add a link to a page explaining what persistence providers are how to configure and use them.
 *   custom message containers (such as last image caching etc)
 
-We use [XBean](http://xbean.org/) to perform the XML configuration.
+We use [XBean](https://geronimo.apache.org/xbean/) to perform the XML configuration.
 
 For details of the XML see the [Xml Reference](xml-reference)
 

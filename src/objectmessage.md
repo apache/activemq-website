@@ -30,17 +30,18 @@ will add `com.mycompany.myapp` package to the list of trusted packages. Note tha
 On the client side, you need to have this same mechanism as malicious code can be deserialized on `ObjectMessage.getObject()` call, compromising your application's environment. You can use the same configuration mechanism on the broker and configure trusted classes using system properties. However, this is usually not convenient in the client applications, so in **5.12.2** and **5.13.1** we introduced additional configuration mechanism using `ActiveMQConnectionFactory`. There are two additional methods defined:
 
 *   The `setTrustedPackages()` method allows you to set the list of trusted packages you want to be to unserialize, like
-```
+```java
 ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
 factory.setTrustedPackages(new ArrayList(Arrays.asList("org.apache.activemq.test,org.apache.camel.test".split(","))));
 ```
 *   The `setTrustAllPackages()` allows you to turn off security check and trust all classes. It's useful for testing purposes.
-```
+```java
 ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
 factory.setTrustAllPackages(true);
 ```
 You can set the same properties in Camel context like:
-```
+
+```xml
 <bean id="connectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
     <property name="brokerURL" value="tcp://localhost:61616"/>
     <property name="trustedPackages">
@@ -57,8 +58,10 @@ You can set the same properties in Camel context like:
     <property name="configuration" ref="jmsConfig"/>
 </bean>
 ```
+
 or
-```
+
+```xml
 <bean id="connectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
     <property name="brokerURL" value="tcp://localhost:61616"/>
 <property name="trustAllPackages" value="true"/>
@@ -70,5 +73,6 @@ or
     <property name="configuration" ref="jmsConfig"/>
 </bean>
 ```
+
 This configuration will override system properties if they are set.
 

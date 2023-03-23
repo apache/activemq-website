@@ -85,7 +85,7 @@ Source Release|[activemq-parent-5.15.3-source-release.zip](https://archive.apach
 Change Log
 ----------
 
-For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12341669)
+For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12341947)
 
 > **Java 8 Required**
 > 
@@ -93,4 +93,4 @@ For a more detailed view of new features and bug fixes, see the [release notes]
 
 > This release affects applications using ObjectMessages. Please refer to [objectmessage](objectmessage) and jira-issue [AMQ-6013](https://issues.apache.org/jira/browse/AMQ-6013) for more information.
 
-Also see the previous [ActiveMQ 5.15.0 Release](activemq-5150-release)
+Also see the previous [ActiveMQ 5.15.2 Release](activemq-5152-release)

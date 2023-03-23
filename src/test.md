@@ -125,7 +125,6 @@ TEST BLOG![](https://cwiki.apache.org/confluence/images/icons/emoticons/check.gi
 ### [Tools](tools.md "Tools")
 
 *   [Web Console](ToolsTools/Tools/web-console.md "Web Console")
-*   [Hermes Jms](ToolsTools/Tools/hermes-Community/FAQ/jms.md "Hermes Jms")
 *   [Maven2 Performance Plugin](Performance/activemq-performance-module-users-manual.md "ActiveMQ Performance Module Users Manual")
 *   [JMeter](http://jakarta.apache.org/jmeter)
 
