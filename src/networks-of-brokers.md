@@ -126,7 +126,7 @@ property|default|description
 ---|---|---
 name|bridge|name of the network - for more than one network connector between the same two brokers - use different names
 dynamicOnly|false|if true, only activate a networked durable subscription when a corresponding durable subscription reactivates, by default they are activated on startup.
-decreaseNetworkConsumerPriority|false|if true, starting at priority -5, decrease the priority for dispatching to a network Queue consumer the further away it is (in network hops) from the producer. When false all network consumers use same default priority(0) as local consumers
+decreaseNetworkConsumerPriority|true|if true, starting at priority -5, decrease the priority for dispatching to a network Queue consumer the further away it is (in network hops) from the producer. When false all network consumers use same default priority(0) as local consumers (before v5.18.0 default=false)
 networkTTL|1|the number of brokers in the network that messages and subscriptions can pass through (sets both message&consumer -TTL)
 messageTTL|1|(version 5.9) the number of brokers in the network that messages can pass through
 consumerTTL|1|(version 5.9) the number of brokers in the network that subscriptions can pass through (keep to 1 in a mesh)
