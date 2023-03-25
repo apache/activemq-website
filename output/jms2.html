@@ -104,6 +104,73 @@
 
 <p>As features are implemented in subsequent releases, these exceptions will be replaced with fully functional methods, examples and unit tests.</p>
 
+<h3 id="jakarta-support">Jakarta support</h3>
+
+<p>Support for JMS 2.0 will also enable the transition to the Jakarta namespace.</p>
+
+<ul>
+  <li>The standard for Java Enterprise features going forward</li>
+  <li>Required for Spring 6</li>
+  <li>Required for Jakarta EE</li>
+  <li>JMS API Java package name-change only</li>
+  <li>ActiveMQ package names do not change</li>
+</ul>
+
+<p>This allows for a dependency-update-only approach to the transition without having to re-code going forward!</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Client jar</th>
+      <th>JMS Package</th>
+      <th>Version</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>activemq-client</td>
+      <td>javax.jms</td>
+      <td>5.18.0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>activemq-client-jakarta</td>
+      <td>jakarta.jms</td>
+      <td>5.18.0</td>
+      <td>Transitional module for client-only Jakarta support</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>There is no functional change, this is purely a Java package naming change:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import javax.jms.ConnectionFactory
+import javax.jms.Message
+import javax.jms...
+</code></pre></div></div>
+
+<p>Becomes</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import jakarta.jms.ConnectionFactory
+import jakarta.jms.Message
+import jakarta.jms...
+</code></pre></div></div>
+
+<p>To use the Jakarta client in Maven:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.activemq&lt;/groupId&gt;
+  &lt;artifactId&gt;activemq-client-jakarta&lt;/clientId&gt;
+  &lt;version&gt;${activemq.version}&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre></div></div>
+
+<p>Note: Spring bean definitions do not change for Jakarta support:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+</code></pre></div></div>
+
 <h3 id="activemq-jms-v20-implementation-progress">ActiveMQ JMS v2.0 Implementation Progress</h3>
 
 <p>The implementation approach is subject to change. Be sure to verify features in Release notes.</p>
@@ -126,62 +193,62 @@
       <td><a href="https://issues.apache.org/jira/browse/AMQ-7309">AMQ-7309</a></td>
       <td>merged</td>
       <td>5.18.0</td>
-      <td> </td>
+      <td>5.18.0</td>
       <td>JMS v2.0 API dependency</td>
       <td>ActiveMQ will ship with a JMS v2.0 dependency jar</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8322">AMQ-8322</a></td>
-      <td>merged <a href="https://github.com/apache/activemq/pull/729">PR-729</a></td>
+      <td>merged</td>
       <td>5.18.0</td>
-      <td> </td>
+      <td>5.18.0</td>
       <td>JMSContext</td>
       <td>Simplified JMS Context object support</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8322">AMQ-8322</a></td>
-      <td>merged <a href="https://github.com/apache/activemq/pull/729">PR-729</a></td>
+      <td>merged</td>
       <td>5.18.0</td>
-      <td> </td>
+      <td>5.18.0</td>
       <td>JMSRuntimeException</td>
       <td>Convert JMSExceptions to be JMSRuntimeExceptions</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8322">AMQ-8322</a></td>
-      <td>merged <a href="https://github.com/apache/activemq/pull/729">PR-729</a></td>
+      <td>merged</td>
       <td>5.18.0</td>
-      <td> </td>
+      <td>5.18.0</td>
       <td>JMSConsumer</td>
       <td>Consume messages</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8322">AMQ-8322</a></td>
-      <td>merged <a href="https://github.com/apache/activemq/pull/729">PR-729</a></td>
+      <td>merged</td>
       <td>5.18.0</td>
-      <td> </td>
+      <td>5.18.0</td>
       <td>JMSProducer</td>
       <td>Produce messages</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8320">AMQ-8320</a></td>
       <td> </td>
-      <td>5.18.0</td>
+      <td>5.18.1</td>
       <td> </td>
       <td>Delivery Delay</td>
       <td>Support for Message DeliveryDelay feature</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8321">AMQ-8321</a></td>
-      <td> </td>
+      <td>merged</td>
       <td>5.18.0</td>
-      <td> </td>
+      <td>5.18.0</td>
       <td>GetBody/isBodyAssignable</td>
       <td>Support for checking body type using a Class&lt;?&gt;</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8324">AMQ-8324</a></td>
       <td> </td>
-      <td>5.18.0</td>
+      <td>5.18.1</td>
       <td> </td>
       <td>JMSProducer features</td>
       <td>Completion Listener and Delivery Delay support</td>
