@@ -8,7 +8,7 @@ shortDescription: 5.18.0 is an important milestone, starting the new 5.18.x seri
 ---
 Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. It's a major milestone for the ActiveMQ project.
 ActiveMQ 5.18.x brings:
-* JMS2 compliant clients, with one client using javax.jms namespacee and one clieent using jakarta.jms namespace
+* JMS2 compliant clients, with one client using javax.jms namespacee and one clieent using jakarta.jms namespace (see [JMS v2.0 page](/jms2))
 * Spring 5.3.x
 * optimized LDAP use in LDAP JAAS login module
 * improved REST API
