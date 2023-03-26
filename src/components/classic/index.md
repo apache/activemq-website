@@ -8,7 +8,7 @@ project_color: pink
 
 Apache ActiveMQ&reg; is the most popular and powerful open source messaging and [Integration Patterns](../../enterprise-integration-patterns) server.
 
-Apache ActiveMQ is fast, supports many [Cross Language Clients and Protocols](../../cross-language-clients), comes with easy to use [Enterprise Integration Patterns](../../enterprise-integration-patterns) and many [advanced features](../../features) while fully supporting [JMS 1.1](http://java.sun.com/products/jms/) and J2EE 1.4\. Apache ActiveMQ is released under the [Apache](http://www.apache.org/) [2.0 License](http://www.apache.org/licenses/LICENSE-2.0)
+Apache ActiveMQ is fast, supports many [Cross Language Clients and Protocols](../../cross-language-clients), comes with easy to use [Enterprise Integration Patterns](../../enterprise-integration-patterns) and many [advanced features](../../features) while fully supporting [JMS 1.1 & JMS 2.0](http://java.sun.com/products/jms/) and J2EE 1.4+\. Apache ActiveMQ is released under the [Apache](http://www.apache.org/) [2.0 License](http://www.apache.org/licenses/LICENSE-2.0)
 
 Grab yourself a [download](../../download), review our [Getting Started Guide](../../getting-started), surf our [FAQ](../../faq), or start [contributing](../../contributing).
 
@@ -23,7 +23,7 @@ Grab yourself a [download](../../download), review our [Getting Started Guide](.
     *   [MQTT](../../mqtt) v3.1 support allowing for connections in an IoT environment.
 *   full support for the [Enterprise Integration Patterns](../../enterprise-integration-patterns) both in the JMS client and the Message Broker
 *   Supports many [advanced features](../../features) such as [Message Groups](../../message-groups), [Virtual Destinations](../../virtual-destinations), [Wildcards](../../wildcards) and [Composite Destinations](../../composite-destinations)
-*   Fully supports JMS 1.1 and J2EE 1.4 with support for transient, persistent, transactional and XA messaging
+*   Fully supports JMS 1.1 & 2.0 and J2EE 1.4+ with support for transient, persistent, transactional and XA messaging
 *   [Spring Support](../../spring-support) so that ActiveMQ can be easily embedded into Spring applications and configured using Spring's XML configuration mechanism
 *   Tested inside popular J2EE servers such as [TomEE](http://tomee.apache.org/), [Geronimo](http://geronimo.apache.org/), JBoss, GlassFish and WebLogic
     *   Includes [JCA 1.5 resource adaptors](../../resource-adapter) for inbound & outbound messaging so that ActiveMQ should auto-deploy in any J2EE 1.4 compliant server
