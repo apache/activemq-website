@@ -4,11 +4,11 @@ release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=
 release_date: 2023-03-24
 title: ActiveMQ 5.18.0 Release
 java_version: 11+
-shortDescription: 5.18.0 is an important milestone, starting the new 5.18.x series. It brings JMS2 clients (both javax and jakarta namespaces), Spring 5.3.x, a bunch of dependency updates, and a lot of fixes and improvements.
+shortDescription: 5.18.0 is an important milestone. It brings initial JMS 2.0 (javax.jms API namespace) and Jakarta Messaging 3.1 (jakarta.jms API namespace) client support, Spring 5.3.x, a bunch of dependency updates, and a lot of fixes and improvements.
 ---
 Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. It's a major milestone for the ActiveMQ project.
 ActiveMQ 5.18.x brings:
-* JMS2 compliant clients, with one client using javax.jms namespacee and one clieent using jakarta.jms namespace (see [JMS v2.0 page](/jms2))
+* It brings initial JMS 2.0 (javax.jms API namespace) and Jakarta Messaging 3.1 (jakarta.jms API namespace) client support. See the [JMS 2.0 page](/jms2) for more details on the available functionality and how to use the Jakarta Messaging support.
 * Spring 5.3.x
 * optimized LDAP use in LDAP JAAS login module
 * improved REST API
