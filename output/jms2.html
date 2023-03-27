@@ -100,18 +100,18 @@
 
 <h3 id="transition-approach">Transition Approach</h3>
 
-<p>Initially, ActiveMQ Clients will throw an UnsupportedOperationException (RuntimeException) for JMS v2.0 methods and features. This ensures that existing JMS v2.0 frameworks are notified of the coming JMS v2.0 support for ActiveMQ and have time to accomodate the changes accordingly.</p>
+<p>Initially, ActiveMQ clients will not support all JMS 2.0 functionality and will throw an UnsupportedOperationException (RuntimeException) for unsupported methods and features, such as those for async send with a CompletionListener, sending messages with a delivery delay, and using shared topic consumers.</p>
 
-<p>As features are implemented in subsequent releases, these exceptions will be replaced with fully functional methods, examples and unit tests.</p>
+<p>As features are implemented in subsequent releases, these exceptions will be replaced with fully functional methods, examples and unit tests. See later/below for more details on implementation progress.</p>
 
-<h3 id="jakarta-support">Jakarta support</h3>
+<h3 id="jakarta-messaging-31-support">Jakarta Messaging 3.1 support</h3>
 
-<p>Support for JMS 2.0 will also enable the transition to the Jakarta namespace.</p>
+<p>The initial support for JMS 2.0 also enables building upon this for transition to Jakarta Messaging 3.1 and its new jakarta.jms API namespace rather than the historical javax.jms namespace.</p>
 
 <ul>
   <li>The standard for Java Enterprise features going forward</li>
   <li>Required for Spring 6</li>
-  <li>Required for Jakarta EE</li>
+  <li>Required for Jakarta EE 9 + 10.</li>
   <li>JMS API Java package name-change only</li>
   <li>ActiveMQ package names do not change</li>
 </ul>
@@ -122,7 +122,7 @@
   <thead>
     <tr>
       <th>Client jar</th>
-      <th>JMS Package</th>
+      <th>API Package</th>
       <th>Version</th>
       <th>Notes</th>
     </tr>
@@ -138,7 +138,7 @@
       <td>activemq-client-jakarta</td>
       <td>jakarta.jms</td>
       <td>5.18.0</td>
-      <td>Transitional module for client-only Jakarta support</td>
+      <td>Transitional module for client-only Jakarta support. Can not be used in the same JVM as javax.jms activemq-client or broker.</td>
     </tr>
   </tbody>
 </table>
@@ -230,14 +230,6 @@ import jakarta.jms...
       <td>Produce messages</td>
     </tr>
     <tr>
-      <td><a href="https://issues.apache.org/jira/browse/AMQ-8320">AMQ-8320</a></td>
-      <td> </td>
-      <td>5.18.1</td>
-      <td> </td>
-      <td>Delivery Delay</td>
-      <td>Support for Message DeliveryDelay feature</td>
-    </tr>
-    <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8321">AMQ-8321</a></td>
       <td>merged</td>
       <td>5.18.0</td>
@@ -246,20 +238,20 @@ import jakarta.jms...
       <td>Support for checking body type using a Class&lt;?&gt;</td>
     </tr>
     <tr>
+      <td><a href="https://issues.apache.org/jira/browse/AMQ-8320">AMQ-8320</a></td>
+      <td> </td>
+      <td>5.18.1</td>
+      <td> </td>
+      <td>Delivery Delay</td>
+      <td>Support for Message DeliveryDelay feature</td>
+    </tr>
+    <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8324">AMQ-8324</a></td>
       <td> </td>
       <td>5.18.1</td>
       <td> </td>
       <td>JMSProducer features</td>
-      <td>Completion Listener and Delivery Delay support</td>
-    </tr>
-    <tr>
-      <td><a href="https://issues.apache.org/jira/browse/AMQ-8325">AMQ-8325</a></td>
-      <td> </td>
-      <td>TBD</td>
-      <td> </td>
-      <td>XA Connection methods</td>
-      <td>Updated methods when using XA Transactions</td>
+      <td>Completion Listener async send support</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8323">AMQ-8323</a></td>
@@ -268,6 +260,14 @@ import jakarta.jms...
       <td> </td>
       <td>Shared Topic Consumer</td>
       <td>Multi-consumer (queue-like) consuming from topic subscriptions</td>
+    </tr>
+    <tr>
+      <td><a href="https://issues.apache.org/jira/browse/AMQ-8325">AMQ-8325</a></td>
+      <td> </td>
+      <td>TBD</td>
+      <td> </td>
+      <td>XA Connection methods</td>
+      <td>Updated methods when using XA Transactions</td>
     </tr>
   </tbody>
 </table>
