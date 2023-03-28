@@ -25,7 +25,7 @@ Apache ActiveMQ is designed to support a large number if [Cross Language Clients
     *   [OSGi Integration](osgi-integration)
     *   [Resource Adapter](resource-adapter)
     *   [SJSAS with GenericJMSRA](sjsas-with-genericjmsra)
-    *   [Spring Support](spring-Community/support)
+    *   [Spring Support](spring-support)
     *   [Sun JNDI](sun-jndi)
     *   [Tomcat](tomcat)
     *   [WebLogic Integration](weblogic-integration)
