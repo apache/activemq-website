@@ -50,7 +50,7 @@ To use the Jakarta client in Maven:
 
     <dependency>
       <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-client-jakarta</clientId>
+      <artifactId>activemq-client-jakarta</artifactId>
       <version>${activemq.version}</version>
     </dependency>
 
@@ -72,7 +72,7 @@ JIRA|Status|Target Version|Completed Version|Feature|Notes
 [AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | merged | 5.18.0 | 5.18.0 | JMSConsumer | Consume messages
 [AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | merged | 5.18.0 | 5.18.0 | JMSProducer | Produce messages
 [AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | merged | 5.18.0 | 5.18.0 | GetBody/isBodyAssignable | Support for checking body type using a Class<?>
-[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | | 5.18.1 | | Delivery Delay | Support for Message DeliveryDelay feature
+[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | PR [#982](https://github.com/apache/activemq/pull/982)| 5.18.1 | | Delivery Delay | Support for Message DeliveryDelay feature
 [AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | | 5.18.1 | | JMSProducer features | Completion Listener async send support
 [AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | | TBD | | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions
 [AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | | TBD | | XA Connection methods | Updated methods when using XA Transactions
