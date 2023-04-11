@@ -31,8 +31,8 @@ This allows for a dependency-update-only approach to the transition without havi
 
 Client jar|API Package|Version|Notes
 ---|---|---
-activemq-client | javax.jms | 5.18.0 | 
-activemq-client-jakarta | jakarta.jms | 5.18.0 | Transitional module for client-only Jakarta support. Can not be used in the same JVM as javax.jms activemq-client or broker.
+activemq-client | javax.jms | 5.18.0+ | Initial JMS 2.0 support. Works with embedded broker and VM transport as previously.
+activemq-client-jakarta | jakarta.jms | 5.18.1+ | Transitional module for initial *client-only* Jakarta Messaging 3.1 support. Can't be used in the same JVM as activemq-client or broker which use javax.jms API. **Note this means no embedded broker / VM transport support, only remote brokers.**
 
 There is no functional change, this is purely a Java package naming change:
 
@@ -72,8 +72,8 @@ JIRA|Status|Target Version|Completed Version|Feature|Notes
 [AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | merged | 5.18.0 | 5.18.0 | JMSConsumer | Consume messages
 [AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | merged | 5.18.0 | 5.18.0 | JMSProducer | Produce messages
 [AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | merged | 5.18.0 | 5.18.0 | GetBody/isBodyAssignable | Support for checking body type using a Class<?>
-[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | PR [#982](https://github.com/apache/activemq/pull/982)| 5.18.1 | | Delivery Delay | Support for Message DeliveryDelay feature
-[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | | 5.18.1 | | JMSProducer features | Completion Listener async send support
+[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | PR [#982](https://github.com/apache/activemq/pull/982)| 5.18.2 | | Delivery Delay | Support for Message DeliveryDelay feature
+[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | | 5.18.2 | | JMSProducer features | Completion Listener async send support
 [AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | | TBD | | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions
 [AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | | TBD | | XA Connection methods | Updated methods when using XA Transactions
 
