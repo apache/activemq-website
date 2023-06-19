@@ -874,12 +874,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.55" data-path="client-reconnection.html">
+        <li class="chapter " data-level="1.55" data-path="client-failover.html">
             
-                <a href="client-reconnection.html">
+                <a href="client-failover.html">
             
                     
-                    Client Reconnection and Session Reattachment
+                    Client Failover
             
                 </a>
             
@@ -1428,7 +1428,26 @@ instances. Default values are based on these implementations.</p>
    <span class="hljs-tag">&lt;<span class="hljs-name">request-log</span> <span class="hljs-attr">filename</span>=<span class="hljs-string">&quot;${artemis.instance}/log/http-access-yyyy_MM_dd.log&quot;</span> <span class="hljs-attr">append</span>=<span class="hljs-string">&quot;true&quot;</span> <span class="hljs-attr">extended</span>=<span class="hljs-string">&quot;true&quot;</span>/&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">web</span>&gt;</span>
 </code></pre>
-<h2 id="proxy-forwarding">Proxy Forwarding</h2>
+<h3 id="system-properties">System properties</h3>
+<p>It is possible to use system properties to add or update web configuration items.
+If you define a system property starting with &quot;webconfig.&quot; it will be parsed at the startup
+to update the web configuration.</p>
+<p>To enable the client authentication for an existing binding with the name <code>artemis</code>,
+set the system property <code>webconfig.bindings.artemis.clientAuth</code> to <code>true</code>, i.e.</p>
+<pre><code>java -Dwebconfig.bindings.artemis.clientAuth=true
+</code></pre><p>To add a new binding or app set the new binding or app attributes using their new names, i.e.</p>
+<pre><code>java -Dwebconfig.bindings.my-binding.uri=http://localhost:8162
+java -Dwebconfig.bindings.my-binding.apps.my-app.uri=my-app
+java -Dwebconfig.bindings.my-binding.apps.my-app.war=my-app.war
+</code></pre><p>To update a binding without a name use its uri and to update an app without a name use its url , i.e.</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">web</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;web&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">binding</span> <span class="hljs-attr">uri</span>=<span class="hljs-string">&quot;http://localhost:8161&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">app</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;activemq-branding&quot;</span> <span class="hljs-attr">war</span>=<span class="hljs-string">&quot;activemq-branding.war&quot;</span>/&gt;</span>
+...
+</code></pre>
+<pre><code>java -Dwebconfig.bindings.&quot;http://localhost:8161&quot;.clientAuth=true
+</code></pre><pre><code>java -Dwebconfig.bindings.&quot;http://localhost:8161&quot;.apps.&quot;activemq-branding&quot;.war=my-branding.war
+</code></pre><h2 id="proxy-forwarding">Proxy Forwarding</h2>
 <p>The proxies and load balancers usually support <code>X-Forwarded</code> headers
 to send information altered or lost when a proxy is involved
 in the path of the request. Jetty supports the <a href="https://www.eclipse.org/jetty/javadoc/current/org/eclipse/jetty/server/ForwardedRequestCustomizer.html" target="_blank"><code>ForwardedRequestCustomizer</code></a>
@@ -1490,7 +1509,7 @@ respectively.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Embedded Web Server","level":"1.67","depth":1,"next":{"title":"Logging","level":"1.68","depth":1,"path":"logging.md","ref":"logging.md","articles":[]},"previous":{"title":"Thread management","level":"1.66","depth":1,"path":"thread-pooling.md","ref":"thread-pooling.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"web-server.md","mtime":"2023-02-03T20:07:27.802Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Embedded Web Server","level":"1.67","depth":1,"next":{"title":"Logging","level":"1.68","depth":1,"path":"logging.md","ref":"logging.md","articles":[]},"previous":{"title":"Thread management","level":"1.66","depth":1,"path":"thread-pooling.md","ref":"thread-pooling.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.29.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"web-server.md","mtime":"2023-06-19T12:36:55.457Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-06-19T12:39:25.929Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

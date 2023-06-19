@@ -874,12 +874,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.55" data-path="client-reconnection.html">
+        <li class="chapter " data-level="1.55" data-path="client-failover.html">
             
-                <a href="client-reconnection.html">
+                <a href="client-failover.html">
             
                     
-                    Client Reconnection and Session Reattachment
+                    Client Failover
             
                 </a>
             
@@ -1402,21 +1402,31 @@ will not be repeated here.</p>
 message count). However, these metrics can be deduced by aggregating the
 lower level metrics (e.g. aggregate the message.count metrics from all queues
 to get the total).</p>
-<p>JVM memory metrics are also exported by default and GC, thread metrics, and 
-<a href="https://netty.io/4.1/api/io/netty/buffer/PooledByteBufAllocatorMetric.html" target="_blank">Netty</a>
-metrics can be configured</p>
+<p>Optional metrics include:</p>
+<ul>
+<li>JVM memory metrics (exported by default)</li>
+<li>JVM GC</li>
+<li>JVM thread</li>
+<li><a href="https://netty.io/4.1/api/io/netty/buffer/PooledByteBufAllocatorMetric.html" target="_blank">Netty</a></li>
+<li>File descriptors</li>
+<li>Processor</li>
+<li>Uptime</li>
+</ul>
 <h2 id="configuration">Configuration</h2>
 <p>Metrics for all addresses and queues are enabled by default. If you want to
 disable metrics for a particular address or set of addresses you can do so by
 setting the <code>enable-metrics</code> <code>address-setting</code> to <code>false</code>.</p>
 <p>In <code>broker.xml</code> use the <code>metrics</code> element to configure which JVM metrics are
 reported and to configure the plugin itself. Here&apos;s a configuration with all
-JVM metrics:</p>
+optional metrics:</p>
 <pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">metrics</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">jvm-memory</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">jvm-memory</span>&gt;</span> <span class="hljs-comment">&lt;!-- defaults to true --&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">jvm-gc</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">jvm-gc</span>&gt;</span> <span class="hljs-comment">&lt;!-- defaults to false --&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">jvm-threads</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">jvm-threads</span>&gt;</span> <span class="hljs-comment">&lt;!-- defaults to false --&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">netty-pool</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">netty-pool</span>&gt;</span> <span class="hljs-comment">&lt;!-- defaults to false --&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">file-descriptors</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">file-descriptors</span>&gt;</span> <span class="hljs-comment">&lt;!-- defaults to false --&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">processor</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">processor</span>&gt;</span> <span class="hljs-comment">&lt;!-- defaults to false --&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">uptime</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">uptime</span>&gt;</span> <span class="hljs-comment">&lt;!-- defaults to false --&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span> <span class="hljs-attr">class-name</span>=<span class="hljs-string">&quot;org.apache.activemq.artemis.core.server.metrics.plugins.LoggingMetricsPlugin&quot;</span>/&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">metrics</span>&gt;</span>
 </code></pre>
@@ -1473,7 +1483,7 @@ customize the implementation as necessary, e.g.:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Metrics","level":"1.49","depth":1,"next":{"title":"Security","level":"1.50","depth":1,"path":"security.md","ref":"security.md","articles":[]},"previous":{"title":"Management Console","level":"1.48","depth":1,"path":"management-console.md","ref":"management-console.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"metrics.md","mtime":"2023-02-03T20:07:27.781Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Metrics","level":"1.49","depth":1,"next":{"title":"Security","level":"1.50","depth":1,"path":"security.md","ref":"security.md","articles":[]},"previous":{"title":"Management Console","level":"1.48","depth":1,"path":"management-console.md","ref":"management-console.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.29.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"metrics.md","mtime":"2023-06-19T12:36:55.437Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-06-19T12:39:25.929Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

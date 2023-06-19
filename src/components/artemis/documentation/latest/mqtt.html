@@ -874,12 +874,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.55" data-path="client-reconnection.html">
+        <li class="chapter " data-level="1.55" data-path="client-failover.html">
             
-                <a href="client-reconnection.html">
+                <a href="client-failover.html">
             
                     
-                    Client Reconnection and Session Reattachment
+                    Client Failover
             
                 </a>
             
@@ -1479,11 +1479,29 @@ over Web Sockets on the port <code>1883</code>. Web browsers can then connect to
 </code></pre>
 <p>Web browsers can then connect to <code>wss://&lt;server&gt;:8883</code> using a Web Socket to
 send and receive MQTT messages.</p>
+<h2 id="link-stealing">Link Stealing</h2>
+<p>The MQTT specifications define a behavior often referred to as &quot;link stealing.&quot;
+This means that whenever a new client connects with the same client ID as
+another existing client then the existing client&apos;s session will be closed and
+its network connection will be terminated.</p>
+<p>In certain use-cases this behavior is not desired so it is configurable. The
+URL parameter <code>allowLinkStealing</code> can be configured on the MQTT <code>acceptor</code> to
+modify this behavior. By default <code>allowLinkStealing</code> is <code>true</code>. If it is set to
+<code>false</code> then whenever a new client connects with the same client ID as another
+existing client then the <em>new</em> client&apos;s session will be closed and its network
+connection will be terminated. In the case of MQTT 5 clients they will receive
+a disconnect reason code of <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901208" target="_blank"><code>0x80</code> (i.e. &quot;Unspecified error&quot;)</a>.</p>
 <h2 id="automatic-subscription-clean-up">Automatic Subscription Clean-up</h2>
-<p>Sometimes MQTT clients don&apos;t clean up their subscriptions. In such situations
-the <code>auto-delete-queues-delay</code> and <code>auto-delete-queues-message-count</code>
-address-settings can be used to clean up the abandoned subscription queues.
-However, the MQTT session meta-data is still present in memory and needs to be
+<p>Sometimes MQTT clients using <code>CleanSession=false</code> don&apos;t clean up their
+subscriptions. In such situations the following address-setting can be used
+to clean up the abandoned subscription queues:</p>
+<pre><code class="lang-xml">   <span class="hljs-tag">&lt;<span class="hljs-name">address-setting</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;myMqttAddress&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-created-queues</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-created-queues</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-queues-delay</span>&gt;</span>3600000<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-queues-delay</span>&gt;</span> <span class="hljs-comment">&lt;!-- 1 hour delay --&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-queues-message-count</span>&gt;</span>-1<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-queues-message-count</span>&gt;</span> <span class="hljs-comment">&lt;!-- doesn&apos;t matter how many messages there are --&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">address-setting</span>&gt;</span>
+</code></pre>
+<p>However, the MQTT session meta-data is still present in memory and needs to be
 cleaned up as well. The URL parameter <code>defaultMqttSessionExpiryInterval</code> can be
 configured on the MQTT <code>acceptor</code> to deal with this situation.</p>
 <p>MQTT 5 added a new <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901048" target="_blank">session expiry interval</a>
@@ -1625,7 +1643,7 @@ MQTT <code>acceptor</code> in <code>broker.xml</code>, e.g.:</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"MQTT","level":"1.13","depth":1,"next":{"title":"STOMP","level":"1.14","depth":1,"path":"stomp.md","ref":"stomp.md","articles":[]},"previous":{"title":"Broker Connections","level":"1.12.1","depth":2,"path":"amqp-broker-connections.md","ref":"amqp-broker-connections.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"mqtt.md","mtime":"2023-02-03T20:07:27.782Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"MQTT","level":"1.13","depth":1,"next":{"title":"STOMP","level":"1.14","depth":1,"path":"stomp.md","ref":"stomp.md","articles":[]},"previous":{"title":"Broker Connections","level":"1.12.1","depth":2,"path":"amqp-broker-connections.md","ref":"amqp-broker-connections.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.29.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"mqtt.md","mtime":"2023-06-19T12:36:55.438Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-06-19T12:39:25.929Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

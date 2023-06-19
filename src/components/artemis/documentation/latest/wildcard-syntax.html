@@ -874,12 +874,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.55" data-path="client-reconnection.html">
+        <li class="chapter " data-level="1.55" data-path="client-failover.html">
             
-                <a href="client-reconnection.html">
+                <a href="client-failover.html">
             
                     
-                    Client Reconnection and Session Reattachment
+                    Client Failover
             
                 </a>
             
@@ -1329,23 +1329,54 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="wildcard-syntax">Wildcard Syntax</h1>
-<p>Apache ActiveMQ Artemis uses a specific syntax for representing wildcards in security
-settings, address settings and when creating consumers.</p>
+<p>Apache ActiveMQ Artemis uses a specific syntax for representing
+wildcards in security settings, address settings and when creating
+consumers.</p>
 <p>The syntax is similar to that used by <a href="https://www.amqp.org" target="_blank">AMQP</a>.</p>
-<p>An Apache ActiveMQ Artemis wildcard expression contains words delimited by the character
-<code>.</code> (full stop).</p>
+<p>An Apache ActiveMQ Artemis wildcard expression contains <strong>words
+separated by a delimiter</strong>. The default delimiter is <code>.</code> (full stop).</p>
 <p>The special characters <code>#</code> and <code>*</code> also have special meaning and can
-take the place of a word.</p>
+take the place of a <strong>word</strong>.</p>
+<p>To be clear, the wildcard characters cannot be used like wildcards in
+a <a href="https://en.wikipedia.org/wiki/Regular_expression" target="_blank">regular expression</a>.
+They operate exclusively on <strong>words separated by a delimiter</strong>.</p>
+<h2 id="matching-any-word">Matching Any Word</h2>
 <p>The character <code>#</code> means &quot;match any sequence of zero or more words&quot;.</p>
+<p>So the wildcard <code>news.europe.#</code> would match:</p>
+<ul>
+<li><code>news.europe</code></li>
+<li><code>news.europe.sport</code></li>
+<li><code>news.europe.politics</code></li>
+<li><code>news.europe.politics.regional</code></li>
+</ul>
+<p>But <code>news.europe.#</code> would <em>not</em> match:</p>
+<ul>
+<li><code>news.usa</code></li>
+<li><code>news.usa.sport</code></li>
+<li><code>entertainment</code></li>
+</ul>
+<h2 id="matching-a-single-word">Matching a Single Word</h2>
 <p>The character <code>*</code> means &quot;match a single word&quot;.</p>
-<p>So the wildcard <code>news.europe.#</code> would match <code>news.europe</code>,
-<code>news.europe.sport</code>, <code>news.europe.politics</code>, and
-<code>news.europe.politics.regional</code> but would <em>not</em> match <code>news.usa</code>,
-<code>news.usa.sport</code> or <code>entertainment</code>.</p>
-<p>The wildcard <code>news.*</code> would match <code>news.europe</code>, but not
-<code>news.europe.sport</code>.</p>
-<p>The wildcard <code>news.*.sport</code> would match <code>news.europe.sport</code> and also
-<code>news.usa.sport</code>, but not <code>news.europe.politics</code>.</p>
+<p>The wildcard <code>news.*</code> would match:</p>
+<ul>
+<li><code>news.europe</code></li>
+<li><code>news.usa</code></li>
+</ul>
+<p>But <code>news.*</code> would <em>not</em> match:</p>
+<ul>
+<li><code>news.europe.sport</code></li>
+<li><code>news.usa.sport</code></li>
+<li><code>news.europe.politics.regional</code></li>
+</ul>
+<p>The wildcard <code>news.*.sport</code> would match:</p>
+<ul>
+<li><code>news.europe.sport</code></li>
+<li><code>news.usa.sport</code></li>
+</ul>
+<p>But <code>news.*.sport</code> would <em>not</em> match:</p>
+<ul>
+<li><code>news.europe.politics</code></li>
+</ul>
 <h2 id="customizing-the-syntax">Customizing the Syntax</h2>
 <p>It&apos;s possible to further configure the syntax of the wildcard addresses using the broker configuration. 
 For that, the <code>&lt;wildcard-addresses&gt;</code> configuration tag is used.</p>
@@ -1400,7 +1431,7 @@ For that, the <code>&lt;wildcard-addresses&gt;</code> configuration tag is used.
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Wildcard Syntax","level":"1.22","depth":1,"next":{"title":"Filter Expressions","level":"1.23","depth":1,"path":"filter-expressions.md","ref":"filter-expressions.md","articles":[]},"previous":{"title":"Routing Messages With Wild Cards","level":"1.21","depth":1,"path":"wildcard-routing.md","ref":"wildcard-routing.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"wildcard-syntax.md","mtime":"2023-02-03T20:07:27.803Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Wildcard Syntax","level":"1.22","depth":1,"next":{"title":"Filter Expressions","level":"1.23","depth":1,"path":"filter-expressions.md","ref":"filter-expressions.md","articles":[]},"previous":{"title":"Routing Messages With Wild Cards","level":"1.21","depth":1,"path":"wildcard-routing.md","ref":"wildcard-routing.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.29.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"wildcard-syntax.md","mtime":"2023-06-19T12:36:55.458Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-06-19T12:39:25.929Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

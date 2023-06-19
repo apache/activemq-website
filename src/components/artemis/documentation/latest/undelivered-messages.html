@@ -874,12 +874,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.55" data-path="client-reconnection.html">
+        <li class="chapter " data-level="1.55" data-path="client-failover.html">
             
-                <a href="client-reconnection.html">
+                <a href="client-failover.html">
             
                     
-                    Client Reconnection and Session Reattachment
+                    Client Failover
             
                 </a>
             
@@ -1355,6 +1355,9 @@ fail or rollback. Without a delayed redelivery, the system can get into a
 &quot;thrashing&quot; state, with delivery being attempted, the client rolling back,
 and delivery being re-attempted ad infinitum in quick succession,
 consuming valuable CPU and network resources.</p>
+<h1 id="persist-redelivery">Persist Redelivery</h1>
+<p>Two Journal update records are stored every time a redelivery happens. One for the number of deliveries that happened, and one in case a scheduled redelivery is being used. </p>
+<p>It is recommended to keep max-redelivery-records=1 in situations where you are operating with very short redelivery delays as you will be creating unecessary records on the journal.</p>
 <h3 id="configuring-delayed-redelivery">Configuring Delayed Redelivery</h3>
 <p>Delayed redelivery is defined in the address-setting configuration:</p>
 <pre><code class="lang-xml"><span class="hljs-comment">&lt;!-- delay redelivery of messages for 5s --&gt;</span>
@@ -1589,7 +1592,7 @@ due to performance implications.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Message Redelivery and Undelivered Messages","level":"1.34","depth":1,"next":{"title":"Message Expiry","level":"1.35","depth":1,"path":"message-expiry.md","ref":"message-expiry.md","articles":[]},"previous":{"title":"Guarantees of sends and commits","level":"1.33","depth":1,"path":"send-guarantees.md","ref":"send-guarantees.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"undelivered-messages.md","mtime":"2023-02-03T20:07:27.798Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Message Redelivery and Undelivered Messages","level":"1.34","depth":1,"next":{"title":"Message Expiry","level":"1.35","depth":1,"path":"message-expiry.md","ref":"message-expiry.md","articles":[]},"previous":{"title":"Guarantees of sends and commits","level":"1.33","depth":1,"path":"send-guarantees.md","ref":"send-guarantees.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.29.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"undelivered-messages.md","mtime":"2023-06-19T12:36:55.454Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-06-19T12:39:25.929Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

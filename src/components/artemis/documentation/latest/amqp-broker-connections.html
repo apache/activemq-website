@@ -874,12 +874,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.55" data-path="client-reconnection.html">
+        <li class="chapter " data-level="1.55" data-path="client-failover.html">
             
-                <a href="client-reconnection.html">
+                <a href="client-failover.html">
             
                     
-                    Client Reconnection and Session Reattachment
+                    Client Failover
             
                 </a>
             
@@ -1355,7 +1355,7 @@
 <li><code>auto-start</code> : Should the broker connection start automatically with the broker. Default is <code>true</code>. If false it is necessary to call a management operation to start it.</li>
 </ul>
 <p><em>Notice:</em> If auto-start is disabled on the broker connection, the start of the broker connection will only happen after the management method <code>startBrokerConnection(connectionName)</code> is called on the ServerController.</p>
-<p><em>Important</em>: The target endpoint needs permission for all operations that configured. Therefore, If a security manager is being used, ensure to perform the configured operations with a user with sufficient permissions.</p>
+<p><em>Important</em>: The target endpoint needs permission for all operations that are configured. Therefore, If a security manager is being used, ensure that you perform the configured operations with a user with sufficient permissions.</p>
 <div style="page-break-after: always"></div>
 
 <h1 id="amqp-server-connection-operations">AMQP Server Connection Operations</h1>
@@ -1381,11 +1381,11 @@
 <div style="page-break-after: always"></div>
 
 <h1 id="reconnecting-and-failover">Reconnecting and Failover</h1>
-<p>It is possible to determine how reconnection will happen on a broker connection. </p>
-<p>These are the attributes are available on amqp-connection XML element:</p>
+<p>It is possible to determine how reconnection will happen on a broker connection.</p>
+<p>These are the attributes that are available on the amqp-connection XML element:</p>
 <ul>
-<li>reconnect-attempts: default as -1 (infinite). How many attempts will be done after a failed connection</li>
-<li>retry-interval: default as 5000, in milliseconds, the wait between each retry in connections. </li>
+<li>reconnect-attempts: default is -1 (infinite). How many attempts will be done after a failed connection</li>
+<li>retry-interval: default is 5000, in milliseconds, the wait between each retry of a connection.</li>
 </ul>
 <p>It is also possible to specify alternate hosts on a broker connection by appending a comma separated list after a # at the end of the URI.
 The broker connection would keep trying on the alternate list until one of the targets is available to connect. Example:</p>
@@ -1416,7 +1416,7 @@ Figure 1. Broker Connection - Reconnecting and Failover.</p>
 <li>Queue and address creation.</li>
 <li>Queue and address deletion.</li>
 </ul>
-<p>By default every operation is sent asynchronously without blocking any clients. However if you set sync=&quot;true&quot; on the mirror configuration, the clients will always wait a mirror on every blocking operation.</p>
+<p>By default every operation is sent asynchronously without blocking any clients. However if you set sync=&quot;true&quot; on the mirror configuration, the clients will always wait for the mirror on every blocking operation.</p>
 <h3 id="mirror-configuration">Mirror configuration</h3>
 <p>Add a <code>&lt;mirror&gt;</code> element within the <code>&lt;amqp-connection&gt;</code> element to configure mirroring to the target broker.</p>
 <p>The following optional arguments can be utilized:</p>
@@ -1444,7 +1444,7 @@ matches all addresses starting with &apos;eu&apos; but not those starting with &
 <li>Address matching on mirror elements is prefix-based and does not support wild-card matching.</li>
 </ul>
 </li>
-<li><code>sync</code>: By default is false. If set it to true any client blocking operation will be held until the mirror as confirmed receiving the operation.<ul>
+<li><code>sync</code>: By default is false. If set it to true any client blocking operation will be held until the mirror has confirmed receiving the operation.<ul>
 <li>Notice that a disconnected node would hold all operations from the client. If you set sync=true you must reconnect a mirror before performing any operations.</li>
 </ul>
 </li>
@@ -1488,7 +1488,7 @@ Figure 2. Broker Connection - Disaster Recovery.</p>
    <span class="hljs-tag">&lt;/<span class="hljs-name">amqp-connection</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">broker-connections</span>&gt;</span>
 </code></pre>
-<p>The broker connections will replicate sends and acknowledgements to the other broker, no matter where they originated. If messages are sent on DC1 (DataCenter1) these will be automatically transferred to DC2 (DataCenter2). Messages acknowledgements received on DC2 will be automatically related back to DC1. 
+<p>The broker connections will replicate sends and acknowledgements to the other broker, no matter where they originated. If messages are sent on DC1 (DataCenter1) these will be automatically transferred to DC2 (DataCenter2). Messages acknowledgements received on DC2 will be automatically related back to DC1.
 The only exception to that rule would be if there were already consumers with pending messages on any server, where a mirrored acknowledgement will not prevent the message being consumed by both consumers. It is recommended to not have active consumers on both servers.</p>
 <h2 id="example">Example</h2>
 <p>There is an example as part of the distribution showing dual broker configuration (or disaster recovery) under ./examples/features/broker-connection/disaster-recovery.</p>
@@ -1645,7 +1645,7 @@ The only exception to that rule would be if there were already consumers with pe
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Broker Connections","level":"1.12.1","depth":2,"next":{"title":"MQTT","level":"1.13","depth":1,"path":"mqtt.md","ref":"mqtt.md","articles":[]},"previous":{"title":"AMQP","level":"1.12","depth":1,"path":"amqp.md","ref":"amqp.md","articles":[{"title":"Broker Connections","level":"1.12.1","depth":2,"path":"amqp-broker-connections.md","ref":"amqp-broker-connections.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"amqp-broker-connections.md","mtime":"2023-02-03T20:07:27.677Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Broker Connections","level":"1.12.1","depth":2,"next":{"title":"MQTT","level":"1.13","depth":1,"path":"mqtt.md","ref":"mqtt.md","articles":[]},"previous":{"title":"AMQP","level":"1.12","depth":1,"path":"amqp.md","ref":"amqp.md","articles":[{"title":"Broker Connections","level":"1.12.1","depth":2,"path":"amqp-broker-connections.md","ref":"amqp-broker-connections.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.29.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"amqp-broker-connections.md","mtime":"2023-06-19T12:36:55.359Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-06-19T12:39:25.929Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
