@@ -874,12 +874,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.55" data-path="client-reconnection.html">
+        <li class="chapter " data-level="1.55" data-path="client-failover.html">
             
-                <a href="client-reconnection.html">
+                <a href="client-failover.html">
             
                     
-                    Client Reconnection and Session Reattachment
+                    Client Failover
             
                 </a>
             
@@ -1339,6 +1339,54 @@
 chapter in addition to any version-specific upgrade instructions outlined here.</li>
 </ul>
 </li>
+</ul>
+<h2 id="2290">2.29.0</h2>
+<p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12352880&amp;projectId=12315920" target="_blank">Full release notes</a></p>
+<p>Highlights:</p>
+<ul>
+<li>This version underwent extensive testing and fixes regarding Large Messages, with a few JIRAs dedicated to this topic. Look on the <a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12352880&amp;projectId=12315920" target="_blank">release notes</a> for more information.</li>
+</ul>
+<h4 id="upgrading-from-older-versions">Upgrading from older versions</h4>
+<ul>
+<li>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-4151" target="_blank">ARTEMIS-4151</a> the default access for MBeans not defined in
+the <code>role-access</code> or <code>allowlist</code> of <code>management.xml</code> is now <em>read only</em>. This is a precautionary measure to ensure no
+unanticipated MBean deployed with the broker poses a risk. However, this will also impact JVM-specific and platform
+MBeans as well (e.g. which allow manual garbage collection, &quot;flight recording,&quot; etc.). Write access and general
+operational access to these MBeans will now have to be manually enabled in <code>management.xml</code> either by changing the
+<code>default-access</code> (not recommended) or specifically configuring a <code>role-access</code> for the particular MBean in question.
+Note: this applies to all MBean access including directly via JMX and via the Jolokia JMX-HTTP bridge.</li>
+<li>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-4212" target="_blank">ARTEMIS-4212</a> the broker will reject address definitions
+in <code>broker.xml</code> which don&apos;t specify a routing type, e.g.:<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">address</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;myAddress&quot;</span>/&gt;</span>
+</code></pre>
+Such configurations will need to be changed to specify a routing-type, e.g.:<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">address</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;myAddress&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">anycast</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">address</span>&gt;</span>
+</code></pre>
+Or<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">address</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;myAddress&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">multicast</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">address</span>&gt;</span>
+</code></pre>
+If an address without a routing type is configured the broker will throw an exception like this and fail to start:<pre><code>java.lang.IllegalArgumentException: AMQ229247: Invalid address configuration for &apos;myAddress&apos;. Address must support multicast and/or anycast.
+      at org.apache.activemq.artemis.core.deployers.impl.FileConfigurationParser.parseAddressConfiguration(FileConfigurationParser.java:1580)
+      at org.apache.activemq.artemis.core.deployers.impl.FileConfigurationParser.parseAddresses(FileConfigurationParser.java:1038)
+      at org.apache.activemq.artemis.core.deployers.impl.FileConfigurationParser.parseMainConfig(FileConfigurationParser.java:804)
+      at org.apache.activemq.artemis.core.config.impl.FileConfiguration.parse(FileConfiguration.java:56)
+      at org.apache.activemq.artemis.core.config.FileDeploymentManager.readConfiguration(FileDeploymentManager.java:81)
+      at org.apache.activemq.artemis.integration.FileBroker.createComponents(FileBroker.java:120)
+      at org.apache.activemq.artemis.cli.commands.Run.execute(Run.java:119)
+      at org.apache.activemq.artemis.cli.Artemis.internalExecute(Artemis.java:212)
+      at org.apache.activemq.artemis.cli.Artemis.execute(Artemis.java:162)
+      at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+      at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+      at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+      at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+      at org.apache.activemq.artemis.boot.Artemis.execute(Artemis.java:144)
+      at org.apache.activemq.artemis.boot.Artemis.main(Artemis.java:61)
+</code></pre></li>
+<li>Due to <a href="https://issues.apache.org/jira/browse/ARTEMIS-3707" target="_blank">ARTEMIS-3707</a> all use of <code>javax.transaction.TransactionManager</code>
+was removed from the JCA Resource Adapter. However, this rendered the <code>transactionTimeout</code> activation configuration
+property useless. Some existing users rely on this behavior so it has been restored and properly deprecated for future
+removal.</li>
 </ul>
 <h2 id="2280">2.28.0</h2>
 <p><a href="https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12352523&amp;projectId=12315920" target="_blank">Full release notes</a></p>
@@ -2184,7 +2232,7 @@ production.</li>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2023-02-03T20:07:27.802Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Versions","level":"1.5","depth":1,"next":{"title":"Messaging Concepts","level":"1.6","depth":1,"path":"messaging-concepts.md","ref":"messaging-concepts.md","articles":[]},"previous":{"title":"Project Info","level":"1.4","depth":1,"path":"project-info.md","ref":"project-info.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.29.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"versions.md","mtime":"2023-06-19T12:36:55.457Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-06-19T12:39:25.929Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

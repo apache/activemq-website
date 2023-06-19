@@ -874,12 +874,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.55" data-path="client-reconnection.html">
+        <li class="chapter " data-level="1.55" data-path="client-failover.html">
             
-                <a href="client-reconnection.html">
+                <a href="client-failover.html">
             
                     
-                    Client Reconnection and Session Reattachment
+                    Client Failover
             
                 </a>
             
@@ -1364,6 +1364,40 @@ persists a special identifier to the <code>journal</code> directory. This id
 <em>must</em> be unique among nodes in the cluster or the cluster will not
 form properly.</p>
 </blockquote>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<p>It is important to note that while the goal of clustering is to increase
+overall message throughput via horizontal scaling it is not a &quot;silver bullet.&quot;
+In certain situations clustering can, in fact, <em>reduce</em> message throughput
+so care must be taken when choosing a clustered configuration. Here&apos;s a few
+general guidelines:</p>
+<ol>
+<li><strong>Establish a clear, concrete performance goal.</strong> Performance testing &amp;
+tuning are often difficult and tedious activities. Small, relative gains
+will tempt you to keep going, and without a goal you will never know when
+to stop. You need a goal to know &quot;how good is good enough.&quot; </li>
+<li><strong>Start simple.</strong> Benchmark your use-case with a single broker first. A
+single broker can handle <em>millions</em> of messages per second in certain 
+use-cases. If you can&apos;t meet your performance goal with a single broker
+only then move to a clustered configuration. Only add complexity when
+there is a <em>clear benefit</em>.</li>
+</ol>
+<p>The main way a cluster can reduce overall message throughput is if there are
+are not enough producers &amp; consumers on each node leading to message build-up
+on some nodes and consumer starvation others. The cluster has mechanisms to
+deal with this (i.e. message load-balancing &amp; redistribution, which will be
+covered later), but you really don&apos;t want the broker to intervene and move
+messages between nodes unless absolutely necessary because <strong>that adds
+latency</strong>.</p>
+<p>Therefore, when thinking in performance terms the main question one must
+answer when choosing a clustered configuration is: Do I have enough clients
+so that each node in the cluster has sufficient consumers to receive all the
+messages produced on that node? If the answer to that question is &quot;yes&quot; then
+clustering may, in fact, improve overall message throughput for you. If the
+answer to that question is &quot;no&quot; then you&apos;re likely to get better performance
+from either a smaller cluster or just a single broker.</p>
+<p>Also keep in mind that a <a href="connection-routers.html">connection router</a> may improve
+performance of your cluster by grouping related consumers and producers together
+on the same node.</p>
 <h2 id="server-discovery">Server discovery</h2>
 <p>Server discovery is a mechanism by which servers can propagate their
 connection details to:</p>
@@ -2215,7 +2249,7 @@ lost.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Clusters","level":"1.60","depth":1,"next":{"title":"Federation","level":"1.61","depth":1,"path":"federation.md","ref":"federation.md","articles":[{"title":"Address Federation","level":"1.61.1","depth":2,"path":"federation-address.md","ref":"federation-address.md","articles":[]},{"title":"Queue Federation","level":"1.61.2","depth":2,"path":"federation-queue.md","ref":"federation-queue.md","articles":[]}]},"previous":{"title":"Duplicate Message Detection","level":"1.59","depth":1,"path":"duplicate-detection.md","ref":"duplicate-detection.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"clusters.md","mtime":"2023-02-03T20:07:27.685Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Clusters","level":"1.60","depth":1,"next":{"title":"Federation","level":"1.61","depth":1,"path":"federation.md","ref":"federation.md","articles":[{"title":"Address Federation","level":"1.61.1","depth":2,"path":"federation-address.md","ref":"federation-address.md","articles":[]},{"title":"Queue Federation","level":"1.61.2","depth":2,"path":"federation-queue.md","ref":"federation-queue.md","articles":[]}]},"previous":{"title":"Duplicate Message Detection","level":"1.59","depth":1,"path":"duplicate-detection.md","ref":"duplicate-detection.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.29.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"clusters.md","mtime":"2023-06-19T12:36:55.364Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-06-19T12:39:25.929Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

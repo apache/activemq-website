@@ -874,12 +874,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.55" data-path="client-reconnection.html">
+        <li class="chapter " data-level="1.55" data-path="client-failover.html">
             
-                <a href="client-reconnection.html">
+                <a href="client-failover.html">
             
                     
-                    Client Reconnection and Session Reattachment
+                    Client Failover
             
                 </a>
             
@@ -1371,11 +1371,13 @@ that would be found in the <code>broker.xml</code> file.</p>
       <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-created-queues</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-created-queues</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-queues-delay</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-queues-delay</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-queues-message-count</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-queues-message-count</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-queues-skip-usage-check</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-queues-skip-usage-check</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">config-delete-queues</span>&gt;</span>OFF<span class="hljs-tag">&lt;/<span class="hljs-name">config-delete-queues</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">config-delete-diverts</span>&gt;</span>OFF<span class="hljs-tag">&lt;/<span class="hljs-name">config-delete-diverts</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">auto-create-addresses</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">auto-create-addresses</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-addresses</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-addresses</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-addresses-delay</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-addresses-delay</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">auto-delete-addresses-skip-usage-check</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">auto-delete-addresses-skip-usage-check</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">config-delete-addresses</span>&gt;</span>OFF<span class="hljs-tag">&lt;/<span class="hljs-name">config-delete-addresses</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">management-browse-page-size</span>&gt;</span>200<span class="hljs-tag">&lt;/<span class="hljs-name">management-browse-page-size</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">management-message-attribute-size-limit</span>&gt;</span>256<span class="hljs-tag">&lt;/<span class="hljs-name">management-message-attribute-size-limit</span>&gt;</span>
@@ -1556,6 +1558,14 @@ to disable scanning. The default scan value is <code>30000</code>.</p>
 less than or equal to before deleting auto-created queues. 
 To disable message count check <code>-1</code> can be set.
 Default is <code>0</code> (empty queue).</p>
+<p><code>auto-delete-queues-skip-usage-check</code>.  A queue will only be auto-deleted by 
+default if it has actually been &quot;used.&quot; A queue is considered &quot;used&quot; if any
+messages have been sent to it or any consumers have connected to it during its
+life. However, there are use-cases where it&apos;s useful to skip this check. When
+set to <code>true</code> it is <strong>imperative</strong> to also set <code>auto-delete-queues-delay</code> to a
+value greater than <code>0</code> otherwise queues may be deleted almost immediately after
+being created. In this case the queue will be deleted based on when it was
+created rather then when it was last &quot;used.&quot; Default is <code>false</code>.</p>
 <p><strong>Note:</strong> the above auto-delete address settings can also be configured 
 individually at the queue level when a client auto creates the queue.</p>
 <p>For Core API it is exposed in createQueue methods. </p>
@@ -1581,6 +1591,14 @@ deleting auto-created addresses after they no longer have any queues. Default
 is <code>0</code> (delete immediately). The broker&apos;s <code>address-queue-scan-period</code> controls
 how often (in milliseconds) addresses are scanned for potential deletion. Use
 <code>-1</code> to disable scanning. The default scan value is <code>30000</code>.</p>
+<p><code>auto-delete-addresses-skip-usage-check</code>.  An address will only be auto-deleted by
+default if it has actually been &quot;used.&quot; An address is considered &quot;used&quot; if any
+queues have been created on it during its life. However, there are use-cases
+where it&apos;s useful to skip this check. When set to <code>true</code> it is <strong>imperative</strong> to
+also set <code>auto-delete-addresses-delay</code> to a value greater than <code>0</code> otherwise
+addresses may be deleted almost immediately after being created. In this case
+the address will be deleted based on when it was created rather then when it was
+last &quot;used.&quot; Default is <code>false</code>.</p>
 <p><code>config-delete-addresses</code>. How the broker should handle addresses deleted on
 config reload, by delete policy: <code>OFF</code> or <code>FORCE</code>. Default is <code>OFF</code>. Read more
 about <a href="config-reload.html">configuration reload</a>.</p>
@@ -1677,7 +1695,7 @@ named <code>ingress-timestamp</code>. The value will be the number of millisecon
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Settings","level":"1.10.2","depth":2,"next":{"title":"Protocols and Interoperability","level":"1.11","depth":1,"path":"protocols-interoperability.md","ref":"protocols-interoperability.md","articles":[]},"previous":{"title":"Model","level":"1.10.1","depth":2,"path":"address-model.md","ref":"address-model.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.28.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"address-settings.md","mtime":"2023-02-03T20:07:27.676Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-02-03T20:11:28.081Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Settings","level":"1.10.2","depth":2,"next":{"title":"Protocols and Interoperability","level":"1.11","depth":1,"path":"protocols-interoperability.md","ref":"protocols-interoperability.md","articles":[]},"previous":{"title":"Model","level":"1.10.1","depth":2,"path":"address-model.md","ref":"address-model.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.29.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"address-settings.md","mtime":"2023-06-19T12:36:55.358Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-06-19T12:39:25.929Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
