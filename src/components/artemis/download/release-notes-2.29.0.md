@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Artemis 2.28.0 Release Notes
+title: ActiveMQ Artemis 2.29.0 Release Notes
 title-class: page-title-artemis
 type: artemis
 ---
