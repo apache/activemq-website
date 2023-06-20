@@ -9,7 +9,7 @@ type: artemis
 
  - [A list of commits](commit-report-2.29.0).
 
- - Please see the "Versions" chapter in the User Guide for upgrade instructions.
+ - Please see the ["Versions"](https://activemq.apache.org/components/artemis/documentation/latest/versions.html) chapter in the User Guide for upgrade instructions.
 
 **Note**: This release requires use of Java 11 or above.
 
