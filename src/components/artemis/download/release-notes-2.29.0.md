@@ -82,7 +82,6 @@ Release Notes - ActiveMQ Artemis - Version 2.29.0
 * [ARTEMIS-4294] - Support text WebSocket encoding
 * [ARTEMIS-4297] - Allow regex in no-cache exception config
 * [ARTEMIS-4313] - Bridge does not retry if destination is full when configured to FAIL
-* [ARTEMIS-4314] - Federation, support consumerWindowSize zero and federate in batches only when the local queue is has excess capacity
 
 ## Test
 * [ARTEMIS-4218] - Support console smoke tests from remote servers
