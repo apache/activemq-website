@@ -14,9 +14,6 @@ type: artemis
 **Note**: This release requires use of Java 11 or above.
 
 
-Release Notes - ActiveMQ Artemis - Version 2.29.0
-
-
 ## Bug
 * [ARTEMIS-2431] - [AMQP] Broker does not send security errors for unauthorized anonymous sasl with pipelined open
 * [ARTEMIS-4082] - AcknowledgementTest.testDupsOKAcknowledgeQueue test is flakey
