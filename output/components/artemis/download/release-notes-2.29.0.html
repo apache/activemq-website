@@ -109,7 +109,11 @@
 <h2 id="bug">Bug</h2>
 <ul>
   <li>[ARTEMIS-2431] - [AMQP] Broker does not send security errors for unauthorized anonymous sasl with pipelined open</li>
+  <li>[ARTEMIS-2824] - _AMQ_Client_ID on SESSION_CLOSED notification is always null</li>
+  <li>[ARTEMIS-3640] - external clients cannot use cluster topology for HA or load balancing</li>
+  <li>[ARTEMIS-3809] - LargeMessageControllerImpl hangs the message consume</li>
   <li>[ARTEMIS-4082] - AcknowledgementTest.testDupsOKAcknowledgeQueue test is flakey</li>
+  <li>[ARTEMIS-4143] - Improve mitigation against split-brain with shared-storage</li>
   <li>[ARTEMIS-4153] - Support “offline” Maven</li>
   <li>[ARTEMIS-4155] - Broker will dead lock if sending OpenWire Large Messages With Journal Retention configured.</li>
   <li>[ARTEMIS-4157] - Error setting broker properties for AddressSettings</li>
@@ -124,7 +128,10 @@
   <li>[ARTEMIS-4175] - JournalFileImpl Leaking</li>
   <li>[ARTEMIS-4176] - Console custom root redirect ignored</li>
   <li>[ARTEMIS-4177] - Misleading documentation for “Logging the clients remote address”</li>
+  <li>[ARTEMIS-4183] - Broker diagram is not properly updated when new nodes become available</li>
+  <li>[ARTEMIS-4185] - Resending compressed message uncompressed throws exception in consumer</li>
   <li>[ARTEMIS-4188] - creating dynamicQueues from an JavaEE MDB applies configured messageSelector as per-queue filters</li>
+  <li>[ARTEMIS-4190] - config-delete-queues doesn’t always work as expected</li>
   <li>[ARTEMIS-4191] - JournalImpl::needs compact should include more logging to enable eventual investigations</li>
   <li>[ARTEMIS-4193] - Interrupting Large Message Streaming with a server kill may leave orphaned files</li>
   <li>[ARTEMIS-4196] - MQTT cluster message distribution is broken with OFF and OFF_WITH_REDISTRIBUTION loadbalancing types</li>
@@ -134,32 +141,45 @@
   <li>[ARTEMIS-4207] - Redistribution may leave large messages stranded</li>
   <li>[ARTEMIS-4208] - OpenWire ChunkSend issuing CriticalAnalyzer</li>
   <li>[ARTEMIS-4209] - “User ID” in web console prefixed with “ID:ID:” for AMQP messages</li>
+  <li>[ARTEMIS-4211] - AMQ222153: Cannot locate record in bidirectional upstream queue federation</li>
+  <li>[ARTEMIS-4215] - JournalFlush might never happen when journal-sync-* is false</li>
   <li>[ARTEMIS-4233] - QueueImpl::NPE on holder.iter == null</li>
   <li>[ARTEMIS-4234] - EmbeddedActiveMQResource is able to receive only first message</li>
   <li>[ARTEMIS-4235] - Losing bridge connection when sending empty Openwire map message.</li>
+  <li>[ARTEMIS-4238] - transaction timeout ActivationConfigProperty is no longer working</li>
   <li>[ARTEMIS-4241] - Paging + FQQN is broken</li>
   <li>[ARTEMIS-4243] - ActiveMQ Artemis CLI fails to export bindings without routing types</li>
   <li>[ARTEMIS-4247] - Inconsistencies between AMQP Mirror and Artemis Clustering</li>
   <li>[ARTEMIS-4249] - Failure to create internal MQTT consumer can orphan subscription queue</li>
   <li>[ARTEMIS-4258] - delayBeforeDispatch not working with OpenWire</li>
+  <li>[ARTEMIS-4259] - JMS consumer + FQQN + selector not working</li>
   <li>[ARTEMIS-4266] - Mitigate NPE with bad SSL config</li>
   <li>[ARTEMIS-4267] - Original exception lost for NoCacheLoginException</li>
+  <li>[ARTEMIS-4268] - AMQPMessage copy constructor shouldn’t copy all message annotations</li>
   <li>[ARTEMIS-4273] - Mask command not picking up codec properties</li>
+  <li>[ARTEMIS-4275] - _AMQ_ConsumerName is missing from Consumer Created/Closed notifications</li>
+  <li>[ARTEMIS-4278] - Incorrect Page Counters when using Prepared Transactions with Paging</li>
+  <li>[ARTEMIS-4279] - CriticalAnalyzer thread does not shut down if error during broker initialization</li>
+  <li>[ARTEMIS-4281] - Queue Reaper may remove non empty queues</li>
   <li>[ARTEMIS-4282] - Sending Large ApplicationProperties section in a transactional session may break the server.</li>
   <li>[ARTEMIS-4286] - Sometimes federated consumer won’t stop</li>
   <li>[ARTEMIS-4298] - Journal Retention Duplicated files during replication</li>
   <li>[ARTEMIS-4302] - NPE on JournalTransaction::forget</li>
-  <li>[ARTEMIS-4311] - Strange typo propagated throughout the codebase: “Mesasge”</li>
-  <li>[ARTEMIS-4316] - Example HTML does not render correctly</li>
+  <li>[ARTEMIS-4303] - Artemis Windows Service fails to start correctly when filepath has a space</li>
+  <li>[ARTEMIS-4309] - Large JMS ObjectMessage types result in UTFDataFormatException when deserialized on client side</li>
+  <li>[ARTEMIS-4312] - Duplicates with redistribution and multiple multicast queues on the same address</li>
 </ul>
 
 <h2 id="new-feature">New Feature</h2>
 <ul>
   <li>[ARTEMIS-4195] - Auth callback to get Client ID</li>
+  <li>[ARTEMIS-4244] - Set web config using system properties</li>
 </ul>
 
 <h2 id="improvement">Improvement</h2>
 <ul>
+  <li>[ARTEMIS-4169] - Auto detect dead-letter and expiry queues in the console</li>
+  <li>[ARTEMIS-4186] - Ability to set compressionLevel for compressLargeMessages</li>
   <li>[ARTEMIS-4200] - Allow configuring link-stealing behavior for MQTT</li>
   <li>[ARTEMIS-4202] - expand coverage of noCacheExceptions in LDAPLoginModule</li>
   <li>[ARTEMIS-4204] - Connectors added via management are not durable</li>
@@ -168,11 +188,19 @@
   <li>[ARTEMIS-4236] - Reorganize default broker.xml around paging configuration</li>
   <li>[ARTEMIS-4239] - use StandardCharsets.UTF_8</li>
   <li>[ARTEMIS-4245] - Expose web SNI settings</li>
+  <li>[ARTEMIS-4251] - Support CORE client failover to other live servers</li>
   <li>[ARTEMIS-4256] - properties config - support removal</li>
   <li>[ARTEMIS-4262] - Clarify wildcard syntax documentation</li>
   <li>[ARTEMIS-4263] - support access to our JaasCallbackhandler from a jdk http Authenticator</li>
+  <li>[ARTEMIS-4265] - Make more web console tabs conditional on permission</li>
+  <li>[ARTEMIS-4274] - Push masked credential support into core client</li>
   <li>[ARTEMIS-4280] -  Kubernetes JaaS LoginModule extract role info from review groups</li>
+  <li>[ARTEMIS-4283] - Fail fast CORE client connect on closing</li>
   <li>[ARTEMIS-4284] - Openwire prefetched messages can be out of order for a single consumer</li>
+  <li>[ARTEMIS-4285] - Disable Redelivery Persistence for new broker installations.</li>
+  <li>[ARTEMIS-4291] - Some metrics do not have the “broker” tag</li>
+  <li>[ARTEMIS-4292] - Support additional Micrometer system metrics</li>
+  <li>[ARTEMIS-4293] - Add management ops to clear authn/z caches</li>
   <li>[ARTEMIS-4294] - Support text WebSocket encoding</li>
   <li>[ARTEMIS-4297] - Allow regex in no-cache exception config</li>
   <li>[ARTEMIS-4313] - Bridge does not retry if destination is full when configured to FAIL</li>
@@ -184,6 +212,10 @@
   <li>[ARTEMIS-4223] - compatibility tests fail on JDK builds with version qualifiers</li>
   <li>[ARTEMIS-4248] - Fix PagingTest::testSimpleResume</li>
   <li>[ARTEMIS-4250] - ShutdownOnCriticalIOErrorMoveNextTest failing</li>
+  <li>[ARTEMIS-4252] - Fix flaky QuorumFailOverTest tests</li>
+  <li>[ARTEMIS-4253] - disabling a few ActiveMQServerControlUsingCoreTest tests</li>
+  <li>[ARTEMIS-4254] - Transactional / Replication Soak Test</li>
+  <li>[ARTEMIS-4290] - Move some tests out of integration-tests into a new module where these tests will run individually</li>
   <li>[ARTEMIS-4308] - Add tests for JDBC and Paging in Soak tests</li>
 </ul>
 
@@ -194,6 +226,7 @@
   <li>[ARTEMIS-4178] - Fixing typo on amqp-broker-connections.md</li>
   <li>[ARTEMIS-4181] - Make try-with-resources style consistent</li>
   <li>[ARTEMIS-4224] - Manage memory consumption on the test suite</li>
+  <li>[ARTEMIS-4237] - Move SoakPagingTest and ReplicationFlowControlTest into soak-tests</li>
   <li>[ARTEMIS-4288] - Update to maven-bundle-plugin 5.1.9</li>
   <li>[ARTEMIS-4299] - Exclude unused json-smart dependency</li>
 </ul>
@@ -217,7 +250,6 @@
   <li>[ARTEMIS-4287] - Update to Qpid JMS 1.9.0</li>
   <li>[ARTEMIS-4289] - update to Log4j 2.20.0</li>
 </ul>
-
 
       </div>
     </div>
