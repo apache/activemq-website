@@ -56,8 +56,6 @@ type: artemis
 * [ARTEMIS-4286] - Sometimes federated consumer won't stop
 * [ARTEMIS-4298] - Journal Retention Duplicated files during replication
 * [ARTEMIS-4302] - NPE on JournalTransaction::forget
-* [ARTEMIS-4311] - Strange typo propagated throughout the codebase: "Mesasge"
-* [ARTEMIS-4316] - Example HTML does not render correctly
 
 ## New Feature
 * [ARTEMIS-4195] - Auth callback to get Client ID
