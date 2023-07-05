@@ -18,6 +18,10 @@ The user manuals for earlier versions are also available on the [previous docs](
 
 *   [HTML](javadocs/javadoc-latest)
 
+See also the JMS / Jakarta Messaging API used for the respective clients:
+*   <a href="https://jakarta.ee/specifications/messaging/2.0/apidocs/" target="_parent">Jakarta Messaging 2.0 - javax.jms</a>
+*   <a href="https://jakarta.ee/specifications/messaging/3.1/apidocs/" target="_parent">Jakarta Messaging 3.1 - jakarta.jms</a>
+
 #### Hacking Guide
 
 *   [HTML](./hacking-guide)
