@@ -29,7 +29,7 @@ We can help you much quicker if you try the following:
 
 #### Using the issue tracker
 
-Before you can raise an issue in the issue tracker you need to [create an account](https://selfserve.apache.org/jira-account.html).
+Before you can create an issue in the issue tracker you need to [request an account](https://selfserve.apache.org/jira-account.html). When requesting the account please **be specific** about the reason you need it. Please give a brief synopsis of the bug your encountering or feature you need. If you're not quite sure you're hitting an actual bug or you're not sure if the feature you need is valid, etc. please [contact us on the users mailing list](contact) to get some clarity. Account requests with vague reasons **will be rejected**.
 
 If you want to be the "assignee" of an issue you need to be in the list of `activemq-developers` on the issue tracker. To join the group please mail the [dev mailing list](mailto:dev@activemq.apache.org) with the email address you used to register with the issue tracker and we'll add you to the group.
 
