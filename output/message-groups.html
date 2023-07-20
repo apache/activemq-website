@@ -214,6 +214,8 @@ if (message.getBooleanProperty("JMSXGroupFirstForConsumer")) {
 </code></pre></div></div>
 <p>As <a href="https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/java/org/apache/activemq/usecases/MessageGroupDelayedTest.java">the appropriate test case</a> shows, adding a small time pause before dispatching or setting a minimum consumer number, ensures equal message group distribution.</p>
 
+<p>If you need to rebalance the message groups manually for any reason you can do so by executing the <code class="language-plaintext highlighter-rouge">removeAllMessageGroups</code> operation on the JMX MBean of the corresponding queue.</p>
+
 <h3 id="competing-demands-of-memory-consumption-load-balancing-complexity-etc">Competing demands of memory consumption, load balancing, complexity, etc.</h3>
 
 <p>The default behavior called <code class="language-plaintext highlighter-rouge">CachedMessageGroupMap</code> is limited to 1024 message groups in an LRU cache may not match you expectation w.r.t message order. <code class="language-plaintext highlighter-rouge">CachedMessageGroupMap</code> has bounded memory use, but only keeps track of up to 1024 (or the maximum configured size) groups, then loses track of any groups older than the newest 1024. In this way, if there are more groups than the maximum, <strong>ordering will be lost for the oldest groups</strong>.</p>
