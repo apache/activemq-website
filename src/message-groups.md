@@ -129,6 +129,8 @@ The following code snippet shows how to wait for two consumers (or two seconds) 
 ```
 As [the appropriate test case](https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/java/org/apache/activemq/usecases/MessageGroupDelayedTest.java) shows, adding a small time pause before dispatching or setting a minimum consumer number, ensures equal message group distribution.
 
+If you need to rebalance the message groups manually for any reason you can do so by executing the `removeAllMessageGroups` operation on the JMX MBean of the corresponding queue.
+
 ### Competing demands of memory consumption, load balancing, complexity, etc.
 
 The default behavior called `CachedMessageGroupMap` is limited to 1024 message groups in an LRU cache may not match you expectation w.r.t message order. `CachedMessageGroupMap` has bounded memory use, but only keeps track of up to 1024 (or the maximum configured size) groups, then loses track of any groups older than the newest 1024. In this way, if there are more groups than the maximum, **ordering will be lost for the oldest groups**.
