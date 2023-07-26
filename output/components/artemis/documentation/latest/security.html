@@ -3,11 +3,10 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <title>Security · ActiveMQ Artemis Documentation</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="generator" content="HonKit 4.0.7">
         
         
         
@@ -17,7 +16,7 @@
     
             
                 
-                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                <link rel="stylesheet" href="gitbook/@honkit/honkit-plugin-highlight/website.css">
                 
             
                 
@@ -66,7 +65,7 @@
     </head>
     <body>
         
-<div class="book">
+<div class="book honkit-cloak">
     <div class="book-summary">
         
             
@@ -1289,8 +1288,8 @@
     <li class="divider"></li>
 
     <li>
-        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
-            Published with GitBook
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            Published with HonKit
         </a>
     </li>
 </ul>
@@ -1775,16 +1774,16 @@ properties login module.</p>
 };
 </code></pre><p>Depending on the user login data, authentication proceeds as follows:</p>
 <ul>
-<li><p>User logs in with a valid password &#x2014; the properties login module successfully
+<li><p>User logs in with a valid password — the properties login module successfully
 authenticates the user and returns immediately. The guest login module is not
 invoked.</p>
 </li>
-<li><p>User logs in with an invalid password &#x2014; the properties login module fails to
+<li><p>User logs in with an invalid password — the properties login module fails to
 authenticate the user, and authentication proceeds to the guest login module.
 The guest login module successfully authenticates the user and returns the
 guest principal.</p>
 </li>
-<li><p>User logs in with a blank password &#x2014; the properties login module fails to
+<li><p>User logs in with a blank password — the properties login module fails to
 authenticate the user, and authentication proceeds to the guest login module.
 The guest login module successfully authenticates the user and returns the
 guest principal.</p>
@@ -1810,18 +1809,18 @@ and the flag attached to the properties login module is changed to requisite.</p
 };
 </code></pre><p>Depending on the user login data, authentication proceeds as follows:</p>
 <ul>
-<li><p>User logs in with a valid password &#x2014; the guest login module fails to
+<li><p>User logs in with a valid password — the guest login module fails to
 authenticate the user (because the user has presented a password while the
 credentialsInvalidate option is enabled) and authentication proceeds to the
 properties login module. The properties login module successfully authenticates
 the user and returns.</p>
 </li>
-<li><p>User logs in with an invalid password &#x2014; the guest login module fails to
+<li><p>User logs in with an invalid password — the guest login module fails to
 authenticate the user and authentication proceeds to the properties login
 module. The properties login module also fails to authenticate the user. The
 net result is authentication failure.</p>
 </li>
-<li><p>User logs in with a blank password &#x2014; the guest login module successfully
+<li><p>User logs in with a blank password — the guest login module successfully
 authenticates the user and returns immediately.  The properties login module
 is not invoked.</p>
 </li>
@@ -1855,9 +1854,9 @@ default is <code>false</code></p>
 file consists of a list of properties of the form, <code>UserName=Password</code>. For
 example, to define the users <code>system</code>, <code>user</code>, and <code>guest</code>, you could create a
 file like the following:</p>
-<pre><code class="lang-properties">system=manager
-user=password
-guest=password
+<pre><code class="lang-properties"><span class="hljs-attr">system</span>=<span class="hljs-string">manager</span>
+<span class="hljs-attr">user</span>=<span class="hljs-string">password</span>
+<span class="hljs-attr">guest</span>=<span class="hljs-string">password</span>
 </code></pre>
 <p>Passwords in <code>artemis-users.properties</code> can be hashed. Such passwords should
 follow the syntax <code>ENC(&lt;hash&gt;)</code>. </p>
@@ -1874,9 +1873,9 @@ files with the specified values.</p>
 form, <code>Role=UserList</code>, where UserList is a comma-separated list of users. For
 example, to define the roles <code>admins</code>, <code>users</code>, and <code>guests</code>, you could create
 a file like the following:</p>
-<pre><code class="lang-properties">admins=system
-users=system,user
-guests=guest
+<pre><code class="lang-properties"><span class="hljs-attr">admins</span>=<span class="hljs-string">system</span>
+<span class="hljs-attr">users</span>=<span class="hljs-string">system,user</span>
+<span class="hljs-attr">guests</span>=<span class="hljs-string">guest</span>
 </code></pre>
 <p>As mentioned above, the Artemis command-line interface supports a command to
 <code>add</code> a user. Commands to <code>list</code> (one or all) users, <code>remove</code> a user, and <code>reset</code>
@@ -1984,7 +1983,7 @@ is <code>jdoe</code>, the search filter becomes <code>(uid=jdoe)</code> after st
 the resulting search filter is applied to the subtree selected by the user
 base, <code>ou=User,ou=ActiveMQ,ou=system</code>, it would match the entry,
 <code>uid=jdoe,ou=User,ou=ActiveMQ,ou=system</code> (and possibly more deeply nested
-entries, depending on the specified search depth&#x2014;see the <code>userSearchSubtree</code>
+entries, depending on the specified search depth—see the <code>userSearchSubtree</code>
 option).</p>
 </li>
 <li><p><code>userSearchSubtree</code> - specify the search depth for user entries, relative to
@@ -2045,7 +2044,7 @@ follows:</p>
 <li><p><code>false</code> (default) - try to match one of the child entries of the roleBase
 node (maps to <code>javax.naming.directory.SearchControls.ONELEVEL_SCOPE</code>).</p>
 </li>
-<li><p><code>true</code> &#x2014; try to match any entry belonging to the subtree of the roleBase
+<li><p><code>true</code> — try to match any entry belonging to the subtree of the roleBase
 node (maps to <code>javax.naming.directory.SearchControls.SUBTREE_SCOPE</code>).</p>
 </li>
 </ul>
@@ -2173,10 +2172,10 @@ consists of a list of properties of the form, <code>UserName=StringifiedSubjectD
 or <code>UserName=/SubjectDNRegExp/</code>. For example, to define the users, <code>system</code>,
 <code>user</code> and <code>guest</code> as well as a <code>hosts</code> user matching several DNs, you could
 create a file like the following:</p>
-<pre><code class="lang-properties">system=CN=system,O=Progress,C=US
-user=CN=humble user,O=Progress,C=US
-guest=CN=anon,O=Progress,C=DE
-hosts=/CN=host\\d+\\.acme\\.com,O=Acme,C=UK/
+<pre><code class="lang-properties"><span class="hljs-attr">system</span>=<span class="hljs-string">CN=system,O=Progress,C=US</span>
+<span class="hljs-attr">user</span>=<span class="hljs-string">CN=humble user,O=Progress,C=US</span>
+<span class="hljs-attr">guest</span>=<span class="hljs-string">CN=anon,O=Progress,C=DE</span>
+<span class="hljs-attr">hosts</span>=<span class="hljs-string">/CN=host\\d+\\.acme\\.com,O=Acme,C=UK/</span>
 </code></pre>
 <p>Note that the backslash character has to be escaped because it has a special
 treatment in properties files.</p>
@@ -2202,7 +2201,7 @@ contents of a certificate in a keystore, perform the following steps:</p>
 <li><p>Export the certificate from the keystore file into a temporary file. For
 example, to export the certificate with alias <code>broker-localhost</code> from the
 <code>broker.ks</code> keystore file, enter the following command:</p>
-<pre><code class="lang-sh">keytool -export -file broker.export -alias broker-localhost -keystore broker.ks -storepass password
+<pre><code class="lang-sh">keytool -<span class="hljs-built_in">export</span> -file broker.export -<span class="hljs-built_in">alias</span> broker-localhost -keystore broker.ks -storepass password
 </code></pre>
 <p>After running this command, the exported certificate is in the file,
 <code>broker.export</code>.</p>
@@ -2230,9 +2229,9 @@ ST=Unknown,\ C=Unknown</code> or
 <code>Role=UserList</code>, where <code>UserList</code> is a comma-separated list of users. For
 example, to define the roles <code>admins</code>, <code>users</code>, and <code>guests</code>, you could create
 a file like the following:</p>
-<pre><code class="lang-properties">admins=system
-users=system,user
-guests=guest
+<pre><code class="lang-properties"><span class="hljs-attr">admins</span>=<span class="hljs-string">system</span>
+<span class="hljs-attr">users</span>=<span class="hljs-string">system,user</span>
+<span class="hljs-attr">guests</span>=<span class="hljs-string">guest</span>
 </code></pre>
 <h4 id="scrampropertiesloginmodule">SCRAMPropertiesLoginModule</h4>
 <p>The SCRAM properties login module implements the SASL challenge response for the SCRAM-SHA mechanism.
@@ -2298,8 +2297,8 @@ be mounted in the container. The service account running the KubernetesLoginModu
 be allowed to <code>create::TokenReview</code>. The <code>system:auth-delegator</code> role is typically use for
 that purpose.</p>
 <p>The optional roles properties file consists of a list of properties of the form, <code>Role=UserList</code>, where <code>UserList</code> is a comma-separated list of users. For example, to define the roles admins, users, and guests, you could create a file like the following:</p>
-<pre><code class="lang-properties">admins=system:serviceaccounts:example-ns:admin-sa
-users=system:serviceaccounts:other-ns:test-sa
+<pre><code class="lang-properties"><span class="hljs-attr">admins</span>=<span class="hljs-string">system:serviceaccounts:example-ns:admin-sa</span>
+<span class="hljs-attr">users</span>=<span class="hljs-string">system:serviceaccounts:other-ns:test-sa</span>
 </code></pre>
 <h3 id="scram-sha-sasl-mechanism">SCRAM-SHA SASL Mechanism</h3>
 <p>SCRAM (Salted Challenge Response Authentication Mechanism) is an authentication mechanism that can establish mutual
@@ -2748,12 +2747,56 @@ parameter and indicate which domain from your <code>login.config</code> to use, 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.50","depth":1,"next":{"title":"Masking Passwords","level":"1.51","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.49","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.29.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2023-06-19T12:36:55.449Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-06-19T12:39:25.929Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Security","level":"1.50","depth":1,"next":{"title":"Masking Passwords","level":"1.51","depth":1,"path":"masking-passwords.md","ref":"masking-passwords.md","articles":[]},"previous":{"title":"Metrics","level":"1.49","depth":1,"path":"metrics.md","ref":"metrics.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"github":"apache/activemq-artemis","theme":"default","githubHost":"https://github.com/","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"version":"2.30.0","title":"ActiveMQ Artemis Documentation","links":{"home":"http://activemq.apache.org/artemis","issues":"https://issues.apache.org/jira/browse/ARTEMIS","contribute":"http://activemq.apache.org/contributing.html"},"gitbook":"3.x.x","description":"ActiveMQ Artemis User Guide and Reference Documentation"},"file":{"path":"security.md","mtime":"2023-07-26T17:45:39.787Z","type":"markdown"},"gitbook":{"version":"4.0.7","time":"2023-07-26T17:45:40.181Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
 
         
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
     <script src="gitbook/gitbook.js"></script>
     <script src="gitbook/theme.js"></script>
     
@@ -2771,10 +2814,6 @@ parameter and indicate which domain from your <code>login.config</code> to use, 
     
         
         <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
-        
-    
-        
-        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
         
     
         
