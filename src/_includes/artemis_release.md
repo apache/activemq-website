@@ -4,7 +4,7 @@
   {% assign docs_version = "latest" %}
 {% endif %}
 #### ActiveMQ Artemis {{include.release.version}}  ({{include.release.release_date | date_to_string: "ordinal", "US"}})
-[Release Notes](release-notes-{{include.release.version}}) | [Git Report](commit-report-{{include.release.version}}) | [Documentation](../documentation/{{docs_version}}) | Java compatibility: **{{java_version}}**
+[Release Notes](release-notes-{{include.release.version}}) | [Git Report](commit-report-{{include.release.version}}) | [Documentation:](../documentation/{{docs_version}}) [HTML](../documentation/{{docs_version}}) / [PDF](../documentation/{{docs_version}}/book.pdf) | Java compatibility: **{{java_version}}**
 {% if include.is_current_release and release.version contains "2.19." %}
 
 **NOTE**: This is the last planned 2.19.x release. Users should upgrade to the latest stream for ongoing releases.
