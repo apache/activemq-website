@@ -155,6 +155,24 @@ curl -XPOST -d "body=message" http://admin:admin@localhost:8161/api/message?dest
 curl -XPOST -d "body=message" http://admin:admin@localhost:8161/api/message?destination=topic://orders.input
 </code></pre></div></div>
 
+<h4 id="message-size-limit">Message size limit</h4>
+
+<p>By default, the size of the message is limited to <code class="language-plaintext highlighter-rouge">100,000</code> characters to prevent running potentially out of memory. This value can be modified by setting the init parameter <code class="language-plaintext highlighter-rouge">maxMessageSize</code> to the value of your choice. Setting the value to <code class="language-plaintext highlighter-rouge">-1</code> disables the limitation.</p>
+
+<p>To change the value, modify the file <code class="language-plaintext highlighter-rouge">webapps/api/WEB-INF/web.xml</code> as shown below:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;servlet&gt;
+    &lt;servlet-name&gt;MessageServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.apache.activemq.web.MessageServlet&lt;/servlet-class&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+    &lt;async-supported&gt;true&lt;/async-supported&gt;
+
+    &lt;init-param&gt;
+        &lt;param-name&gt;maxMessageSize&lt;/param-name&gt;
+        &lt;param-value&gt;-1&lt;/param-value&gt;
+    &lt;/init-param&gt;
+&lt;/servlet&gt;
+</code></pre></div></div>
+
 <h3 id="timeouts">Timeouts</h3>
 
 <p>When reading from a queue we might not have any messages. We can use a timeout query parameter to indicate how long we are prepared to wait for a message to arrive. This allows us to poll or block until a message arrives.</p>
