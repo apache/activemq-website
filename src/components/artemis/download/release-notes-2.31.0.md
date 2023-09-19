@@ -5,7 +5,7 @@ title-class: page-title-artemis
 type: artemis
 ---
 
- - [A complete list of JIRAs](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&version=12353446) for the 2.30.0 release.
+ - [A complete list of JIRAs](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&version=12353446) for the 2.31.0 release.
 
  - [A list of commits](commit-report-2.31.0).
 
