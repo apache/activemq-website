@@ -23,4 +23,3 @@ See also the JMS / Jakarta Messaging API used for the respective Artemis clients
 #### Hacking Guide
 
 *   [HTML](./hacking-guide)
-*   [PDF](./hacking-guide/book.pdf)
