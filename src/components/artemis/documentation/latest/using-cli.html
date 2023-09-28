@@ -18,11 +18,12 @@
 <div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#getting-help">1. Getting Help</a></li>
-<li><a href="#bash-and-zsh-auto-complete">2. Bash and ZSH auto complete</a></li>
+<li><a href="#bash-and-zsh-auto-complete">2. Bash and Zsh auto complete</a></li>
 <li><a href="#input-required">3. Input required</a></li>
 <li><a href="#artemis-shell">4. Artemis Shell</a>
 <ul class="sectlevel2">
-<li><a href="#connecting">4.1. Connecting</a></li>
+<li><a href="#connecting-interactively">4.1. Connecting Interactively</a></li>
+<li><a href="#connecting-statically">4.2. Connecting Statically</a></li>
 </ul>
 </li>
 </ul>
@@ -32,7 +33,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>ActiveMQ Artemis has a Command Line Interface (CLI) that can used to manage a few aspects of the broker like instance creation, basic user management, queues, etc.</p>
+<p>ActiveMQ Artemis has a Command Line Interface (CLI) that can used to manage a few aspects of the broker like instance creation, basic user management, queue &amp; address management, etc.</p>
 </div>
 <div class="paragraph">
 <p>There are two ways the CLI can be used:</p>
@@ -40,35 +41,23 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Bash Shell</p>
-<div class="ulist">
-<ul>
-<li>
-<p>A traditional CLI that can be accessed by <code>./artemis &lt;COMMAND&gt; ARGUMENTS&#8230;&#8203;</code></p>
-</li>
-</ul>
-</div>
+<p>Traditional CLI commands, e.g.: <code>./artemis [COMMAND] [PARAMETERS]</code></p>
 </li>
 <li>
-<p>Artemis Shell</p>
-<div class="ulist">
-<ul>
-<li>
-<p>A shell emulation that is accesssed by <code>./artemis</code> or <code>./artemis shell</code>.</p>
-</li>
-</ul>
-</div>
+<p>A custom shell that is accesssed using the <code>./artemis</code> or <code>./artemis shell</code> commands.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>All commands available through the traditional Command Line Interface (CLI) are also available through the Shell interface.</p>
+<p>All commands available through the traditional CLI commands are also available through the shell interface.</p>
 </div>
 <div class="paragraph">
-<p>The Shell interface will reuse some information as you repeat commands, such as the user, password, and target broker URI making the repetitive use a bit simpler.</p>
+<p>One benefit of the traditional CLI commands is that they can be used in your own bash scripts for automation, etc.</p>
 </div>
 <div class="paragraph">
-<p>The CLI interface however could be used in your bash scripts for your own automation while the Shell session being a user interface in a terminal session.</p>
+<p>One benefit of the shell is that it will <strong>reuse</strong> some information as you repeat commands.
+For example, once you supply the broker URI and username &amp; password to one command those values will be transparently applied other commands in the same shell session.
+Of course, the shell also allows you to avoid retyping <code>./artemis</code> for every command.</p>
 </div>
 </div>
 </div>
@@ -76,11 +65,11 @@
 <h2 id="getting-help"><a class="anchor" href="#getting-help"></a><a class="link" href="#getting-help">1. Getting Help</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>All of these commands can be accessed in the form of calling "artemis [COMMAND] [PARAMETERS]". You can get a complete list of available commands by typing:</p>
+<p>You can get a complete list of available commands by typing:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis <span class="nb">help</span>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis <span class="nb">help</span>
 <span class="go">Usage: artemis [COMMAND]
 ActiveMQ Artemis Command Line
 Commands:
@@ -106,15 +95,15 @@ Commands:
 </div>
 </div>
 <div class="paragraph">
-<p>It is also possible to use help at a specific command or sub-command for more information.
-Examples:</p>
-</div>
-<div class="paragraph">
-<p>To get a list of sub commands for data, you type <code>./artemis help data</code>, e.g.:</p>
+<p>It is also possible to use <code>help</code> at a specific command or sub-command for more information.
+For example, to get a list of sub-commands for <code>data</code> you type <code>./artemis help data</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="go">Commands:
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis <span class="nb">help </span>data
+<span class="go">Usage: artemis data [COMMAND]
+use 'help data' for sub commands list
+Commands:
   recover  Recover (undelete) every message on the journal by creating a new
              output journal. Rolled back and acked messages will be sent out to
              the output as much as possible.
@@ -130,11 +119,12 @@ Examples:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Or getting information about a particular command (e.g. <code>./artemis help create</code>).</p>
+<p>Or you can get help for a particular command.
+For example, <code>./artemis help create</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="go">Usage: artemis create [--aio] [--allow-anonymous] [--autocreate] [--autodelete]
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="go">Usage: artemis create [--aio] [--allow-anonymous] [--autocreate] [--autodelete]
                       [--blocking] [--clustered] [--cygwin]
                       [--disable-persistence] [--failover-on-shutdown]
                       [--force] [--jdbc] [--mapped] [--nio]
@@ -341,42 +331,42 @@ Examples:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="bash-and-zsh-auto-complete"><a class="anchor" href="#bash-and-zsh-auto-complete"></a><a class="link" href="#bash-and-zsh-auto-complete">2. Bash and ZSH auto complete</a></h2>
+<h2 id="bash-and-zsh-auto-complete"><a class="anchor" href="#bash-and-zsh-auto-complete"></a><a class="link" href="#bash-and-zsh-auto-complete">2. Bash and Zsh auto complete</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Bash and ZSH provide ways to auto-complete command line interfaces. To integrate with that functionality you have the option to generate the 'auto-complete' script:</p>
+<p>Bash and Zsh provide ways to auto-complete commands. To integrate with that functionality you have the option to generate the auto-complete script, i.e.:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis auto-complete</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis auto-complete</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This will generate a file named auto-complete-artemis.sh that should be used with:</p>
+<p>This will generate a file named <code>auto-complete-artemis.sh</code> that can be installed using:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">source</span> ./auto-complete-artemis.sh</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">source</span> ./auto-complete-artemis.sh</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>After the auto completion installed in the bash session, bash would start to show auto-completion information upon the pressure of the key [TAB]:</p>
+<p>After the auto-completion is installed you can view auto-completion information by pressing <kbd>TAB</kbd>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis
 <span class="go">activation     browser        create         kill           perf-journal   run            transfer       version
 address        check          data           mask           producer       shell          upgrade
 auto-complete  consumer       help           perf           queue          stop           user</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Same showing options:</p>
+<p>In order to see the various parameters available you must type <code>--</code> then press <kbd>TAB</kbd>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ ./artemis create --
---addresses                             --jdbc-bindings-table-name              --paging
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis create <span class="nt">--</span>
+<span class="go">--addresses                             --jdbc-bindings-table-name              --paging
 --aio                                   --jdbc-connection-url                   --password
 --allow-anonymous                       --jdbc-driver-class-name                --ping
 --autocreate                            --jdbc-large-message-table-name         --port-offset
@@ -384,7 +374,7 @@ auto-complete  consumer       help           perf           queue          stop 
 --blocking                              --jdbc-lock-renew-period                --relax-jolokia
 --cluster-password                      --jdbc-message-table-name               --replicated
 --cluster-user                          --jdbc-network-timeout                  --require-login
---clustered                             --jdbc-node-manager-table-name          --role</pre>
+--clustered                             --jdbc-node-manager-table-name          --role</span></code></pre>
 </div>
 </div>
 </div>
@@ -393,20 +383,18 @@ auto-complete  consumer       help           perf           queue          stop 
 <h2 id="input-required"><a class="anchor" href="#input-required"></a><a class="link" href="#input-required">3. Input required</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Some functionality on the CLI may require user input if not provided through a parameter in cases like connecting to a broker or creating the broker instance.</p>
-</div>
-<div class="paragraph">
-<p>For example:</p>
+<p>Some functionality may require interactive user input if not explicitly provided through a parameter.
+For example, in cases like connecting to a broker or creating the broker instance:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis queue <span class="nb">stat</span>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis queue <span class="nb">stat</span>
 <span class="go">Connection brokerURL = tcp://localhost:61616
 </span><span class="gp">Connection failed::AMQ229031: Unable to validate user from /127.0.0.1:56320. Username: null;</span><span class="w"> </span>SSL certificate subject DN: unavailable
 <span class="go">
 --user:
 Type the username for a retry
-a
+myUser
 
 --password: is mandatory with this configuration:
 Type the password for a retry</span></code></pre>
@@ -418,19 +406,19 @@ Type the password for a retry</span></code></pre>
 <h2 id="artemis-shell"><a class="anchor" href="#artemis-shell"></a><a class="link" href="#artemis-shell">4. Artemis Shell</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To initialize the shell session, type './artemis shell' (or just ./artemis if you prefer):</p>
+<p>To initialize the shell session, type <code>./artemis shell</code> (or just <code>./artemis</code> if you prefer):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The ActiveMQ Artemis Shell provides an interface that can be used to call the CLI commands directly without leaving the Java Virtual Machine.</p>
+<p>The ActiveMQ Artemis shell provides an interface that can be used to execute commands directly without leaving the Java Virtual Machine.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="go">     _        _               _
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="go">     _        _               _
     / \  ____| |_  ___ __  __(_) _____
    / _ \|  _ \ __|/ _ \  \/  | |/  __/
   / ___ \ | \/ |_/  __/ |\/| | |\___ \
@@ -444,13 +432,13 @@ Type the password for a retry</span></code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="connecting"><a class="anchor" href="#connecting"></a><a class="link" href="#connecting">4.1. Connecting</a></h3>
+<h3 id="connecting-interactively"><a class="anchor" href="#connecting-interactively"></a><a class="link" href="#connecting-interactively">4.1. Connecting Interactively</a></h3>
 <div class="paragraph">
-<p>It is possible to authenticate your CLI client once to the server, and reuse the connection information for future commands being performed:</p>
+<p>It is possible to authenticate your CLI client once to the server and reuse the connection information for additional commands:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">Apache ActiveMQ Artemis &gt;</span><span class="w"> </span>connect <span class="nt">--user</span><span class="o">=</span>a <span class="nt">--password</span><span class="o">=</span>b <span class="nt">--url</span> tcp://localhost:61616
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">Apache ActiveMQ Artemis &gt;</span><span class="w"> </span>connect <span class="nt">--user</span><span class="o">=</span>myUser <span class="nt">--password</span><span class="o">=</span>myPass <span class="nt">--url</span> tcp://localhost:61616
 <span class="go">Connection brokerURL = tcp://localhost:61616
 Connection Successful!</span></code></pre>
 </div>
@@ -459,11 +447,11 @@ Connection Successful!</span></code></pre>
 <p>Now any command requiring authentication will reuse these parameters.</p>
 </div>
 <div class="paragraph">
-<p>For example the sub-command 'queue stat' will reuse previous information to perform its connection to the broker.</p>
+<p>For example the sub-command <code>queue stat</code> will reuse previous information to perform its connection to the broker.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">Apache ActiveMQ Artemis &gt;</span><span class="w"> </span>queue <span class="nb">stat</span>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">Apache ActiveMQ Artemis &gt;</span><span class="w"> </span>queue <span class="nb">stat</span>
 <span class="go">Connection brokerURL = tcp://localhost:61616
 |NAME                     |ADDRESS                  |CONSUMER_COUNT|MESSAGE_COUNT|MESSAGES_ADDED|DELIVERING_COUNT|MESSAGES_ACKED|SCHEDULED_COUNT|ROUTING_TYPE|
 |DLQ                      |DLQ                      |0             |0            |0             |0               |0             |0              |ANYCAST     |
@@ -472,25 +460,23 @@ Connection Successful!</span></code></pre>
 |activemq.management.0b...|activemq.management.0b...|1             |0            |0             |0               |0             |0              |MULTICAST   |</span></code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="connecting-from-command-line"><a class="anchor" href="#connecting-from-command-line"></a><a class="link" href="#connecting-from-command-line">4.1.1. Connecting from Command Line</a></h4>
+</div>
+<div class="sect2">
+<h3 id="connecting-statically"><a class="anchor" href="#connecting-statically"></a><a class="link" href="#connecting-statically">4.2. Connecting Statically</a></h3>
 <div class="paragraph">
-<p>To make the initial connection simpler, it is possible to start the shell with an initial connection from the startup:</p>
+<p>It is possible to start the shell with an initial connection configured statically, e.g.:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis shell <span class="nt">--user</span> &lt;username&gt; <span class="nt">--password</span> &lt;password&gt; <span class="nt">--url</span> &lt;tcp://myserver:myport&gt;</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis shell <span class="nt">--user</span> &lt;username&gt; <span class="nt">--password</span> &lt;password&gt; <span class="nt">--url</span> tcp://&lt;<span class="nb">hostname</span><span class="o">&gt;</span>:&lt;port&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The CLI should not ask for an user/password for any further commands with this option being used:</p>
-</div>
-<div class="paragraph">
-<p>Example:</p>
+<p>The CLI should not ask for a the broker URL or user/password for any further commands, e.g.:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis shell <span class="nt">--user</span> a <span class="nt">--password</span> b
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis shell <span class="nt">--user</span> myUser <span class="nt">--password</span> myPass
 <span class="c">...
 </span><span class="go">
 
@@ -501,7 +487,6 @@ Connection Successful!</span></code></pre>
 |ExpiryQueue              |ExpiryQueue              |0             |0            |0             |0               |0             |0              |ANYCAST     |
 |TEST                     |TEST                     |0             |8743         |8743          |0               |0             |0              |ANYCAST     |
 |activemq.management.2a...|activemq.management.2a...|1             |0            |0             |0               |0             |0              |MULTICAST   |</span></code></pre>
-</div>
 </div>
 </div>
 </div>
