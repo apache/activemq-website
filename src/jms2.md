@@ -7,9 +7,7 @@ type: activemq5
 
 [Connectivity](connectivity) > [Protocols](protocols) > [JMS 2.0](jms2)
 
-ActiveMQ 5.x support for JMS v2.0 is in progress.
-
-Adding support for JMS v2.0 creates compatability challenges both for existing JMS v1.1 users and existing frameworks that use JMS v2.0 API via the JMS v1.1 compatability capabilities. 
+ActiveMQ 5.x support for JMS v3.1 and v2.0 is in progress.
 
 ### Transition Approach
 
@@ -19,7 +17,7 @@ As features are implemented in subsequent releases, these exceptions will be rep
 
 ### Jakarta Messaging 3.1 support
 
-The initial support for JMS 2.0 also enables building upon this for transition to Jakarta Messaging 3.1 and its new jakarta.jms API namespace rather than the historical javax.jms namespace.
+Support for JMS 2.0 also enables building upon this for transition to Jakarta Messaging 3.1 and its new jakarta.jms API namespace rather than the historical javax.jms namespace.
 
  * The standard for Java Enterprise features going forward
  * Required for Spring 6
@@ -31,7 +29,8 @@ This allows for a dependency-update-only approach to the transition without havi
 
 Client jar|API Package|Version|Notes
 ---|---|---
-activemq-client | javax.jms | 5.18.0+ | Initial JMS 2.0 support. Works with embedded broker and VM transport as previously.
+activemq-client | jakarta.jms | 6.0.x | JMS 3.1 support. Works with embedded broker and VM transport.
+activemq-client | javax.jms | 5.18.x | JMS 2.0 support. Works with embedded broker and VM transport.
 activemq-client-jakarta | jakarta.jms | 5.18.1+ | Transitional module for initial *client-only* Jakarta Messaging 3.1 support. Can't be used in the same JVM as activemq-client or broker which use javax.jms API. **Note this means no embedded broker / VM transport support, only remote brokers.**
 
 There is no functional change, this is purely a Java package naming change:
@@ -46,7 +45,7 @@ Becomes
     import jakarta.jms.Message
     import jakarta.jms...
 
-To use the Jakarta client in Maven:
+To use the Jakarta transition client available with ActiveMQ 5.18.x in Maven:
 
     <dependency>
       <groupId>org.apache.activemq</groupId>
@@ -58,7 +57,7 @@ Note: Spring bean definitions do not change for Jakarta support:
 
     <bean class="org.apache.activemq.ActiveMQConnectionFactory">
 
-### ActiveMQ JMS v2.0 Implementation Progress 
+### ActiveMQ JMS v3.1, v2.0 Implementation Progress 
 
 The implementation approach is subject to change. Be sure to verify features in Release notes. 
 
@@ -72,10 +71,11 @@ JIRA|Status|Target Version|Completed Version|Feature|Notes
 [AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | merged | 5.18.0 | 5.18.0 | JMSConsumer | Consume messages
 [AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | merged | 5.18.0 | 5.18.0 | JMSProducer | Produce messages
 [AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | merged | 5.18.0 | 5.18.0 | GetBody/isBodyAssignable | Support for checking body type using a Class<?>
-[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | PR [#982](https://github.com/apache/activemq/pull/982)| 5.18.2 | | Delivery Delay | Support for Message DeliveryDelay feature
-[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | | 5.18.2 | | JMSProducer features | Completion Listener async send support
+[AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | merged | 6.0.0, 5.18.3 | | XA Connection methods | Updated methods when using XA Transactions
+[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | merged | 6.0.0, 5.18.3 | | JMSConsumer | .receiveBody(Class<T>) methods
+[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | PR [#982](https://github.com/apache/activemq/pull/982)| 6.0.1, 5.18.4 | | Delivery Delay | Support for Message DeliveryDelay feature
+[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | PR [#1045](https://github.com/apache/activemq/pull/1045) | 6.0.1, 5.18.4 | | JMSProducer features | Completion Listener async send support
 [AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | | TBD | | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions
-[AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | | TBD | | XA Connection methods | Updated methods when using XA Transactions
 
 ### Feature notes
 
