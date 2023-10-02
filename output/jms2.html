@@ -94,9 +94,7 @@
       <div class="col-12 activemq5">
         <p><a href="connectivity">Connectivity</a> &gt; <a href="protocols">Protocols</a> &gt; <a href="jms2">JMS 2.0</a></p>
 
-<p>ActiveMQ 5.x support for JMS v2.0 is in progress.</p>
-
-<p>Adding support for JMS v2.0 creates compatability challenges both for existing JMS v1.1 users and existing frameworks that use JMS v2.0 API via the JMS v1.1 compatability capabilities.</p>
+<p>ActiveMQ 5.x support for JMS v3.1 and v2.0 is in progress.</p>
 
 <h3 id="transition-approach">Transition Approach</h3>
 
@@ -106,7 +104,7 @@
 
 <h3 id="jakarta-messaging-31-support">Jakarta Messaging 3.1 support</h3>
 
-<p>The initial support for JMS 2.0 also enables building upon this for transition to Jakarta Messaging 3.1 and its new jakarta.jms API namespace rather than the historical javax.jms namespace.</p>
+<p>Support for JMS 2.0 also enables building upon this for transition to Jakarta Messaging 3.1 and its new jakarta.jms API namespace rather than the historical javax.jms namespace.</p>
 
 <ul>
   <li>The standard for Java Enterprise features going forward</li>
@@ -130,9 +128,15 @@
   <tbody>
     <tr>
       <td>activemq-client</td>
+      <td>jakarta.jms</td>
+      <td>6.0.x</td>
+      <td>JMS 3.1 support. Works with embedded broker and VM transport.</td>
+    </tr>
+    <tr>
+      <td>activemq-client</td>
       <td>javax.jms</td>
-      <td>5.18.0+</td>
-      <td>Initial JMS 2.0 support. Works with embedded broker and VM transport as previously.</td>
+      <td>5.18.x</td>
+      <td>JMS 2.0 support. Works with embedded broker and VM transport.</td>
     </tr>
     <tr>
       <td>activemq-client-jakarta</td>
@@ -157,7 +161,7 @@ import jakarta.jms.Message
 import jakarta.jms...
 </code></pre></div></div>
 
-<p>To use the Jakarta client in Maven:</p>
+<p>To use the Jakarta transition client available with ActiveMQ 5.18.x in Maven:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
   &lt;groupId&gt;org.apache.activemq&lt;/groupId&gt;
@@ -171,7 +175,7 @@ import jakarta.jms...
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
 </code></pre></div></div>
 
-<h3 id="activemq-jms-v20-implementation-progress">ActiveMQ JMS v2.0 Implementation Progress</h3>
+<h3 id="activemq-jms-v31-v20-implementation-progress">ActiveMQ JMS v3.1, v2.0 Implementation Progress</h3>
 
 <p>The implementation approach is subject to change. Be sure to verify features in Release notes.</p>
 
@@ -238,17 +242,33 @@ import jakarta.jms...
       <td>Support for checking body type using a Class&lt;?&gt;</td>
     </tr>
     <tr>
+      <td><a href="https://issues.apache.org/jira/browse/AMQ-8325">AMQ-8325</a></td>
+      <td>merged</td>
+      <td>6.0.0, 5.18.3</td>
+      <td> </td>
+      <td>XA Connection methods</td>
+      <td>Updated methods when using XA Transactions</td>
+    </tr>
+    <tr>
+      <td><a href="https://issues.apache.org/jira/browse/AMQ-8464">AMQ-8464</a></td>
+      <td>merged</td>
+      <td>6.0.0, 5.18.3</td>
+      <td> </td>
+      <td>JMSConsumer</td>
+      <td>.receiveBody(Class<T>) methods</T></td>
+    </tr>
+    <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8320">AMQ-8320</a></td>
       <td>PR <a href="https://github.com/apache/activemq/pull/982">#982</a></td>
-      <td>5.18.2</td>
+      <td>6.0.1, 5.18.4</td>
       <td> </td>
       <td>Delivery Delay</td>
       <td>Support for Message DeliveryDelay feature</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8324">AMQ-8324</a></td>
-      <td> </td>
-      <td>5.18.2</td>
+      <td>PR <a href="https://github.com/apache/activemq/pull/1045">#1045</a></td>
+      <td>6.0.1, 5.18.4</td>
       <td> </td>
       <td>JMSProducer features</td>
       <td>Completion Listener async send support</td>
@@ -260,14 +280,6 @@ import jakarta.jms...
       <td> </td>
       <td>Shared Topic Consumer</td>
       <td>Multi-consumer (queue-like) consuming from topic subscriptions</td>
-    </tr>
-    <tr>
-      <td><a href="https://issues.apache.org/jira/browse/AMQ-8325">AMQ-8325</a></td>
-      <td> </td>
-      <td>TBD</td>
-      <td> </td>
-      <td>XA Connection methods</td>
-      <td>Updated methods when using XA Transactions</td>
     </tr>
   </tbody>
 </table>
