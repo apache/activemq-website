@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Intercepting Operations</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#implementing-the-interceptors">1. Implementing The Interceptors</a></li>
 <li><a href="#configuring-the-interceptors">2. Configuring The Interceptors</a></li>
@@ -47,7 +47,7 @@ This makes interceptors powerful, but also potentially dangerous.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="kn">package</span> <span class="nn">org.apache.activemq.artemis.api.core.interceptor</span><span class="o">;</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kn">package</span> <span class="nn">org.apache.activemq.artemis.api.core.interceptor</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Interceptor</span> <span class="o">{</span>
    <span class="kt">boolean</span> <span class="nf">intercept</span><span class="o">(</span><span class="nc">Packet</span> <span class="n">packet</span><span class="o">,</span> <span class="nc">RemotingConnection</span> <span class="n">connection</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ActiveMQException</span><span class="o">;</span>
@@ -59,7 +59,7 @@ This makes interceptors powerful, but also potentially dangerous.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="kn">package</span> <span class="nn">org.apache.activemq.artemis.core.protocol.stomp</span><span class="o">;</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kn">package</span> <span class="nn">org.apache.activemq.artemis.core.protocol.stomp</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">StompFrameInterceptor</span> <span class="kd">extends</span> <span class="nc">BaseInterceptor</span><span class="o">&lt;</span><span class="nc">StompFrame</span><span class="o">&gt;</span> <span class="o">{</span>
    <span class="kt">boolean</span> <span class="nf">intercept</span><span class="o">(</span><span class="nc">StompFrame</span> <span class="n">stompFrame</span><span class="o">,</span> <span class="nc">RemotingConnection</span> <span class="n">connection</span><span class="o">);</span>
@@ -71,7 +71,7 @@ This makes interceptors powerful, but also potentially dangerous.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="kn">package</span> <span class="nn">org.apache.activemq.artemis.core.protocol.mqtt</span><span class="o">;</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kn">package</span> <span class="nn">org.apache.activemq.artemis.core.protocol.mqtt</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MQTTInterceptor</span> <span class="kd">extends</span> <span class="nc">BaseInterceptor</span><span class="o">&lt;</span><span class="nc">MqttMessage</span><span class="o">&gt;</span> <span class="o">{</span>
     <span class="kt">boolean</span> <span class="nf">intercept</span><span class="o">(</span><span class="nc">MqttMessage</span> <span class="n">mqttMessage</span><span class="o">,</span> <span class="nc">RemotingConnection</span> <span class="n">connection</span><span class="o">);</span>
@@ -101,7 +101,7 @@ This makes interceptors powerful, but also potentially dangerous.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;remoting-incoming-interceptors&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;remoting-incoming-interceptors&gt;</span>
    <span class="nt">&lt;class-name&gt;</span>org.apache.activemq.artemis.jms.example.LoginInterceptor<span class="nt">&lt;/class-name&gt;</span>
    <span class="nt">&lt;class-name&gt;</span>org.apache.activemq.artemis.jms.example.AdditionalPropertyInterceptor<span class="nt">&lt;/class-name&gt;</span>
 <span class="nt">&lt;/remoting-incoming-interceptors&gt;</span>

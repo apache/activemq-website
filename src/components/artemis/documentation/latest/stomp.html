@@ -15,7 +15,7 @@
 <div id="header">
 <h1>STOMP</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#limitations">1. Limitations</a></li>
 <li><a href="#virtual-hosting">2. Virtual Hosting</a></li>
@@ -113,7 +113,7 @@ When providing an overview of the protocol the STOMP 1.2 specification <a href="
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>A STOMP server is modelled as a set of destinations to which messages can be sent.
+<pre class="nowrap">A STOMP server is modelled as a set of destinations to which messages can be sent.
 The STOMP protocol treats destinations as opaque string and their syntax is
 server implementation specific. Additionally STOMP does not define what the
 delivery semantics of destinations should be. The delivery, or
@@ -183,7 +183,7 @@ For example, broker.xml could use the following:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;address-settings&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-settings&gt;</span>
    <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"queue/#"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;default-address-routing-type&gt;</span>ANYCAST<span class="nt">&lt;/default-address-routing-type&gt;</span>
       <span class="nt">&lt;default-queue-routing-type&gt;</span>ANYCAST<span class="nt">&lt;/default-queue-routing-type&gt;</span>
@@ -219,7 +219,7 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"stomp-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:61613?protocols=STOMP;connectionTtl=20000<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"stomp-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:61613?protocols=STOMP;connectionTtl=20000<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -308,7 +308,7 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"stomp-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:61613?protocols=STOMP;stompEnableMessageId=true<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"stomp-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:61613?protocols=STOMP;stompEnableMessageId=true<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -317,7 +317,7 @@ The property key is <code>amqMessageId</code> and the value is a String represen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>amqMessageId : STOMP12345</pre>
+<pre class="nowrap">amqMessageId : STOMP12345</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -353,7 +353,7 @@ For example, if you wanted to configure a durable subscription on the address <c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"myAddress"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;multicast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"myclientid.mysubscription"</span><span class="nt">/&gt;</span>
@@ -375,7 +375,7 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"stomp-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:61613?protocols=STOMP;stompMinLargeMessageSize=10240<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"stomp-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:61613?protocols=STOMP;stompMinLargeMessageSize=10240<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -402,7 +402,7 @@ Modern web browsers which support Web Sockets can send and receive STOMP message
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"stomp-ws-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:61614?protocols=STOMP<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"stomp-ws-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:61614?protocols=STOMP<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">

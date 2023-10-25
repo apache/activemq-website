@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Broker Connections</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#amqp-server-connections">1. AMQP Server Connections</a></li>
 <li><a href="#amqp-server-connection-operations">2. AMQP Server Connection Operations</a></li>
@@ -56,7 +56,7 @@ However, in the future, it might be expanded to other protocols.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   ...
 <span class="nt">&lt;/broker-connections&gt;</span></code></pre>
 </div>
@@ -76,7 +76,7 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"other-server"</span> <span class="na">retry-interval=</span><span class="s">"100"</span> <span class="na">reconnect-attempts=</span><span class="s">"-1"</span> <span class="na">user=</span><span class="s">"john"</span> <span class="na">password=</span><span class="s">"doe"</span><span class="nt">&gt;</span>
     ...
   <span class="nt">&lt;/amqp-connection&gt;</span>
@@ -230,7 +230,7 @@ Example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://ServerA:5672#BackupA:5672,BackupB:5672"</span> <span class="na">name=</span><span class="s">"ServerA"</span> <span class="na">reconnect-attempts=</span><span class="s">"-1"</span> <span class="na">retry-interval=</span><span class="s">"5000"</span><span class="nt">&gt;</span>
     ...
   <span class="nt">&lt;/amqp-connection&gt;</span>
@@ -387,7 +387,7 @@ If you set sync=true you must reconnect a mirror before performing any operation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"mirror"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;mirror/&gt;</span>
   <span class="nt">&lt;/amqp-connection&gt;</span>
@@ -405,7 +405,7 @@ If you set sync=true you must reconnect a mirror before performing any operation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connection&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connection&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://brokerB:5672"</span> <span class="na">name=</span><span class="s">"brokerB"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;mirror/&gt;</span>
   <span class="nt">&lt;/amqp-connection&gt;</span>
@@ -451,7 +451,7 @@ Broker Connection - Disaster Recovery.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
    <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://DataCenter2:5672"</span> <span class="na">name=</span><span class="s">"DC2"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;mirror/&gt;</span>
    <span class="nt">&lt;/amqp-connection&gt;</span>
@@ -463,7 +463,7 @@ Broker Connection - Disaster Recovery.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
    <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://DataCenter1:5672"</span> <span class="na">name=</span><span class="s">"DC1"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;mirror/&gt;</span>
    <span class="nt">&lt;/amqp-connection&gt;</span>
@@ -532,7 +532,7 @@ When configuring a sender or receiver, the following properties can be set:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"other-server"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;sender</span> <span class="na">address-match=</span><span class="s">"queues.#"</span><span class="nt">/&gt;</span>
     <span class="c">&lt;!-- notice the local queues for remotequeues.# need to be created on this broker --&gt;</span>
@@ -559,7 +559,7 @@ When configuring a sender or receiver, the following properties can be set:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"other-server"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;receiver</span> <span class="na">queue-name=</span><span class="s">"remoteQueueA"</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;sender</span> <span class="na">queue-name=</span><span class="s">"localQueueB"</span><span class="nt">/&gt;</span>
@@ -629,7 +629,7 @@ For example, a configuration where queues with names beginning "queue." act as s
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"router"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;peer</span> <span class="na">address-match=</span><span class="s">"queues.#"</span><span class="nt">/&gt;</span>
   <span class="nt">&lt;/amqp-connection&gt;</span>
@@ -655,7 +655,7 @@ For example, a similar prefix- based router address configuration would be:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>address {
+<pre class="nowrap">address {
     prefix: queue
     waypoint: yes
 }</pre>
@@ -700,7 +700,7 @@ When a queue with its distinct name (as in the following example) is used, sende
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"other-server"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;sender</span> <span class="na">address-match=</span><span class="s">"queues.#"</span><span class="nt">/&gt;</span>
   <span class="nt">&lt;/amqp-connection&gt;</span>
@@ -745,7 +745,7 @@ To avoid confusion it is recommended that <code>address name</code> and <code>qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"federation-example"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;federation&gt;</span>
        <span class="nt">&lt;local-address-policy</span> <span class="na">name=</span><span class="s">"example-local-address-policy"</span><span class="nt">&gt;</span>
@@ -777,7 +777,7 @@ To avoid confusion it is recommended that <code>address name</code> and <code>qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"federation-example"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;federation&gt;</span>
        <span class="nt">&lt;local-address-policy</span> <span class="na">name=</span><span class="s">"example-local-address-policy"</span>
@@ -841,7 +841,7 @@ To avoid confusion it is recommended that <code>address name</code> and <code>qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"federation-example"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;federation&gt;</span>
        <span class="nt">&lt;local-queue-policy</span> <span class="na">name=</span><span class="s">"example-local-queue-policy"</span><span class="nt">&gt;</span>

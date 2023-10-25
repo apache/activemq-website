@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Paging</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#page-files">1. Page Files</a>
 <ul class="sectlevel2">
@@ -147,7 +147,7 @@ Use <a href="#global-max-size">global-max-size</a> or <a href="#global-max-messa
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;address-settings&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-settings&gt;</span>
    <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"jms.someaddress"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;max-size-bytes&gt;</span>104857600<span class="nt">&lt;/max-size-bytes&gt;</span>
       <span class="nt">&lt;max-size-messages&gt;</span>1000<span class="nt">&lt;/max-size-messages&gt;</span>
@@ -216,15 +216,23 @@ If the value is <code>BLOCK</code> then client message producers will block when
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>max-read-page-messages</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">how many message can be read from paging into the Queue whenever more messages are needed.
-The system wtill stop reading if `max-read-page-bytes hits the limit first.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of paged messages that the broker can read into memory per-queue. The default value is -1, which means that no limit applies.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1 (disabled)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>max-read-page-bytes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">how much memory the messages read from paging can take on the Queue whenever more messages are needed.
-The system will stop reading if <code>max-read-page-messages</code> hits the limit first.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum memory, in bytes, that can be used to read paged messages into memory per-queue. When applying this limit, the broker takes into account both messages that are currently delivering and messages that are ready to be delivered to consumers. The default value is 2 * page-size (usually being 20 MB). If consumers are slow to acknowledge messages, you can increase the default value to ensure that the memory is not consumed by messages pending acknowledgment, which can starve the broker of messages.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2 * page-size-bytes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">prefetch-page-messages</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of paged messages that the broker can read from disk into memory per-queue. The default value is taken from max-read-page-messages, usually at -1, which means that no limit applies.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>max-read-page-messages</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">prefetch-page-bytes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of paged messages that the broker can read from disk into memory per-queue. The default value is taken from max-read-page-messages, usually at -1, which means that no limit applies.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">if not defined, <code>max-read-page-bytes</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page-limit-bytes</code></p></td>
@@ -267,11 +275,11 @@ The configured policy will start based on the first value to reach its mark.</p>
 <div class="sect3">
 <h4 id="maximum-read-from-page"><a class="anchor" href="#maximum-read-from-page"></a><a class="link" href="#maximum-read-from-page">2.2.1. Maximum read from page</a></h4>
 <div class="paragraph">
-<p><code>max-read-page-messages</code> and <code>max-read-page-bytes</code> are used to control messaging reading from paged file into the Queue.
-The broker will add messages on the Queue until either <code>max-read-page-meessages</code> or <code>max-read-page-bytes</code> reaches the limit.</p>
+<p><code>max-read-page-messages</code>, <code>max-read-page-bytes</code>, <code>prefetch-page-messages</code> and <code>prefetch-page-bytes</code> are used to control reading from paged file into the Queue.
+The broker will add messages as long as all these limits are satisfied.</p>
 </div>
 <div class="paragraph">
-<p>If both values are set to -1 the broker will keep reading messages as long as the consumer is reaching for more messages.
+<p>If all these values are set to -1 the broker will keep reading messages as long as the consumer is reaching for more messages.
 However this would keep the broker unprotected from consumers allocating huge transactions or consumers that don&#8217;t have flow control enabled.</p>
 </div>
 </div>

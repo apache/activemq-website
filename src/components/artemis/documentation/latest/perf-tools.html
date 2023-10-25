@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Performance Tools</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#case-1-single-producer-single-consumer-over-a-queue">1. Case 1: Single producer Single consumer over a queue</a>
 <ul class="sectlevel2">
@@ -107,7 +107,7 @@ In the former case it will use the same JVM parameter configured on the instance
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>./artemis perf client queue://TEST_QUEUE
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nv">$ </span>./artemis perf client queue://TEST_QUEUE
 Connection brokerURL <span class="o">=</span> tcp://localhost:61616
 2022-01-18 10:30:54,535 WARN  <span class="o">[</span>org.apache.activemq.artemis.core.client] AMQ212053: CompletionListener/SendAcknowledgementHandler used with <span class="nv">confirmationWindowSize</span><span class="o">=</span><span class="nt">-1</span><span class="nb">.</span> Enable confirmationWindowSize to receive acks from server!
 <span class="nt">---</span> warmup <span class="nb">false</span>
@@ -124,7 +124,7 @@ Before looking what the metrics mean, there&#8217;s an initial <code>WARN</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash">WARN  <span class="o">[</span>org.apache.activemq.artemis.core.client] AMQ212053: CompletionListener/SendAcknowledgementHandler used with <span class="nv">confirmationWindowSize</span><span class="o">=</span><span class="nt">-1</span><span class="nb">.</span> Enable confirmationWindowSize to receive acks from server!</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash">WARN  <span class="o">[</span>org.apache.activemq.artemis.core.client] AMQ212053: CompletionListener/SendAcknowledgementHandler used with <span class="nv">confirmationWindowSize</span><span class="o">=</span><span class="nt">-1</span><span class="nb">.</span> Enable confirmationWindowSize to receive acks from server!</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -151,14 +151,14 @@ the <code>perf</code> commands uses CORE as the default JMS provider</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616</code></pre>
 </div>
 </div>
 <div class="sect3">
 <h4 id="running-it"><a class="anchor" href="#running-it"></a><a class="link" href="#running-it">1.1.1. Running it</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>./artemis perf client <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 queue://TEST_QUEUE
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nv">$ </span>./artemis perf client <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 queue://TEST_QUEUE
 <span class="nt">---</span> warmup <span class="nb">false</span>
 <span class="nt">---</span> sent:          8114 msg/sec
 <span class="nt">---</span> blocked:       8114 msg/sec
@@ -288,12 +288,12 @@ This detail is relevant to explain the live rate <a href="#running-it">statistic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nt">--max-pending</span> 100</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nt">--max-pending</span> 100</code></pre>
 </div>
 </div>
 <div id="our-previous-command" class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>./artemis perf client <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 queue://TEST_QUEUE
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nv">$ </span>./artemis perf client <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 queue://TEST_QUEUE
 Connection brokerURL <span class="o">=</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000
 <span class="c"># first samples shows very BAD performance because client JVM is still warming up</span>
 <span class="nt">---</span> warmup <span class="nb">true</span>
@@ -372,7 +372,7 @@ Any latency collected trace on this guide is going to use <a href="https://hdrhi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nt">--hdr</span> /tmp/non_durable_queue.hdr</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nt">--hdr</span> /tmp/non_durable_queue.hdr</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -408,7 +408,7 @@ Any latency collected trace on this guide is going to use <a href="https://hdrhi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nt">--rate</span> &lt;msg/sec integer value&gt;</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nt">--rate</span> &lt;msg/sec integer value&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -416,7 +416,7 @@ Any latency collected trace on this guide is going to use <a href="https://hdrhi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nt">---</span> aggregated send <span class="nb">time</span>:       mean:   1056.09 us - 50.00%:   1003.00 us - 90.00%:   1423.00 us - 99.00%:   1639.00 us - 99.90%:   4287.00 us - 99.99%:   7103.00 us - max:     19583.00 us
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nt">---</span> aggregated send <span class="nb">time</span>:       mean:   1056.09 us - 50.00%:   1003.00 us - 90.00%:   1423.00 us - 99.00%:   1639.00 us - 99.90%:   4287.00 us - 99.99%:   7103.00 us - max:     19583.00 us
 <span class="nt">---</span> aggregated transfer <span class="nb">time</span>:   mean:  18647.51 us - 50.00%:  10751.00 us - 90.00%:  54271.00 us - 99.00%:  84991.00 us - 99.90%:  90111.00 us - 99.99%:  93183.00 us - max:     94207.00 us</code></pre>
 </div>
 </div>
@@ -426,7 +426,7 @@ let&#8217;s try by running a load test with ~30% of the max perceived sent rate,
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nt">--rate</span> 30000 <span class="nt">--hdr</span> /tmp/30K.hdr</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nt">--rate</span> 30000 <span class="nt">--hdr</span> /tmp/30K.hdr</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -434,7 +434,7 @@ let&#8217;s try by running a load test with ~30% of the max perceived sent rate,
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>./artemis perf client <span class="nt">--rate</span> 30000 <span class="nt">--hdr</span> /tmp/30K.hdr <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 queue://TEST_QUEUE
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nv">$ </span>./artemis perf client <span class="nt">--rate</span> 30000 <span class="nt">--hdr</span> /tmp/30K.hdr <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 queue://TEST_QUEUE
 <span class="c"># ... after 20 warmup seconds ...</span>
 <span class="nt">---</span> warmup <span class="nb">false</span>
 <span class="nt">---</span> sent:         30302 msg/sec
@@ -518,7 +518,7 @@ let&#8217;s try by running a load test with ~30% of the max perceived sent rate,
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nt">--num-destinations</span> &lt;number of destinations to generate&gt;</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nt">--num-destinations</span> &lt;number of destinations to generate&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -529,7 +529,7 @@ let&#8217;s try by running a load test with ~30% of the max perceived sent rate,
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nt">--num-destinations</span> 3 topic://TOPIC</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nt">--num-destinations</span> 3 topic://TOPIC</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -543,7 +543,7 @@ let&#8217;s try by running a load test with ~30% of the max perceived sent rate,
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nt">--producers</span> 3 <span class="nt">--consumers</span> 2 <span class="nt">--num-destinations</span> 10 topic://TOPIC</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nt">--producers</span> 3 <span class="nt">--consumers</span> 2 <span class="nt">--num-destinations</span> 10 topic://TOPIC</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -551,7 +551,7 @@ let&#8217;s try by running a load test with ~30% of the max perceived sent rate,
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="c"># same as in the previous cases</span>
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="c"># same as in the previous cases</span>
 ./artemis perf client <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--s</span>
 how-latency <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 <span class="se">\</span>
 <span class="nt">--producers</span> 3 <span class="nt">--consumers</span> 2 <span class="nt">--num-destinations</span> 10 <span class="nt">--durable</span> <span class="nt">--persistent</span> topic://DURABLE_TOPIC
@@ -563,7 +563,7 @@ how-latency <span class="nt">--url</span> tcp://localhost:61616?confirmationWind
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash">javax.jms.IllegalStateException: Cannot create durable subscription - client ID has not been <span class="nb">set</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash">javax.jms.IllegalStateException: Cannot create durable subscription - client ID has not been <span class="nb">set</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -578,7 +578,7 @@ ClientID still requires users to specify Client ID prefixes with <code>--clientI
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash">./artemis perf client <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 <span class="se">\</span>
+<pre class="rouge highlight nowrap"><code data-lang="bash">./artemis perf client <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 <span class="se">\</span>
 <span class="nt">--producers</span> 3 <span class="nt">--consumers</span> 2 <span class="nt">--num-destinations</span> 10 <span class="nt">--durable</span> <span class="nt">--persistent</span> topic://DURABLE_TOPIC <span class="nt">--clientID</span> test_id
 <span class="c"># after few seconds</span>
 <span class="nt">---</span> warmup <span class="nb">false</span>
@@ -604,7 +604,7 @@ ClientID still requires users to specify Client ID prefixes with <code>--clientI
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash">./artemis perf client <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 <span class="se">\</span>
+<pre class="rouge highlight nowrap"><code data-lang="bash">./artemis perf client <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 <span class="se">\</span>
 <span class="nt">--producers</span> 3 <span class="nt">--consumers</span> 2 <span class="nt">--num-destinations</span> 10 <span class="nt">--durable</span> <span class="nt">--persistent</span> topic://DURABLE_TOPIC <span class="nt">--clientID</span> test_id <span class="se">\</span>
 <span class="nt">--rate</span> 60000
 <span class="c"># after many seconds while running</span>
@@ -625,7 +625,7 @@ ClientID still requires users to specify Client ID prefixes with <code>--clientI
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nt">--threads</span> &lt;producer threads&gt;</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nt">--threads</span> &lt;producer threads&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -633,7 +633,7 @@ ClientID still requires users to specify Client ID prefixes with <code>--clientI
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash">./artemis perf client <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 <span class="se">\</span>
+<pre class="rouge highlight nowrap"><code data-lang="bash">./artemis perf client <span class="nt">--warmup</span> 20 <span class="nt">--max-pending</span> 100 <span class="nt">--show-latency</span> <span class="nt">--url</span> tcp://localhost:61616?confirmationWindowSize<span class="o">=</span>20000 <span class="nt">--consumer-url</span> tcp://localhost:61616 <span class="se">\</span>
 <span class="nt">--producers</span> 3 <span class="nt">--consumers</span> 2 <span class="nt">--num-destinations</span> 10 <span class="nt">--durable</span> <span class="nt">--persistent</span> topic://DURABLE_TOPIC <span class="nt">--clientID</span> test_id <span class="se">\</span>
 <span class="nt">--rate</span> 60000 <span class="nt">--threads</span> 2
 <span class="c"># after few seconds warming up....</span>

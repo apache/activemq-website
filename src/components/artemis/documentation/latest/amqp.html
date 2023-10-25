@@ -15,7 +15,7 @@
 <div id="header">
 <h1>AMQP</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#examples">1. Examples</a></li>
 <li><a href="#message-conversions">2. Message Conversions</a></li>
@@ -349,7 +349,7 @@ Milliseconds since epoch times</p></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">ConnectionFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JmsConnectionFactory</span><span class="o">(</span><span class="s">"amqp://localhost:5672"</span><span class="o">);</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ConnectionFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JmsConnectionFactory</span><span class="o">(</span><span class="s">"amqp://localhost:5672"</span><span class="o">);</span>
 <span class="nc">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="na">createConnection</span><span class="o">();</span>
 <span class="nc">Session</span> <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">createSession</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="nc">Session</span><span class="o">.</span><span class="na">AUTO_ACKNOWLEDGE</span><span class="o">);</span>
 <span class="n">connection</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
@@ -364,7 +364,7 @@ If you intend to filter after DLQ or Expiry you may choose the internal property
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="c1">// Replace the consumer creation on the previous example:</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="c1">// Replace the consumer creation on the previous example:</span>
 <span class="nc">MessageConsumer</span> <span class="n">consumer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="n">queue</span><span class="o">,</span> <span class="s">"_AMQ_ORIG_ADDRESS='ORIGINAL_PLACE'"</span><span class="o">);</span></code></pre>
 </div>
 </div>
@@ -384,7 +384,7 @@ If you intend to filter after DLQ or Expiry you may choose the internal property
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>.... ;amqpIdleTimeout=<span class="nt">&lt;configured-timeout&gt;</span>; ..... <span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>.... ;amqpIdleTimeout=<span class="nt">&lt;configured-timeout&gt;</span>; ..... <span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -395,7 +395,7 @@ On this case you will rely on TCP to determine when the socket needs to be close
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>.... ;amqpIdleTimeout=0; ..... <span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>.... ;amqpIdleTimeout=0; ..... <span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -403,7 +403,7 @@ On this case you will rely on TCP to determine when the socket needs to be close
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>tcp://0.0.0.0:5672?amqpIdleTimeout=0;tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;directDeliver=false;batchDelay=10<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>tcp://0.0.0.0:5672?amqpIdleTimeout=0;tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;directDeliver=false;batchDelay=10<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 </div>
@@ -421,7 +421,7 @@ Modern web browsers which support Web Sockets can send and receive AMQP messages
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp-ws-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:5672?protocols=AMQP<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp-ws-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:5672?protocols=AMQP<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">

@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Authentication &amp; Authorization</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#tracking-the-validated-user">1. Tracking the Validated User</a></li>
 <li><a href="#role-based-security-for-addresses">2. Role based security for addresses</a>
@@ -168,7 +168,7 @@ If the user has any of those roles, he/she will be granted that permission for t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"globalqueues.europe.#"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"globalqueues.europe.#"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"createDurableQueue"</span> <span class="na">roles=</span><span class="s">"admin"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"deleteDurableQueue"</span> <span class="na">roles=</span><span class="s">"admin"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"createNonDurableQueue"</span> <span class="na">roles=</span><span class="s">"admin, guest, europe-users"</span><span class="nt">/&gt;</span>
@@ -208,7 +208,7 @@ Where more than one match applies to a set of addresses the <em>more specific</e
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"globalqueues.europe.orders.#"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"globalqueues.europe.orders.#"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"send"</span> <span class="na">roles=</span><span class="s">"europe-users"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"consume"</span> <span class="na">roles=</span><span class="s">"europe-users"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/security-setting&gt;</span></code></pre>
@@ -235,7 +235,7 @@ For example, consider an address with multiple queues:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;anycast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span> <span class="nt">/&gt;</span>
@@ -251,7 +251,7 @@ You can do this using the fully qualified queue name (i.e. FQQN) in the <code>ma
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"foo::q1"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"foo::q1"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"consume"</span> <span class="na">roles=</span><span class="s">"q1Role"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/security-setting&gt;</span>
 <span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"foo::q2"</span><span class="nt">&gt;</span>
@@ -283,7 +283,7 @@ The explicit goal of using FQQN here is to be <em>exact</em>.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;security-settings&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-settings&gt;</span>
    <span class="nt">&lt;security-setting-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.impl.LegacyLDAPSecuritySettingPlugin"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"initialContextFactory"</span> <span class="na">value=</span><span class="s">"com.sun.jndi.ldap.LdapCtxFactory"</span><span class="nt">/&gt;</span>
       <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionURL"</span> <span class="na">value=</span><span class="s">"ldap://localhost:1024"</span><span class="nt">/&gt;</span>
@@ -327,7 +327,7 @@ The security implementations of ActiveMQ "Classic" and Artemis don&#8217;t match
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;security-setting-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.impl.LegacyLDAPSecuritySettingPlugin"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.impl.LegacyLDAPSecuritySettingPlugin"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"initialContextFactory"</span> <span class="na">value=</span><span class="s">"com.sun.jndi.ldap.LdapCtxFactory"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionURL"</span> <span class="na">value=</span><span class="s">"ldap://localhost:1024"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionUsername"</span> <span class="na">value=</span><span class="s">"uid=admin,ou=system"</span><span class="nt">/&gt;</span>
@@ -554,7 +554,7 @@ Here is an example using the <code>PropertiesLogin</code> JAAS login module whic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;jaas-security</span> <span class="na">domain=</span><span class="s">"PropertiesLogin"</span><span class="nt">/&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;jaas-security</span> <span class="na">domain=</span><span class="s">"PropertiesLogin"</span><span class="nt">/&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -564,7 +564,7 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>PropertiesLogin {
+<pre class="nowrap">PropertiesLogin {
     org.apache.activemq.artemis.spi.core.security.jaas.PropertiesLoginModule required
         debug=true
         org.apache.activemq.jaas.properties.user="artemis-users.properties"
@@ -605,7 +605,7 @@ Here&#8217;s an example of what would go in <code>bootstrap.xml</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;jaas-security</span> <span class="na">domain=</span><span class="s">"PropertiesLogin"</span> <span class="na">certificate-domain=</span><span class="s">"CertLogin"</span><span class="nt">/&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;jaas-security</span> <span class="na">domain=</span><span class="s">"PropertiesLogin"</span> <span class="na">certificate-domain=</span><span class="s">"CertLogin"</span><span class="nt">/&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -613,7 +613,7 @@ Here&#8217;s an example of what would go in <code>bootstrap.xml</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>PropertiesLogin {
+<pre class="nowrap">PropertiesLogin {
    org.apache.activemq.artemis.spi.core.security.jaas.PropertiesLoginModule required
        debug=false
        org.apache.activemq.jaas.properties.user="artemis-users.properties"
@@ -689,7 +689,7 @@ In this example, the guest login module is used in combination with the properti
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>activemq-domain {
+<pre class="nowrap">activemq-domain {
   org.apache.activemq.artemis.spi.core.security.jaas.PropertiesLoginModule sufficient
       debug=true
       org.apache.activemq.jaas.properties.user="artemis-users.properties"
@@ -728,7 +728,7 @@ You should also note that, compared with the preceding example, the order of the
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>activemq-guest-when-no-creds-only-domain {
+<pre class="nowrap">activemq-guest-when-no-creds-only-domain {
     org.apache.activemq.artemis.spi.core.security.jaas.GuestLoginModule sufficient
         debug=true
        credentialsInvalidate=true
@@ -807,7 +807,7 @@ For example, to define the users <code>system</code>, <code>user</code>, and <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">system</span><span class="p">=</span><span class="s">manager</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">system</span><span class="p">=</span><span class="s">manager</span>
 <span class="py">user</span><span class="p">=</span><span class="s">password</span>
 <span class="py">guest</span><span class="p">=</span><span class="s">password</span></code></pre>
 </div>
@@ -822,7 +822,7 @@ This command will not work  from the Artemis home, and it will also not work unl
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh">./artemis user add <span class="nt">--user-command-user</span> guest <span class="nt">--user-command-password</span> guest <span class="nt">--role</span> admin</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="sh">./artemis user add <span class="nt">--user-command-user</span> guest <span class="nt">--user-command-password</span> guest <span class="nt">--role</span> admin</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -834,7 +834,7 @@ For example, to define the roles <code>admins</code>, <code>users</code>, and <c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">admins</span><span class="p">=</span><span class="s">system</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">admins</span><span class="p">=</span><span class="s">system</span>
 <span class="py">users</span><span class="p">=</span><span class="s">system,user</span>
 <span class="py">guests</span><span class="p">=</span><span class="s">guest</span></code></pre>
 </div>
@@ -1130,7 +1130,7 @@ The files associate a username and a list of group IDs with each DN.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">activemq</span><span class="o">.</span><span class="na">artemis</span><span class="o">.</span><span class="na">spi</span><span class="o">.</span><span class="na">core</span><span class="o">.</span><span class="na">security</span><span class="o">.</span><span class="na">jaas</span><span class="o">.</span><span class="na">TextFileCertificateLoginModule</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">activemq</span><span class="o">.</span><span class="na">artemis</span><span class="o">.</span><span class="na">spi</span><span class="o">.</span><span class="na">core</span><span class="o">.</span><span class="na">security</span><span class="o">.</span><span class="na">jaas</span><span class="o">.</span><span class="na">TextFileCertificateLoginModule</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1138,7 +1138,7 @@ The files associate a username and a list of group IDs with each DN.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>CertLogin {
+<pre class="nowrap">CertLogin {
     org.apache.activemq.artemis.spi.core.security.jaas.TextFileCertificateLoginModule
         debug=true
         org.apache.activemq.jaas.textfiledn.user="users.properties"
@@ -1182,7 +1182,7 @@ For example, to define the users, <code>system</code>, <code>user</code> and <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">system</span><span class="p">=</span><span class="s">CN=system,O=Progress,C=US</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">system</span><span class="p">=</span><span class="s">CN=system,O=Progress,C=US</span>
 <span class="py">user</span><span class="p">=</span><span class="s">CN=humble user,O=Progress,C=US</span>
 <span class="py">guest</span><span class="p">=</span><span class="s">CN=anon,O=Progress,C=DE</span>
 <span class="py">hosts</span><span class="p">=</span><span class="s">/CN=host</span><span class="se">\\</span><span class="s">d+</span><span class="se">\\</span><span class="s">.acme</span><span class="se">\\</span><span class="s">.com,O=Acme,C=UK/</span></code></pre>
@@ -1223,7 +1223,7 @@ To print the contents of a certificate in a keystore, perform the following step
 For example, to export the certificate with alias <code>broker-localhost</code> from the <code>broker.ks</code> keystore file, enter the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh">keytool <span class="nt">-export</span> <span class="nt">-file</span> broker.export <span class="nt">-alias</span> broker-localhost <span class="nt">-keystore</span> broker.ks <span class="nt">-storepass</span> password</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="sh">keytool <span class="nt">-export</span> <span class="nt">-file</span> broker.export <span class="nt">-alias</span> broker-localhost <span class="nt">-keystore</span> broker.ks <span class="nt">-storepass</span> password</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1235,7 +1235,7 @@ For example, to export the certificate with alias <code>broker-localhost</code> 
 For example, to print out the contents of <code>broker.export</code>, enter the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh">keytool <span class="nt">-printcert</span> <span class="nt">-file</span> broker.export</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="sh">keytool <span class="nt">-printcert</span> <span class="nt">-file</span> broker.export</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1243,7 +1243,7 @@ For example, to print out the contents of <code>broker.export</code>, enter the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Owner: CN=localhost, OU=broker, O=Unknown, L=Unknown, ST=Unknown, C=Unknown
+<pre class="nowrap">Owner: CN=localhost, OU=broker, O=Unknown, L=Unknown, ST=Unknown, C=Unknown
 Issuer: CN=localhost, OU=broker, O=Unknown, L=Unknown, ST=Unknown, C=Unknown
 Serial number: 4537c82e
 Valid from: Thu Oct 19 19:47:10 BST 2006 until: Wed Jan 17 18:47:10 GMT 2007
@@ -1266,7 +1266,7 @@ For example, to define the roles <code>admins</code>, <code>users</code>, and <c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">admins</span><span class="p">=</span><span class="s">system</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">admins</span><span class="p">=</span><span class="s">system</span>
 <span class="py">users</span><span class="p">=</span><span class="s">system,user</span>
 <span class="py">guests</span><span class="p">=</span><span class="s">guest</span></code></pre>
 </div>
@@ -1282,7 +1282,7 @@ For more usage detail refer to <a href="#scram-sha-sasl-mechanism">SCRAM-SHA SAS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>amqp-sasl-scram {
+<pre class="nowrap">amqp-sasl-scram {
    org.apache.activemq.artemis.spi.core.security.jaas.SCRAMPropertiesLoginModule required
        org.apache.activemq.jaas.properties.user="artemis-users.properties"
        org.apache.activemq.jaas.properties.role="artemis-roles.properties";
@@ -1298,7 +1298,7 @@ This Principal can then be used for <a href="#role-mapping">role mapping</a>.</p
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>{
+<pre class="nowrap">{
    org.apache.activemq.artemis.spi.core.security.jaas.SCRAMLoginModule
 };</pre>
 </div>
@@ -1312,7 +1312,7 @@ This allows subsequent login modules to do role mapping for the TLS client certi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>org.apache.activemq.artemis.spi.core.security.jaas.ExternalCertificateLoginModule required
+<pre class="nowrap">org.apache.activemq.artemis.spi.core.security.jaas.ExternalCertificateLoginModule required
     ;</pre>
 </div>
 </div>
@@ -1326,7 +1326,7 @@ If no UserPrincipal exists, the first matching Principal will be added as a User
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>org.apache.activemq.artemis.spi.core.security.jaas.PrincipalConversionLoginModule required
+<pre class="nowrap">org.apache.activemq.artemis.spi.core.security.jaas.PrincipalConversionLoginModule required
      principalClassList=org.apache.x.Principal,org.apache.y.Principal
     ;</pre>
 </div>
@@ -1340,7 +1340,7 @@ This allows subsequent login modules to do role mapping for the kerberos identit
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>org.apache.activemq.artemis.spi.core.security.jaas.Krb5LoginModule required
+<pre class="nowrap">org.apache.activemq.artemis.spi.core.security.jaas.Krb5LoginModule required
     ;</pre>
 </div>
 </div>
@@ -1397,7 +1397,7 @@ For example, to define the roles admins, users, and guests, you could create a f
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">admins</span><span class="p">=</span><span class="s">system:serviceaccounts:example-ns:admin-sa</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">admins</span><span class="p">=</span><span class="s">system:serviceaccounts:example-ns:admin-sa</span>
 <span class="py">users</span><span class="p">=</span><span class="s">system:serviceaccounts:other-ns:test-sa</span></code></pre>
 </div>
 </div>
@@ -1432,7 +1432,7 @@ In this example, SASL is restricted to only the <code>SCRAM-SHA-256</code> mecha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>  &lt;acceptor name="amqp"&gt;tcp://localhost:5672?protocols=AMQP;saslMechanisms=SCRAM-SHA-256;saslLoginConfigScope=amqp-sasl-scram</pre>
+<pre class="nowrap">  &lt;acceptor name="amqp"&gt;tcp://localhost:5672?protocols=AMQP;saslMechanisms=SCRAM-SHA-256;saslLoginConfigScope=amqp-sasl-scram</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1444,7 +1444,7 @@ The mechanism makes use of JAAS to complete the SASL exchanges.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>amqp-sasl-scram {
+<pre class="nowrap">amqp-sasl-scram {
    org.apache.activemq.artemis.spi.core.security.jaas.SCRAMPropertiesLoginModule required
        org.apache.activemq.jaas.properties.user="artemis-users.properties"
        org.apache.activemq.jaas.properties.role="artemis-roles.properties";
@@ -1460,7 +1460,7 @@ The secure encoded form of the password must be generated using the main method 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>java -cp "&lt;distro-lib-dir&gt;/*" org.apache.activemq.artemis.spi.core.security.jaas.SCRAMPropertiesLoginModule &lt;username&gt; &lt;password&gt; [&lt;iterations&gt;]</pre>
+<pre class="nowrap">java -cp "&lt;distro-lib-dir&gt;/*" org.apache.activemq.artemis.spi.core.security.jaas.SCRAMPropertiesLoginModule &lt;username&gt; &lt;password&gt; [&lt;iterations&gt;]</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1486,7 +1486,7 @@ With SASL doing Kerberos authentication, TLS can be used to provide integrity an
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>tcp://0.0.0.0:5672?protocols=AMQP;saslMechanisms=GSSAPI<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>tcp://0.0.0.0:5672?protocols=AMQP;saslMechanisms=GSSAPI<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1498,7 +1498,7 @@ An alternative configuration scope can be specified on the AMQP acceptor using t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>amqp-sasl-gssapi {
+<pre class="nowrap">amqp-sasl-gssapi {
     com.sun.security.auth.module.Krb5LoginModule required
     isInitiator=false
     storeKey=true
@@ -1525,7 +1525,7 @@ Note that in the case of Kerberos, the Peer Principal does not exist as an Apach
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>activemq {
+<pre class="nowrap">activemq {
   org.apache.activemq.artemis.spi.core.security.jaas.Krb5LoginModule required
     ;
   org.apache.activemq.artemis.spi.core.security.jaas.LDAPLoginModule optional
@@ -1623,7 +1623,7 @@ There are properties to define either:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
 
    <span class="nt">&lt;security-manager</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.spi.core.security.ActiveMQBasicSecurityManager"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"bootstrapUser"</span> <span class="na">value=</span><span class="s">"myUser"</span><span class="nt">/&gt;</span>
@@ -1657,7 +1657,7 @@ supports masking.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
 
    <span class="nt">&lt;security-manager</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.spi.core.security.ActiveMQBasicSecurityManager"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"bootstrapUserFile"</span> <span class="na">value=</span><span class="s">"artemis-users.properties"</span><span class="nt">/&gt;</span>
@@ -1712,7 +1712,7 @@ For example if you&#8217;ve specified a <code>bootstrapUser</code> then the <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"activemq.management.#"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"activemq.management.#"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"createNonDurableQueue"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"createAddress"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"consume"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
@@ -1748,7 +1748,7 @@ The is done through role-mapping entries in the security-settings block:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;security-settings&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-settings&gt;</span>
    [...]
    <span class="nt">&lt;role-mapping</span> <span class="na">from=</span><span class="s">"cn=admins,ou=Group,ou=ActiveMQ,ou=system"</span> <span class="na">to=</span><span class="s">"my-admin-role"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;role-mapping</span> <span class="na">from=</span><span class="s">"cn=users,ou=Group,ou=ActiveMQ,ou=system"</span> <span class="na">to=</span><span class="s">"my-user-role"</span><span class="nt">/&gt;</span>
@@ -1827,7 +1827,7 @@ It is configured in <code>bootstrap.xml</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"console"</span> <span class="na">war=</span><span class="s">"console.war"</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;/binding&gt;</span>
@@ -1840,7 +1840,7 @@ e.g.:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"https://localhost:8443"</span>
              <span class="na">keyStorePath=</span><span class="s">"${artemis.instance}/etc/keystore.jks"</span>
              <span class="na">keyStorePassword=</span><span class="s">"password"</span><span class="nt">&gt;</span>
@@ -1890,7 +1890,7 @@ This is needed only if <code>clientAuth</code> is <code>true</code>.</p>
 <p>Add the <a href="#certificateloginmodule">certificate login module</a> to the <code>login.config</code> file, i.e.</p>
 <div class="listingblock">
 <div class="content">
-<pre>activemq-cert {
+<pre class="nowrap">activemq-cert {
  org.apache.activemq.artemis.spi.core.security.jaas.TextFileCertificateLoginModule required
      debug=true
      org.apache.activemq.jaas.textfiledn.user="cert-users.properties"
@@ -1907,7 +1907,7 @@ This is configured in the <code>artemis.profile</code> via the system property <
 <p>Create a key pair for the client and import the public key in a truststore file.</p>
 <div class="listingblock">
 <div class="content">
-<pre>keytool -storetype pkcs12 -keystore client-keystore.p12 -storepass securepass -keypass securepass -alias client -genkey -keyalg "RSA" -keysize 2048 -dname "CN=ActiveMQ Artemis Client, OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -ext bc=ca:false -ext eku=cA
+<pre class="nowrap">keytool -storetype pkcs12 -keystore client-keystore.p12 -storepass securepass -keypass securepass -alias client -genkey -keyalg "RSA" -keysize 2048 -dname "CN=ActiveMQ Artemis Client, OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -ext bc=ca:false -ext eku=cA
 keytool -storetype pkcs12 -keystore client-keystore.p12 -storepass securepass -alias client -exportcert -rfc &gt; client.crt
 keytool -storetype pkcs12 -keystore client-truststore.p12 -storepass securepass -keypass securepass -importcert -alias client-ca -file client.crt -noprompt</pre>
 </div>
@@ -1917,7 +1917,7 @@ keytool -storetype pkcs12 -keystore client-truststore.p12 -storepass securepass 
 <p>Enable secure access using HTTPS protocol with client authentication, use the truststore file created in the previous step to set the <code>trustStorePath</code> and <code>trustStorePassword</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"https://localhost:8443"</span>
             <span class="na">keyStorePath=</span><span class="s">"${artemis.instance}/etc/server-keystore.p12"</span>
             <span class="na">keyStorePassword=</span><span class="s">"password"</span>
@@ -1993,7 +1993,7 @@ JMS:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">ActiveMQConnectionFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQConnectionFactory</span><span class="o">(</span><span class="s">"vm://0?deserializationBlackList=org.apache.pkg1,org.some.pkg2"</span><span class="o">);</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ActiveMQConnectionFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQConnectionFactory</span><span class="o">(</span><span class="s">"vm://0?deserializationBlackList=org.apache.pkg1,org.some.pkg2"</span><span class="o">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2064,7 +2064,7 @@ By default, the broker uses <code>org.apache.activemq.artemis.spi.core.security.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
 
    <span class="nt">&lt;security-manager</span> <span class="na">class-name=</span><span class="s">"com.foo.MySecurityManager"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"myKey1"</span> <span class="na">value=</span><span class="s">"myValue1"</span><span class="nt">/&gt;</span>
@@ -2089,7 +2089,7 @@ Simply use the <code>securityDomain</code> parameter and indicate which domain f
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"myAcceptor"</span><span class="nt">&gt;</span>tcp://127.0.0.1:61616?securityDomain=mySecurityDomain<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"myAcceptor"</span><span class="nt">&gt;</span>tcp://127.0.0.1:61616?securityDomain=mySecurityDomain<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">

@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Address Model</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#address">1. Address</a></li>
 <li><a href="#queue">2. Queue</a></li>
@@ -242,7 +242,7 @@ Anycast</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"address.foo"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;anycast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span><span class="nt">/&gt;</span>
@@ -257,7 +257,7 @@ In that case you&#8217;d use a configuration like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"orderQueue"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;anycast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orderQueue"</span><span class="nt">/&gt;</span>
@@ -287,7 +287,7 @@ Multicast</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"address.foo"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;multicast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span><span class="nt">/&gt;</span>
@@ -304,7 +304,7 @@ In that case, this is the recommended configuration:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"address.foo"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;multicast/&gt;</span>
    <span class="nt">&lt;/address&gt;</span>
@@ -342,7 +342,7 @@ Applications simply need to use the address name and the queue name separated by
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"a1"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;multicast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span> <span class="nt">/&gt;</span>
@@ -357,7 +357,7 @@ Applications simply need to use the address name and the queue name separated by
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">Queue</span> <span class="n">q1</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"a1::q1"</span><span class="o">);</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">Queue</span> <span class="n">q1</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"a1::q1"</span><span class="o">);</span>
 <span class="nc">MessageConsumer</span> <span class="n">consumer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="n">q1</span><span class="o">);</span></code></pre>
 </div>
 </div>
@@ -387,7 +387,7 @@ The <code>max-consumers</code> parameter of the queue element can be used to lim
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"durable.foo"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;multicast&gt;</span>
          <span class="c">&lt;!-- pre-configured shared durable subscription queue --&gt;</span>
@@ -409,7 +409,7 @@ To do this simply set the <code>max-consumers</code> parameter to <code>1</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"durable.foo"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;multicast&gt;</span>
          <span class="c">&lt;!-- pre-configured non shared durable subscription queue --&gt;</span>
@@ -439,7 +439,7 @@ The queue is purged (its messages are removed) and will not receive any more mes
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"non.shared.durable.foo"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;multicast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orders1"</span> <span class="na">purge-on-no-consumers=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
@@ -470,7 +470,7 @@ The queue is purged (its messages are removed) and will not receive any more mes
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;multicast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orders1"</span> <span class="na">enabled=</span><span class="s">"false"</span><span class="nt">/&gt;</span>
@@ -509,7 +509,7 @@ When the <code>temporary-queue-namespace</code> is set and a temporary queue is 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;temporary-queue-namespace&gt;</span>temp<span class="nt">&lt;/temporary-queue-namespace&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;temporary-queue-namespace&gt;</span>temp<span class="nt">&lt;/temporary-queue-namespace&gt;</span>
 
 <span class="nt">&lt;address-settings&gt;</span>
    <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"temp.#"</span><span class="nt">&gt;</span>
@@ -584,7 +584,7 @@ To add a filter use the <code>filter</code> element when configuring a queue, e.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"filter"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;anycast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"filter"</span><span class="nt">&gt;</span>
@@ -610,7 +610,7 @@ The following JMS example shows how consumer filters work.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"filter"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;anycast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"filter"</span><span class="nt">/&gt;</span>
@@ -624,7 +624,7 @@ The following JMS example shows how consumer filters work.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="o">...</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="o">...</span>
 <span class="c1">// Send some messages</span>
 <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">;</span> <span class="n">i</span> <span class="o">++)</span> <span class="o">{</span>
   <span class="nc">TextMessage</span> <span class="n">redMessage</span> <span class="o">=</span> <span class="n">senderSession</span><span class="o">.</span><span class="na">createTextMessage</span><span class="o">(</span><span class="s">"Red"</span><span class="o">);</span>
@@ -645,7 +645,7 @@ The following JMS example shows how consumer filters work.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">MessageConsumer</span> <span class="n">redConsumer</span> <span class="o">=</span> <span class="n">redSession</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="n">queue</span><span class="o">,</span> <span class="s">"color='red'"</span><span class="o">);</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">MessageConsumer</span> <span class="n">redConsumer</span> <span class="o">=</span> <span class="n">redSession</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="n">queue</span><span class="o">,</span> <span class="s">"color='red'"</span><span class="o">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -654,7 +654,7 @@ The <code>redConsumer</code> will receive 3 messages.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>red, red, red</pre>
+<pre class="nowrap">red, red, red</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -662,7 +662,7 @@ The <code>redConsumer</code> will receive 3 messages.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>green, green, green</pre>
+<pre class="nowrap">green, green, green</pre>
 </div>
 </div>
 </div>
@@ -700,7 +700,7 @@ Client code can specify <code>queue/foo/</code> if the client wants anycast rout
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"artemis"</span><span class="nt">&gt;</span>tcp://0.0.0.0:61616?protocols=AMQP;anycastPrefix=queue/<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"artemis"</span><span class="nt">&gt;</span>tcp://0.0.0.0:61616?protocols=AMQP;anycastPrefix=queue/<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -718,7 +718,7 @@ Client code can specify <code>topic/foo/</code> if the client wants multicast ro
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"artemis"</span><span class="nt">&gt;</span>tcp://0.0.0.0:61616?protocols=AMQP;multicastPrefix=topic/<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"artemis"</span><span class="nt">&gt;</span>tcp://0.0.0.0:61616?protocols=AMQP;multicastPrefix=topic/<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">

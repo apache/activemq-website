@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Management</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#the-management-api">1. The Management API</a>
 <ul class="sectlevel2">
@@ -397,7 +397,7 @@ For example, the <code>ObjectName</code> to manage the anycast queue <code>examp
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>org.apache.activemq.artemis:broker=&lt;brokerName&gt;,component=addresses,address="exampleAddress",subcomponent=queues,routing-type="anycast",queue="exampleQueue"</pre>
+<pre class="nowrap">org.apache.activemq.artemis:broker=&lt;brokerName&gt;,component=addresses,address="exampleAddress",subcomponent=queues,routing-type="anycast",queue="exampleQueue"</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -405,7 +405,7 @@ For example, the <code>ObjectName</code> to manage the anycast queue <code>examp
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>org.apache.activemq.artemis.api.core.management.QueueControl</pre>
+<pre class="nowrap">org.apache.activemq.artemis.api.core.management.QueueControl</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -414,7 +414,7 @@ Example usage of the <code>ObjectNameBuilder</code> to obtain <code>ActiveMQServ
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="n">brokerName</span> <span class="o">=</span> <span class="s">"0.0.0.0"</span><span class="o">;</span>  <span class="c1">// configured e.g. in broker.xml &lt;broker-name&gt; element</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="n">brokerName</span> <span class="o">=</span> <span class="s">"0.0.0.0"</span><span class="o">;</span>  <span class="c1">// configured e.g. in broker.xml &lt;broker-name&gt; element</span>
 <span class="n">objectNameBuilder</span> <span class="o">=</span> <span class="nc">ObjectNameBuilder</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="nc">ArtemisResolver</span><span class="o">.</span><span class="na">DEFAULT_DOMAIN</span><span class="o">,</span> <span class="n">brokerName</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
 <span class="n">serverObjectName</span> <span class="o">=</span> <span class="n">objectNameBuilder</span><span class="o">.</span><span class="na">getActiveMQServerObjectName</span><span class="o">()</span></code></pre>
 </div>
@@ -431,7 +431,7 @@ It can be disabled by setting <code>jmx-management-enabled</code> to <code>false
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;jmx-management-enabled&gt;</span>false<span class="nt">&lt;/jmx-management-enabled&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;jmx-management-enabled&gt;</span>false<span class="nt">&lt;/jmx-management-enabled&gt;</span></code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -450,7 +450,7 @@ The default configuration is:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;allowlist&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;allowlist&gt;</span>
    <span class="nt">&lt;entry</span> <span class="na">domain=</span><span class="s">"hawtio"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/allowlist&gt;</span></code></pre>
 </div>
@@ -462,7 +462,7 @@ You can also use wildcards for the MBean properties so the following would also 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;allowlist&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;allowlist&gt;</span>
    <span class="nt">&lt;entry</span> <span class="na">domain=</span><span class="s">"hawtio"</span> <span class="na">key=</span><span class="s">"type=*"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/allowlist&gt;</span></code></pre>
 </div>
@@ -486,7 +486,7 @@ You can also use wildcards for the MBean properties so the following would also 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;role-access&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;role-access&gt;</span>
   <span class="nt">&lt;match</span> <span class="na">domain=</span><span class="s">"org.apache.activemq.artemis"</span><span class="nt">&gt;</span>
      <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"list*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
      <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"get*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
@@ -506,7 +506,7 @@ You could also explicitly configure this by using the full method name, like so:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"listMessages"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"listMessages"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -514,7 +514,7 @@ You could also explicitly configure this by using the full method name, like so:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;match</span> <span class="na">domain=</span><span class="s">"org.apache.activemq.artemis"</span> <span class="na">key=</span><span class="s">"subcomponent=queues"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;match</span> <span class="na">domain=</span><span class="s">"org.apache.activemq.artemis"</span> <span class="na">key=</span><span class="s">"subcomponent=queues"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"list*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"get*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"is*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
@@ -528,7 +528,7 @@ You could also explicitly configure this by using the full method name, like so:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>org.apache.activemq.artemis:broker=&lt;brokerName&gt;,component=addresses,address="exampleAddress",subcomponent=queues,routing-type="anycast",queue="exampleQueue"</pre>
+<pre class="nowrap">org.apache.activemq.artemis:broker=&lt;brokerName&gt;,component=addresses,address="exampleAddress",subcomponent=queues,routing-type="anycast",queue="exampleQueue"</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -536,7 +536,7 @@ You could also explicitly configure this by using the full method name, like so:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;match</span> <span class="na">domain=</span><span class="s">"org.apache.activemq.artemis"</span> <span class="na">key=</span><span class="s">"queue=exampleQueue"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;match</span> <span class="na">domain=</span><span class="s">"org.apache.activemq.artemis"</span> <span class="na">key=</span><span class="s">"queue=exampleQueue"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"list*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"get*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"is*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
@@ -550,7 +550,7 @@ You could also explicitly configure this by using the full method name, like so:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;match</span> <span class="na">domain=</span><span class="s">"org.apache.activemq.artemis"</span> <span class="na">key=</span><span class="s">"queue=example*"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;match</span> <span class="na">domain=</span><span class="s">"org.apache.activemq.artemis"</span> <span class="na">key=</span><span class="s">"queue=example*"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"list*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"get*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;access</span> <span class="na">method=</span><span class="s">"is*"</span> <span class="na">roles=</span><span class="s">"view,update,amq"</span><span class="nt">/&gt;</span>
@@ -591,7 +591,7 @@ To enable this you simply add the following xml:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;connector</span> <span class="na">connector-port=</span><span class="s">"1099"</span><span class="nt">/&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;connector</span> <span class="na">connector-port=</span><span class="s">"1099"</span><span class="nt">/&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -600,7 +600,7 @@ If you were connecting via JConsole you would connect as a remote process using 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi</pre>
+<pre class="nowrap">service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -710,7 +710,7 @@ To manage several Apache ActiveMQ Artemis servers from the <em>same</em> MBeanSe
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="c">&lt;!-- use a specific JMX domain for ActiveMQ Artemis MBeans --&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="c">&lt;!-- use a specific JMX domain for ActiveMQ Artemis MBeans --&gt;</span>
 <span class="nt">&lt;jmx-domain&gt;</span>my.org.apache.activemq<span class="nt">&lt;/jmx-domain&gt;</span></code></pre>
 </div>
 </div>
@@ -731,7 +731,7 @@ For a full guide as to how to use it refer to <a href="https://jolokia.org/docum
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-v</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass http://localhost:8161/console/jolokia/read/org.apache.activemq.artemis:broker<span class="o">=</span><span class="se">\"</span>0.0.0.0<span class="se">\"</span>/Active</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-v</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass http://localhost:8161/console/jolokia/read/org.apache.activemq.artemis:broker<span class="o">=</span><span class="se">\"</span>0.0.0.0<span class="se">\"</span>/Active</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -739,7 +739,7 @@ For a full guide as to how to use it refer to <a href="https://jolokia.org/docum
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-v</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass <span class="nt">--header</span> <span class="s2">"Content-type: application/json"</span> <span class="nt">--request</span> POST <span class="nt">--data</span> <span class="s1">'{"attribute": "Active", "mbean": "org.apache.activemq.artemis:broker=\"0.0.0.0\"", "type": "read"}'</span> http://localhost:8161/console/jolokia</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-v</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass <span class="nt">--header</span> <span class="s2">"Content-type: application/json"</span> <span class="nt">--request</span> POST <span class="nt">--data</span> <span class="s1">'{"attribute": "Active", "mbean": "org.apache.activemq.artemis:broker=\"0.0.0.0\"", "type": "read"}'</span> http://localhost:8161/console/jolokia</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -750,7 +750,7 @@ For a full guide as to how to use it refer to <a href="https://jolokia.org/docum
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+<pre class="rouge highlight nowrap"><code data-lang="json"><span class="p">{</span><span class="w">
   </span><span class="nl">"request"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nl">"mbean"</span><span class="p">:</span><span class="w"> </span><span class="s2">"org.apache.activemq.artemis:broker=</span><span class="se">\"</span><span class="s2">0.0.0.0</span><span class="se">\"</span><span class="s2">"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"attribute"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Version"</span><span class="p">,</span><span class="w">
@@ -835,7 +835,7 @@ For portability, results are returned as a <a href="https://json.org">JSON</a> S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">ClientSession</span> <span class="n">session</span> <span class="o">=</span> <span class="o">...</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ClientSession</span> <span class="n">session</span> <span class="o">=</span> <span class="o">...</span>
 <span class="nc">ClientRequestor</span> <span class="n">requestor</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ClientRequestor</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="s">"activemq.management"</span><span class="o">);</span>
 <span class="nc">ClientMessage</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createMessage</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
 <span class="nc">ManagementHelper</span><span class="o">.</span><span class="na">putAttribute</span><span class="o">(</span><span class="n">message</span><span class="o">,</span> <span class="s">"queue.exampleQueue"</span><span class="o">,</span> <span class="s">"messageCount"</span><span class="o">);</span>
@@ -873,7 +873,7 @@ When called with a message from a different JMS library, an exception will be th
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;management-address&gt;</span>activemq.management<span class="nt">&lt;/management-address&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;management-address&gt;</span>activemq.management<span class="nt">&lt;/management-address&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -885,7 +885,7 @@ This is also configured in broker.xml:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="c">&lt;!-- users with the admin role will be allowed to manage --&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="c">&lt;!-- users with the admin role will be allowed to manage --&gt;</span>
 <span class="c">&lt;!-- Apache ActiveMQ Artemis using management messages    --&gt;</span>
 <span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"activemq.management"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"manage"</span> <span class="na">roles=</span><span class="s">"admin"</span> <span class="nt">/&gt;</span>
@@ -949,7 +949,7 @@ It can then receive the notifications from its queue.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;management-notification-address&gt;</span>activemq.notifications<span class="nt">&lt;/management-notification-address&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;management-notification-address&gt;</span>activemq.notifications<span class="nt">&lt;/management-notification-address&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -965,7 +965,7 @@ If these notifications are not otherwise used they can be disabled through:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;suppress-session-notifications&gt;</span>true<span class="nt">&lt;/suppress-session-notifications&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;suppress-session-notifications&gt;</span>true<span class="nt">&lt;/suppress-session-notifications&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -980,7 +980,7 @@ Default value is <code>false</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">Topic</span> <span class="n">notificationsTopic</span> <span class="o">=</span> <span class="nc">ActiveMQJMSClient</span><span class="o">.</span><span class="na">createTopic</span><span class="o">(</span><span class="s">"activemq.notifications"</span><span class="o">);</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">Topic</span> <span class="n">notificationsTopic</span> <span class="o">=</span> <span class="nc">ActiveMQJMSClient</span><span class="o">.</span><span class="na">createTopic</span><span class="o">(</span><span class="s">"activemq.notifications"</span><span class="o">);</span>
 
 <span class="nc">Session</span> <span class="n">session</span> <span class="o">=</span> <span class="o">...</span>
 <span class="nc">MessageConsumer</span> <span class="n">notificationConsumer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="n">notificationsTopic</span><span class="o">);</span>
@@ -1193,7 +1193,7 @@ For example, to know specifically how many messages were <em>consumed</em> from 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;message-counter-enabled&gt;</span>true<span class="nt">&lt;/message-counter-enabled&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;message-counter-enabled&gt;</span>true<span class="nt">&lt;/message-counter-enabled&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1202,7 +1202,7 @@ If message counters are enabled, these values should be configured to suit your 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="c">&lt;!-- keep history for a week --&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="c">&lt;!-- keep history for a week --&gt;</span>
 <span class="nt">&lt;message-counter-max-day-history&gt;</span>7<span class="nt">&lt;/message-counter-max-day-history&gt;</span>
 <span class="c">&lt;!-- sample the queues every minute (60000ms) --&gt;</span>
 <span class="nt">&lt;message-counter-sample-period&gt;</span>60000<span class="nt">&lt;/message-counter-sample-period&gt;</span></code></pre>
@@ -1214,7 +1214,7 @@ For example, to retrieve message counters on a queue using JMX:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="c1">// retrieve a connection to Apache ActiveMQ Artemis's MBeanServer</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="c1">// retrieve a connection to Apache ActiveMQ Artemis's MBeanServer</span>
 <span class="nc">MBeanServerConnection</span> <span class="n">mbsc</span> <span class="o">=</span> <span class="o">...</span>
 <span class="nc">QueueControlMBean</span> <span class="n">queueControl</span> <span class="o">=</span> <span class="o">(</span><span class="nc">QueueControl</span><span class="o">)</span><span class="nc">MBeanServerInvocationHandler</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span><span class="n">mbsc</span><span class="o">,</span>
    <span class="n">on</span><span class="o">,</span>
