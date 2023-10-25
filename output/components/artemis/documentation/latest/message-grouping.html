@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Message Grouping</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#using-core-api">1. Using Core API</a></li>
 <li><a href="#using-jms">2. Using JMS</a></li>
@@ -95,7 +95,7 @@ Alternatively, you can set <code>autogroup</code> to true on the <code>SessionFa
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="c1">// send 2 messages in the same group to ensure the same</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="c1">// send 2 messages in the same group to ensure the same</span>
 <span class="c1">// consumer will receive both</span>
 <span class="nc">Message</span> <span class="n">message</span> <span class="o">=</span> <span class="o">...</span>
 <span class="n">message</span><span class="o">.</span><span class="na">setStringProperty</span><span class="o">(</span><span class="s">"JMSXGroupID"</span><span class="o">,</span> <span class="s">"Group-0"</span><span class="o">);</span>
@@ -113,7 +113,7 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
 <span class="py">connectionFactory.myConnectionFactory</span><span class="p">=</span><span class="s">tcp://localhost:61616?autoGroup=true</span></code></pre>
 </div>
 </div>
@@ -125,7 +125,7 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
 <span class="py">connectionFactory.myConnectionFactory</span><span class="p">=</span><span class="s">tcp://localhost:61616?groupID=Group-0</span></code></pre>
 </div>
 </div>
@@ -141,7 +141,7 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">Message</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTextMessage</span><span class="o">(</span><span class="s">"&lt;foo&gt;hey&lt;/foo&gt;"</span><span class="o">);</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">Message</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTextMessage</span><span class="o">(</span><span class="s">"&lt;foo&gt;hey&lt;/foo&gt;"</span><span class="o">);</span>
 <span class="n">message</span><span class="o">.</span><span class="na">setStringProperty</span><span class="o">(</span><span class="s">"JMSXGroupID"</span><span class="o">,</span> <span class="s">"Group-0"</span><span class="o">);</span>
 <span class="n">message</span><span class="o">.</span><span class="na">setIntProperty</span><span class="o">(</span><span class="s">"JMSXGroupSeq"</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
 <span class="o">...</span>
@@ -166,7 +166,7 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;multicast&gt;</span>
       <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orders1"</span> <span class="na">group-first-key=</span><span class="s">"JMSXGroupFirstForConsumer"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;/multicast&gt;</span>
@@ -178,7 +178,7 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">Queue</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"my.destination.name?group-first-key=JMSXGroupFirstForConsumer"</span><span class="o">);</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">Queue</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"my.destination.name?group-first-key=JMSXGroupFirstForConsumer"</span><span class="o">);</span>
 <span class="nc">Topic</span> <span class="n">topic</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTopic</span><span class="o">(</span><span class="s">"my.destination.name?group-first-key=JMSXGroupFirstForConsumer"</span><span class="o">);</span></code></pre>
 </div>
 </div>
@@ -187,7 +187,7 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"my.address"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"my.address"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;default-group-first-key&gt;</span>JMSXGroupFirstForConsumer<span class="nt">&lt;/default-group-first-key&gt;</span>
 <span class="nt">&lt;/address-setting&gt;</span></code></pre>
 </div>
@@ -219,7 +219,7 @@ To ensure that inflight messages are processed before dispatch of new messages p
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;multicast&gt;</span>
       <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orders1"</span> <span class="na">group-rebalance=</span><span class="s">"true"</span> <span class="na">group-rebalance-pause-dispatch=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;/multicast&gt;</span>
@@ -231,7 +231,7 @@ To ensure that inflight messages are processed before dispatch of new messages p
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">Queue</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"my.destination.name?group-rebalance=true&amp;group-rebalance-pause-dispatch=true"</span><span class="o">);</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">Queue</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"my.destination.name?group-rebalance=true&amp;group-rebalance-pause-dispatch=true"</span><span class="o">);</span>
 <span class="nc">Topic</span> <span class="n">topic</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTopic</span><span class="o">(</span><span class="s">"my.destination.name?group-rebalance=true&amp;group-rebalance-pause-dispatch=true"</span><span class="o">);</span></code></pre>
 </div>
 </div>
@@ -240,7 +240,7 @@ To ensure that inflight messages are processed before dispatch of new messages p
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"my.address"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"my.address"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;default-group-rebalance&gt;</span>true<span class="nt">&lt;/default-group-rebalance&gt;</span>
    <span class="nt">&lt;default-group-rebalance-pause-dispatch&gt;</span>true<span class="nt">&lt;/default-group-rebalance-pause-dispatch&gt;</span>
 <span class="nt">&lt;/address-setting&gt;</span></code></pre>
@@ -266,7 +266,7 @@ This can be useful on a multicast address,  where many queues exist but one queu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;multicast&gt;</span>
       <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orders1"</span> <span class="na">group-buckets=</span><span class="s">"1024"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;/multicast&gt;</span>
@@ -281,7 +281,7 @@ This can be useful on a multicast address,  where many queues exist but one queu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">Queue</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"my.destination.name?group-buckets=1024"</span><span class="o">);</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">Queue</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"my.destination.name?group-buckets=1024"</span><span class="o">);</span>
 <span class="nc">Topic</span> <span class="n">topic</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTopic</span><span class="o">(</span><span class="s">"my.destination.name?group-buckets=1024"</span><span class="o">);</span></code></pre>
 </div>
 </div>
@@ -290,7 +290,7 @@ This can be useful on a multicast address,  where many queues exist but one queu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"my.bucket.address"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"my.bucket.address"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;default-group-buckets&gt;</span>1024<span class="nt">&lt;/default-group-buckets&gt;</span>
 <span class="nt">&lt;/address-setting&gt;</span></code></pre>
 </div>
@@ -350,7 +350,7 @@ This should be configured in <code>broker.xml</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;grouping-handler</span> <span class="na">name=</span><span class="s">"my-grouping-handler"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;grouping-handler</span> <span class="na">name=</span><span class="s">"my-grouping-handler"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;type&gt;</span>LOCAL<span class="nt">&lt;/type&gt;</span>
    <span class="nt">&lt;address&gt;</span>jms<span class="nt">&lt;/address&gt;</span>
    <span class="nt">&lt;timeout&gt;</span>5000<span class="nt">&lt;/timeout&gt;</span>

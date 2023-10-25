@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Using the Server</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#installation">1. Installation</a></li>
 <li><a href="#creating-a-broker-instance">2. Creating a Broker Instance</a>
@@ -67,7 +67,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>|___ bin
+<pre class="nowrap">|___ bin
 |
 |___ examples
 |      |___ common
@@ -131,7 +131,7 @@ This process requires the use of the <a href="using-cli.html#command-line-interf
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">cd</span> /var/lib
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">cd</span> /var/lib
 <span class="gp">$</span><span class="w"> </span><span class="k">${</span><span class="nv">ARTEMIS_HOME</span><span class="k">}</span>/bin/artemis create mybroker</code></pre>
 </div>
 </div>
@@ -177,7 +177,7 @@ For a full list of options use the <code>help</code> command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ ./artemis help create
+<pre class="nowrap">$ ./artemis help create
 NAME
         artemis create - creates a new broker instance
 
@@ -447,7 +447,7 @@ OPTIONS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh">./artemis create /usr/server
+<pre class="rouge highlight nowrap"><code data-lang="sh">./artemis create /usr/server
 Creating ActiveMQ Artemis instance at: /user/server
 
 <span class="nt">--user</span>: is a mandatory property!
@@ -485,7 +485,7 @@ Or you can run the broker <span class="k">in </span>the background using:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh">/var/lib/mybroker/bin/artemis run</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="sh">/var/lib/mybroker/bin/artemis run</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -497,7 +497,7 @@ Example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh">/var/lib/mybroker/bin/artemis stop</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="sh">/var/lib/mybroker/bin/artemis stop</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -567,7 +567,7 @@ Let&#8217;s take a look at an example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
 
    <span class="nt">&lt;jaas-security</span> <span class="na">domain=</span><span class="s">"activemq"</span><span class="nt">/&gt;</span>
 
@@ -629,7 +629,7 @@ Here is an example of this with a connector configuration:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;connector</span> <span class="na">name=</span><span class="s">"netty"</span><span class="nt">&gt;</span>tcp://${activemq.remoting.netty.host:localhost}:${activemq.remoting.netty.port:61616}<span class="nt">&lt;/connector&gt;</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;connector</span> <span class="na">name=</span><span class="s">"netty"</span><span class="nt">&gt;</span>tcp://${activemq.remoting.netty.host:localhost}:${activemq.remoting.netty.port:61616}<span class="nt">&lt;/connector&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -646,7 +646,7 @@ Just use the following command to install it:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre> $ ./artemis-service.exe install</pre>
+<pre class="nowrap"> $ ./artemis-service.exe install</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -678,10 +678,28 @@ the environment variable <code>JAVA_ARGS_APPEND</code> can be used to append or 
 <div class="paragraph">
 <p>Runtime dependencies like diverts, transformers, broker plugins, JDBC drivers, password decoders, etc. must be accessible by the broker at runtime.
 Package the dependency in a jar, and put it on the broker&#8217;s classpath.
-This can be done by placing the jar file in the <code>lib</code> directory of the broker distribution itself or in the <code>lib</code> directory of the broker instance.
+This can be done by placing the jar file in the <code>lib</code> directory of the broker distribution itself,
+by placing the jar file in the <code>lib</code> directory of the broker instance,
+by setting the system property <code>artemis.extra.libs</code> with the directory that contains the jar file, or
+by setting the environment variable <code>ARTEMIS_EXTRA_LIBS</code> with the directory that contains the jar file,
 A broker instance does not have a <code>lib</code> directory by default so it may need to be created.
 It should be on the "top" level with the <code>bin</code>, <code>data</code>, <code>log</code>, etc.
-directories.</p>
+directories.
+The system property <code>artemis.extra.libs</code> is a comma separated list of directories that contains jar files, i.e.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code>-Dartemis.extra.libs=/usr/local/share/java/lib1,/usr/local/share/java/lib2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The environment variable <code>ARTEMIS_EXTRA_LIBS</code> is a comma separated list of directories that contains jar files and
+is ignored if the system property <code>artemis.extra.libs</code> is defined, i.e.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code>export ARTEMIS_EXTRA_LIBS=/usr/local/share/java/lib1,/usr/local/share/java/lib2</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">

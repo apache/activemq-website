@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Using JMS or Jakarta Messaging</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#a-simple-ordering-system">1. A simple ordering system</a></li>
 <li><a href="#jndi">2. JNDI</a>
@@ -107,7 +107,7 @@ It knows the location of the server it is connecting to, as well as many other c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
 <span class="py">connectionFactory.invmConnectionFactory</span><span class="p">=</span><span class="s">vm://0</span></code></pre>
 </div>
 </div>
@@ -121,7 +121,7 @@ A client using JMS and JNDI can account for this by specifying a connction facto
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
 <span class="py">connectionFactory.invmConnectionFactory0</span><span class="p">=</span><span class="s">vm://0</span>
 <span class="py">connectionFactory.invmConnectionFactory1</span><span class="p">=</span><span class="s">vm://1</span>
 <span class="py">connectionFactory.invmConnectionFactory2</span><span class="p">=</span><span class="s">vm://2</span></code></pre>
@@ -153,7 +153,7 @@ Here&#8217;s a simple example of a client configuring a connection factory to co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
 <span class="py">connectionFactory.ConnectionFactory</span><span class="p">=</span><span class="s">tcp://myhost:5445</span></code></pre>
 </div>
 </div>
@@ -230,7 +230,7 @@ This can be changed by setting the type like so</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
 <span class="py">java.naming.provider.url</span><span class="p">=</span><span class="s">tcp://localhost:5445?type=CF</span></code></pre>
 </div>
 </div>
@@ -293,7 +293,7 @@ For example, if the server had a JMS queue configured like so:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"OrderQueue"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"OrderQueue"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"OrderQueue"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/address&gt;</span></code></pre>
 </div>
@@ -303,7 +303,7 @@ For example, if the server had a JMS queue configured like so:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">java.naming.factory.initial</span><span class="p">=</span><span class="s">org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory</span>
 <span class="py">java.naming.provider.url</span><span class="p">=</span><span class="s">tcp://myhost:5445</span>
 <span class="err">queue.queues/</span><span class="py">OrderQueue</span><span class="p">=</span><span class="s">OrderQueue</span></code></pre>
 </div>
@@ -326,7 +326,7 @@ If the above properties are set in <code>jndi.properties</code> and it is on the
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">InitialContext</span> <span class="n">ic</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InitialContext</span><span class="o">();</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">InitialContext</span> <span class="n">ic</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InitialContext</span><span class="o">();</span>
 
 <span class="c1">//Now we'll look up the connection factory from which we can create</span>
 <span class="c1">//connections to myhost:5445:</span>
@@ -417,7 +417,7 @@ Apache ActiveMQ Artemis supports the direct instantiation of JMS Queue, Topic an
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">TransportConfiguration</span> <span class="n">transportConfiguration</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransportConfiguration</span><span class="o">(</span><span class="nc">NettyConnectorFactory</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">TransportConfiguration</span> <span class="n">transportConfiguration</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransportConfiguration</span><span class="o">(</span><span class="nc">NettyConnectorFactory</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
 
 <span class="nc">ConnectionFactory</span> <span class="n">cf</span> <span class="o">=</span> <span class="nc">ActiveMQJMSClient</span><span class="o">.</span><span class="na">createConnectionFactoryWithoutHA</span><span class="o">(</span><span class="nc">JMSFactoryType</span><span class="o">.</span><span class="na">CF</span><span class="o">,</span><span class="n">transportConfiguration</span><span class="o">);</span>
 

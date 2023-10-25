@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Large Messages</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
 <ul class="sectlevel1">
 <li><a href="#configuring-the-server">1. Configuring the server</a></li>
 <li><a href="#configuring-the-core-client">2. Configuring the Core Client</a></li>
@@ -58,7 +58,7 @@ For JDBC persistence the <code>large-message-table</code> should be configured.<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;configuration</span> <span class="na">xmlns=</span><span class="s">"urn:activemq"</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;configuration</span> <span class="na">xmlns=</span><span class="s">"urn:activemq"</span>
    <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
    <span class="na">xsi:schemaLocation=</span><span class="s">"urn:activemq /schema/artemis-server.xsd"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;core</span> <span class="na">xmlns=</span><span class="s">"urn:activemq:core"</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="na">xsi:schemaLocation=</span><span class="s">"urn:activemq:core"</span><span class="nt">&gt;</span>
@@ -205,7 +205,7 @@ It will block until the entire content is transferred to the <code>OutputStream<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">ClientMessage</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="na">receive</span><span class="o">(...);</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ClientMessage</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="na">receive</span><span class="o">(...);</span>
 
 <span class="c1">// This will block here until the stream was transferred</span>
 <span class="n">msg</span><span class="o">.</span><span class="na">saveOutputStream</span><span class="o">(</span><span class="n">someOutputStream</span><span class="o">);</span>
@@ -221,7 +221,7 @@ It will block until the entire content is transferred to the <code>OutputStream<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">ClientMessage</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createMessage</span><span class="o">();</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ClientMessage</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createMessage</span><span class="o">();</span>
 <span class="n">msg</span><span class="o">.</span><span class="na">setInputStream</span><span class="o">(</span><span class="n">dataInputStream</span><span class="o">);</span></code></pre>
 </div>
 </div>
@@ -240,7 +240,7 @@ On those cases you can use the message property _AMQ_LARGE_SIZE.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">BytesMessage</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createBytesMessage</span><span class="o">();</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">BytesMessage</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createBytesMessage</span><span class="o">();</span>
 
 <span class="nc">FileInputStream</span> <span class="n">fileInputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileInputStream</span><span class="o">(</span><span class="n">fileInput</span><span class="o">);</span>
 
@@ -256,7 +256,7 @@ On those cases you can use the message property _AMQ_LARGE_SIZE.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">BytesMessage</span> <span class="n">messageReceived</span> <span class="o">=</span> <span class="o">(</span><span class="nc">BytesMessage</span><span class="o">)</span><span class="n">messageConsumer</span><span class="o">.</span><span class="na">receive</span><span class="o">(</span><span class="mi">120000</span><span class="o">);</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">BytesMessage</span> <span class="n">messageReceived</span> <span class="o">=</span> <span class="o">(</span><span class="nc">BytesMessage</span><span class="o">)</span><span class="n">messageConsumer</span><span class="o">.</span><span class="na">receive</span><span class="o">(</span><span class="mi">120000</span><span class="o">);</span>
 
 <span class="nc">File</span> <span class="n">outputFile</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="s">"huge_message_received.dat"</span><span class="o">);</span>
 
@@ -273,7 +273,7 @@ On those cases you can use the message property _AMQ_LARGE_SIZE.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="c1">// This won't wait the stream to finish. You need to keep the consumer active.</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="c1">// This won't wait the stream to finish. You need to keep the consumer active.</span>
 <span class="n">messageReceived</span><span class="o">.</span><span class="na">setObjectProperty</span><span class="o">(</span><span class="s">"JMS_AMQ_OutputStream"</span><span class="o">,</span> <span class="n">bufferedOutput</span><span class="o">);</span></code></pre>
 </div>
 </div>
@@ -302,7 +302,7 @@ On those cases you can use the message property _AMQ_LARGE_SIZE.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">ClientMessage</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="na">receive</span><span class="o">();</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ClientMessage</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="na">receive</span><span class="o">();</span>
 
 <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">1024</span><span class="o">];</span>
 <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">;</span>  <span class="n">i</span> <span class="o">&lt;</span> <span class="n">msg</span><span class="o">.</span><span class="na">getBodySize</span><span class="o">();</span> <span class="n">i</span> <span class="o">+=</span> <span class="n">bytes</span><span class="o">.</span><span class="na">length</span><span class="o">)</span>
@@ -317,7 +317,7 @@ On those cases you can use the message property _AMQ_LARGE_SIZE.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="nc">BytesMessage</span> <span class="n">rm</span> <span class="o">=</span> <span class="o">(</span><span class="nc">BytesMessage</span><span class="o">)</span><span class="n">cons</span><span class="o">.</span><span class="na">receive</span><span class="o">(</span><span class="mi">10000</span><span class="o">);</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">BytesMessage</span> <span class="n">rm</span> <span class="o">=</span> <span class="o">(</span><span class="nc">BytesMessage</span><span class="o">)</span><span class="n">cons</span><span class="o">.</span><span class="na">receive</span><span class="o">(</span><span class="mi">10000</span><span class="o">);</span>
 
 <span class="kt">byte</span> <span class="n">data</span><span class="o">[]</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">1024</span><span class="o">];</span>
 
@@ -358,7 +358,7 @@ This is the former semantic of the broker and it is kept this way for compatibil
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;acceptors&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptors&gt;</span>
       <span class="c">&lt;!-- AMQP Acceptor.  Listens on default AMQP port for AMQP traffic.--&gt;</span>
       <span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>tcp://0.0.0.0:5672?;   ..... amqpMinLargeMessageSize=102400; .... <span class="nt">&lt;/acceptor&gt;</span>
 <span class="nt">&lt;/acceptors&gt;</span></code></pre>
