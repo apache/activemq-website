@@ -9,6 +9,7 @@ Details of security problems fixed in released versions of Apache ActiveMQ 5.x a
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2023-46604](../../security-advisories.data/CVE-2023-46604-announcement.txt) - Unbounded deserialization causes ActiveMQ to be vulnerable to a remote code execution (RCE) attack
 *   [CVE-2021-26117](../../security-advisories.data/CVE-2021-26117-announcement.txt) - ActiveMQ: LDAP-Authentication does not verify passwords on servers with anonymous bind
 *   [CVE-2020-13947](../../security-advisories.data/CVE-2020-13947-announcement.txt) - XSS in WebConsole
 *   [CVE-2020-13920](../../security-advisories.data/CVE-2020-13920-announcement.txt) - JMX MITM vulnerability
