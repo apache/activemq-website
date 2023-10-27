@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Resource Limits</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Resource Limits</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
+<ul class="sectlevel1">
+<li><a href="#configuring-limits-via-resource-limit-settings">1. Configuring Limits Via Resource Limit Settings</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sometimes it&#8217;s helpful to set particular limits on what certain users can do beyond the normal security settings related to authorization and  authentication.
+For example, limiting how many connections a user can create or how many queues a user can create.
+This chapter will explain how to  configure such limits.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-limits-via-resource-limit-settings"><a class="anchor" href="#configuring-limits-via-resource-limit-settings"></a><a class="link" href="#configuring-limits-via-resource-limit-settings">1. Configuring Limits Via Resource Limit Settings</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here is an example of the XML used to set resource limits:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;resource-limit-settings&gt;</span>
+   <span class="nt">&lt;resource-limit-setting</span> <span class="na">match=</span><span class="s">"myUser"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;max-connections&gt;</span>5<span class="nt">&lt;/max-connections&gt;</span>
+      <span class="nt">&lt;max-queues&gt;</span>3<span class="nt">&lt;/max-queues&gt;</span>
+   <span class="nt">&lt;/resource-limit-setting&gt;</span>
+<span class="nt">&lt;/resource-limit-settings&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unlike the <code>match</code> from <code>address-setting</code>, this <code>match</code> does not use any wild-card syntax.
+It&#8217;s a simple 1:1 mapping of the limits to a <strong>user</strong>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">max-connections</dt>
+<dd>
+<p>How many connections the matched user can make to the broker.
+The default is -1 which means there is no limit.</p>
+</dd>
+<dt class="hdlist1">max-queues</dt>
+<dd>
+<p>How many queues the matched user can create.
+The default is -1 which means there is no limit.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

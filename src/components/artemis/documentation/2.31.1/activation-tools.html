@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Activation Sequence Tools</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Activation Sequence Tools</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.31.1</a></div>
+<ul class="sectlevel1">
+<li><a href="#troubleshooting-case-zookeeper-cluster-disaster">1. Troubleshooting Case: ZooKeeper Cluster disaster</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can use the Artemis CLI to execute activation sequence maintenance/recovery tools for <a href="ha.html#high-availability-and-failover">Pluggable Quorum Replication</a>.</p>
+</div>
+<div class="paragraph">
+<p>The 2 main commands are <code>activation list</code> and <code>activation set</code>, that can be used together to recover some disaster happened to local/coordinated activation sequences.</p>
+</div>
+<div class="paragraph">
+<p>Here is a disaster scenario built around the RI (using <a href="https://zookeeper.apache.org/">Apache ZooKeeper</a> and <a href="https://curator.apache.org/">Apache curator</a>) to demonstrate the usage of such commands.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="troubleshooting-case-zookeeper-cluster-disaster"><a class="anchor" href="#troubleshooting-case-zookeeper-cluster-disaster"></a><a class="link" href="#troubleshooting-case-zookeeper-cluster-disaster">1. Troubleshooting Case: ZooKeeper Cluster disaster</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A proper ZooKeeper cluster should use at least 3 nodes, but what happens if all these nodes crash loosing any activation state information required to run an Artemis replication cluster?</p>
+</div>
+<div class="paragraph">
+<p>During the disaster ie ZooKeeper nodes no longer reachable, brokers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>live ones shutdown (and if restarted by a script, should hang awaiting to connect to the ZooKeeper cluster again)</p>
+</li>
+<li>
+<p>replicas become passive, awaiting to connect to the ZooKeeper cluster again</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Admin should:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Stop all Artemis brokers</p>
+</li>
+<li>
+<p>Restart ZooKeeper cluster</p>
+</li>
+<li>
+<p>Search brokers with the highest local activation sequence for their <code>NodeID</code>, by running this command from the <code>bin</code> folder of the broker:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="nv">$ </span>./artemis activation list <span class="nt">--local</span>
+Local activation sequence <span class="k">for </span><span class="nv">NodeID</span><span class="o">=</span>7debb3d1-0d4b-11ec-9704-ae9213b68ac4: 1</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>From the <code>bin</code> folder of the brokers with the highest local activation sequence</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="bash"><span class="c"># assuming 1 to be the highest local activation sequence obtained at the previous step</span>
+<span class="c"># for NodeID 7debb3d1-0d4b-11ec-9704-ae9213b68ac4</span>
+<span class="nv">$ </span>./artemis activation <span class="nb">set</span> <span class="nt">--remote</span> <span class="nt">--to</span> 1
+Forced coordinated activation sequence <span class="k">for </span><span class="nv">NodeID</span><span class="o">=</span>7debb3d1-0d4b-11ec-9704-ae9213b68ac4 from 0 to 1</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Restart all brokers: previously live ones should be able to be live again</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The higher the number of ZooKeeper nodes are, the less the chance are that a disaster like this requires Admin intervention, because it allows the ZooKeeper cluster to tolerate more failures.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

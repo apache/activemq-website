@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Routing Messages With Wild Cards</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book">
+<div id="header">
+<h1>Routing Messages With Wild Cards</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis allows the routing of messages via wildcard addresses.</p>
+</div>
+<div class="paragraph">
+<p>If a queue is created with an address of say <code>queue.news.#</code> then it will receive any messages sent to addresses that match this, for instance <code>queue.news.europe</code> or <code>queue.news.usa</code> or <code>queue.news.usa.sport</code>.
+If you create a consumer on this queue, this allows a consumer to consume messages which are sent to a <em>hierarchy</em> of addresses.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In JMS terminology this allows "topic hierarchies" to be created.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This functionality is enabled by default.
+To turn it off add the following to the <code>broker.xml</code> configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;wildcard-addresses&gt;</span>
+   <span class="nt">&lt;routing-enabled&gt;</span>false<span class="nt">&lt;/routing-enabled&gt;</span>
+<span class="nt">&lt;/wildcard-addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For more information on the wild card syntax and how to configure it, take a look at <a href="wildcard-syntax.html#wildcard-syntax">wildcard syntax</a> chapter, also see the topic hierarchy example in the <a href="examples.html#examples">examples</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
