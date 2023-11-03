@@ -29,7 +29,7 @@ This allows for a dependency-update-only approach to the transition without havi
 
 Client jar|API Package|Version|Notes
 ---|---|---
-activemq-client | jakarta.jms | 6.0.x | JMS 3.1 support. Works with embedded broker and VM transport.
+activemq-client | jakarta.jms | 6.0.x | Jakarta Messaging 3.1 support. Works with embedded broker and VM transport.
 activemq-client | javax.jms | 5.18.x | JMS 2.0 support. Works with embedded broker and VM transport.
 activemq-client-jakarta | jakarta.jms | 5.18.1+ | Transitional module for initial *client-only* Jakarta Messaging 3.1 support. Can't be used in the same JVM as activemq-client or broker which use javax.jms API. **Note this means no embedded broker / VM transport support, only remote brokers.**
 
