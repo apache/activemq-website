@@ -4,7 +4,7 @@ title: Source
 title-class: page-title-main
 type: main
 ---
-ActiveMQ 5
+ActiveMQ source code
 ==========
 
 Web Browsing of the git Repo

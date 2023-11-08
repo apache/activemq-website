@@ -5,7 +5,7 @@ title-class: page-title-activemq5
 type: activemq5
 ---
 
-Details of security problems fixed in released versions of Apache ActiveMQ 5.x are detailed below.
+Details of security problems fixed in released versions of Apache ActiveMQ 6.x and 5.x are detailed below.
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 

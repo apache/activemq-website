@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ 5 Documentation
+title: ActiveMQ Documentation
 title-class: page-title-activemq5
 type: activemq5
 ---
@@ -17,7 +17,7 @@ type: activemq5
 *   [Community](../../community)
 *   [Features](../../features)
 *   [Connectivity](../../connectivity)
-*   [Using ActiveMQ 5](../../using-activemq-5)
+*   [Using ActiveMQ](../../using-activemq-5)
 *   [Tools](../../tools)
 *   [Support](../../support)
 *   [Developers](../../developers)
