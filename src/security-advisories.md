@@ -6,7 +6,7 @@ type: main
 ---
 Details of security problems fixed in released versions of individual Apache ActiveMQ components are detailed at:
 
-* [ActiveMQ "Classic"](components/classic/security)
+* [ActiveMQ Classic](components/classic/security)
 * [ActiveMQ Artemis](components/artemis/security)
 * [ActiveMQ Apollo](security-advisories-apollo)
 

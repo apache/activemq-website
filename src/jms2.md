@@ -23,7 +23,7 @@ Support for JMS 2.0 also enables building upon this for transition to Jakarta Me
  * Required for Spring 6
  * Required for Jakarta EE 9 + 10.
  * JMS API Java package name-change only
- * ActiveMQ package names do not change 
+ * ActiveMQ package names do not change
 
 This allows for a dependency-update-only approach to the transition without having to re-code going forward!
 
@@ -53,7 +53,11 @@ To use the Jakarta transition client available with ActiveMQ 5.18.x in Maven:
       <version>${activemq.version}</version>
     </dependency>
 
-Note: Spring bean definitions do not change for Jakarta support:
+Note: With ActiveMQ 6.0, the activemq-client-jakarta module is removed as it is no longer needed.
+
+### Spring bean usage
+
+Spring bean definitions do not change for Jakarta support.
 
     <bean class="org.apache.activemq.ActiveMQConnectionFactory">
 
@@ -72,7 +76,7 @@ JIRA|Status|Target Version|Completed Version|Feature|Notes
 [AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | merged | 5.18.0 | 5.18.0 | JMSProducer | Produce messages
 [AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | merged | 5.18.0 | 5.18.0 | GetBody/isBodyAssignable | Support for checking body type using a Class<?>
 [AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | merged | 6.0.0, 5.18.3 | | XA Connection methods | Updated methods when using XA Transactions
-[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | merged | 6.0.0, 5.18.3 | | JMSConsumer | .receiveBody(Class<T>) methods
+[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | PR [#1046](https://github.com/apache/activemq/pull/1046) | 6.1.0, 5.18.4 | | JMSConsumer | .receiveBody(Class<T>) methods
 [AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | PR [#982](https://github.com/apache/activemq/pull/982)| 6.1.0, 5.18.4 | | Delivery Delay | Support for Message DeliveryDelay feature
 [AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | PR [#1045](https://github.com/apache/activemq/pull/1045) | 6.1.0, 5.18.4 | | JMSProducer features | Completion Listener async send support
 [AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | | 6.2.0, 5.18.5 | | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions

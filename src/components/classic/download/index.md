@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ 5 Download
+title: ActiveMQ Download
 title-class: page-title-activemq5
 type: activemq5
 ---

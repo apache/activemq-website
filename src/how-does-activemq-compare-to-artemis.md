@@ -10,5 +10,4 @@ type: activemq5
 
 [Artemis](components/artemis) is the codename used for the HornetQ code that was donated to the Apache Foundation.
 
-Artemis will eventually become the successor to ActiveMQ 5.x as ActiveMQ 6.x.
-
+Artemis may eventually become the successor to ActiveMQ 6.x/5.x. ActiveMQ 6.x is a modernization of ActiveMQ 5.x with support for Jakarta EE.
