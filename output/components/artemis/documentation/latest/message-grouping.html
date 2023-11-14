@@ -15,16 +15,25 @@
 <div id="header">
 <h1>Message Grouping</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.2</a></div>
 <ul class="sectlevel1">
 <li><a href="#using-core-api">1. Using Core API</a></li>
 <li><a href="#using-jms">2. Using JMS</a></li>
-<li><a href="#example">3. Example</a></li>
-<li><a href="#clustered-grouping">4. Clustered Grouping</a>
+<li><a href="#closing-a-message-group">3. Closing a Message Group</a></li>
+<li><a href="#notifying-consumer-of-group-ownership-change">4. Notifying Consumer of Group Ownership change</a></li>
+<li><a href="#rebalancing-message-groups">5. Rebalancing Message Groups</a>
 <ul class="sectlevel2">
-<li><a href="#clustered-grouping-configuration">4.1. Clustered Grouping Configuration</a></li>
-<li><a href="#clustered-grouping-best-practices">4.2. Clustered Grouping Best Practices</a></li>
-<li><a href="#clustered-grouping-example">4.3. Clustered Grouping Example</a></li>
+<li><a href="#manually">5.1. Manually</a></li>
+<li><a href="#automatically">5.2. Automatically</a></li>
+</ul>
+</li>
+<li><a href="#group-buckets">6. Group Buckets</a></li>
+<li><a href="#example">7. Example</a></li>
+<li><a href="#clustered-grouping">8. Clustered Grouping</a>
+<ul class="sectlevel2">
+<li><a href="#clustered-grouping-configuration">8.1. Clustered Grouping Configuration</a></li>
+<li><a href="#clustered-grouping-best-practices">8.2. Clustered Grouping Best Practices</a></li>
+<li><a href="#clustered-grouping-example">8.3. Clustered Grouping Example</a></li>
 </ul>
 </li>
 </ul>
@@ -129,12 +138,14 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 <span class="py">connectionFactory.myConnectionFactory</span><span class="p">=</span><span class="s">tcp://localhost:61616?groupID=Group-0</span></code></pre>
 </div>
 </div>
-<h4 id="closing-a-message-group" class="discrete">Closing a Message Group</h4>
-<div class="paragraph">
-<p>You generally don&#8217;t need to close a message group, you just keep using it.</p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="closing-a-message-group"><a class="anchor" href="#closing-a-message-group"></a><a class="link" href="#closing-a-message-group">3. Closing a Message Group</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>However if you really do want to close a group you can add a negative sequence number.</p>
+<p>You generally don&#8217;t need to close a message group, you just keep using it.
+However, if you really do want to close a group you can add a negative sequence number.</p>
 </div>
 <div class="paragraph">
 <p>Example:</p>
@@ -149,20 +160,24 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 </div>
 </div>
 <div class="paragraph">
-<p>This then closes the message group so if another message is sent in the future with the same message group ID it will be reassigned to a new consumer.</p>
+<p>This closes the message group so if another message is sent in the future with the same message group ID it will be reassigned to a new consumer.</p>
 </div>
-<h4 id="notifying-consumer-of-group-ownership-change" class="discrete">Notifying Consumer of Group Ownership change</h4>
+</div>
+</div>
+<div class="sect1">
+<h2 id="notifying-consumer-of-group-ownership-change"><a class="anchor" href="#notifying-consumer-of-group-ownership-change"></a><a class="link" href="#notifying-consumer-of-group-ownership-change">4. Notifying Consumer of Group Ownership change</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>ActiveMQ supports putting a boolean header, set on the first message sent to a consumer for a particular message group.</p>
+<p>ActiveMQ supports putting a boolean header on the first message sent to a consumer for a particular message group.</p>
 </div>
 <div class="paragraph">
-<p>To enable this, you must set a header key that the broker will use to set the flag.</p>
+<p>To enable this you must set a header key that the broker will use to set the flag.</p>
 </div>
 <div class="paragraph">
 <p>In the examples we use <code>JMSXGroupFirstForConsumer</code> but it can be any header key value you want.</p>
 </div>
 <div class="paragraph">
-<p>By setting <code>group-first-key</code> to <code>JMSXGroupFirstForConsumer</code> at the queue level, every time a new group is assigned a consumer the header <code>JMSXGroupFirstForConsumer</code> will be set to true on the first message.</p>
+<p>By setting <code>group-first-key</code> to <code>JMSXGroupFirstForConsumer</code> at the queue level, every time a new group is assigned a consumer the header <code>JMSXGroupFirstForConsumer</code> will be set to <code>true</code> on the first message.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -174,7 +189,7 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 </div>
 </div>
 <div class="paragraph">
-<p>Or on auto-create when using the JMS Client by using address parameters when  creating the destination used by the consumer.</p>
+<p>Or on auto-create when using the core JMS client by using address parameters when  creating the destination used by the consumer.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -183,7 +198,7 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 </div>
 </div>
 <div class="paragraph">
-<p>Also the default for all queues under and address can be defaulted using the  <code>address-setting</code> configuration:</p>
+<p>Also, the default for all queues under and address can be defaulted using the  <code>address-setting</code> configuration:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -193,29 +208,47 @@ Here&#8217;s a simple example using the "ConnectionFactory" connection factory w
 </div>
 </div>
 <div class="paragraph">
-<p>By default this is null, and therefor OFF.</p>
+<p>By default, this is off.</p>
 </div>
-<h4 id="rebalancing-message-groups" class="discrete">Rebalancing Message Groups</h4>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rebalancing-message-groups"><a class="anchor" href="#rebalancing-message-groups"></a><a class="link" href="#rebalancing-message-groups">5. Rebalancing Message Groups</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Sometimes after new consumers are added you can find that if you have long lived groups, that they have no groups assigned, and thus are not being utilised, this is because the long lived groups will already be assigned to existing consumers.</p>
+<p>Sometimes after new consumers are added you can find that they have no groups assigned, and thus are not being utilised.
+This is because all the groups are already assigned to existing consumers.
+However, it is possible to rebalance the groups so that all the consumers are the queue are assigned one or more groups.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>At the exact moment of a reset a message to the originally associated consumer could be in flight at the same time a new message for the same group is dispatched to the new associated consumer.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="manually"><a class="anchor" href="#manually"></a><a class="link" href="#manually">5.1. Manually</a></h3>
+<div class="paragraph">
+<p>Use the management API (e.g via the web console) by invoking <code>resetAllGroups</code> on the associated queue.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="automatically"><a class="anchor" href="#automatically"></a><a class="link" href="#automatically">5.2. Automatically</a></h3>
+<div class="paragraph">
+<p>By setting <code>group-rebalance</code> to <code>true</code> at the queue level every time a consumer is added it will trigger a rebalance/reset of the groups.</p>
 </div>
 <div class="paragraph">
-<p>It is possibly to rebalance the groups.</p>
-</div>
-<div class="paragraph">
-<p><strong><em>note</em></strong> during the split moment of reset, a message to the original associated consumer could be in flight at the same time, a new message for the same group is dispatched to the new associated consumer.</p>
-</div>
-<h5 id="manually" class="discrete">Manually</h5>
-<div class="paragraph">
-<p>via the management API or managment console by invoking <code>resetAllGroups</code></p>
-</div>
-<h5 id="automatically" class="discrete">Automatically</h5>
-<div class="paragraph">
-<p>By setting <code>group-rebalance</code> to <code>true</code> at the queue level, every time a consumer is added it will trigger a rebalance/reset of the groups.</p>
-</div>
-<div class="paragraph">
-<p>As noted above, when group rebalance is done, there is a risk you may have inflight messages being processed, by default the broker will continue to dispatch whilst rebalance is occuring.
-To ensure that inflight messages are processed before dispatch of new messages post rebalance,  to different consumers, you can set <code>group-rebalance-pause-dispatch</code> to <code>true</code> which will cause the dispatch to pause whilst rebalance occurs, until all inflight messages are processed.</p>
+<p>As noted above, when group rebalance is done there is a risk you may have inflight messages being processed.
+By default, the broker will continue to dispatch whilst rebalance is occuring.
+To ensure that inflight messages are processed before dispatch of new messages post rebalance, to different consumers, you can set <code>group-rebalance-pause-dispatch</code> to <code>true</code> which will cause the dispatch to pause whilst rebalance occurs until all inflight messages are processed.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -227,7 +260,7 @@ To ensure that inflight messages are processed before dispatch of new messages p
 </div>
 </div>
 <div class="paragraph">
-<p>Or on auto-create when using the JMS Client by using address parameters when  creating the destination used by the consumer.</p>
+<p>Or on auto-create when using the core JMS client by using address parameters when creating the destination used by the consumer.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -236,7 +269,7 @@ To ensure that inflight messages are processed before dispatch of new messages p
 </div>
 </div>
 <div class="paragraph">
-<p>Also the default for all queues under and address can be defaulted using the  <code>address-setting</code> configuration:</p>
+<p>Also, the default for all queues under and address can be defaulted using the  <code>address-setting</code> configuration:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -250,7 +283,12 @@ To ensure that inflight messages are processed before dispatch of new messages p
 <p>By default, <code>default-group-rebalance</code> is <code>false</code> meaning this is disabled/off.
 By default, <code>default-group-rebalance-pause-dispatch</code> is <code>false</code> meaning this is disabled/off.</p>
 </div>
-<h4 id="group-buckets" class="discrete">Group Buckets</h4>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="group-buckets"><a class="anchor" href="#group-buckets"></a><a class="link" href="#group-buckets">6. Group Buckets</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>For handling groups in a queue with bounded memory allowing better scaling of groups,  you can enable group buckets, essentially the group id is hashed into a bucket instead of keeping track of every single group id.</p>
 </div>
@@ -304,7 +342,7 @@ This can be useful on a multicast address,  where many queues exist but one queu
 </div>
 </div>
 <div class="sect1">
-<h2 id="example"><a class="anchor" href="#example"></a><a class="link" href="#example">3. Example</a></h2>
+<h2 id="example"><a class="anchor" href="#example"></a><a class="link" href="#example">7. Example</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>See the <a href="examples.html#message-group">Message Group Example</a> which shows how message groups are configured and used with JMS and via a connection factory.</p>
@@ -312,7 +350,7 @@ This can be useful on a multicast address,  where many queues exist but one queu
 </div>
 </div>
 <div class="sect1">
-<h2 id="clustered-grouping"><a class="anchor" href="#clustered-grouping"></a><a class="link" href="#clustered-grouping">4. Clustered Grouping</a></h2>
+<h2 id="clustered-grouping"><a class="anchor" href="#clustered-grouping"></a><a class="link" href="#clustered-grouping">8. Clustered Grouping</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Before looking at the details for configuring clustered grouping support it is worth examing the idea of clustered grouping as a whole.
@@ -334,7 +372,7 @@ But since the message groups are ordered the messages in each group cannot be co
 <p>However, if you&#8217;ve evaluated your overall use-case with these design caveats in  mind and have determined that clustered grouping is still viable then read on for all the configuration details and best practices.</p>
 </div>
 <div class="sect2">
-<h3 id="clustered-grouping-configuration"><a class="anchor" href="#clustered-grouping-configuration"></a><a class="link" href="#clustered-grouping-configuration">4.1. Clustered Grouping Configuration</a></h3>
+<h3 id="clustered-grouping-configuration"><a class="anchor" href="#clustered-grouping-configuration"></a><a class="link" href="#clustered-grouping-configuration">8.1. Clustered Grouping Configuration</a></h3>
 <div class="paragraph">
 <p>Using message groups in a cluster is a bit more complex.
 This is because messages with a particular group id can arrive on any node so each node needs to know about which group id&#8217;s are bound to which consumer on which node.
@@ -399,7 +437,7 @@ Simple create your back up node and configure it with the same Local handler.</p
 </div>
 </div>
 <div class="sect2">
-<h3 id="clustered-grouping-best-practices"><a class="anchor" href="#clustered-grouping-best-practices"></a><a class="link" href="#clustered-grouping-best-practices">4.2. Clustered Grouping Best Practices</a></h3>
+<h3 id="clustered-grouping-best-practices"><a class="anchor" href="#clustered-grouping-best-practices"></a><a class="link" href="#clustered-grouping-best-practices">8.2. Clustered Grouping Best Practices</a></h3>
 <div class="paragraph">
 <p>Some best practices should be followed when using clustered grouping:</p>
 </div>
@@ -430,7 +468,7 @@ This is because this will determine how often the last-time-use value should be 
 </div>
 </div>
 <div class="sect2">
-<h3 id="clustered-grouping-example"><a class="anchor" href="#clustered-grouping-example"></a><a class="link" href="#clustered-grouping-example">4.3. Clustered Grouping Example</a></h3>
+<h3 id="clustered-grouping-example"><a class="anchor" href="#clustered-grouping-example"></a><a class="link" href="#clustered-grouping-example">8.3. Clustered Grouping Example</a></h3>
 <div class="paragraph">
 <p>See the <a href="examples.html#clustered-grouping">Clustered Grouping Example</a> which shows how to configure message groups with a ActiveMQ Artemis Cluster.</p>
 </div>
