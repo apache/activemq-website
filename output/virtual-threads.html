@@ -112,8 +112,29 @@
 
 <p>To enable Virtual Threads in ActiveMQ 6.x (and higher)</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker ... virtualThreadTeaskRunner="true" .. &gt;
-</code></pre></div></div>
+<ol>
+  <li>Checkout activemq source code from git</li>
+  <li>Build using JDK 21 (Virtual Thread support will be added automatically)</li>
+  <li>
+    <p>Edit conf/activemq.xml</p>
+
+    <p>&lt;broker … virtualThreadTeaskRunner=”true” .. &gt;</p>
+  </li>
+  <li>
+    <p>Run ActiveMQ and confirm with the following log message:</p>
+
+    <table>
+      <tbody>
+        <tr>
+          <td>INFO</td>
+          <td>VirtualThreadExecutor initialized name:ActiveMQ BrokerService[localhost] Task</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ol>
+
+<p>NOTE: The log message may be removed in the future</p>
 
 <h3 id="activemq-virtual-thread-implementation-progress">ActiveMQ Virtual Thread Implementation Progress</h3>
 
