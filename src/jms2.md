@@ -75,7 +75,7 @@ JIRA|Status|Target Version|Completed Version|Feature|Notes
 [AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | merged | 5.18.0 | 5.18.0 | JMSConsumer | Consume messages
 [AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | merged | 5.18.0 | 5.18.0 | JMSProducer | Produce messages
 [AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | merged | 5.18.0 | 5.18.0 | GetBody/isBodyAssignable | Support for checking body type using a Class<?>
-[AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | merged | 6.0.0, 5.18.3 | | XA Connection methods | Updated methods when using XA Transactions
+[AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | merged | 6.0.0, 5.18.3 | 6.0.0, 5.18.3 | XA Connection methods | Updated methods when using XA Transactions
 [AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | PR [#1046](https://github.com/apache/activemq/pull/1046) | 6.1.0, 5.18.4 | | JMSConsumer | .receiveBody(Class<T>) methods
 [AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | PR [#982](https://github.com/apache/activemq/pull/982)| 6.1.0, 5.18.4 | | Delivery Delay | Support for Message DeliveryDelay feature
 [AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | PR [#1045](https://github.com/apache/activemq/pull/1045) | 6.1.0, 5.18.4 | | JMSProducer features | Completion Listener async send support
