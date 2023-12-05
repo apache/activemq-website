@@ -15,8 +15,8 @@ Apache NMS.ActiveMQ {{ page.version }} was released on {{ page.release_date | da
 Download Here
 -------------
 
-Apache.NMS.ActiveMQ Source code|[Apache.NMS.ActiveMQ-2.0.1-src.zip ](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-src.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-src.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-src.zip.asc)
-Apache.NMS.ActiveMQ Binary Assemblies|[Apache.NMS.ActiveMQ-2.0.1-bin.zip](https://www.apache.org/dyn/closer.lua?filename=/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-bin.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-bin.zip.asc)
+Apache.NMS.ActiveMQ Source code|[Apache.NMS.ActiveMQ-2.0.1-src.zip ](https://archive.apache.org/dist/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-src.zip)|[SHA512](https://downloads.apache.org/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-src.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-src.zip.asc)
+Apache.NMS.ActiveMQ Binary Assemblies|[Apache.NMS.ActiveMQ-2.0.1-bin.zip](https://archive.apache.org/dist/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-bin.zip)|[SHA512](https://downloads.apache.org/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-bin.zip.sha512)|[PGP Signature](https://downloads.apache.org/activemq/apache-nms-activemq/2.0.1/Apache.NMS.ActiveMQ-2.0.1-bin.zip.asc)
 
 Changelog
 ---------
