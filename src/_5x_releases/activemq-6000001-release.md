@@ -4,11 +4,11 @@ release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=
 release_date: 2023-12-03
 title: ActiveMQ 6.0.1 Release
 java_version: 17+
-shortDescription: 6.0.1 is a maintaince release on the 6.x series.
+shortDescription: 6.0.1 is a maintenance release on the 6.x series.
 ---
 Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. 
 
-It's a maintainance release on the 6.x series, especially bringing:
+It's a maintenance release on the 6.x series, especially bringing:
 - Fix Jakarta support in ActiveMQ RA
 - Fix OSGi headers in activemq-jms-pool and activemq-cf
 - Fix provided jetty.xml example on the SSL connector
