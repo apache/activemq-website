@@ -106,31 +106,16 @@ e.g.
 uri="static:(tcp://host1:61616,tcp://host2:61616)?maxReconnectDelay=5000&useExponentialBackOff=false"
 ```
 
-StaticFailover Discovery
----------------------
-A common configuration option for a network of brokers is to establish a network bridge between a broker and an n+1 broker pair. Typical configurations involve using the `failover:` transport, but there are a some other non-intuitive options that must be configured for it to work as desired. For this reason, ActiveMQ v5.17.2+ has a convenience discovery agent that can be specified with the `staticfailover:` transport prefix:
-```
-<networkConnectors>
-  <networkConnector uri="staticfailover:(tcp://host1:61616,tcp://host2:61616,tcp://..)"/>
-</networkConnectors>
-```
-The URIs are listed in order for: BROKER1,BROKER2,BROKER3...BROKER4
-
-The same configuration options for `static:` are available for `staticfailover:`
-
 MasterSlave Discovery
 ---------------------
-<div class="alert alert-warning">
-  This discovery agent is deprecated as of 5.17.2 and will be removed in a future release. Please use the staticfailover discovery agent.
-</div>
 
-A common configuration option for a network of brokers is to establish a network bridge between a broker and an n+1 broker pair. Typical configurations involve using the `failover:` transport, but there are a some other non-intuitive options that must be configured for it to work as desired. For this reason, ActiveMQ v5.6+ has a convenience discovery agent that can be specified with the `masterslave:` transport prefix:
+A common configuration option for a network of brokers is to establish a network bridge between a broker and an n+1 broker pair (master/slave). Typical configurations involve using the `failover:` transport, but there are a some other non-intuitive options that must be configured for it to work as desired. For this reason, ActiveMQ v5.6+ has a convenience discovery agent that can be specified with the `masterslave:` transport prefix:
 ```
 <networkConnectors>
   <networkConnector uri="masterslave:(tcp://host1:61616,tcp://host2:61616,tcp://..)"/>
 </networkConnectors>
 ```
-The URIs are listed in order for: BROKER1,BROKER2,BROKER3...BROKER4
+The URIs are listed in order for: MASTER,SLAVE1,SLAVE2...SLAVE![(thumbs down)](https://cwiki.apache.org/confluence/s/en_GB/5997/6f42626d00e36f53fe51440403446ca61552e2a2.1/_/images/icons/emoticons/thumbs_down.png)
 
 The same configuration options for `static:` are available for `masterslave:`
 
