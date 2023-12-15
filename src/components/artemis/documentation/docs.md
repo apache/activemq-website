@@ -12,6 +12,10 @@ The user documentation is available in HTML and PDF formats, select the relevant
 
 The user documentation for earlier versions are also available on the <a href="../download/past_releases" target="_parent">past releases</a> page.
 
+#### Examples:
+
+Examples can be found in the <a href="https://github.com/apache/activemq-artemis-examples/" target="_parent">ActiveMQ Artemis Examples</a> repository.
+
 #### API
 
 *   [HTML](javadocs/javadoc-latest)

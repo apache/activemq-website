@@ -4,7 +4,7 @@
   {% assign docs_version = "latest" %}
 {% endif %}
 #### ActiveMQ Artemis {{include.release.version}}  ({{include.release.release_date | date_to_string: "ordinal", "US"}})
-[Release Notes](release-notes-{{include.release.version}}) | [Git Report](commit-report-{{include.release.version}}) | [Documentation:](../documentation/{{docs_version}}) [HTML](../documentation/{{docs_version}}) / [PDF](../documentation/{{docs_version}}/book.pdf) | Java compatibility: **{{java_version}}**
+[Release Notes](release-notes-{{include.release.version}}) | [Git Report](commit-report-{{include.release.version}}) | [Documentation:](../documentation/{{docs_version}}) [HTML](../documentation/{{docs_version}}) / [PDF](../documentation/{{docs_version}}/book.pdf) |{% if include.examples_link %} [Examples](https://github.com/apache/activemq-artemis-examples/) |{% endif %} Java compatibility: **{{java_version}}**
 
 {% if include.is_current_release %}
 tar.gz:|[apache-artemis-{{include.release.version}}-bin.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis/{{include.release.version}}/apache-artemis-{{include.release.version}}-bin.tar.gz&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis/{{include.release.version}}/apache-artemis-{{include.release.version}}-bin.tar.gz.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis/{{include.release.version}}/apache-artemis-{{include.release.version}}-bin.tar.gz.asc)
