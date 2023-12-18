@@ -17,10 +17,12 @@
 # under the License.
 #
 
+import datetime
 import urllib
 import yaml
 import codecs as _codecs
 
+from datetime import datetime
 from xml.sax.saxutils import escape as escape_html
 
 def write_utf8(file, string):
@@ -29,6 +31,8 @@ def write_utf8(file, string):
 
     return file
 
+def get_date_string():
+    return datetime.today().strftime('%Y-%m-%d')
 
 def render_release_notes(project, release):
     issues = _fetch_issues(project, release)
