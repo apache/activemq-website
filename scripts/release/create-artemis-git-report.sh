@@ -50,9 +50,6 @@ ARTEMIS_DIR="$( cd -- "$1" >/dev/null 2>&1 ; pwd -P )"
 PRIOR_VERSION="$2"
 NEW_VERSION="$3"
 
-echo "The website dir: $WEBSITE_DIR"
-echo "The artemis dir: $ARTEMIS_DIR"
-
 if [ ! -d "$ARTEMIS_DIR" ] || [ ! -d "$ARTEMIS_DIR/artemis-server" ] || [ ! -f "$ARTEMIS_DIR/.asf.yaml" ]; then
     error "ERROR: The provided activemq-artemis checkout path does not point to an activemq-artemis checkout"
     exit 1
