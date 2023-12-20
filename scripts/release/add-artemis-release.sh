@@ -24,13 +24,13 @@ error () {
    echo ""
    echo "** ERROR: $@ **"
    echo ""
-   echo "Usage: ./scripts/release/update-artemis-docs.sh <path.to/activemq-artemis> <previous-release-version> <new-release-version>"
+   echo "Usage: ./scripts/release/add-artemis-release.sh <path.to/activemq-artemis> <previous-release-version> <new-release-version>"
    echo ""
    echo "Must be run from within an activemq-website checkout root."
    echo ""
    echo "Example:"
    echo "cd <path.to>/activemq-website"
-   echo "./scripts/release/update-artemis-docs.sh ../release-work/activemq-artemis 2.30.0 2.31.0"
+   echo "./scripts/release/add-artemis-release.sh ../release-work/activemq-artemis 2.30.0 2.31.0"
    echo ""
    exit 64
 }
@@ -60,29 +60,25 @@ if [ ! -d "$ARTEMIS_DIR/target" ] || [ ! -d "$ARTEMIS_DIR/target/checkout" ]; th
     exit 1
 fi
 
-RELEASE_DIR="$ARTEMIS_DIR/target/checkout"
-
-LATEST_DOCS=$WEBSITE_DIR/src/components/artemis/documentation/latest/
-PRIOR_DOCS=$WEBSITE_DIR/src/components/artemis/documentation/$PRIOR_VERSION/
-
-LATEST_JAVADOCS=$WEBSITE_DIR/src/components/artemis/documentation/javadocs/javadoc-latest/
-NEW_DOCS=$RELEASE_DIR/artemis-website/target/classes/user-manual/
-NEW_JAVADOCS=$RELEASE_DIR/artemis-website/target/apidocs/
+GIT_REPORT_FILE=$WEBSITE_DIR/src/components/artemis/download/commit-report-$NEW_VERSION.html
 
 
 
-echo "Moving previous release docs, from $LATEST_DOCS to $PRIOR_DOCS"
-mv $LATEST_DOCS $PRIOR_DOCS
+./scripts/release/create-artemis-release-file $NEW_VERSION
 
-echo "Copying new release docs, from $NEW_DOCS to $LATEST_DOCS"
-cp -aR $NEW_DOCS. $LATEST_DOCS
+./scripts/release/create-artemis-release-notes $NEW_VERSION
 
-echo "Clearing previous release javadocs, from $LATEST_JAVADOCS"
-rm -rf $LATEST_JAVADOCS
+if [ ! -f "$GIT_REPORT_FILE" ]; then
+    echo "INFO: Did not find git report file at $GIT_REPORT_FILE so creating now"
+    ./scripts/release/create-artemis-git-report.sh $ARTEMIS_DIR $PRIOR_VERSION $NEW_VERSION
+else
+   echo "INFO: Found existing git report file, skipping."
+fi
 
-echo "Copying new release javadocs, from $NEW_JAVADOCS to $LATEST_JAVADOCS"
-cp -aR $NEW_JAVADOCS. $LATEST_JAVADOCS
+cd $WEBSITE_DIR
+./scripts/release/update-artemis-docs.sh $ARTEMIS_DIR $PRIOR_VERSION $NEW_VERSION
 
-git add $LATEST_DOCS $PRIOR_DOCS $LATEST_JAVADOCS
-
-echo "Doc updates complete, check over git status"
+echo ""
+echo "Files created for adding release. See output above for details."
+echo "Update the artemis list within the src/_data/current_releases.yml file if needed."
+echo "Check over git status, add remaining files, commit and push."
