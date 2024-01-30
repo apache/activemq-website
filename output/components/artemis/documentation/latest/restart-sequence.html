@@ -14,7 +14,7 @@
 <div id="header">
 <h1>Restart Sequence</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#restarting-1-broker-at-a-time">1. Restarting 1 broker at a time</a></li>
 <li><a href="#completely-shutting-down-the-brokers-and-starting">2. Completely shutting down the brokers and starting</a></li>
@@ -27,7 +27,7 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>Apache ActiveMQ Artemis ships with 2 architectures for providing HA features.
-The master and slave brokers can be configured either using network replication or using shared storage.
+The primary and backup brokers can be configured either using network replication or using shared storage.
 This document will share restart sequences for the brokers under various circumstances when the client applications are  connected to it.</p>
 </div>
 </div>
@@ -37,7 +37,7 @@ This document will share restart sequences for the brokers under various circums
 <div class="sectionbody">
 <div class="paragraph">
 <p>When restarting the brokers one at a time at regular intervals, it is not important to follow any sequence.
-We just need to make sure that atleast 1 broker in the master/slave pair is live to take up the connections from  the client applications.</p>
+We just need to make sure that at least 1 broker in the primary/backup pair is active to take up the connections from the client applications.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -47,7 +47,7 @@ We just need to make sure that atleast 1 broker in the master/slave pair is live
 </td>
 <td class="content">
 <div class="paragraph">
-<p>While restarting the brokers while the client applications are connected  kindly make sure that atleast one broker is always live to serve the connected  clients.</p>
+<p>While restarting the brokers while the client applications are connected kindly make sure that at least one broker is always active to serve the connected clients.</p>
 </div>
 </td>
 </tr>
@@ -64,23 +64,24 @@ We just need to make sure that atleast 1 broker in the master/slave pair is live
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Shut down all the slave brokers.</p>
+<p>Shut down all the backup brokers.</p>
 </li>
 <li>
-<p>Shut down all the master brokers.</p>
+<p>Shut down all the primary brokers.</p>
 </li>
 <li>
-<p>Start all the master brokers.</p>
+<p>Start all the primary brokers.</p>
 </li>
 <li>
-<p>Start all the slave brokers.</p>
+<p>Start all the backup brokers.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>This sequence is particularly important in case of network replication for  the following reasons: If the master broker is shutdown first, the slave broker will come live and accept  all the client connections.
-Then when the slave broker is stopped, the clients will  remain connected to the last live connection i.e. slave.
-Now, when we start the slave  and master brokers, the clients will keep trying to connecting to the last connection  i.e. with slave and will never be able to connect until we restart the client applications.
+<p>This sequence is particularly important in case of network replication for the following reasons.
+If the primary broker is shutdown first the backup broker will activate and accept all the client connections.
+Then when the backup broker is stopped the clients will attempt to reconnect to the broker that was active most recently i.e. backup.
+Now, when we start the backup and primary brokers the clients will keep trying to connect to the last connection i.e. with backup and will never be able to connect until we restart the client applications.
 To avoid the hassle of restarting of client applications, we must follow the sequence  as suggested above.</p>
 </div>
 </div>
@@ -93,16 +94,16 @@ To avoid the hassle of restarting of client applications, we must follow the seq
 With this sequence, client applications do not need to be restarted in order to make  connection with the brokers.</p>
 </div>
 <div class="paragraph">
-<p>During the split brain situation both the master and slave brokers are live and there is  no replication that is happening from the master broker to the slave.</p>
+<p>During the split brain situation both the primary and backup brokers are active and there is no replication that is happening from the primary broker to the backup.</p>
 </div>
 <div class="paragraph">
-<p>In such situation, there can be some client applications that are connected to the master  broker and other connected to the slave broker.
+<p>In such situation, there can be some client applications that are connected to the primary broker and other connected to the backup broker.
 Now after we restart the brokers and the  cluster is properly formed.</p>
 </div>
 <div class="paragraph">
-<p>Here, the clients that were connected to the master broker during the split brain situation  are auto-connected to the cluster and start processing the messages.
-But the clients that got  connected to the slave broker are still trying to make connection with the broker.
-This happens  because the slave broker has restarted in 'back up' mode.</p>
+<p>Here, the clients that were connected to the primary broker during the split brain situation  are auto-connected to the cluster and start processing the messages.
+But the clients that got  connected to the backup broker are still trying to make connection with the broker.
+This happens  because the backup broker has restarted in 'back up' mode.</p>
 </div>
 <div class="paragraph">
 <p>Thus, not all the clients get connected to the brokers and function properly.</p>
@@ -113,27 +114,27 @@ This happens  because the slave broker has restarted in 'back up' mode.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Stop the slave broker</p>
+<p>Stop the backup broker</p>
 </li>
 <li>
-<p>Start the slave broker.
-Observe the logs for the message "Waiting for the master"</p>
+<p>Start the backup broker.
+Observe the logs for the message "Waiting for the primary"</p>
 </li>
 <li>
-<p>Stop the master broker.</p>
+<p>Stop the primary broker.</p>
 </li>
 <li>
-<p>Start the master broker.
-Observe the master broker logs for "Server is live" Observe the slave broker logs for "backup announced"</p>
+<p>Start the primary broker.
+Observe the primary broker logs for "Server is active" Observe the backup broker logs for "backup announced"</p>
 </li>
 <li>
-<p>Stop the master broker again.
-Wait until the slave broker becomes live.
-Observe that all the  clients are connected to the slave broker.</p>
+<p>Stop the primary broker again.
+Wait until the backup broker becomes live.
+Observe that all the  clients are connected to the backup broker.</p>
 </li>
 <li>
-<p>Start the master broker.
-This time, all the connections will be switched to master broker again,</p>
+<p>Start the primary broker.
+This time, all the connections will be switched to primary broker again,</p>
 </li>
 </ol>
 </div>
@@ -145,8 +146,8 @@ This time, all the connections will be switched to master broker again,</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>During the split brain situation, messages are produced on the slave broker since it is live.
-While resolving the split brain situation, if there are some delta messages that are not produced  on the slave broker.
+<p>During the split brain situation, messages are produced on the backup broker since it is live.
+While resolving the split brain situation, if there are some delta messages that are not produced  on the backup broker.
 Those messages cannot be auto-recovered.
 There will be manual intervention  required to retrieve the messages, sometime it is almost impossible to recover the messages.
 The above mentioned sequence helps in forming the cluster that was broken due to split brain  and getting all the client applications to auto connected to the cluster without any need for  client applications to be restarted.</p>

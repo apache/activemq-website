@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Authentication &amp; Authorization</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#tracking-the-validated-user">1. Tracking the Validated User</a></li>
 <li><a href="#role-based-security-for-addresses">2. Role based security for addresses</a>
@@ -215,16 +215,16 @@ Where more than one match applies to a set of addresses the <em>more specific</e
 </div>
 </div>
 <div class="paragraph">
-<p>In this <code>security-setting</code> block the match 'globalqueues.europe.orders.<mark>' is more specific than the previous match 'globalqueues.europe.</mark>'.
-So any addresses which match 'globalqueues.europe.orders.#' will take their security settings <em>only</em> from the latter security-setting block.</p>
+<p>In this <code>security-setting</code> block the match <code>globalqueues.europe.orders.#</code> is more specific than the previous match <code>globalqueues.europe.#</code>.
+So any addresses which match <code>globalqueues.europe.orders.#</code> will take their security settings <em>only</em> from the latter security-setting block.</p>
 </div>
 <div class="paragraph">
-<p>Note that settings are not inherited from the former block.
-All the settings will be taken from the more specific matching block, so for the address 'globalqueues.europe.orders.plastics' the only permissions that exist are <code>send</code> and <code>consume</code> for the role europe-users.
-The permissions <code>createDurableQueue</code>, <code>deleteDurableQueue</code>, <code>createNonDurableQueue</code>, <code>deleteNonDurableQueue</code> are not inherited from the other security-setting block.</p>
+<p>Note that <strong>settings are not inherited</strong> from the former block.
+All the settings will be taken from the more specific matching block, so for the address <code>globalqueues.europe.orders.plastics</code> the only permissions that exist are <code>send</code> and <code>consume</code> for the role <code>europe-users</code>.
+The permissions <code>createDurableQueue</code>, <code>deleteDurableQueue</code>, <code>createNonDurableQueue</code>, <code>deleteNonDurableQueue</code> are not inherited from the other <code>security-setting</code> block.</p>
 </div>
 <div class="paragraph">
-<p>By not inheriting permissions, it allows you to effectively deny permissions in more specific security-setting blocks by simply not specifying them.
+<p>By not inheriting permissions, it allows you to effectively deny permissions in more specific <code>security-setting</code> blocks by simply not specifying them.
 Otherwise it would not be possible to deny permissions in sub-groups of addresses.</p>
 </div>
 <div class="sect2">
@@ -537,7 +537,7 @@ This is the default security manager.</p>
 <li>
 <p>The <code>ActiveMQBasicSecurityManager</code> which doesn&#8217;t use JAAS and only supports auth via username &amp; password credentials.
 It also supports adding, removing, and updating users via the management API.
-All user &amp; role data is stored in the broker&#8217;s bindings journal which means any changes made to a live broker will be available on its backup.</p>
+All user &amp; role data is stored in the broker&#8217;s bindings journal which means any changes made to a primary broker will be available on its backup.</p>
 </li>
 <li>
 <p>The legacy, deprecated <code>ActiveMQSecurityManagerImpl</code> that reads user credentials, i.e. user names, passwords and role information from properties files on the classpath called <code>artemis-users.properties</code> and <code>artemis-roles.properties</code>.</p>
@@ -1464,7 +1464,7 @@ The secure encoded form of the password must be generated using the main method 
 </div>
 </div>
 <div class="paragraph">
-<p>An sample of the output can be found in the amqp examples, examples/protocols/amqp/sasl-scram/src/main/resources/activemq/server0/artemis-users.properties</p>
+<p>An sample of the output can be found in the amqp <a href="examples.html">examples</a>, examples/protocols/amqp/sasl-scram/src/main/resources/activemq/server0/artemis-users.properties</p>
 </div>
 </div>
 </div>
@@ -1558,11 +1558,11 @@ However, this security manager <em>may</em> still may have a couple of advantage
 </div>
 <div class="paragraph">
 <p>All user &amp; role data is stored in the bindings journal (or bindings table if using JDBC).
-The advantage here is that in a live/backup use-case any user management performed on the live broker will be reflected on the backup upon failover.</p>
+The advantage here is that in a primary/backup use-case any user management performed on the primary broker will be reflected on the backup upon failover.</p>
 </div>
 <div class="paragraph">
 <p>Typically LDAP would be employed for this kind of use-case, but not everyone wants or is able to administer an independent LDAP server.
-One significant benefit of LDAP is that user data can be shared between multiple live brokers.
+One significant benefit of LDAP is that user data can be shared between multiple active brokers.
 However, this is not possible with the <code>ActiveMQBasicSecurityManager</code> or, in fact, any other configuration potentially available out of the box.
 Nevertheless, if you just want to share user data between a single live/backup pair then the basic security manager may be a good fit for you.</p>
 </div>
@@ -1945,11 +1945,11 @@ keytool -storetype pkcs12 -keystore client-truststore.p12 -storepass securepass 
 <p>Artemis provides a simple class filtering mechanism with which a user can specify which packages are to be trusted and which are not. Objects whose classes are from trusted packages can be deserialized without problem, whereas those from 'not trusted' packages will be denied deserialization.</p>
 </div>
 <div class="paragraph">
-<p>Artemis keeps a <code>black list</code> to keep track of packages that are not trusted and a <code>white list</code> for trusted packages. By default both lists are empty, meaning any serializable object is allowed to be deserialized.
-If an object whose class matches one of the packages in black list, it is not allowed to be deserialized.
-If it matches one in the white list the object can be deserialized.
-If a package appears in both black list and white list, the one in black list takes precedence.
-If a class neither matches with <code>black list</code> nor with the <code>white list</code>, the class deserialization will be denied unless the white list is empty (meaning the user doesn&#8217;t specify the white list at all).</p>
+<p>Artemis keeps a <code>deny list</code> to keep track of packages that are not trusted and a <code>allow list</code> for trusted packages. By default both lists are empty, meaning any serializable object is allowed to be deserialized.
+If an object whose class matches one of the packages in deny list, it is not allowed to be deserialized.
+If it matches one in the allow list the object can be deserialized.
+If a package appears in both deny list and allow list, the one in deny list takes precedence.
+If a class neither matches with <code>deny list</code> nor with the <code>allow list</code>, the class deserialization will be denied unless the allow list is empty (meaning the user doesn&#8217;t specify the allow list at all).</p>
 </div>
 <div class="paragraph">
 <p>A class is considered as a 'match' if:</p>
@@ -1982,44 +1982,43 @@ entries could be:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>A <code>*</code> means 'match-all' in a black or white list.</p>
+<p>A <code>*</code> means 'match-all' in a deny or allow list.</p>
 </div>
 <div class="sect2">
 <h3 id="config-via-connection-factories"><a class="anchor" href="#config-via-connection-factories"></a><a class="link" href="#config-via-connection-factories">10.1. Config via Connection Factories</a></h3>
 <div class="paragraph">
-<p>To specify the white and black lists one can use the URL parameters
-<code>deserializationBlackList</code> and <code>deserializationWhiteList</code>. For example, using
-JMS:</p>
+<p>To specify the <em>allow</em> and <em>deny</em> lists one can use the URL parameters <code>deserializationDenyList</code> and <code>deserializationAllowList</code>.
+For example, using JMS:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ActiveMQConnectionFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQConnectionFactory</span><span class="o">(</span><span class="s">"vm://0?deserializationBlackList=org.apache.pkg1,org.some.pkg2"</span><span class="o">);</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ActiveMQConnectionFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQConnectionFactory</span><span class="o">(</span><span class="s">"vm://0?deserializationDenyList=org.apache.pkg1,org.some.pkg2"</span><span class="o">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The above statement creates a factory that has a black list contains two forbidden packages, "org.apache.pkg1" and "org.some.pkg2", separated by a comma.</p>
+<p>The above statement creates a factory that has a deny list contains two forbidden packages, "org.apache.pkg1" and "org.some.pkg2", separated by a comma.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="config-via-system-properties"><a class="anchor" href="#config-via-system-properties"></a><a class="link" href="#config-via-system-properties">10.2. Config via system properties</a></h3>
 <div class="paragraph">
-<p>There are two system properties available for specifying black list and white list:</p>
+<p>There are two system properties available for specifying deny list and allow list:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">org.apache.activemq.artemis.jms.deserialization.whitelist</dt>
+<dt class="hdlist1">org.apache.activemq.artemis.jms.deserialization.allowlist</dt>
 <dd>
-<p>comma separated list of entries for the white list.</p>
+<p>comma separated list of entries for the allow list.</p>
 </dd>
-<dt class="hdlist1">org.apache.activemq.artemis.jms.deserialization.blacklist</dt>
+<dt class="hdlist1">org.apache.activemq.artemis.jms.deserialization.denylist</dt>
 <dd>
-<p>comma separated list of entries for the black list.</p>
+<p>comma separated list of entries for the deny list.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
 <p>Once defined, all JMS object message deserialization in the VM is subject to checks against the two lists.
-However if you create a ConnectionFactory and set a new set of black/white lists on it, the new values will override the system properties.</p>
+However if you create a ConnectionFactory and set a new set of deny/allow lists on it, the new values will override the system properties.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2030,13 +2029,13 @@ There are two properties that you can configure with connection factories in a r
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">deserializationBlackList</dt>
+<dt class="hdlist1">deserializationDenyList</dt>
 <dd>
-<p>comma separated values for black list</p>
+<p>comma separated values for deny list</p>
 </dd>
-<dt class="hdlist1">deserializationWhiteList</dt>
+<dt class="hdlist1">deserializationAllowList</dt>
 <dd>
-<p>comma separated values for white list</p>
+<p>comma separated values for allow list</p>
 </dd>
 </dl>
 </div>
@@ -2076,7 +2075,7 @@ By default, the broker uses <code>org.apache.activemq.artemis.spi.core.security.
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>security-manager</code> example demonstrates how to do this is more detail.</p>
+<p>The <code>security-manager</code> <a href="examples.html">example</a> demonstrates how to do this is more detail.</p>
 </div>
 </div>
 </div>

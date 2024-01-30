@@ -11,9 +11,19 @@
 <link rel="stylesheet" href="css/font-awesome.css">
 <link rel="stylesheet" href="css/rouge-github.css">
 </head>
-<body class="book">
+<body class="book toc2 toc-left">
 <div id="header">
 <h1>Address Settings</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#literal-matches">1. Literal Matches</a>
+<ul class="sectlevel2">
+<li><a href="#configuring-a-literal-match">1.1. Configuring a Literal Match</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div id="preamble">
@@ -23,14 +33,17 @@
 In the below example the settings would only be applied to the address <code>order.foo</code> address, but it is also possible to use <a href="wildcard-syntax.html#wildcard-syntax">wildcards</a> to apply settings.</p>
 </div>
 <div class="paragraph">
-<p>For example, if you used the <code>match</code> string <code>queue.#</code> the settings would be applied to all addresses which start with <code>queue.</code></p>
+<p>For example, if you used the <code>match</code> string <code>queue.#</code> the settings would be applied to <em>all</em> addresses which start with <code>queue.</code>.</p>
 </div>
 <div class="paragraph">
 <p>Address settings are <strong>hierarchical</strong>.
 Therefore, if more than one <code>address-setting</code> would match then the settings are applied in order of their specificity with the more specific match taking priority.
-A match on the any-words delimiter (<code>#</code>) is considered less specific than a match without it.
-A match with a single word delimiter <code>*</code> is considered less specific than a match on an exact queue name.
+A match on the any-words delimiter (<code>#</code> by default) is considered less specific than a match without it.
+A match with a single word delimiter (<code>*</code> by default) is considered less specific than a match on an exact queue name.
 In this way settings can be "layered" so that configuration details don&#8217;t need to be repeated.</p>
+</div>
+<div class="paragraph">
+<p>Address setting matches can also be "literal" which can be used to match wildcards literally, for further details see <a href="#literal-matches">literal matches</a>.</p>
 </div>
 <div class="paragraph">
 <p>The meaning of the specific settings are explained fully throughout the user manual, however here is a brief description with a link to the appropriate chapter if available.</p>
@@ -519,6 +532,53 @@ By default, the <code>id-cache-size</code> setting inherits from the global <cod
 elements if not explicitly configured. Read more about <a href="duplicate-detection.html#configuring-the-duplicate-id-cache">duplicate id cache sizes</a>.</p>
 </dd>
 </dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="literal-matches"><a class="anchor" href="#literal-matches"></a><a class="link" href="#literal-matches">1. Literal Matches</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A <em>literal</em> match is a match that contains wildcards but should be applied <em>without regard</em> to those wildcards. In other words, the wildcards should be ignored and the address settings should only be applied to the literal (i.e. exact) match.</p>
+</div>
+<div class="paragraph">
+<p>This can be useful when an application uses a <a href="wildcard-routing.html">wildcard address</a>. For example, if an application creates a multicast queue on the address <code>orders.#</code> and that queue needs a different configuration than other matching addresses like <code>orders.retail</code> and <code>orders.wholesale</code>. Generally speaking this kind of use-case is rare, but wildcard addresses are often used by MQTT clients, and this kind of configuration flexiblity is useful.</p>
+</div>
+<div class="sect2">
+<h3 id="configuring-a-literal-match"><a class="anchor" href="#configuring-a-literal-match"></a><a class="link" href="#configuring-a-literal-match">1.1. Configuring a Literal Match</a></h3>
+<div class="paragraph">
+<p>If you want to configure a literal match the first thing to do is to configure the <code>literal-match-markers</code> parameter in <code>broker.xml</code>. This defines the beginning and ending characters used to mark the literal match, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;core&gt;</span>
+   ...
+   <span class="nt">&lt;literal-match-markers&gt;</span>()<span class="nt">&lt;/literal-match-markers&gt;</span>
+   ...
+<span class="nt">&lt;/core&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, no value is defined for <code>literal-match-markers</code> which means that literal matches are disabled by default. The value must be only 2 characters.</p>
+</div>
+<div class="paragraph">
+<p>Once <code>literal-match-markers</code> is defined you can then use those markers in the <code>match</code> of the address setting, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-settings&gt;</span>
+   <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"(orders.#)"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;enable-metrics&gt;</span>true<span class="nt">&lt;/enable-metrics&gt;</span>
+   <span class="nt">&lt;/address-setting&gt;</span>
+   <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"orders.#"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;enable-metrics&gt;</span>false<span class="nt">&lt;/enable-metrics&gt;</span>
+   <span class="nt">&lt;/address-setting&gt;</span>
+<span class="nt">&lt;/address-settings&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using these settings metrics will be enabled on the address <code>orders.#</code> and any queues bound directly on that address, but metrics will <em>not</em> be enabled for other matching addresses like <code>orders.retail</code> or <code>orders.wholesale</code> and any queues bound to those addresses.</p>
+</div>
 </div>
 </div>
 </div>
