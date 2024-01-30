@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Examples</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Examples</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<ul class="sectlevel1">
+<li><a href="#running-the-examples">1. Running the Examples</a></li>
+<li><a href="#applet">2. Applet</a></li>
+<li><a href="#application-layer-failover">3. Application-Layer Failover</a></li>
+<li><a href="#core-bridge-example">4. Core Bridge Example</a></li>
+<li><a href="#browser">5. Browser</a></li>
+<li><a href="#camel">6. Camel</a></li>
+<li><a href="#client-kickoff">7. Client Kickoff</a></li>
+<li><a href="#client-side-failover-listener">8. Client side failover listener</a></li>
+<li><a href="#client-side-load-balancing">9. Client-Side Load-Balancing</a></li>
+<li><a href="#clustered-durable-subscription">10. Clustered Durable Subscription</a></li>
+<li><a href="#clustered-grouping">11. Clustered Grouping</a></li>
+<li><a href="#clustered-queue">12. Clustered Queue</a></li>
+<li><a href="#clustering-with-jgroups">13. Clustering with JGroups</a></li>
+<li><a href="#clustered-standalone">14. Clustered Standalone</a></li>
+<li><a href="#clustered-static-discovery">15. Clustered Static Discovery</a></li>
+<li><a href="#clustered-static-cluster-one-way">16. Clustered Static Cluster One Way</a></li>
+<li><a href="#clustered-topic">17. Clustered Topic</a></li>
+<li><a href="#message-consumer-rate-limiting">18. Message Consumer Rate Limiting</a></li>
+<li><a href="#dead-letter">19. Dead Letter</a></li>
+<li><a href="#delayed-redelivery">20. Delayed Redelivery</a></li>
+<li><a href="#divert">21. Divert</a></li>
+<li><a href="#durable-subscription">22. Durable Subscription</a></li>
+<li><a href="#embedded">23. Embedded</a></li>
+<li><a href="#embedded-simple">24. Embedded Simple</a></li>
+<li><a href="#exclusive-queue">25. Exclusive Queue</a></li>
+<li><a href="#message-expiration">26. Message Expiration</a></li>
+<li><a href="#apache-activemq-artemis-resource-adapter-example">27. Apache ActiveMQ Artemis Resource Adapter example</a></li>
+<li><a href="#http-transport">28. HTTP Transport</a></li>
+<li><a href="#instantiate-jms-objects-directly">29. Instantiate JMS Objects Directly</a></li>
+<li><a href="#interceptor">30. Interceptor</a></li>
+<li><a href="#interceptor-amqp">31. Interceptor AMQP</a></li>
+<li><a href="#interceptor-client">32. Interceptor Client</a></li>
+<li><a href="#interceptor-mqtt">33. Interceptor MQTT</a></li>
+<li><a href="#jaas">34. JAAS</a></li>
+<li><a href="#jms-auto-closable">35. JMS Auto Closable</a></li>
+<li><a href="#jms-completion-listener">36. JMS Completion Listener</a></li>
+<li><a href="#jms-bridge">37. JMS Bridge</a></li>
+<li><a href="#jms-context">38. JMS Context</a></li>
+<li><a href="#jms-shared-consumer">39. JMS Shared Consumer</a></li>
+<li><a href="#jmx-management">40. JMX Management</a></li>
+<li><a href="#large-message">41. Large Message</a></li>
+<li><a href="#last-value-queue">42. Last-Value Queue</a></li>
+<li><a href="#management">43. Management</a></li>
+<li><a href="#management-notification">44. Management Notification</a></li>
+<li><a href="#message-counter">45. Message Counter</a></li>
+<li><a href="#message-group">46. Message Group</a></li>
+<li><a href="#message-group-2">47. Message Group</a></li>
+<li><a href="#message-priority">48. Message Priority</a></li>
+<li><a href="#multiple-failover">49. Multiple Failover</a></li>
+<li><a href="#multiple-failover-failback">50. Multiple Failover Failback</a></li>
+<li><a href="#no-consumer-buffering">51. No Consumer Buffering</a></li>
+<li><a href="#non-transaction-failover-with-server-data-replication">52. Non-Transaction Failover With Server Data Replication</a></li>
+<li><a href="#openwire">53. OpenWire</a></li>
+<li><a href="#paging">54. Paging</a></li>
+<li><a href="#pre-acknowledge">55. Pre-Acknowledge</a></li>
+<li><a href="#message-producer-rate-limiting">56. Message Producer Rate Limiting</a></li>
+<li><a href="#queue">57. Queue</a></li>
+<li><a href="#message-redistribution">58. Message Redistribution</a></li>
+<li><a href="#queue-requestor">59. Queue Requestor</a></li>
+<li><a href="#queue-with-message-selector">60. Queue with Message Selector</a></li>
+<li><a href="#reattach-node-example">61. Reattach Node example</a></li>
+<li><a href="#replicated-failback-example">62. Replicated Failback example</a></li>
+<li><a href="#replicated-failback-static-example">63. Replicated Failback static example</a></li>
+<li><a href="#replicated-multiple-failover-example">64. Replicated multiple failover example</a></li>
+<li><a href="#replicated-failover-transaction-example">65. Replicated Failover transaction example</a></li>
+<li><a href="#request-reply-example">66. Request-Reply example</a></li>
+<li><a href="#scheduled-message">67. Scheduled Message</a></li>
+<li><a href="#security">68. Security</a></li>
+<li><a href="#security-ldap">69. Security LDAP</a></li>
+<li><a href="#security-keycloak">70. Security keycloak</a></li>
+<li><a href="#send-acknowledgements">71. Send Acknowledgements</a></li>
+<li><a href="#slow-consumer">72. Slow Consumer</a></li>
+<li><a href="#spring-integration">73. Spring Integration</a></li>
+<li><a href="#ssl-transport">74. SSL Transport</a></li>
+<li><a href="#static-message-selector">75. Static Message Selector</a></li>
+<li><a href="#static-message-selector-using-jms">76. Static Message Selector Using JMS</a></li>
+<li><a href="#stomp">77. Stomp</a></li>
+<li><a href="#stomp1-1">78. Stomp1.1</a></li>
+<li><a href="#stomp1-2">79. Stomp1.2</a></li>
+<li><a href="#stomp-over-web-sockets">80. Stomp Over Web Sockets</a></li>
+<li><a href="#symmetric-cluster">81. Symmetric Cluster</a></li>
+<li><a href="#temporary-queue">82. Temporary Queue</a></li>
+<li><a href="#topic">83. Topic</a></li>
+<li><a href="#topic-hierarchy">84. Topic Hierarchy</a></li>
+<li><a href="#topic-selector-1">85. Topic Selector 1</a></li>
+<li><a href="#topic-selector-2">86. Topic Selector 2</a></li>
+<li><a href="#transaction-failover">87. Transaction Failover</a></li>
+<li><a href="#failover-without-transactions">88. Failover Without Transactions</a></li>
+<li><a href="#transactional-session">89. Transactional Session</a></li>
+<li><a href="#xa-heuristic">90. XA Heuristic</a></li>
+<li><a href="#xa-receive">91. XA Receive</a></li>
+<li><a href="#xa-send">92. XA Send</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Apache ActiveMQ Artemis distribution comes with over 90 run out-of-the-box examples demonstrating many of the features.</p>
+</div>
+<div class="paragraph">
+<p>The examples are available in both the binary and source distribution under the <code>examples</code> directory.
+Examples are split by the following source tree:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>features</code> - Examples containing broker specific features.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>clustered</code> - examples showing load balancing and distribution capabilities.</p>
+</li>
+<li>
+<p><code>ha</code> - examples showing failover and reconnection capabilities.</p>
+</li>
+<li>
+<p><code>perf</code> - examples allowing you to run a few performance tests on the server</p>
+</li>
+<li>
+<p><code>standard</code> - examples demonstrating various broker features.</p>
+</li>
+<li>
+<p><code>sub-modules</code> - examples of integrated external modules.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>protocols</code> - Protocol specific examples</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>amqp</code></p>
+</li>
+<li>
+<p><code>mqtt</code></p>
+</li>
+<li>
+<p><code>openwire</code></p>
+</li>
+<li>
+<p><code>stomp</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="running-the-examples"><a class="anchor" href="#running-the-examples"></a><a class="link" href="#running-the-examples">1. Running the Examples</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To run any example, simply <code>cd</code> into the appropriate example directory and type <code>mvn verify</code> or <code>mvn install</code> (For details please read the readme.html in each example directory).</p>
+</div>
+<div class="paragraph">
+<p>You can use the profile <code>-Pexamples</code> to run multiple examples under any example tree.</p>
+</div>
+<div class="paragraph">
+<p>For each example, you will have a created server under <code>./target/server0</code> (some examples use more than one server).</p>
+</div>
+<div class="paragraph">
+<p>You have the option to prevent the example from starting the server (e.g. if you want to start the server manually) by simply specifying the <code>-PnoServer</code> profile, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="sh"><span class="c"># running an example without running the server</span>
+mvn verify <span class="nt">-PnoServer</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also under <code>./target</code> there will be a script repeating the commands to create each server.
+Here is the <code>create-server0.sh</code> generated by the <code>Queue</code> example.
+This is useful to see exactly what command(s) are required to configure the server(s).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="sh"><span class="c"># These are the commands used to create server0</span>
+/myInstallDirectory/apache-artemis/bin/artemis create <span class="nt">--allow-anonymous</span> <span class="nt">--silent</span> <span class="nt">--force</span> <span class="nt">--no-web</span> <span class="nt">--user</span> guest <span class="nt">--password</span> guest <span class="nt">--role</span> guest <span class="nt">--port-offset</span> 0 <span class="nt">--data</span> ./data <span class="nt">--allow-anonymous</span> <span class="nt">--no-autotune</span> <span class="nt">--verbose</span> /myInstallDirectory/apache-artemis-1.1.0/examples/features/standard/queue/target/server0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Several examples use UDP clustering which may not work in your environment by default.
+On linux the command would be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="sh">route add <span class="nt">-net</span> 224.0.0.0 netmask 240.0.0.0 dev lo</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command should be run as root.
+This will redirect any traffic directed to <code>224.0.0.0</code> to the loopback interface.
+On Mac OS X, the command is slightly different:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="sh"><span class="nb">sudo </span>route add 224.0.0.0 127.0.0.1 <span class="nt">-netmask</span> 240.0.0.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All the examples use the <a href="maven-plugin.html#maven-plugins">Maven plugin</a>, which can be useful for running your test servers as well.</p>
+</div>
+<div class="paragraph">
+<p>This is the common output when running an example.
+On this case taken from the <code>Queue</code> example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="sh"><span class="o">[</span>INFO] Scanning <span class="k">for </span>projects...
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">------------------------------------------------------------------------</span>
+<span class="o">[</span>INFO] Building ActiveMQ Artemis JMS Queue Example 2.5.0
+<span class="o">[</span>INFO] <span class="nt">------------------------------------------------------------------------</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-enforcer-plugin:1.4:enforce <span class="o">(</span>enforce-maven<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-enforcer-plugin:1.4:enforce <span class="o">(</span>enforce-java<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-remote-resources-plugin:1.5:process <span class="o">(</span>process-resource-bundles<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-resources-plugin:2.6:resources <span class="o">(</span>default-resources<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO] Using <span class="s1">'UTF-8'</span> encoding to copy filtered resources.
+<span class="o">[</span>INFO] Copying 1 resource
+<span class="o">[</span>INFO] Copying 3 resources
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-compiler-plugin:3.1:compile <span class="o">(</span>default-compile<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO] Nothing to compile - all classes are up to <span class="nb">date</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-checkstyle-plugin:2.17:check <span class="o">(</span>default<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> apache-rat-plugin:0.12:check <span class="o">(</span>default<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO] RAT will not execute since it is configured to be skipped via system property <span class="s1">'rat.skip'</span><span class="nb">.</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-resources-plugin:2.6:testResources <span class="o">(</span>default-testResources<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO] Using <span class="s1">'UTF-8'</span> encoding to copy filtered resources.
+<span class="o">[</span>INFO] skip non existing resourceDirectory /home/user/activemq-artemis/examples/features/standard/queue/src/test/resources
+<span class="o">[</span>INFO] Copying 3 resources
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-compiler-plugin:3.1:testCompile <span class="o">(</span>default-testCompile<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO] No sources to compile
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-surefire-plugin:2.18.1:test <span class="o">(</span>default-test<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-jar-plugin:2.4:jar <span class="o">(</span>default-jar<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO] Building jar: /home/user/activemq-artemis/examples/features/standard/queue/target/queue-2.5.0.jar
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-site-plugin:3.3:attach-descriptor <span class="o">(</span>attach-descriptor<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="o">&gt;&gt;&gt;</span> maven-source-plugin:2.2.1:jar <span class="o">(</span>attach-sources<span class="o">)</span> <span class="o">&gt;</span> generate-sources @ queue <span class="o">&gt;&gt;&gt;</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-enforcer-plugin:1.4:enforce <span class="o">(</span>enforce-maven<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-enforcer-plugin:1.4:enforce <span class="o">(</span>enforce-java<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="o">&lt;&lt;&lt;</span> maven-source-plugin:2.2.1:jar <span class="o">(</span>attach-sources<span class="o">)</span> &lt; generate-sources @ queue <span class="o">&lt;&lt;&lt;</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-source-plugin:2.2.1:jar <span class="o">(</span>attach-sources<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO] Building jar: /home/user/activemq-artemis/examples/features/standard/queue/target/queue-2.5.0-sources.jar
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="o">&gt;&gt;&gt;</span> maven-source-plugin:2.2.1:jar <span class="o">(</span>default<span class="o">)</span> <span class="o">&gt;</span> generate-sources @ queue <span class="o">&gt;&gt;&gt;</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-enforcer-plugin:1.4:enforce <span class="o">(</span>enforce-maven<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-enforcer-plugin:1.4:enforce <span class="o">(</span>enforce-java<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="o">&lt;&lt;&lt;</span> maven-source-plugin:2.2.1:jar <span class="o">(</span>default<span class="o">)</span> &lt; generate-sources @ queue <span class="o">&lt;&lt;&lt;</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> maven-source-plugin:2.2.1:jar <span class="o">(</span>default<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> dependency-check-maven:1.4.3:check <span class="o">(</span>default<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO] Skipping dependency-check
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> artemis-maven-plugin:2.5.0:create <span class="o">(</span>create<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO] Local       <span class="nb">id</span>: <span class="nb">local
+      </span>url: file:///home/user/.m2/repository/
+   layout: default
+snapshots: <span class="o">[</span>enabled <span class="o">=&gt;</span> <span class="nb">true</span>, update <span class="o">=&gt;</span> always]
+ releases: <span class="o">[</span>enabled <span class="o">=&gt;</span> <span class="nb">true</span>, update <span class="o">=&gt;</span> always]
+
+<span class="o">[</span>INFO] Entries.size 2
+<span class="o">[</span>INFO] ... <span class="nv">key</span><span class="o">=</span>project <span class="o">=</span> MavenProject: org.apache.activemq.examples.broker:queue:2.5.0 @ /home/user/activemq-artemis/examples/features/standard/queue/pom.xml
+<span class="o">[</span>INFO] ... <span class="nv">key</span><span class="o">=</span>pluginDescriptor <span class="o">=</span> Component Descriptor: role: <span class="s1">'org.apache.maven.plugin.Mojo'</span>, implementation: <span class="s1">'org.apache.activemq.artemis.maven.ArtemisCLIPlugin'</span>, role hint: <span class="s1">'org.apache.activemq:artemis-maven-plugin:2.5.0:cli'</span>
+role: <span class="s1">'org.apache.maven.plugin.Mojo'</span>, implementation: <span class="s1">'org.apache.activemq.artemis.maven.ArtemisCreatePlugin'</span>, role hint: <span class="s1">'org.apache.activemq:artemis-maven-plugin:2.5.0:create'</span>
+role: <span class="s1">'org.apache.maven.plugin.Mojo'</span>, implementation: <span class="s1">'org.apache.activemq.artemis.maven.ArtemisDependencyScanPlugin'</span>, role hint: <span class="s1">'org.apache.activemq:artemis-maven-plugin:2.5.0:dependency-scan'</span>
+role: <span class="s1">'org.apache.maven.plugin.Mojo'</span>, implementation: <span class="s1">'org.apache.activemq.artemis.maven.ArtemisClientPlugin'</span>, role hint: <span class="s1">'org.apache.activemq:artemis-maven-plugin:2.5.0:runClient'</span>
+<span class="nt">---</span>
+Executing org.apache.activemq.artemis.cli.commands.Create create <span class="nt">--allow-anonymous</span> <span class="nt">--silent</span> <span class="nt">--force</span> <span class="nt">--user</span> guest <span class="nt">--password</span> guest <span class="nt">--role</span> guest <span class="nt">--port-offset</span> 0 <span class="nt">--data</span> ./data <span class="nt">--allow-anonymous</span> <span class="nt">--no-web</span> <span class="nt">--no-autotune</span> <span class="nt">--verbose</span> <span class="nt">--aio</span> /home/user/activemq-artemis/examples/features/standard/queue/target/server0
+Home::/home/user/activemq-artemis/examples/features/standard/queue/../../../../artemis-distribution/target/apache-artemis-2.5.0-bin/apache-artemis-2.5.0, Instance::null
+Creating ActiveMQ Artemis instance at: /home/user/activemq-artemis/examples/features/standard/queue/target/server0
+
+You can now start the broker by executing:
+
+   <span class="s2">"/home/user/activemq-artemis/examples/features/standard/queue/target/server0/bin/artemis"</span> run
+
+Or you can run the broker <span class="k">in </span>the background using:
+
+   <span class="s2">"/home/user/activemq-artemis/examples/features/standard/queue/target/server0/bin/artemis-service"</span> start
+
+<span class="o">[</span>INFO] <span class="c">###################################################################################################</span>
+<span class="o">[</span>INFO] create-server0.sh created with commands to reproduce server0
+<span class="o">[</span>INFO] under /home/user/activemq-artemis/examples/features/standard/queue/target
+<span class="o">[</span>INFO] <span class="c">###################################################################################################</span>
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> artemis-maven-plugin:2.5.0:cli <span class="o">(</span>start<span class="o">)</span> @ queue <span class="nt">---</span>
+<span class="o">[</span>INFO] awaiting server to start
+server-out:     _        _               _
+server-out:    / <span class="se">\ </span> ____| |_  ___ __  __<span class="o">(</span>_<span class="o">)</span> _____
+server-out:   / _ <span class="se">\|</span>  _ <span class="se">\ </span>__|/ _ <span class="se">\ </span> <span class="se">\/</span>  | |/  __/
+server-out:  / ___ <span class="se">\ </span>| <span class="se">\/</span> |_/  __/ |<span class="se">\/</span>| | |<span class="se">\_</span>__ <span class="se">\</span>
+server-out: /_/   <span class="se">\_\|</span>   <span class="se">\_</span>_<span class="se">\_</span>___|_|  |_|_|/___ /
+server-out: Apache ActiveMQ Artemis 2.5.0
+server-out:
+server-out:
+server-out:2018-03-13 09:06:37,980 WARN  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ222018: AIO was not located on this platform, it will fall back to using pure Java NIO. If your platform is Linux, <span class="nb">install </span>LibAIO to <span class="nb">enable </span>the AIO journal
+server-out:2018-03-13 09:06:38,052 INFO  <span class="o">[</span>org.apache.activemq.artemis.integration.bootstrap] AMQ101000: Starting ActiveMQ Artemis Server
+<span class="o">[</span>INFO] awaiting server to start
+server-out:2018-03-13 09:06:38,123 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221000: live Message Broker is starting with configuration Broker Configuration <span class="o">(</span><span class="nv">clustered</span><span class="o">=</span><span class="nb">false</span>,journalDirectory<span class="o">=</span>./data/journal,bindingsDirectory<span class="o">=</span>./data/bindings,largeMessagesDirectory<span class="o">=</span>./data/large-messages,pagingDirectory<span class="o">=</span>./data/paging<span class="o">)</span>
+server-out:2018-03-13 09:06:38,146 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221013: Using NIO Journal
+server-out:2018-03-13 09:06:38,178 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221057: Global Max Size is being adjusted to 1/2 of the JVM max size <span class="o">(</span><span class="nt">-Xmx</span><span class="o">)</span><span class="nb">.</span> being defined as 1,073,741,824
+server-out:2018-03-13 09:06:38,197 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: <span class="o">[</span>artemis-server]. Adding protocol support <span class="k">for</span>: CORE
+server-out:2018-03-13 09:06:38,198 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: <span class="o">[</span>artemis-amqp-protocol]. Adding protocol support <span class="k">for</span>: AMQP
+server-out:2018-03-13 09:06:38,198 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: <span class="o">[</span>artemis-hornetq-protocol]. Adding protocol support <span class="k">for</span>: HORNETQ
+server-out:2018-03-13 09:06:38,198 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: <span class="o">[</span>artemis-mqtt-protocol]. Adding protocol support <span class="k">for</span>: MQTT
+server-out:2018-03-13 09:06:38,199 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: <span class="o">[</span>artemis-openwire-protocol]. Adding protocol support <span class="k">for</span>: OPENWIRE
+server-out:2018-03-13 09:06:38,199 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221043: Protocol module found: <span class="o">[</span>artemis-stomp-protocol]. Adding protocol support <span class="k">for</span>: STOMP
+server-out:2018-03-13 09:06:38,261 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221034: Waiting indefinitely to obtain live lock
+server-out:2018-03-13 09:06:38,262 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221035: Live Server Obtained live lock
+server-out:2018-03-13 09:06:38,386 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221003: Deploying queue DLQ on address DLQ
+server-out:2018-03-13 09:06:38,445 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221003: Deploying queue ExpiryQueue on address ExpiryQueue
+<span class="o">[</span>INFO] awaiting server to start
+server-out:2018-03-13 09:06:38,739 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:61616 <span class="k">for </span>protocols <span class="o">[</span>CORE,MQTT,AMQP,STOMP,HORNETQ,OPENWIRE]
+server-out:2018-03-13 09:06:38,741 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:5445 <span class="k">for </span>protocols <span class="o">[</span>HORNETQ,STOMP]
+server-out:2018-03-13 09:06:38,742 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:5672 <span class="k">for </span>protocols <span class="o">[</span>AMQP]
+server-out:2018-03-13 09:06:38,744 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:1883 <span class="k">for </span>protocols <span class="o">[</span>MQTT]
+server-out:2018-03-13 09:06:38,746 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221020: Started EPOLL Acceptor at 0.0.0.0:61613 <span class="k">for </span>protocols <span class="o">[</span>STOMP]
+server-out:2018-03-13 09:06:38,752 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221007: Server is now live
+server-out:2018-03-13 09:06:38,752 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221001: Apache ActiveMQ Artemis Message Broker version 2.5.0 <span class="o">[</span>0.0.0.0, <span class="nv">nodeID</span><span class="o">=</span>bf1853a1-26c7-11e8-9378-d96702a756ed]
+<span class="o">[</span>INFO] Server started
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> artemis-maven-plugin:2.5.0:runClient <span class="o">(</span>runClient<span class="o">)</span> @ queue <span class="nt">---</span>
+Sent message: This is a text message
+Received message: This is a text message
+<span class="o">[</span>INFO]
+<span class="o">[</span>INFO] <span class="nt">---</span> artemis-maven-plugin:2.5.0:cli <span class="o">(</span>stop<span class="o">)</span> @ queue <span class="nt">---</span>
+server-out:2018-03-13 09:06:40,888 INFO  <span class="o">[</span>org.apache.activemq.artemis.core.server] AMQ221002: Apache ActiveMQ Artemis Message Broker version 2.5.0 <span class="o">[</span>bf1853a1-26c7-11e8-9378-d96702a756ed] stopped, <span class="nb">uptime </span>2.786 seconds
+server-out:Server stopped!
+<span class="o">[</span>INFO] <span class="nt">------------------------------------------------------------------------</span>
+<span class="o">[</span>INFO] BUILD SUCCESS
+<span class="o">[</span>INFO] <span class="nt">------------------------------------------------------------------------</span>
+<span class="o">[</span>INFO] Total <span class="nb">time</span>: 6.641 s
+<span class="o">[</span>INFO] Finished at: 2018-03-13T09:06:40-05:00
+<span class="o">[</span>INFO] Final Memory: 43M/600M
+<span class="o">[</span>INFO] <span class="nt">------------------------------------------------------------------------</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This includes a preview list of a few examples that we distribute with Artemis.
+Please refer to the distribution for a more accurate list.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="applet"><a class="anchor" href="#applet"></a><a class="link" href="#applet">2. Applet</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This example shows you how to send and receive JMS messages from an Applet.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="application-layer-failover"><a class="anchor" href="#application-layer-failover"></a><a class="link" href="#application-layer-failover">3. Application-Layer Failover</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis also supports Application-Layer failover, useful in the case that replication is not enabled on the server side.</p>
+</div>
+<div class="paragraph">
+<p>With Application-Layer failover, it&#8217;s up to the application to register a JMS <code>ExceptionListener</code> with Apache ActiveMQ Artemis which will be called by Apache ActiveMQ Artemis in the event that connection failure is detected.</p>
+</div>
+<div class="paragraph">
+<p>The code in the <code>ExceptionListener</code> then recreates the JMS connection, session, etc on another node and the application can continue.</p>
+</div>
+<div class="paragraph">
+<p>Application-layer failover is an alternative approach to High Availability (HA).
+Application-layer failover differs from automatic failover in that some client side coding is required in order to implement this.
+Also, with Application-layer failover, since the old session object dies and a new one is created, any uncommitted work in the old session will be lost, and any unacknowledged messages might be redelivered.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="core-bridge-example"><a class="anchor" href="#core-bridge-example"></a><a class="link" href="#core-bridge-example">4. Core Bridge Example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>bridge</code> example demonstrates a core bridge deployed on one server, which consumes messages from a local queue and forwards them to an address on a second server.</p>
+</div>
+<div class="paragraph">
+<p>Core bridges are used to create message flows between any two Apache ActiveMQ Artemis servers which are remotely separated.
+Core bridges are resilient and will cope with temporary connection failure allowing them to be an ideal choice for forwarding over unreliable connections, e.g. a WAN.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="browser"><a class="anchor" href="#browser"></a><a class="link" href="#browser">5. Browser</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>browser</code> example shows you how to use a JMS <code>QueueBrowser</code> with Apache ActiveMQ Artemis.</p>
+</div>
+<div class="paragraph">
+<p>Queues are a standard part of JMS, please consult the JMS 2.0 specification for full details.</p>
+</div>
+<div class="paragraph">
+<p>A <code>QueueBrowser</code> is used to look at messages on the queue without removing them.
+It can scan the entire content of a queue or only messages matching a message selector.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="camel"><a class="anchor" href="#camel"></a><a class="link" href="#camel">6. Camel</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>camel</code> example demonstrates how to build and deploy a Camel route to the broker using a web application archive (i.e. <code>war</code> file).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="client-kickoff"><a class="anchor" href="#client-kickoff"></a><a class="link" href="#client-kickoff">7. Client Kickoff</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>client-kickoff</code> example shows how to terminate client connections given an IP address using the JMX management API.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="client-side-failover-listener"><a class="anchor" href="#client-side-failover-listener"></a><a class="link" href="#client-side-failover-listener">8. Client side failover listener</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>client-side-failoverlistener</code> example shows how to register a listener to monitor failover events</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="client-side-load-balancing"><a class="anchor" href="#client-side-load-balancing"></a><a class="link" href="#client-side-load-balancing">9. Client-Side Load-Balancing</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>client-side-load-balancing</code> example demonstrates how sessions created from a single JMS <code>Connection</code> can be created to different nodes of the cluster.
+In other words it demonstrates how Apache ActiveMQ Artemis does client-side load-balancing of sessions across the cluster.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clustered-durable-subscription"><a class="anchor" href="#clustered-durable-subscription"></a><a class="link" href="#clustered-durable-subscription">10. Clustered Durable Subscription</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This example demonstrates a clustered JMS durable subscription</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clustered-grouping"><a class="anchor" href="#clustered-grouping"></a><a class="link" href="#clustered-grouping">11. Clustered Grouping</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is similar to the message grouping example except that it demonstrates it working over a cluster.
+Messages sent to different nodes with the same group id will be sent to the same node and the same consumer.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clustered-queue"><a class="anchor" href="#clustered-queue"></a><a class="link" href="#clustered-queue">12. Clustered Queue</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>clustered-queue</code> example demonstrates a queue deployed on two different nodes.
+The two nodes are configured to form a cluster.
+We then create a consumer for the queue on each node, and we create a producer on only one of the nodes.
+We then send some messages via the producer, and we verify that both consumers receive the sent messages in a round-robin fashion.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clustering-with-jgroups"><a class="anchor" href="#clustering-with-jgroups"></a><a class="link" href="#clustering-with-jgroups">13. Clustering with JGroups</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>clustered-jgroups</code> example demonstrates how to form a two node cluster using JGroups as its underlying topology discovery technique, rather than the default UDP broadcasting.
+We then create a consumer for the queue on each node, and we create a producer on only one of the nodes.
+We then send some messages via the producer, and we verify that both consumers receive the sent messages in a round-robin fashion.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clustered-standalone"><a class="anchor" href="#clustered-standalone"></a><a class="link" href="#clustered-standalone">14. Clustered Standalone</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>clustered-standalone</code> example demonstrates how to configure and starts 3 cluster nodes on the same machine to form a cluster.
+A subscriber for a JMS topic is created on each node, and we create a producer on only one of the nodes.
+We then send some messages via the producer, and we verify that the 3 subscribers receive all the sent messages.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clustered-static-discovery"><a class="anchor" href="#clustered-static-discovery"></a><a class="link" href="#clustered-static-discovery">15. Clustered Static Discovery</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This example demonstrates how to configure a cluster using a list of connectors rather than UDP for discovery</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clustered-static-cluster-one-way"><a class="anchor" href="#clustered-static-cluster-one-way"></a><a class="link" href="#clustered-static-cluster-one-way">16. Clustered Static Cluster One Way</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This example demonstrates how to set up a cluster where cluster connections are one way, i.e. server A -&gt; Server B -&gt; Server C</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clustered-topic"><a class="anchor" href="#clustered-topic"></a><a class="link" href="#clustered-topic">17. Clustered Topic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>clustered-topic</code> example demonstrates a JMS topic deployed on two different nodes.
+The two nodes are configured to form a cluster.
+We then create a subscriber on the topic on each node, and we create a producer on only one of the nodes.
+We then send some messages via the producer, and we verify that both subscribers receive all the sent messages.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="message-consumer-rate-limiting"><a class="anchor" href="#message-consumer-rate-limiting"></a><a class="link" href="#message-consumer-rate-limiting">18. Message Consumer Rate Limiting</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>With Apache ActiveMQ Artemis you can specify a maximum consume rate at which a JMS MessageConsumer will consume messages.
+This can be specified when creating or deploying the connection factory.</p>
+</div>
+<div class="paragraph">
+<p>If this value is specified then Apache ActiveMQ Artemis will ensure that messages are never consumed at a rate higher than the specified rate.
+This is a form of consumer throttling.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dead-letter"><a class="anchor" href="#dead-letter"></a><a class="link" href="#dead-letter">19. Dead Letter</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>dead-letter</code> example shows you how to define and deal with dead letter messages.
+Messages can be delivered unsuccessfully (e.g. if the transacted session used to consume them is rolled back).</p>
+</div>
+<div class="paragraph">
+<p>Such a message goes back to the JMS destination ready to be redelivered.
+However, this means it is possible for a message to be delivered again and again without any success and remain in the destination, clogging the system.</p>
+</div>
+<div class="paragraph">
+<p>To prevent this, messaging systems define dead letter messages: after a specified unsuccessful delivery attempts, the message is removed from the destination and put instead in a dead letter destination where they can be consumed for further investigation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="delayed-redelivery"><a class="anchor" href="#delayed-redelivery"></a><a class="link" href="#delayed-redelivery">20. Delayed Redelivery</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>delayed-redelivery</code> example demonstrates how Apache ActiveMQ Artemis can be configured to provide a delayed redelivery in the case a message needs to be redelivered.</p>
+</div>
+<div class="paragraph">
+<p>Delaying redelivery can often be useful in the case that clients regularly fail or roll-back.
+Without a delayed redelivery, the system can get into a "thrashing" state, with delivery being attempted, the client rolling back, and delivery being re-attempted in quick succession, using up valuable CPU and network resources.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="divert"><a class="anchor" href="#divert"></a><a class="link" href="#divert">21. Divert</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis diverts allow messages to be transparently "diverted" or copied from one address to another with just some simple configuration defined on the server side.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="durable-subscription"><a class="anchor" href="#durable-subscription"></a><a class="link" href="#durable-subscription">22. Durable Subscription</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>durable-subscription</code> example shows you how to use a durable subscription with Apache ActiveMQ Artemis.
+Durable subscriptions are a standard part of JMS, please consult the JMS 1.1 specification for full details.</p>
+</div>
+<div class="paragraph">
+<p>Unlike non-durable subscriptions, the key function of durable subscriptions is that the messages contained in them persist longer than the lifetime of the subscriber - i.e. they will accumulate messages sent to the topic even if there is no active subscriber on them.
+They will also survive server restarts or crashes.
+Note that for the messages to be persisted, the messages sent to them must be marked as durable messages.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="embedded"><a class="anchor" href="#embedded"></a><a class="link" href="#embedded">23. Embedded</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>embedded</code> example shows how to embed a broker within your own code using POJO instantiation and no config files.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="embedded-simple"><a class="anchor" href="#embedded-simple"></a><a class="link" href="#embedded-simple">24. Embedded Simple</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>embedded-simple</code> example shows how to embed a broker within your own code using regular Apache ActiveMQ Artemis XML files.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="exclusive-queue"><a class="anchor" href="#exclusive-queue"></a><a class="link" href="#exclusive-queue">25. Exclusive Queue</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>exlusive-queue</code> example shows you how to use exclusive queues, that route all messages to only one consumer at a time.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="message-expiration"><a class="anchor" href="#message-expiration"></a><a class="link" href="#message-expiration">26. Message Expiration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>expiry</code> example shows you how to define and deal with message expiration.
+Messages can be retained in the messaging system for a limited period of time before being removed.
+JMS specification states that clients should not receive messages that have been expired (but it does not guarantee this will not happen).</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis can assign an expiry address to a given queue so that when messages are expired, they are removed from the queue and sent to the expiry address.
+These "expired" messages can later be consumed from the expiry address for further inspection.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="apache-activemq-artemis-resource-adapter-example"><a class="anchor" href="#apache-activemq-artemis-resource-adapter-example"></a><a class="link" href="#apache-activemq-artemis-resource-adapter-example">27. Apache ActiveMQ Artemis Resource Adapter example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This examples shows how to build the activemq resource adapters a rar for deployment in other Application Server&#8217;s</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="http-transport"><a class="anchor" href="#http-transport"></a><a class="link" href="#http-transport">28. HTTP Transport</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>http-transport</code> example shows you how to configure Apache ActiveMQ Artemis to use the HTTP protocol as its transport layer.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="instantiate-jms-objects-directly"><a class="anchor" href="#instantiate-jms-objects-directly"></a><a class="link" href="#instantiate-jms-objects-directly">29. Instantiate JMS Objects Directly</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Usually, JMS Objects such as <code>ConnectionFactory</code>, <code>Queue</code> and <code>Topic</code> instances are looked up from JNDI before being used by the client code.
+This objects are called "administered objects" in JMS terminology.</p>
+</div>
+<div class="paragraph">
+<p>However, in some cases a JNDI server may not be available or desired.
+To come to the rescue Apache ActiveMQ Artemis also supports the direct instantiation of these administered objects on the client side so you don&#8217;t have to use JNDI for JMS.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="interceptor"><a class="anchor" href="#interceptor"></a><a class="link" href="#interceptor">30. Interceptor</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis allows an application to use an interceptor to hook into the messaging system.
+Interceptors allow you to handle various message events in Apache ActiveMQ Artemis.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="interceptor-amqp"><a class="anchor" href="#interceptor-amqp"></a><a class="link" href="#interceptor-amqp">31. Interceptor AMQP</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Similar to the <a href="#interceptor">Interceptor</a> example, but using AMQP interceptors.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="interceptor-client"><a class="anchor" href="#interceptor-client"></a><a class="link" href="#interceptor-client">32. Interceptor Client</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Similar to the <a href="#interceptor">Interceptor</a> example, but using interceptors on the <strong>client</strong> rather than the broker.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="interceptor-mqtt"><a class="anchor" href="#interceptor-mqtt"></a><a class="link" href="#interceptor-mqtt">33. Interceptor MQTT</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Similar to the <a href="#interceptor">Interceptor</a> example, but using MQTT interceptors.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="jaas"><a class="anchor" href="#jaas"></a><a class="link" href="#jaas">34. JAAS</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>jaas</code> example shows you how to configure Apache ActiveMQ Artemis to use JAAS for security.
+Apache ActiveMQ Artemis can leverage JAAS to delegate user authentication and authorization to existing security infrastructure.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="jms-auto-closable"><a class="anchor" href="#jms-auto-closable"></a><a class="link" href="#jms-auto-closable">35. JMS Auto Closable</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>jms-auto-closeable</code> example shows how JMS resources, such as connections, sessions and consumers, in JMS 2 can be automatically closed on error.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="jms-completion-listener"><a class="anchor" href="#jms-completion-listener"></a><a class="link" href="#jms-completion-listener">36. JMS Completion Listener</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>jms-completion-listener</code> example shows how to send a message asynchronously to Apache ActiveMQ Artemis and use a CompletionListener to be notified of the Broker receiving it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="jms-bridge"><a class="anchor" href="#jms-bridge"></a><a class="link" href="#jms-bridge">37. JMS Bridge</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>jms-bridge</code> example shows how to setup a bridge between two standalone Apache ActiveMQ Artemis servers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="jms-context"><a class="anchor" href="#jms-context"></a><a class="link" href="#jms-context">38. JMS Context</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>jms-context</code> example shows how to send and receive a message to/from an address/queue using Apache ActiveMQ Artemis by using a JMS Context.</p>
+</div>
+<div class="paragraph">
+<p>A JMSContext is part of JMS 2.0 and combines the JMS Connection and Session Objects into a simple Interface.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="jms-shared-consumer"><a class="anchor" href="#jms-shared-consumer"></a><a class="link" href="#jms-shared-consumer">39. JMS Shared Consumer</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>jms-shared-consumer</code> example shows you how can use shared consumers to share a subscription on a topic.
+In JMS 1.1 this was not allowed and so caused a scalability issue.
+In JMS 2 this restriction has been lifted so you can share the load across different threads and connections.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="jmx-management"><a class="anchor" href="#jmx-management"></a><a class="link" href="#jmx-management">40. JMX Management</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>jmx</code> example shows how to manage Apache ActiveMQ Artemis using JMX.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="large-message"><a class="anchor" href="#large-message"></a><a class="link" href="#large-message">41. Large Message</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>large-message</code> example shows you how to send and receive very large messages with Apache ActiveMQ Artemis.
+Apache ActiveMQ Artemis supports the sending and receiving of huge messages, much larger than can fit in available RAM on the client or server.
+Effectively the only limit to message size is the amount of disk space you have on the server.</p>
+</div>
+<div class="paragraph">
+<p>Large messages are persisted on the server so they can survive a server restart.
+In other words Apache ActiveMQ Artemis doesn&#8217;t just do a simple socket stream from the sender to the consumer.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="last-value-queue"><a class="anchor" href="#last-value-queue"></a><a class="link" href="#last-value-queue">42. Last-Value Queue</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>last-value-queue</code> example shows you how to define and deal with last-value queues.
+Last-value queues are special queues which discard any messages when a newer message with the same value for a well-defined last-value property is put in the queue.
+In other words, a last-value queue only retains the last value.</p>
+</div>
+<div class="paragraph">
+<p>A typical example for last-value queue is for stock prices, where you are only interested by the latest price for a particular stock.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="management"><a class="anchor" href="#management"></a><a class="link" href="#management">43. Management</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>management</code> example shows how to manage Apache ActiveMQ Artemis using JMS Messages to invoke management operations on the server.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="management-notification"><a class="anchor" href="#management-notification"></a><a class="link" href="#management-notification">44. Management Notification</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>management-notification</code> example shows how to receive management notifications from Apache ActiveMQ Artemis using JMS messages.
+Apache ActiveMQ Artemis servers emit management notifications when events of interest occur (consumers are created or closed, addresses are created or deleted, security authentication fails, etc.).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="message-counter"><a class="anchor" href="#message-counter"></a><a class="link" href="#message-counter">45. Message Counter</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>message-counters</code> example shows you how to use message counters to obtain message information for a queue.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="message-group"><a class="anchor" href="#message-group"></a><a class="link" href="#message-group">46. Message Group</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>message-group</code> example shows you how to configure and use message groups with Apache ActiveMQ Artemis.
+Message groups allow you to pin messages so they are only consumed by a single consumer.
+Message groups are sets of messages that has the following characteristics:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Messages in a message group share the same group id, i.e. they have same JMSXGroupID string property values</p>
+</li>
+<li>
+<p>The consumer that receives the first message of a group will receive all the messages that belongs to the group</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="message-group-2"><a class="anchor" href="#message-group-2"></a><a class="link" href="#message-group-2">47. Message Group</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>message-group2</code> example shows you how to configure and use message groups with Apache ActiveMQ Artemis via a connection factory.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="message-priority"><a class="anchor" href="#message-priority"></a><a class="link" href="#message-priority">48. Message Priority</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Message Priority can be used to influence the delivery order for messages.</p>
+</div>
+<div class="paragraph">
+<p>It can be retrieved by the message&#8217;s standard header field 'JMSPriority' as defined in JMS specification version 1.1.</p>
+</div>
+<div class="paragraph">
+<p>The value is of type integer, ranging from 0 (the lowest) to 9 (the highest).
+When messages are being delivered, their priorities will effect their order of delivery.
+Messages of higher priorities will likely be delivered before those of lower priorities.</p>
+</div>
+<div class="paragraph">
+<p>Messages of equal priorities are delivered in the natural order of their arrival at their destinations.
+Please consult the JMS 1.1 specification for full details.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="multiple-failover"><a class="anchor" href="#multiple-failover"></a><a class="link" href="#multiple-failover">49. Multiple Failover</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This example demonstrates how to set up a live server with multiple backups</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="multiple-failover-failback"><a class="anchor" href="#multiple-failover-failback"></a><a class="link" href="#multiple-failover-failback">50. Multiple Failover Failback</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This example demonstrates how to set up a live server with multiple backups but forcing failover back to the original live server</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="no-consumer-buffering"><a class="anchor" href="#no-consumer-buffering"></a><a class="link" href="#no-consumer-buffering">51. No Consumer Buffering</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, Apache ActiveMQ Artemis consumers buffer messages from the server in a client side buffer before you actually receive them on the client side.
+This improves performance since otherwise every time you called receive() or had processed the last message in a <code>MessageListener onMessage()</code> method, the Apache ActiveMQ Artemis client would have to go the server to request the next message, which would then get sent to the client side, if one was available.</p>
+</div>
+<div class="paragraph">
+<p>This would involve a network round trip for every message and reduce performance.
+Therefore, by default, Apache ActiveMQ Artemis pre-fetches messages into a buffer on each consumer.</p>
+</div>
+<div class="paragraph">
+<p>In some case buffering is not desirable, and Apache ActiveMQ Artemis allows it to be switched off.
+This example demonstrates that.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="non-transaction-failover-with-server-data-replication"><a class="anchor" href="#non-transaction-failover-with-server-data-replication"></a><a class="link" href="#non-transaction-failover-with-server-data-replication">52. Non-Transaction Failover With Server Data Replication</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>non-transaction-failover</code> example demonstrates two servers coupled as a live-backup pair for high availability (HA), and a client using a <em>non-transacted</em> JMS session failing over from live to backup when the live server is crashed.</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis implements failover of client connections between live and backup servers.
+This is implemented by the replication of state between live and backup nodes.
+When replication is configured and a live node crashes, the client connections can carry and continue to send and consume messages.
+When non-transacted sessions are used, once and only once message delivery is not guaranteed and it is possible that some messages will be lost or delivered twice.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="openwire"><a class="anchor" href="#openwire"></a><a class="link" href="#openwire">53. OpenWire</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>Openwire</code> example shows how to configure an Apache ActiveMQ Artemis server to communicate with an Apache ActiveMQ Artemis JMS client that uses open-wire protocol.</p>
+</div>
+<div class="paragraph">
+<p>You will find the queue example for open wire, and the chat example.
+The virtual-topic-mapping examples shows how to map the ActiveMQ "Classic" Virtual Topic naming convention to work with the Artemis Address model.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="paging"><a class="anchor" href="#paging"></a><a class="link" href="#paging">54. Paging</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>paging</code> example shows how Apache ActiveMQ Artemis can support huge queues even when the server is running in limited RAM.
+It does this by transparently <em>paging</em> messages to disk, and <em>depaging</em> them when they are required.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="pre-acknowledge"><a class="anchor" href="#pre-acknowledge"></a><a class="link" href="#pre-acknowledge">55. Pre-Acknowledge</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Standard JMS supports three acknowledgement modes:<code> AUTO_ACKNOWLEDGE</code>, <code>CLIENT_ACKNOWLEDGE</code>, and <code>DUPS_OK_ACKNOWLEDGE</code>.
+For a full description on these modes please consult the JMS specification, or any JMS tutorial.</p>
+</div>
+<div class="paragraph">
+<p>All of these standard modes involve sending acknowledgements from the client to the server.
+However in some cases, you really don&#8217;t mind losing messages in event of failure, so it would make sense to acknowledge the message on the server before delivering it to the client.
+This example demonstrates how Apache ActiveMQ Artemis allows this with an extra acknowledgement mode.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="message-producer-rate-limiting"><a class="anchor" href="#message-producer-rate-limiting"></a><a class="link" href="#message-producer-rate-limiting">56. Message Producer Rate Limiting</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>producer-rte-limit</code> example demonstrates how, with Apache ActiveMQ Artemis, you can specify a maximum send rate at which a JMS message producer will send messages.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="queue"><a class="anchor" href="#queue"></a><a class="link" href="#queue">57. Queue</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A simple example demonstrating a queue.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="message-redistribution"><a class="anchor" href="#message-redistribution"></a><a class="link" href="#message-redistribution">58. Message Redistribution</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>queue-message-redistribution</code> example demonstrates message redistribution between queues with the same name deployed in different nodes of a cluster.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="queue-requestor"><a class="anchor" href="#queue-requestor"></a><a class="link" href="#queue-requestor">59. Queue Requestor</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A simple example demonstrating a JMS queue requestor.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="queue-with-message-selector"><a class="anchor" href="#queue-with-message-selector"></a><a class="link" href="#queue-with-message-selector">60. Queue with Message Selector</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>queue-selector</code> example shows you how to selectively consume messages using message selectors with queue consumers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="reattach-node-example"><a class="anchor" href="#reattach-node-example"></a><a class="link" href="#reattach-node-example">61. Reattach Node example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>Reattach Node</code> example shows how a client can try to reconnect to the same server instead of failing the connection immediately and notifying any user ExceptionListener objects.
+Apache ActiveMQ Artemis can be configured to automatically retry the connection, and reattach to the server when it becomes available again across the network.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="replicated-failback-example"><a class="anchor" href="#replicated-failback-example"></a><a class="link" href="#replicated-failback-example">62. Replicated Failback example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An example showing how failback works when using replication, In this example a live server will replicate all its Journal to a backup server as it updates it.
+When the live server crashes the backup takes over from the live server and the client reconnects and carries on from where it left off.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="replicated-failback-static-example"><a class="anchor" href="#replicated-failback-static-example"></a><a class="link" href="#replicated-failback-static-example">63. Replicated Failback static example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An example showing how failback works when using replication, but this time with static connectors</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="replicated-multiple-failover-example"><a class="anchor" href="#replicated-multiple-failover-example"></a><a class="link" href="#replicated-multiple-failover-example">64. Replicated multiple failover example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An example showing how to configure multiple backups when using replication</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="replicated-failover-transaction-example"><a class="anchor" href="#replicated-failover-transaction-example"></a><a class="link" href="#replicated-failover-transaction-example">65. Replicated Failover transaction example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An example showing how failover works with a transaction when using replication</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="request-reply-example"><a class="anchor" href="#request-reply-example"></a><a class="link" href="#request-reply-example">66. Request-Reply example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A simple example showing the JMS request-response pattern.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scheduled-message"><a class="anchor" href="#scheduled-message"></a><a class="link" href="#scheduled-message">67. Scheduled Message</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>scheduled-message</code> example shows you how to send a scheduled message to an address/queue with Apache ActiveMQ Artemis.
+Scheduled messages won&#8217;t get delivered until a specified time in the future.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="security"><a class="anchor" href="#security"></a><a class="link" href="#security">68. Security</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>security</code> example shows you how configure and use role based security with Apache ActiveMQ Artemis.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="security-ldap"><a class="anchor" href="#security-ldap"></a><a class="link" href="#security-ldap">69. Security LDAP</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>security-ldap</code> example shows you how configure and use role based security with Apache ActiveMQ Artemis &amp; an embedded instance of the Apache DS LDAP server.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="security-keycloak"><a class="anchor" href="#security-keycloak"></a><a class="link" href="#security-keycloak">70. Security keycloak</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>security-keycloak</code> example shows you how to delegate security with Apache ActiveMQ Artemis &amp; an external Keycloak.
+Using OAuth of the web console and direct access for JMS clients.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="send-acknowledgements"><a class="anchor" href="#send-acknowledgements"></a><a class="link" href="#send-acknowledgements">71. Send Acknowledgements</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>send-acknowledgements</code> example shows you how to use Apache ActiveMQ Artemis&#8217;s advanced <em>asynchronous send acknowledgements</em> feature to obtain acknowledgement from the server that sends have been received and processed in a separate stream to the sent messages.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="slow-consumer"><a class="anchor" href="#slow-consumer"></a><a class="link" href="#slow-consumer">72. Slow Consumer</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>slow-consumer</code> example shows you how to detect slow consumers and configure a slow consumer policy in Apache ActiveMQ Artemis&#8217;s</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spring-integration"><a class="anchor" href="#spring-integration"></a><a class="link" href="#spring-integration">73. Spring Integration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This example shows how to use embedded JMS using Apache ActiveMQ Artemis&#8217;s Spring integration.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ssl-transport"><a class="anchor" href="#ssl-transport"></a><a class="link" href="#ssl-transport">74. SSL Transport</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>ssl-enabled</code> shows you how to configure SSL with Apache ActiveMQ Artemis to send and receive message.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="static-message-selector"><a class="anchor" href="#static-message-selector"></a><a class="link" href="#static-message-selector">75. Static Message Selector</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>static-selector</code> example shows you how to configure an Apache ActiveMQ Artemis core queue with static message selectors (filters).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="static-message-selector-using-jms"><a class="anchor" href="#static-message-selector-using-jms"></a><a class="link" href="#static-message-selector-using-jms">76. Static Message Selector Using JMS</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>static-selector-jms</code> example shows you how to configure an Apache ActiveMQ Artemis queue with static message selectors (filters) using JMS.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="stomp"><a class="anchor" href="#stomp"></a><a class="link" href="#stomp">77. Stomp</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>stomp</code> example shows you how to configure an Apache ActiveMQ Artemis server to send and receive Stomp messages.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="stomp1-1"><a class="anchor" href="#stomp1-1"></a><a class="link" href="#stomp1-1">78. Stomp1.1</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>stomp</code> example shows you how to configure an Apache ActiveMQ Artemis server to send and receive Stomp messages via a Stomp 1.1 connection.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="stomp1-2"><a class="anchor" href="#stomp1-2"></a><a class="link" href="#stomp1-2">79. Stomp1.2</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>stomp</code> example shows you how to configure an Apache ActiveMQ Artemis server to send and receive Stomp messages via a Stomp 1.2 connection.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="stomp-over-web-sockets"><a class="anchor" href="#stomp-over-web-sockets"></a><a class="link" href="#stomp-over-web-sockets">80. Stomp Over Web Sockets</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>stomp-websockets</code> example shows you how to configure an Apache ActiveMQ Artemis server to send and receive Stomp messages directly from Web browsers (provided they support Web Sockets).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="symmetric-cluster"><a class="anchor" href="#symmetric-cluster"></a><a class="link" href="#symmetric-cluster">81. Symmetric Cluster</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>symmetric-cluster</code> example demonstrates a symmetric cluster set-up with Apache ActiveMQ Artemis.</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis has extremely flexible clustering which allows you to set-up servers in many different topologies.
+The most common topology that you&#8217;ll perhaps be familiar with if you are used to application server clustering is a symmetric cluster.</p>
+</div>
+<div class="paragraph">
+<p>With a symmetric cluster, the cluster is homogeneous, i.e. each node is configured the same as every other node, and every node is connected to every other node in the cluster.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="temporary-queue"><a class="anchor" href="#temporary-queue"></a><a class="link" href="#temporary-queue">82. Temporary Queue</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A simple example demonstrating how to use a JMS temporary queue.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="topic"><a class="anchor" href="#topic"></a><a class="link" href="#topic">83. Topic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A simple example demonstrating a JMS topic.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="topic-hierarchy"><a class="anchor" href="#topic-hierarchy"></a><a class="link" href="#topic-hierarchy">84. Topic Hierarchy</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis supports topic hierarchies.
+With a topic hierarchy you can register a subscriber with a wild-card and that subscriber will receive any messages sent to an address that matches the wild card.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="topic-selector-1"><a class="anchor" href="#topic-selector-1"></a><a class="link" href="#topic-selector-1">85. Topic Selector 1</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>topic-selector-example1</code> example shows you how to send message to a JMS Topic, and subscribe them using selectors with Apache ActiveMQ Artemis.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="topic-selector-2"><a class="anchor" href="#topic-selector-2"></a><a class="link" href="#topic-selector-2">86. Topic Selector 2</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>topic-selector-example2</code> example shows you how to selectively consume messages using message selectors with topic consumers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="transaction-failover"><a class="anchor" href="#transaction-failover"></a><a class="link" href="#transaction-failover">87. Transaction Failover</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>transaction-failover</code> example demonstrates two servers coupled as a live-backup pair for high availability (HA), and a client using a transacted JMS session failing over from live to backup when the live server is crashed.</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis implements failover of client connections between live and backup servers.
+This is implemented by the sharing of a journal between the servers.
+When a live node crashes, the client connections can carry and continue to send and consume messages.
+When transacted sessions are used, once and only once message delivery is guaranteed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="failover-without-transactions"><a class="anchor" href="#failover-without-transactions"></a><a class="link" href="#failover-without-transactions">88. Failover Without Transactions</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>stop-server-failover</code> example demonstrates failover of the JMS connection from one node to another when the live server crashes using a JMS non-transacted session.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="transactional-session"><a class="anchor" href="#transactional-session"></a><a class="link" href="#transactional-session">89. Transactional Session</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>transactional</code> example shows you how to use a transactional Session with Apache ActiveMQ Artemis.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="xa-heuristic"><a class="anchor" href="#xa-heuristic"></a><a class="link" href="#xa-heuristic">90. XA Heuristic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>xa-heuristic</code> example shows you how to make an XA heuristic decision through Apache ActiveMQ Artemis Management Interface.
+A heuristic decision is a unilateral decision to commit or rollback an XA transaction branch after it has been prepared.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="xa-receive"><a class="anchor" href="#xa-receive"></a><a class="link" href="#xa-receive">91. XA Receive</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>xa-receive</code> example shows you how message receiving behaves in an XA transaction in Apache ActiveMQ Artemis.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="xa-send"><a class="anchor" href="#xa-send"></a><a class="link" href="#xa-send">92. XA Send</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>xa-send</code> example shows you how message sending behaves in an XA transaction in Apache ActiveMQ Artemis.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

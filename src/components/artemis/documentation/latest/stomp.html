@@ -15,30 +15,34 @@
 <div id="header">
 <h1>STOMP</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
-<li><a href="#limitations">1. Limitations</a></li>
-<li><a href="#virtual-hosting">2. Virtual Hosting</a></li>
-<li><a href="#mapping-stomp-destinations-to-addresses-and-queues">3. Mapping STOMP destinations to addresses and queues</a></li>
-<li><a href="#logging">4. Logging</a></li>
-<li><a href="#routing-semantics">5. Routing Semantics</a>
+<li><a href="#limitations">1. Limitations</a>
 <ul class="sectlevel2">
-<li><a href="#configuring-routing-semantics-from-the-client-side">5.1. Configuring Routing Semantics from the Client Side</a></li>
-<li><a href="#configuring-routing-semantics-from-the-broker-side">5.2. Configuring Routing Semantics from the Broker side</a></li>
+<li><a href="#transactional-acknowledgements">1.1. Transactional Acknowledgements</a></li>
+<li><a href="#virtual-hosting">1.2. Virtual Hosting</a></li>
 </ul>
 </li>
-<li><a href="#stomp-heart-beating-and-connection-ttl">6. STOMP heart-beating and connection-ttl</a></li>
-<li><a href="#selectorfilter-expressions">7. Selector/Filter expressions</a></li>
-<li><a href="#stomp-and-jms-interoperability">8. STOMP and JMS interoperability</a>
+<li><a href="#mapping-stomp-destinations-to-addresses-and-queues">2. Mapping STOMP destinations to addresses and queues</a></li>
+<li><a href="#logging">3. Logging</a></li>
+<li><a href="#routing-semantics">4. Routing Semantics</a>
 <ul class="sectlevel2">
-<li><a href="#sending-and-consuming-stomp-message-from-jms-or-core-api">8.1. Sending and consuming STOMP message from JMS or Core API</a></li>
-<li><a href="#message-ids-for-stomp-messages">8.2. Message IDs for STOMP messages</a></li>
+<li><a href="#configuring-routing-semantics-from-the-client-side">4.1. Configuring Routing Semantics from the Client Side</a></li>
+<li><a href="#configuring-routing-semantics-from-the-broker-side">4.2. Configuring Routing Semantics from the Broker side</a></li>
 </ul>
 </li>
-<li><a href="#durable-subscriptions">9. Durable Subscriptions</a></li>
-<li><a href="#handling-of-large-messages-with-stomp">10. Handling of Large Messages with STOMP</a></li>
-<li><a href="#web-sockets">11. Web Sockets</a></li>
-<li><a href="#flow-control">12. Flow Control</a></li>
+<li><a href="#stomp-heart-beating-and-connection-ttl">5. STOMP heart-beating and connection-ttl</a></li>
+<li><a href="#selectorfilter-expressions">6. Selector/Filter expressions</a></li>
+<li><a href="#stomp-and-jms-interoperability">7. STOMP and JMS interoperability</a>
+<ul class="sectlevel2">
+<li><a href="#sending-and-consuming-stomp-message-from-jms-or-core-api">7.1. Sending and consuming STOMP message from JMS or Core API</a></li>
+<li><a href="#message-ids-for-stomp-messages">7.2. Message IDs for STOMP messages</a></li>
+</ul>
+</li>
+<li><a href="#durable-subscriptions">8. Durable Subscriptions</a></li>
+<li><a href="#handling-of-large-messages-with-stomp">9. Handling of Large Messages with STOMP</a></li>
+<li><a href="#web-sockets">10. Web Sockets</a></li>
+<li><a href="#flow-control">11. Flow Control</a></li>
 </ul>
 </div>
 </div>
@@ -59,13 +63,15 @@ Apache ActiveMQ Artemis supports STOMP 1.0, 1.1 and 1.2.</p>
 <p>See the general <a href="protocols-interoperability.html#protocols-and-interoperability">Protocols and Interoperability</a> chapter for details on configuring an <code>acceptor</code> for STOMP.</p>
 </div>
 <div class="paragraph">
-<p>Refer to the STOMP examples for a look at some of this functionality in action.</p>
+<p>Refer to the STOMP <a href="examples.html">examples</a> for a look at some of this functionality in action.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="limitations"><a class="anchor" href="#limitations"></a><a class="link" href="#limitations">1. Limitations</a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="transactional-acknowledgements"><a class="anchor" href="#transactional-acknowledgements"></a><a class="link" href="#transactional-acknowledgements">1.1. Transactional Acknowledgements</a></h3>
 <div class="paragraph">
 <p>The STOMP specification identifies <strong>transactional acknowledgements</strong> as an optional feature.
 Support for transactional acknowledgements is not implemented in Apache ActiveMQ Artemis.
@@ -73,17 +79,16 @@ The <code>ACK</code> frame can not be part of a transaction.
 It will be ignored if its <code>transaction</code> header is set.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="virtual-hosting"><a class="anchor" href="#virtual-hosting"></a><a class="link" href="#virtual-hosting">2. Virtual Hosting</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="virtual-hosting"><a class="anchor" href="#virtual-hosting"></a><a class="link" href="#virtual-hosting">1.2. Virtual Hosting</a></h3>
 <div class="paragraph">
 <p>Apache ActiveMQ Artemis currently doesn&#8217;t support virtual hosting, which means the <code>host</code> header in <code>CONNECT</code> frame will be ignored.</p>
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
-<h2 id="mapping-stomp-destinations-to-addresses-and-queues"><a class="anchor" href="#mapping-stomp-destinations-to-addresses-and-queues"></a><a class="link" href="#mapping-stomp-destinations-to-addresses-and-queues">3. Mapping STOMP destinations to addresses and queues</a></h2>
+<h2 id="mapping-stomp-destinations-to-addresses-and-queues"><a class="anchor" href="#mapping-stomp-destinations-to-addresses-and-queues"></a><a class="link" href="#mapping-stomp-destinations-to-addresses-and-queues">2. Mapping STOMP destinations to addresses and queues</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>STOMP clients deals with <em>destinations</em> when sending messages and subscribing.
@@ -95,17 +100,20 @@ Destination names are simply strings which are mapped to some form of destinatio
 </div>
 </div>
 <div class="sect1">
-<h2 id="logging"><a class="anchor" href="#logging"></a><a class="link" href="#logging">4. Logging</a></h2>
+<h2 id="logging"><a class="anchor" href="#logging"></a><a class="link" href="#logging">3. Logging</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Incoming and outgoing STOMP frames can be logged by enabling <code>DEBUG</code> for <code>org.apache.activemq.artemis.core.protocol.stomp.StompConnection</code>.
 This can be extremely useful for debugging or simply monitoring client activity.
 Along with the STOMP frame itself the remote IP address of the client is logged as well as the internal connection ID so that frames from the same client can be correlated.</p>
 </div>
+<div class="paragraph">
+<p>Follow <a href="logging.html#configuring-a-specific-level-for-a-logger">these steps</a> to configure logging appropriately.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="routing-semantics"><a class="anchor" href="#routing-semantics"></a><a class="link" href="#routing-semantics">5. Routing Semantics</a></h2>
+<h2 id="routing-semantics"><a class="anchor" href="#routing-semantics"></a><a class="link" href="#routing-semantics">4. Routing Semantics</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The STOMP specification is intentionally ambiguous about message routing semantics.
@@ -126,9 +134,9 @@ semantics that they can support with STOMP.</pre>
 <p>Therefore, there are a handful of different ways to specify which semantics are desired both on the client-side and broker-side.</p>
 </div>
 <div class="sect2">
-<h3 id="configuring-routing-semantics-from-the-client-side"><a class="anchor" href="#configuring-routing-semantics-from-the-client-side"></a><a class="link" href="#configuring-routing-semantics-from-the-client-side">5.1. Configuring Routing Semantics from the Client Side</a></h3>
+<h3 id="configuring-routing-semantics-from-the-client-side"><a class="anchor" href="#configuring-routing-semantics-from-the-client-side"></a><a class="link" href="#configuring-routing-semantics-from-the-client-side">4.1. Configuring Routing Semantics from the Client Side</a></h3>
 <div class="sect3">
-<h4 id="sending"><a class="anchor" href="#sending"></a><a class="link" href="#sending">5.1.1. Sending</a></h4>
+<h4 id="sending"><a class="anchor" href="#sending"></a><a class="link" href="#sending">4.1.1. Sending</a></h4>
 <div class="paragraph">
 <p>When a STOMP client sends a message (using a <code>SEND</code> frame), the protocol manager looks at the <code>destination-type</code> header to determine where to route it and potentially how to create the address and/or queue to which it is being sent.
 Valid values are <code>ANYCAST</code> and <code>MULTICAST</code> (case sensitive).
@@ -139,7 +147,7 @@ If no indication of routing type is supplied (either by the client or the broker
 </div>
 </div>
 <div class="sect3">
-<h4 id="subscribing"><a class="anchor" href="#subscribing"></a><a class="link" href="#subscribing">5.1.2. Subscribing</a></h4>
+<h4 id="subscribing"><a class="anchor" href="#subscribing"></a><a class="link" href="#subscribing">4.1.2. Subscribing</a></h4>
 <div class="paragraph">
 <p>When a STOMP client subscribes to a destination (using a <code>SUBSCRIBE</code> frame), the protocol manager looks at the <code>subscription-type</code> header frame to determine what subscription semantics to use and potentially how to create the address and/or queue for the subscription.
 If no indication of routing type is supplied (either by the client or the broker) then the default defined in the corresponding <code>default-address-routing-type</code> &amp; <code>default-queue-routing-type</code> address-settings will be used as necessary.</p>
@@ -150,12 +158,12 @@ If no indication of routing type is supplied (either by the client or the broker
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuring-routing-semantics-from-the-broker-side"><a class="anchor" href="#configuring-routing-semantics-from-the-broker-side"></a><a class="link" href="#configuring-routing-semantics-from-the-broker-side">5.2. Configuring Routing Semantics from the Broker side</a></h3>
+<h3 id="configuring-routing-semantics-from-the-broker-side"><a class="anchor" href="#configuring-routing-semantics-from-the-broker-side"></a><a class="link" href="#configuring-routing-semantics-from-the-broker-side">4.2. Configuring Routing Semantics from the Broker side</a></h3>
 <div class="paragraph">
 <p>On the broker-side there are two main options for specifying routing semantics - prefixes and address settings</p>
 </div>
 <div class="sect3">
-<h4 id="prefixes"><a class="anchor" href="#prefixes"></a><a class="link" href="#prefixes">5.2.1. Prefixes</a></h4>
+<h4 id="prefixes"><a class="anchor" href="#prefixes"></a><a class="link" href="#prefixes">4.2.1. Prefixes</a></h4>
 <div class="paragraph">
 <p>Using prefixes involves specifying the <code>anycastPrefix</code> and/or the <code>multicastPrefix</code> on the acceptor which the STOMP client is using.
 For the STOMP use-case these prefixes tell the broker that destinations using them should be treated as anycast or multicast.
@@ -176,7 +184,7 @@ The <code>anycastPrefix</code> and/or <code>multicastPrefix</code> on the accept
 </div>
 </div>
 <div class="sect3">
-<h4 id="address-settings"><a class="anchor" href="#address-settings"></a><a class="link" href="#address-settings">5.2.2. Address Settings</a></h4>
+<h4 id="address-settings"><a class="anchor" href="#address-settings"></a><a class="link" href="#address-settings">4.2.2. Address Settings</a></h4>
 <div class="paragraph">
 <p>Using address settings involves defining address-setting elements whose <code>match</code> corresponds with the destination names the clients will use along with the proper <code>delimiter</code> to enabled matching.
 For example, broker.xml could use the following:</p>
@@ -207,7 +215,7 @@ Additionally, if a STOMP client sends a message to <code>destination:topic/bar</
 </div>
 </div>
 <div class="sect1">
-<h2 id="stomp-heart-beating-and-connection-ttl"><a class="anchor" href="#stomp-heart-beating-and-connection-ttl"></a><a class="link" href="#stomp-heart-beating-and-connection-ttl">6. STOMP heart-beating and connection-ttl</a></h2>
+<h2 id="stomp-heart-beating-and-connection-ttl"><a class="anchor" href="#stomp-heart-beating-and-connection-ttl"></a><a class="link" href="#stomp-heart-beating-and-connection-ttl">5. STOMP heart-beating and connection-ttl</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Well behaved STOMP clients will always send a <code>DISCONNECT</code> frame before closing their connections.
@@ -269,7 +277,7 @@ With STOMP 1.1 users can use heart-beats to maintain the life cycle of stomp con
 </div>
 </div>
 <div class="sect1">
-<h2 id="selectorfilter-expressions"><a class="anchor" href="#selectorfilter-expressions"></a><a class="link" href="#selectorfilter-expressions">7. Selector/Filter expressions</a></h2>
+<h2 id="selectorfilter-expressions"><a class="anchor" href="#selectorfilter-expressions"></a><a class="link" href="#selectorfilter-expressions">6. Selector/Filter expressions</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>STOMP subscribers can specify an expression used to select or filter what the subscriber receives using the <code>selector</code> header.
@@ -278,10 +286,10 @@ The filter expression syntax follows the <em>core filter syntax</em> described i
 </div>
 </div>
 <div class="sect1">
-<h2 id="stomp-and-jms-interoperability"><a class="anchor" href="#stomp-and-jms-interoperability"></a><a class="link" href="#stomp-and-jms-interoperability">8. STOMP and JMS interoperability</a></h2>
+<h2 id="stomp-and-jms-interoperability"><a class="anchor" href="#stomp-and-jms-interoperability"></a><a class="link" href="#stomp-and-jms-interoperability">7. STOMP and JMS interoperability</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="sending-and-consuming-stomp-message-from-jms-or-core-api"><a class="anchor" href="#sending-and-consuming-stomp-message-from-jms-or-core-api"></a><a class="link" href="#sending-and-consuming-stomp-message-from-jms-or-core-api">8.1. Sending and consuming STOMP message from JMS or Core API</a></h3>
+<h3 id="sending-and-consuming-stomp-message-from-jms-or-core-api"><a class="anchor" href="#sending-and-consuming-stomp-message-from-jms-or-core-api"></a><a class="link" href="#sending-and-consuming-stomp-message-from-jms-or-core-api">7.1. Sending and consuming STOMP message from JMS or Core API</a></h3>
 <div class="paragraph">
 <p>STOMP is mainly a text-orientated protocol.
 To make it simpler to interoperate with JMS and Core API, our STOMP implementation checks for presence of the <code>content-length</code> header to decide how to map a STOMP 1.0 message to a JMS Message or a Core message.</p>
@@ -298,7 +306,7 @@ A STOMP 1.0 client can check the presence of the <code>content-length</code> hea
 </div>
 </div>
 <div class="sect2">
-<h3 id="message-ids-for-stomp-messages"><a class="anchor" href="#message-ids-for-stomp-messages"></a><a class="link" href="#message-ids-for-stomp-messages">8.2. Message IDs for STOMP messages</a></h3>
+<h3 id="message-ids-for-stomp-messages"><a class="anchor" href="#message-ids-for-stomp-messages"></a><a class="link" href="#message-ids-for-stomp-messages">7.2. Message IDs for STOMP messages</a></h3>
 <div class="paragraph">
 <p>When receiving STOMP messages via a JMS consumer or a QueueBrowser, the messages have no properties like JMSMessageID by default.
 However this may bring some inconvenience to clients who wants an ID for their purpose.
@@ -327,7 +335,7 @@ The property key is <code>amqMessageId</code> and the value is a String represen
 </div>
 </div>
 <div class="sect1">
-<h2 id="durable-subscriptions"><a class="anchor" href="#durable-subscriptions"></a><a class="link" href="#durable-subscriptions">9. Durable Subscriptions</a></h2>
+<h2 id="durable-subscriptions"><a class="anchor" href="#durable-subscriptions"></a><a class="link" href="#durable-subscriptions">8. Durable Subscriptions</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The <code>SUBSCRIBE</code> and <code>UNSUBSCRIBE</code> frames can be augmented with special headers to create and destroy durable subscriptions respectively.</p>
@@ -365,7 +373,7 @@ For example, if you wanted to configure a durable subscription on the address <c
 </div>
 </div>
 <div class="sect1">
-<h2 id="handling-of-large-messages-with-stomp"><a class="anchor" href="#handling-of-large-messages-with-stomp"></a><a class="link" href="#handling-of-large-messages-with-stomp">10. Handling of Large Messages with STOMP</a></h2>
+<h2 id="handling-of-large-messages-with-stomp"><a class="anchor" href="#handling-of-large-messages-with-stomp"></a><a class="link" href="#handling-of-large-messages-with-stomp">9. Handling of Large Messages with STOMP</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>STOMP clients may send very large frame bodies which can exceed the size of the broker&#8217;s internal buffer, causing unexpected errors.
@@ -391,7 +399,7 @@ The default value of <code>stompMinLargeMessageSize</code> is the same as the de
 </div>
 </div>
 <div class="sect1">
-<h2 id="web-sockets"><a class="anchor" href="#web-sockets"></a><a class="link" href="#web-sockets">11. Web Sockets</a></h2>
+<h2 id="web-sockets"><a class="anchor" href="#web-sockets"></a><a class="link" href="#web-sockets">10. Web Sockets</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Apache ActiveMQ Artemis also supports STOMP over <a href="https://html.spec.whatwg.org/multipage/web-sockets.html">Web Sockets</a>.
@@ -425,12 +433,12 @@ However, this can be changed by using the <code>webSocketEncoderType</code> acce
 Valid values are <code>binary</code> and <code>text</code>.</p>
 </div>
 <div class="paragraph">
-<p>The <code>stomp-websockets</code> example shows how to configure an Apache ActiveMQ Artemis broker to have web browsers and Java applications exchanges messages.</p>
+<p>The <code>stomp-websockets</code> <a href="examples.html">example</a> shows how to configure an Apache ActiveMQ Artemis broker to have web browsers and Java applications exchanges messages.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="flow-control"><a class="anchor" href="#flow-control"></a><a class="link" href="#flow-control">12. Flow Control</a></h2>
+<h2 id="flow-control"><a class="anchor" href="#flow-control"></a><a class="link" href="#flow-control">11. Flow Control</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>STOMP clients can use the <code>consumer-window-size</code> header on the <code>SUBSCRIBE</code> frame to control the flow of messages to clients.

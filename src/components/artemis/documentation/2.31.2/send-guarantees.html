@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Guarantees of Sends and Commits</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Guarantees of Sends and Commits</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<ul class="sectlevel1">
+<li><a href="#transaction-completion">1. Transaction Completion</a></li>
+<li><a href="#non-transactional-message-sends">2. Non Transactional Message Sends</a></li>
+<li><a href="#non-transactional-acknowledgements">3. Non Transactional Acknowledgements</a></li>
+<li><a href="#asynchronous-send-acknowledgements">4. Asynchronous Send Acknowledgements</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="transaction-completion"><a class="anchor" href="#transaction-completion"></a><a class="link" href="#transaction-completion">1. Transaction Completion</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When committing or rolling back a transaction with Apache ActiveMQ Artemis, the request to commit or rollback is sent to the server, and the call will block on the client side until a response has been received from the server that the commit or rollback was executed.</p>
+</div>
+<div class="paragraph">
+<p>When the commit or rollback is received on the server, it will be committed to the journal, and depending on the value of the parameter <code>journal-sync-transactional</code> the server will ensure that the commit or rollback is durably persisted to storage before sending the response back to the client.
+If this parameter has the value <code>false</code> then commit or rollback may not actually get persisted to storage until some time after the response has been sent to the client.
+In event of server failure this may mean the commit or rollback never gets persisted to storage.
+The default value of this parameter is <code>true</code> so the client can be sure all transaction commits or rollbacks have been persisted to storage by the time the call to commit or rollback returns.</p>
+</div>
+<div class="paragraph">
+<p>Setting this parameter to <code>false</code> can improve performance at the expense of some loss of transaction durability.</p>
+</div>
+<div class="paragraph">
+<p>This parameter is set in <code>broker.xml</code></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="non-transactional-message-sends"><a class="anchor" href="#non-transactional-message-sends"></a><a class="link" href="#non-transactional-message-sends">2. Non Transactional Message Sends</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are sending messages to a server using a non transacted session, Apache ActiveMQ Artemis can be configured to block the call to send until the message has definitely reached the server, and a response has been sent back to the client.
+This can be configured individually for durable and non-durable messages, and is determined by the following two URL parameters:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">blockOnDurableSend</dt>
+<dd>
+<p>If this is set to <code>true</code> then all calls to send for durable messages on non transacted sessions will block until the message has reached the server, and a response has been sent back.
+The default value is <code>true</code>.</p>
+</dd>
+<dt class="hdlist1">blockOnNonDurableSend</dt>
+<dd>
+<p>If this is set to <code>true</code> then all calls to send for non-durable messages on non transacted sessions will block until the message has reached the server, and a response has been sent back.
+The default value is <code>false</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Setting block on sends to <code>true</code> can reduce performance since each send requires a network round trip before the next send can be performed.
+This means the performance of sending messages will be limited by the network round trip time (RTT) of your network, rather than the bandwidth of your network.
+For better performance we recommend either batching many messages sends together in a transaction since with a transactional session, only the commit / rollback blocks not every send, or, using Apache ActiveMQ Artemis&#8217;s advanced <em>asynchronous send acknowledgements feature</em> described in Asynchronous Send Acknowledgements.</p>
+</div>
+<div class="paragraph">
+<p>When the server receives a message sent from a non transactional session, and that message is durable and the message is routed to at least one durable queue, then the server will persist the message in permanent storage.
+If the journal parameter <code>journal-sync-non-transactional</code> is set to <code>true</code> the server will not send a response back to the client until the message has been persisted and the server has a guarantee that the data has been persisted to disk.
+The default value for this parameter is <code>true</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="non-transactional-acknowledgements"><a class="anchor" href="#non-transactional-acknowledgements"></a><a class="link" href="#non-transactional-acknowledgements">3. Non Transactional Acknowledgements</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are acknowledging the delivery of a message at the client side using a non transacted session, Apache ActiveMQ Artemis can be configured to block the call to acknowledge until the acknowledge has definitely reached the server, and a response has been sent back to the client.
+This is configured with the parameter <code>BlockOnAcknowledge</code>.
+If this is set to <code>true</code> then all calls to acknowledge on non transacted sessions will block until the acknowledge has reached the server, and a response has been sent back.
+You might want to set this to <code>true</code> if you want to implement a strict <em>at most once</em> delivery policy.
+The default value is <code>false</code></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="asynchronous-send-acknowledgements"><a class="anchor" href="#asynchronous-send-acknowledgements"></a><a class="link" href="#asynchronous-send-acknowledgements">4. Asynchronous Send Acknowledgements</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are using a non transacted session but want a guarantee that every message sent to the server has reached it, then, as discussed in Guarantees of Non Transactional Message Sends, you can configure Apache ActiveMQ Artemis to block the call to send until the server has received the message, persisted it and sent back a response.
+This works well but has a severe performance penalty - each call to send needs to block for at least the time of a network round trip (RTT) - the performance of sending is thus limited by the latency of the network, <em>not</em> limited by the network bandwidth.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s do a little bit of maths to see how severe that is.
+We&#8217;ll consider a standard 1Gib ethernet network with a network round trip between the server and the client of 0.25 ms.</p>
+</div>
+<div class="paragraph">
+<p>With a RTT of 0.25 ms, the client can send <em>at most</em> 1000/ 0.25 = 4000 messages per second if it blocks on each message send.</p>
+</div>
+<div class="paragraph">
+<p>If each message is &lt; 1500 bytes and a standard 1500 bytes MTU (Maximum Transmission Unit) size is used on the network, then a 1GiB network has a <em>theoretical</em> upper limit of (1024 * 1024 * 1024 / 8) / 1500 = 89478 messages per second if messages are sent without blocking!
+These figures aren&#8217;t an exact science but you can clearly see that being limited by network RTT can have serious effect on performance.</p>
+</div>
+<div class="paragraph">
+<p>To remedy this, Apache ActiveMQ Artemis provides an advanced new feature called <em>asynchronous send acknowledgements</em>.
+With this feature, Apache ActiveMQ Artemis can be configured to send messages without blocking in one direction and asynchronously getting acknowledgement from the server that the messages were received in a separate stream.
+By de-coupling the send from the acknowledgement of the send, the system is not limited by the network RTT, but is limited by the network bandwidth.
+Consequently better throughput can be achieved than is possible using a blocking approach, while at the same time having absolute guarantees that messages have successfully reached the server.</p>
+</div>
+<div class="paragraph">
+<p>The window size for send acknowledgements is determined by the confirmation-window-size parameter on the connection factory or client session factory.
+Please see <a href="client-failover.html#core-client-failover">Client Failover</a> for more info on this.</p>
+</div>
+<div class="paragraph">
+<p>To use the feature using the core API, you implement the interface <code>org.apache.activemq.artemis.api.core.client.SendAcknowledgementHandler</code> and set a handler instance on your <code>ClientSession</code>.</p>
+</div>
+<div class="paragraph">
+<p>Then, you just send messages as normal using your <code>ClientSession</code>, and as messages reach the server, the server will send back an acknowledgement of the send asynchronously, and some time later you are informed at the client side by Apache ActiveMQ Artemis calling your handler&#8217;s <code>sendAcknowledged(ClientMessage message)</code> method, passing in a reference to the message that was sent.</p>
+</div>
+<div class="paragraph">
+<p>To enable asynchronous send acknowledgements you must make sure <code>confirmationWindowSize</code> is set to a positive integer value, e.g. 10MiB</p>
+</div>
+<div class="paragraph">
+<p>Please see <a href="examples.html#examples">the examples chapter</a> for a full working example.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

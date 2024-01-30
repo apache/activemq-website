@@ -15,12 +15,12 @@
 <div id="header">
 <h1>Network Isolation (Split Brain)</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#quorum-voting">1. Quorum Voting</a>
 <ul class="sectlevel2">
 <li><a href="#backup-voting">1.1. Backup Voting</a></li>
-<li><a href="#live-voting">1.2. Live Voting</a></li>
+<li><a href="#primary-voting">1.2. Primary Voting</a></li>
 </ul>
 </li>
 <li><a href="#pinging-the-network">2. Pinging the network</a></li>
@@ -31,8 +31,8 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>It is possible that if a replicated live or backup server becomes isolated in a network that failover will occur and you will end up with 2 live servers serving messages in a cluster, this we call split brain.
-There are different configurations you can choose from that will help mitigate this problem</p>
+<p>It is possible that if a primary or backup configured for replication becomes isolated in a network that failover will occur and you will end up with 2 active brokers serving messages. This we call <em>split brain</em>.
+There are different configurations you can choose from that will help mitigate this problem.</p>
 </div>
 </div>
 </div>
@@ -40,18 +40,18 @@ There are different configurations you can choose from that will help mitigate t
 <h2 id="quorum-voting"><a class="anchor" href="#quorum-voting"></a><a class="link" href="#quorum-voting">1. Quorum Voting</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Quorum voting is used by both the live and the backup to decide what to do if a replication connection is disconnected.
-Basically the server will request each live server in the cluster to vote as to whether it thinks the server it is replicating to or from is still alive.
+<p>Quorum voting is used by both the primary and the backup to decide what to do if a replication connection is disconnected.
+Basically the server will request each active server in the cluster to vote as to whether it thinks the server it is replicating to or from is still alive.
 You can also configure the time for which the quorum manager will wait for the quorum vote response.
-The default time is 30 seconds you can configure like so for master and also for the slave:</p>
+The default time is 30 seconds you can configure like so for primary and also for the backup:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
   <span class="nt">&lt;replication&gt;</span>
-    <span class="nt">&lt;master&gt;</span>
+    <span class="nt">&lt;primary&gt;</span>
        <span class="nt">&lt;quorum-vote-wait&gt;</span>12<span class="nt">&lt;/quorum-vote-wait&gt;</span>
-    <span class="nt">&lt;/master&gt;</span>
+    <span class="nt">&lt;/primary&gt;</span>
   <span class="nt">&lt;/replication&gt;</span>
 <span class="nt">&lt;/ha-policy&gt;</span></code></pre>
 </div>
@@ -63,10 +63,10 @@ If less than 3 pairs are used then the only option is to use a Network Pinger wh
 <div class="sect2">
 <h3 id="backup-voting"><a class="anchor" href="#backup-voting"></a><a class="link" href="#backup-voting">1.1. Backup Voting</a></h3>
 <div class="paragraph">
-<p>By default if a replica loses its replication connection to the live broker it makes a decision as to whether to start or not with a quorum vote.
-This of course requires that there be at least 3 pairs of live/backup nodes in the cluster.
-For a 3 node cluster it will start if it gets 2 votes back saying that its live server is no longer available, for 4 nodes this would be 3 votes and so on.
-When a backup loses connection to the master it will keep voting for a quorum until it either receives a vote allowing it to start or it detects that the master is still live.
+<p>By default if a backup loses its replication connection to its primary it makes a decision as to whether to start or not with a quorum vote.
+This of course requires that there be at least 3 pairs of primary/backup nodes in the cluster.
+For a 3 node cluster it will start if it gets 2 votes back saying that its primary server is no longer available, for 4 nodes this would be 3 votes and so on.
+When a backup loses connection to the primary it will keep voting for a quorum until it either receives a vote allowing it to start or it detects that the primary is still active.
 for the latter it will then restart as a backup.
 How many votes and how long between each vote the backup should wait is configured like so:</p>
 </div>
@@ -74,10 +74,10 @@ How many votes and how long between each vote the backup should wait is configur
 <div class="content">
 <pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
   <span class="nt">&lt;replication&gt;</span>
-    <span class="nt">&lt;slave&gt;</span>
+    <span class="nt">&lt;backup&gt;</span>
        <span class="nt">&lt;vote-retries&gt;</span>12<span class="nt">&lt;/vote-retries&gt;</span>
        <span class="nt">&lt;vote-retry-wait&gt;</span>5000<span class="nt">&lt;/vote-retry-wait&gt;</span>
-    <span class="nt">&lt;/slave&gt;</span>
+    <span class="nt">&lt;/backup&gt;</span>
   <span class="nt">&lt;/replication&gt;</span>
 <span class="nt">&lt;/ha-policy&gt;</span></code></pre>
 </div>
@@ -89,9 +89,9 @@ How many votes and how long between each vote the backup should wait is configur
 <div class="content">
 <pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
   <span class="nt">&lt;replication&gt;</span>
-    <span class="nt">&lt;slave&gt;</span>
+    <span class="nt">&lt;backup&gt;</span>
        <span class="nt">&lt;quorum-size&gt;</span>2<span class="nt">&lt;/quorum-size&gt;</span>
-    <span class="nt">&lt;/slave&gt;</span>
+    <span class="nt">&lt;/backup&gt;</span>
   <span class="nt">&lt;/replication&gt;</span>
 <span class="nt">&lt;/ha-policy&gt;</span></code></pre>
 </div>
@@ -101,21 +101,21 @@ How many votes and how long between each vote the backup should wait is configur
 </div>
 </div>
 <div class="sect2">
-<h3 id="live-voting"><a class="anchor" href="#live-voting"></a><a class="link" href="#live-voting">1.2. Live Voting</a></h3>
+<h3 id="primary-voting"><a class="anchor" href="#primary-voting"></a><a class="link" href="#primary-voting">1.2. Primary Voting</a></h3>
 <div class="paragraph">
-<p>By default, if the live server loses its replication connection then it will just carry on and wait for a backup to reconnect and start replicating again.
-In the event of a possible split brain scenario this may mean that the live stays live even though the backup has been activated.
-It is possible to configure the live server to vote for a quorum if this happens, in this way if the live server doesn&#8217;t not receive a majority vote then it will shutdown.
-This is done by setting the <em>vote-on-replication-failure</em> to true.</p>
+<p>By default, if the primary server loses its replication connection then it will just carry on and wait for a backup to reconnect and start replicating again.
+In the event of a possible split brain scenario this may mean that the primary stays active even though the backup has been activated.
+It is possible to configure the primary server to vote for a quorum if this happens, in this way if the primary server does not receive a majority vote then it will shutdown.
+This is done by setting the <em>vote-on-replication-failure</em> to <code>true</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
   <span class="nt">&lt;replication&gt;</span>
-    <span class="nt">&lt;master&gt;</span>
+    <span class="nt">&lt;primary&gt;</span>
        <span class="nt">&lt;vote-on-replication-failure&gt;</span>true<span class="nt">&lt;/vote-on-replication-failure&gt;</span>
        <span class="nt">&lt;quorum-size&gt;</span>2<span class="nt">&lt;/quorum-size&gt;</span>
-    <span class="nt">&lt;/master&gt;</span>
+    <span class="nt">&lt;/primary&gt;</span>
   <span class="nt">&lt;/replication&gt;</span>
 <span class="nt">&lt;/ha-policy&gt;</span></code></pre>
 </div>
@@ -227,18 +227,22 @@ Use this to use an HTTP server to validate the network
 09:53:23,556 INFO  [org.apache.activemq.artemis.core.server] AMQ221001: Apache ActiveMQ Artemis Message Broker version 1.6.0 [0.0.0.0, nodeID=04fd5dd8-b18c-11e6-9efe-6a0001921ad0]</pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>== Warning</p>
-</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
 <div class="paragraph">
 <p>Make sure you understand your network topology as this is meant to validate your network.
 Using IPs that could eventually disappear or be partially visible may defeat the purpose.
 You can use a list of multiple IPs.
 Any successful ping will make the server OK to continue running</p>
 </div>
-</blockquote>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Configuring the Transport</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#acceptors">1. Acceptors</a></li>
 <li><a href="#connectors">2. Connectors</a></li>
@@ -432,7 +432,7 @@ Default is <code>true</code></p>
 <p>Netty SSL is similar to the Netty TCP transport but it provides additional security by encrypting TCP connections using the Secure Sockets Layer SSL</p>
 </div>
 <div class="paragraph">
-<p>Please see the examples for a full working example of using Netty SSL.</p>
+<p>Please see the <a href="examples.html">examples</a> for a full working example of using Netty SSL.</p>
 </div>
 <div class="paragraph">
 <p>Netty SSL uses all the same properties as Netty TCP but adds the following additional properties:</p>
@@ -448,6 +448,12 @@ See <a href="#configuring-an-sslcontextfactory">Configuring an SSLContextFactory
 <dt class="hdlist1">sslEnabled</dt>
 <dd>
 <p>Must be <code>true</code> to enable SSL.
+Default is <code>false</code>.</p>
+</dd>
+<dt class="hdlist1">sslAutoReload</dt>
+<dd>
+<p>Must be <code>true</code> to have the broker 'watch' an acceptors keyStorePath and/or trustStorePath and invoke reload() on update.
+The watch period is controlled by <a href="config-reload.html#configuration-reload">the configuration reload feature</a>.
 Default is <code>false</code>.</p>
 </dd>
 <dt class="hdlist1">keyStorePath</dt>
@@ -475,7 +481,7 @@ The ActiveMQ-specific system property is useful if another component on the clie
 <dt class="hdlist1">keyStoreType</dt>
 <dd>
 <p>The type of keystore being used.
-For example, <code>JKS</code>, <code>JCEKS</code>, <code>PKCS12</code>, etc.
+For example, <code>JKS</code>, <code>JCEKS</code>, <code>PKCS12</code>, <code>PEM</code> etc.
 This value can also be set via the "javax.net.ssl.keyStoreType" system property or the ActiveMQ-specific "org.apache.activemq.ssl.keyStoreType" system property.
 The ActiveMQ-specific system property is useful if another component on the  client is already making use of the standard Java system property.
 Default is <code>JKS</code>.</p>
@@ -524,7 +530,7 @@ The ActiveMQ-specific system property is useful if another component on the clie
 <dt class="hdlist1">trustStoreType</dt>
 <dd>
 <p>The type of truststore being used.
-For example, <code>JKS</code>, <code>JCEKS</code>, <code>PKCS12</code>, etc.
+For example, <code>JKS</code>, <code>JCEKS</code>, <code>PKCS12</code>, <code>PEM</code> etc.
 This value can also be set via the "javax.net.ssl.trustStoreType" system property or the ActiveMQ-specific "org.apache.activemq.ssl.trustStoreType" system property.
 The ActiveMQ-specific system property is useful if another component on the client is already making use of the standard Java system property.
 Default is <code>JKS</code>.</p>

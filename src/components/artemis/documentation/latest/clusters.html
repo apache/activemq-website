@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Clusters</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#overview">1. Overview</a></li>
 <li><a href="#performance-considerations">2. Performance Considerations</a></li>
@@ -158,8 +158,8 @@ A connector defines a way in which a client (or other server) can make connectio
 For more information on what a connector is, please see <a href="configuring-transports.html#configuring-the-transport">Configuring the Transport</a>.</p>
 </div>
 <div class="paragraph">
-<p>The broadcast group takes a set of connector pairs, each connector pair contains connection settings for a live and backup server (if one exists) and broadcasts them on the network.
-Depending on which broadcasting technique you configure the cluster, it uses either UDP or JGroups to broadcast connector pairs information.</p>
+<p>The broadcast group takes a connector and broadcasts it on the network.
+Depending on which broadcasting technique you configure, it uses either UDP or JGroups to broadcast connector information.</p>
 </div>
 <div class="paragraph">
 <p>Broadcast groups are defined in the server configuration file <code>broker.xml</code>.
@@ -361,7 +361,7 @@ As it receives broadcasts on the broadcast endpoint from a particular server it 
 </ul>
 </div>
 <div class="paragraph">
-<p>Although a discovery group will always accept broadcasts, its current list of available live and backup servers is only ever used when an initial connection is made, from then server discovery is done over the normal Apache ActiveMQ Artemis connections.</p>
+<p>Although a discovery group will always accept broadcasts, its current list of available primary and backup servers is only ever used when an initial connection is made, from then server discovery is done over the normal Apache ActiveMQ Artemis connections.</p>
 </div>
 <div class="admonitionblock note">
 <table>

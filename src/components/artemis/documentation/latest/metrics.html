@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Metrics</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#exported-metrics">1. Exported Metrics</a>
 <ul class="sectlevel2">
@@ -49,6 +49,8 @@ Relevant implementations of <code>MeterRegistry</code> are available from the <a
    <span class="nc">ActiveMQMetricsPlugin</span> <span class="nf">init</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">options</span><span class="o">);</span>
 
    <span class="nc">MeterRegistry</span> <span class="nf">getRegistry</span><span class="o">();</span>
+
+   <span class="k">default</span> <span class="kt">void</span> <span class="nf">registered</span><span class="o">(</span><span class="nc">ActiveMQServer</span> <span class="n">server</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
 <span class="o">}</span></code></pre>
 </div>
 </div>
@@ -57,7 +59,9 @@ Relevant implementations of <code>MeterRegistry</code> are available from the <a
 At this point the plugin should instantiate and configure the <code>io.micrometer.core.instrument.MeterRegistry</code> implementation.</p>
 </div>
 <div class="paragraph">
-<p>Later during the broker startup process it will call <code>getRegistry</code> in order to get the <code>MeterRegistry</code> implementation and use it for registering meters.</p>
+<p>Later during the broker startup process it will call <code>getRegistry</code> in order to get the <code>MeterRegistry</code> implementation and use it for registering meters.
+Once registered, it will call <code>registered</code> to provide the plugin with a handle to the server.
+The plugin can then use that handle later to inspect whether the broker is operational and not in a startup or shutdown phase.</p>
 </div>
 <div class="paragraph">
 <p>The broker ships with two <code>ActiveMQMetricsPlugin</code> implementations:</p>
@@ -100,6 +104,12 @@ A description for each metric is exported along with the metric itself therefore
 <li>
 <p>address.memory.usage</p>
 </li>
+<li>
+<p>address.memory.usage.percentage</p>
+</li>
+<li>
+<p>disk.store.usage</p>
+</li>
 </ul>
 </div>
 </div>
@@ -112,6 +122,12 @@ A description for each metric is exported along with the metric itself therefore
 </li>
 <li>
 <p>unrouted.message.count</p>
+</li>
+<li>
+<p>address.size</p>
+</li>
+<li>
+<p>number.of.pages</p>
 </li>
 </ul>
 </div>
