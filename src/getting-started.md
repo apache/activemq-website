@@ -347,7 +347,7 @@ See the [Initial Configuration](configuration) for details of which jars you nee
 
 If you want to use JNDI to connect to your JMS provider then please view the [JNDI Support](jndi-support). If you are a Spring user you should read about [Spring Support](spring-support)
 
-After the installation, ActiveMQ is running with a basic configuration. For details on configuring options, please see refer to the [Configuration](configuration) section.
+After the installation, ActiveMQ is running with a basic configuration. For details on configuring options, please refer to the [Configuration](faq#configuration) section.
 
 Additional Resources
 --------------------
