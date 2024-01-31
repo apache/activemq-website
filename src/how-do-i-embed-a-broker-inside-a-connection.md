@@ -7,6 +7,7 @@ type: activemq5
 
  [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq) > [How do I embed a Broker inside a Connection](how-do-i-embed-a-broker-inside-a-connection)
 
+{% include inclusive-terminology-notice.html %}
 
 In many messaging topologies there are JMS Brokers (server side) and a JMS client side. Often it makes sense to deploy a broker within your JVM. This allows you to optimise away a network hop; making the networking of JMS as efficient as pure RMI, but with all the usual JMS features of location independence, reliability, load balancing etc.
 
@@ -23,7 +24,7 @@ broker.addConnector("tcp://localhost:61616");
 
 broker.start();
 ```
-If you want to lazily bind the transport connector as part of start(), useful when start() will block pending a store lock (as in a slave start), you can use the following code
+If you want to lazily bind the transport connector as part of start(), useful when start() will block pending a store lock (as in a passive broker start), you can use the following code
 ```
 BrokerService broker = new BrokerService();
 

@@ -4,6 +4,7 @@ title: Replicated LevelDB Store
 title-class: page-title-activemq5
 type: activemq5
 ---
+{% include inclusive-terminology-notice.html %}
 
 > **Warning**
 > 
@@ -12,7 +13,7 @@ type: activemq5
 Synopsis
 --------
 
-The Replicated LevelDB Store uses Apache ZooKeeper to pick a master from a set of broker nodes configured to replicate a LevelDB Store. Then synchronizes all slave LevelDB Stores with the master keeps them up to date by replicating all updates from the master.
+The Replicated LevelDB Store uses Apache ZooKeeper to pick an active broker from a set of broker nodes configured to replicate a LevelDB Store. Then synchronizes all passive broker LevelDB Stores with the active broker keeps them up to date by replicating all updates from the active broker.
 
 The Replicated LevelDB Store uses the same data files as a LevelDB Store, so you can switch a broker configuration between replicated and non replicated whenever you want.
 
@@ -25,11 +26,11 @@ How it works.
 
 ![](assets/img/replicated-leveldb-store.png)
 
-It uses [Apache ZooKeeper](http://zookeeper.apache.org/) to coordinate which node in the cluster becomes the master. The elected master broker node starts and accepts client connections. The other nodes go into slave mode and connect the the master and synchronize their persistent state /w it. The slave nodes do not accept client connections. All persistent operations are replicated to the connected slaves. If the master dies, the slaves with the latest update gets promoted to become the master. The failed node can then be brought back online and it will go into slave mode.
+It uses [Apache ZooKeeper](http://zookeeper.apache.org/) to coordinate which node in the cluster becomes the active broker. The elected active broker node starts and accepts client connections. The other nodes go into passive broker mode and connect to the active broker and synchronize their persistent state /w it. The passive brokers do not accept client connections. All persistent operations are replicated to the connected passive brokers. If the active broker dies, the passive brokers with the latest update gets promoted to become the active broker. The failed node can then be brought back online and it will go into passive broker mode.
 
-All messaging operations which require a sync to disk will wait for the update to be replicated to a quorum of the nodes before completing. So if you configure the store with `replicas="3"` then the quorum size is `(3/2+1)=2`. The master will store the update locally and wait for 1 other slave to store the update before reporting success. Another way to think about it is that store will do synchronous replication to a quorum of the replication nodes and asynchronous replication replication to any additional nodes.
+All messaging operations which require a sync to disk will wait for the update to be replicated to a quorum of the nodes before completing. So if you configure the store with `replicas="3"` then the quorum size is `(3/2+1)=2`. The active broker will store the update locally and wait for 1 other passive broker to store the update before reporting success. Another way to think about it is that store will do synchronous replication to a quorum of the replication nodes and asynchronous replication replication to any additional nodes.
 
-When a new master is elected, you also need at least a quorum of nodes online to be able to find a node with the lastest updates. The node with the lastest updates will become the new master. Therefore, it's recommend that you run with at least 3 replica nodes so that you can take one down without suffering a service outage.
+When a new active broker is elected, you also need at least a quorum of nodes online to be able to find a node with the lastest updates. The node with the lastest updates will become the new active broker. Therefore, it's recommend that you run with at least 3 replica nodes so that you can take one down without suffering a service outage.
 
 ### Deployment Tips
 
@@ -39,7 +40,7 @@ failover:(tcp://broker1:61616,tcp://broker2:61616,tcp://broker3:61616)
 ```
 You should run at least 3 ZooKeeper server nodes so that the ZooKeeper service is highly available. Don't overcommit your ZooKeeper servers. An overworked ZooKeeper might start thinking live replication nodes have gone offline due to delays in processing their 'keep-alive' messages.
 
-For best results, make sure you explicitly configure the hostname attribute with a hostname or ip address for the node that other cluster members to access the machine with. The automatically determined hostname is not always accessible by the other cluster members and results in slaves not being able to establish a replication session with the master.
+For best results, make sure you explicitly configure the hostname attribute with a hostname or ip address for the node that other cluster members to access the machine with. The automatically determined hostname is not always accessible by the other cluster members and results in passive brokers not being able to establish a replication session with the active broker.
 
 Configuration
 -------------
@@ -73,7 +74,7 @@ property name|default value|Comments
 `securityToken`||A security token which must match on all replication nodes for them to accept each others replication requests.
 `zkAddress`|`127.0.0.1:2181`|A comma separated list of ZooKeeper servers.
 `zkPassword`||The password to use when connecting to the ZooKeeper server.
-`zkPath`|`/default`|The path to the ZooKeeper directory where Master/Slave election information will be exchanged.
+`zkPath`|`/default`|The path to the ZooKeeper directory where Active/Passive election information will be exchanged.
 `zkSessionTimeout`|`2s`|How quickly a node failure will be detected by ZooKeeper. (prior to 5.11 - this had a typo zkSessionTmeout)
 `sync`|`quorum_mem`|Controls where updates are reside before being considered complete. This setting is a comma separated list of the following options: `local_mem`, `local_disk`, `remote_mem`, `remote_disk`, `quorum_mem`, `quorum_disk`. If you combine two settings for a target, the stronger guarantee is used. For example, configuring `local_mem, local_disk` is the same as just using `local_disk`. quorum_mem is the same as `local_mem, remote_mem` and `quorum_disk` is the same as `local_disk, remote_disk`
 
@@ -83,9 +84,9 @@ The following configuration properties can be unique per node:
 
 property name||default value|Comments
 ---|---|---
-`bind`|`tcp://0.0.0.0:61619`|When this node becomes a master, it will bind the configured address and port to service the replication protocol. Using dynamic ports is also supported. Just configure with `tcp://0.0.0.0:0`
-`hostname`||The host name used to advertise the replication service when this node becomes the master. If not set it will be automatically determined.|
-`weight`|`1`|The replication node that has the latest update with the highest weight will become the master. Used to give preference to some nodes towards becoming master.
+`bind`|`tcp://0.0.0.0:61619`|When this node becomes the active broker, it will bind the configured address and port to service the replication protocol. Using dynamic ports is also supported. Just configure with `tcp://0.0.0.0:0`
+`hostname`||The host name used to advertise the replication service when this node becomes the active broker. If not set it will be automatically determined.|
+`weight`|`1`|The replication node that has the latest update with the highest weight will become the active broker. Used to give preference to some nodes towards becoming active broker.
 
 The store also supports the same configuration properties of a standard [LevelDB Store](leveldb-store) but it does not support the pluggable storage lockers :
 
@@ -109,5 +110,5 @@ property name|default value|Comments
 
 > **Caveats**
 > 
-> The LevelDB store does not yet support storing data associated with [Delay and Schedule Message Delivery](delay-and-schedule-message-delivery). Those are are stored in a separate non-replicated KahaDB data files. Unexpected results will occur if you use [Delay and Schedule Message Delivery](delay-and-schedule-message-delivery) with the replicated leveldb store since that data will be not be there when the master fails over to a slave.
+> The LevelDB store does not yet support storing data associated with [Delay and Schedule Message Delivery](delay-and-schedule-message-delivery). Those are are stored in a separate non-replicated KahaDB data files. Unexpected results will occur if you use [Delay and Schedule Message Delivery](delay-and-schedule-message-delivery) with the replicated leveldb store since that data will be not there when the active broker fails over to a passive broker.
 

@@ -7,6 +7,7 @@ type: activemq5
 
 [Features](features) > [Consumer Features](consumer-features) > [Exclusive Consumer](exclusive-consumer)
 
+{% include inclusive-terminology-notice.html %}
 
 ### Background
 
@@ -20,7 +21,7 @@ So what folks have to do in J2EE clusters is often to _pin_ one particular JVM i
 
 We have a new feature in 4.x called Exclusive Consumer or Exclusive Queues which avoids the end user having to _pin_ anything. The broker will pick a single MessageConsumer to get all the messages for a queue to ensure ordering. If that consumer fails, the broker will auto failover and choose another consumer.
 
-So the effect is a heterogeneous J2EE cluster where each JVM has the same setup and configuration; the broker is choosing one consumer to be the _master_ and send all the messages to it in order until it dies; then you get immediate failover to another consumer.
+So the effect is a heterogeneous J2EE cluster where each JVM has the same setup and configuration; the broker is choosing one consumer to be the _active consumer_ and send all the messages to it in order until it dies; then you get immediate failover to another consumer.
 
 For those who've struggled with pinning JMS consumers in J2EE clusters you'll immediately realize how useful this is to making clustered, high available distributed services.
 

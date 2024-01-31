@@ -7,6 +7,7 @@ type: activemq5
 
 [Using ActiveMQ](using-activemq) > [Examples](examples)
 
+{% include inclusive-terminology-notice.html %}
 
 Since version **5.12.0**, Apache ActiveMQ comes with the new tool that can be used to produce and consume messages from the broker.
 
@@ -41,7 +42,7 @@ activemq:consumer
 Options
 -------
 
-For all options on the commands, run them with `--help` parameter. The up to date, options for [producer](https://github.com/apache/activemq/blob/master/activemq-console/src/main/resources/org/apache/activemq/console/command/producer.txt) and [consumer](https://github.com/apache/activemq/blob/master/activemq-console/src/main/resources/org/apache/activemq/console/command/consumer.txt) can be found in the source.
+For all options on the commands, run them with `--help` parameter. The up to date, options for [producer](https://github.com/apache/activemq/blob/main/activemq-console/src/main/resources/org/apache/activemq/console/command/producer.txt) and [consumer](https://github.com/apache/activemq/blob/main/activemq-console/src/main/resources/org/apache/activemq/console/command/consumer.txt) can be found in the source.
 
 Examples
 --------

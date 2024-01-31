@@ -224,7 +224,7 @@ or to be more specific, total consumer count with
 ```
 wget --user admin --password admin --header "Origin: http://localhost" --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost/TotalConsumerCount
 ```
-By default, ActiveMQ uses the [following](https://github.com/apache/activemq/blob/master/assembly/src/release/webapps/api/WEB-INF/classes/jolokia-access.xml) Jolokia security policy:
+By default, ActiveMQ uses the [following](https://github.com/apache/activemq/blob/main/assembly/src/release/webapps/api/WEB-INF/classes/jolokia-access.xml) Jolokia security policy:
 ```
 <restrict>
 

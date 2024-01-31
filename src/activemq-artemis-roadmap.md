@@ -4,6 +4,7 @@ title: Artemis' Roadmap to ActiveMQ <i>Next</i>
 title-class: page-title-main
 type: main
 ---
+{% include inclusive-terminology-notice.html %}
 
 The goal of this page is to identify the outstanding issues that must be addressed by Artemis in order to achieve feature parity with ActiveMQ "Classic". The overall objective for working toward feature parity between "Classic" and Artemis is for Artemis to eventually become the next major version of ActiveMQ. This page exists so that we can work together as a group to achieve this goal. This page does **not** list the features which Artemis has *beyond* what currently exists in ActiveMQ "Classic".
 
@@ -27,7 +28,7 @@ Keep in mind that not every feature must have a &#9989;. Artemis may still be re
 
 |Feature|Artemis Support|JIRA|Notes|
 |---|:---:|---|---|
-|[Broker Camel Component](broker-camel-component)|&#9989;||[example](https://github.com/apache/activemq-artemis/tree/master/examples/features/standard/camel)|
+|[Broker Camel Component](broker-camel-component)|&#9989;||[example](https://github.com/apache/activemq-artemis/tree/main/examples/features/standard/camel)|
 |[Discovery](discovery)|&#9989;||[UDP multicast & JGroups](components/artemis/documentation/latest/using-jms)|
 |[Enterprise Integration Patterns](enterprise-integration-patterns)|&#9989;||see "Broker Camel Component"|
 |[Horizontal Scaling](horizontal-scaling)|&#9989;||supported via [clustering](components/artemis/documentation/latest/clusters) or [federation](components/artemis/documentation/latest/federation)|
@@ -44,7 +45,7 @@ Keep in mind that not every feature must have a &#9989;. Artemis may still be re
 
 |Feature|Artemis Support|JIRA|Notes|
 |---|:---:|---|---|
-|[Master-slave](masterslave)|&#9989;||using JDBC, shared filesystem, & replication; [documentation](components/artemis/documentation/latest/ha)|
+|[Active-passive](activepassive)|&#9989;||using JDBC, shared filesystem, & replication; [documentation](components/artemis/documentation/latest/ha)|
 |[Network of brokers](networks-of-brokers)|&#9989;|[ARTEMIS-2265](https://issues.apache.org/jira/browse/ARTEMIS-2265)|equivalent through [clustering](components/artemis/documentation/latest/clusters) or [federation](components/artemis/documentation/latest/federation)|
 |[Replicated message store](replicated-message-store)|&#9989;||equivalent via [replication](components/artemis/documentation/latest/ha) HA config|
 
@@ -137,5 +138,5 @@ Migration
 This section should help to answer the end user question, _'How do I migrate from ActiveMQ "Classic" to Artemis?'_. This should include the identification of any tools that can help make this easier, as well as documenting information and procedures specific to migrating.
 
 * [Migration Guide](components/artemis/migration)
-* Export messages from KahaDB using [this tool](https://github.com/apache/activemq-cli-tools/tree/master/activemq-kahadb-exporter). The exported XML can be imported via the `./artemis data imp` command.
-* For non-standard backends (where direct export isn't an option) follow [this example](https://github.com/apache/activemq-artemis/tree/master/examples/features/sub-modules/inter-broker-bridge/artemis-jms-bridge) to migrate messages from ActiveMQ "Classic" to Artemis over the wire.
+* Export messages from KahaDB using [this tool](https://github.com/apache/activemq-cli-tools/tree/main/activemq-kahadb-exporter). The exported XML can be imported via the `./artemis data imp` command.
+* For non-standard backends (where direct export isn't an option) follow [this example](https://github.com/apache/activemq-artemis/tree/main/examples/features/sub-modules/inter-broker-bridge/artemis-jms-bridge) to migrate messages from ActiveMQ "Classic" to Artemis over the wire.

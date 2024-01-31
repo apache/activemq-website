@@ -551,7 +551,7 @@ A Flow provides different dispatch policies within the NMR
 
 _\<masterConnector>_
 
-Connects a Slave Broker to a Master when using [Master Slave](masterslave) for High Availability of messages.
+Connects a passive Broker to an active broker when using [Active Passive](activepassive) for High Availability of messages.
 
 _\<memoryUsage>_
 
@@ -2254,7 +2254,7 @@ useDatabaseLock
 
 _boolean_
 
-Sets whether or not an exclusive database lock should be used to enable JDBC Master/Slave. Enabled by default.
+Sets whether or not an exclusive database lock should be used to enable JDBC Active/Passive. Enabled by default.
 
 useExternalMessageReferences
 
@@ -2568,7 +2568,7 @@ useDatabaseLock
 
 _boolean_
 
-Sets whether or not an exclusive database lock should be used to enable JDBC Master/Slave. Enabled by default.
+Sets whether or not an exclusive database lock should be used to enable JDBC Active/Passive. Enabled by default.
 
 useJournal
 
@@ -2922,7 +2922,7 @@ _boolean_
 
 ### The _\<masterConnector>_ Element
 
-Connects a Slave Broker to a Master when using [Master Slave](masterslave) for High Availability of messages.
+Connects a passive Broker to an active broker when using [Active Passive](activepassive) for High Availability of messages.
 
 #### Properties
 
@@ -5039,7 +5039,7 @@ A Flow provides different dispatch policies within the NMR
 
 _\<masterConnector>_
 
-Connects a Slave Broker to a Master when using [Master Slave](masterslave) for High Availability of messages.
+Connects a passive Broker to an active broker when using [Active Passive](activepassive) for High Availability of messages.
 
 _\<memoryPersistenceAdapter>_
 

@@ -7,6 +7,8 @@ type: activemq5
 
  [Features](features)
 
+{% include inclusive-terminology-notice.html %}
+
 Apache ActiveMQ Features
 ------------------------
 
@@ -20,11 +22,11 @@ Apache ActiveMQ is packed with features; to get an idea you might want to look a
     *   [The ActiveBlaze Message type](the-activeblaze-message-type)
 *   [Broker Camel Component](broker-camel-component)
 *   [Clustering](clustering)
-    *   [MasterSlave](masterslave)
-        *   [JDBC Master Slave](jdbc-master-slave)
+    *   [ActivePassive](activepassive)
+        *   [JDBC Active Passive](jdbc-active-passive)
         *   [KahaDB Replication (Experimental)](kahadb-replication-experimental)
-        *   [Pure Master Slave](pure-master-slave)
-        *   [Shared File System Master Slave](shared-file-system-master-slave)
+        *   [Pure Active Passive](pure-active-passive)
+        *   [Shared File System Active Passive](shared-file-system-active-passive)
     *   [Networks of Brokers](networks-of-brokers)
     *   [Replicated Message Store](replicated-message-store)
 *   [Command Agent](command-agent)

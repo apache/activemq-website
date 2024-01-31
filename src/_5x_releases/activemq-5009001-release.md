@@ -9,18 +9,20 @@ redirect_from:
 
 [Overview](overview) > [Download](download) > [ActiveMQ 5.9.1 Release](activemq-591-release)
 
+{% include inclusive-terminology-notice.html %}
+
 <div class="alert alert-warning">
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
 Apache ActiveMQ 5.9.1 resolves [more than 120 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+%225.9.1%22+AND+status+%3D+Resolved+ORDER+BY+priority+DESC&mode=hide), mostly bug fixes and improvements. It has the following new features:
 
-*   [Replicated LevelDB Store](replicated-Features/PersistenceFeatures/Persistence/Features/Persistence/leveldb-store) for shared nothing Master/Slave.
+*   [Replicated LevelDB Store](replicated-Features/PersistenceFeatures/Persistence/Features/Persistence/leveldb-store) for shared nothing Active/Passive.
 *   [Runtime Configuration](New Features/New Features in 5.9/runtime-Community/FAQ/configuration)
 *   Generic JMS XA connection pool in activemq-jms-pool module (has no ActiveMQ dependency)
 *   MQTT over WebSockets support
 *   [**broker**](FeaturesFeatures/Features/broker-camel-component) Apache Camel component
-*   Broker auto-restart upon losing master status
+*   Broker auto-restart upon losing active status
 *   AMQP Hardening
 *   LevelDB Hardening
 

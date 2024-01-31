@@ -7,6 +7,7 @@ type: activemq5
 
 [Features](features) > [Message Features](message-features) > [Advisory Message](advisory-message)
 
+{% include inclusive-terminology-notice.html %}
 
 ActiveMQ supports advisory messages which allows you to watch the system using regular JMS messages. Currently we have advisory messages that support:
 
@@ -101,7 +102,7 @@ Advisory Topics|Description|Properties|Data Structure|Default|PolicyEntry Proper
 `ActiveMQ.Advisory.MessageConsumed.Queue`|Message consumed by a client.|`String='orignalMessageId'` - the delivered id|`Message`|`false`|`advisoryForConsumed`
 `ActiveMQ.Advisory.MessageConsumed.Topic`|Message consumed by a client.|`String='orignalMessageId'` - the delivered id|`Message`|`false`|`advisoryForConsumed`
 `ActiveMQ.Advisory.FULL`|A Usage resource is at its limit.|`String='usageName'` - the name of Usage resource|`null`|`false`|`advisoryWhenFull`
-`ActiveMQ.Advisory.MasterBroker`|A broker is now the master in a master/slave configuration.|`null`|`null`|`true`|`none`
+`ActiveMQ.Advisory.MasterBroker`|A broker is now the active broker in an active/passive configuration.|`null`|`null`|`true`|`none`
 
 ### New Advisories in 5.4
 

@@ -7,6 +7,7 @@ type: activemq5
 
 [Features](features) > [Clustering](clustering) > [Replicated Message Store](replicated-message-store)
 
+{% include inclusive-terminology-notice.html %}
 
 If messages are stored on the hard drive of a broker or inside a single database; then you have a single point of failure with respect to the message persistence. If you lose the entire machine, disk or database, you have lost messages.
 
@@ -22,11 +23,11 @@ If you're using RAID disks striped sufficiently, you could just restart the mach
 
 If you use one of the file based persistence mechanisms such as the default high performance journal and Apache Derby, you could write to a SAN or shared network drive and in times of failure, start up a new broker using the files from the failed broker.
 
-Also 4.1 allows you to start many brokers reading from the same shared file system to support high availability via the [Shared File System Master Slave](shared-file-system-master-slave) feature.
+Also 4.1 allows you to start many brokers reading from the same shared file system to support high availability via the [Shared File System Active Passive](shared-file-system-active-passive) feature.
 
-### Master/Slave
+### Active/Passive
 
-An alternative is to use the [MasterSlave](masterslave) feature to pair brokers together so that all messages are replicated to both brokers, the master and slave to ensure that there are two physical copies of the message so that catastrophic hardware failures (such as loss of an entire data centre) can be handled.
+An alternative is to use the [ActivePassive](activepassive) feature to pair brokers together so that all messages are replicated to both brokers, the active and passive to ensure that there are two physical copies of the message so that catastrophic hardware failures (such as loss of an entire data centre) can be handled.
 
 ### Clustered JDBC databases
 

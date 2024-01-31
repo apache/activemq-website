@@ -7,6 +7,7 @@ type: activemq5
 
 [Features](features) > [Clustering](clustering)
 
+{% include inclusive-terminology-notice.html %}
 
 Clustering is a large topic and often means different things to different people. We'll try to list the various aspects of clustering and how they relate to ActiveMQ
 
@@ -50,17 +51,17 @@ Networks of brokers also allows us to scale up to a massive number of clients in
 
 You can think of this as a cluster of clients connecting with a cluster of brokers with auto-failover and discovery, making a simple and easy to use messaging fabric.
 
-Master Slave
+Active Passive
 ------------
 
 The problem with running lots of stand alone brokers or brokers in a network is that messages are owned by a single physical broker at any point in time. If that broker goes down, you have to wait for it to be restarted before the message can be delivered. (If you are using non-persistent messaging and a broker goes down you generally lose your message).
 
-The idea behind [MasterSlave](masterslave) is that messages are replicated to a slave broker so that even if you have a catastrophic hardware failure of the master's machine, file system or data centre, you get immediate failover to the slave with no message loss.
+The idea behind [ActivePassive](activepassive) is that messages are replicated to a passive broker so that even if you have a catastrophic hardware failure of the active broker's machine, file system or data centre, you get immediate failover to the passive broker with no message loss.
 
 Replicated Message Stores
 -------------------------
 
-An alternative to [MasterSlave](masterslave) is to have some way to replicate the message store; so for the disk files to be shared in some way. For example using a SAN or shared network drive you can share the files of a broker so that if it fails another broker can take over straight away.
+An alternative to [ActivePassive](activepassive) is to have some way to replicate the message store; so for the disk files to be shared in some way. For example using a SAN or shared network drive you can share the files of a broker so that if it fails another broker can take over straight away.
 
 So by supporting a [Replicated Message Store](replicated-message-store) you can reduce the risk of message loss to provide either a HA backup or a full [DR](dr) solution capable of surviving a data centre failure.
 

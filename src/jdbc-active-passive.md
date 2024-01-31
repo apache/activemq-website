@@ -1,13 +1,17 @@
 ---
 layout: default_md
-title: JDBC Master Slave 
+title: JDBC Active Passive 
 title-class: page-title-activemq5
 type: activemq5
+redirect_from:
+- /jdbc-master-slave
 ---
 
- [Features](features) > [Clustering](clustering) > [MasterSlave](masterslave) > [JDBC Master Slave](jdbc-master-slave)
+ [Features](features) > [Clustering](clustering) > [ActivePassive](activepassive) > [JDBC Active Passive](jdbc-active-passive)
 
-JDBC Master Slave
+{% include inclusive-terminology-notice.html %}
+
+JDBC Active Passive
 -----------------
 
 First supported in ActiveMQ version 4.1
@@ -16,7 +20,7 @@ If you are using pure JDBC and not using the high performance journal then you a
 
 ### Startup
 
-When using just JDBC as the data source you can use a Master Slave approach, running as many brokers as you wish as this diagram shows. On startup one master grabs an exclusive lock in the broker database - all other brokers are slaves and pause waiting for the exclusive lock.
+When using just JDBC as the data source you can use an Active Passive approach, running as many brokers as you wish as this diagram shows. On startup one active grabs an exclusive lock in the broker database - all other brokers are passives and pause waiting for the exclusive lock.
 
 ![](assets/img/Startup.png)
 
@@ -24,29 +28,29 @@ Clients should be using the [Failover Transport](failover-transport-reference) t
 ```
 failover:(tcp://broker1:61616,tcp://broker2:61616,tcp://broker3:61616)
 ```
-Only the master broker starts up its transport connectors and so the clients can only connect to the master.
+Only the active broker starts up its transport connectors and so the clients can only connect to the active.
 
-### Master failure
+### Active failure
 
-If the master looses connection to the database or looses the exclusive lock then it immediately shuts down. If a master shuts down or fails, one of the other slaves will grab the lock and so the topology switches to the following diagram
+If the active loses connection to the database or loses the exclusive lock then it immediately shuts down. If an active shuts down or fails, one of the other passives will grab the lock and so the topology switches to the following diagram
 
-![](assets/img/MasterFailed.png)
+![](assets/img/ActiveFailed.png)
 
-One of the other other slaves immediately grabs the exclusive lock on the database to them commences becoming the master, starting all of its transport connectors.
+One of the other passives immediately grabs the exclusive lock on the database to them commences becoming the active, starting all of its transport connectors.
 
-Clients loose connection to the stopped master and then the failover transport tries to connect to the available brokers - of which the only one available is the new master.
+Clients lose connection to the stopped active and then the failover transport tries to connect to the available brokers - of which the only one available is the new active.
 
-### Master restart
+### Active restart
 
-At any time you can restart other brokers which join the cluster and start as slaves waiting to become a master if the master is shutdown or a failure occurs. So the following topology is created after a restart of an old master...
+At any time you can restart other brokers which join the cluster and start as passives waiting to become an active if the active is shutdown or a failure occurs. So the following topology is created after a restart of an old active...
 
-![](assets/img/MasterRestarted.png)
+![](assets/img/ActiveRestarted.png)
 
-### Configuring JDBC Master Slave
+### Configuring JDBC Active Passive
 
-By default if you use the **<jdbcPersistenceAdapter/>** to avoid the high performance journal you will be using JDBC Master Slave by default. You just need to run more than one broker and point the client side URIs to them to get master/slave. This works because they both try an acquire an exclusive lock on a shared table in the database and only one will succeed.
+By default if you use the **<jdbcPersistenceAdapter/>** to avoid the high performance journal you will be using JDBC Active Passive by default. You just need to run more than one broker and point the client side URIs to them to get active/passive. This works because they both try an acquire an exclusive lock on a shared table in the database and only one will succeed.
 
-The following example shows how to configure the ActiveMQ broker in JDBC Master Slave mode
+The following example shows how to configure the ActiveMQ broker in JDBC Active Passive mode
 ```
 <beans>
 

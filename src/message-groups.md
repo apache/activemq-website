@@ -127,7 +127,7 @@ The following code snippet shows how to wait for two consumers (or two seconds) 
   </policyMap>
 </destinationPolicy>
 ```
-As [the appropriate test case](https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/java/org/apache/activemq/usecases/MessageGroupDelayedTest.java) shows, adding a small time pause before dispatching or setting a minimum consumer number, ensures equal message group distribution.
+As [the appropriate test case](https://github.com/apache/activemq/blob/main/activemq-unit-tests/src/test/java/org/apache/activemq/usecases/MessageGroupDelayedTest.java) shows, adding a small time pause before dispatching or setting a minimum consumer number, ensures equal message group distribution.
 
 If you need to rebalance the message groups manually for any reason you can do so by executing the `removeAllMessageGroups` operation on the JMX MBean of the corresponding queue.
 

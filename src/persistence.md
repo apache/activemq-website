@@ -7,6 +7,8 @@ type: activemq5
 
 [Features](features) > [Persistence](persistence)
 
+{% include inclusive-terminology-notice.html %}
+
 ActiveMQ V5.14.2 / V5.17.0
 -------------
 
@@ -16,7 +18,7 @@ We once again recommend you use [KahaDB](kahadb).
 ActiveMQ V5.9
 -------------
 
-In ActiveMQ 5.9, the [Replicated LevelDB Store](replicated-leveldb-store) was introduced. It handles using [Apache ZooKeeper](http://zookeeper.apache.org/) to pick a master from a set of broker nodes configured to replicate single LevelDB Store. Then synchronizes all slave LevelDB Stores with the master keeps them up to date by replicating all updates to the master. It may have become the preferred [Master Slave](masterslave) configuration going forward.
+In ActiveMQ 5.9, the [Replicated LevelDB Store](replicated-leveldb-store) was introduced. It handles using [Apache ZooKeeper](http://zookeeper.apache.org/) to pick an active broker from a set of broker nodes configured to replicate single LevelDB Store. Then synchronizes all passive broker LevelDB Stores with the active broker keeps them up to date by replicating all updates to the active broker. It may have become the preferred [Active Passive](activepassive) configuration going forward.
 
 ActiveMQ V5.8
 -------------

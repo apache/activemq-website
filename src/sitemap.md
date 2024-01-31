@@ -7,6 +7,7 @@ type: activemq5
 
 [Site](site) > [SiteMap](sitemap)
 
+{% include inclusive-terminology-notice.html %}
 
 Using ActiveMQ
 --------------
@@ -325,10 +326,10 @@ Features
     *   [The ActiveBlaze Message type](the-activeblaze-message-type)
 *   [Broker Camel Component](broker-camel-component)
 *   [Clustering]()
-    *   [MasterSlave]()
-        *   [JDBC Master Slave](jdbc-master-slave)
+    *   [ActivePassive]()
+        *   [JDBC Active Passive](jdbc-active-passive)
         *   [KahaDB Replication (Experimental)](kahadb-replication-experimental)
-        *   [Shared File System Master Slave](shared-file-system-master-slave)
+        *   [Shared File System Active Passive](shared-file-system-active-passive)
     *   [Networks of Brokers](networks-of-brokers)
     *   [Replicated Message Store](replicated-message-store)
 *   [Command Agent](command-agent)
