@@ -24,6 +24,8 @@ type: main
 [Read More]({{site.baseurl}}/components/nms/nms-api-downloads)
 {% elsif document.collection contains "nms_amqp" %}
 [Read More]({{site.baseurl}}/components/nms/providers/amqp/downloads/)
+{% elsif document.collection contains "classic" %}
+[Read More]({{site.baseurl}}/components/classic/download/)
 {% else %}
 [Read More]({{document.url}})
 {% endif %}

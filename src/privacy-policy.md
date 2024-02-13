@@ -1,12 +1,9 @@
 ---
 layout: default_md
-title: Privacy Policy 
-title-class: page-title-activemq5
-type: activemq5
+title: ActiveMQ Privacy Policy 
+title-class: page-title-main
+type: main
 ---
-
-[Community](community) > [Privacy Policy](privacy-policy)
-
 
 Information about your use of this website is collected using server access logs and a tracking cookie. The collected information consists of the following:
 
@@ -15,8 +12,6 @@ Information about your use of this website is collected using server access logs
 3.  The date and time you access our site;
 4.  The pages you visit; and
 5.  The addresses of pages from where you followed a link to our site.
-
-Part of this information is gathered using a tracking cookie set by the [Google Analytics](http://www.google.com/analytics/) service and handled by Google as described in their [privacy policy](http://www.google.com/privacy.html). See your browser documentation for instructions on how to disable the cookie if you prefer not to share this data with Google.
 
 We use the gathered information to help us make our site more useful to visitors and to better understand how and when our site is used. We do not track or collect personally identifiable information or associate gathered data with any personally identifying information from other sources.
 

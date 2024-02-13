@@ -1,15 +1,15 @@
 ---
 layout: default_md
-title: Security Advisories - ActiveMQ 5.x
-title-class: page-title-activemq5
-type: activemq5
+title: Security Advisories - ActiveMQ Classic
+title-class: page-title-classic
+type: classic
 ---
 
-Details of security problems fixed in released versions of Apache ActiveMQ 6.x and 5.x are detailed below.
+Details of security problems fixed in released versions of Apache ActiveMQ Classic 6.x and 5.x are detailed below.
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
-*   [CVE-2023-46604](../../security-advisories.data/CVE-2023-46604-announcement.txt) - Unbounded deserialization causes ActiveMQ to be vulnerable to a remote code execution (RCE) attack
+*   [CVE-2023-46604](../../security-advisories.data/CVE-2023-46604-announcement.txt) - Unbounded deserialization causes ActiveMQ Classic to be vulnerable to a remote code execution (RCE) attack
 *   [CVE-2022-41678](../../security-advisories.data/CVE-2022-41678-announcement.txt) - Deserialization vulnerability on Jolokia that allows authenticated users to perform remote code execution (RCE)
 *   [CVE-2021-26117](../../security-advisories.data/CVE-2021-26117-announcement.txt) - ActiveMQ: LDAP-Authentication does not verify passwords on servers with anonymous bind
 *   [CVE-2020-13947](../../security-advisories.data/CVE-2020-13947-announcement.txt) - XSS in WebConsole
@@ -26,7 +26,7 @@ See the main [Security Advisories](../../security-advisories) page for details f
 *   [CVE-2016-0782](../../security-advisories.data/CVE-2016-0782-announcement.txt) - ActiveMQ Web Console - Cross-Site Scripting
 *   [CVE-2016-3088](../../security-advisories.data/CVE-2016-3088-announcement.txt) - ActiveMQ Fileserver web application vulnerabilities
 *   [CVE-2015-5254](../../security-advisories.data/CVE-2015-5254-announcement.txt) - Unsafe deserialization in ActiveMQ
-*   [CVE-2015-1830](../../security-advisories.data/CVE-2015-1830-announcement.txt) - Path traversal leading to unauthenticated RCE in ActiveMQ 
+*   [CVE-2015-1830](../../security-advisories.data/CVE-2015-1830-announcement.txt) - Path traversal leading to unauthenticated RCE in ActiveMQ Classic
 *   [CVE-2014-3576](../../security-advisories.data/CVE-2014-3576-announcement.txt) - Remote Unauthenticated Shutdown of Broker (DoS)
 *   [CVE-2014-3600](../../security-advisories.data/CVE-2014-3600-announcement.txt) - Apache ActiveMQ XXE with XPath selectors
 *   [CVE-2014-3612](../../security-advisories.data/CVE-2014-3612-announcement.txt) - ActiveMQ JAAS: LDAPLoginModule allows empty password authentication and Wildcard Interpretation

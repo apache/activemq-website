@@ -1,20 +1,20 @@
 ---
 layout: default_md
-title: ActiveMQ Download
-title-class: page-title-activemq5
-type: activemq5
+title: Download ActiveMQ Classic
+title-class: page-title-classic
+type: classic
 ---
 
-These are the current releases. For prior releases, please see the [past releases](../../../download-archives) page.
+These are the current ActiveMQ Classic releases. For prior releases, please see the [past releases](../documentation/download-archives) page.
 
 It is important to [verify the integrity](#verify-the-integrity-of-downloads) of the files you download.
 
-{% assign releases = site["5x_releases"] | reverse %}
+{% assign reversed_releases = site["classic_releases"] | reverse %}
 
-{% for current_release in site.data.current_releases["5x"] %}
-    {% for release in releases %}
-        {% if release.version contains current_release %}
-#### ActiveMQ {{release.version}} ({{release.release_date | date_to_string: "ordinal", "US"}})
+{% for current_release_prefix in site.data.current_releases["classic"] %}
+    {% for release in reversed_releases %}
+        {% if release.version contains current_release_prefix %}
+#### ActiveMQ Classic {{release.version}} ({{release.release_date | date_to_string: "ordinal", "US"}})
 [Release Notes]({{ release.release_notes }}) | [Release Page]({{release.url}}) | [Documentation](../documentation) | Java compatibility: **{{release.java_version}}**
 
 Windows|[apache-activemq-{{release.version}}-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.asc)
