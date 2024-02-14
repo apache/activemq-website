@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="/js/fontawesome-v5.0.8-all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ"></script>
+    <script src="/js/jquery-3.6.1.slim.min.js" integrity="sha384-MYL22lstpGhSa4+udJSGro5I+VfM13fdJfCbAzP9krCEoK5r2EDFdgTg2+DGXdj+"></script>
+    <script src="/js/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"></script>
+    <script src="/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/news">News</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ Classic</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Community<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact">Contact Us</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contributing">Contribute</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/support">Get Support</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/assets/img/feather.png" style="height:20px">Apache<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://whimsy.apache.org/board/minutes/ActiveMQ.html">Board Reports</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://privacy.apache.org/policies/privacy-policy-public.html">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-classic">
+    <div class="container">
+      <h1>Slow Consumer Handling</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 classic">
+        <p><a href="features">Features</a> &gt; <a href="consumer-features">Consumer Features</a> &gt; <a href="slow-consumer-handling">Slow Consumer Handling</a></p>
+
+<p><a href="Design Documents/slow-consumers">Slow Consumers</a> can cause problems on non-durable topics since they can force the broker to keep old messages in RAM which once it fills up, forces the broker to slow down producers, causing the fast consumers to be slowed down. One option we could implement in the future is spooling to disk - but then spooling to disk could slow down the fast consumers too.</p>
+
+<p>Currently we have a strategy that lets you configure the maximum number of matched messages the broker will keep around for a consumer in addition to its prefetch buffer. Once this maximum is reached, as new messages come in, older messages are discarded. This allows you to keep the RAM for current messages and keep sending messages to a slow consumer but to discard old messages.</p>
+
+<h2 id="pending-message-limit-strategy">Pending Message Limit Strategy</h2>
+
+<p>You can configure the <code class="language-plaintext highlighter-rouge">PendingMessageLimitStrategy</code> implementation class on the destination map so that different regions of your topic namespace can have different strategies for dealing with slow consumers. For example you may want to use this strategy for prices which are very high volume but for orders and trades which are lower volume you might not wish to discard old messages.</p>
+
+<p>The strategy calculates the maximum number of pending messages to be kept in RAM for a consumer (above its prefetch size). A value of zero means keep no messages around other than the prefetch amount. A value greater than zero will keep up to that amount of messages around, discarding the older messages as new messages come in. A value of <code class="language-plaintext highlighter-rouge">-1</code> disables the discarding of messages.</p>
+
+<p>There are currently two different implementations of the strategy:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ConstantPendingMessageLimitStrategy</code></li>
+  <li><code class="language-plaintext highlighter-rouge">PrefetchRatePendingMessageLimitStrategy</code></li>
+</ul>
+
+<h3 id="constantpendingmessagelimitstrategy">ConstantPendingMessageLimitStrategy</h3>
+
+<p>This strategy uses a constant limit for all consumers (above their prefetch size).</p>
+
+<p>Example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;constantPendingMessageLimitStrategy limit="50"/&gt;
+</code></pre></div></div>
+
+<h3 id="prefetchratependingmessagelimitstrategy">PrefetchRatePendingMessageLimitStrategy</h3>
+
+<p>This strategy calculates the maximum number of pending messages using a multiplier of the consumers prefetch size. So you could for example keep around 2.5 times the prefetch count for each consumer.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;prefetchRatePendingMessageLimitStrategy multiplier="2.5"/&gt;
+</code></pre></div></div>
+
+<h3 id="using-the-prefetch-policy-to-configure-the-limit">Using the Prefetch Policy to Configure the Limit</h3>
+
+<p>The JMS Client has a <a href="what-is-the-prefetch-limit-for">prefetch policy</a> you can use to configure the various prefetch limits for persistent and non persistent queues and topics. The prefetch policy also allows you to specify the <code class="language-plaintext highlighter-rouge">maximumPendingMessageLimit</code> on a per connection/consumer basis. One minor difference with configuring this value; to simplify operation with non-JMS clients such as with <a href="openwire">OpenWire</a> the value of zero is ignored; so the lowest value you can configure is <code class="language-plaintext highlighter-rouge">1</code>.</p>
+
+<h3 id="configuring-the-eviction-policy">Configuring the Eviction Policy</h3>
+
+<p>We have a <code class="language-plaintext highlighter-rouge">MessageEvictionStrategy</code> which is used to decide which message should be evicted on a slow consumer. The default implementation is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;oldestMessageEvictionStrategy/&gt;
+</code></pre></div></div>
+
+<p>However, you can write your own to use some application specific way of choosing messages for eviction. For example, if you are sending market data price updates you may wish to find an older price value, which might not be the oldest message.</p>
+
+<p>Example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;uniquePropertyMessageEvictionStrategy propertyName="STOCK"/&gt;
+
+</code></pre></div></div>
+<p>where <code class="language-plaintext highlighter-rouge">propertyName</code> is the JMS message property that specifies the price.</p>
+
+<p>Another option could be to use the oldest message with the lowest priority message. Therefore if you have some high priority messages, evict the lower priority messages first even if they are newer.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;oldestMessageWithLowestPriorityEvictionStrategy/&gt;
+</code></pre></div></div>
+
+<h2 id="example">Example</h2>
+
+<p>The following example shows an ActiveMQ Classic broker configuration file. Notice that for topics in the <code class="language-plaintext highlighter-rouge">PRICES.&gt;</code> wildcard range the <code class="language-plaintext highlighter-rouge">pendingMessageLimitStrategy</code> property is set to only keep around <code class="language-plaintext highlighter-rouge">10</code> messages for each consumer above their prefetch buffer size.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:amq="http://activemq.apache.org/schema/core" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd 
+                           http://activemq.apache.org/schema/core  
+                           http://activemq.apache.org/schema/core/activemq-core.xsd"&gt; 
+  &lt;bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/&gt; 
+  &lt;broker xmlns="http://activemq.apache.org/schema/core" persistent="false" brokerName="${brokername}"&gt; 
+    &lt;!-- lets define the dispatch policy --&gt; 
+    &lt;destinationPolicy&gt; 
+      &lt;policyMap&gt; 
+        &lt;policyEntries&gt; 
+          &lt;policyEntry topic="FOO.&gt;"&gt; 
+            &lt;dispatchPolicy&gt; 
+              &lt;roundRobinDispatchPolicy/&gt; 
+            &lt;/dispatchPolicy&gt; 
+            &lt;subscriptionRecoveryPolicy&gt; 
+              &lt;lastImageSubscriptionRecoveryPolicy/&gt; 
+            &lt;/subscriptionRecoveryPolicy&gt;
+          &lt;/policyEntry&gt; 
+          &lt;policyEntry topic="ORDERS.&gt;"&gt; 
+            &lt;dispatchPolicy&gt; 
+              &lt;strictOrderDispatchPolicy/&gt; 
+            &lt;/dispatchPolicy&gt; 
+            &lt;!-- 1 minutes worth --&gt; 
+            &lt;subscriptionRecoveryPolicy&gt;
+              &lt;timedSubscriptionRecoveryPolicy recoverDuration="60000"/&gt;
+            &lt;/subscriptionRecoveryPolicy&gt; 
+          &lt;/policyEntry&gt; 
+          &lt;policyEntry topic="PRICES.&gt;"&gt; 
+          &lt;!-- lets force old messages to be discarded for slow consumers --&gt; 
+            &lt;pendingMessageLimitStrategy&gt; 
+              &lt;constantPendingMessageLimitStrategy limit="10"/&gt; 
+            &lt;/pendingMessageLimitStrategy&gt; 
+            &lt;!-- 10 seconds worth --&gt; 
+            &lt;subscriptionRecoveryPolicy&gt; 
+              &lt;timedSubscriptionRecoveryPolicy recoverDuration="10000"/&gt; 
+            &lt;/subscriptionRecoveryPolicy&gt; 
+          &lt;/policyEntry&gt; 
+          &lt;policyEntry tempTopic="true" advisoryForConsumed="true"/&gt; 
+          &lt;policyEntry tempQueue="true" advisoryForConsumed="true"/&gt; 
+        &lt;/policyEntries&gt; 
+      &lt;/policyMap&gt; 
+    &lt;/destinationPolicy&gt; 
+  &lt;/broker&gt; 
+&lt;/beans&gt;
+</code></pre></div></div>
+
+<h2 id="usage-tips">Usage Tips</h2>
+
+<p>It is advisable that if you know a particular consumer is going to be slow then set its prefetch size to something smaller than the fast consumers!</p>
+
+<p>For example, if you know a particular server is quite slow and you have very high message rates <em>and</em> you have some very fast consumers then you might want to enable this feature and set the prefetch on the slow servers to be a <em>little</em> lower than on the fast servers.</p>
+
+<h3 id="monitoring-the-status-of-slow-consumers">Monitoring the Status of Slow Consumers</h3>
+
+<p>You can also use a <a href="jmx">JMX</a> Console to view the statistics of the active subscriptions. This allows you to view the following statistics on a <code class="language-plaintext highlighter-rouge">TopicSubscriptionViewMBean</code>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Statistic</th>
+      <th>Definition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">discarded</code></td>
+      <td>The count of how many messages have been discarded during the lifetime of the subscription due to it being a slow consumer</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">matched</code></td>
+      <td>The current number of messages matched and to be dispatched to the subscription as soon as some capacity is available in the prefetch buffer. So a non-zero value implies that the prefetch buffer is full for this subscription</td>
+    </tr>
+  </tbody>
+</table>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p><a href="https://www.apache.org/foundation/marks/list/">Apache, ActiveMQ, Apache ActiveMQ</a>, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2024, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="/js/fontawesome-v5.0.8-all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ"></script>
+    <script src="/js/jquery-3.6.1.slim.min.js" integrity="sha384-MYL22lstpGhSa4+udJSGro5I+VfM13fdJfCbAzP9krCEoK5r2EDFdgTg2+DGXdj+"></script>
+    <script src="/js/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"></script>
+    <script src="/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/news">News</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ Classic</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Community<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact">Contact Us</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contributing">Contribute</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/support">Get Support</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/assets/img/feather.png" style="height:20px">Apache<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://whimsy.apache.org/board/minutes/ActiveMQ.html">Board Reports</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://privacy.apache.org/policies/privacy-policy-public.html">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-classic">
+    <div class="container">
+      <h1>LDAP Broker Discovery Mechanism</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 classic">
+        <p><a href="using-activemq-classic-5">Using ActiveMQ Classic 5</a> &gt; <a href="ldap-broker-discovery-mechanism">LDAP Broker Discovery Mechanism</a></p>
+
+<p>Configuring network topologies can be quite tedious when the number of brokers in the system is large. To help ease the configuration overhead for these types of situations, a broker can be configured to look up its broker connections using a LDAP v3 directory server.</p>
+
+<blockquote>
+  <p><strong>Note</strong></p>
+
+  <p>The basic feature was added to satisfy <a href="https://issues.apache.org/activemq/browse/AMQ-358">AMQ-358</a>. There are known problems and limitations with this implementation. These deficiencies have been addressed in <a href="https://issues.apache.org/activemq/browse/AMQ-1587">AMQ-1587</a>. The features discussed on this page require the patch attached to JIRA issue <a href="https://issues.apache.org/activemq/browse/AMQ-1587">AMQ-1587</a>. This patch should apply cleanly to the ActiveMQ Classic 5.0.0 release or the current development trunk.</p>
+</blockquote>
+
+<h2 id="ldap-v3-directory-server-compliance">LDAP v3 Directory Server Compliance</h2>
+
+<p>The following table lists a known subset of directory servers and their compliance to work with the LDAP discovery feature. Most LDAP v3 directory servers will support this feature if they properly implement the <a href="http://www.ietf.org/rfc/rfc2307.txt">RFC2307</a> schemas. In order to support the persistent search capabilities the server must implement the extension defined in <a href="http://www.ietf.org/proceedings/01aug/I-D/draft-ietf-ldapext-psearch-03.txt">draft-ietf-ldapext-psearch-03.txt</a>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Vendor</th>
+      <th>Product</th>
+      <th>Version</th>
+      <th><a href="http://www.ietf.org/rfc/rfc2307.txt">RFC2307</a></th>
+      <th><a href="http://www.ietf.org/proceedings/01aug/I-D/draft-ietf-ldapext-psearch-03.txt">draft-ietf-ldapext-psearch-03.txt</a></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Apache</td>
+      <td>ApacheDS</td>
+      <td>1.0.x</td>
+      <td><img src="assets/img/check.png" alt="(tick)" /></td>
+      <td><img src="assets/img/check.png" alt="(tick)" /></td>
+    </tr>
+    <tr>
+      <td>Microsoft</td>
+      <td>Active Directory</td>
+      <td>Windows 2000, Windows 2003</td>
+      <td><img src="assets/img/warning.png" alt="(warning)" /></td>
+      <td><img src="assets/img/error.png" alt="(error)" /></td>
+    </tr>
+    <tr>
+      <td>Microsoft</td>
+      <td>Active Directory</td>
+      <td>Windows 2003 R2</td>
+      <td><img src="assets/img/check.png" alt="(tick)" /></td>
+      <td><img src="assets/img/error.png" alt="(error)" /></td>
+    </tr>
+    <tr>
+      <td>Sun</td>
+      <td>OpenDS</td>
+      <td>0.9.x</td>
+      <td><img src="assets/img/check.png" alt="(tick)" /></td>
+      <td><img src="assets/img/check.png" alt="(tick)" /></td>
+    </tr>
+    <tr>
+      <td>OpenLDAP</td>
+      <td>OpenLDAP</td>
+      <td>2.3.x, 2.4.x</td>
+      <td><img src="assets/img/check.png" alt="(tick)" /></td>
+      <td><img src="assets/img/error.png" alt="(error)" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="assets/img/warning.png" alt="(warning)" /> LDAP v3 directory server which do not support <a href="http://www.ietf.org/rfc/rfc2307.txt">RFC2307</a> by default. Support can be added by manually importing them. See vendor specific setup requirements on how to do this.<br />
+<img src="assets/img/error.png" alt="(error)" /> LDAP v3 directory servers which do not support the <a href="http://www.ietf.org/proceedings/01aug/I-D/draft-ietf-ldapext-psearch-03.txt">draft-ietf-ldapext-psearch-03.txt</a>.</p>
+
+<h2 id="ldap-network-connector-properties">LDAP Network Connector Properties</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Default</th>
+      <th>Required</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>uri</td>
+      <td>null</td>
+      <td><strong>Yes</strong></td>
+      <td>The URI of the LDAP v3 Server to connect to (i.e. ldap://host:port, failover://(ldap://host1:port,ldap://host2:port).</td>
+    </tr>
+    <tr>
+      <td>base</td>
+      <td>null</td>
+      <td><strong>Yes</strong></td>
+      <td>The RDN base used as the root for the search criteria.</td>
+    </tr>
+    <tr>
+      <td>user</td>
+      <td>null</td>
+      <td><strong>Yes</strong>, if not using anonymousAuthentication</td>
+      <td>The username needed to bind to the server.</td>
+    </tr>
+    <tr>
+      <td>password</td>
+      <td>null</td>
+      <td><strong>Yes</strong>, if not using anonymousAuthentication</td>
+      <td>The password needed to bind to the server.</td>
+    </tr>
+    <tr>
+      <td>anonymousAuthentication</td>
+      <td>false</td>
+      <td><strong>Yes</strong>, if not using user/password</td>
+      <td>Enable if you want to bind to the server anonymously. This is recommended over using user/password properties since your login credentials will not be stored in an unencrypted XML file.</td>
+    </tr>
+    <tr>
+      <td>searchEventListener</td>
+      <td>false</td>
+      <td><strong>No</strong></td>
+      <td>Enable if you want the broker to stay in sync with changes made to entries matching the search criteria.</td>
+    </tr>
+    <tr>
+      <td>searchScope</td>
+      <td>ONELEVEL_SCOPE</td>
+      <td><strong>No</strong></td>
+      <td>Can be any of search scopes defined by javax.naming.directory.SearchControls class. OBJECT_SCOPE - search the named object defined by base. ONELEVEL_SCOPE - search one level of the base. SUBTREE_SCOPE - search entire subtree rooted at the base.</td>
+    </tr>
+    <tr>
+      <td>searchFilter</td>
+      <td>(&amp;(objectClass=ipHost)(objectClass=ipService))</td>
+      <td><strong>No</strong></td>
+      <td>Can be any filter that conforms to <a href="http://www.ietf.org/rfc/rfc2254.txt">RFC2254</a>. If a custom one is specified the actual search filter used will be (&amp;(&amp;(objectClass=ipHost)(objectClass=ipService))(USER CUSTOM))</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p><strong>Other Properties</strong></p>
+
+  <p>All of the properties defined in <a href="http://activemq.apache.orgFeatures/Clustering/networks-of-brokers">Networks of Brokers</a> are also available to the ldapNetworkConnector. Any of the properties defined for a normal networkConnector will be used as connection parameters to any discovered brokers matching the search criteria.</p>
+</blockquote>
+
+<h2 id="example-1-simple-network-of-brokers">Example 1: Simple Network of Brokers</h2>
+
+<h3 id="network-configuration">Network Configuration</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Topology</th>
+      <th>LDAP v3 Directory Structure</th>
+      <th>Entry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets/img/Example1-Topology.jpg" alt="" /></td>
+      <td><img src="assets/img/Example1-DirectoryStructure.jpg" alt="" /></td>
+      <td><img src="assets/img/Example1-Entry.jpg" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="activemq-classic-configuration-activemqxml">ActiveMQ Classic Configuration (activemq.xml)</h3>
+
+<p><strong>srv-a.mydomain.com</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker brokerName="srv-a.mydomain.com" ...&gt;
+   ...
+
+   &lt;networkConnectors&gt;
+      &lt;ldapNetworkConnector uri="ldap://myldap.mydomain.com:389"
+                            base="dc=brokers,dc=mydomain,dc=com"
+                            anonymousAuthentication="true"
+                            searchFilter="(cn=*)"
+                            searchScope="SUBTREE_SCOPE"
+                            /&gt;
+   &lt;/networkConnectors&gt;
+
+   ...
+&lt;/broker&gt;
+</code></pre></div></div>
+
+<p><strong>srv-b.mydomain.com</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker brokerName="srv-b.mydomain.com" ...&gt;
+   ...
+
+   &lt;networkConnectors/&gt;
+      &lt;!-- NO NETWORK CONNECTORS --&gt;
+   &lt;/networkConnectors&gt;
+
+   ...
+&lt;/broker&gt;
+</code></pre></div></div>
+
+<h2 id="example-2-larger-network-of-brokers">Example 2: Larger Network of Brokers</h2>
+
+<h3 id="network-configuration-1">Network Configuration</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Topology</th>
+      <th>LDAP v3 Directory Structure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="assets/img/Example2-Topology.jpg" alt="" /></td>
+      <td><img src="assets/img/Example2-DirectoryStructure.jpg" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="activemq-classic-configuration-activemqxml-1">ActiveMQ Classic Configuration (activemq.xml)</h3>
+
+<p><strong>srv-a.mydomain.com</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker brokerName="srv-a.mydomain.com" ...&gt;
+   ...
+
+   &lt;networkConnectors&gt;
+      &lt;ldapNetworkConnector uri="ldap://myldap.mydomain.com:389"
+                            base="dc=brokers-for-srv-a,dc=mydomain,dc=com"
+                            anonymousAuthentication="true"
+                            searchFilter="(cn=*)"
+                            searchScope="SUBTREE_SCOPE"
+                            networkTTL="2"
+                            /&gt;
+      &lt;!-- networkTTL=2 since we want messages to flow from srv-a to srv-c --&gt;
+   &lt;/networkConnectors&gt;
+
+   ...
+&lt;/broker&gt;
+</code></pre></div></div>
+
+<p><strong>srv-b.mydomain.com</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker brokerName="srv-b.mydomain.com" ...&gt;
+   ...
+
+   &lt;networkConnectors/&gt;
+      &lt;ldapNetworkConnector uri="ldap://myldap.mydomain.com:389"
+                            base="dc=brokers-other,dc=mydomain,dc=com"
+                            anonymousAuthentication="true"
+                            searchFilter="(cn=*)"
+                            searchScope="SUBTREE_SCOPE"
+                            /&gt;
+   &lt;/networkConnectors&gt;
+
+   ...
+&lt;/broker&gt;
+</code></pre></div></div>
+
+<p><strong>srv-c.mydomain.com</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker brokerName="srv-c.mydomain.com" ...&gt;
+   ...
+
+   &lt;networkConnectors/&gt;
+      &lt;!-- NO NETWORK CONNECTORS --&gt;
+   &lt;/networkConnectors&gt;
+
+   ...
+&lt;/broker&gt;
+</code></pre></div></div>
+
+<p><strong>srv-d.mydomain.com</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker brokerName="srv-d.mydomain.com" ...&gt;
+   ...
+
+   &lt;networkConnectors/&gt;
+      &lt;ldapNetworkConnector uri="ldap://myldap.mydomain.com:389"
+                            base="dc=brokers-other,dc=mydomain,dc=com"
+                            anonymousAuthentication="true"
+                            searchFilter="(cn=*)"
+                            searchScope="SUBTREE_SCOPE"
+                            /&gt;
+   &lt;/networkConnectors&gt;
+
+   ...
+&lt;/broker&gt;
+</code></pre></div></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p><a href="https://www.apache.org/foundation/marks/list/">Apache, ActiveMQ, Apache ActiveMQ</a>, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2024, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

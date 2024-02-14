@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="/js/fontawesome-v5.0.8-all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ"></script>
+    <script src="/js/jquery-3.6.1.slim.min.js" integrity="sha384-MYL22lstpGhSa4+udJSGro5I+VfM13fdJfCbAzP9krCEoK5r2EDFdgTg2+DGXdj+"></script>
+    <script src="/js/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"></script>
+    <script src="/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/news">News</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ Classic</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Community<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact">Contact Us</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contributing">Contribute</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/support">Get Support</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/assets/img/feather.png" style="height:20px">Apache<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://whimsy.apache.org/board/minutes/ActiveMQ.html">Board Reports</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://privacy.apache.org/policies/privacy-policy-public.html">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-classic">
+    <div class="container">
+      <h1>Message Groups</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 classic">
+        <p><a href="features">Features</a> &gt; <a href="consumer-features">Consumer Features</a> &gt; <a href="message-groups">Message Groups</a></p>
+
+<h2 id="message-groups">Message Groups</h2>
+
+<p>Message Groups are an enhancement to the <a href="exclusive-consumer">Exclusive Consumer</a> feature. They provide:</p>
+
+<ul>
+  <li>Guaranteed ordering of the processing of related messages across a single queue.</li>
+  <li>Load balancing of the processing of messages across multiple consumers.</li>
+  <li>High availability / auto-failover to other consumers if a JVM goes down.</li>
+</ul>
+
+<p>So logically Message Groups are like a parallel <a href="exclusive-consumer">Exclusive Consumer</a>. Rather than all messages going to a single consumer, the standard JMS header <code class="language-plaintext highlighter-rouge">JMSXGroupID</code> is used to define which <em>message group</em> the message belongs to. The Message Group feature then ensures that all messages for the <em>same</em> message group will be sent to the <em>same</em> JMS consumer - whilst that consumer stays alive. As soon as the consumer dies another will be chosen.</p>
+
+<p>Another way of explaining Message Groups is that it provides sticky load balancing of messages across consumers; where the <code class="language-plaintext highlighter-rouge">JMSXGroupID</code> is kinda like a HTTP session ID or cookie value and the message broker is acting like a HTTP load balancer.</p>
+
+<h3 id="example-use-case">Example Use Case</h3>
+
+<p>Lets say we are doing some kind of order matching system where people are buying and selling things (stocks, shares, placing online bets, whatever). You want to have consumers who match bids and offers for different items (stocks / bets) so they want to keep in RAM for performance a sub-set of the data set. Therefore set the <code class="language-plaintext highlighter-rouge">JMSXGroupID</code> to be <code class="language-plaintext highlighter-rouge">MSFT</code>, <code class="language-plaintext highlighter-rouge">IBM</code>, <code class="language-plaintext highlighter-rouge">SUNW</code> and so forth to use the stock symbol to define the message group. (It can be any string whatsoever; maybe combining trading book, trading exchange, date and so forth - the more specific the group ID, the more concurrent you can run). Assume we are buying and selling <code class="language-plaintext highlighter-rouge">MSFT</code>, <code class="language-plaintext highlighter-rouge">IBM</code>, <code class="language-plaintext highlighter-rouge">SUNW</code> shares; the Message Groups feature guarantees that all the <code class="language-plaintext highlighter-rouge">MSFT</code> messages will be processed in order by the same consumer; ditto for <code class="language-plaintext highlighter-rouge">IBM</code> and <code class="language-plaintext highlighter-rouge">SUNW</code>.</p>
+
+<h3 id="how-message-groups-work">How Message Groups Work</h3>
+
+<p>When a message is being dispatched to a consumer, the <code class="language-plaintext highlighter-rouge">JMSXGroupID</code> is checked. If one is present then the broker checks to see if a consumer owns that message group. Since there could be a large number of message groups hash buckets are used rather than the actual <code class="language-plaintext highlighter-rouge">JMSXGroupID</code> string.</p>
+
+<p>If no consumer is associated with a message group a consumer is chosen. Said JMS <code class="language-plaintext highlighter-rouge">MessageConsumer</code> will receive all further messages with the same <code class="language-plaintext highlighter-rouge">JMSXGroupID</code> value until:</p>
+
+<ul>
+  <li>the consumer closes (or the client which created the consumer dies etc).</li>
+  <li>someone closes the message group by sending a message with a negative value for <code class="language-plaintext highlighter-rouge">JMSXGroupSeq</code> (see below for more details).</li>
+</ul>
+
+<p><strong>Note</strong>: as with message selector matching, grouping based on <code class="language-plaintext highlighter-rouge">JMSXGroupID</code> occurs before dispatch on messages in memory. With the default <code class="language-plaintext highlighter-rouge">maxPageSize</code> option, large backlogs of messages destined for one group can block receipt of messages to other groups if they don’t all fit in memory. You can change the default <code class="language-plaintext highlighter-rouge">maxPageSize</code> setting for destinations as follows:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;destinationPolicy&gt;
+    &lt;policyMap&gt;
+       &lt;policyEntries&gt;
+           &lt;policyEntry queue="&gt;" maxPageSize="1000"/&gt;
+       &lt;/policyEntries&gt;
+    &lt;/policyMap&gt;
+&lt;/destinationPolicy&gt;
+</code></pre></div></div>
+
+<h3 id="using-message-groups">Using Message Groups</h3>
+
+<p>You just need to change your JMS producers to fill in the <code class="language-plaintext highlighter-rouge">JMSXGroupID</code> message header with some <code class="language-plaintext highlighter-rouge">String</code> value of your choice.</p>
+
+<p>Example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Mesasge message = session.createTextMessage("&lt;foo&gt;hey&lt;/foo&gt;");
+message.setStringProperty("JMSXGroupID", "IBM\_NASDAQ\_20/4/05");
+...
+producer.send(message);
+</code></pre></div></div>
+
+<h3 id="closing-a-message-group">Closing a Message Group</h3>
+
+<p>You generally don’t need to close a message group; just keep using it. However if you really do want to close a group you can add a negative sequence number.</p>
+
+<p>Example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Mesasge message = session.createTextMessage("&lt;foo&gt;hey&lt;/foo&gt;");
+message.setStringProperty("JMSXGroupID", "IBM\_NASDAQ\_20/4/05");
+message.setIntProperty("JMSXGroupSeq", -1);
+...
+producer.send(message);
+</code></pre></div></div>
+<p>This then <em>closes</em> the message group so if another message is sent in the future with the same message group ID it will be reassigned to a new consumer.</p>
+
+<h3 id="implications">Implications</h3>
+
+<p>Message Groups mean you get the power of <strong>grid</strong> processing of messages across a cluster of consumers with reliability, auto-failover, load balancing but you can also order the processing of messages too. So its the best of both worlds. However using the above example, what Message Groups actually do is to partition your work load across consumers using a user definable partition strategy - the <code class="language-plaintext highlighter-rouge">JMSXGroupID</code> value.</p>
+
+<p>The neat thing about this is that you can do neat things like use lots of RAM caching; keep the order for <code class="language-plaintext highlighter-rouge">MSFT</code> in RAM in the <code class="language-plaintext highlighter-rouge">MSFT</code> consumer; keep the <code class="language-plaintext highlighter-rouge">IBM</code> orders in RAM in the <code class="language-plaintext highlighter-rouge">IBM</code> consumer - since the message broker is partitioning for you, you do not have to rely on a distributed cache with inter-cache synchronization and locking to take advantage of caching.</p>
+
+<p>The great thing is - to the application developer, it looks like a simple 1 consumer world where you process messages and do your job; leaving the broker to do all the hard stuff for you</p>
+
+<ul>
+  <li>partitioning the traffic</li>
+  <li>load balancing of message groups across consumers</li>
+  <li>auto-failover of groups to different consumers as consumers come and go</li>
+</ul>
+
+<p>In summary; if ordering or per-message caching and synchronization are in any way important to you then we highly recommend you use message groups to partition your traffic.</p>
+
+<h3 id="getting-notified-of-ownership-changes-of-message-groups">Getting Notified of Ownership Changes of Message Groups</h3>
+
+<p>ActiveMQ Classic support a boolean header called <code class="language-plaintext highlighter-rouge">JMSXGroupFirstForConsumer</code>. This header is set on the first message sent to a consumer for a particular message group.</p>
+
+<p>If the JMS connection is using <code class="language-plaintext highlighter-rouge">failover:</code> and a temporary network error occurs so that the connection disconnects from the broker and reconnects some time later, a new consumer instance will be created under the covers of the JMS client leading to the possibility of another message with this header being set for the same message group.</p>
+
+<p>Example:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>String groupId = message.getStringProperty("JMSXGroupId");
+
+if (message.getBooleanProperty("JMSXGroupFirstForConsumer")) {
+   // flush cache for groupId
+}
+</code></pre></div></div>
+<p>To flush caches to ensure consistent state when faced with network errors.</p>
+
+<h3 id="adding-new-consumers">Adding New Consumers</h3>
+
+<p>If you have existing messages in the broker and add consumers at a later stage, it is a good idea to delay message dispatch start until all consumers are present (or at least to give enough time for them to subscribe). If you don’t do that the first consumer will probably acquire all message groups and all messages will be dispatched to it. You can achieve this by using <code class="language-plaintext highlighter-rouge">consumersBeforeDispatchStarts</code> and <code class="language-plaintext highlighter-rouge">timeBeforeDispatchStarts</code> <a href="per-destination-policies">destination policies</a>.</p>
+
+<p>When both <strong>consumersBeforeDispatchStarts</strong> and <strong>timeBeforeDispatchStarts</strong> are set to a value greater than zero, the dispatching will start as soon as the required number of consumers are present or the timeBeforeDispatchStarts timeout expires. If only consumersBeforeDispatchStarts is set then the timeout for consumers to connect is 1 second. If all consumers disconnect then message dispatch delay will be applied again at the next consumer connection.</p>
+
+<p>Here’s the example of the destination policy that delays dispatch for <code class="language-plaintext highlighter-rouge">200ms</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;destinationPolicy&gt;
+  &lt;policyMap&gt;
+    &lt;policyEntries&gt;
+      &lt;policyEntry queue="&gt;" timeBeforeDispatchStarts="200"/&gt;
+    &lt;/policyEntries&gt;
+  &lt;/policyMap&gt;
+&lt;/destinationPolicy&gt;
+</code></pre></div></div>
+<p>The following code snippet shows how to wait for two consumers (or two seconds) before dispatch starts:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;destinationPolicy&gt;
+  &lt;policyMap&gt;
+    &lt;policyEntries&gt;
+      &lt;policyEntry queue="&gt;" consumersBeforeDispatchStarts="2" timeBeforeDispatchStarts="2000"/&gt;
+    &lt;/policyEntries&gt;
+  &lt;/policyMap&gt;
+&lt;/destinationPolicy&gt;
+</code></pre></div></div>
+<p>As <a href="https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/java/org/apache/activemq/usecases/MessageGroupDelayedTest.java">the appropriate test case</a> shows, adding a small time pause before dispatching or setting a minimum consumer number, ensures equal message group distribution.</p>
+
+<p>If you need to rebalance the message groups manually for any reason you can do so by executing the <code class="language-plaintext highlighter-rouge">removeAllMessageGroups</code> operation on the JMX MBean of the corresponding queue.</p>
+
+<h3 id="competing-demands-of-memory-consumption-load-balancing-complexity-etc">Competing demands of memory consumption, load balancing, complexity, etc.</h3>
+
+<p>The default behavior called <code class="language-plaintext highlighter-rouge">CachedMessageGroupMap</code> is limited to 1024 message groups in an LRU cache may not match you expectation w.r.t message order. <code class="language-plaintext highlighter-rouge">CachedMessageGroupMap</code> has bounded memory use, but only keeps track of up to 1024 (or the maximum configured size) groups, then loses track of any groups older than the newest 1024. In this way, if there are more groups than the maximum, <strong>ordering will be lost for the oldest groups</strong>.</p>
+
+<p>Typically users would close groups such that the in memory set can be retained below the configured limits. Some usefull discussion at <a href="https://issues.apache.org/jira/browse/AMQ-6851">AMQ-6851</a></p>
+
+<p>In order to prevent this limitation you can use <code class="language-plaintext highlighter-rouge">MessageGroupHashBucket</code> or <code class="language-plaintext highlighter-rouge">SimpleMessageGroupMap</code>. Their are working by associating each group with a consumer.</p>
+
+<p><code class="language-plaintext highlighter-rouge">SimpleMessageGroupMap</code> keeps track of every group but suffers from unbounded memory use.</p>
+
+<p>The following code snippet shows how to enable it :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;destinationPolicy&gt;
+  &lt;policyMap&gt;
+    &lt;policyEntries&gt;
+      &lt;policyEntry queue="&gt;"&gt;
+          &lt;messageGroupMapFactory&gt;
+            &lt;simpleMessageGroupMapFactory/&gt;
+          &lt;/messageGroupMapFactory&gt;
+      &lt;/policyEntry&gt;
+    &lt;/policyEntries&gt;
+  &lt;/policyMap&gt;
+&lt;/destinationPolicy&gt;
+
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">MessageGroupHashBucked</code> keeps track of every group and has bounded memory use. The following code snippet shows how to enable it :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;destinationPolicy&gt;
+  &lt;policyMap&gt;
+    &lt;policyEntries&gt;
+      &lt;policyEntry queue="&gt;"&gt;
+          &lt;messageGroupMapFactory&gt;
+            &lt;messageGroupHashBucked cachedSize=1024 /&gt;
+          &lt;/messageGroupMapFactory&gt;
+      &lt;/policyEntry&gt;
+    &lt;/policyEntries&gt;
+  &lt;/policyMap&gt;
+&lt;/destinationPolicy&gt;
+</code></pre></div></div>
+
+<h3 id="see">See</h3>
+
+<ul>
+  <li><a href="how-do-message-groups-compare-to-selectors">How do Message Groups compare to Selectors</a></li>
+</ul>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p><a href="https://www.apache.org/foundation/marks/list/">Apache, ActiveMQ, Apache ActiveMQ</a>, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2024, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
