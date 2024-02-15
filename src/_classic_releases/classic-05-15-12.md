@@ -4,6 +4,6 @@ release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=
 title: ActiveMQ Classic 5.15.12 Release 
 java_version: 8
 redirect_from:
-- /components/classic/download/activemq-51512-release
+- /../../../activemq-51512-release
 ---
 Apache ActiveMQ Classic {{page.version}} includes several resolved [issues]({{page.release_notes}}) and bug fixes.

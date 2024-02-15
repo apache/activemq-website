@@ -4,10 +4,10 @@ title: ActiveMQ Classic 5.3.2 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
-- /components/classic/download/activemq-532-release
+- /../../../activemq-532-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.3.2 Release](activemq-532-release)
+[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.3.2 Release](classic-05-03-02)
 
 <div class="alert alert-warning">
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
@@ -86,5 +86,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=10520&styleName=Html&version=12310)
 
-Also see the previous [ActiveMQ Classic 5.3.1 Release](activemq-531-release)
+Also see the previous [ActiveMQ Classic 5.3.1 Release](classic-05-03-01)
 

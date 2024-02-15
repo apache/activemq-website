@@ -4,10 +4,10 @@ title: ActiveMQ Classic 5.14.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
-- /components/classic/download/activemq-5140-release
+- /../../../activemq-5140-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.14.0 Release](activemq-5140-release)
+[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.14.0 Release](classic-05-14-00)
 
 ActiveMQ Classic 5.14.0 Release
 -----------------------
@@ -88,5 +88,5 @@ For a more detailed view of new features and bug fixes, see the [release notes]
 
 > This release affects applications using ObjectMessages. Please refer to [objectmessage](objectmessage) and jira-issue [AMQ-6013](https://issues.apache.org/jira/browse/AMQ-6013) for more information.
 
-Also see the previous [ActiveMQ Classic 5.13.4 Release](activemq-5134-release)
+Also see the previous [ActiveMQ Classic 5.13.4 Release](classic-05-13-04)
 

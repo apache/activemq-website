@@ -4,10 +4,10 @@ title: ActiveMQ Classic 5.15.10 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
-- /components/classic/download/activemq-51510-release
+- /../../../activemq-51510-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.15.10 Release](activemq-51510-release)
+[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.15.10 Release](classic-05-15-010)
 
 ActiveMQ Classic 5.15.10 Release
 -----------------------
@@ -91,4 +91,4 @@ For a more detailed view of new features and bug fixes, see the [release notes]
 > 
 > The minimum Java version has been upgraded to Java 8.
 
-Also see the previous [ActiveMQ Classic 5.15.9 Release](activemq-5159-release)
+Also see the previous [ActiveMQ Classic 5.15.9 Release](classic-05-15-09)

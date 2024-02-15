@@ -4,10 +4,10 @@ title: ActiveMQ Classic 5.4.3 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
-- /components/classic/download/activemq-543-release
+- /../../../activemq-543-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.4.3 Release](activemq-543-release)
+[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.4.3 Release](classic-05-04-03)
 
 <div class="alert alert-warning">
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
@@ -81,5 +81,5 @@ Source for Unix/Linux/Cygwin|[activemq-parent-5.4.3-source-release.tar.gz](http:
 svn co http://svn.apache.org/repos/asf/activemq/tags/activemq-5.4.3
 ```
 
-Also see the previous [ActiveMQ Classic 5.4.2 Release](activemq-542-release)
+Also see the previous [ActiveMQ Classic 5.4.2 Release](classic-05-04-02)
 

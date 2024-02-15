@@ -4,10 +4,10 @@ title: ActiveMQ Classic 5.1.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
-- /components/classic/download/activemq-510-release
+- /../../../activemq-510-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.1.0 Release](activemq-510-release)
+[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.1.0 Release](classic-05-01-00)
 
 <div class="alert alert-warning">
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
@@ -124,5 +124,5 @@ For a more detailed view of new features and bug fixes, see the [release notes](
 
 JIRA Issues Macro: Data cannot be retrieved due to an unexpected error
 
-Also see the previous [ActiveMQ Classic 5.0.0 Release](activemq-500-release)
+Also see the previous [ActiveMQ Classic 5.0.0 Release](classic-05-00-00)
 

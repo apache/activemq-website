@@ -5,7 +5,7 @@ release_date: 2021-01-20
 title: ActiveMQ Classic 5.16.1 Release 
 java_version: 8+
 redirect_from:
-- /components/classic/download/activemq-5161-release
+- /../../../activemq-5161-release
 ---
 Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. It fully supports JDK 9+ at runtime and includes several resolved [issues]({{ page.release_notes }}) and bug fixes.
 

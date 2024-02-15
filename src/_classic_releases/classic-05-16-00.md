@@ -4,6 +4,6 @@ release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=
 title: ActiveMQ Classic 5.16.0 Release 
 java_version: 8+
 redirect_from:
-- /components/classic/download/activemq-5160-release
+- /../../../activemq-5160-release
 ---
 Apache ActiveMQ Classic 5.16.0 is the first release on the 5.16.x series. It fully supports JDK 9+ at runtime and includes several resolved [issues]({{page.release_notes}}) and bug fixes.

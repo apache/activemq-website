@@ -4,10 +4,10 @@ title: ActiveMQ Classic 5.4.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
-- /components/classic/download/activemq-540-release
+- /../../../activemq-540-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.4.0 Release](activemq-540-release)
+[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.4.0 Release](classic-05-04-00)
 
 <div class="alert alert-warning">
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
@@ -15,7 +15,7 @@ redirect_from:
 
 Warning
 
-This release has been retracted due to bug [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491). It is no longer downloadable from ASF servers. Please use the [ActiveMQ Classic 5.4.3 Release](activemq-543-release) instead.
+This release has been retracted due to bug [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491). It is no longer downloadable from ASF servers. Please use the [ActiveMQ Classic 5.4.3 Release](classic-05-04-03) instead.
 
 Apache ActiveMQ Classic 5.4.0 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/IssueNavigator.jspa?reset=true&&pid=10520&fixfor=12110&sorter/field=priority&sorter/order=DESC) 283 issues.
 
@@ -120,5 +120,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=10520&styleName=Html&version=12110)
 
-Also see the previous [ActiveMQ Classic 5.3.2 Release](activemq-532-release)
+Also see the previous [ActiveMQ Classic 5.3.2 Release](classic-05-03-02)
 

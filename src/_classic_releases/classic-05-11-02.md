@@ -4,10 +4,10 @@ title: ActiveMQ Classic 5.11.2 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
-- /components/classic/download/activemq-5112-release
+- /../../../activemq-5112-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.11.2 Release](activemq-5112-release)
+[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.11.2 Release](classic-05-11-02)
 
 ActiveMQ Classic 5.11.2 Release
 -----------------------
@@ -86,5 +86,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12329669)
 
-Also see the previous [ActiveMQ Classic 5.11.1 Release](activemq-5111-release)
+Also see the previous [ActiveMQ Classic 5.11.1 Release](classic-05-11-01)
 

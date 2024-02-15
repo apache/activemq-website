@@ -4,10 +4,10 @@ title: ActiveMQ Classic 5.5.1 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
-- /components/classic/download/activemq-551-release
+- /../../../activemq-551-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.5.1 Release](activemq-551-release)
+[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.5.1 Release](classic-05-05-01)
 
 <div class="alert alert-warning">
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
@@ -80,5 +80,5 @@ Source Release|[activemq-parent-5.5.1-source-release.zip](http://archive.apache.
 svn co http://svn.apache.org/repos/asf/activemq/tags/activemq-5.5.1
 ```
 
-Also see the previous [ActiveMQ Classic 5.5.0 Release](activemq-550-release)
+Also see the previous [ActiveMQ Classic 5.5.0 Release](classic-05-05-00)
 
