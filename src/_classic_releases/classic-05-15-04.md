@@ -1,10 +1,11 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.15.4 Release 
+title: ActiveMQ Classic 5.15.4 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
 - /../../../activemq-5154-release
+- /../../../activemq-5015004-release
 ---
 
 <div class="alert alert-warning">
@@ -83,7 +84,7 @@ Change Log
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12342685)
 
 > **Java 8 Required**
-> 
+>
 > The minimum Java version has been upgraded to Java 8.
 
 > This release affects applications using ObjectMessages. Please refer to [objectmessage](objectmessage) and jira-issue [AMQ-6013](https://issues.apache.org/jira/browse/AMQ-6013) for more information.

@@ -5,8 +5,10 @@ release_date: 2023-10-25
 title: ActiveMQ Classic 5.17.6 Release
 java_version: 11+
 shortDescription: Maintenance release on Classic 5.17.x series
+redirect_from:
+- /../../../activemq-5017006-release
 ---
-Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. 
+Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
 
 It's a maintenance release on the ActiveMQ Classic 5.17.x series, bringing:
 - improvement on KahaDB memory consumption

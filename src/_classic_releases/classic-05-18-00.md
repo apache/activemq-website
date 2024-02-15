@@ -5,6 +5,8 @@ release_date: 2023-03-24
 title: ActiveMQ Classic 5.18.0 Release
 java_version: 11+
 shortDescription: Classic 5.18.0 brings initial JMS 2.0 (javax.jms API) and Jakarta Messaging 3.1 (jakarta.jms API) client support, Spring 5.3.x, and various dependency updates, fixes and improvements.
+redirect_from:
+- /../../../activemq-5018000-release
 ---
 Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. It's a major milestone for the ActiveMQ Classic.
 ActiveMQ Classic 5.18.x brings:

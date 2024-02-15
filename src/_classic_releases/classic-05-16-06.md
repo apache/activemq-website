@@ -5,6 +5,8 @@ release_date: 2023-02-16
 title: ActiveMQ Classic 5.16.6 Release
 java_version: 8+
 shortDescription: Important release, including several improvements, fixes, and dependency updates.
+redirect_from:
+- /../../../activemq-5016006-release
 ---
 Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. It's an important release, switching including several resolved [issues]({{ page.release_notes }}).
 

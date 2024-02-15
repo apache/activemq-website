@@ -1,10 +1,11 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.4.1 Release 
+title: ActiveMQ Classic 5.4.1 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
 - /../../../activemq-541-release
+- /../../../activemq-5004001-release
 ---
 
 <div class="alert alert-warning">
@@ -15,7 +16,7 @@ Warning
 
 This release has been retracted due to bug [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491). It is no longer downloadable from ASF servers. Please use the [ActiveMQ Classic 5.4.3 Release](classic-05-04-03) instead.
 
-Apache ActiveMQ Classic 5.4.1 is primarily a maintenance release which resolves  
+Apache ActiveMQ Classic 5.4.1 is primarily a maintenance release which resolves
 [49 issues](https://issues.apache.org/activemq/secure/IssueNavigator.jspa?reset=true&&pid=10520&fixfor=12332&sorter/field=priority&sorter/order=DESC) mostly bug fixes and improvements
 
 New Features in 5.4.1

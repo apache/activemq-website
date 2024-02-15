@@ -1,10 +1,11 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.3.2 Release 
+title: ActiveMQ Classic 5.3.2 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
 - /../../../activemq-532-release
+- /../../../activemq-5003002-release
 ---
 
 <div class="alert alert-warning">

@@ -4,9 +4,11 @@ release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=
 release_date: 2023-10-25
 title: ActiveMQ Classic 5.18.3 Release
 java_version: 11+
-shortDescription: Classic 5.18.3 is a maintenance release on the ActiveMQ Classic 5.18.x series.
+shortDescription: Maintenance release on Classic 5.18.x series.
+redirect_from:
+- /../../../activemq-5018003-release
 ---
-Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. 
+Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
 
 It's a maintenance release on the ActiveMQ Classic 5.18.x series, bringing:
 - fix on destinations create when message is delayed

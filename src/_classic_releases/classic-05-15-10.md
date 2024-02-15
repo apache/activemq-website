@@ -1,10 +1,11 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.15.10 Release 
+title: ActiveMQ Classic 5.15.10 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
 - /../../../activemq-51510-release
+- /../../../activemq-5015010-release
 ---
 
 <div class="alert alert-warning">
@@ -83,7 +84,7 @@ Change Log
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12345171)
 
 > **Java 8 Required**
-> 
+>
 > The minimum Java version has been upgraded to Java 8.
 
 Also see the previous [ActiveMQ Classic 5.15.9 Release](classic-05-15-09)

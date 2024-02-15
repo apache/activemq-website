@@ -1,10 +1,11 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.4.2 Release 
+title: ActiveMQ Classic 5.4.2 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
 - /../../../activemq-542-release
+- /../../../activemq-5004002-release
 ---
 
 <div class="alert alert-warning">
@@ -15,7 +16,7 @@ Warning
 
 This release has been retracted due to bug [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491). It is no longer downloadable from ASF servers. Please use the [ActiveMQ Classic 5.4.3 Release](classic-05-04-03) instead.
 
-Apache ActiveMQ Classic 5.4.2 is primarily a maintenance release which resolves  
+Apache ActiveMQ Classic 5.4.2 is primarily a maintenance release which resolves
 [61 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&&pid=12311210&status=5&status=6&fixfor=12315625&sorter/field=priority&sorter/order=DESC) mostly bug fixes and improvements
 
 Getting the Binary Distributions

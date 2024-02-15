@@ -8,6 +8,8 @@ shortDescription: >
     Important release, including several improvements, fixes, and dependency updates.
 
     <br/><br/><strong>NOTE:</strong> This is the last planned Classic 5.16.x release. Users should upgrade to the current stream for ongoing releases.
+redirect_from:
+- /../../../activemq-5016007-release
 ---
 Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. It's an important release, switching including several resolved [issues]({{ page.release_notes }}).
 

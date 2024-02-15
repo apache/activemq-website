@@ -5,8 +5,10 @@ release_date: 2023-07-02
 title: ActiveMQ Classic 5.17.5 Release
 java_version: 11+
 shortDescription: Maintenance release on Classic 5.17.x series
+redirect_from:
+- /../../../activemq-5017005-release
 ---
-Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. 
+Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
 
 It's a maintenance release on the ActiveMQ Classic 5.17.x series, bringing:
 - fix on stale queues when a connection is long to shutdown
