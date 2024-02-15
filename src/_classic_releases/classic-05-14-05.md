@@ -7,11 +7,6 @@ redirect_from:
 - /../../../activemq-5145-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.14.5 Release](classic-05-14-05)
-
-ActiveMQ Classic 5.14.5 Release
------------------------
-
 <div class="alert alert-warning">
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>

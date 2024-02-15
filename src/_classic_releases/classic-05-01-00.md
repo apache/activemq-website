@@ -7,8 +7,6 @@ redirect_from:
 - /../../../activemq-510-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.1.0 Release](classic-05-01-00)
-
 <div class="alert alert-warning">
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
@@ -18,11 +16,7 @@ New Features in 5.1
 
 In the 5.1.x release of Apache ActiveMQ Classic there are the following new features:
 
-*   You can use the new [DestinationSource](http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/advisory/DestinationSource.html) on an ActiveMQConnection to access the available queues or topics or listen to queues/topics being created or deleted.
-    
-    New Features in 5.1
-    -------------------
-    
+*   You can use the new [DestinationSource](http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/advisory/DestinationSource.html) on an ActiveMQConnection to access the available queues or topics or listen to queues/topics being created or deleted.    
 *   Support for more graceful handling of [timeouts within MessageProducer.send](http://issues.apache.org/activemq/browse/AMQ-1517)
 *   Add the option for a [backup channel that is already connected for the Failover transport](http://issues.apache.org/activemq/browse/AMQ-1572)
 *   ActiveMQ Classic configuration can now validate against an XSD which means that it can be embedded in a spring configuration file.

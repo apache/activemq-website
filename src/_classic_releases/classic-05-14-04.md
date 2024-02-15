@@ -7,11 +7,6 @@ redirect_from:
 - /../../../activemq-5144-release
 ---
 
-[Overview](overview) > [Download](download) > [ActiveMQ Classic 5.14.4 Release](classic-05-14-04)
-
-ActiveMQ Classic 5.14.4 Release
------------------------
-
 Apache ActiveMQ Classic 5.14.4 includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12338909) and bug fixes.
 
 ### Getting the Binary Distributions
