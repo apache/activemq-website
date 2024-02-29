@@ -16,24 +16,25 @@ If anything in any component's documentation is confusing or not clear please [l
 
 #### Code
 
-If you want to get your hands on the code here are the repos for all our components. It's typically best to use the GitHub mirror as that will allow you to easily send pull requests which can be reviewed by project committers and merged.
+If you want to get your hands on the code here are the repos for all our components. It's typically best to use the GitHub mirror as that will allow you to easily send pull requests which can be reviewed by project committers and merged. The Gitbox links redirect to GitHub for browsing.
 
 |Component|Apache Git Repository|GitHub Mirror|
 |---|---|
-|Classic|[activemq](https://git-wip-us.apache.org/repos/asf?p=activemq.git)|[activemq](https://github.com/apache/activemq)|
-|Artemis|[activemq-artemis](https://git-wip-us.apache.org/repos/asf?p=activemq-artemis.git)|[activemq-artemis](https://github.com/apache/activemq-artemis)|
-|Artemis Native|[activemq-artemis-native](https://git-wip-us.apache.org/repos/asf?p=activemq-artemis-native.git)|[activemq-artemis-native](https://github.com/apache/activemq-artemis-native)|
-|NMS API|[activemq-nms-api](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-api.git)|[activemq-nms-api](https://github.com/apache/activemq-nms-api)|
-|NMS AMQP|[activemq-nms-amqp](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-amqp.git)|[activemq-nms-amqp](https://github.com/apache/activemq-nms-amqp)|
-|NMS EMS|[activemq-nms-ems](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-ems.git)|[activemq-nms-ems](https://github.com/apache/activemq-nms-ems)|
-|NMS OpenWire|[activemq-nms-openwire](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-openwire.git)|[activemq-nms-openwire](https://github.com/apache/activemq-nms-openwire)|
-|NMS MSMQ|[activemq-nms-msmq](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-msmq.git)|[activemq-nms-msmq](https://github.com/apache/activemq-nms-msmq)|
-|NMS STOMP|[activemq-nms-stomp](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-stomp.git)|[activemq-nms-stomp](https://github.com/apache/activemq-nms-stomp)|
-|NMS XMS|[activemq-nms-xms](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-xms.git)|[activemq-nms-xms](https://github.com/apache/activemq-nms-xms)|
-|NMS ZMQ|[activemq-nms-zmq](https://git-wip-us.apache.org/repos/asf?p=activemq-nms-zmq.git)|[activemq-nms-zmq](https://github.com/apache/activemq-nms-zmq)|
-|CLI Tools|[activemq-cli-tools](https://git-wip-us.apache.org/repos/asf?p=activemq-cli-tools.git)|[activemq-cli-tools](https://github.com/apache/activemq-cli-tools)|
-|CPP|[activemq-cpp](https://git-wip-us.apache.org/repos/asf?p=activemq-cpp.git)|[activemq-cpp](https://github.com/apache/activemq-cpp)|
-|Website|[activemq-website](https://git-wip-us.apache.org/repos/asf?p=activemq-website.git)|[activemq-website](https://github.com/apache/activemq-website)|
+|Classic|[activemq](https://gitbox.apache.org/repos/asf/activemq.git)|[activemq](https://github.com/apache/activemq)|
+|Artemis|[activemq-artemis](https://gitbox.apache.org/repos/asf/activemq-artemis.git)|[activemq-artemis](https://github.com/apache/activemq-artemis)|
+|Artemis Examples|[activemq-artemis-examples](https://gitbox.apache.org/repos/asf/activemq-artemis-examples.git)|[activemq-artemis-examples](https://github.com/apache/activemq-artemis-examples)|
+|Artemis Native|[activemq-artemis-native](https://gitbox.apache.org/repos/asf/activemq-artemis-native.git)|[activemq-artemis-native](https://github.com/apache/activemq-artemis-native)|
+|NMS API|[activemq-nms-api](https://gitbox.apache.org/repos/asf/activemq-nms-api.git)|[activemq-nms-api](https://github.com/apache/activemq-nms-api)|
+|NMS AMQP|[activemq-nms-amqp](https://gitbox.apache.org/repos/asf/activemq-nms-amqp.git)|[activemq-nms-amqp](https://github.com/apache/activemq-nms-amqp)|
+|NMS EMS|[activemq-nms-ems](https://gitbox.apache.org/repos/asf/activemq-nms-ems.git)|[activemq-nms-ems](https://github.com/apache/activemq-nms-ems)|
+|NMS OpenWire|[activemq-nms-openwire](https://gitbox.apache.org/repos/asf/activemq-nms-openwire.git)|[activemq-nms-openwire](https://github.com/apache/activemq-nms-openwire)|
+|NMS MSMQ|[activemq-nms-msmq](https://gitbox.apache.org/repos/asf/activemq-nms-msmq.git)|[activemq-nms-msmq](https://github.com/apache/activemq-nms-msmq)|
+|NMS STOMP|[activemq-nms-stomp](https://gitbox.apache.org/repos/asf/activemq-nms-stomp.git)|[activemq-nms-stomp](https://github.com/apache/activemq-nms-stomp)|
+|NMS XMS|[activemq-nms-xms](https://gitbox.apache.org/repos/asf/activemq-nms-xms.git)|[activemq-nms-xms](https://github.com/apache/activemq-nms-xms)|
+|NMS ZMQ|[activemq-nms-zmq](https://gitbox.apache.org/repos/asf/activemq-nms-zmq.git)|[activemq-nms-zmq](https://github.com/apache/activemq-nms-zmq)|
+|CLI Tools|[activemq-cli-tools](https://gitbox.apache.org/repos/asf/activemq-cli-tools.git)|[activemq-cli-tools](https://github.com/apache/activemq-cli-tools)|
+|CPP|[activemq-cpp](https://gitbox.apache.org/repos/asf/activemq-cpp.git)|[activemq-cpp](https://github.com/apache/activemq-cpp)|
+|Website|[activemq-website](https://gitbox.apache.org/repos/asf/activemq-website.git)|[activemq-website](https://github.com/apache/activemq-website)|
 
 #### Becoming a commmitter
 
