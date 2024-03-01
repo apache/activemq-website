@@ -98,7 +98,7 @@ JMX API is also exposed via [REST management API](rest)
 
 3. Modify the "activemq" startup script (in bin) to enable the Java 1.5+ JMX connector
 
-    Find the "ACTIVEMQ_SUNJMX_START=" line and change it too the following: (note that in previous versions of ActiveMQ Classic this property was called SUNJMX in some scripts.  As of v5.12.0 all scripts use ACTIVEMQ_SUNJMX_START):
+    Find the "ACTIVEMQ_SUNJMX_START=" line and change it to the following: (note that in previous versions of ActiveMQ Classic this property was called SUNJMX in some scripts.  As of v5.12.0 all scripts use ACTIVEMQ_SUNJMX_START):
     
     1. Windows
       ```   
