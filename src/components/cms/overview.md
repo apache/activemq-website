@@ -162,7 +162,7 @@ std::auto_ptr<cms::ConnectionFactory> connectionFactory(
 std::auto_ptr<cms::Connection> connection( connectionFactory->createConnection() );
 
 // Create a new Session from our Connection
-std::auto_ptr<cms::Session> session( connection->createSession();
+std::auto_ptr<cms::Session> session( connection->createSession() );
 
 // Now create a TextMessage
 std::auto_ptr<cms::TextMessage> textMessage( session->createTextMessage() );
