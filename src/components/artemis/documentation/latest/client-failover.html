@@ -14,11 +14,11 @@
 <div id="header">
 <h1>Core Client Failover</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#reconnect-to-the-same-server">1. Reconnect to the same server</a></li>
 <li><a href="#reconnect-to-the-backup-server">2. Reconnect to the backup server</a></li>
-<li><a href="#reconnect-to-other-live-servers">3. Reconnect to other live servers</a></li>
+<li><a href="#reconnect-to-other-active-servers">3. Reconnect to other active servers</a></li>
 <li><a href="#session-reconnection">4. Session reconnection</a></li>
 <li><a href="#failing-over-on-the-initial-connection">5. Failing over on the initial connection</a></li>
 <li><a href="#reconnection-and-failover-attributes">6. Reconnection and failover attributes</a></li>
@@ -30,7 +30,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Apache ActiveMQ Artemis clients can be configured to automatically <a href="#reconnect-to-the-same-server">reconnect to the same server</a>, <a href="#reconnect-to-the-backup-server">reconnect to the backup server</a> or <a href="#reconnect-to-other-live-servers">reconnect to other live servers</a> in the event that a failure is detected in the connection between the client and the server.
+<p>Apache ActiveMQ Artemis clients can be configured to automatically <a href="#reconnect-to-the-same-server">reconnect to the same server</a>, <a href="#reconnect-to-the-backup-server">reconnect to the backup server</a> or <a href="#reconnect-to-other-active-servers">reconnect to other active servers</a> in the event that a failure is detected in the connection between the client and the server.
 The clients detect connection failure when they have not received any packets from the server within the time given by <code>client-failure-check-period</code> as explained in section <a href="connection-ttl.html#detecting-dead-connections">Detecting Dead Connections</a>.</p>
 </div>
 </div>
@@ -85,19 +85,19 @@ For full details on how to configure server discovery, please see <a href="clust
 Alternatively, the clients can explicitly connect to a specific server and download the current servers and backups see <a href="clusters.html#clusters">Clusters</a>.</p>
 </div>
 <div class="paragraph">
-<p>By default, failover will only occur after at least one connection has been made to the live server.
-In other words, by default, failover will not occur if the client fails to make an initial connection to the live server - in this case it will simply retry connecting to the live server according to the reconnect-attempts property and fail after this number of attempts.</p>
+<p>By default, failover will only occur after at least one connection has been made.
+In other words, by default, failover will not occur if the client fails to make an initial connection - in this case it will simply retry connecting according to the reconnect-attempts property and fail after this number of attempts.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="reconnect-to-other-live-servers"><a class="anchor" href="#reconnect-to-other-live-servers"></a><a class="link" href="#reconnect-to-other-live-servers">3. Reconnect to other live servers</a></h2>
+<h2 id="reconnect-to-other-active-servers"><a class="anchor" href="#reconnect-to-other-active-servers"></a><a class="link" href="#reconnect-to-other-active-servers">3. Reconnect to other active servers</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Set <code>failoverAttempts</code> to any non-zero value to reconnect to other live servers, for further details see <a href="#reconnection-and-failover-attributes">Reconnection and failover attributes</a>.</p>
+<p>Set <code>failoverAttempts</code> to any non-zero value to reconnect to other active servers, for further details see <a href="#reconnection-and-failover-attributes">Reconnection and failover attributes</a>.</p>
 </div>
 <div class="paragraph">
-<p>If <code>reconnectAttempts</code> value is not zero then the client will try to reconnect to other live servers only after all attempts to <a href="#reconnect-to-the-same-server">reconnect to the same server</a> or <a href="#reconnect-to-the-backup-server">reconnect to the backup server</a> fail.</p>
+<p>If <code>reconnectAttempts</code> value is not zero then the client will try to reconnect to other active servers only after all attempts to <a href="#reconnect-to-the-same-server">reconnect to the same server</a> or <a href="#reconnect-to-the-backup-server">reconnect to the backup server</a> fail.</p>
 </div>
 </div>
 </div>
@@ -105,7 +105,7 @@ In other words, by default, failover will not occur if the client fails to make 
 <h2 id="session-reconnection"><a class="anchor" href="#session-reconnection"></a><a class="link" href="#session-reconnection">4. Session reconnection</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>When clients <a href="#reconnect-to-the-same-server">reconnect to the same server</a> after a restart, <a href="#reconnect-to-the-backup-server">reconnect to the backup server</a> or <a href="#reconnect-to-other-live-servers">reconnect to other live servers</a> any sessions will no longer exist on the server and it won&#8217;t be possible to 100% transparently re-attach to them.
+<p>When clients <a href="#reconnect-to-the-same-server">reconnect to the same server</a> after a restart, <a href="#reconnect-to-the-backup-server">reconnect to the backup server</a> or <a href="#reconnect-to-other-active-servers">reconnect to other active servers</a> any sessions will no longer exist on the server and it won&#8217;t be possible to 100% transparently re-attach to them.
 In this case, any sessions and consumers on the client will be automatically recreated on the server.</p>
 </div>
 <div class="paragraph">
@@ -118,7 +118,7 @@ In this case, any sessions and consumers on the client will be automatically rec
 <div class="sectionbody">
 <div class="paragraph">
 <p>Since the client does not learn about the full topology until after the first connection is made there is a window where it does not know about the backup.
-If a failure happens at this point the client can only try reconnecting to the original live server.
+If a failure happens at this point the client can only try reconnecting to the original server.
 To configure how many attempts the client will make you can set the URL parameter <code>initialConnectAttempts</code>.
 The default for this is <code>0</code>, that is try only once.
 Once the number of attempts has been made an exception will be thrown.</p>
@@ -166,7 +166,7 @@ The default value is <code>2000</code> milliseconds.</p>
 </dd>
 <dt class="hdlist1">ha</dt>
 <dd>
-<p>This optional parameter determines weather the client will try to reconnect to the backup node when the live node is not reachable.
+<p>This optional parameter determines whether the client will try to reconnect to the backup node when the primary node is not reachable.
 The default value is <code>false</code>.
 For more information on HA, please see <a href="ha.html#high-availability-and-failover">High Availability and Failover</a>.</p>
 </dd>

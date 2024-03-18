@@ -15,7 +15,7 @@
 <div id="header">
 <h1>MQTT</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#mqtt-quality-of-service">1. MQTT Quality of Service</a></li>
 <li><a href="#mqtt-retain-messages">2. MQTT Retain Messages</a></li>
@@ -67,7 +67,7 @@ For this reason MQTT is ideally suited to constrained devices such as sensors an
 <p>See the general <a href="protocols-interoperability.html#protocols-and-interoperability">Protocols and Interoperability</a> chapter for details on configuring an <code>acceptor</code> for MQTT.</p>
 </div>
 <div class="paragraph">
-<p>Refer to the MQTT examples for a look at some of this functionality in action.</p>
+<p>Refer to the MQTT <a href="examples.html">examples</a> for a look at some of this functionality in action.</p>
 </div>
 </div>
 </div>
@@ -163,7 +163,7 @@ This feature can be useful in an IoT style scenario to detect errors across a po
 <div class="sectionbody">
 <div class="paragraph">
 <p>Detailed protocol logging (e.g. packets in/out) can be activated by turning on <code>TRACE</code> logging for <code>org.apache.activemq.artemis.core.protocol.mqtt</code>.
-Follow <a href="logging.html#activating-trace-for-a-specific-logger">these steps</a> to configure logging appropriately.</p>
+Follow <a href="logging.html#configuring-a-specific-level-for-a-logger">these steps</a> to configure logging appropriately.</p>
 </div>
 <div class="paragraph">
 <p>The MQTT specification doesn&#8217;t dictate the format of the payloads which clients publish.
@@ -177,9 +177,33 @@ Payload logging is limited to avoid filling the logs with potentially hundreds o
 <h2 id="persistent-subscriptions"><a class="anchor" href="#persistent-subscriptions"></a><a class="link" href="#persistent-subscriptions">5. Persistent Subscriptions</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The subscription information for MQTT sessions is stored in an internal queue named <code>$sys.mqtt.sessions</code> and persisted to disk (assuming persistence is enabled).
+<p>The subscription information for MQTT sessions is stored in an internal queue named <code>$sys.mqtt.sessions</code> and persisted to storage (assuming persistence is enabled).
 The information is durable so that MQTT subscribers can reconnect and resume their subscriptions seamlessly after a broker restart, failure, etc.
 When brokers are configured for high availability this information will be available on the backup so even in the case of a broker fail-over subscribers will be able to resume their subscriptions.</p>
+</div>
+<div class="paragraph">
+<p>While persistent subscriptions can be convenient they impose a performance penalty since data must be written to storage.
+If you don&#8217;t need the convenience (e.g. you always use clean sessions) and you don&#8217;t want the performance penalty then you can disable it by disabling durability for the <code>$sys.mqtt.sessions</code> queue in <code>broker.xml</code>, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   ...
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"$sys.mqtt.sessions"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;anycast&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"$sys.mqtt.sessions"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;durable&gt;</span>false<span class="nt">&lt;/durable&gt;</span>
+         <span class="nt">&lt;/queue&gt;</span>
+      <span class="nt">&lt;/anycast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+   ...
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The setting <code>mqtt-session-state-persistence-timeout</code> controls how long the broker will wait for the data to be written to storage before throwing an error.
+It is measured in milliseconds.
+The default is <code>5000</code>.</p>
 </div>
 </div>
 </div>
@@ -189,7 +213,7 @@ When brokers are configured for high availability this information will be avail
 <div class="paragraph">
 <p>The client ID used by an MQTT application is very important as it uniquely identifies the application.
 In some situations broker administrators may want to perform extra validation or even modify incoming client IDs to support specific use-cases.
-This is possible by implementing a custom security manager as demonstrated in the <code>security-manager</code> example shipped with the broker.</p>
+This is possible by implementing a custom security manager as demonstrated in the <code>security-manager</code> <a href="examples.html">example</a>.</p>
 </div>
 <div class="paragraph">
 <p>The simplest implementation is a "wrapper" just like the <code>security-manager</code> example uses.
@@ -287,30 +311,17 @@ In the case of MQTT 5 clients they will receive a disconnect reason code of <a h
 <h2 id="automatic-subscription-clean-up"><a class="anchor" href="#automatic-subscription-clean-up"></a><a class="link" href="#automatic-subscription-clean-up">10. Automatic Subscription Clean-up</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Sometimes MQTT clients using <code>CleanSession=false</code> don&#8217;t clean up their subscriptions.
-In such situations the following address-setting can be used to clean up the abandoned subscription queues:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="xml">   <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"myMqttAddress"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;auto-delete-created-queues&gt;</span>true<span class="nt">&lt;/auto-delete-created-queues&gt;</span>
-      <span class="nt">&lt;auto-delete-queues-delay&gt;</span>3600000<span class="nt">&lt;/auto-delete-queues-delay&gt;</span> <span class="c">&lt;!-- 1 hour delay --&gt;</span>
-      <span class="nt">&lt;auto-delete-queues-message-count&gt;</span>-1<span class="nt">&lt;/auto-delete-queues-message-count&gt;</span> <span class="c">&lt;!-- doesn't matter how many messages there are --&gt;</span>
-   <span class="nt">&lt;/address-setting&gt;</span></code></pre>
-</div>
+<p>Sometimes MQTT 3.x clients using <code>CleanSession=false</code> don&#8217;t properly unsubscribe. The URL parameter <code>defaultMqttSessionExpiryInterval</code> can be configured on the MQTT <code>acceptor</code> so that abandoned sessions and subscription queues will be cleaned up automatically after the expiry interval elapses.</p>
 </div>
 <div class="paragraph">
-<p>However, the MQTT session meta-data is still present in memory and needs to be cleaned up as well.
-The URL parameter <code>defaultMqttSessionExpiryInterval</code> can be configured on the MQTT <code>acceptor</code> to deal with this situation.</p>
+<p>MQTT 5 has the same basic semantics with slightly different configuration.
+The <code>CleanSession</code> flag was replaced with <code>CleanStart</code> and a <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901048">session expiry interval</a> property.
+The broker will use the client&#8217;s session expiry interval if it is set.
+If it is not set then the broker will apply the <code>defaultMqttSessionExpiryInterval</code>.</p>
 </div>
 <div class="paragraph">
-<p>MQTT 5 added a new <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901048">session expiry interval</a> property with the same basic semantics.
-The broker will use the client&#8217;s value for this property if it is set.
-If it is not set then it will apply the <code>defaultMqttSessionExpiryInterval</code>.</p>
-</div>
-<div class="paragraph">
-<p>The default <code>defaultMqttSessionExpiryInterval</code> is <code>-1</code> which means no MQTT 3.x session states will be expired and no MQTT 5 session states which do not pass their own session expiry interval will be expired.
-Otherwise it represents the number of <strong>seconds</strong> which must elapse after the client has disconnected before the broker will remove the session state.</p>
+<p>The default <code>defaultMqttSessionExpiryInterval</code> is <code>-1</code> which means no clean up will happen for MQTT 3.x clients or for MQTT 5 clients which do not pass their own session expiry interval.
+Otherwise it represents the number of <strong>seconds</strong> which must elapse after the client has disconnected before the broker will remove the session state and subscription queues.</p>
 </div>
 <div class="paragraph">
 <p>MQTT session state is scanned every 5,000 milliseconds by default.

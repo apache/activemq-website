@@ -1,19 +1,13 @@
 ---
 layout: default_md
 title: PMC Templates 
-title-class: page-title-activemq5
-type: activemq5
+title-class: page-title-main
+type: main
 --- 
-
-[Community](community) > [PMC Templates](pmc-templates)
-
-
 The following templates are for use by the ActiveMQ PMC:
-
 
 Committer Discussion
 ====================
-
 ```
 To: [private@activemq.apache.org](mailto:private@activemq.apache.org)
 Subject: [DISCUSS] Invite <CANDIDATE> to become an ActiveMQ committer

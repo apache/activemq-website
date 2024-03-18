@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>MQTT</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>MQTT</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<ul class="sectlevel1">
+<li><a href="#mqtt-quality-of-service">1. MQTT Quality of Service</a></li>
+<li><a href="#mqtt-retain-messages">2. MQTT Retain Messages</a></li>
+<li><a href="#will-messages">3. Will Messages</a></li>
+<li><a href="#debug-logging">4. Debug Logging</a></li>
+<li><a href="#persistent-subscriptions">5. Persistent Subscriptions</a></li>
+<li><a href="#custom-client-id-handling">6. Custom Client ID Handling</a></li>
+<li><a href="#wildcard-subscriptions">7. Wildcard subscriptions</a></li>
+<li><a href="#web-sockets">8. Web Sockets</a></li>
+<li><a href="#link-stealing">9. Link Stealing</a></li>
+<li><a href="#automatic-subscription-clean-up">10. Automatic Subscription Clean-up</a></li>
+<li><a href="#flow-control">11. Flow Control</a></li>
+<li><a href="#topic-alias-maximum">12. Topic Alias Maximum</a></li>
+<li><a href="#maximum-packet-size">13. Maximum Packet Size</a></li>
+<li><a href="#server-keep-alive">14. Server Keep Alive</a></li>
+<li><a href="#enhanced-authentication">15. Enhanced Authentication</a></li>
+<li><a href="#publish-authorization-failures">16. Publish Authorization Failures</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>MQTT is a light weight, client to server, publish / subscribe messaging protocol.
+MQTT has been specifically designed to reduce transport overhead (and thus network traffic) and code footprint on client devices.
+For this reason MQTT is ideally suited to constrained devices such as sensors and actuators and is quickly becoming the defacto standard communication protocol for IoT.</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis supports the following MQTT versions (with links to their respective specifications):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://public.dhe.ibm.com/software/dw/webservices/ws-mqtt/mqtt-v3r1.html">3.1</a></p>
+</li>
+<li>
+<p><a href="https://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">3.1.1</a></p>
+</li>
+<li>
+<p><a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html">5.0</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>By default there are <code>acceptor</code> elements configured to accept MQTT connections  on ports <code>61616</code> and <code>1883</code>.</p>
+</div>
+<div class="paragraph">
+<p>See the general <a href="protocols-interoperability.html#protocols-and-interoperability">Protocols and Interoperability</a> chapter for details on configuring an <code>acceptor</code> for MQTT.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the MQTT examples for a look at some of this functionality in action.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mqtt-quality-of-service"><a class="anchor" href="#mqtt-quality-of-service"></a><a class="link" href="#mqtt-quality-of-service">1. MQTT Quality of Service</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MQTT offers 3 quality of service levels.</p>
+</div>
+<div class="paragraph">
+<p>Each message (or topic subscription) can define a quality of service that is associated with it.
+The quality of service level defined on a topic is the maximum level a client is willing to accept.
+The quality of service level on a message is the desired quality of service level for this message.
+The broker will attempt to deliver messages to subscribers at the highest quality of service level based on what is defined on the message and topic subscription.</p>
+</div>
+<div class="paragraph">
+<p>Each quality of service level offers a level of guarantee by which a message is sent or received:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>QoS 0: <code>AT MOST ONCE</code></p>
+<div class="paragraph">
+<p>Guarantees that a particular message is only ever received by the subscriber a maximum of one time.
+This does mean that the message may never arrive.
+The sender and the receiver will attempt to deliver the message, but if something fails and the message does not reach its destination (say due to a network connection) the message may be lost.
+This QoS has the least network traffic overhead and the least burden on the client and the broker and is often useful for telemetry data where it doesn&#8217;t matter if some of the data is lost.</p>
+</div>
+</li>
+<li>
+<p>QoS 1: <code>AT LEAST ONCE</code></p>
+<div class="paragraph">
+<p>Guarantees that a message will reach its intended recipient one or more times.
+The sender will continue to send the message until it receives an acknowledgment from the recipient, confirming it has received the message.
+The result of this QoS is that the recipient may receive the message multiple times, and also increases the network overhead than QoS 0, (due to acks).
+In addition more burden is placed on the sender as it needs to store the message and retry should it fail to receive an ack in a reasonable time.</p>
+</div>
+</li>
+<li>
+<p>QoS 2: <code>EXACTLY ONCE</code></p>
+<div class="paragraph">
+<p>The most costly of the QoS (in terms of network traffic and burden on sender and receiver) this QoS will ensure that the message is received by a recipient exactly one time.
+This ensures that the receiver never gets any duplicate copies of the message and will eventually get it, but at the extra cost of network overhead and complexity required on the sender and receiver.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mqtt-retain-messages"><a class="anchor" href="#mqtt-retain-messages"></a><a class="link" href="#mqtt-retain-messages">2. MQTT Retain Messages</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MQTT has an interesting feature in which messages can be "retained" for a particular address.
+This means that once a retain message has been sent to an address, any new subscribers to that address will receive the last sent retained message before any others messages.
+This happens even if the retained message was sent before a client has connected or subscribed.
+An example of where this feature might be useful is in environments such as IoT where devices need to quickly get the current state of a system when they are on boarded into a system.</p>
+</div>
+<div class="paragraph">
+<p>Retained messages are stored in a queue named with a special prefix according to the name of the topic where they were originally sent.
+For example, a retained message sent to the topic <code>/abc/123</code> will be stored in a multicast queue named <code>$sys.mqtt.retain.abc.123</code> with an address of the same name.
+The MQTT specification doesn&#8217;t define how long retained messages should be stored so the broker will hold on to this data until a client explicitly deletes the retained message or it potentially expires.
+However, even at that point the queue and address for the retained message will remain.
+These resources can be automatically deleted via the following <code>address-setting</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"$sys.mqtt.retain.#"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;auto-delete-queues&gt;</span>true<span class="nt">&lt;/auto-delete-queues&gt;</span>
+   <span class="nt">&lt;auto-delete-addresses&gt;</span>true<span class="nt">&lt;/auto-delete-addresses&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Keep in mind that it&#8217;s also possible to automatically apply an <a href="message-expiry.html#message-expiry"><code>expiry-delay</code></a> to retained messages as well.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="will-messages"><a class="anchor" href="#will-messages"></a><a class="link" href="#will-messages">3. Will Messages</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A will message can be sent when a client initially connects to a broker.
+Clients are able to set a "will message" as part of the connect packet.
+If the client abnormally disconnects, say due to a device or network failure the broker will proceed to publish the will message to the specified address (as defined also in the connect packet).
+Other subscribers to the will topic will receive the will message and can react accordingly.
+This feature can be useful in an IoT style scenario to detect errors across a potentially large scale deployment of devices.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="debug-logging"><a class="anchor" href="#debug-logging"></a><a class="link" href="#debug-logging">4. Debug Logging</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Detailed protocol logging (e.g. packets in/out) can be activated by turning on <code>TRACE</code> logging for <code>org.apache.activemq.artemis.core.protocol.mqtt</code>.
+Follow <a href="logging.html#activating-trace-for-a-specific-logger">these steps</a> to configure logging appropriately.</p>
+</div>
+<div class="paragraph">
+<p>The MQTT specification doesn&#8217;t dictate the format of the payloads which clients publish.
+As far as the broker is concerned a payload is just an array of bytes.
+However, to facilitate logging the broker will encode the payloads as UTF-8 strings and print them up to 256 characters.
+Payload logging is limited to avoid filling the logs with potentially hundreds of megabytes of unhelpful information.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="persistent-subscriptions"><a class="anchor" href="#persistent-subscriptions"></a><a class="link" href="#persistent-subscriptions">5. Persistent Subscriptions</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The subscription information for MQTT sessions is stored in an internal queue named <code>$sys.mqtt.sessions</code> and persisted to disk (assuming persistence is enabled).
+The information is durable so that MQTT subscribers can reconnect and resume their subscriptions seamlessly after a broker restart, failure, etc.
+When brokers are configured for high availability this information will be available on the backup so even in the case of a broker fail-over subscribers will be able to resume their subscriptions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="custom-client-id-handling"><a class="anchor" href="#custom-client-id-handling"></a><a class="link" href="#custom-client-id-handling">6. Custom Client ID Handling</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The client ID used by an MQTT application is very important as it uniquely identifies the application.
+In some situations broker administrators may want to perform extra validation or even modify incoming client IDs to support specific use-cases.
+This is possible by implementing a custom security manager as demonstrated in the <code>security-manager</code> example shipped with the broker.</p>
+</div>
+<div class="paragraph">
+<p>The simplest implementation is a "wrapper" just like the <code>security-manager</code> example uses.
+In the <code>authenticate</code> method you can modify the client ID using <code>setClientId()</code> on the <code>org.apache.activemq.artemis.spi.core.protocol.RemotingConnection</code> that is passed in.
+If you perform some custom validation of the client ID you can reject the client ID by throwing a <code>org.apache.activemq.artemis.core.protocol.mqtt.exceptions.InvalidClientIdException</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="wildcard-subscriptions"><a class="anchor" href="#wildcard-subscriptions"></a><a class="link" href="#wildcard-subscriptions">7. Wildcard subscriptions</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MQTT addresses are hierarchical much like a file system, and they use a special character (i.e. <code>/</code> by default) to separate hierarchical levels.
+Subscribers are able to subscribe to specific topics or to whole branches of a hierarchy.</p>
+</div>
+<div class="paragraph">
+<p>To subscribe to branches of an address hierarchy a subscriber can use wild cards.
+There are 2 types of wildcards in MQTT:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Multi level</strong> (<code>#</code>)</p>
+<div class="paragraph">
+<p>Adding this wildcard to an address would match all branches of the address hierarchy under a specified node.
+For example: <code>/uk/<mark></code>  Would match <code>/uk/cities</code>, <code>/uk/cities/newcastle</code> and also <code>/uk/rivers/tyne</code>.
+Subscribing to an address <code></mark></code> would result in subscribing to all topics in the broker.
+This can be useful, but should be done so with care since it has significant performance implications.</p>
+</div>
+</li>
+<li>
+<p><strong>Single level</strong> (<code>+</code>)</p>
+<div class="paragraph">
+<p>Matches a single level in the address hierarchy.
+For example <code>/uk/+/stores</code> would match <code>/uk/newcastle/stores</code> but not <code>/uk/cities/newcastle/stores</code>.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These MQTT-specific wildcards are automatically <em>translated</em> into the wildcard syntax used by ActiveMQ Artemis.
+These wildcards are configurable.
+See the <a href="wildcard-syntax.html#customizing-the-syntax">Wildcard Syntax</a> chapter for details about how to configure custom wildcards.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="web-sockets"><a class="anchor" href="#web-sockets"></a><a class="link" href="#web-sockets">8. Web Sockets</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis also supports MQTT over <a href="https://html.spec.whatwg.org/multipage/web-sockets.html">Web Sockets</a>.
+Modern web browsers which support Web Sockets can send and receive MQTT messages.</p>
+</div>
+<div class="paragraph">
+<p>MQTT over Web Sockets is supported via a normal MQTT acceptor:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"mqtt-ws-acceptor"</span><span class="nt">&gt;</span>tcp://host:1883?protocols=MQTT<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this configuration, Apache ActiveMQ Artemis will accept MQTT connections over Web Sockets on the port <code>1883</code>.
+Web browsers can then connect to <code>ws://&lt;server&gt;:1883</code> using a Web Socket to send and receive MQTT messages.</p>
+</div>
+<div class="paragraph">
+<p>SSL/TLS is also available, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"mqtt-wss-acceptor"</span><span class="nt">&gt;</span>tcp://host:8883?protocols=MQTT;sslEnabled=true;keyStorePath=/path/to/keystore;keyStorePassword=myPass<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Web browsers can then connect to <code>wss://&lt;server&gt;:8883</code> using a Web Socket to send and receive MQTT messages.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="link-stealing"><a class="anchor" href="#link-stealing"></a><a class="link" href="#link-stealing">9. Link Stealing</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The MQTT specifications define a behavior often referred to as "link stealing." This means that whenever a new client connects with the same client ID as another existing client then the existing client&#8217;s session will be closed and its network connection will be terminated.</p>
+</div>
+<div class="paragraph">
+<p>In certain use-cases this behavior is not desired so it is configurable.
+The URL parameter <code>allowLinkStealing</code> can be configured on the MQTT <code>acceptor</code> to modify this behavior.
+By default <code>allowLinkStealing</code> is <code>true</code>.
+If it is set to <code>false</code> then whenever a new client connects with the same client ID as another existing client then the <em>new</em> client&#8217;s session will be closed and its network connection will be terminated.
+In the case of MQTT 5 clients they will receive a disconnect reason code of <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901208"><code>0x80</code> (i.e. "Unspecified error")</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="automatic-subscription-clean-up"><a class="anchor" href="#automatic-subscription-clean-up"></a><a class="link" href="#automatic-subscription-clean-up">10. Automatic Subscription Clean-up</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sometimes MQTT clients using <code>CleanSession=false</code> don&#8217;t clean up their subscriptions.
+In such situations the following address-setting can be used to clean up the abandoned subscription queues:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml">   <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"myMqttAddress"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;auto-delete-created-queues&gt;</span>true<span class="nt">&lt;/auto-delete-created-queues&gt;</span>
+      <span class="nt">&lt;auto-delete-queues-delay&gt;</span>3600000<span class="nt">&lt;/auto-delete-queues-delay&gt;</span> <span class="c">&lt;!-- 1 hour delay --&gt;</span>
+      <span class="nt">&lt;auto-delete-queues-message-count&gt;</span>-1<span class="nt">&lt;/auto-delete-queues-message-count&gt;</span> <span class="c">&lt;!-- doesn't matter how many messages there are --&gt;</span>
+   <span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, the MQTT session meta-data is still present in memory and needs to be cleaned up as well.
+The URL parameter <code>defaultMqttSessionExpiryInterval</code> can be configured on the MQTT <code>acceptor</code> to deal with this situation.</p>
+</div>
+<div class="paragraph">
+<p>MQTT 5 added a new <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901048">session expiry interval</a> property with the same basic semantics.
+The broker will use the client&#8217;s value for this property if it is set.
+If it is not set then it will apply the <code>defaultMqttSessionExpiryInterval</code>.</p>
+</div>
+<div class="paragraph">
+<p>The default <code>defaultMqttSessionExpiryInterval</code> is <code>-1</code> which means no MQTT 3.x session states will be expired and no MQTT 5 session states which do not pass their own session expiry interval will be expired.
+Otherwise it represents the number of <strong>seconds</strong> which must elapse after the client has disconnected before the broker will remove the session state.</p>
+</div>
+<div class="paragraph">
+<p>MQTT session state is scanned every 5,000 milliseconds by default.
+This can be changed using the <code>mqtt-session-scan-interval</code> element set in the <code>core</code> section of <code>broker.xml</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="flow-control"><a class="anchor" href="#flow-control"></a><a class="link" href="#flow-control">11. Flow Control</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MQTT 5 introduced a simple form of <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Flow_Control">flow control</a>.
+In short, a broker can tell a client how many QoS 1 &amp; 2 messages it can receive before being acknowledged and vice versa.</p>
+</div>
+<div class="paragraph">
+<p>This is controlled on the broker by setting the <code>receiveMaximum</code> URL parameter on the MQTT <code>acceptor</code> in <code>broker.xml</code>.</p>
+</div>
+<div class="paragraph">
+<p>The default value is <code>65535</code> (the maximum value of the 2-byte integer used by  MQTT).</p>
+</div>
+<div class="paragraph">
+<p>A value of <code>0</code> is prohibited by the MQTT 5 specification.</p>
+</div>
+<div class="paragraph">
+<p>A value of <code>-1</code> will prevent the broker from informing the client of any receive maximum which means flow-control will be disabled from clients to the broker.
+This is effectively the same as setting the value to <code>65535</code>, but reduces the size of the <code>CONNACK</code> packet by a few bytes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="topic-alias-maximum"><a class="anchor" href="#topic-alias-maximum"></a><a class="link" href="#topic-alias-maximum">12. Topic Alias Maximum</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MQTT 5 introduced <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#" class="bare">https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#</a><em>Topic_Alias[topic aliasing].
+This is an optimization for the size of <code>PUBLISH</code> control packets as a 2-byte integer value can now be substituted for the _name</em> of the topic which can potentially be quite long.</p>
+</div>
+<div class="paragraph">
+<p>Both the client and the broker can inform each other about the <em>maximum</em> alias value they support (i.e. how many different aliases they support).
+This is controlled on the broker using the <code>topicAliasMaximum</code> URL parameter on the <code>acceptor</code> used by the MQTT client.</p>
+</div>
+<div class="paragraph">
+<p>The default value is <code>65535</code> (the maximum value of the 2-byte integer used by MQTT).</p>
+</div>
+<div class="paragraph">
+<p>A value of <code>0</code> will disable topic aliasing from clients to the broker.</p>
+</div>
+<div class="paragraph">
+<p>A value of <code>-1</code> will prevent the broker from informing the client of any topic alias maximum which means aliasing will be disabled from clients to the broker.
+This is effectively the same as setting the value to <code>0</code>, but reduces the size of the <code>CONNACK</code> packet by a few bytes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="maximum-packet-size"><a class="anchor" href="#maximum-packet-size"></a><a class="link" href="#maximum-packet-size">13. Maximum Packet Size</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MQTT 5 introduced the <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901086">maximum packet size</a>.
+This is the maximum packet size the server or client is willing to accept.</p>
+</div>
+<div class="paragraph">
+<p>This is controlled on the broker by setting the <code>maximumPacketSize</code> URL parameter on the MQTT <code>acceptor</code> in <code>broker.xml</code>.</p>
+</div>
+<div class="paragraph">
+<p>The default value is <code>268435455</code> (i.e. 256MB - the maximum value of the variable byte integer used by MQTT).</p>
+</div>
+<div class="paragraph">
+<p>A value of <code>0</code> is prohibited by the MQTT 5 specification.</p>
+</div>
+<div class="paragraph">
+<p>A value of <code>-1</code> will prevent the broker from informing the client of any maximum packet size which means no limit will be enforced on the size of incoming packets.
+This also reduces the size of the <code>CONNACK</code> packet by a few bytes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="server-keep-alive"><a class="anchor" href="#server-keep-alive"></a><a class="link" href="#server-keep-alive">14. Server Keep Alive</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All MQTT versions support a connection keep alive value defined by the <em>client</em>.
+MQTT 5 introduced a <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901094">server keep alive</a> value so that a broker can define the value that the client should use.
+The  primary use of the server keep alive is for the server to inform the client that it will disconnect the client for inactivity sooner than the keep alive specified by the client.</p>
+</div>
+<div class="paragraph">
+<p>This is controlled on the broker by setting the <code>serverKeepAlive</code> URL parameter on the MQTT <code>acceptor</code> in <code>broker.xml</code>.</p>
+</div>
+<div class="paragraph">
+<p>The default value is <code>60</code> and is measured in <strong>seconds</strong>.</p>
+</div>
+<div class="paragraph">
+<p>A value of <code>0</code> completely disables keep alives no matter the client&#8217;s keep alive value.
+This is <strong>not recommended</strong> because disabling keep alives is generally considered dangerous since it could lead to resource exhaustion.</p>
+</div>
+<div class="paragraph">
+<p>A value of <code>-1</code> means the broker will <em>always</em> accept the client&#8217;s keep alive value (even if that value is <code>0</code>).</p>
+</div>
+<div class="paragraph">
+<p>Any other value means the <code>serverKeepAlive</code> will be applied if it is <em>less than</em> the client&#8217;s keep alive value <strong>unless</strong> the client&#8217;s keep alive value is <code>0</code> in which case the <code>serverKeepAlive</code> is applied.
+This is because a value of <code>0</code> would disable keep alives and disabling keep alives is generally considered dangerous since it could lead to resource exhaustion.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enhanced-authentication"><a class="anchor" href="#enhanced-authentication"></a><a class="link" href="#enhanced-authentication">15. Enhanced Authentication</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MQTT 5 introduced <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901256">enhanced authentication</a> which extends the existing name &amp; password authentication to include challenge / response style authentication.</p>
+</div>
+<div class="paragraph">
+<p>However, there are currently no challenge / response mechanisms implemented so if a client passes the "Authentication Method" property in its <code>CONNECT</code> packet it will receive a <code>CONNACK</code> with a reason code of <code>0x8C</code> (i.e. bad authentication method) and the network connection will be closed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="publish-authorization-failures"><a class="anchor" href="#publish-authorization-failures"></a><a class="link" href="#publish-authorization-failures">16. Publish Authorization Failures</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The MQTT 3.1.1 specification is ambiguous regarding the broker&#8217;s behavior when a <code>PUBLISH</code> packet fails due to a lack of authorization.
+In <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718042">section 3.3.5</a> it says:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>If a Server implementation does not authorize a PUBLISH to be performed by a Client;
+it has no way of informing that Client.
+It MUST either make a positive acknowledgement, according to the normal QoS rules, or close the Network Connection</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>By default the broker will close the network connection.
+However if you&#8217;d rather have the broker make a positive acknowledgement then set the URL parameter <code>closeMqttConnectionOnPublishAuthorizationFailure</code> to <code>false</code> on the relevant MQTT <code>acceptor</code> in <code>broker.xml</code>, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"mqtt"</span><span class="nt">&gt;</span>tcp://0.0.0:1883?protocols=MQTT;closeMqttConnectionOnPublishAuthorizationFailure=false<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

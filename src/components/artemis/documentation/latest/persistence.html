@@ -15,11 +15,11 @@
 <div id="header">
 <h1>Persistence</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#file-journal-default">1. File Journal (Default)</a>
 <ul class="sectlevel2">
-<li><a href="#journal-retention">1.1. Journal Retention</a></li>
+<li><a href="#journal-and-data-retention">1.1. Journal and Data Retention</a></li>
 <li><a href="#java-nio">1.2. Java NIO</a></li>
 <li><a href="#linux-asynchronous-io">1.3. Linux Asynchronous IO</a></li>
 <li><a href="#memory-mapped">1.4. Memory mapped</a></li>
@@ -79,60 +79,9 @@ If so, the file can be reclaimed and re-used.</p>
 Apache ActiveMQ Artemis ships with two implementations:</p>
 </div>
 <div class="sect2">
-<h3 id="journal-retention"><a class="anchor" href="#journal-retention"></a><a class="link" href="#journal-retention">1.1. Journal Retention</a></h3>
+<h3 id="journal-and-data-retention"><a class="anchor" href="#journal-and-data-retention"></a><a class="link" href="#journal-and-data-retention">1.1. Journal and Data Retention</a></h3>
 <div class="paragraph">
-<p>If you enable <code>journal-retention</code> on broker.xml, ActiveMQ Artemis will keep copy of every data that has passed through the broker on this folder.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="xml">    ...
-      <span class="nt">&lt;journal-retention</span> <span class="na">unit=</span><span class="s">"DAYS"</span> <span class="na">directory=</span><span class="s">"history"</span> <span class="na">period=</span><span class="s">"365"</span> <span class="na">storage-limit=</span><span class="s">"10G"</span><span class="nt">/&gt;</span>
-    ...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>ActiveMQ Artemis will keep a copy of each generated journal file, up to the configured retention period, at the unit chose.
-On the example above the system would keep all the journal files up to 365 days.</p>
-</div>
-<div class="paragraph">
-<p>It is also possible to limit the number of files kept on the retention directory.
-You can keep a storage-limit, and the system will start removing older files when you have more files than the configured storage limit.</p>
-</div>
-<div class="paragraph">
-<p>Notice the storage limit is optional however you need to be careful to not run out of disk space at the retention folder or the broker might be shutdown because of a critical IO failure.</p>
-</div>
-<div class="paragraph">
-<p>You can use the CLI tools to inspect and recover data from the history, by just passing the journal folder being the retention directory.</p>
-</div>
-<div class="paragraph">
-<p>Example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="shell">./artemis data print <span class="nt">--journal</span> ../data/history</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To recover the messages from the history:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="shell">./artemis data recovery <span class="nt">--journal</span> ../data/history <span class="nt">--target</span> ../data/recovered <span class="nt">--large-messages</span> ../data/large-messages</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It is important that you don&#8217;t call recover into a the journal while the broker is alive.
-As a matter of fact the current recommendations is to do that on a new journal directory.
-Perhaps on a new broker so you can inspect and transfer these messages.</p>
-</div>
-<div class="paragraph">
-<p>The retention feature is in its current form very simple and intended for emergency situations.
-If you think it is useful new options to recover the data could be added, perhaps thorugh the admin console and other possibilities.
-Please share your feedback on this area, and as always Pull Requests are welcomed!</p>
-</div>
-<div class="paragraph">
-<p>Also the recovery CLI tool will recover every data on the selected folder.
-It is important that you do some maintenance and copy the files and interval you need to a new location before you call recover.</p>
+<p>ActiveMQ Artemis provides a way to store and replay historical data. Refer to <a href="data-retention.html">Data Retention</a> chapter for more information.</p>
 </div>
 </div>
 <div class="sect2">
@@ -627,9 +576,9 @@ Note that each address will have its own page table which will use this name app
 </dd>
 <dt class="hdlist1">node-manager-store-table-name</dt>
 <dd>
-<p>The name of the table in which the HA Shared Store locks (ie live and backup) and HA related data will be persisted for the ActiveMQ Artemis server.
+<p>The name of the table in which the HA Shared Store locks (i.e. primary and backup) and HA related data will be persisted for the ActiveMQ Artemis server.
 Specifying table names allows users to share single database amongst multiple servers, without interference.
-Each Shared Store live/backup pairs must use the same table name and isn&#8217;t supported to share the same table between multiple (and unrelated) live/backup pairs.</p>
+Each Shared Store primary/backup pairs must use the same table name and isn&#8217;t supported to share the same table between multiple (and unrelated) primary/backup pairs.</p>
 </dd>
 <dt class="hdlist1">jdbc-driver-class-name</dt>
 <dd>
@@ -658,7 +607,7 @@ The default value is 5 milliseconds.</p>
 </dd>
 <dt class="hdlist1">jdbc-allowed-time-diff</dt>
 <dd>
-<p>The maximal time offset between the broker and the database in milliseconds when requesting the current time of the database while updating and validating live and backup locks.
+<p>The maximal time offset between the broker and the database in milliseconds when requesting the current time of the database while updating and validating primary and backup locks.
 Currently this value only affects the logging and will show a warning if the detected difference exceeds the limit.
 The default value is 250 milliseconds.</p>
 </dd>

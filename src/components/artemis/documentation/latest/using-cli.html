@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Command Line Interface</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.31.2</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#getting-help">1. Getting Help</a></li>
 <li><a href="#bash-and-zsh-auto-complete">2. Bash and Zsh auto complete</a></li>
@@ -125,9 +125,9 @@ For example, <code>./artemis help create</code>:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight nowrap"><code data-lang="console"><span class="go">Usage: artemis create [--aio] [--allow-anonymous] [--autocreate] [--autodelete]
-                      [--blocking] [--clustered] [--cygwin]
+                      [--backup] [--blocking] [--clustered]
                       [--disable-persistence] [--failover-on-shutdown]
-                      [--force] [--jdbc] [--mapped] [--nio]
+                      [--force] [--jdbc] [--linux] [--mapped] [--nio]
                       [--no-amqp-acceptor] [--no-autocreate] [--no-autotune]
                       [--no-fsync] [--no-hornetq-acceptor] [--no-mqtt-acceptor]
                       [--no-stomp-acceptor] [--no-web] [--paging]
@@ -166,7 +166,7 @@ For example, <code>./artemis help create</code>:</p>
 <span class="gp">                      [--ssl-key-password=&lt;sslKeyPassword&gt;</span><span class="o">]</span>
 <span class="gp">                      [--ssl-trust=&lt;sslTrust&gt;</span><span class="o">]</span>
 <span class="gp">                      [--ssl-trust-password=&lt;sslTrustPassword&gt;</span><span class="o">]</span>
-<span class="gp">                      [--static-cluster=&lt;staticNode&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--user</span><span class="o">=</span>&lt;user&gt;]
+<span class="gp">                      [--staticCluster=&lt;staticNode&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--user</span><span class="o">=</span>&lt;user&gt;]
 <span class="gp">                      [--java-options=&lt;javaOptions&gt;</span><span class="o">]</span>... &lt;directory&gt;
 <span class="go">Create a new broker instance.
 </span><span class="gp">      &lt;directory&gt;</span><span class="w">            </span>The instance directory to hold the broker<span class="s1">'s
@@ -184,6 +184,8 @@ For example, <code>./artemis help create</code>:</p>
                                Default: true.
       --autodelete           Allow automatic deletion of addresses &amp; queues.
                                Default: false.
+      --backup               Be a backup broker. Valid for shared store or
+                               replication.
       --blocking             Block producers when address becomes full.
                                Opposite of --paging. Default: false.
 </span><span class="gp">      --cluster-password=&lt;clusterPassword&gt;</span><span class="w">
@@ -191,8 +193,6 @@ For example, <code>./artemis help create</code>:</p>
 </span><span class="gp">      --cluster-user=&lt;clusterUser&gt;</span><span class="w">
 </span><span class="go">                             The user to use for clustering. Default: input.
       --clustered            Enable clustering.
-      --cygwin               Force Cygwin script creation. Default: based on
-                               your actual system.
 </span><span class="gp">      --data=&lt;data&gt;</span><span class="w">          </span>Directory where ActiveMQ data are stored. Paths
 <span class="go">                               can be absolute or relative to artemis.instance
                                directory. Default: data.
@@ -258,6 +258,8 @@ For example, <code>./artemis help create</code>:</p>
 </span><span class="gp">      --journal-retention-max-bytes=&lt;retentionMaxBytes&gt;</span><span class="w">
 </span><span class="go">                             Maximum number of bytes to keep in the retention
                                directory.
+      --linux, --cygwin      Force Linux or Cygwin script creation. Default:
+                               based on your actual system.
       --mapped               Set the journal as mapped.
 </span><span class="gp">      --max-hops=&lt;maxHops&gt;</span><span class="w">   </span>Number of hops on the cluster configuration.
 <span class="gp">      --message-load-balancing=&lt;messageLoadBalancing&gt;</span><span class="w">
@@ -301,8 +303,7 @@ For example, <code>./artemis help create</code>:</p>
       --shared-store         Enable broker shared store.
       --silent               Disable all the inputs, and make a best guess for
                                any required input.
-      --slave                Be a slave broker. Valid for shared store or
-                               replication.
+      --slave                Deprecated for removal. Use 'backup' instead.
 </span><span class="gp">      --ssl-key=&lt;sslKey&gt;</span><span class="w">     </span>Embedded web server<span class="s1">'s key store path.
 </span><span class="gp">      --ssl-key-password=&lt;sslKeyPassword&gt;</span><span class="w">
 </span><span class="go">                             The key store's password.
@@ -310,7 +311,7 @@ For example, <code>./artemis help create</code>:</p>
 <span class="go">                               authentication.
 </span><span class="gp">      --ssl-trust-password=&lt;sslTrustPassword&gt;</span><span class="w">
 </span><span class="go">                             The trust store's password.
-</span><span class="gp">      --static-cluster=&lt;staticNode&gt;</span><span class="w">
+</span><span class="gp">      --staticCluster, --static-cluster=&lt;staticNode&gt;</span><span class="w">
 </span><span class="go">                             Cluster node connectors list separated by comma, e.
                                g. "tcp://server:61616,tcp://server2:61616,tcp:
                                //server3:61616".

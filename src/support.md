@@ -8,7 +8,7 @@ Support is divided into two main categories - **community** and **commercial**.
 
 #### Community Support
 
-This is an open source project so the amount of time community members have available to help resolve your issue is often limited as most help is provided on a volunteer basis. However, it is *free* and you are often able to discuss issues with the developers who actually wrote the code you are running.
+This is an open source project so the amount of time community members have available to help resolve your issue is often limited as help is provided on a volunteer basis from [individuals](https://www.apache.org/foundation/how-it-works/#hats). However, it is *free* and you are often able to discuss issues with the developers who actually wrote the code you are running.
 
 If you want community support then please [contact us](contact). If you’re fairly certain you’re hitting a bug [please report it](issues) via one of our issue trackers. Be sure to review these pages carefully as they contain tips and tricks about working with Apache communities in general and ActiveMQ in particular.
 
