@@ -27,7 +27,7 @@ The new KahaDB store supports a very fast and flexible replication system. It fe
 Master Election
 ---------------
 
-KahaDB supports a pluggable Master Election algorithm but the only current implementation is one based on [ZooKeeper](http://hadoop.apache.org/zookeeper).
+KahaDB supports a pluggable Master Election algorithm but the only current implementation is one based on [ZooKeeper](https://zookeeper.apache.org/).
 
 ZooKeeper is used to implement the master election algorithm. ZooKeeper is a very fast, replicated, in memory database with features that make it easy to implement cluster control algorithms. It is an Apache project which you can [freely download](http://hadoop.apache.org/zookeeper/releases.html). You must installed and have at least one ZooKeeper server running before setting up a KahaDB Master Slave configuration.
 
