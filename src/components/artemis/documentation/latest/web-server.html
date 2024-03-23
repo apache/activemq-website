@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Embedded Web Server</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.33.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#configuration">1. Configuration</a>
 <ul class="sectlevel2">
@@ -100,6 +100,10 @@ Default is <code>8</code> or the value of <code>maxThreads</code> if it is lower
 <dd>
 <p>The time to wait before terminating an idle thread from the embedded web server. Measured in milliseconds. Default is <code>60000</code>.</p>
 </dd>
+<dt class="hdlist1">scanPeriod</dt>
+<dd>
+<p>How often to scan for changes of the key and trust store files related to a binding when the <code>sslAutoReload</code> attribute value of the <code>binding</code> element is <code>true</code>, for further details see <a href="#binding">Binding</a>. Measured in seconds. Default is <code>5</code>.</p>
+</dd>
 </dl>
 </div>
 </div>
@@ -180,6 +184,12 @@ Only applicable when using <code>https</code>.</p>
 <p>Whether or not the client request must include an SNI Host name.
 Default is <code>false</code>.
 Only applicable when using <code>https</code>.</p>
+</dd>
+<dt class="hdlist1">sslAutoReload</dt>
+<dd>
+<p>Whether or not the key and trust store files must be watched for changes and automatically reloaded.
+The watch period is controlled by the <code>scanPeriod</code> attribute of the <code>web</code> element, for further details see <a href="#web">Web</a>.
+Default is <code>false</code>.</p>
 </dd>
 </dl>
 </div>
