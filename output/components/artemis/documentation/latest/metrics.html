@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Metrics</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.33.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#exported-metrics">1. Exported Metrics</a>
 <ul class="sectlevel2">
@@ -196,30 +196,86 @@ However, these metrics can be deduced by aggregating the lower level metrics (e.
 </div>
 <div class="sect2">
 <h3 id="optional-metrics"><a class="anchor" href="#optional-metrics"></a><a class="link" href="#optional-metrics">1.4. Optional metrics</a></h3>
-<div class="ulist">
-<ul>
-<li>
-<p>JVM memory metrics (exported by default)</p>
-</li>
-<li>
-<p>JVM GC</p>
-</li>
-<li>
-<p>JVM thread</p>
-</li>
-<li>
-<p><a href="https://netty.io/4.1/api/io/netty/buffer/PooledByteBufAllocatorMetric.html">Netty</a></p>
-</li>
-<li>
-<p>File descriptors</p>
-</li>
-<li>
-<p>Processor</p>
-</li>
-<li>
-<p>Uptime</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>There are a handful of other useful metrics that are related to the JVM, the underlying operating system, etc.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">JVM memory metrics</dt>
+<dd>
+<p>Gauges buffer and memory pool utilization.
+Underlying data gathered from Java&#8217;s <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/BufferPoolMXBean.html">BufferPoolMXBeans</a> and <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryPoolMXBean.html">MemoryPoolMXBeans</a>.</p>
+<div class="paragraph">
+<p>Enabled by default.</p>
+</div>
+</dd>
+<dt class="hdlist1">JVM GC</dt>
+<dd>
+<p>Gauges max and live data size, promotion and allocation rates, and the number of times the GC pauses (or concurrent phase time in the case of CMS).
+Underlying data gathered from Java&#8217;s <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryPoolMXBean.html">MemoryPoolMXBeans</a>.</p>
+<div class="paragraph">
+<p>Disabled by default.</p>
+</div>
+</dd>
+<dt class="hdlist1">JVM thread</dt>
+<dd>
+<p>Gauges thread peak, the number of daemon threads, and live threads.
+Underlying data gathered from Java&#8217;s <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/ThreadMXBean.html">ThreadMXBean</a>.</p>
+<div class="paragraph">
+<p>Disabled by default.</p>
+</div>
+</dd>
+<dt class="hdlist1">Netty</dt>
+<dd>
+<p>Collects metrics from Netty&#8217;s <a href="https://netty.io/4.1/api/io/netty/buffer/PooledByteBufAllocatorMetric.html">PooledByteBufAllocatorMetric</a>.</p>
+<div class="paragraph">
+<p>Disabled by default.</p>
+</div>
+</dd>
+<dt class="hdlist1">File descriptors</dt>
+<dd>
+<p>Gauges current and max-allowed open files.</p>
+<div class="paragraph">
+<p>Disabled by default.</p>
+</div>
+</dd>
+<dt class="hdlist1">Processor</dt>
+<dd>
+<p>Gauges system CPU count, CPU usage, and 1-minute load average as well as process CPU usage.</p>
+<div class="paragraph">
+<p>Disabled by default.</p>
+</div>
+</dd>
+<dt class="hdlist1">Uptime</dt>
+<dd>
+<p>Gauges process start time and uptime.</p>
+<div class="paragraph">
+<p>Disabled by default.</p>
+</div>
+</dd>
+<dt class="hdlist1">Logging</dt>
+<dd>
+<p>Counts the number of logging events per logging category (e.g. <code>WARN</code>, <code>ERROR</code>, etc.).</p>
+<div class="paragraph">
+<p>Disabled by default.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This works <em>exclusively</em> with Log4j2 (i.e the default logging implementation shipped with the broker).
+If you&#8217;re embedding the broker and using a different logging implementation (e.g. Log4j 1.x, JUL, Logback, etc.) and you enable these metrics then the broker will fail to start with a <code>java.lang.NoClassDefFoundError</code> as it attempts to locate Log4j2 classes that don&#8217;t exist on the classpath.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+</dl>
 </div>
 </div>
 </div>
@@ -232,7 +288,7 @@ However, these metrics can be deduced by aggregating the lower level metrics (e.
 If you want to disable metrics for a particular address or set of addresses you can do so by setting the <code>enable-metrics</code> <code>address-setting</code> to <code>false</code>.</p>
 </div>
 <div class="paragraph">
-<p>In <code>broker.xml</code> use the <code>metrics</code> element to configure which JVM metrics are reported and to configure the plugin itself.
+<p>In <code>broker.xml</code> use the <code>metrics</code> element to configure which general broker and JVM metrics are reported and to configure the plugin itself.
 Here&#8217;s a configuration with all optional metrics:</p>
 </div>
 <div class="listingblock">
@@ -245,6 +301,7 @@ Here&#8217;s a configuration with all optional metrics:</p>
    <span class="nt">&lt;file-descriptors&gt;</span>true<span class="nt">&lt;/file-descriptors&gt;</span> <span class="c">&lt;!-- defaults to false --&gt;</span>
    <span class="nt">&lt;processor&gt;</span>true<span class="nt">&lt;/processor&gt;</span> <span class="c">&lt;!-- defaults to false --&gt;</span>
    <span class="nt">&lt;uptime&gt;</span>true<span class="nt">&lt;/uptime&gt;</span> <span class="c">&lt;!-- defaults to false --&gt;</span>
+   <span class="nt">&lt;logging&gt;</span>true<span class="nt">&lt;/logging&gt;</span> <span class="c">&lt;!-- defaults to false --&gt;</span>
    <span class="nt">&lt;plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.metrics.plugins.LoggingMetricsPlugin"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/metrics&gt;</span></code></pre>
 </div>
