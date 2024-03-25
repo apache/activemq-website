@@ -69,7 +69,7 @@ If the master looses the exclusive lock then it immediately shuts down. If a mas
 
 ![](assets/img/MasterFailed.png)
 
-One of the other other slaves immediately grabs the exclusive lock on the file system to them commences becoming the master, starting all of its transport connectors.
+One of the other slaves immediately grabs the exclusive lock on the file system to them commences becoming the master, starting all of its transport connectors.
 
 Clients loose connection to the stopped master and then the failover transport tries to connect to the available brokers - of which the only one available is the new master.
 

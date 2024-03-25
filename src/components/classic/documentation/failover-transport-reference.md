@@ -68,11 +68,11 @@ In this example if the connection isn't established the send operation will time
 
 The Failover transport tracks transactions by default. In-flight transactions are replayed upon re-connection. For simple scenarios this works as expected. However, there is an assumption regarding acknowledged (or consumer) transactions in that the previously received messages will automatically be replayed upon re-connection. This, however, is not always true when there are many connections and consumers, as re-delivery order is not guaranteed as stale outstanding acknowledgements can interfere with newly delivered messages. This can lead to unacknowledged messages.
 
-`From ActiveMQ Classic 5.3.1**: re-delivery order **_is_** tracked and a transaction will fail to commit if outstanding messages are not redelivered after failover. A `javax.jms.``TransactionRolledBackException` is thrown if the commit fails. In doubt transactions will result in a rollback such that they can be replayed by the application. In doubt transactions occur when failover happens when a commit message is in-flight. It is not possible to know the exact point of failure. Did failure happen because the transaction commit message was not delivered or was the commit reply lost? In either case, it becomes necessary to rollback the transaction so that the application can get an indication of the failure and deal with any potential problem.
+**From ActiveMQ Classic 5.3.1**: re-delivery order **_is_** tracked and a transaction will fail to commit if outstanding messages are not redelivered after failover. A `javax.jms.TransactionRolledBackException` is thrown if the commit fails. In doubt transactions will result in a rollback such that they can be replayed by the application. In doubt transactions occur when failover happens when a commit message is in-flight. It is not possible to know the exact point of failure. Did failure happen because the transaction commit message was not delivered or was the commit reply lost? In either case, it becomes necessary to rollback the transaction so that the application can get an indication of the failure and deal with any potential problem.
 
 ##### Broker-side Options for Failover
 
-`From ActiveMQ Classic 5.4**: the `TransportConnector` has options available so that the broker can update clients automatically with information regarding the presence of new brokers that are available (or are no longer available) for failover.
+**From ActiveMQ Classic 5.4**: the `TransportConnector` has options available so that the broker can update clients automatically with information regarding the presence of new brokers that are available (or are no longer available) for failover.
 
 The options are:
 
@@ -107,7 +107,7 @@ When new brokers join the cluster the client is automatically informed of the ne
 
 ##### Priority Backup
 
-`From ActiveMQ Classic 5.6**: if brokers are available in both local and remote networks, it's possible to specify a preference for local brokers over remote brokers using the `priorityBackup` and `priorityURIs` options.
+**From ActiveMQ Classic 5.6**: if brokers are available in both local and remote networks, it's possible to specify a preference for local brokers over remote brokers using the `priorityBackup` and `priorityURIs` options.
 
 Consider the following URL:
 ```
@@ -125,7 +125,7 @@ In this case the client will prioritize either `local1` or `local2` brokers and 
 
 ##### Configuring Nested URI Options.
 
-`From ActiveMQ Classic 5.9**: common URI options can be configured by appending them to the query string of the failover URI where each common URI option has the prefix: `nested.` 
+**From ActiveMQ Classic 5.9**: common URI options can be configured by appending them to the query string of the failover URI where each common URI option has the prefix: `nested.` 
 
 Example - instead of doing this:
 ```

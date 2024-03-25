@@ -55,7 +55,7 @@ ActiveMQ Classic also supports other transports than tcp to be used for the netw
 
 ### Example using multicast discovery
 
-This example uses multicast [discovery](http://activemq.apache.orgFeatures/discovery)
+This example uses [multicast discovery](discovery#multicast)
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 
