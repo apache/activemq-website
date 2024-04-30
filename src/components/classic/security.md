@@ -9,6 +9,7 @@ Details of security problems fixed in released versions of Apache ActiveMQ Class
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2024-32114](../../security-advisories.data/CVE-2024-32114-announcement.txt) - Jolokia and REST API were not secured with default configuration
 *   [CVE-2023-46604](../../security-advisories.data/CVE-2023-46604-announcement.txt) - Unbounded deserialization causes ActiveMQ Classic to be vulnerable to a remote code execution (RCE) attack
 *   [CVE-2022-41678](../../security-advisories.data/CVE-2022-41678-announcement.txt) - Deserialization vulnerability on Jolokia that allows authenticated users to perform remote code execution (RCE)
 *   [CVE-2021-26117](../../security-advisories.data/CVE-2021-26117-announcement.txt) - ActiveMQ: LDAP-Authentication does not verify passwords on servers with anonymous bind
