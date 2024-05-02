@@ -5,13 +5,13 @@ title-class: page-title-main
 type: main
 ---
 
-The goal of this page is to identify the outstanding issues that must be addressed by Artemis in order to achieve feature parity with Classic. The overall objective for working toward feature parity between Classic and Artemis is for Artemis to eventually become the next major version of ActiveMQ. This page exists so that we can work together as a group to achieve this goal. This page does **not** list the features which Artemis has *beyond* what currently exists in Classic.
+The goal of this page is to identify the outstanding issues that must be addressed by Artemis in order to achieve feature parity with ActiveMQ Classic. This page does **not** list the features which Artemis has *beyond* what currently exists in Classic.
 
 ## Features/Scenarios
 
 This section should be used to compare what features from ActiveMQ Classic have been implemented in Artemis. Feature items can be listed, with links to JIRA tickets for longer conversation and hashing out specific feature details. This will help us to more clearly track everything that Artemis needs. This list of features was taken from the Classic [features page](features).
 
-Keep in mind that not every feature must have a &#9989;. Artemis may still be ready to become ActiveMQ *Next* even if features on this page still have an &#10060; if those features are deemed low priority. Artemis is not meant to be a 100% complete reimplementation of ActiveMQ Classic. Features should only be reimplemented where it makes good sense.
+Keep in mind that not every feature must have a &#9989;. Artemis is not meant to be a 100% complete reimplementation of ActiveMQ Classic. Features should only be reimplemented where it makes good sense.
 
 ### Protocol Support
 
