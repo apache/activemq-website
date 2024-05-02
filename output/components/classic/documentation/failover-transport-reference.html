@@ -225,11 +225,11 @@
 
 <p>The Failover transport tracks transactions by default. In-flight transactions are replayed upon re-connection. For simple scenarios this works as expected. However, there is an assumption regarding acknowledged (or consumer) transactions in that the previously received messages will automatically be replayed upon re-connection. This, however, is not always true when there are many connections and consumers, as re-delivery order is not guaranteed as stale outstanding acknowledgements can interfere with newly delivered messages. This can lead to unacknowledged messages.</p>
 
-<p><code class="language-plaintext highlighter-rouge">From ActiveMQ Classic 5.3.1**: re-delivery order **_is_** tracked and a transaction will fail to commit if outstanding messages are not redelivered after failover. A </code>javax.jms.``TransactionRolledBackException` is thrown if the commit fails. In doubt transactions will result in a rollback such that they can be replayed by the application. In doubt transactions occur when failover happens when a commit message is in-flight. It is not possible to know the exact point of failure. Did failure happen because the transaction commit message was not delivered or was the commit reply lost? In either case, it becomes necessary to rollback the transaction so that the application can get an indication of the failure and deal with any potential problem.</p>
+<p><strong>From ActiveMQ Classic 5.3.1</strong>: re-delivery order <strong><em>is</em></strong> tracked and a transaction will fail to commit if outstanding messages are not redelivered after failover. A <code class="language-plaintext highlighter-rouge">javax.jms.TransactionRolledBackException</code> is thrown if the commit fails. In doubt transactions will result in a rollback such that they can be replayed by the application. In doubt transactions occur when failover happens when a commit message is in-flight. It is not possible to know the exact point of failure. Did failure happen because the transaction commit message was not delivered or was the commit reply lost? In either case, it becomes necessary to rollback the transaction so that the application can get an indication of the failure and deal with any potential problem.</p>
 
 <h5 id="broker-side-options-for-failover">Broker-side Options for Failover</h5>
 
-<p><code class="language-plaintext highlighter-rouge">From ActiveMQ Classic 5.4**: the </code>TransportConnector` has options available so that the broker can update clients automatically with information regarding the presence of new brokers that are available (or are no longer available) for failover.</p>
+<p><strong>From ActiveMQ Classic 5.4</strong>: the <code class="language-plaintext highlighter-rouge">TransportConnector</code> has options available so that the broker can update clients automatically with information regarding the presence of new brokers that are available (or are no longer available) for failover.</p>
 
 <p>The options are:</p>
 
@@ -289,7 +289,7 @@
 
 <h5 id="priority-backup">Priority Backup</h5>
 
-<p><code class="language-plaintext highlighter-rouge">From ActiveMQ Classic 5.6**: if brokers are available in both local and remote networks, it's possible to specify a preference for local brokers over remote brokers using the </code>priorityBackup<code class="language-plaintext highlighter-rouge"> and </code>priorityURIs` options.</p>
+<p><strong>From ActiveMQ Classic 5.6</strong>: if brokers are available in both local and remote networks, it’s possible to specify a preference for local brokers over remote brokers using the <code class="language-plaintext highlighter-rouge">priorityBackup</code> and <code class="language-plaintext highlighter-rouge">priorityURIs</code> options.</p>
 
 <p>Consider the following URL:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failover:(tcp://local:61616,tcp://remote:61616)?randomize=false&amp;priorityBackup=true
@@ -305,7 +305,7 @@
 
 <h5 id="configuring-nested-uri-options">Configuring Nested URI Options.</h5>
 
-<p><code class="language-plaintext highlighter-rouge">From ActiveMQ Classic 5.9**: common URI options can be configured by appending them to the query string of the failover URI where each common URI option has the prefix: </code>nested.` </p>
+<p><strong>From ActiveMQ Classic 5.9</strong>: common URI options can be configured by appending them to the query string of the failover URI where each common URI option has the prefix: <code class="language-plaintext highlighter-rouge">nested.</code> </p>
 
 <p>Example - instead of doing this:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failover:(tcp://broker1:61616?wireFormat.maxInactivityDuration=1000,tcp://broker2:61616?wireFormat.maxInactivityDuration=1000,tcp://broker3:61616?wireFormat.maxInactivityDuration=1000) 
