@@ -336,13 +336,31 @@ Default is <code>true</code>.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-automatic queue creation does <em>not</em> work for the core client.
+Automatic queue creation does <em>not</em> work for the core client.
 The core API is a low-level API and is not meant to have such automation.
 </td>
 </tr>
 </table>
 </div>
 </dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Automatic queue creation is for queues that <em>would not otherwise be created during normal operation</em>.
+For example, when a remote application creates a consumer on a JMS topic then a queue will be created representing that subscription as described in the <a href="jms-core-mapping.html">JMS-to-core mapping chapter</a>.
+This queue will be created regardless of how <code>auto-create-queues</code> is configured because it is required for <em>normal operation</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
 <dt class="hdlist1">auto-delete-queues</dt>
 <dd>
 <p>Whether or not the broker should automatically delete auto-created queues when they have both 0 consumers and the message count is  less than or equal to <code>auto-delete-queues-message-count</code>.
