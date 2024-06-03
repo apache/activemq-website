@@ -15,13 +15,14 @@
 <div id="header">
 <h1>Plugin Support</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.33.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.34.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#registering-a-plugin">1. Registering a Plugin</a></li>
 <li><a href="#registering-a-plugin-programmatically">2. Registering a Plugin Programmatically</a></li>
 <li><a href="#using-the-loggingactivemqserverplugin">3. Using the <code>LoggingActiveMQServerPlugin</code></a></li>
 <li><a href="#using-the-notificationactivemqserverplugin">4. Using the NotificationActiveMQServerPlugin</a></li>
 <li><a href="#using-the-brokermessageauthorizationplugin">5. Using the BrokerMessageAuthorizationPlugin</a></li>
+<li><a href="#using-the-connectionperiodicexpiryplugin">6. Using the ConnectionPeriodicExpiryPlugin</a></li>
 </ul>
 </div>
 </div>
@@ -293,6 +294,63 @@ In the example below <code>ROLE_PROPERTY</code> is set to <code>permissions</cod
 <pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-plugins&gt;</span>
    <span class="nt">&lt;broker-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.plugin.impl.BrokerMessageAuthorizationPlugin"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"ROLE_PROPERTY"</span> <span class="na">value=</span><span class="s">"permissions"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;/broker-plugin&gt;</span>
+<span class="nt">&lt;/broker-plugins&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using-the-connectionperiodicexpiryplugin"><a class="anchor" href="#using-the-connectionperiodicexpiryplugin"></a><a class="link" href="#using-the-connectionperiodicexpiryplugin">6. Using the ConnectionPeriodicExpiryPlugin</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>ConnectionPeriodicExpiryPlugin</code> will implement a global expiry (and disconnect) for connections that live longer than <code>periodSeconds</code> on a matching acceptor basis.</p>
+</div>
+<div class="paragraph">
+<p>This plugin can be useful when credential rotation or credential validation must be enforced at regular intervals as authentication will be enforced on reconnect.</p>
+</div>
+<div class="paragraph">
+<p>The plugin requires the configuration of the <code>acceptorMatchRegex</code> to determine the acceptors to monitor. It is typical to separate client acceptors and federation or cluster acceptors such that only client connections will be subject to periodic expiry. The <code>acceptorMatchRegex</code> must be configured to match the name of the acceptor(s) whose connections will be subject to periodic expiry.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Property Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>acceptorMatchRegex</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the regular expression used to match against the names of acceptors to monitor</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>periodSeconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the max period, in seconds, that a connection can last</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">900 seconds (15 minutes)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>accuracyWindowSeconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">determines how often we check connections for expiry and also provides an upper bound on the random seconds we use to schedule a disconnect. Using a random second will potentially avoid many reconnects occurring at the exact same time. It must be positive value &gt; 0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30 seconds</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The plugin can be configured via xml in the normal broker-plugin way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-plugins&gt;</span>
+   <span class="nt">&lt;broker-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.plugin.impl.ConnectionPeriodicExpiryPlugin"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"acceptorMatchRegex"</span> <span class="na">value=</span><span class="s">"netty-client-acceptor"</span> <span class="nt">/&gt;</span>
    <span class="nt">&lt;/broker-plugin&gt;</span>
 <span class="nt">&lt;/broker-plugins&gt;</span></code></pre>
 </div>

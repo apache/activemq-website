@@ -15,7 +15,7 @@
 <div id="header">
 <h1>STOMP</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.33.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.34.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#limitations">1. Limitations</a>
 <ul class="sectlevel2">
@@ -349,11 +349,21 @@ The combination of these two headers will form the identity of the durable subsc
 The values for these headers should match what was set on the <code>SUBSCRIBE</code> frame to delete the corresponding durable subscription.</p>
 </div>
 <div class="paragraph">
-<p>Aside from <code>durable-subscription-name</code>, the broker also supports <code>durable-subscriber-name</code> (a deprecated property used before <code>durable-subscription-name</code>) as well as <code>activemq.subscriptionName</code> from ActiveMQ "Classic".
+<p>Aside from <code>durable-subscription-name</code>, the broker also supports <code>durable-subscriber-name</code> (a deprecated property used before <code>durable-subscription-name</code>) as well as <code>activemq.subscriptionName</code> from ActiveMQ Classic.
 This is the order of precedence if the frame contains more than one of these:</p>
 </div>
-<div class="paragraph">
-<p>1) <code>durable-subscriber-name</code> 2) <code>durable-subscription-name</code> 3) <code>activemq.subscriptionName</code></p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>durable-subscription-name</code></p>
+</li>
+<li>
+<p><code>durable-subscriber-name</code></p>
+</li>
+<li>
+<p><code>activemq.subscriptionName</code></p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
 <p>It is possible to pre-configure durable subscriptions since the STOMP implementation creates the queue used for the durable subscription in a deterministic way (i.e. using the format of <code>client-id</code>.<code>subscription-name</code>).

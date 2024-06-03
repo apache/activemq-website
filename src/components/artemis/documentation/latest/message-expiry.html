@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Message Expiry</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.33.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.34.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#core-api">1. Core API</a></li>
 <li><a href="#configuring-expiry-delay">2. Configuring Expiry Delay</a></li>
@@ -159,6 +159,19 @@ If <code>min-expiry-delay</code> is not defined then the message will not be cha
 <div class="paragraph">
 <p>If messages are expired and no expiry address is specified, messages are simply removed from the queue and dropped.
 Address <a href="wildcard-syntax.html#wildcard-syntax">wildcards</a> can be used to configure expiry address for a set of addresses.</p>
+</div>
+<div class="paragraph">
+<p>If a wildcard is used to configure the expiry address for a set of addresses and you want to <em>unset</em> the expiry address for a particular addess (or set of addresses) then you can do so, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"#"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;expiry-address&gt;</span>expiryQueue<span class="nt">&lt;/expiry-address&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span>
+<span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"exampleQueue"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;expiry-address/&gt;</span> <span class="c">&lt;!-- unset expiry-address so messages which expire from queues bound to matching addresses are dropped --&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
 </div>
 </div>
 </div>
