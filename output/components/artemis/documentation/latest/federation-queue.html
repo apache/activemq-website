@@ -15,10 +15,16 @@
 <div id="header">
 <h1>Queue Federation</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.33.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.34.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#use-cases">1. Use Cases</a></li>
-<li><a href="#configuring-queue-federation">2. Configuring Queue Federation</a></li>
+<li><a href="#configuring-queue-federation">2. Configuring Queue Federation</a>
+<ul class="sectlevel3">
+<li><a href="#priority-ordered-queue-policy-parameters">2.1. Priority ordered queue-policy parameters</a></li>
+<li><a href="#priority-ordered-transformer-parameters">2.2. Priority ordered transformer parameters</a></li>
+<li><a href="#upstream-parameters">2.3. Upstream parameters</a></li>
+</ul>
+</li>
 <li><a href="#configuring-downstream-federation">3. Configuring Downstream Federation</a></li>
 </ul>
 </div>
@@ -125,49 +131,49 @@ The batch size is derived from the relevant address settings defaultConsumerWind
 <h2 id="configuring-queue-federation"><a class="anchor" href="#configuring-queue-federation"></a><a class="link" href="#configuring-queue-federation">2. Configuring Queue Federation</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Federation is configured in <code>broker.xml</code>.</p>
+<p>Federation is configured in <code>broker.xml</code> file.</p>
 </div>
 <div class="paragraph">
 <p>Sample Queue Federation setup:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="nowrap">&lt;federations&gt;
-    &lt;federation name="eu-north-1" user="federation_username" password="32a10275cf4ab4e9"&gt;
-        &lt;upstream name="eu-east-1"&gt;
-           &lt;static-connectors&gt;
-              &lt;connector-ref&gt;eu-east-connector1&lt;/connector-ref&gt;
-              &lt;connector-ref&gt;eu-east-connector1&lt;/connector-ref&gt;
-           &lt;/static-connectors&gt;
-           &lt;policy ref="news-queue-federation"/&gt;
-        &lt;/upstream&gt;
-        &lt;upstream name="eu-west-1" &gt;
-           &lt;static-connectors&gt;
-              &lt;connector-ref&gt;eu-west-connector1&lt;/connector-ref&gt;
-              &lt;connector-ref&gt;eu-west-connector1&lt;/connector-ref&gt;
-           &lt;/static-connectors&gt;
-           &lt;policy ref="news-queue-federation"/&gt;
-        &lt;/upstream&gt;
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;federations&gt;</span>
+    <span class="nt">&lt;federation</span> <span class="na">name=</span><span class="s">"eu-north-1"</span> <span class="na">user=</span><span class="s">"federation_username"</span> <span class="na">password=</span><span class="s">"32a10275cf4ab4e9"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;upstream</span> <span class="na">name=</span><span class="s">"eu-east-1"</span><span class="nt">&gt;</span>
+           <span class="nt">&lt;static-connectors&gt;</span>
+              <span class="nt">&lt;connector-ref&gt;</span>eu-east-connector1<span class="nt">&lt;/connector-ref&gt;</span>
+              <span class="nt">&lt;connector-ref&gt;</span>eu-east-connector2<span class="nt">&lt;/connector-ref&gt;</span>
+           <span class="nt">&lt;/static-connectors&gt;</span>
+           <span class="nt">&lt;policy</span> <span class="na">ref=</span><span class="s">"news-queue-federation"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/upstream&gt;</span>
+        <span class="nt">&lt;upstream</span> <span class="na">name=</span><span class="s">"eu-west-1"</span> <span class="nt">&gt;</span>
+           <span class="nt">&lt;static-connectors&gt;</span>
+              <span class="nt">&lt;connector-ref&gt;</span>eu-west-connector1<span class="nt">&lt;/connector-ref&gt;</span>
+              <span class="nt">&lt;connector-ref&gt;</span>eu-west-connector2<span class="nt">&lt;/connector-ref&gt;</span>
+           <span class="nt">&lt;/static-connectors&gt;</span>
+           <span class="nt">&lt;policy</span> <span class="na">ref=</span><span class="s">"news-queue-federation"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/upstream&gt;</span>
 
-        &lt;queue-policy name="news-queue-federation" priority-adjustment="-5" include-federated="true" transformer-ref="federation-transformer-3"&gt;
-           &lt;include queue-match="#" address-match="queue.bbc.new" /&gt;
-           &lt;include queue-match="#" address-match="queue.usatoday" /&gt;
-           &lt;include queue-match="#" address-match="queue.news.#" /&gt;
+        <span class="nt">&lt;queue-policy</span> <span class="na">name=</span><span class="s">"news-queue-federation"</span> <span class="na">priority-adjustment=</span><span class="s">"-5"</span> <span class="na">include-federated=</span><span class="s">"true"</span> <span class="na">transformer-ref=</span><span class="s">"news-transformer"</span><span class="nt">&gt;</span>
+           <span class="nt">&lt;include</span> <span class="na">queue-match=</span><span class="s">"#"</span> <span class="na">address-match=</span><span class="s">"queue.bbc.new"</span> <span class="nt">/&gt;</span>
+           <span class="nt">&lt;include</span> <span class="na">queue-match=</span><span class="s">"#"</span> <span class="na">address-match=</span><span class="s">"queue.usatoday"</span> <span class="nt">/&gt;</span>
+           <span class="nt">&lt;include</span> <span class="na">queue-match=</span><span class="s">"#"</span> <span class="na">address-match=</span><span class="s">"queue.news.#"</span> <span class="nt">/&gt;</span>
 
-           &lt;exclude queue-match="#.local" address-match="#" /&gt;
-        &lt;/queue-policy&gt;
+           <span class="nt">&lt;exclude</span> <span class="na">queue-match=</span><span class="s">"#.local"</span> <span class="na">address-match=</span><span class="s">"#"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/queue-policy&gt;</span>
 
-        &lt;transformer name="news-transformer"&gt;
-           &lt;class-name&gt;org.foo.NewsTransformer&lt;/class-name&gt;
-           &lt;property key="key1" value="value1"/&gt;
-           &lt;property key="key2" value="value2"/&gt;
-        &lt;/transformer&gt;
-    &lt;/federation&gt;
-&lt;/federations&gt;</pre>
+        <span class="nt">&lt;transformer</span> <span class="na">name=</span><span class="s">"news-transformer"</span><span class="nt">&gt;</span>
+           <span class="nt">&lt;class-name&gt;</span>org.foo.NewsTransformer<span class="nt">&lt;/class-name&gt;</span>
+           <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"key1"</span> <span class="na">value=</span><span class="s">"value1"</span><span class="nt">/&gt;</span>
+           <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"key2"</span> <span class="na">value=</span><span class="s">"value2"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/transformer&gt;</span>
+    <span class="nt">&lt;/federation&gt;</span>
+<span class="nt">&lt;/federations&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the above setup downstream broker <code>eu-north-1</code> is configured to connect to two upstream brokers <code>eu-east-1</code> and <code>eu-east-2</code>, the credentials used for both connections to both brokers in this sample are shared, you can set user and password at the upstream level should they be different per upstream.</p>
+<p>In the above setup downstream broker <code>eu-north-1</code> is configured to connect to two upstream brokers <code>eu-east-1</code> and <code>eu-west-1</code>, the credentials used for both connections to both brokers in this sample are shared, you can set user and password at the upstream level should they be different per upstream.</p>
 </div>
 <div class="paragraph">
 <p>Both upstreams are configured with the same queue-policy <code>news-queue-federation</code>, that is selecting addresses which match any of the include criteria, but will exclude any queues that end with <code>.local</code>, keeping these as local queues only.</p>
@@ -175,9 +181,8 @@ The batch size is derived from the relevant address settings defaultConsumerWind
 <div class="paragraph">
 <p><strong>It is important that federation name is globally unique.</strong></p>
 </div>
-<div class="paragraph">
-<p>Let&#8217;s take a look at all the <code>queue-policy</code> parameters in turn, in order of priority.</p>
-</div>
+<div class="sect3">
+<h4 id="priority-ordered-queue-policy-parameters"><a class="anchor" href="#priority-ordered-queue-policy-parameters"></a><a class="link" href="#priority-ordered-queue-policy-parameters">2.1. Priority ordered queue-policy parameters</a></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">name</dt>
@@ -186,14 +191,11 @@ The batch size is derived from the relevant address settings defaultConsumerWind
 </dd>
 <dt class="hdlist1">include</dt>
 <dd>
-<p>The address-match pattern to include addresses.
-Multiple of these can be set.
-If none are set all addresses are matched.</p>
+<p>The address-match pattern to include addresses. Multiple of these can be set. If none are set all addresses are matched.</p>
 </dd>
 <dt class="hdlist1">exclude</dt>
 <dd>
-<p>The address-match pattern to exclude addresses.
-Multiple of these can be set.</p>
+<p>The address-match pattern to exclude addresses. Multiple of these can be set.</p>
 </dd>
 <dt class="hdlist1">priority-adjustment</dt>
 <dd>
@@ -201,9 +203,9 @@ Multiple of these can be set.</p>
 </dd>
 <dt class="hdlist1">include-federated</dt>
 <dd>
-<p>by default this is false, we don&#8217;t federate a federated consumer, this is to avoid issue, where in symmetric or any closed loop setup you could end up when no "real" consumers attached with messages flowing round and round endlessly.</p>
+<p>by default this is <code>false</code>, we do not federate a federated consumer, this is to avoid issue, where in symmetric or any closed loop setup you could end up when no "real" consumers attached with messages flowing round and round endlessly.</p>
 <div class="paragraph">
-<p>There is though a valid case that if you dont have a close loop setup e.g. three brokers in a chain (A-&gt;B-&gt;C) with producer at broker A and consumer at C, you would want broker B to re-federate the consumer onto A.</p>
+<p>There is though a valid case that if you do not have a close loop setup e.g. three brokers in a chain (A-&gt;B-&gt;C) with producer at broker A and consumer at C, you would want broker B to re-federate the consumer onto A.</p>
 </div>
 </dd>
 <dt class="hdlist1">transformer-ref</dt>
@@ -224,60 +226,61 @@ Multiple of these can be set.</p>
 </tr>
 </table>
 </div>
+</div>
+<div class="sect3">
+<h4 id="priority-ordered-transformer-parameters"><a class="anchor" href="#priority-ordered-transformer-parameters"></a><a class="link" href="#priority-ordered-transformer-parameters">2.2. Priority ordered transformer parameters</a></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">name</dt>
+<dd>
+<p>Unique name in the server used to reference the transformer in <code>address-policy</code> and <code>queue-policy</code></p>
+</dd>
+<dt class="hdlist1">transformer-class-name</dt>
+<dd>
+<p>An optional <code>transformer-class-name</code> can be specified.
+This is the name of a user-defined class which implements the <code>org.apache.activemq.artemis.core.server.transformer.Transformer</code> interface.</p>
 <div class="paragraph">
-<p>Now look at all the <code>transformer</code> parameters in turn, in order of priority:</p>
+<p>If specified, then the transformer&#8217;s <code>transform()</code> method will be invoked with the message before it is transferred.
+This gives you the opportunity to transform the message&#8217;s header or body before it is federated.</p>
+</div>
+</dd>
+<dt class="hdlist1">property</dt>
+<dd>
+<p>holds key-value pairs that can be used to configure the transformer.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="upstream-parameters"><a class="anchor" href="#upstream-parameters"></a><a class="link" href="#upstream-parameters">2.3. Upstream parameters</a></h4>
+<div class="paragraph">
+<p>Tag <code>upstream</code> defines the upstream broker connection and the policies to use.</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">name</dt>
 <dd>
-<p>This must be a unique name in the server, and is used to ref the transformer in <code>address-policy</code> and <code>queue-policy</code></p>
+<p>Unique name for upstream federated server.</p>
 </dd>
-<dt class="hdlist1">transformer-class-name</dt>
-<dd>
-<p>An optional transformer-class-name can be specified.
-This is the name of a user-defined class which implements the <code>org.apache.activemq.artemis.core.server.transformer.Transformer</code> interface.</p>
-<div class="paragraph">
-<p>If this is specified then the transformer&#8217;s <code>transform()</code> method will be invoked with the message before it is transferred.
-This gives you the opportunity to transform the message&#8217;s header or body before it is federated.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>property</code> holds key, value pairs that can be used to configure the transformer.</p>
-</li>
-</ul>
-</div>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Finally look at <code>upstream</code>, this is what defines the upstream broker connection and the policies to use against it.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>name</code> attribute.
-This must be a unique name in the server, and is used to ref the transformer in <code>address-policy</code> and <code>queue-policy</code></p>
-<div class="dlist">
-<dl>
 <dt class="hdlist1">user</dt>
 <dd>
-<p>This optional attribute determines the user name to use when creating the upstream connection to the remote server.
-If it is not specified the shared federation user and password will be used if set.</p>
+<p>This optional attribute determines the username to use when creating the upstream connection to the remote server.
+If not specified, the shared federation user and password will be used if they were set.</p>
 </dd>
 <dt class="hdlist1">password</dt>
 <dd>
 <p>This optional attribute determines the password to use when creating the upstream connection to the remote server.
-If it is not specified the shared federation user and password will be used if set.</p>
+If not specified, the shared federation user and password will be used if they were set.</p>
 </dd>
 <dt class="hdlist1">static-connectors</dt>
 <dd>
 <p>Either this or <code>discovery-group-ref</code> is used to connect the bridge to the target server.</p>
 <div class="paragraph">
 <p>The <code>static-connectors</code> is a list of <code>connector-ref</code> elements pointing to <code>connector</code> elements defined elsewhere.
-A <em>connector</em> encapsulates knowledge of what transport to use (TCP, SSL, HTTP etc) as well as the server connection parameters (host, port etc).
-For more information about what connectors are and how to configure them, please see <a href="configuring-transports.html#configuring-the-transport">Configuring the Transport</a>.</p>
+A <em>connector</em> encapsulates knowledge of what transport to use (TCP, SSL, HTTP etc.) as well as the server connection parameters (host, port etc).</p>
+</div>
+<div class="paragraph">
+<p>For more information about what connectors are and how to configure them, see <a href="configuring-transports.html#configuring-the-transport">Configuring the Transport</a>.</p>
 </div>
 </dd>
 <dt class="hdlist1">discovery-group-ref</dt>
@@ -286,19 +289,19 @@ For more information about what connectors are and how to configure them, please
 <div class="paragraph">
 <p>The <code>discovery-group-ref</code> element has one attribute - <code>discovery-group-name</code>.
 This attribute points to a <code>discovery-group</code> defined elsewhere.
-For more information about what discovery-groups are and how to configure them, please see <a href="clusters.html#clusters">Discovery Groups</a>.</p>
+For more information about what discovery-groups are and how to configure them, see <a href="clusters.html#clusters">Discovery Groups</a>.</p>
 </div>
 </dd>
 <dt class="hdlist1">ha</dt>
 <dd>
-<p>This optional parameter determines whether or not this bridge should support high availability.
-True means it will connect to any available server in a cluster and support failover.
+<p>This optional parameter determines whether this bridge should support high availability.
+<code>True</code> means it will connect to any available server in a cluster and support failover.
 Default is <code>false</code>.</p>
 </dd>
 <dt class="hdlist1">circuit-breaker-timeout</dt>
 <dd>
-<p>When a connection issue occurs, as the single connection is shared by many federated queue and address consumers, to avoid each one trying to reconnect and possibly causing a thrundering heard issue, the first one will try.
-If unsuccessful the circuit breaker will open, returning the same exception to all.
+<p>When a connection issue occurs, as the single connection is shared by many federated queue and address consumers, to avoid each one trying to reconnect and possibly causing a thundering herd issue, the first one will be tried.
+If unsuccessful the circuit breaker will open, returning the same exception to all connections.
 This is the timeout until the circuit can be closed and connection retried.
 Measured in milliseconds.</p>
 </dd>
@@ -334,7 +337,7 @@ The default value is <code>500</code> milliseconds.</p>
 </dd>
 <dt class="hdlist1">retry-interval-multiplier</dt>
 <dd>
-<p>This is a multiplier used to increase the <code>retry-interval</code> after each reconnect attempt, default is 1.</p>
+<p>Used to increase the <code>retry-interval</code> after each reconnect attempt, default is 1.</p>
 </dd>
 <dt class="hdlist1">max-retry-interval</dt>
 <dd>
@@ -344,19 +347,17 @@ Default is 2000.</p>
 <dt class="hdlist1">initial-connect-attempts</dt>
 <dd>
 <p>The number of times the system will try to connect to the remote broker in the federation.
-If the max-retry is achieved this broker will be considered permanently down and the system will not route messages to this broker.
+If the <em>max-retry</em> is achieved this broker will be considered permanently down and the system will not route messages to this broker.
 Default is -1 (infinite retries).</p>
 </dd>
 <dt class="hdlist1">reconnect-attempts</dt>
 <dd>
 <p>The number of times the system will try to reconnect to the remote broker in the federation.
-If the max-retry is achieved this broker will be considered permanently down and the system will stop routing messages to this broker.
+If the <em>max-retry</em> is achieved this broker will be considered permanently down and the system will stop routing messages to this broker.
 Default is -1 (infinite retries).</p>
 </dd>
 </dl>
 </div>
-</li>
-</ul>
 </div>
 </div>
 </div>
@@ -366,18 +367,23 @@ Default is -1 (infinite retries).</p>
 <div class="paragraph">
 <p>Similarly to <code>upstream</code> configuration, a downstream configuration can be configured.
 This works by sending a command to the <code>downstream</code> broker to have it create an <code>upstream</code> connection back to the downstream broker.
-The benefit of  this is being able to configure everything for federation on one broker in some cases to make it easier, such as a hub and spoke topology.</p>
+The benefit of this is being able to configure everything for federation on one broker in some cases to make it easier, such as a hub and spoke topology.</p>
 </div>
 <div class="paragraph">
-<p>All of the same configuration options apply to <code>downstream</code> as does <code>upstream</code> with the exception of one extra configuration flag that needs to be set:</p>
+<p>All the same configuration options apply to <code>downstream</code> as does <code>upstream</code> with the exception of one extra configuration flag that needs to be set:</p>
 </div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">upstream-connector-ref</dt>
+<dd>
+<p>Is an element pointing to a <code>connector</code> elements defined elsewhere.
+This reference is used to tell the downstream broker what connector to use to create a new upstream connection back to the downstream broker.</p>
 <div class="paragraph">
-<p>The <code>upstream-connector-ref</code> is an element pointing to a   <code>connector</code> elements defined elsewhere.
-This ref is used to tell the downstream broker   what connector to use to create a new upstream connection back to the downstream broker.</p>
+<p>A <em>connector</em> encapsulates knowledge of what transport to use (TCP, SSL, HTTP etc.) as well as the server connection parameters (host, port etc).
+For more information about what connectors are and how to configure them, see <a href="configuring-transports.html#configuring-the-transport">Configuring the Transport</a>.</p>
 </div>
-<div class="paragraph">
-<p>A <em>connector</em> encapsulates knowledge of what transport to use (TCP, SSL, HTTP etc) as well as   the server connection parameters (host, port etc).
-For more information about what connectors are and   how to configure them, please see <a href="configuring-transports.html#configuring-the-transport">Configuring the   Transport</a>.</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
 <p>Sample Downstream Address Federation setup:</p>
@@ -402,20 +408,20 @@ For more information about what connectors are and   how to configure them, plea
    <span class="nt">&lt;federation</span> <span class="na">name=</span><span class="s">"eu-north-1"</span> <span class="na">user=</span><span class="s">"federation_username"</span> <span class="na">password=</span><span class="s">"32a10275cf4ab4e9"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;downstream</span> <span class="na">name=</span><span class="s">"eu-east-1"</span><span class="nt">&gt;</span>
           <span class="nt">&lt;static-connectors&gt;</span>
-             <span class="nt">&lt;connector-ref&gt;</span>eu-east-connector1<span class="nt">&lt;/connector-ref&gt;</span>
+             <span class="nt">&lt;connector-ref&gt;</span>eu-east-1-connector<span class="nt">&lt;/connector-ref&gt;</span>
           <span class="nt">&lt;/static-connectors&gt;</span>
           <span class="nt">&lt;upstream-connector-ref&gt;</span>netty-connector<span class="nt">&lt;/upstream-connector-ref&gt;</span>
           <span class="nt">&lt;policy</span> <span class="na">ref=</span><span class="s">"news-address-federation"</span><span class="nt">/&gt;</span>
       <span class="nt">&lt;/downstream&gt;</span>
       <span class="nt">&lt;downstream</span> <span class="na">name=</span><span class="s">"eu-west-1"</span> <span class="nt">&gt;</span>
          <span class="nt">&lt;static-connectors&gt;</span>
-            <span class="nt">&lt;connector-ref&gt;</span>eu-west-connector1<span class="nt">&lt;/connector-ref&gt;</span>
+            <span class="nt">&lt;connector-ref&gt;</span>eu-west-1-connector<span class="nt">&lt;/connector-ref&gt;</span>
          <span class="nt">&lt;/static-connectors&gt;</span>
          <span class="nt">&lt;upstream-connector-ref&gt;</span>netty-connector<span class="nt">&lt;/upstream-connector-ref&gt;</span>
          <span class="nt">&lt;policy</span> <span class="na">ref=</span><span class="s">"news-address-federation"</span><span class="nt">/&gt;</span>
       <span class="nt">&lt;/downstream&gt;</span>
 
-      <span class="nt">&lt;queue-policy</span> <span class="na">name=</span><span class="s">"news-queue-federation"</span> <span class="na">priority-adjustment=</span><span class="s">"-5"</span> <span class="na">include-federated=</span><span class="s">"true"</span> <span class="na">transformer-ref=</span><span class="s">"federation-transformer-3"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;queue-policy</span> <span class="na">name=</span><span class="s">"news-queue-federation"</span> <span class="na">priority-adjustment=</span><span class="s">"-5"</span> <span class="na">include-federated=</span><span class="s">"true"</span> <span class="na">transformer-ref=</span><span class="s">"news-transformer"</span><span class="nt">&gt;</span>
          <span class="nt">&lt;include</span> <span class="na">queue-match=</span><span class="s">"#"</span> <span class="na">address-match=</span><span class="s">"queue.bbc.new"</span> <span class="nt">/&gt;</span>
          <span class="nt">&lt;include</span> <span class="na">queue-match=</span><span class="s">"#"</span> <span class="na">address-match=</span><span class="s">"queue.usatoday"</span> <span class="nt">/&gt;</span>
          <span class="nt">&lt;include</span> <span class="na">queue-match=</span><span class="s">"#"</span> <span class="na">address-match=</span><span class="s">"queue.news.#"</span> <span class="nt">/&gt;</span>

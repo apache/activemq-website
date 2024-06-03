@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Maven Plugins</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Maven Plugins</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.33.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#when-to-use-it">1. When to use it</a></li>
+<li><a href="#goals">2. Goals</a></li>
+<li><a href="#declaration">3. Declaration</a></li>
+<li><a href="#create-goal">4. create goal</a></li>
+<li><a href="#cli-goal">5. cli goal</a>
+<ul class="sectlevel2">
+<li><a href="#runclient-goal">5.1. runClient goal</a></li>
+<li><a href="#complete-example">5.2. Complete example</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since Artemis 1.1.0 Artemis provides the possibility of using Maven Plugins to manage the life cycle of servers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="when-to-use-it"><a class="anchor" href="#when-to-use-it"></a><a class="link" href="#when-to-use-it">1. When to use it</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>These Maven plugins were initially created to manage server instances across our examples.
+They can create a server, start, and do any CLI operation over servers.</p>
+</div>
+<div class="paragraph">
+<p>You could for example use these maven plugins on your testsuite or deployment automation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="goals"><a class="anchor" href="#goals"></a><a class="link" href="#goals">2. Goals</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are three goals that you can use</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">create</dt>
+<dd>
+<p>This will create a server accordingly to your arguments.
+You can do some extra tricks here such as installing extra libraries for external modules.</p>
+</dd>
+<dt class="hdlist1">cli</dt>
+<dd>
+<p>This will perform any CLI operation.
+This is basically a maven expression of the CLI classes</p>
+</dd>
+<dt class="hdlist1">runClient</dt>
+<dd>
+<p>This is a simple wrapper around classes implementing a static main call.
+Notice that this won&#8217;t spawn a new VM or new Thread.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="declaration"><a class="anchor" href="#declaration"></a><a class="link" href="#declaration">3. Declaration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On your pom, use the plugins section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;build&gt;</span>
+   <span class="nt">&lt;plugins&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+         <span class="nt">&lt;groupId&gt;</span>org.apache.activemq<span class="nt">&lt;/groupId&gt;</span>
+         <span class="nt">&lt;artifactId&gt;</span>artemis-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+   <span class="nt">&lt;/plugins&gt;</span>
+<span class="nt">&lt;/build&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create-goal"><a class="anchor" href="#create-goal"></a><a class="link" href="#create-goal">4. create goal</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>I won&#8217;t detail every operation of the create plugin here, but I will try to describe the main parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A place that will hold any file to replace on the configuration.
+For instance if you are providing your own broker.xml.
+Default is "${basedir}/target/classes/activemq/server0"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">home</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The location where you downloaded and installed artemis.
+Default is "${activemq.basedir}"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">alternateHome</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is used case you have two possible locations for your home (e.g. one under compile and one under production</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">instance</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Where the server is going to be installed.
+Default is "${basedir}/target/server0"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">liblist[]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of libraries to be installed under ./lib.
+ex: "org.jgroups:jgroups:3.6.0.Final"</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;execution&gt;</span>
+   <span class="nt">&lt;id&gt;</span>create<span class="nt">&lt;/id&gt;</span>
+   <span class="nt">&lt;goals&gt;</span>
+      <span class="nt">&lt;goal&gt;</span>create<span class="nt">&lt;/goal&gt;</span>
+   <span class="nt">&lt;/goals&gt;</span>
+   <span class="nt">&lt;configuration&gt;</span>
+      <span class="nt">&lt;ignore&gt;</span>${noServer}<span class="nt">&lt;/ignore&gt;</span>
+   <span class="nt">&lt;/configuration&gt;</span>
+<span class="nt">&lt;/execution&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cli-goal"><a class="anchor" href="#cli-goal"></a><a class="link" href="#cli-goal">5. cli goal</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some properties for the CLI</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A place that will hold any file to replace on the configuration.
+For instance if you are providing your own broker.xml.
+Default is "${basedir}/target/classes/activemq/server0"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">home</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The location where you downloaded and installed artemis.
+Default is "${activemq.basedir}"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">alternateHome</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is used case you have two possible locations for your home (e.g. one under compile and one under production</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">instance</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Where the server is going to be installed.
+Default is "${basedir}/target/server0"</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Similarly to the create plugin, the artemis exampels are using the cli plugin.
+Look at them for concrete examples.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;execution&gt;</span>
+  <span class="nt">&lt;id&gt;</span>start<span class="nt">&lt;/id&gt;</span>
+  <span class="nt">&lt;goals&gt;</span>
+     <span class="nt">&lt;goal&gt;</span>cli<span class="nt">&lt;/goal&gt;</span>
+  <span class="nt">&lt;/goals&gt;</span>
+  <span class="nt">&lt;configuration&gt;</span>
+     <span class="nt">&lt;spawn&gt;</span>true<span class="nt">&lt;/spawn&gt;</span>
+     <span class="nt">&lt;ignore&gt;</span>${noServer}<span class="nt">&lt;/ignore&gt;</span>
+     <span class="nt">&lt;testURI&gt;</span>tcp://localhost:61616<span class="nt">&lt;/testURI&gt;</span>
+     <span class="nt">&lt;args&gt;</span>
+        <span class="nt">&lt;param&gt;</span>run<span class="nt">&lt;/param&gt;</span>
+     <span class="nt">&lt;/args&gt;</span>
+  <span class="nt">&lt;/configuration&gt;</span>
+<span class="nt">&lt;/execution&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="runclient-goal"><a class="anchor" href="#runclient-goal"></a><a class="link" href="#runclient-goal">5.1. runClient goal</a></h3>
+<div class="paragraph">
+<p>This is a simple solution for running classes implementing the main method.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">clientClass</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A class implement a static void main(String arg[])</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">args</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string array of arguments passed to the method</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;execution&gt;</span>
+  <span class="nt">&lt;id&gt;</span>runClient<span class="nt">&lt;/id&gt;</span>
+  <span class="nt">&lt;goals&gt;</span>
+     <span class="nt">&lt;goal&gt;</span>runClient<span class="nt">&lt;/goal&gt;</span>
+  <span class="nt">&lt;/goals&gt;</span>
+  <span class="nt">&lt;configuration&gt;</span>
+     <span class="nt">&lt;clientClass&gt;</span>org.apache.activemq.artemis.jms.example.QueueExample<span class="nt">&lt;/clientClass&gt;</span>
+  <span class="nt">&lt;/configuration&gt;</span>
+<span class="nt">&lt;/execution&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="complete-example"><a class="anchor" href="#complete-example"></a><a class="link" href="#complete-example">5.2. Complete example</a></h3>
+<div class="paragraph">
+<p>The following example is a copy of the /examples/features/standard/queue example.
+You may refer to it directly under the examples directory tree.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">"http://maven.apache.org/POM/4.0.0"</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+
+   <span class="nt">&lt;parent&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.activemq.examples.broker<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>jms-examples<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>1.1.0<span class="nt">&lt;/version&gt;</span>
+   <span class="nt">&lt;/parent&gt;</span>
+
+   <span class="nt">&lt;artifactId&gt;</span>queue<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;packaging&gt;</span>jar<span class="nt">&lt;/packaging&gt;</span>
+   <span class="nt">&lt;name&gt;</span>ActiveMQ Artemis JMS Queue Example<span class="nt">&lt;/name&gt;</span>
+
+   <span class="nt">&lt;properties&gt;</span>
+      <span class="nt">&lt;activemq.basedir&gt;</span>${project.basedir}/../../../..<span class="nt">&lt;/activemq.basedir&gt;</span>
+   <span class="nt">&lt;/properties&gt;</span>
+
+   <span class="nt">&lt;dependencies&gt;</span>
+      <span class="nt">&lt;dependency&gt;</span>
+         <span class="nt">&lt;groupId&gt;</span>org.apache.activemq<span class="nt">&lt;/groupId&gt;</span>
+         <span class="nt">&lt;artifactId&gt;</span>artemis-jms-client<span class="nt">&lt;/artifactId&gt;</span>
+         <span class="nt">&lt;version&gt;</span>${project.version}<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;/dependency&gt;</span>
+   <span class="nt">&lt;/dependencies&gt;</span>
+
+   <span class="nt">&lt;build&gt;</span>
+      <span class="nt">&lt;plugins&gt;</span>
+         <span class="nt">&lt;plugin&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.apache.activemq<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>artemis-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;executions&gt;</span>
+               <span class="nt">&lt;execution&gt;</span>
+                  <span class="nt">&lt;id&gt;</span>create<span class="nt">&lt;/id&gt;</span>
+                  <span class="nt">&lt;goals&gt;</span>
+                     <span class="nt">&lt;goal&gt;</span>create<span class="nt">&lt;/goal&gt;</span>
+                  <span class="nt">&lt;/goals&gt;</span>
+                  <span class="nt">&lt;configuration&gt;</span>
+                     <span class="nt">&lt;ignore&gt;</span>${noServer}<span class="nt">&lt;/ignore&gt;</span>
+                  <span class="nt">&lt;/configuration&gt;</span>
+               <span class="nt">&lt;/execution&gt;</span>
+               <span class="nt">&lt;execution&gt;</span>
+                  <span class="nt">&lt;id&gt;</span>start<span class="nt">&lt;/id&gt;</span>
+                  <span class="nt">&lt;goals&gt;</span>
+                     <span class="nt">&lt;goal&gt;</span>cli<span class="nt">&lt;/goal&gt;</span>
+                  <span class="nt">&lt;/goals&gt;</span>
+                  <span class="nt">&lt;configuration&gt;</span>
+                     <span class="nt">&lt;spawn&gt;</span>true<span class="nt">&lt;/spawn&gt;</span>
+                     <span class="nt">&lt;ignore&gt;</span>${noServer}<span class="nt">&lt;/ignore&gt;</span>
+                     <span class="nt">&lt;testURI&gt;</span>tcp://localhost:61616<span class="nt">&lt;/testURI&gt;</span>
+                     <span class="nt">&lt;args&gt;</span>
+                        <span class="nt">&lt;param&gt;</span>run<span class="nt">&lt;/param&gt;</span>
+                     <span class="nt">&lt;/args&gt;</span>
+                  <span class="nt">&lt;/configuration&gt;</span>
+               <span class="nt">&lt;/execution&gt;</span>
+               <span class="nt">&lt;execution&gt;</span>
+                  <span class="nt">&lt;id&gt;</span>runClient<span class="nt">&lt;/id&gt;</span>
+                  <span class="nt">&lt;goals&gt;</span>
+                     <span class="nt">&lt;goal&gt;</span>runClient<span class="nt">&lt;/goal&gt;</span>
+                  <span class="nt">&lt;/goals&gt;</span>
+                  <span class="nt">&lt;configuration&gt;</span>
+                     <span class="nt">&lt;clientClass&gt;</span>org.apache.activemq.artemis.jms.example.QueueExample<span class="nt">&lt;/clientClass&gt;</span>
+                  <span class="nt">&lt;/configuration&gt;</span>
+               <span class="nt">&lt;/execution&gt;</span>
+               <span class="nt">&lt;execution&gt;</span>
+                  <span class="nt">&lt;id&gt;</span>stop<span class="nt">&lt;/id&gt;</span>
+                  <span class="nt">&lt;goals&gt;</span>
+                     <span class="nt">&lt;goal&gt;</span>stop<span class="nt">&lt;/goal&gt;</span>
+                  <span class="nt">&lt;/goals&gt;</span>
+                  <span class="nt">&lt;configuration&gt;</span>
+                     <span class="nt">&lt;ignore&gt;</span>${noServer}<span class="nt">&lt;/ignore&gt;</span>
+                  <span class="nt">&lt;/configuration&gt;</span>
+               <span class="nt">&lt;/execution&gt;</span>
+            <span class="nt">&lt;/executions&gt;</span>
+            <span class="nt">&lt;dependencies&gt;</span>
+               <span class="nt">&lt;dependency&gt;</span>
+                  <span class="nt">&lt;groupId&gt;</span>org.apache.activemq.examples.broker<span class="nt">&lt;/groupId&gt;</span>
+                  <span class="nt">&lt;artifactId&gt;</span>queue<span class="nt">&lt;/artifactId&gt;</span>
+                  <span class="nt">&lt;version&gt;</span>${project.version}<span class="nt">&lt;/version&gt;</span>
+               <span class="nt">&lt;/dependency&gt;</span>
+            <span class="nt">&lt;/dependencies&gt;</span>
+         <span class="nt">&lt;/plugin&gt;</span>
+      <span class="nt">&lt;/plugins&gt;</span>
+   <span class="nt">&lt;/build&gt;</span>
+
+<span class="nt">&lt;/project&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

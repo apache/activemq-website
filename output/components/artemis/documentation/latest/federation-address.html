@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Address Federation</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.33.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.34.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#topology-patterns">1. Topology Patterns</a>
 <ul class="sectlevel2">
@@ -26,7 +26,13 @@
 <li><a href="#divert-binding-support">1.5. Divert Binding Support</a></li>
 </ul>
 </li>
-<li><a href="#configuring-address-federation">2. Configuring Address Federation</a></li>
+<li><a href="#configuring-address-federation">2. Configuring Address Federation</a>
+<ul class="sectlevel3">
+<li><a href="#address-policy-parameters">2.1. address-policy parameters</a></li>
+<li><a href="#transformer-parameters">2.2. transformer parameters</a></li>
+<li><a href="#upstream-parameters">2.3. Upstream parameters</a></li>
+</ul>
+</li>
 <li><a href="#configuring-downstream-federation">3. Configuring Downstream Federation</a></li>
 </ul>
 </div>
@@ -35,15 +41,17 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Address federation is like full multicast over the connected brokers, in that every message sent to address  on <code>Broker-A</code> will be delivered to every queue on that broker, but like wise will be delivered to <code>Broker-B</code>  and all attached queues there.</p>
+<p>Address federation is similar to full multicast over the connected brokers.
+Every message sent to address on <code>Broker-A</code> will be delivered to every queue on that broker, but also will be delivered to <code>Broker-B</code> and all their attached queues.</p>
 </div>
 <div class="paragraph">
 <p>Address federation dynamically links to other addresses in upstream or downstream brokers.
-It automatically creates a queue on the remote address for itself,  to which then it consumes, copying to the local address, as though they were published directly to it.</p>
+It automatically creates a queue on the remote address for itself, which it then consumes and copies to the local address, as if they were published directly to it.</p>
 </div>
 <div class="paragraph">
-<p>The upstream brokers do not need to be reconfigured or the address, simply permissions to the address need to be  given to the address for the downstream broker.
-Similarly the same applies for downstream configurations.</p>
+<p>Upstream brokers or addresses do not need to be reconfigured.
+Just add the needed permissions to the address for the downstream broker.
+The same applies for downstream configurations.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -66,10 +74,10 @@ Similarly the same applies for downstream configurations.</p>
 </div>
 <div class="paragraph">
 <p>As seen above, a publisher and consumer are connected to each broker.
-Queues and thus consumers on those queues, can receive messages published by either publisher.</p>
+Queues <em>(consumers of those queues)</em> can receive messages published by either publisher.</p>
 </div>
 <div class="paragraph">
-<p>It is important in this setup to set <code>max-hops=1</code> to so that messages are copied only one and avoid cyclic replication.
+<p>In this setup, it is important to set <code>max-hops=1</code>, so messages are copied only once and cyclic replication is avoided.
 If <code>max-hops</code> is not configured correctly, consumers will get multiple copies of the same message.</p>
 </div>
 </div>
@@ -82,14 +90,15 @@ If <code>max-hops</code> is not configured correctly, consumers will get multipl
 <div class="title">Figure 3. Address Federation - Full Mesh</div>
 </div>
 <div class="paragraph">
-<p>If not already spotted, the setup is identical to symmetric but simply where all brokers are symmetrically federating each other, creating a full mesh.</p>
+<p>This setup is identical to symmetric above.
+All brokers are symmetrically federating each other, creating a full mesh.</p>
 </div>
 <div class="paragraph">
 <p>As illustrated, a publisher and consumer are connected to each broker.
 Queues and thus consumers on those queues, can receive messages published by either publisher.</p>
 </div>
 <div class="paragraph">
-<p>As with symmetric setup, it is important in this setup to set <code>max-hops=1</code> to so that messages are copied only one and avoid cyclic replication.
+<p>Again, it is important to set <code>max-hops=1</code>, so messages are copied only once and cyclic replication is avoided.
 If <code>max-hops</code> is not configured correctly, consumers will get multiple copies of the same message.</p>
 </div>
 </div>
@@ -103,11 +112,12 @@ If <code>max-hops</code> is not configured correctly, consumers will get multipl
 </div>
 <div class="paragraph">
 <p>In a ring of brokers each federated address is <code>upstream</code> to just one other in the ring.
-To avoid the cyclic issue,  it is important to set <code>max-hops</code> to <code>n - 1</code> where <code>n</code> is the number of nodes in the ring.
-e.g. in the example above property is set to 5 so that every address in the ring sees the message exactly once.</p>
+To avoid the cyclic issue, it is important to set <code>max-hops</code> to <code>n - 1</code> where <code>n</code> is the number of nodes in the ring.
+In the example above, property is set to 5, so that every address in the ring receives the message exactly once.</p>
 </div>
 <div class="paragraph">
-<p>Whilst this setup is cheap in regards to connections, it is brittle, in that if a single broker fails, the ring fails.</p>
+<p>Whilst this setup is cheap in regard to connections it is brittle.
+If a single broker fails then the ring fails.</p>
 </div>
 </div>
 <div class="sect2">
@@ -119,10 +129,11 @@ e.g. in the example above property is set to 5 so that every address in the ring
 <div class="title">Figure 5. Address Federation - Fan Out</div>
 </div>
 <div class="paragraph">
-<p>One main address (it would required no configuration) is linked to by a tree of downstream federated addresses,  the tree can extend to any depth, and can be extended to without needing to re-configure existing brokers.</p>
+<p>One main address (requires no configuration) is linked to a tree of downstream federated addresses.
+The tree can extend to any depth and can be extended further without needing to re-configure existing brokers.</p>
 </div>
 <div class="paragraph">
-<p>In this case messages published to the main address can be received by any consumer connected to any broker in the tree.</p>
+<p>In this case, messages published to the main address can be received by any consumer connected to any broker in the tree.</p>
 </div>
 </div>
 <div class="sect2">
@@ -130,13 +141,14 @@ e.g. in the example above property is set to 5 so that every address in the ring
 <div class="paragraph">
 <p>Divert binding support can be added as part of the address policy configuration.
 This will allow the federation to respond to divert bindings to create demand.
-For example, let&#8217;s say there is one address called "test.federation.source" that is included as a match for the federated address and another address called "test.federation.target" that is not included.
-Normally when a queue is created on "test.federation.target" this would not cause a federated consumer to be created because the address is not part of the included matches.
-However, if we create a divert binding such that "test.federation.source" is the source address and "test.federation.target" is the forwarded address then demand will now be created.
-The source address still must be multicast but the target address can be multicast or anycast.</p>
+For example, let&#8217;s say there is one address called <code>test.federation.source</code> that is included as a match for the federated address and another address called <code>test.federation.target</code> that is not included.
+Normally, when a queue is created on <code>test.federation.target</code>, this would not cause a federated consumer to be created because the address is not part of the included matches.
+However, if we create a divert binding such that <code>test.federation.source</code> is the source address and <code>test.federation.target</code> is the forwarded address then demand will now be created.
+The source address still must be <em>multicast</em> but the target address can be <em>multicast</em> or <em>anycast</em>.</p>
 </div>
 <div class="paragraph">
-<p>An example use case for this might be a divert that redirects JMS topics (multicast addresses) to a JMS queue (anycast addresses) to allow for load balancing of the messages on a topic for legacy consumers not supporting JMS 2.0 and shared subscriptions.</p>
+<p>An example use case for this might be a divert, that redirects JMS topics (multicast addresses) to a JMS queue (anycast addresses).
+This allows message load balancing on a topic for legacy consumers not supporting JMS 2.0 and shared subscriptions.</p>
 </div>
 </div>
 </div>
@@ -145,7 +157,7 @@ The source address still must be multicast but the target address can be multica
 <h2 id="configuring-address-federation"><a class="anchor" href="#configuring-address-federation"></a><a class="link" href="#configuring-address-federation">2. Configuring Address Federation</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Federation is configured in <code>broker.xml</code>.</p>
+<p>Federation is configured in <code>broker.xml</code> file.</p>
 </div>
 <div class="paragraph">
 <p>Sample Address Federation setup:</p>
@@ -157,19 +169,19 @@ The source address still must be multicast but the target address can be multica
         <span class="nt">&lt;upstream</span> <span class="na">name=</span><span class="s">"eu-east-1"</span><span class="nt">&gt;</span>
            <span class="nt">&lt;static-connectors&gt;</span>
               <span class="nt">&lt;connector-ref&gt;</span>eu-east-connector1<span class="nt">&lt;/connector-ref&gt;</span>
-              <span class="nt">&lt;connector-ref&gt;</span>eu-east-connector1<span class="nt">&lt;/connector-ref&gt;</span>
+              <span class="nt">&lt;connector-ref&gt;</span>eu-east-connector2<span class="nt">&lt;/connector-ref&gt;</span>
            <span class="nt">&lt;/static-connectors&gt;</span>
            <span class="nt">&lt;policy</span> <span class="na">ref=</span><span class="s">"news-address-federation"</span><span class="nt">/&gt;</span>
         <span class="nt">&lt;/upstream&gt;</span>
         <span class="nt">&lt;upstream</span> <span class="na">name=</span><span class="s">"eu-west-1"</span> <span class="nt">&gt;</span>
            <span class="nt">&lt;static-connectors&gt;</span>
               <span class="nt">&lt;connector-ref&gt;</span>eu-west-connector1<span class="nt">&lt;/connector-ref&gt;</span>
-              <span class="nt">&lt;connector-ref&gt;</span>eu-west-connector1<span class="nt">&lt;/connector-ref&gt;</span>
+              <span class="nt">&lt;connector-ref&gt;</span>eu-west-connector2<span class="nt">&lt;/connector-ref&gt;</span>
            <span class="nt">&lt;/static-connectors&gt;</span>
            <span class="nt">&lt;policy</span> <span class="na">ref=</span><span class="s">"news-address-federation"</span><span class="nt">/&gt;</span>
         <span class="nt">&lt;/upstream&gt;</span>
 
-        <span class="nt">&lt;address-policy</span> <span class="na">name=</span><span class="s">"news-address-federation"</span> <span class="na">max-hops=</span><span class="s">"1"</span> <span class="na">auto-delete=</span><span class="s">"true"</span> <span class="na">auto-delete-delay=</span><span class="s">"300000"</span> <span class="na">auto-delete-message-count=</span><span class="s">"-1"</span> <span class="na">transformer-ref=</span><span class="s">"federation-transformer-3"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;address-policy</span> <span class="na">name=</span><span class="s">"news-address-federation"</span> <span class="na">max-hops=</span><span class="s">"1"</span> <span class="na">auto-delete=</span><span class="s">"true"</span> <span class="na">auto-delete-delay=</span><span class="s">"300000"</span> <span class="na">auto-delete-message-count=</span><span class="s">"-1"</span> <span class="na">transformer-ref=</span><span class="s">"news-transformer"</span><span class="nt">&gt;</span>
            <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"queue.bbc.new"</span> <span class="nt">/&gt;</span>
            <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"queue.usatoday"</span> <span class="nt">/&gt;</span>
            <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"queue.news.#"</span> <span class="nt">/&gt;</span>
@@ -187,17 +199,18 @@ The source address still must be multicast but the target address can be multica
 </div>
 </div>
 <div class="paragraph">
-<p>In the above setup downstream broker <code>eu-north-1</code> is configured to connect to two upstream brokers <code>eu-east-1</code> and <code>eu-east-2</code>, the credentials used for both connections to both brokers in this sample are shared, you can set user and password at the upstream level should they be different per upstream.</p>
+<p>In the above setup, downstream broker <code>eu-north-1</code> is configured to connect to two upstream brokers <code>eu-east-1</code> and <code>eu-west-1</code>.
+Credentials used for both connections to brokers in this sample are shared.
+Should they be different per upstream, you can alter credentials at the upstream level.</p>
 </div>
 <div class="paragraph">
-<p>Both upstreams are configured with the same address-policy <code>news-address-federation</code>, that is selecting addresses which match any of the include criteria, but will exclude anything that starts <code>queue.news.sport</code>.</p>
+<p>Both upstreams are configured with the same address-policy <code>news-address-federation</code>, that is selecting addresses which match any of the include criteria and exclude anything that starts <code>queue.news.sport</code>.</p>
 </div>
 <div class="paragraph">
 <p><strong>It is important that federation name is globally unique.</strong></p>
 </div>
-<div class="paragraph">
-<p>Let&#8217;s take a look at all the <code>address-policy</code> parameters in turn, in order of priority.</p>
-</div>
+<div class="sect3">
+<h4 id="address-policy-parameters"><a class="anchor" href="#address-policy-parameters"></a><a class="link" href="#address-policy-parameters">2.1. address-policy parameters</a></h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">name</dt>
@@ -212,34 +225,34 @@ If none are set all addresses are matched.</p>
 </dd>
 <dt class="hdlist1">exclude</dt>
 <dd>
-<p>The address-match pattern to exclude addresses.
-Multiple of these can be set.</p>
+<p>The address-match pattern to exclude addresses. Multiple of these can be set.</p>
 </dd>
 <dt class="hdlist1">max-hops</dt>
 <dd>
-<p>The number of hops that a message can have made for it to be federated, see <a href="#topology-patterns">Topology Patterns</a> above for more details.</p>
+<p>The maximum number of hops that message can perform across federated addresses. See <a href="#topology-patterns">Topology Patterns</a> above for details.</p>
 </dd>
 <dt class="hdlist1">auto-delete</dt>
 <dd>
 <p>For address federation, the downstream dynamically creates a durable queue on the upstream address.
-This is used to mark if the upstream queue should be deleted once downstream disconnects,  and the delay and message count params have been met.
-This is useful if you want to automate the clean up, though you may wish to disable this if you want messages to queued for the downstream when disconnect no matter what.</p>
+This is used to mark if the upstream queue should be deleted once downstream disconnects and the delay and message count parameters have been met.
+It is useful in automating cleanup.
+You may wish to disable this, if you want messages to be queued for the downstream when disconnect no matter what.</p>
 </dd>
 <dt class="hdlist1">auto-delete-delay</dt>
 <dd>
-<p>The amount of time in milliseconds after the downstream broker has disconnected before the upstream queue can be eligable for <code>auto-delete</code>.</p>
+<p>The amount of time in milliseconds after the downstream broker has disconnected, before the upstream queue can be eligible for <code>auto-delete</code>.</p>
 </dd>
 <dt class="hdlist1">auto-delete-message-count</dt>
 <dd>
-<p>The amount number messages in the upstream queue that the message count must be equal or below before the downstream broker has disconnected before the upstream queue can be eligable for <code>auto-delete</code>.</p>
+<p>Maximum number of messages allowed in the upstream queue to be eligible for <code>auto-delete</code>, after the downstream broker has disconnected.</p>
 </dd>
 <dt class="hdlist1">transformer-ref</dt>
 <dd>
-<p>The ref name for a transformer (see transformer config) that you may wish to configure to transform the message on federation transfer.</p>
+<p>Reference name of a transformer (see transformer config) that you may wish to configure to transform the message on federation transfer.</p>
 </dd>
 <dt class="hdlist1">enable-divert-bindings</dt>
 <dd>
-<p>Setting to true will enable divert bindings to be listened for demand.
+<p>Setting to <code>true</code> will enable divert bindings to be listened for demand.
 If there is a divert binding with an address that matches the included addresses for the stream, any queue bindings that match the forward address of the divert will create demand.
 Default is <code>false</code>.</p>
 </dd>
@@ -257,55 +270,60 @@ Default is <code>false</code>.</p>
 </tr>
 </table>
 </div>
+</div>
+<div class="sect3">
+<h4 id="transformer-parameters"><a class="anchor" href="#transformer-parameters"></a><a class="link" href="#transformer-parameters">2.2. transformer parameters</a></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">name</dt>
+<dd>
+<p>Unique name in the server used to reference the transformer in <code>address-policy</code> and <code>queue-policy</code>.</p>
+</dd>
+<dt class="hdlist1">transformer-class-name</dt>
+<dd>
+<p>This is the name of a user-defined class which implements the <code>org.apache.activemq.artemis.core.server.transformer.Transformer</code> interface.</p>
 <div class="paragraph">
-<p>Now look at all the <code>transformer</code> parameters in turn, in order of priority:</p>
+<p>If specified, then the transformer&#8217;s <code>transform()</code> method will be invoked with the message before it is transferred.
+This gives you the opportunity to transform the message&#8217;s header or body before it is federated.</p>
+</div>
+</dd>
+<dt class="hdlist1">property</dt>
+<dd>
+<p>holds key-value pairs that can be used to configure the transformer.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="upstream-parameters"><a class="anchor" href="#upstream-parameters"></a><a class="link" href="#upstream-parameters">2.3. Upstream parameters</a></h4>
+<div class="paragraph">
+<p>Tag <code>upstream</code> defines the upstream broker connection and the policies to use.</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">name</dt>
 <dd>
-<p>This must be a unique name in the server, and is used to ref the transformer in <code>address-policy</code> and <code>queue-policy</code></p>
-</dd>
-<dt class="hdlist1">transformer-class-name</dt>
-<dd>
-<p>An optional transformer-class-name can be specified.
-This is the name of a user-defined class which implements the <code>org.apache.activemq.artemis.core.server.transformer.Transformer</code> interface.</p>
-<div class="paragraph">
-<p>If this is specified then the transformer&#8217;s <code>transform()</code> method will be invoked with the message before it is transferred.
-This gives you the opportunity to transform the message&#8217;s header or body before it is federated.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>property</code> holds key, value pairs that can be used to configure the transformer.</p>
-<div class="paragraph">
-<p>Finally look at <code>upstream</code>, this is what defines the upstream broker connection and the policies to use against it.</p>
-</div>
-</li>
-<li>
-<p><code>name</code> attribute.
-This must be a unique name in the server, and is used to ref the transformer in <code>address-policy</code> and <code>queue-policy</code></p>
-</li>
-</ul>
-</div>
+<p>Unique name for upstream federated server.</p>
 </dd>
 <dt class="hdlist1">user</dt>
 <dd>
-<p>This optional attribute determines the user name to use when creating the upstream connection to the remote server.
-If it is not specified the shared federation user and password will be used if set.</p>
+<p>This optional attribute determines the username to use when creating the upstream connection to the remote server.
+If not specified, the shared federation user and password will be used if they were set.</p>
 </dd>
 <dt class="hdlist1">password</dt>
 <dd>
 <p>This optional attribute determines the password to use when creating the upstream connection to the remote server.
-If it is not specified the shared federation user and password will be used if set.</p>
+If not specified, the shared federation user and password will be used if they were set.</p>
 </dd>
 <dt class="hdlist1">static-connectors</dt>
 <dd>
 <p>Either this or <code>discovery-group-ref</code> is used to connect the bridge to the target server.</p>
 <div class="paragraph">
 <p>The <code>static-connectors</code> is a list of <code>connector-ref</code> elements pointing to <code>connector</code> elements defined elsewhere.
-A <em>connector</em> encapsulates knowledge of what transport to use (TCP, SSL, HTTP etc) as well as the server connection parameters (host, port etc).
-For more information about what connectors are and how to configure them, please see <a href="configuring-transports.html#configuring-the-transport">Configuring the Transport</a>.</p>
+A <em>connector</em> encapsulates knowledge of what transport to use (TCP, SSL, HTTP etc.) as well as the server connection parameters (host, port etc).</p>
+</div>
+<div class="paragraph">
+<p>For more information about what connectors are and how to configure them, see <a href="configuring-transports.html#configuring-the-transport">Configuring the Transport</a>.</p>
 </div>
 </dd>
 <dt class="hdlist1">discovery-group-ref</dt>
@@ -314,19 +332,19 @@ For more information about what connectors are and how to configure them, please
 <div class="paragraph">
 <p>The <code>discovery-group-ref</code> element has one attribute - <code>discovery-group-name</code>.
 This attribute points to a <code>discovery-group</code> defined elsewhere.
-For more information about what discovery-groups are and how to configure them, please see <a href="clusters.html#clusters">Discovery Groups</a>.</p>
+For more information about what <em>discovery-groups</em> are and how to configure them, see <a href="clusters.html#clusters">Discovery Groups</a>.</p>
 </div>
 </dd>
 <dt class="hdlist1">ha</dt>
 <dd>
-<p>This optional parameter determines whether or not this bridge should support high availability.
-True means it will connect to any available server in a cluster and support failover.
+<p>Optional parameter determines whether this bridge should support high availability.
+Using <code>true</code> will connect to any available server in a cluster and support failover.
 The default value is <code>false</code>.</p>
 </dd>
 <dt class="hdlist1">circuit-breaker-timeout</dt>
 <dd>
-<p>When a connection issue occurs, as the single connection is shared by many federated queue and address consumers, to avoid each one trying to reconnect and possibly causing a thundering heard issue, the first one will try.
-If unsuccessful the circuit breaker will open, returning the same exception to all.
+<p>When a connection issue occurs, as the single connection is shared by many federated queue and address consumers, to avoid each one trying to reconnect and possibly causing a thundering herd issue, the first one will be tried.
+If unsuccessful the circuit breaker will open, returning the same exception to all connections.
 This is the timeout until the circuit can be closed and connection retried.
 Measured in milliseconds.</p>
 </dd>
@@ -362,7 +380,7 @@ The default value is <code>500</code> milliseconds.</p>
 </dd>
 <dt class="hdlist1">retry-interval-multiplier</dt>
 <dd>
-<p>This is a multiplier used to increase the <code>retry-interval</code> after each reconnect attempt, default is 1.</p>
+<p>Used to increase the <code>retry-interval</code> after each reconnect attempt, default is 1.</p>
 </dd>
 <dt class="hdlist1">max-retry-interval</dt>
 <dd>
@@ -372,16 +390,17 @@ Default is <code>2000</code>.</p>
 <dt class="hdlist1">initial-connect-attempts</dt>
 <dd>
 <p>The number of times the system will try to connect to the remote broker in the federation.
-If the max-retry is achieved this broker will be considered permanently down and the system will not route messages to this broker.
+If the max is reached this broker will be considered permanently down and the system will not route messages to this broker.
 Default is <code>-1</code> (infinite retries).</p>
 </dd>
 <dt class="hdlist1">reconnect-attempts</dt>
 <dd>
 <p>The number of times the system will try to reconnect to the remote broker in the federation.
-If the max-retry is achieved this broker will be considered permanently down and the system will stop routing messages to this broker.
+If the max is reached this broker will be considered permanently down and the system will stop routing messages to this broker.
 Default is <code>-1</code> (infinite retries).</p>
 </dd>
 </dl>
+</div>
 </div>
 </div>
 </div>
@@ -391,18 +410,23 @@ Default is <code>-1</code> (infinite retries).</p>
 <div class="paragraph">
 <p>Similarly to <code>upstream</code> configuration, a downstream configuration can be configured.
 This works by sending a command to the <code>downstream</code> broker to have it create an <code>upstream</code> connection back to the downstream broker.
-The benefit of  this is being able to configure everything for federation on one broker in some cases to make it easier, such as a hub and spoke topology</p>
+The benefit of this is being able to configure everything for federation on one broker in some cases to make it easier, such as a hub and spoke topology</p>
 </div>
 <div class="paragraph">
-<p>All of the same configuration options apply to <code>downstream</code> as does <code>upstream</code> with the exception of one extra configuration flag that needs to be set:</p>
+<p>All the same configuration options apply to <code>downstream</code> as does <code>upstream</code> with the exception of one extra configuration flag that needs to be set:</p>
 </div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">upstream-connector-ref</dt>
+<dd>
+<p>Is an element pointing to a <code>connector</code> elements defined elsewhere.
+This reference is used to tell the downstream broker what connector to use to create a new upstream connection back to the downstream broker.</p>
 <div class="paragraph">
-<p>The <code>upstream-connector-ref</code> is an element pointing to a   <code>connector</code> elements defined elsewhere.
-This ref is used to tell the downstream broker   what connector to use to create a new upstream connection back to the downstream broker.</p>
+<p>A <em>connector</em> encapsulates knowledge of what transport to use (TCP, SSL, HTTP etc.) as well as the server connection parameters (host, port etc).
+For more information about what connectors are and how to configure them, see <a href="configuring-transports.html#configuring-the-transport">Configuring the Transport</a>.</p>
 </div>
-<div class="paragraph">
-<p>A <em>connector</em> encapsulates knowledge of what transport to use (TCP, SSL, HTTP etc) as well as   the server connection parameters (host, port etc).
-For more information about what connectors are and   how to configure them, please see <a href="configuring-transports.html#configuring-the-transport">Configuring the   Transport</a>.</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
 <p>Sample Downstream Address Federation setup:</p>
@@ -427,20 +451,20 @@ For more information about what connectors are and   how to configure them, plea
    <span class="nt">&lt;federation</span> <span class="na">name=</span><span class="s">"eu-north-1"</span> <span class="na">user=</span><span class="s">"federation_username"</span> <span class="na">password=</span><span class="s">"32a10275cf4ab4e9"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;downstream</span> <span class="na">name=</span><span class="s">"eu-east-1"</span><span class="nt">&gt;</span>
           <span class="nt">&lt;static-connectors&gt;</span>
-             <span class="nt">&lt;connector-ref&gt;</span>eu-east-connector1<span class="nt">&lt;/connector-ref&gt;</span>
+             <span class="nt">&lt;connector-ref&gt;</span>eu-east-1-connector<span class="nt">&lt;/connector-ref&gt;</span>
           <span class="nt">&lt;/static-connectors&gt;</span>
           <span class="nt">&lt;upstream-connector-ref&gt;</span>netty-connector<span class="nt">&lt;/upstream-connector-ref&gt;</span>
           <span class="nt">&lt;policy</span> <span class="na">ref=</span><span class="s">"news-address-federation"</span><span class="nt">/&gt;</span>
       <span class="nt">&lt;/downstream&gt;</span>
       <span class="nt">&lt;downstream</span> <span class="na">name=</span><span class="s">"eu-west-1"</span> <span class="nt">&gt;</span>
          <span class="nt">&lt;static-connectors&gt;</span>
-            <span class="nt">&lt;connector-ref&gt;</span>eu-west-connector1<span class="nt">&lt;/connector-ref&gt;</span>
+            <span class="nt">&lt;connector-ref&gt;</span>eu-west-1-connector<span class="nt">&lt;/connector-ref&gt;</span>
          <span class="nt">&lt;/static-connectors&gt;</span>
          <span class="nt">&lt;upstream-connector-ref&gt;</span>netty-connector<span class="nt">&lt;/upstream-connector-ref&gt;</span>
          <span class="nt">&lt;policy</span> <span class="na">ref=</span><span class="s">"news-address-federation"</span><span class="nt">/&gt;</span>
       <span class="nt">&lt;/downstream&gt;</span>
 
-      <span class="nt">&lt;address-policy</span> <span class="na">name=</span><span class="s">"news-address-federation"</span> <span class="na">max-hops=</span><span class="s">"1"</span> <span class="na">auto-delete=</span><span class="s">"true"</span> <span class="na">auto-delete-delay=</span><span class="s">"300000"</span> <span class="na">auto-delete-message-count=</span><span class="s">"-1"</span> <span class="na">transformer-ref=</span><span class="s">"federation-transformer-3"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;address-policy</span> <span class="na">name=</span><span class="s">"news-address-federation"</span> <span class="na">max-hops=</span><span class="s">"1"</span> <span class="na">auto-delete=</span><span class="s">"true"</span> <span class="na">auto-delete-delay=</span><span class="s">"300000"</span> <span class="na">auto-delete-message-count=</span><span class="s">"-1"</span> <span class="na">transformer-ref=</span><span class="s">"news-transformer"</span><span class="nt">&gt;</span>
          <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"queue.bbc.new"</span> <span class="nt">/&gt;</span>
          <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"queue.usatoday"</span> <span class="nt">/&gt;</span>
          <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"queue.news.#"</span> <span class="nt">/&gt;</span>

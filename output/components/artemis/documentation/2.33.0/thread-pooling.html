@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Thread management</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Thread management</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.33.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#server-side-thread-management">1. Server-Side Thread Management</a>
+<ul class="sectlevel2">
+<li><a href="#server-scheduled-thread-pool">1.1. Server Scheduled Thread Pool</a></li>
+<li><a href="#general-purpose-server-thread-pool">1.2. General Purpose Server Thread Pool</a></li>
+<li><a href="#expiry-reaper-thread">1.3. Expiry Reaper Thread</a></li>
+<li><a href="#asynchronous-io">1.4. Asynchronous IO</a></li>
+</ul>
+</li>
+<li><a href="#client-side-thread-management">2. Client-Side Thread Management</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter describes how Apache ActiveMQ Artemis uses and pools threads and how you can manage them.</p>
+</div>
+<div class="paragraph">
+<p>First we&#8217;ll discuss how threads are managed and used on the server side, then we&#8217;ll look at the client side.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="server-side-thread-management"><a class="anchor" href="#server-side-thread-management"></a><a class="link" href="#server-side-thread-management">1. Server-Side Thread Management</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Each Apache ActiveMQ Artemis Server maintains a single thread pool for general use, and a scheduled thread pool for scheduled use.
+A Java scheduled thread pool cannot be configured to use a standard thread pool, otherwise we could use a single thread pool for both scheduled and non scheduled activity.</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis will, by default, cap its thread pool at three times the number of cores (or hyper-threads) as reported by `             Runtime.getRuntime().availableProcessors()<code> for processing incoming packets.
+To override this value, you can set the number of threads by specifying the parameter </code>nioRemotingThreads` in the transport configuration.
+See the <a href="configuring-transports.html#configuring-the-transport">configuring transports</a> for more information on this.</p>
+</div>
+<div class="paragraph">
+<p>There are also a small number of other places where threads are used directly, we&#8217;ll discuss each in turn.</p>
+</div>
+<div class="sect2">
+<h3 id="server-scheduled-thread-pool"><a class="anchor" href="#server-scheduled-thread-pool"></a><a class="link" href="#server-scheduled-thread-pool">1.1. Server Scheduled Thread Pool</a></h3>
+<div class="paragraph">
+<p>The server scheduled thread pool is used for most activities on the server side that require running periodically or with delays.
+It maps internally to a <code>java.util.concurrent.ScheduledThreadPoolExecutor</code> instance.</p>
+</div>
+<div class="paragraph">
+<p>The maximum number of thread used by this pool is configure in <code>broker.xml</code> with the <code>scheduled-thread-pool-max-size</code> parameter.
+The default value is <code>5</code> threads.
+A small number of threads is usually sufficient for this pool.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="general-purpose-server-thread-pool"><a class="anchor" href="#general-purpose-server-thread-pool"></a><a class="link" href="#general-purpose-server-thread-pool">1.2. General Purpose Server Thread Pool</a></h3>
+<div class="paragraph">
+<p>This general purpose thread pool is used for most asynchronous actions on the server side.
+It maps internally to a <code>java.util.concurrent.ThreadPoolExecutor</code> instance.</p>
+</div>
+<div class="paragraph">
+<p>The maximum number of thread used by this pool is configure in <code>broker.xml</code> with the <code>thread-pool-max-size</code> parameter.</p>
+</div>
+<div class="paragraph">
+<p>If a value of <code>-1</code> is used this signifies that the thread pool has no upper bound and new threads will be created on demand if there are not enough threads available to satisfy a request.
+If activity later subsides then threads are timed-out and closed.</p>
+</div>
+<div class="paragraph">
+<p>If a value of <code>n</code> where <code>n</code>is a positive integer greater than zero is used this signifies that the thread pool is bounded.
+If more requests come in and there are no free threads in the pool and the pool is full then requests will block until a thread becomes available.
+It is recommended that a bounded thread pool is used with caution since it can lead to dead-lock situations if the upper bound is chosen to be too low.</p>
+</div>
+<div class="paragraph">
+<p>The default value for <code>thread-pool-max-size</code> is <code>30</code>.</p>
+</div>
+<div class="paragraph">
+<p>See the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html">J2SE javadoc</a> for more information on unbounded (cached), and bounded (fixed) thread pools.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="expiry-reaper-thread"><a class="anchor" href="#expiry-reaper-thread"></a><a class="link" href="#expiry-reaper-thread">1.3. Expiry Reaper Thread</a></h3>
+<div class="paragraph">
+<p>A single thread is also used on the server side to scan for expired messages in queues.
+We cannot use either of the thread pools for this since this thread needs to run at its own configurable priority.</p>
+</div>
+<div class="paragraph">
+<p>For more information on configuring the reaper, please see <a href="message-expiry.html#message-expiry">message expiry</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="asynchronous-io"><a class="anchor" href="#asynchronous-io"></a><a class="link" href="#asynchronous-io">1.4. Asynchronous IO</a></h3>
+<div class="paragraph">
+<p>Asynchronous IO has a thread pool for receiving and dispatching events out of the native layer.
+You will find it on a thread dump with the prefix ActiveMQ-AIO-poller-pool.
+Apache ActiveMQ Artemis uses one thread per opened file on the journal (there is usually one).</p>
+</div>
+<div class="paragraph">
+<p>There is also a single thread used to invoke writes on libaio.
+We do that to avoid context switching on libaio that would cause performance issues.
+You will find this thread on a thread dump with the prefix ActiveMQ-AIO-writer-pool.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="client-side-thread-management"><a class="anchor" href="#client-side-thread-management"></a><a class="link" href="#client-side-thread-management">2. Client-Side Thread Management</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On the client side, Apache ActiveMQ Artemis maintains a single, "global" static scheduled thread pool and a single, "global" static general thread pool for use by all clients using the same classloader in that JVM instance.</p>
+</div>
+<div class="paragraph">
+<p>The static scheduled thread pool has a maximum size of <code>5</code> threads by default.
+This can be changed using the <code>scheduledThreadPoolMaxSize</code> URI parameter.</p>
+</div>
+<div class="paragraph">
+<p>The general purpose thread pool has an unbounded maximum size.
+This is changed using the <code>threadPoolMaxSize</code> URL parameter.</p>
+</div>
+<div class="paragraph">
+<p>If required Apache ActiveMQ Artemis can also be configured so that each <code>ClientSessionFactory</code> instance does not use these "global" static pools but instead maintains its own scheduled and general purpose pool.
+Any sessions created from that <code>ClientSessionFactory</code> will use those pools instead.
+This is configured using the <code>useGlobalPools</code> boolean URL parameter.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
