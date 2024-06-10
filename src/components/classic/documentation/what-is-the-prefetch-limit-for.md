@@ -23,7 +23,7 @@ Large prefetch values are recommended for high performance with high message vol
 
 ### Specifying the PrefetchPolicy
 
-You can specify an instance of the [ActiveMQPrefetchPolicy](http://activemq.apache.org/maven/apidocs/org/apache/activemq/ActiveMQPrefetchPolicy.html) on an [ActiveMQConnectionFactory](http://activemq.apache.org/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) or [ActiveMQConnection](http://activemq.apache.org/maven/apidocs/org/apache/activemq/ActiveMQConnection.html). This allows you to configure all the individual prefetch values; as each different quality of service has a different value. e.g.
+You can specify an instance of the [ActiveMQPrefetchPolicy](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQPrefetchPolicy.html) on an [ActiveMQConnectionFactory](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) or [ActiveMQConnection](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnection.html). This allows you to configure all the individual prefetch values; as each different quality of service has a different value. e.g.
 
 *   persistent queues (default value: `1000`)
     
@@ -49,7 +49,7 @@ consumer = session.createConsumer(queue);
 ```
 ### Pooled Consumers and Prefetch
 
-Consuming messages from a pool of consumers an be problematic due to prefetch. Unconsumed prefetched messages are only released when a consumer is closed, but with a pooled consumer the close is deferred (for reuse) till the consumer pool closes. This leaves prefetched messages unconsumed till the consumer is reused. This feature can be desirable from a performance perspective. However, it can lead to out-of-order message delivery when there is more than one consumer in the pool. For this reason, the [org.apache.activemq.pool.PooledConnectionFactory](http://activemq.apache.org/maven/apidocs/org/apache/activemq/jms/pool/PooledConnectionFactory.html) does **not** pool consumers.
+Consuming messages from a pool of consumers an be problematic due to prefetch. Unconsumed prefetched messages are only released when a consumer is closed, but with a pooled consumer the close is deferred (for reuse) till the consumer pool closes. This leaves prefetched messages unconsumed till the consumer is reused. This feature can be desirable from a performance perspective. However, it can lead to out-of-order message delivery when there is more than one consumer in the pool. For this reason, the [org.apache.activemq.pool.PooledConnectionFactory](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/jms/pool/PooledConnectionFactory.html) does **not** pool consumers.
 
 Pooling consumers is supported by Springs CachingConnectionFactory (although turned off by default). In case you use the CachingConnectionFactory with multiple consumer threads configured in Springs DefaultMessageListenerContainer (DMLC) then you either want to turn off consumer pooling in the CachingConnectionFactory (its off by default) or you may want to use a prefetch of 0 when pooling consumers. In this way, the consumer will poll for messages on each call to `receive(timeout)`. Its generally recommended to turn off consumer caching in Springs CachingConnectionFactory and any other frameworks that allow to pool JMS consumers.
 

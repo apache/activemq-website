@@ -153,6 +153,6 @@ If you don't want persistence at all you can disable it easily via the [Xml Conf
 ```xml
 <broker persistent="false"> </broker>
 ```
-This will make the broker use the [<memoryPersistenceAdapter>](http://activemq.apache.org/maven/apidocs/org/apache/activemq/store/memory/MemoryPersistenceAdapter.html)  
+This will make the broker use the [<memoryPersistenceAdapter>](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/store/memory/MemoryPersistenceAdapter.html)  
 For an example of using a configuration URI see [How To Unit Test JMS Code](how-to-unit-test-jms-code)
 

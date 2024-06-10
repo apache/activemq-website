@@ -20,7 +20,7 @@ For an example of the kinds of things you can do with interceptors see the follo
 
 ### How plugins work
 
-A plugin is an instance of the interface [BrokerPlugin](http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/BrokerPlugin.html) which allows a plugin to add itself into the broker interceptor chain, typically using the [BrokerFilter](http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/BrokerFilter.html) as a base class to allow only certain operations to be customized.
+A plugin is an instance of the interface [BrokerPlugin](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/BrokerPlugin.html) which allows a plugin to add itself into the broker interceptor chain, typically using the [BrokerFilter](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/BrokerFilter.html) as a base class to allow only certain operations to be customized.
 
 The object that implements the BrokerPlugin interface is called out as a plugin in the message broker's XML configuration file (see example below). Your plugin can then optionally reference other beans that are defined in the XML file.
 ```
@@ -82,7 +82,7 @@ http://activemq.apache.org/camel/schema/spring/camel-spring.xsd">
  
 </beans>
 ```
-At startup, the main or core broker calls your plugin's installPlugin() method. This method creates and returns an object that typically extends [BrokerFilter](http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/BrokerFilter.html).
+At startup, the main or core broker calls your plugin's installPlugin() method. This method creates and returns an object that typically extends [BrokerFilter](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/BrokerFilter.html).
 ```
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerPlugin;
@@ -95,7 +95,7 @@ public class MyPlugin implements BrokerPlugin {
 
 }
 ```
-The BrokerFilter class is a convenience class that implements the [Broker](http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/Broker.html) interface. This interface defines all the main operations (e.g., addConnection, addSession, etc.) that your implementation can intercept. The class that extends BrokerFilter overrides any of the methods that are defined in the Broker interface so that it can intercept the corresponding core engine's operations. Here's an example of a class that extends BrokerFilter and intercepts/overrides the addConnection() and addSession() Broker methods/operations.
+The BrokerFilter class is a convenience class that implements the [Broker](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/Broker.html) interface. This interface defines all the main operations (e.g., addConnection, addSession, etc.) that your implementation can intercept. The class that extends BrokerFilter overrides any of the methods that are defined in the Broker interface so that it can intercept the corresponding core engine's operations. Here's an example of a class that extends BrokerFilter and intercepts/overrides the addConnection() and addSession() Broker methods/operations.
 ```
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerFilter;

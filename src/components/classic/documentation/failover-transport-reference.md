@@ -56,7 +56,7 @@ failover:(tcp://primary:61616,tcp://secondary:61616)?randomize=false
 
 ##### Notes
 
-Under the Failover transport send operations will, by default, block indefinitely when the broker becomes unavailable. There are two options available for handling this scenario. First, either set a [TransportListener](http://activemq.apache.org/maven/apidocs/org/apache/activemq/transport/TransportListener.html) directly on the [ActiveMQConnectionFactory](http://activemq.apache.org/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html), so that it is in place before any request that may require a network hop or second, set the `timeout` option. The `timeout` option causes the current send operation to fail after the specified timeout.
+Under the Failover transport send operations will, by default, block indefinitely when the broker becomes unavailable. There are two options available for handling this scenario. First, either set a [TransportListener](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/transport/TransportListener.html) directly on the [ActiveMQConnectionFactory](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html), so that it is in place before any request that may require a network hop or second, set the `timeout` option. The `timeout` option causes the current send operation to fail after the specified timeout.
 
 Example:
 ```
