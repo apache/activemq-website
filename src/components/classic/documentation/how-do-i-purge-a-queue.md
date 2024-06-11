@@ -14,9 +14,9 @@ A frequent requirement is to purge a queue (i.e. delete all the messages on it).
 
 You can use the [Web Console](web-console) to view queues, add/remove queues, purge queues or delete/forward individual messages.
 
-Another option is to use [JMX](jmx) to browse the queues and call the **purge()** method on the [QueueViewMBean](http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/jmx/QueueViewMBean.html).
+Another option is to use [JMX](jmx) to browse the queues and call the **purge()** method on the [QueueViewMBean](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/jmx/QueueViewMBean.html).
 
-You could also delete the queue via removeQueue(String) or removeTopic(String) methods on the [BrokerViewMBean](http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/jmx/BrokerViewMBean.html)
+You could also delete the queue via removeQueue(String) or removeTopic(String) methods on the [BrokerViewMBean](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/jmx/BrokerViewMBean.html)
 
 You can also do it [programmatically](how-can-i-see-what-destinations-are-used)
 
