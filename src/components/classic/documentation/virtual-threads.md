@@ -25,6 +25,7 @@ To enable Virtual Threads in ActiveMQ Classic 6.x (and higher)
 
 1. Checkout activemq source code from git
 2. Build using JDK 21 (Virtual Thread support will be added automatically)
+3. Copy the lib/jdk21/activemq-client-jdk21-_version.jar to lib/activemq-client-_version_.jar
 3. Edit conf/activemq.xml
 
     <broker ... virtualThreadTeaskRunner="true" .. >
@@ -43,5 +44,5 @@ User feedback is welcome! Please comment on the JIRAs with questions and comment
 
 JIRA|Status|Target Version|Completed Version|Feature|Notes
 ---|---|---
-[AMQ-9394](https://issues.apache.org/jira/browse/AMQ-9394) | PR [#1121](https://github.com/apache/activemq/pull/1121) | 6.1.0 | | Task Runner Factory | Optional support to configure Virtual Thread Executor Service
+[AMQ-9394](https://issues.apache.org/jira/browse/AMQ-9394) | PR [#1121](https://github.com/apache/activemq/pull/1121) | 6.2.0 | | Task Runner Factory | Tech Preview support to allow Virtual Thread Executor Service
 
