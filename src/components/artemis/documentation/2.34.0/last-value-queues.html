@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Last-Value Queues</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Last-Value Queues</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.34.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#configuration">1. Configuration</a></li>
+<li><a href="#last-value-property">2. Last-Value Property</a></li>
+<li><a href="#forcing-all-consumers-to-be-non-destructive">3. Forcing all consumers to be non-destructive</a></li>
+<li><a href="#clustering">4. Clustering</a></li>
+<li><a href="#example">5. Example</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Last-Value queues are special queues which discard any messages when a newer message with the same value for a well-defined Last-Value property is put in the queue.
+In other words, a Last-Value queue only retains the last value.</p>
+</div>
+<div class="paragraph">
+<p>A typical example for Last-Value queue is for stock prices, where you are only interested by the latest value for a particular stock.</p>
+</div>
+<div class="paragraph">
+<p>Messages sent to an Last-Value queue without the specified property will be delivered as normal and will never be "replaced".</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">1. Configuration</a></h2>
+<div class="sectionbody">
+<h4 id="last-value-key-configuration" class="discrete">Last Value Key Configuration</h4>
+<div class="paragraph">
+<p>Last-Value queues can be statically configured in broker.xml via the <code>last-value-key</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;multicast&gt;</span>
+      <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orders1"</span> <span class="na">last-value-key=</span><span class="s">"reuters_code"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;/multicast&gt;</span>
+<span class="nt">&lt;/address&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Specified on creating a queue by using the CORE api specifying the parameter  <code>lastValue</code> to <code>true</code>.</p>
+</div>
+<div class="paragraph">
+<p>Or on auto-create when using the JMS Client by using address parameters when  creating the destination used by the consumer.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">Queue</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"my.destination.name?last-value-key=reuters_code"</span><span class="o">);</span>
+<span class="nc">Topic</span> <span class="n">topic</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTopic</span><span class="o">(</span><span class="s">"my.destination.name?last-value-key=reuters_code"</span><span class="o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Address wildcards can be used to configure Last-Value queues for a set of addresses (see <a href="wildcard-syntax.html#wildcard-syntax">here</a>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"lastValueQueue"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;default-last-value-key&gt;</span>reuters_code<span class="nt">&lt;/default-last-value-key&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, <code>default-last-value-key</code> is <code>null</code>.</p>
+</div>
+<h4 id="legacy-last-value-configuration" class="discrete">Legacy Last Value Configuration</h4>
+<div class="paragraph">
+<p>Last-Value queues can also just be configured via the <code>last-value</code> boolean property, doing so it will default the last-value-key to <code>_AMQ_LVQ_NAME</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;multicast&gt;</span>
+      <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orders1"</span> <span class="na">last-value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;/multicast&gt;</span>
+<span class="nt">&lt;/address&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Specified on creating a queue by using the CORE api specifying the parameter  <code>lastValue</code> to <code>true</code>.</p>
+</div>
+<div class="paragraph">
+<p>Or on auto-create when using the JMS Client by using address parameters when  creating the destination used by the consumer.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">Queue</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"my.destination.name?last-value=true"</span><span class="o">);</span>
+<span class="nc">Topic</span> <span class="n">topic</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTopic</span><span class="o">(</span><span class="s">"my.destination.name?last-value=true"</span><span class="o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also the default for all queues under and address can be defaulted using the  <code>address-setting</code> configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"lastValueQueue"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;default-last-value-queue&gt;</span>true<span class="nt">&lt;/default-last-value-queue&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, <code>default-last-value-queue</code> is false.</p>
+</div>
+<div class="paragraph">
+<p>Note that <code>address-setting</code> <code>last-value-queue</code> config is deprecated, please use <code>default-last-value-queue</code> instead.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="last-value-property"><a class="anchor" href="#last-value-property"></a><a class="link" href="#last-value-property">2. Last-Value Property</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The property name used to identify the last value is configurable  at the queue level mentioned above.</p>
+</div>
+<div class="paragraph">
+<p>If using the legacy setting to configure an LVQ then the default property  <code>"_AMQ_LVQ_NAME"</code> is used (or the constant <code>Message.HDR_LAST_VALUE_NAME</code> from the Core API).</p>
+</div>
+<div class="paragraph">
+<p>For example, using the sample configuration</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;multicast&gt;</span>
+      <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orders1"</span> <span class="na">last-value-key=</span><span class="s">"reuters_code"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;/multicast&gt;</span>
+<span class="nt">&lt;/address&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>if two messages with the same value for the Last-Value property are sent to a Last-Value queue, only the latest message will be kept in the queue:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="c1">// send 1st message with Last-Value property `reuters_code` set to `VOD`</span>
+<span class="nc">TextMessage</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTextMessage</span><span class="o">(</span><span class="s">"1st message with Last-Value property set"</span><span class="o">);</span>
+<span class="n">message</span><span class="o">.</span><span class="na">setStringProperty</span><span class="o">(</span><span class="s">"reuters_code"</span><span class="o">,</span> <span class="s">"VOD"</span><span class="o">);</span>
+<span class="n">producer</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+
+<span class="c1">// send 2nd message with Last-Value property `reuters_code` set to `VOD`</span>
+<span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTextMessage</span><span class="o">(</span><span class="s">"2nd message with Last-Value property set"</span><span class="o">);</span>
+<span class="n">message</span><span class="o">.</span><span class="na">setStringProperty</span><span class="o">(</span><span class="s">"reuters_code"</span><span class="o">,</span> <span class="s">"VOD"</span><span class="o">);</span>
+<span class="n">producer</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+
+<span class="o">...</span>
+
+<span class="c1">// only the 2nd message will be received: it is the latest with</span>
+<span class="c1">// the Last-Value property set</span>
+<span class="nc">TextMessage</span> <span class="n">messageReceived</span> <span class="o">=</span> <span class="o">(</span><span class="nc">TextMessage</span><span class="o">)</span><span class="n">messageConsumer</span><span class="o">.</span><span class="na">receive</span><span class="o">(</span><span class="mi">5000</span><span class="o">);</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"Received message: %s\n"</span><span class="o">,</span> <span class="n">messageReceived</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="forcing-all-consumers-to-be-non-destructive"><a class="anchor" href="#forcing-all-consumers-to-be-non-destructive"></a><a class="link" href="#forcing-all-consumers-to-be-non-destructive">3. Forcing all consumers to be non-destructive</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It&#8217;s common to combine last-value queues with <a href="non-destructive-queues.html#non-destructive-queues">non-destructive</a> semantics.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clustering"><a class="anchor" href="#clustering"></a><a class="link" href="#clustering">4. Clustering</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The fundamental ideas behind last-value queues and clustering are at odds with each other.</p>
+</div>
+<div class="paragraph">
+<p>Clustering was designed as a way to increase message throughput through horizontal scaling.
+The messages in a clustered queue can be spread across  <em>all</em> nodes in the cluster.
+This allows clients to be distributed across the cluster to leverage the computing resources all the nodes rather than being bottlenecked on a single node.</p>
+</div>
+<div class="paragraph">
+<p>However, if you wanted to use a last-value queue in a cluster then in order to enforce last-value semantics all messages would be required to go to a queue on a <em>single</em> node.
+This would effectively <em>nullify</em> the benefits of clustering.
+Also, the arrival of messages on and and redistribution of those messages from nodes other than the node where the last-value semantics would be enforced would almost certainly impact which message is considered "last."</p>
+</div>
+<div class="paragraph">
+<p>For these reasons last-value queues are not supported in a traditional cluster.
+However, it would be possible to use a <a href="connection-routers.html#connection-routers">connection router</a> in front of a cluster (or even a set of non-clustered brokers) to ensure all clients which need to use the same last-value queue are directed to the same node.
+See the <a href="connection-routers.html#connection-routers">connection router</a> for more details on configuration, etc.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example"><a class="anchor" href="#example"></a><a class="link" href="#example">5. Example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See the <a href="examples.html#last-value-queue">last-value queue example</a> which shows  how last value queues are configured and used with JMS.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

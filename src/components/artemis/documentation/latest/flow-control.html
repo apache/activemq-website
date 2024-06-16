@@ -15,20 +15,18 @@
 <div id="header">
 <h1>Flow Control</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.34.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.35.0</a></div>
 <ul class="sectlevel1">
-<li><a href="#consumer-flow-control">1. Consumer Flow Control</a></li>
-<li><a href="#window-based-flow-control">2. Window-Based Flow Control</a>
+<li><a href="#consumer-flow-control">1. Consumer Flow Control</a>
 <ul class="sectlevel2">
-<li><a href="#fast-consumers">2.1. Fast consumers</a></li>
-<li><a href="#slow-consumers">2.2. Slow consumers</a></li>
+<li><a href="#window-based-flow-control">1.1. Window-Based Flow Control</a></li>
+<li><a href="#rate-limited-flow-control">1.2. Rate limited flow control</a></li>
 </ul>
 </li>
-<li><a href="#rate-limited-flow-control">3. Rate limited flow control</a></li>
-<li><a href="#producer-flow-control">4. Producer flow control</a>
+<li><a href="#producer-flow-control">2. Producer flow control</a>
 <ul class="sectlevel2">
-<li><a href="#window-based-flow-control-2">4.1. Window based flow control</a></li>
-<li><a href="#rate-limited-flow-control-2">4.2. Rate limited flow control</a></li>
+<li><a href="#window-based-flow-control-2">2.1. Window based flow control</a></li>
+<li><a href="#rate-limited-flow-control-2">2.2. Rate limited flow control</a></li>
 </ul>
 </li>
 </ul>
@@ -50,11 +48,8 @@
 For performance reasons clients normally buffer messages before delivering to the consumer via the <code>receive()</code> method or asynchronously via a message listener.
 If the consumer cannot process messages as fast as they are being delivered and stored in the internal buffer, then you could end up with a situation where messages would keep building up possibly causing out of memory on the client if they cannot be processed in time.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="window-based-flow-control"><a class="anchor" href="#window-based-flow-control"></a><a class="link" href="#window-based-flow-control">2. Window-Based Flow Control</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="window-based-flow-control"><a class="anchor" href="#window-based-flow-control"></a><a class="link" href="#window-based-flow-control">1.1. Window-Based Flow Control</a></h3>
 <div class="paragraph">
 <p>By default, Apache ActiveMQ Artemis consumers buffer messages from the server in a client side buffer before the client consumes them.
 This improves performance: otherwise every time the client consumes a message, Apache ActiveMQ Artemis would have to go the server to request the next message.
@@ -90,8 +85,8 @@ The total maximum size of messages (in bytes) that will be buffered on each cons
 <p>Setting the consumer window size can considerably improve performance depending on the messaging use case.
 As an example, let&#8217;s consider the two extremes:</p>
 </div>
-<div class="sect2">
-<h3 id="fast-consumers"><a class="anchor" href="#fast-consumers"></a><a class="link" href="#fast-consumers">2.1. Fast consumers</a></h3>
+<div class="sect3">
+<h4 id="fast-consumers"><a class="anchor" href="#fast-consumers"></a><a class="link" href="#fast-consumers">1.1.1. Fast consumers</a></h4>
 <div class="paragraph">
 <p>Fast consumers can process messages as fast as they consume them (or even faster)</p>
 </div>
@@ -103,8 +98,8 @@ This will allow <em>unbounded</em> message buffering on the client side.</p>
 <p>Use this setting with caution: it can overflow the client memory if the consumer is not able to process messages as fast as it receives them.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="slow-consumers"><a class="anchor" href="#slow-consumers"></a><a class="link" href="#slow-consumers">2.2. Slow consumers</a></h3>
+<div class="sect3">
+<h4 id="slow-consumers"><a class="anchor" href="#slow-consumers"></a><a class="link" href="#slow-consumers">1.1.2. Slow consumers</a></h4>
 <div class="paragraph">
 <p>Slow consumers takes significant time to process each message and it is desirable to prevent buffering messages on the client side so that they can be delivered to another consumer instead.</p>
 </div>
@@ -132,10 +127,8 @@ In that case, setting the value of <code>consumerWindowSize</code> to optimize p
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="rate-limited-flow-control"><a class="anchor" href="#rate-limited-flow-control"></a><a class="link" href="#rate-limited-flow-control">3. Rate limited flow control</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="rate-limited-flow-control"><a class="anchor" href="#rate-limited-flow-control"></a><a class="link" href="#rate-limited-flow-control">1.2. Rate limited flow control</a></h3>
 <div class="paragraph">
 <p>It is also possible to control the <em>rate</em> at which a consumer can consume messages.
 This is a form of throttling and can be used to make sure that a consumer never consumes messages at a rate faster than the rate specified.
@@ -167,14 +160,15 @@ So if you had a slow rate limit and a high window based limit the clients intern
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
-<h2 id="producer-flow-control"><a class="anchor" href="#producer-flow-control"></a><a class="link" href="#producer-flow-control">4. Producer flow control</a></h2>
+<h2 id="producer-flow-control"><a class="anchor" href="#producer-flow-control"></a><a class="link" href="#producer-flow-control">2. Producer flow control</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Apache ActiveMQ Artemis also can limit the amount of data sent from a client to a server to prevent the server being overwhelmed.</p>
 </div>
 <div class="sect2">
-<h3 id="window-based-flow-control-2"><a class="anchor" href="#window-based-flow-control-2"></a><a class="link" href="#window-based-flow-control-2">4.1. Window based flow control</a></h3>
+<h3 id="window-based-flow-control-2"><a class="anchor" href="#window-based-flow-control-2"></a><a class="link" href="#window-based-flow-control-2">2.1. Window based flow control</a></h3>
 <div class="paragraph">
 <p>In a similar way to consumer window based flow control, Apache ActiveMQ Artemis producers, by default, can only send messages to an address as long as they have sufficient credits to do so.
 The amount of credits required to send a message is given by the size of the message.</p>
@@ -189,7 +183,7 @@ The amount of credits required to send a message is given by the size of the mes
 <p>The window size therefore determines the amount of bytes that can be in-flight at any one time before more need to be requested - this prevents the remoting connection from getting overloaded.</p>
 </div>
 <div class="sect3">
-<h4 id="blocking-core-producers"><a class="anchor" href="#blocking-core-producers"></a><a class="link" href="#blocking-core-producers">4.1.1. Blocking CORE Producers</a></h4>
+<h4 id="blocking-core-producers"><a class="anchor" href="#blocking-core-producers"></a><a class="link" href="#blocking-core-producers">2.1.1. Blocking CORE Producers</a></h4>
 <div class="paragraph">
 <p>When using the CORE protocol (used by both the Artemis Core Client and Artemis JMS Client) the server will always aim give the same number of credits as have been requested.
 However, it is also possible to set a maximum size on any address, and the server will never send more credits to any one producer than what is available according to the address&#8217;s upper memory limit.
@@ -275,7 +269,7 @@ It is also possible for a misbehaving client to ignore the flow control credits 
 </div>
 </div>
 <div class="sect3">
-<h4 id="blocking-amqp-producers"><a class="anchor" href="#blocking-amqp-producers"></a><a class="link" href="#blocking-amqp-producers">4.1.2. Blocking AMQP Producers</a></h4>
+<h4 id="blocking-amqp-producers"><a class="anchor" href="#blocking-amqp-producers"></a><a class="link" href="#blocking-amqp-producers">2.1.2. Blocking AMQP Producers</a></h4>
 <div class="paragraph">
 <p>Apache ActiveMQ Artemis ships with out of the box with 2 protocols that support flow control.
 Artemis CORE protocol and AMQP.
@@ -299,7 +293,7 @@ This is additional parameter allows a kind of soft and hard limit, in normal cir
 </div>
 </div>
 <div class="sect2">
-<h3 id="rate-limited-flow-control-2"><a class="anchor" href="#rate-limited-flow-control-2"></a><a class="link" href="#rate-limited-flow-control-2">4.2. Rate limited flow control</a></h3>
+<h3 id="rate-limited-flow-control-2"><a class="anchor" href="#rate-limited-flow-control-2"></a><a class="link" href="#rate-limited-flow-control-2">2.2. Rate limited flow control</a></h3>
 <div class="paragraph">
 <p>Apache ActiveMQ Artemis also allows the rate a producer can emit message to be limited, in units of messages per second.
 By specifying such a rate, Apache ActiveMQ Artemis will ensure that producer never produces messages at a rate higher than that specified.
