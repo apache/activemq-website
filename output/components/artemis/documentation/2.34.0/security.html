@@ -1,0 +1,2127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Authentication &amp; Authorization</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Authentication &amp; Authorization</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.34.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#tracking-the-validated-user">1. Tracking the Validated User</a></li>
+<li><a href="#role-based-security-for-addresses">2. Role based security for addresses</a>
+<ul class="sectlevel2">
+<li><a href="#fine-grained-security-using-fully-qualified-queue-name">2.1. Fine-grained security using fully qualified queue name</a></li>
+<li><a href="#applying-view-and-edit-permissions-to-the-management-api">2.2. Applying <code>view</code> and <code>edit</code> permissions to the management api</a></li>
+</ul>
+</li>
+<li><a href="#security-setting-plugin">3. Security Setting Plugin</a>
+<ul class="sectlevel2">
+<li><a href="#available-plugins">3.1. Available plugins</a></li>
+</ul>
+</li>
+<li><a href="#secure-sockets-layer-ssl-transport">4. Secure Sockets Layer (SSL) Transport</a></li>
+<li><a href="#user-credentials">5. User credentials</a>
+<ul class="sectlevel2">
+<li><a href="#jaas-security-manager">5.1. JAAS Security Manager</a></li>
+<li><a href="#jaas-login-modules">5.2. JAAS Login Modules</a></li>
+<li><a href="#scram-sha-sasl-mechanism">5.3. SCRAM-SHA SASL Mechanism</a></li>
+<li><a href="#kerberos-authentication">5.4. Kerberos Authentication</a></li>
+<li><a href="#role-mapping">5.5. Role Mapping</a></li>
+<li><a href="#basic-security-manager">5.6. Basic Security Manager</a></li>
+</ul>
+</li>
+<li><a href="#mapping-external-roles">6. Mapping external roles</a></li>
+<li><a href="#sasl">7. SASL</a></li>
+<li><a href="#changing-the-usernamepassword-for-clustering">8. Changing the username/password for clustering</a></li>
+<li><a href="#securing-the-console">9. Securing the console</a>
+<ul class="sectlevel2">
+<li><a href="#config-access-using-client-certificates">9.1. Config access using client certificates</a></li>
+</ul>
+</li>
+<li><a href="#controlling-jms-objectmessage-deserialization">10. Controlling JMS ObjectMessage deserialization</a>
+<ul class="sectlevel2">
+<li><a href="#config-via-connection-factories">10.1. Config via Connection Factories</a></li>
+<li><a href="#config-via-system-properties">10.2. Config via system properties</a></li>
+<li><a href="#config-for-resource-adapters">10.3. Config for resource adapters</a></li>
+</ul>
+</li>
+<li><a href="#masking-passwords">11. Masking Passwords</a></li>
+<li><a href="#custom-security-manager">12. Custom Security Manager</a></li>
+<li><a href="#per-acceptor-security-domains">13. Per-Acceptor Security Domains</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter describes how security works with Apache ActiveMQ Artemis and how you can configure it.</p>
+</div>
+<div class="paragraph">
+<p>To disable security completely simply set the <code>security-enabled</code> property to <code>false</code> in the <code>broker.xml</code> file.</p>
+</div>
+<div class="paragraph">
+<p>For performance reasons both <strong>authentication and authorization is cached</strong> independently.
+Entries are removed from the caches (i.e. invalidated) either when the cache reaches its maximum size in which case the least-recently used entry is removed or when an entry has been in the cache "too long".</p>
+</div>
+<div class="paragraph">
+<p>The size of the caches are controlled by the <code>authentication-cache-size</code> and <code>authorization-cache-size</code> configuration parameters.
+Both default to <code>1000</code>.</p>
+</div>
+<div class="paragraph">
+<p>How long cache entries are valid is controlled by <code>security-invalidation-interval</code>, which is in milliseconds.
+Using <code>0</code> will disable caching.
+The default is <code>10000</code> ms.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tracking-the-validated-user"><a class="anchor" href="#tracking-the-validated-user"></a><a class="link" href="#tracking-the-validated-user">1. Tracking the Validated User</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To assist in security auditing the <code>populate-validated-user</code> option exists.
+If this is <code>true</code> then the server will add the name of the validated user to the message using the key <code>_AMQ_VALIDATED_USER</code>.
+For JMS and Stomp clients this is mapped to the key <code>JMSXUserID</code>.
+For users authenticated based on their SSL certificate this name is the name to which their certificate&#8217;s DN maps.
+If <code>security-enabled</code> is <code>false</code> and <code>populate-validated-user</code> is <code>true</code> then the server will simply use whatever user name (if any) the client provides.
+This option is <code>false</code> by default.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="role-based-security-for-addresses"><a class="anchor" href="#role-based-security-for-addresses"></a><a class="link" href="#role-based-security-for-addresses">2. Role based security for addresses</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis contains a flexible role-based security model for applying security to queues, based on their addresses.</p>
+</div>
+<div class="paragraph">
+<p>As explained in <a href="core.html#using-core">Using Core</a>, Apache ActiveMQ Artemis core consists mainly of sets of queues bound to addresses.
+A message is sent to an address and the server looks up the set of queues that are bound to that address, the server then routes the message to those set of queues.</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis allows sets of permissions to be defined against the queues based on their address.
+An exact match on the address can be used or a <a href="wildcard-syntax.html#wildcard-syntax">wildcard match</a> can be used.</p>
+</div>
+<div class="paragraph">
+<p>There are different permissions that can be given to the set of queues which match the address.
+Those permissions are:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">createAddress</dt>
+<dd>
+<p>This permission allows the user to create an address fitting the <code>match</code>.</p>
+</dd>
+<dt class="hdlist1">deleteAddress</dt>
+<dd>
+<p>This permission allows the user to delete an address fitting the <code>match</code>.</p>
+</dd>
+<dt class="hdlist1">createDurableQueue</dt>
+<dd>
+<p>This permission allows the user to create a durable queue under matching addresses.</p>
+</dd>
+<dt class="hdlist1">deleteDurableQueue</dt>
+<dd>
+<p>This permission allows the user to delete a durable queue under matching addresses.</p>
+</dd>
+<dt class="hdlist1">createNonDurableQueue</dt>
+<dd>
+<p>This permission allows the user to create a non-durable queue under matching addresses.</p>
+</dd>
+<dt class="hdlist1">deleteNonDurableQueue</dt>
+<dd>
+<p>This permission allows the user to delete a non-durable queue under matching addresses.</p>
+</dd>
+<dt class="hdlist1">send</dt>
+<dd>
+<p>This permission allows the user to send a message to matching addresses.</p>
+</dd>
+<dt class="hdlist1">consume</dt>
+<dd>
+<p>This permission allows the user to consume a message from a queue bound to matching addresses.</p>
+</dd>
+<dt class="hdlist1">browse</dt>
+<dd>
+<p>This permission allows the user to browse a queue bound to the matching address.</p>
+</dd>
+<dt class="hdlist1">manage</dt>
+<dd>
+<p>This permission allows the user to invoke management operations by sending management messages to the management address.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The following two permissions pertain to operations on the <a href="management.html#management">management apis</a> of the broker. They split management operations into two sets, read only for <code>view</code>, and <code>edit</code> for mutating operations. The split is controlled by a regular expression. Methods that match will require the <code>view</code> permission, all others require <code>edit</code>. The regular expression can be modified through the configuration attribute <a href="configuration-index.html#view-permission-method-match-pattern"><code>view-permission-method-match-pattern</code></a>. These permissions are applicable to the <a href="management.html#fine-grained-rbac-on-management-messages">management address</a> and to <a href="management.html#jmx-authorization-in-broker-xml">MBean access</a>. They are granted to match addresses prefixed with the <a href="configuration-index.html#management-rbac-prefix">management prefix</a>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">view</dt>
+<dd>
+<p>This permission allows access to a read-only subset of management operations.</p>
+</dd>
+<dt class="hdlist1">edit</dt>
+<dd>
+<p>This permission allows access to the mutating management operations, any operation not in the <code>view</code> set.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>For each permission, a list of roles who are granted that permission is specified.
+If the user has any of those roles, he/she will be granted that permission for that set of addresses.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take a simple example, here&#8217;s a security block from <code>broker.xml</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"globalqueues.europe.#"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"createDurableQueue"</span> <span class="na">roles=</span><span class="s">"admin"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"deleteDurableQueue"</span> <span class="na">roles=</span><span class="s">"admin"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"createNonDurableQueue"</span> <span class="na">roles=</span><span class="s">"admin, guest, europe-users"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"deleteNonDurableQueue"</span> <span class="na">roles=</span><span class="s">"admin, guest, europe-users"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"send"</span> <span class="na">roles=</span><span class="s">"admin, europe-users"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"consume"</span> <span class="na">roles=</span><span class="s">"admin, europe-users"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using the default <a href="wildcard-syntax.html#wildcard-syntax">wildcard syntax</a> the <code>#</code> character signifies "any sequence of words".
+Words are delimited by the <code>.</code> character.
+Therefore, the above security block applies to any address that starts with the string "globalqueues.europe.".</p>
+</div>
+<div class="paragraph">
+<p>Only users who have the <code>admin</code> role can create or delete durable queues bound to an address that starts with the string "globalqueues.europe."</p>
+</div>
+<div class="paragraph">
+<p>Any users with the roles <code>admin</code>, <code>guest</code>, or <code>europe-users</code> can create or delete temporary queues bound to an address that starts with the string "globalqueues.europe."</p>
+</div>
+<div class="paragraph">
+<p>Any users with the roles <code>admin</code> or <code>europe-users</code> can send messages to these addresses or consume messages from queues bound to an address that starts with the string "globalqueues.europe."</p>
+</div>
+<div class="paragraph">
+<p>The mapping between a user and what roles they have is handled by the security manager.
+Apache ActiveMQ Artemis ships with a user manager that reads user credentials from a file on disk, and can also plug into JAAS or JBoss Application Server security.</p>
+</div>
+<div class="paragraph">
+<p>For more information on configuring the security manager, please see 'Changing the Security Manager'.</p>
+</div>
+<div class="paragraph">
+<p>There can be zero or more <code>security-setting</code> elements in each xml file.
+Where more than one match applies to a set of addresses the <em>more specific</em> match takes precedence.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at an example of that, here&#8217;s another <code>security-setting</code> block:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"globalqueues.europe.orders.#"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"send"</span> <span class="na">roles=</span><span class="s">"europe-users"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"consume"</span> <span class="na">roles=</span><span class="s">"europe-users"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this <code>security-setting</code> block the match <code>globalqueues.europe.orders.#</code> is more specific than the previous match <code>globalqueues.europe.#</code>.
+So any addresses which match <code>globalqueues.europe.orders.#</code> will take their security settings <em>only</em> from the latter security-setting block.</p>
+</div>
+<div class="paragraph">
+<p>Note that <strong>settings are not inherited</strong> from the former block.
+All the settings will be taken from the more specific matching block, so for the address <code>globalqueues.europe.orders.plastics</code> the only permissions that exist are <code>send</code> and <code>consume</code> for the role <code>europe-users</code>.
+The permissions <code>createDurableQueue</code>, <code>deleteDurableQueue</code>, <code>createNonDurableQueue</code>, <code>deleteNonDurableQueue</code> are not inherited from the other <code>security-setting</code> block.</p>
+</div>
+<div class="paragraph">
+<p>By not inheriting permissions, it allows you to effectively deny permissions in more specific <code>security-setting</code> blocks by simply not specifying them.
+Otherwise it would not be possible to deny permissions in sub-groups of addresses.</p>
+</div>
+<div class="sect2">
+<h3 id="fine-grained-security-using-fully-qualified-queue-name"><a class="anchor" href="#fine-grained-security-using-fully-qualified-queue-name"></a><a class="link" href="#fine-grained-security-using-fully-qualified-queue-name">2.1. Fine-grained security using fully qualified queue name</a></h3>
+<div class="paragraph">
+<p>In certain situations it may be necessary to configure security that is more fine-grained that simply across an entire address.
+For example, consider an address with multiple queues:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;anycast&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span> <span class="nt">/&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q2"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/anycast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You may want to limit consumption from <code>q1</code> to one role and consumption from <code>q2</code> to another role.
+You can do this using the fully qualified queue name (i.e. FQQN) in the <code>match</code> of the <code>security-setting</code>, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"foo::q1"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"consume"</span> <span class="na">roles=</span><span class="s">"q1Role"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span>
+<span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"foo::q2"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"consume"</span> <span class="na">roles=</span><span class="s">"q2Role"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Wildcard matching doesn&#8217;t work in conjunction with FQQN.
+The explicit goal of using FQQN here is to be <em>exact</em>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="applying-view-and-edit-permissions-to-the-management-api"><a class="anchor" href="#applying-view-and-edit-permissions-to-the-management-api"></a><a class="link" href="#applying-view-and-edit-permissions-to-the-management-api">2.2. Applying <code>view</code> and <code>edit</code> permissions to the management api</a></h3>
+<div class="paragraph">
+<p>The <code>view</code> and <code>edit</code> permissions are optionally applied to the management apis of the broker.</p>
+</div>
+<div class="paragraph">
+<p>For RBAC on JMX MBean access they can replace the authorization section in management.xml as described at <a href="management.html#jmx-authorization-in-broker-xml">JMX authorization in broker.xml</a></p>
+</div>
+<div class="paragraph">
+<p>For RBAC on management resources accessed via messages sent to the management address, the additional permissions are enabled by configuring <a href="configuration-index.html#management-message-rbac"><code>management-message-rbac</code></a> as described at <a href="management.html#fine-grained-rbac-on-management-messages">Fine grained RBAC on management messages</a></p>
+</div>
+<div class="paragraph">
+<p>The split between operations that require the <code>view</code> and <code>edit</code> permissions can be controlled via <a href="configuration-index.html#view-permission-method-match-pattern">view-permission-method-match-pattern</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="security-setting-plugin"><a class="anchor" href="#security-setting-plugin"></a><a class="link" href="#security-setting-plugin">3. Security Setting Plugin</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Aside from configuring sets of permissions via XML these permissions can alternatively be configured via a plugin which implements <code>org.apache.activemq.artemis.core.server.SecuritySettingPlugin</code> e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-settings&gt;</span>
+   <span class="nt">&lt;security-setting-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.impl.LegacyLDAPSecuritySettingPlugin"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"initialContextFactory"</span> <span class="na">value=</span><span class="s">"com.sun.jndi.ldap.LdapCtxFactory"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionURL"</span> <span class="na">value=</span><span class="s">"ldap://localhost:1024"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionUsername"</span> <span class="na">value=</span><span class="s">"uid=admin,ou=system"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionPassword"</span> <span class="na">value=</span><span class="s">"secret"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionProtocol"</span> <span class="na">value=</span><span class="s">"s"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"authentication"</span> <span class="na">value=</span><span class="s">"simple"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;/security-setting-plugin&gt;</span>
+<span class="nt">&lt;/security-settings&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Most of this configuration is specific to the plugin implementation.
+However, there are two configuration details that will be specified for every implementation:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">class-name</dt>
+<dd>
+<p>This attribute of <code>security-setting-plugin</code> indicates the name of the class which implements <code>org.apache.activemq.artemis.core.server.SecuritySettingPlugin</code>.</p>
+</dd>
+<dt class="hdlist1">setting</dt>
+<dd>
+<p>Each of these elements represents a name/value pair that will be passed to the implementation for configuration purposes.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See the JavaDoc on <code>org.apache.activemq.artemis.core.server.SecuritySettingPlugin</code> for further details about the interface and what each method is expected to do.</p>
+</div>
+<div class="sect2">
+<h3 id="available-plugins"><a class="anchor" href="#available-plugins"></a><a class="link" href="#available-plugins">3.1. Available plugins</a></h3>
+<div class="sect3">
+<h4 id="legacyldapsecuritysettingplugin"><a class="anchor" href="#legacyldapsecuritysettingplugin"></a><a class="link" href="#legacyldapsecuritysettingplugin">3.1.1. LegacyLDAPSecuritySettingPlugin</a></h4>
+<div class="paragraph">
+<p>This plugin will read the security information that was previously handled by <a href="http://activemq.apache.org/security.html"><code>LDAPAuthorizationMap</code></a> and the <a href="http://activemq.apache.org/cached-ldap-authorization-module.html"><code>cachedLDAPAuthorizationMap</code></a> in Apache ActiveMQ "Classic" and turn it into Artemis security settings where possible.
+The security implementations of ActiveMQ "Classic" and Artemis don&#8217;t match perfectly so some translation must occur to achieve near equivalent functionality.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of the plugin&#8217;s configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.impl.LegacyLDAPSecuritySettingPlugin"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"initialContextFactory"</span> <span class="na">value=</span><span class="s">"com.sun.jndi.ldap.LdapCtxFactory"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionURL"</span> <span class="na">value=</span><span class="s">"ldap://localhost:1024"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionUsername"</span> <span class="na">value=</span><span class="s">"uid=admin,ou=system"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionPassword"</span> <span class="na">value=</span><span class="s">"secret"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"connectionProtocol"</span> <span class="na">value=</span><span class="s">"s"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;setting</span> <span class="na">name=</span><span class="s">"authentication"</span> <span class="na">value=</span><span class="s">"simple"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting-plugin&gt;</span></code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">class-name</dt>
+<dd>
+<p>The implementation is <code>org.apache.activemq.artemis.core.server.impl.LegacyLDAPSecuritySettingPlugin</code>.</p>
+</dd>
+<dt class="hdlist1">initialContextFactory</dt>
+<dd>
+<p>The initial context factory used to connect to LDAP.
+It must always be set to <code>com.sun.jndi.ldap.LdapCtxFactory</code> (i.e. the default value).</p>
+</dd>
+<dt class="hdlist1">connectionURL</dt>
+<dd>
+<p>Specifies the location of the directory server using an ldap URL, <code>ldap://Host:Port</code>.
+You can optionally qualify this URL, by adding a forward slash, <code>/</code>, followed by the DN of a particular node in the directory tree.
+For example, <code>ldap://ldapserver:10389/ou=system</code>.
+The default is <code>ldap://localhost:1024</code>.</p>
+</dd>
+<dt class="hdlist1">connectionUsername</dt>
+<dd>
+<p>The DN of the user that opens the connection to the directory server.
+For example, <code>uid=admin,ou=system</code>.
+Directory servers generally require clients to present username/password credentials in order to open a connection.</p>
+</dd>
+<dt class="hdlist1">connectionPassword</dt>
+<dd>
+<p>The password that matches the DN from <code>connectionUsername</code>.
+In the directory server, in the DIT, the password is normally stored as a <code>userPassword</code> attribute in the corresponding directory entry.</p>
+</dd>
+<dt class="hdlist1">connectionProtocol</dt>
+<dd>
+<p>Currently the only supported value is a blank string.
+In future, this option will allow you to select the Secure Socket Layer (SSL) for the connection to the directory server.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This option must be set explicitly to an empty string, because it has no default value.
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">authentication</dt>
+<dd>
+<p>Specifies the authentication method used when binding to the LDAP server.
+Can take either of the values, <code>simple</code> (username and password, the default value) or <code>none</code> (anonymous).</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Simple Authentication and Security Layer (SASL) authentication is currently not supported.
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">destinationBase</dt>
+<dd>
+<p>Specifies the DN of the node whose children provide the permissions for all destinations.
+In this case the DN is a literal value (that is, no string substitution is performed on the property value).
+For example, a typical value of this property is <code>ou=destinations,o=ActiveMQ,ou=system</code> (i.e. the default value).</p>
+</dd>
+<dt class="hdlist1">filter</dt>
+<dd>
+<p>Specifies an LDAP search filter, which is used when looking up the permissions for any kind of destination.
+The search filter attempts to match one of the children or descendants of the queue or topic node.
+The default value is <code>(cn=*)</code>.</p>
+</dd>
+<dt class="hdlist1">roleAttribute</dt>
+<dd>
+<p>Specifies an attribute of the node matched by <code>filter</code>, whose value is the DN of a role.
+Default value is <code>uniqueMember</code>.</p>
+</dd>
+<dt class="hdlist1">adminPermissionValue</dt>
+<dd>
+<p>Specifies a value that matches the <code>admin</code> permission.
+The default value is <code>admin</code>.</p>
+</dd>
+<dt class="hdlist1">readPermissionValue</dt>
+<dd>
+<p>Specifies a value that matches the <code>read</code> permission.
+The default value is <code>read</code>.</p>
+</dd>
+<dt class="hdlist1">writePermissionValue</dt>
+<dd>
+<p>Specifies a value that matches the <code>write</code> permission.
+The default value is <code>write</code>.</p>
+</dd>
+<dt class="hdlist1">enableListener</dt>
+<dd>
+<p>Whether or not to enable a listener that will automatically receive updates made in the LDAP server and update the broker&#8217;s authorization configuration in real-time.
+The default value is <code>true</code>.</p>
+<div class="paragraph">
+<p>Some LDAP servers (e.g. OpenLDAP) don&#8217;t support the "persistent search" feature which allows the "listener" functionality to work.
+For these servers set the <code>refreshInterval</code> to a value greater than <code>0</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">refreshInterval</dt>
+<dd>
+<p>How long to wait (in seconds) before refreshing the security settings from the LDAP server.
+This can be used for LDAP servers which don&#8217;t support the "persistent search" feature needed for use with <code>enableListener</code> (e.g. OpenLDAP).
+Default is <code>0</code> (i.e. no refresh).</p>
+<div class="paragraph">
+<p>Keep in mind that this can be a potentially expensive operation based on how often the refresh is configured and how large the data set is so take care in how <code>refreshInterval</code> is configured.</p>
+</div>
+</dd>
+<dt class="hdlist1">mapAdminToManage</dt>
+<dd>
+<p>Whether or not to map the legacy <code>admin</code> permission to the <code>manage</code> permission.
+See details of the mapping semantics below.
+The default  value is <code>false</code>.</p>
+</dd>
+<dt class="hdlist1">allowQueueAdminOnRead</dt>
+<dd>
+<p>Whether or not to map the legacy <code>read</code> permission to the <code>createDurableQueue</code>, <code>createNonDurableQueue</code>, and <code>deleteDurableQueue</code> permissions so that JMS clients can create durable and non-durable subscriptions without needing the <code>admin</code> permission.
+This was allowed in ActiveMQ "Classic".
+The default value is <code>false</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The name of the queue or topic defined in LDAP will serve as the "match" for the security-setting, the permission value will be mapped from the ActiveMQ "Classic" type to the Artemis type, and the role will be mapped as-is.</p>
+</div>
+<div class="paragraph">
+<p>ActiveMQ "Classic" only has 3 permission types - <code>read</code>, <code>write</code>, and <code>admin</code>.
+These permission types are described on their <a href="http://activemq.apache.org/security.html">website</a>.
+However, as described previously, ActiveMQ Artemis has 9 permission types - <code>createAddress</code>, <code>deleteAddress</code>, <code>createDurableQueue</code>, <code>deleteDurableQueue</code>, <code>createNonDurableQueue</code>, <code>deleteNonDurableQueue</code>, <code>send</code>, <code>consume</code>, <code>browse</code>, and <code>manage</code>.
+Here&#8217;s how the old types are mapped to the new types:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">read</dt>
+<dd>
+<p><code>consume</code>, <code>browse</code></p>
+</dd>
+<dt class="hdlist1">write</dt>
+<dd>
+<p><code>send</code></p>
+</dd>
+<dt class="hdlist1">admin</dt>
+<dd>
+<p><code>createAddress</code>, <code>deleteAddress</code>, <code>createDurableQueue</code>, <code>deleteDurableQueue</code>, <code>createNonDurableQueue</code>, <code>deleteNonDurableQueue</code>, <code>manage</code> (if <code>mapAdminToManage</code> is <code>true</code>)</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>As mentioned, there are a few places where a translation was performed to achieve some equivalence.:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>This mapping doesn&#8217;t include the Artemis <code>manage</code> permission type by default since there is no type analogous for that in ActiveMQ "Classic".
+However, if <code>mapAdminToManage</code> is <code>true</code> then the legacy <code>admin</code> permission will be mapped to the <code>manage</code> permission.</p>
+</li>
+<li>
+<p>The <code>admin</code> permission in ActiveMQ "Classic" relates to whether or not the broker will auto-create a destination if it doesn&#8217;t exist and the user sends a message to it.
+Artemis automatically allows the automatic creation of a destination if the user has permission to send message to it.
+Therefore, the plugin will map the <code>admin</code> permission to the 6 aforementioned permissions in Artemis by default.
+If <code>mapAdminToManage</code> is <code>true</code> then the legacy <code>admin</code> permission will be mapped to the <code>manage</code> permission as well.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="secure-sockets-layer-ssl-transport"><a class="anchor" href="#secure-sockets-layer-ssl-transport"></a><a class="link" href="#secure-sockets-layer-ssl-transport">4. Secure Sockets Layer (SSL) Transport</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When messaging clients are connected to servers, or servers are connected to other servers (e.g. via bridges) over an untrusted network then Apache ActiveMQ Artemis allows that traffic to be encrypted using the Secure Sockets Layer (SSL) transport.</p>
+</div>
+<div class="paragraph">
+<p>For more information on configuring the SSL transport, please see <a href="configuring-transports.html#configuring-the-transport">Configuring the Transport</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="user-credentials"><a class="anchor" href="#user-credentials"></a><a class="link" href="#user-credentials">5. User credentials</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis ships with three security manager implementations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The flexible, pluggable <code>ActiveMQJAASSecurityManager</code> which supports any standard JAAS login module.
+Artemis ships with several login modules which will be discussed further down.
+This is the default security manager.</p>
+</li>
+<li>
+<p>The <code>ActiveMQBasicSecurityManager</code> which doesn&#8217;t use JAAS and only supports auth via username &amp; password credentials.
+It also supports adding, removing, and updating users via the management API.
+All user &amp; role data is stored in the broker&#8217;s bindings journal which means any changes made to a primary broker will be available on its backup.</p>
+</li>
+<li>
+<p>The legacy, deprecated <code>ActiveMQSecurityManagerImpl</code> that reads user credentials, i.e. user names, passwords and role information from properties files on the classpath called <code>artemis-users.properties</code> and <code>artemis-roles.properties</code>.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="jaas-security-manager"><a class="anchor" href="#jaas-security-manager"></a><a class="link" href="#jaas-security-manager">5.1. JAAS Security Manager</a></h3>
+<div class="paragraph">
+<p>When using the Java Authentication and Authorization Service (JAAS) much of the configuration depends on which login module is used.
+However, there are a few commonalities for every case.
+The first place to look is in <code>bootstrap.xml</code>.
+Here is an example using the <code>PropertiesLogin</code> JAAS login module which reads user, password, and role information from properties files:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;jaas-security</span> <span class="na">domain=</span><span class="s">"PropertiesLogin"</span><span class="nt">/&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>No matter what login module you&#8217;re using, you&#8217;ll need to specify it here in <code>bootstrap.xml</code>.
+The <code>domain</code> attribute here refers to the relevant login module entry in <code>login.config</code>.
+For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">PropertiesLogin {
+    org.apache.activemq.artemis.spi.core.security.jaas.PropertiesLoginModule required
+        debug=true
+        org.apache.activemq.jaas.properties.user="artemis-users.properties"
+        org.apache.activemq.jaas.properties.role="artemis-roles.properties";
+};</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>login.config</code> file is a standard JAAS configuration file.
+You can read more about this file on <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/jgss/tutorials/LoginConfigFile.html">Oracle&#8217;s website</a>.
+In short, the file defines:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>an alias for an entry (e.g. <code>PropertiesLogin</code>)</p>
+</li>
+<li>
+<p>the implementation class for the login module (e.g. <code>org.apache.activemq.artemis.spi.core.security.jaas.PropertiesLoginModule</code>)</p>
+</li>
+<li>
+<p>a flag which indicates whether the success of the login module is <code>required</code>, <code>requisite</code>, <code>sufficient</code>, or <code>optional</code> (see more details on these flags in the <a href="https://docs.oracle.com/javase/8/docs/api/javax/security/auth/login/Configuration.html">JavaDoc</a>)</p>
+</li>
+<li>
+<p>a list of configuration options specific to the login module implementation</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>By default, the location and name of <code>login.config</code> is specified on the Artemis command-line which is set by <code>etc/artemis.profile</code> on linux and  <code>etc\artemis.profile.cmd</code> on Windows.</p>
+</div>
+<div class="sect3">
+<h4 id="dual-authentication"><a class="anchor" href="#dual-authentication"></a><a class="link" href="#dual-authentication">5.1.1. Dual Authentication</a></h4>
+<div class="paragraph">
+<p>The JAAS Security Manager also supports another configuration parameter - <code>certificate-domain</code>.
+This is useful when you want to authenticate clients connecting with SSL connections based on their SSL certificates (e.g. using the <code>CertificateLoginModule</code> discussed below) but you still want to authenticate clients connecting with non-SSL connections with, e.g., username and password.
+Here&#8217;s an example of what would go in <code>bootstrap.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;jaas-security</span> <span class="na">domain=</span><span class="s">"PropertiesLogin"</span> <span class="na">certificate-domain=</span><span class="s">"CertLogin"</span><span class="nt">/&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And here&#8217;s the corresponding <code>login.config</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">PropertiesLogin {
+   org.apache.activemq.artemis.spi.core.security.jaas.PropertiesLoginModule required
+       debug=false
+       org.apache.activemq.jaas.properties.user="artemis-users.properties"
+       org.apache.activemq.jaas.properties.role="artemis-roles.properties";
+};
+
+CertLogin {
+   org.apache.activemq.artemis.spi.core.security.jaas.TextFileCertificateLoginModule required
+       debug=true
+       org.apache.activemq.jaas.textfiledn.user="cert-users.properties"
+       org.apache.activemq.jaas.textfiledn.role="cert-roles.properties";
+};</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the broker is configured this way then any client connecting with SSL and a client certificate will be authenticated using <code>CertLogin</code> and any client connecting without SSL will be authenticated using <code>PropertiesLogin</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="jaas-login-modules"><a class="anchor" href="#jaas-login-modules"></a><a class="link" href="#jaas-login-modules">5.2. JAAS Login Modules</a></h3>
+<div class="sect3">
+<h4 id="guestloginmodule"><a class="anchor" href="#guestloginmodule"></a><a class="link" href="#guestloginmodule">5.2.1. GuestLoginModule</a></h4>
+<div class="paragraph">
+<p>Allows users without credentials (and, depending on how it is configured, possibly also users with invalid credentials) to access the broker.
+Normally, the guest login module is chained with another login module, such as a properties login module.
+It is implemented by <code>org.apache.activemq.artemis.spi.core.security.jaas.GuestLoginModule</code>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">org.apache.activemq.jaas.guest.user</dt>
+<dd>
+<p>the user name to assign;
+default is "guest"</p>
+</dd>
+<dt class="hdlist1">org.apache.activemq.jaas.guest.role</dt>
+<dd>
+<p>the role name to assign;
+default is "guests"</p>
+</dd>
+<dt class="hdlist1">credentialsInvalidate</dt>
+<dd>
+<p>boolean flag;
+if <code>true</code>, reject login requests that include a password (i.e. guest login succeeds only when the user does not provide a password);
+default is <code>false</code></p>
+</dd>
+<dt class="hdlist1">debug</dt>
+<dd>
+<p>boolean flag;
+if <code>true</code>, enable debugging;
+this is used only for testing or debugging;
+normally, it should be set to <code>false</code>, or omitted;
+default is <code>false</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>There are two basic use cases for the guest login module, as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Guests with no credentials or invalid credentials.</p>
+</li>
+<li>
+<p>Guests with no credentials only.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following snippet shows how to configure a JAAS login entry for the use case where users with no credentials or invalid credentials are logged in as guests.
+In this example, the guest login module is used in combination with the properties login module.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">activemq-domain {
+  org.apache.activemq.artemis.spi.core.security.jaas.PropertiesLoginModule sufficient
+      debug=true
+      org.apache.activemq.jaas.properties.user="artemis-users.properties"
+      org.apache.activemq.jaas.properties.role="artemis-roles.properties";
+
+  org.apache.activemq.artemis.spi.core.security.jaas.GuestLoginModule sufficient
+      debug=true
+      org.apache.activemq.jaas.guest.user="anyone"
+      org.apache.activemq.jaas.guest.role="restricted";
+};</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Depending on the user login data, authentication proceeds as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>User logs in with a valid password&#8201;&#8212;&#8201;the properties login module successfully authenticates the user and returns immediately.
+The guest login module is not invoked.</p>
+</li>
+<li>
+<p>User logs in with an invalid password&#8201;&#8212;&#8201;the properties login module fails to authenticate the user, and authentication proceeds to the guest login module.
+The guest login module successfully authenticates the user and returns the guest principal.</p>
+</li>
+<li>
+<p>User logs in with a blank password&#8201;&#8212;&#8201;the properties login module fails to authenticate the user, and authentication proceeds to the guest login module.
+The guest login module successfully authenticates the user and returns the guest principal.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following snipped shows how to configure a JAAS login entry for the use case where only those users with no credentials are logged in as guests.
+To support this use case, you must set the credentialsInvalidate option to true in the configuration of the guest login module.
+You should also note that, compared with the preceding example, the order of the login modules is reversed and the flag attached to the properties login module is changed to requisite.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">activemq-guest-when-no-creds-only-domain {
+    org.apache.activemq.artemis.spi.core.security.jaas.GuestLoginModule sufficient
+        debug=true
+       credentialsInvalidate=true
+       org.apache.activemq.jaas.guest.user="guest"
+       org.apache.activemq.jaas.guest.role="guests";
+
+    org.apache.activemq.artemis.spi.core.security.jaas.PropertiesLoginModule requisite
+        debug=true
+        org.apache.activemq.jaas.properties.user="artemis-users.properties"
+        org.apache.activemq.jaas.properties.role="artemis-roles.properties";
+};</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Depending on the user login data, authentication proceeds as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>User logs in with a valid password&#8201;&#8212;&#8201;the guest login module fails to authenticate the user (because the user has presented a password while the credentialsInvalidate option is enabled) and authentication proceeds to the properties login module.
+The properties login module successfully authenticates the user and returns.</p>
+</li>
+<li>
+<p>User logs in with an invalid password&#8201;&#8212;&#8201;the guest login module fails to authenticate the user and authentication proceeds to the properties login module.
+The properties login module also fails to authenticate the user.
+The net result is authentication failure.</p>
+</li>
+<li>
+<p>User logs in with a blank password&#8201;&#8212;&#8201;the guest login module successfully authenticates the user and returns immediately.
+The properties login module is not invoked.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="propertiesloginmodule"><a class="anchor" href="#propertiesloginmodule"></a><a class="link" href="#propertiesloginmodule">5.2.2. PropertiesLoginModule</a></h4>
+<div class="paragraph">
+<p>The JAAS properties login module provides a simple store of authentication data, where the relevant user data is stored in a pair of flat files.
+This is convenient for demonstrations and testing, but for an enterprise system, the integration with LDAP is preferable.
+It is implemented by <code>org.apache.activemq.artemis.spi.core.security.jaas.PropertiesLoginModule</code>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">org.apache.activemq.jaas.properties.user</dt>
+<dd>
+<p>the path to the file which contains user and password properties</p>
+</dd>
+<dt class="hdlist1">org.apache.activemq.jaas.properties.role</dt>
+<dd>
+<p>the path to the file which contains user and role properties</p>
+</dd>
+<dt class="hdlist1">org.apache.activemq.jaas.properties.password.codec</dt>
+<dd>
+<p>the fully qualified class name of the password codec to use.
+See the <a href="masking-passwords.html#masking-passwords">password masking</a> documentation for more details on how this works.</p>
+</dd>
+<dt class="hdlist1">reload</dt>
+<dd>
+<p>boolean flag;
+whether or not to reload the properties files when a modification occurs;
+default is <code>false</code></p>
+</dd>
+<dt class="hdlist1">debug</dt>
+<dd>
+<p>boolean flag;
+if <code>true</code>, enable debugging;
+this is used only for testing or debugging;
+normally, it should be set to <code>false</code>, or omitted;
+default is <code>false</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>In the context of the properties login module, the <code>artemis-users.properties</code> file consists of a list of properties of the form, <code>UserName=Password</code>.
+For example, to define the users <code>system</code>, <code>user</code>, and <code>guest</code>, you could create a file like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">system</span><span class="p">=</span><span class="s">manager</span>
+<span class="py">user</span><span class="p">=</span><span class="s">password</span>
+<span class="py">guest</span><span class="p">=</span><span class="s">password</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Passwords in <code>artemis-users.properties</code> can be hashed.
+Such passwords should follow the syntax <code>ENC(&lt;hash&gt;)</code>.</p>
+</div>
+<div class="paragraph">
+<p>Hashed passwords can easily be added to <code>artemis-users.properties</code> using the <code>user</code> CLI command from the Artemis <em>instance</em>.
+This command will not work  from the Artemis home, and it will also not work unless the broker has been started.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="sh">./artemis user add <span class="nt">--user-command-user</span> guest <span class="nt">--user-command-password</span> guest <span class="nt">--role</span> admin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will use the default codec to perform a "one-way" hash of the password and alter both the <code>artemis-users.properties</code> and <code>artemis-roles.properties</code> files with the specified values.</p>
+</div>
+<div class="paragraph">
+<p>The <code>artemis-roles.properties</code> file consists of a list of properties of the form, <code>Role=UserList</code>, where UserList is a comma-separated list of users.
+For example, to define the roles <code>admins</code>, <code>users</code>, and <code>guests</code>, you could create a file like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">admins</span><span class="p">=</span><span class="s">system</span>
+<span class="py">users</span><span class="p">=</span><span class="s">system,user</span>
+<span class="py">guests</span><span class="p">=</span><span class="s">guest</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As mentioned above, the Artemis command-line interface supports a command to <code>add</code> a user.
+Commands to <code>list</code> (one or all) users, <code>remove</code> a user, and <code>reset</code> a user&#8217;s password and/or role(s) are also supported via the command-line interface as well as the normal management interfaces (e.g. JMX, web console, etc.).</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>Warning</strong></p>
+</div>
+<div class="paragraph">
+<p>Management and CLI operations to manipulate user &amp; role data are only available when using the <code>PropertiesLoginModule</code>.</p>
+</div>
+<div class="paragraph">
+<p>In general, using properties files and broker-centric user management for anything other than very basic use-cases is not recommended.
+The broker is designed to deal with messages.
+It&#8217;s not in the business of managing users, although that functionality is provided at a limited level for convenience.
+LDAP is recommended for enterprise level production use-cases.</p>
+</div>
+</blockquote>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ldaploginmodule"><a class="anchor" href="#ldaploginmodule"></a><a class="link" href="#ldaploginmodule">5.2.3. LDAPLoginModule</a></h4>
+<div class="paragraph">
+<p>The LDAP login module enables you to perform authentication and authorization by checking the incoming credentials against user data stored in a central X.500 directory server.
+For systems that already have an X.500 directory server in place, this means that you can rapidly integrate ActiveMQ Artemis with the existing security database and user accounts can be managed using the X.500 system.
+It is implemented by <code>org.apache.activemq.artemis.spi.core.security.jaas.LDAPLoginModule</code>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">initialContextFactory</dt>
+<dd>
+<p>must always be set to <code>com.sun.jndi.ldap.LdapCtxFactory</code></p>
+</dd>
+<dt class="hdlist1">connectionURL</dt>
+<dd>
+<p>specify the location of the directory server using an ldap URL, ldap://Host:Port.
+You can optionally qualify this URL, by adding a forward slash, <code>/</code>, followed by the DN of a particular node in the directory tree.
+For example, ldap://ldapserver:10389/ou=system.</p>
+</dd>
+<dt class="hdlist1">authentication</dt>
+<dd>
+<p>specifies the authentication method used when binding to the LDAP server.
+Can take either of the values, <code>simple</code> (username and password), <code>GSSAPI</code> (Kerberos SASL) or <code>none</code> (anonymous).</p>
+</dd>
+<dt class="hdlist1">connectionUsername</dt>
+<dd>
+<p>the DN of the user that opens the connection to the directory server.
+For example, <code>uid=admin,ou=system</code>.
+Directory servers generally require clients to present username/password credentials in order to open a connection.</p>
+</dd>
+<dt class="hdlist1">connectionPassword</dt>
+<dd>
+<p>the password that matches the DN from <code>connectionUsername</code>.
+In the directory server, in the DIT, the password is normally stored as a <code>userPassword</code> attribute in the corresponding directory entry.</p>
+</dd>
+<dt class="hdlist1">saslLoginConfigScope</dt>
+<dd>
+<p>the scope in JAAS configuration (login.config) to use to obtain Kerberos initiator credentials when the <code>authentication</code> method is SASL <code>GSSAPI</code>.
+The default value is <code>broker-sasl-gssapi</code>.</p>
+</dd>
+<dt class="hdlist1">connectionProtocol</dt>
+<dd>
+<p>currently, the only supported value is a blank string.
+In future, this option will allow you to select the Secure Socket Layer (SSL) for the connection to the directory server.
+This option must be set explicitly to an empty string, because it has no default value.</p>
+</dd>
+<dt class="hdlist1">connectionTimeout</dt>
+<dd>
+<p>specifies the string representation of an integer representing the connection timeout in milliseconds.
+If the LDAP provider cannot establish a connection within that period, it aborts the connection attempt.
+The integer should be greater than zero.
+An integer less than or equal to zero means to use the network protocol&#8217;s (i.e., TCP&#8217;s) timeout value.</p>
+<div class="paragraph">
+<p>If <code>connectionTimeout</code> is not specified, the default is to wait for the connection to be established or until the underlying network times out.</p>
+</div>
+<div class="paragraph">
+<p>When connection pooling has been requested for a connection, this property also determines the maximum wait time for a connection when all connections in the pool are in use and the maximum pool size has been reached.
+If the value of this property is less than or equal to zero under such circumstances, the provider will wait indefinitely for a connection to become available;
+otherwise, the provider will abort the wait when the maximum wait time has been exceeded.
+See <code>connectionPool</code> for more details.</p>
+</div>
+</dd>
+<dt class="hdlist1">readTimeout</dt>
+<dd>
+<p>specifies the string representation of an integer representing the read timeout in milliseconds for LDAP operations.
+If the LDAP provider cannot get a LDAP response within that period, it aborts the read attempt.
+The integer should be greater than zero.
+An integer less than or equal to zero means no read timeout is specified which is equivalent to waiting for the response infinitely until it is received.</p>
+<div class="paragraph">
+<p>If <code>readTimeout</code> is not specified, the default is to wait for the response until it is received.</p>
+</div>
+</dd>
+<dt class="hdlist1">userBase</dt>
+<dd>
+<p>selects a particular subtree of the DIT to search for user entries.
+The subtree is specified by a DN, which specifes the base node of the subtree.
+For example, by setting this option to <code>ou=User,ou=ActiveMQ,ou=system</code>, the search for user entries is restricted to the subtree beneath the <code>ou=User,ou=ActiveMQ,ou=system</code> node.</p>
+</dd>
+<dt class="hdlist1">userSearchMatching</dt>
+<dd>
+<p>specifies an LDAP search filter, which is applied to the subtree selected by <code>userBase</code>.
+Before passing to the LDAP search operation, the string value you provide here is subjected to string substitution, as implemented by the <code>java.text.MessageFormat</code> class.
+Essentially, this means that the special string, <code>{0}</code>, is substituted by the username, as extracted from the incoming client credentials.</p>
+<div class="paragraph">
+<p>After substitution, the string is interpreted as an LDAP search filter, where the LDAP search filter syntax is defined by the IETF standard, RFC 2254.
+A short introduction to the search filter syntax is available from Oracle&#8217;s JNDI tutorial, <a href="https://docs.oracle.com/javase/jndi/tutorial/basics/directory/filter.html">Search Filters</a>.</p>
+</div>
+<div class="paragraph">
+<p>For example, if this option is set to <code>(uid={0})</code> and the received username is <code>jdoe</code>, the search filter becomes <code>(uid=jdoe)</code> after string substitution.
+If the resulting search filter is applied to the subtree selected by the user base, <code>ou=User,ou=ActiveMQ,ou=system</code>, it would match the entry, <code>uid=jdoe,ou=User,ou=ActiveMQ,ou=system</code> (and possibly more deeply nested entries, depending on the specified search depth&#8212;&#8203;see the <code>userSearchSubtree</code> option).</p>
+</div>
+</dd>
+<dt class="hdlist1">userSearchSubtree</dt>
+<dd>
+<p>specify the search depth for user entries, relative to the node specified by <code>userBase</code>.
+This option is a boolean.
+<code>false</code> indicates it will try to match one of the child entries of the <code>userBase</code> node (maps to <code>javax.naming.directory.SearchControls.ONELEVEL_SCOPE</code>).
+<code>true</code>   indicates it will try to match any entry belonging to the subtree of the <code>userBase</code> node (maps to <code>javax.naming.directory.SearchControls.SUBTREE_SCOPE</code>).</p>
+</dd>
+<dt class="hdlist1">userRoleName</dt>
+<dd>
+<p>specifies the name of the multi-valued attribute of the user entry that contains a list of role names for the user (where the role names are interpreted as group names by the broker&#8217;s authorization plug-in).
+If you omit this option, no role names are extracted from the user entry.</p>
+</dd>
+<dt class="hdlist1">roleBase</dt>
+<dd>
+<p>if you want to store role data directly in the directory server, you can use a combination of role options (<code>roleBase</code>, <code>roleSearchMatching</code>, <code>roleSearchSubtree</code>, and <code>roleName</code>) as an alternative to (or in addition to) specifying the <code>userRoleName</code> option.
+This option selects a particular subtree of the DIT to search for role/group entries.
+The subtree is specified by a DN, which specifes the base node of the subtree.
+For example, by setting this option to <code>ou=Group,ou=ActiveMQ,ou=system</code>, the search for role/group entries is restricted to the subtree beneath the <code>ou=Group,ou=ActiveMQ,ou=system</code> node.</p>
+</dd>
+<dt class="hdlist1">roleName</dt>
+<dd>
+<p>specifies the attribute type of the role entry that contains the name of the role/group (e.g. C, O, OU, etc.).
+If you omit this option the full DN of the role is used.</p>
+</dd>
+<dt class="hdlist1">roleSearchMatching</dt>
+<dd>
+<p>specifies an LDAP search filter, which is applied to the subtree selected by <code>roleBase</code>.
+This works in a similar manner to the <code>userSearchMatching</code> option, except that it supports two substitution strings, as follows:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{0}</code> - substitutes the full DN of the matched user entry (that is, the result of the user search).
+For example, for the user, <code>jdoe</code>, the substituted string could be <code>uid=jdoe,ou=User,ou=ActiveMQ,ou=system</code>.</p>
+</li>
+<li>
+<p><code>{1}</code> - substitutes the received username.
+For example, <code>jdoe</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, if this option is set to <code>(member=uid={1})</code> and the received   username is <code>jdoe</code>, the search filter becomes <code>(member=uid=jdoe)</code> after string   substitution (assuming ApacheDS search filter syntax).
+If the resulting search   filter is applied to the subtree selected by the role base,   <code>ou=Group,ou=ActiveMQ,ou=system</code>, it matches all role entries that have a   <code>member</code> attribute equal to <code>uid=jdoe</code> (the value of a <code>member</code> attribute is a   DN).</p>
+</div>
+<div class="paragraph">
+<p>+
+This option must always be set to enable role searching because it has no   default value.
+Leaving it unset disables role searching and the role   information must come from <code>userRoleName</code>.</p>
+</div>
+<div class="paragraph">
+<p>+
+If you use OpenLDAP, the syntax of the search filter is   <code>(member:=uid=jdoe)</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">roleSearchSubtree</dt>
+<dd>
+<p>specify the search depth for role entries, relative to the node specified by <code>roleBase</code>.
+This option can take boolean values, as follows:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>false</code> (default) - try to match one of the child entries of the roleBase node (maps to <code>javax.naming.directory.SearchControls.ONELEVEL_SCOPE</code>).</p>
+</li>
+<li>
+<p><code>true</code>&#8201;&#8212;&#8201;try to match any entry belonging to the subtree of the roleBase node (maps to <code>javax.naming.directory.SearchControls.SUBTREE_SCOPE</code>).</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">authenticateUser</dt>
+<dd>
+<p>boolean flag to disable authentication.
+Useful as an optimisation when this module is used just for role mapping of a Subject&#8217;s existing authenticated principals;
+default is <code>true</code>.</p>
+</dd>
+<dt class="hdlist1">referral</dt>
+<dd>
+<p>specify how to handle referrals;
+valid values: <code>ignore</code>, <code>follow</code>, <code>throw</code>;
+default is <code>ignore</code>.</p>
+</dd>
+<dt class="hdlist1">ignorePartialResultException</dt>
+<dd>
+<p>boolean flag for use when searching Active Directory (AD).
+AD servers don&#8217;t handle referrals automatically, which causes  a <code>PartialResultException</code> to be thrown when referrals are encountered by a  search, even if <code>referral</code> is set to <code>ignore</code>.
+Set to <code>true</code> to ignore these  exceptions;
+default is <code>false</code>.</p>
+</dd>
+<dt class="hdlist1">expandRoles</dt>
+<dd>
+<p>boolean indicating whether to enable the role expansion functionality or not;
+default false.
+If enabled, then roles within roles will be found.
+For example, role <code>A</code> is in role <code>B</code>.
+User <code>X</code> is in role <code>A</code>, which means user <code>X</code> is in role <code>B</code> by virtue of being in role <code>A</code>.</p>
+</dd>
+<dt class="hdlist1">expandRolesMatching</dt>
+<dd>
+<p>specifies an LDAP search filter which is applied to the subtree selected by <code>roleBase</code>.
+Before passing to the LDAP search operation, the string value you provide here is subjected to string substitution, as implemented by the <code>java.text.MessageFormat</code> class.
+Essentially, this means that the special string, <code>{0}</code>, is substituted by the role name as extracted from the previous role search.
+This option must always be set to enable role expansion because it has no default value.
+Example value: <code>(member={0})</code>.</p>
+</dd>
+<dt class="hdlist1">noCacheExceptions</dt>
+<dd>
+<p>comma separated list of class names or regular expressions to match exceptions which may be thrown during communication with the LDAP server;
+default is empty.
+Typically any failure to authenticate will be stored in the authentication cache so that the underlying security data store (e.g. LDAP) is spared any unnecessary traffic.
+For example, an application with the wrong password attempting to login multiple times in short order might adversely impact the LDAP server.
+However, in cases where the failure is, for example, due to a temporary network outage and the <code>security-invalidation-interval</code> is relatively high then <em>not</em> caching such failures would be better.
+Users can enumerate any relevant exceptions which the cache should ignore (e.g. <code>java.net.ConnectException</code>).
+The name of the exception or the regular expression should match the <strong>root cause</strong> from the relevant stack-trace.
+Users can confirm the configured exceptions are being skipped by enabling debug logging for <code>org.apache.activemq.artemis.core.security.impl.SecurityStoreImpl</code>.</p>
+</dd>
+<dt class="hdlist1">debug</dt>
+<dd>
+<p>boolean flag;
+if <code>true</code>, enable debugging;
+this is used only for testing or debugging;
+normally, it should be set to <code>false</code>, or omitted;
+default is <code>false</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Any additional configuration option not recognized by the LDAP login module itself  is passed as-is to the underlying LDAP connection logic.</p>
+</div>
+<div class="paragraph">
+<p>Add user entries under the node specified by the <code>userBase</code> option.
+When creating a new user entry in the directory, choose an object class that supports the <code>userPassword</code> attribute (for example, the <code>person</code> or <code>inetOrgPerson</code> object classes are typically suitable).
+After creating the user entry, add the <code>userPassword</code> attribute, to hold the user&#8217;s password.</p>
+</div>
+<div class="paragraph">
+<p>If you want to store role data in dedicated role entries (where each node represents a particular role), create a role entry as follows.
+Create a new child of the <code>roleBase</code> node, where the <code>objectClass</code> of the child is <code>groupOfNames</code>.
+Set the <code>cn</code> (or whatever attribute type is specified by <code>roleName</code>) of the new child node equal to the name of the role/group.
+Define a <code>member</code> attribute for each member of the role/group, setting the <code>member</code> value to the DN of the corresponding user (where the DN is specified either fully, <code>uid=jdoe,ou=User,ou=ActiveMQ,ou=system</code>, or partially, <code>uid=jdoe</code>).</p>
+</div>
+<div class="paragraph">
+<p>If you want to add roles to user entries, you would need to customize the directory schema, by adding a suitable attribute type to the user entry&#8217;s object class.
+The chosen attribute type must be capable of handling multiple values.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="certificateloginmodule"><a class="anchor" href="#certificateloginmodule"></a><a class="link" href="#certificateloginmodule">5.2.4. CertificateLoginModule</a></h4>
+<div class="paragraph">
+<p>The JAAS certificate authentication login module must be used in combination with SSL and the clients must be configured with their own certificate.
+In this scenario, authentication is actually performed during the SSL/TLS handshake, not directly by the JAAS certificate authentication plug-in.
+The role of the plug-in is as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>To further constrain the set of acceptable users, because only the user DNs explicitly listed in the relevant properties file are eligible to be authenticated.</p>
+</li>
+<li>
+<p>To associate a list of groups with the received user identity, facilitating integration with the authorization feature.</p>
+</li>
+<li>
+<p>To require the presence of an incoming certificate (by default, the SSL/TLS layer is configured to treat the presence of a client certificate as optional).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The JAAS certificate login module stores a collection of certificate DNs in a pair of flat files.
+The files associate a username and a list of group IDs with each DN.</p>
+</div>
+<div class="paragraph">
+<p>The certificate login module is implemented by the following class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">activemq</span><span class="o">.</span><span class="na">artemis</span><span class="o">.</span><span class="na">spi</span><span class="o">.</span><span class="na">core</span><span class="o">.</span><span class="na">security</span><span class="o">.</span><span class="na">jaas</span><span class="o">.</span><span class="na">TextFileCertificateLoginModule</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following <code>CertLogin</code> login entry shows how to configure certificate login module in the login.config file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">CertLogin {
+    org.apache.activemq.artemis.spi.core.security.jaas.TextFileCertificateLoginModule
+        debug=true
+        org.apache.activemq.jaas.textfiledn.user="users.properties"
+        org.apache.activemq.jaas.textfiledn.role="roles.properties";
+};</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the preceding example, the JAAS realm is configured to use a single <code>org.apache.activemq.artemis.spi.core.security.jaas.TextFileCertificateLoginModule</code> login module.
+The options supported by this login module are as follows:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">debug</dt>
+<dd>
+<p>boolean flag;
+if true, enable debugging;
+this is used only for testing or debugging;
+normally, it should be set to <code>false</code>, or omitted;
+default is <code>false</code></p>
+</dd>
+<dt class="hdlist1">org.apache.activemq.jaas.textfiledn.user</dt>
+<dd>
+<p>specifies the location of the user properties file (relative to the directory containing the login configuration file).</p>
+</dd>
+<dt class="hdlist1">org.apache.activemq.jaas.textfiledn.role</dt>
+<dd>
+<p>specifies the location of the role properties file (relative to the directory containing the login configuration file).</p>
+</dd>
+<dt class="hdlist1">reload</dt>
+<dd>
+<p>boolean flag;
+whether or not to reload the properties files when a modification occurs;
+default is <code>false</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>In the context of the certificate login module, the <code>users.properties</code> file consists of a list of properties of the form, <code>UserName=StringifiedSubjectDN</code> or <code>UserName=/SubjectDNRegExp/</code>.
+For example, to define the users, <code>system</code>, <code>user</code> and <code>guest</code> as well as a <code>hosts</code> user matching several DNs, you could create a file like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">system</span><span class="p">=</span><span class="s">CN=system,O=Progress,C=US</span>
+<span class="py">user</span><span class="p">=</span><span class="s">CN=humble user,O=Progress,C=US</span>
+<span class="py">guest</span><span class="p">=</span><span class="s">CN=anon,O=Progress,C=DE</span>
+<span class="py">hosts</span><span class="p">=</span><span class="s">/CN=host</span><span class="se">\\</span><span class="s">d+</span><span class="se">\\</span><span class="s">.acme</span><span class="se">\\</span><span class="s">.com,O=Acme,C=UK/</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the backslash character has to be escaped because it has a special treatment in properties files.</p>
+</div>
+<div class="paragraph">
+<p>Each username is mapped to a subject DN, encoded as a string (where the string encoding is specified by RFC 2253).
+For example, the system username is mapped to the <code>CN=system,O=Progress,C=US</code> subject DN.
+When performing authentication, the plug-in extracts the subject DN from the received certificate, converts it to the standard string format, and compares it with the subject DNs in the <code>users.properties</code> file by testing for string equality.
+Consequently, you must be careful to ensure that the subject DNs appearing in the <code>users.properties</code> file are an exact match for the subject DNs extracted from the user certificates.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Technically, there is some residual ambiguity in the DN string format.
+For example, the <code>domainComponent</code> attribute could be represented in a string either as the string, <code>DC</code>, or as the OID, <code>0.9.2342.19200300.100.1.25</code>.
+Normally, you do not need to worry about this ambiguity.
+But it could potentially be a problem, if you changed the underlying implementation of the Java security layer.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The easiest way to obtain the subject DNs from the user certificates is by invoking the <code>keytool</code> utility to print the certificate contents.
+To print the contents of a certificate in a keystore, perform the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Export the certificate from the keystore file into a temporary file.
+For example, to export the certificate with alias <code>broker-localhost</code> from the <code>broker.ks</code> keystore file, enter the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="sh">keytool <span class="nt">-export</span> <span class="nt">-file</span> broker.export <span class="nt">-alias</span> broker-localhost <span class="nt">-keystore</span> broker.ks <span class="nt">-storepass</span> password</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After running this command, the exported certificate is in the file,   <code>broker.export</code>.</p>
+</div>
+</li>
+<li>
+<p>Print out the contents of the exported certificate.
+For example, to print out the contents of <code>broker.export</code>, enter the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="sh">keytool <span class="nt">-printcert</span> <span class="nt">-file</span> broker.export</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Which should produce output similar to that shown here:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">Owner: CN=localhost, OU=broker, O=Unknown, L=Unknown, ST=Unknown, C=Unknown
+Issuer: CN=localhost, OU=broker, O=Unknown, L=Unknown, ST=Unknown, C=Unknown
+Serial number: 4537c82e
+Valid from: Thu Oct 19 19:47:10 BST 2006 until: Wed Jan 17 18:47:10 GMT 2007
+Certificate fingerprints:
+         MD5:  3F:6C:0C:89:A8:80:29:CC:F5:2D:DA:5C:D7:3F:AB:37
+         SHA1: F0:79:0D:04:38:5A:46:CE:86:E1:8A:20:1F:7B:AB:3A:46:E4:34:5C</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The string following <code>Owner:</code> gives the subject DN.
+The format used to enter   the subject DN depends on your platform.
+The <code>Owner:</code> string above could be   represented as either <code>CN=localhost,\ OU=broker,\ O=Unknown,\ L=Unknown,\   ST=Unknown,\ C=Unknown</code> or   <code>CN=localhost,OU=broker,O=Unknown,L=Unknown,ST=Unknown,C=Unknown</code>.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The <code>roles.properties</code> file consists of a list of properties of the form, <code>Role=UserList</code>, where <code>UserList</code> is a comma-separated list of users.
+For example, to define the roles <code>admins</code>, <code>users</code>, and <code>guests</code>, you could create a file like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">admins</span><span class="p">=</span><span class="s">system</span>
+<span class="py">users</span><span class="p">=</span><span class="s">system,user</span>
+<span class="py">guests</span><span class="p">=</span><span class="s">guest</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="scrampropertiesloginmodule"><a class="anchor" href="#scrampropertiesloginmodule"></a><a class="link" href="#scrampropertiesloginmodule">5.2.5. SCRAMPropertiesLoginModule</a></h4>
+<div class="paragraph">
+<p>The SCRAM properties login module implements the SASL challenge response for the SCRAM-SHA mechanism.
+The data in the properties file reference via <code>org.apache.activemq.jaas.properties.user</code> needs to be generated by the login module it&#8217;s self, as part of user registration.
+It contains proof of knowledge of passwords, rather than passwords themselves.
+For more usage detail refer to <a href="#scram-sha-sasl-mechanism">SCRAM-SHA SASL Mechanism</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">amqp-sasl-scram {
+   org.apache.activemq.artemis.spi.core.security.jaas.SCRAMPropertiesLoginModule required
+       org.apache.activemq.jaas.properties.user="artemis-users.properties"
+       org.apache.activemq.jaas.properties.role="artemis-roles.properties";
+};</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="scramloginmodule"><a class="anchor" href="#scramloginmodule"></a><a class="link" href="#scramloginmodule">5.2.6. SCRAMLoginModule</a></h4>
+<div class="paragraph">
+<p>The SCRAM login module converts a valid SASL SCRAM-SHA Authenticated identity into a JAAS User Principal.
+This Principal can then be used for <a href="#role-mapping">role mapping</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">{
+   org.apache.activemq.artemis.spi.core.security.jaas.SCRAMLoginModule
+};</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="externalcertificateloginmodule"><a class="anchor" href="#externalcertificateloginmodule"></a><a class="link" href="#externalcertificateloginmodule">5.2.7. ExternalCertificateLoginModule</a></h4>
+<div class="paragraph">
+<p>The external certificate login module is used to propagate a validated TLS client certificate&#8217;s subjectDN into a JAAS UserPrincipal.
+This allows subsequent login modules to do role mapping for the TLS client certificate.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">org.apache.activemq.artemis.spi.core.security.jaas.ExternalCertificateLoginModule required
+    ;</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="principalconversionloginmodule"><a class="anchor" href="#principalconversionloginmodule"></a><a class="link" href="#principalconversionloginmodule">5.2.8. PrincipalConversionLoginModule</a></h4>
+<div class="paragraph">
+<p>The principal conversion login module is used to convert an existing validated Principal  into a JAAS UserPrincipal.
+The module is configured with a list of class names used to match existing Principals.
+If no UserPrincipal exists, the first matching Principal will be added as a UserPrincipal of the same Name.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">org.apache.activemq.artemis.spi.core.security.jaas.PrincipalConversionLoginModule required
+     principalClassList=org.apache.x.Principal,org.apache.y.Principal
+    ;</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="krb5loginmodule"><a class="anchor" href="#krb5loginmodule"></a><a class="link" href="#krb5loginmodule">5.2.9. Krb5LoginModule</a></h4>
+<div class="paragraph">
+<p>The Kerberos login module is used to propagate a validated SASL GSSAPI kerberos token identity into a validated JAAS UserPrincipal.
+This allows subsequent login modules to do role mapping for the kerberos identity.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">org.apache.activemq.artemis.spi.core.security.jaas.Krb5LoginModule required
+    ;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The simplest way to make the login configuration available to JAAS is to add the directory containing the file, <code>login.config</code>, to your CLASSPATH.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="kubernetesloginmodule"><a class="anchor" href="#kubernetesloginmodule"></a><a class="link" href="#kubernetesloginmodule">5.2.10. KubernetesLoginModule</a></h4>
+<div class="paragraph">
+<p>The Kubernetes login module enables you to perform authentication and authorization by validating the <code>Bearer</code> token against the Kubernetes API.
+The authentication is done by submitting a <code>TokenReview</code> request that the Kubernetes cluster validates.
+The response will tell whether the user is authenticated and the associated username and roles.
+It is implemented by <code>org.apache.activemq.artemis.spi.core.security.jaas.KubernetesLoginModule</code>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ignoreTokenReviewRoles</dt>
+<dd>
+<p>when true, do not map roles from the TokenReview user groups.
+default false</p>
+</dd>
+<dt class="hdlist1">org.apache.activemq.jaas.kubernetes.role</dt>
+<dd>
+<p>the optional path to the file which contains role mapping, useful when ignoreTokenReviewRoles=true</p>
+</dd>
+<dt class="hdlist1">reload</dt>
+<dd>
+<p>boolean flag;
+whether or not to reload the properties file when a modification occurs;
+default is <code>false</code></p>
+</dd>
+<dt class="hdlist1">debug</dt>
+<dd>
+<p>boolean flag;
+if <code>true</code>, enable debugging;
+this is used only for testing or debugging;
+normally, it should be set to <code>false</code>, or omitted;
+default is <code>false</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The login module must be allowed to query the required Rest API.
+For that, it will use the available token under <code>/var/run/secrets/kubernetes.io/serviceaccount/token</code>.
+Besides, in order to trust the connection the client will use the <code>ca.crt</code> file existing in the same folder.
+These two files will be mounted in the container.
+The service account running the KubernetesLoginModule must be allowed to <code>create::TokenReview</code>.
+The <code>system:auth-delegator</code> role is typically use for that purpose.</p>
+</div>
+<div class="paragraph">
+<p>The optional roles properties file consists of a list of properties of the form, <code>Role=UserList</code>, where <code>UserList</code> is a comma-separated list of users.
+For example, to define the roles admins, users, and guests, you could create a file like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="properties"><span class="py">admins</span><span class="p">=</span><span class="s">system:serviceaccounts:example-ns:admin-sa</span>
+<span class="py">users</span><span class="p">=</span><span class="s">system:serviceaccounts:other-ns:test-sa</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="scram-sha-sasl-mechanism"><a class="anchor" href="#scram-sha-sasl-mechanism"></a><a class="link" href="#scram-sha-sasl-mechanism">5.3. SCRAM-SHA SASL Mechanism</a></h3>
+<div class="paragraph">
+<p>SCRAM (Salted Challenge Response Authentication Mechanism) is an authentication mechanism that can establish mutual authentication using passwords.
+Apache ActiveMQ Artemis supports SCRAM-SHA-256 and SCRAM-SHA-512 SASL mechanisms to provide authentication for AMQP connections.</p>
+</div>
+<div class="paragraph">
+<p>The following properties of SCRAM make it safe to use SCRAM-SHA even on unencrypted connections:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The passwords are not sent in the clear over the communication channel.
+The client is challenged to offer proof it knows the password of the authenticating user, and the server is challenged to offer proof it had the password to initialise its authentication store.
+Only the proof is exchanged.</p>
+</li>
+<li>
+<p>The server and client each generate a new challenge for each authentication exchange, making it resilient against replay attacks.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="configuring-the-server-to-use-scram-sha"><a class="anchor" href="#configuring-the-server-to-use-scram-sha"></a><a class="link" href="#configuring-the-server-to-use-scram-sha">5.3.1. Configuring the server to use SCRAM-SHA</a></h4>
+<div class="paragraph">
+<p>The desired SCRAM-SHA mechanisms must be enabled on the AMQP acceptor in <code>broker.xml</code> by adding them to the <code>saslMechanisms</code> list url parameter.
+In this example, SASL is restricted to only the <code>SCRAM-SHA-256</code> mechanism:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">  &lt;acceptor name="amqp"&gt;tcp://localhost:5672?protocols=AMQP;saslMechanisms=SCRAM-SHA-256;saslLoginConfigScope=amqp-sasl-scram</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Of note is the reference to the sasl login config scope <code>saslLoginConfigScope=amqp-sasl-scram</code> that holds the relevant SCRAM login module.
+The mechanism makes use of JAAS to complete the SASL exchanges.</p>
+</div>
+<div class="paragraph">
+<p>An example configuration scope for <code>login.config</code> that will implement SCRAM-SHA-256 using property files, is as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">amqp-sasl-scram {
+   org.apache.activemq.artemis.spi.core.security.jaas.SCRAMPropertiesLoginModule required
+       org.apache.activemq.jaas.properties.user="artemis-users.properties"
+       org.apache.activemq.jaas.properties.role="artemis-roles.properties";
+};</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="configuring-a-user-with-scram-sha-data-on-the-server"><a class="anchor" href="#configuring-a-user-with-scram-sha-data-on-the-server"></a><a class="link" href="#configuring-a-user-with-scram-sha-data-on-the-server">5.3.2. Configuring a user with SCRAM-SHA data on the server</a></h4>
+<div class="paragraph">
+<p>With SCRAM-SHA, the server&#8217;s users properties file do not contain any passwords, instead they contain derivative data that can be used to respond to a challenge.
+The secure encoded form of the password must be generated using the main method of org.apache.activemq.artemis.spi.core.security.jaas.SCRAMPropertiesLoginModule from the artemis-server module and inserting the resulting lines into your artemis-users.properties file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">java -cp "&lt;distro-lib-dir&gt;/*" org.apache.activemq.artemis.spi.core.security.jaas.SCRAMPropertiesLoginModule &lt;username&gt; &lt;password&gt; [&lt;iterations&gt;]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An sample of the output can be found in the amqp <a href="examples.html">examples</a>, examples/protocols/amqp/sasl-scram/src/main/resources/activemq/server0/artemis-users.properties</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="kerberos-authentication"><a class="anchor" href="#kerberos-authentication"></a><a class="link" href="#kerberos-authentication">5.4. Kerberos Authentication</a></h3>
+<div class="paragraph">
+<p>You must have the Kerberos infrastructure set up in your deployment environment before the server can accept Kerberos credentials.
+The server can acquire its Kerberos acceptor credentials by using JAAS and a Kerberos login module.
+The JDK provides the <a href="https://docs.oracle.com/javase/8/docs/jre/api/security/jaas/spec/com/sun/security/auth/module/Krb5LoginModule.html">Krb5LoginModule</a> which executes the necessary Kerberos protocol steps to authenticate and obtain Kerberos credentials.</p>
+</div>
+<div class="sect3">
+<h4 id="gssapi-sasl-mechanism"><a class="anchor" href="#gssapi-sasl-mechanism"></a><a class="link" href="#gssapi-sasl-mechanism">5.4.1. GSSAPI SASL Mechanism</a></h4>
+<div class="paragraph">
+<p>Using SASL over <a href="amqp.html#amqp">AMQP</a>, Kerberos authentication is supported using the <code>GSSAPI</code> SASL mechanism.
+With SASL doing Kerberos authentication, TLS can be used to provide integrity and confidentially to the communications channel in the normal way.</p>
+</div>
+<div class="paragraph">
+<p>The <code>GSSAPI</code> SASL mechanism must be enabled  on the AMQP acceptor in <code>broker.xml</code> by adding it to the <code>saslMechanisms</code> list url parameter: <code>saslMechanisms="GSSAPI&lt;,PLAIN, etc&gt;</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>tcp://0.0.0.0:5672?protocols=AMQP;saslMechanisms=GSSAPI<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The GSSAPI mechanism implementation on the server will use a JAAS configuration scope named <code>amqp-sasl-gssapi</code> to obtain its Kerberos acceptor credentials.
+An alternative configuration scope can be specified on the AMQP acceptor using the url parameter: <code>saslLoginConfigScope=&lt;some other scope&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p>An example configuration scope for <code>login.config</code> that will pick up a Kerberos keyTab for the Kerberos acceptor Principal <code>amqp/localhost</code> is as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">amqp-sasl-gssapi {
+    com.sun.security.auth.module.Krb5LoginModule required
+    isInitiator=false
+    storeKey=true
+    useKeyTab=true
+    principal="amqp/localhost"
+    debug=true;
+};</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="role-mapping"><a class="anchor" href="#role-mapping"></a><a class="link" href="#role-mapping">5.5. Role Mapping</a></h3>
+<div class="paragraph">
+<p>On the server, a Kerberos or SCRAM-SHA JAAS authenticated Principal must be added to the Subject&#8217;s principal set as an Apache ActiveMQ Artemis UserPrincipal using the corresponding Apache ActiveMQ Artemis <code>Krb5LoginModule</code> or <code>SCRAMLoginModule</code> login modules.
+They are separate to allow conversion and role mapping to be as restrictive or permissive as desired.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="#propertiesloginmodule">PropertiesLoginModule</a> or <a href="#ldaploginmodule">LDAPLoginModule</a> can then be used to map the authenticated  Principal to an Apache ActiveMQ Artemis <a href="#role-based-security-for-addresses">Role</a>.
+Note that in the case of Kerberos, the Peer Principal does not exist as an Apache ActiveMQ Artemis user, only as a role member.</p>
+</div>
+<div class="paragraph">
+<p>In the following example, any existing Kerberos authenticated peer will convert to an Apache ActiveMQ Artemis user principal and will have role mapping applied by the LDAPLoginModule as appropriate.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">activemq {
+  org.apache.activemq.artemis.spi.core.security.jaas.Krb5LoginModule required
+    ;
+  org.apache.activemq.artemis.spi.core.security.jaas.LDAPLoginModule optional
+    initialContextFactory=com.sun.jndi.ldap.LdapCtxFactory
+    connectionURL="ldap://localhost:1024"
+    authentication=GSSAPI
+    saslLoginConfigScope=broker-sasl-gssapi
+    connectionProtocol=s
+    userBase="ou=users,dc=example,dc=com"
+    userSearchMatching="(krb5PrincipalName={0})"
+    userSearchSubtree=true
+    authenticateUser=false
+    roleBase="ou=system"
+    roleName=cn
+    roleSearchMatching="(member={0})"
+    roleSearchSubtree=false
+    ;
+};</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="basic-security-manager"><a class="anchor" href="#basic-security-manager"></a><a class="link" href="#basic-security-manager">5.6. Basic Security Manager</a></h3>
+<div class="paragraph">
+<p>As the name suggests, the <code>ActiveMQBasicSecurityManager</code> is <em>basic</em>.
+It is not pluggable like the JAAS security manager and it <em>only</em> supports authentication via username and password credentials.
+Furthermore, the Hawtio-based web console requires JAAS.
+Therefore you will <em>still need</em> to configure a <code>login.config</code> if you plan on using the web console.
+However, this security manager <em>may</em> still may have a couple of advantages depending on your use-case.</p>
+</div>
+<div class="paragraph">
+<p>All user &amp; role data is stored in the bindings journal (or bindings table if using JDBC).
+The advantage here is that in a primary/backup use-case any user management performed on the primary broker will be reflected on the backup upon failover.</p>
+</div>
+<div class="paragraph">
+<p>Typically LDAP would be employed for this kind of use-case, but not everyone wants or is able to administer an independent LDAP server.
+One significant benefit of LDAP is that user data can be shared between multiple active brokers.
+However, this is not possible with the <code>ActiveMQBasicSecurityManager</code> or, in fact, any other configuration potentially available out of the box.
+Nevertheless, if you just want to share user data between a single live/backup pair then the basic security manager may be a good fit for you.</p>
+</div>
+<div class="paragraph">
+<p>User management is provided by the broker&#8217;s management API.
+This includes the ability to add, list, update, and remove users &amp; roles.
+As with all management functions, this is available via JMX, management messages, HTTP (via Jolokia), web console, etc.
+These functions are also available from the ActiveMQ Artemis command-line interface.
+Having the broker store this data directly means that it must be running in order to manage users.
+There is no way to modify the bindings data manually.</p>
+</div>
+<div class="paragraph">
+<p>To be clear, any management access via HTTP (e.g. web console or Jolokia) will go through Hawtio JAAS.
+MBean access via JConsole or other remote JMX tool will go through the basic security manager.
+Management messages will also go through the basic security manager.</p>
+</div>
+<div class="sect3">
+<h4 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">5.6.1. Configuration</a></h4>
+<div class="paragraph">
+<p>The configuration for the <code>ActiveMQBasicSecurityManager</code> happens in <code>bootstrap.xml</code> just like it does for all security manager implementations.
+Start by removing <code>&lt;jaas-security /&gt;</code> section and add <code>&lt;security-manager /&gt;</code> configuration as described below.</p>
+</div>
+<div class="paragraph">
+<p>The <code>ActiveMQBasicSecurityManager</code> requires some special configuration for the following reasons:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the bindings data which holds the user &amp; role data cannot be modified manually</p>
+</li>
+<li>
+<p>the broker must be running to manage users</p>
+</li>
+<li>
+<p>the broker often needs to be secured from first boot</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If, for example, the broker was configured to use the  <code>ActiveMQBasicSecurityManager</code> and was started from scratch then no clients would be able to connect because there would be no users &amp; roles configured.
+However, in order to configure users &amp; roles one would need to use the  management API which would require the proper credentials.
+It&#8217;s a <a href="https://en.wikipedia.org/wiki/Catch-22_(logic)">catch-22</a> problem.
+Therefore, it is essential to configure "bootstrap" credentials that will be automatically created when the broker starts.
+There are properties to define either:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a single user whose credentials can then be used to add other users</p>
+</li>
+<li>
+<p>properties files from which to load users &amp; roles in bulk</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of the single bootstrap user configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
+
+   <span class="nt">&lt;security-manager</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.spi.core.security.ActiveMQBasicSecurityManager"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"bootstrapUser"</span> <span class="na">value=</span><span class="s">"myUser"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"bootstrapPassword"</span> <span class="na">value=</span><span class="s">"myPass"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"bootstrapRole"</span> <span class="na">value=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;/security-manager&gt;</span>
+
+   ...
+<span class="nt">&lt;/broker&gt;</span></code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">bootstrapUser</dt>
+<dd>
+<p>The name of the bootstrap user.</p>
+</dd>
+<dt class="hdlist1">bootstrapPassword</dt>
+<dd>
+<p>The password for the bootstrap user;
+supports masking.</p>
+</dd>
+<dt class="hdlist1">bootstrapRole</dt>
+<dd>
+<p>The role of the bootstrap user.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>If your use-case requires <em>multiple</em> users to be available when the broker starts then you can use a configuration like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
+
+   <span class="nt">&lt;security-manager</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.spi.core.security.ActiveMQBasicSecurityManager"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"bootstrapUserFile"</span> <span class="na">value=</span><span class="s">"artemis-users.properties"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"bootstrapRoleFile"</span> <span class="na">value=</span><span class="s">"artemis-roles.properties"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;/security-manager&gt;</span>
+
+   ...
+<span class="nt">&lt;/broker&gt;</span></code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">bootstrapUserFile</dt>
+<dd>
+<p>The name of the file from which to load users.
+This is a <em>properties</em> file formatted exactly the same as the user properties file  used by the <a href="#propertiesloginmodule"><code>PropertiesLoginModule</code></a>.
+This file  should be on the broker&#8217;s classpath (e.g. in the <code>etc</code> directory).</p>
+</dd>
+<dt class="hdlist1">bootstrapRoleFile</dt>
+<dd>
+<p>The role of the bootstrap user.
+This is a <em>properties</em> file formatted exactly the same as the role properties file used by the <a href="#propertiesloginmodule"><code>PropertiesLoginModule</code></a>.
+This file should be on the broker&#8217;s classpath (e.g. in the <code>etc</code> directory).</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Regardless of whether you configure a single bootstrap user or load many users from properties files, any user with which additional users are created should be in a role with the appropriate permissions on the <code>activemq.management</code>  address.
+For example if you&#8217;ve specified a <code>bootstrapUser</code> then the <code>bootstrapRole</code> will need the following permissions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>createNonDurableQueue</code></p>
+</li>
+<li>
+<p><code>createAddress</code></p>
+</li>
+<li>
+<p><code>consume</code></p>
+</li>
+<li>
+<p><code>manage</code></p>
+</li>
+<li>
+<p><code>send</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"activemq.management.#"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"createNonDurableQueue"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"createAddress"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"consume"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"manage"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"send"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Any <code>bootstrap</code> credentials will be reset <strong>whenever</strong> you start the broker no matter what changes may have been made to them at runtime previously, so depending on your use-case you should decide if you want to leave <code>bootstrap</code> configuration permanent or if you want to remove it after initial configuration.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mapping-external-roles"><a class="anchor" href="#mapping-external-roles"></a><a class="link" href="#mapping-external-roles">6. Mapping external roles</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Roles from external authentication providers (i.e. LDAP) can be mapped to internally used roles.
+The is done through role-mapping entries in the security-settings block:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-settings&gt;</span>
+   [...]
+   <span class="nt">&lt;role-mapping</span> <span class="na">from=</span><span class="s">"cn=admins,ou=Group,ou=ActiveMQ,ou=system"</span> <span class="na">to=</span><span class="s">"my-admin-role"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;role-mapping</span> <span class="na">from=</span><span class="s">"cn=users,ou=Group,ou=ActiveMQ,ou=system"</span> <span class="na">to=</span><span class="s">"my-user-role"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-settings&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Role mapping is additive.
+That means the user will keep the original role(s) as well as the newly assigned role(s).
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This role mapping only affects the roles which are used to authorize queue access through the configured acceptors.
+It can not be used to map the role required to access the web console.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sasl"><a class="anchor" href="#sasl"></a><a class="link" href="#sasl">7. SASL</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="amqp.html#amqp">AMQP</a> supports SASL.
+The following mechanisms are supported:  PLAIN, EXTERNAL, ANONYMOUS, GSSAPI, SCRAM-SHA-256, SCRAM-SHA-512.
+The published list can be constrained via the amqp acceptor <code>saslMechanisms</code> property.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+EXTERNAL will only be chosen if a subject is available from the TLS client certificate.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="changing-the-usernamepassword-for-clustering"><a class="anchor" href="#changing-the-usernamepassword-for-clustering"></a><a class="link" href="#changing-the-usernamepassword-for-clustering">8. Changing the username/password for clustering</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order for cluster connections to work correctly, each node in the cluster must make connections to the other nodes.
+The username/password they use for this should always be changed from the installation default to prevent a security risk.</p>
+</div>
+<div class="paragraph">
+<p>Please see <a href="management.html#management">Management</a> for instructions on how to do this.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="securing-the-console"><a class="anchor" href="#securing-the-console"></a><a class="link" href="#securing-the-console">9. Securing the console</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Artemis comes with a web console that allows user to browse Artemis documentation via an embedded server.
+By default the web access is plain HTTP.
+It is configured in <code>bootstrap.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"console"</span> <span class="na">war=</span><span class="s">"console.war"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/binding&gt;</span>
+<span class="nt">&lt;/web&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively you can edit the above configuration to enable secure access using HTTPS protocol.
+e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"https://localhost:8443"</span>
+             <span class="na">keyStorePath=</span><span class="s">"${artemis.instance}/etc/keystore.jks"</span>
+             <span class="na">keyStorePassword=</span><span class="s">"password"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"jolokia"</span> <span class="na">war=</span><span class="s">"jolokia-war-1.3.5.war"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/binding&gt;</span>
+<span class="nt">&lt;/web&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As shown in the example, to enable https the first thing to do is config the <code>bind</code> to be an <code>https</code> url.
+In addition, You will have to configure a few extra properties described as below.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">keyStorePath</dt>
+<dd>
+<p>The path of the key store file.</p>
+</dd>
+<dt class="hdlist1">keyStorePassword</dt>
+<dd>
+<p>The key store&#8217;s password.</p>
+</dd>
+<dt class="hdlist1">clientAuth</dt>
+<dd>
+<p>The boolean flag indicates whether or not client authentication is required.
+Default is <code>false</code>.</p>
+</dd>
+<dt class="hdlist1">trustStorePath</dt>
+<dd>
+<p>The path of the trust store file.
+This is needed only if <code>clientAuth</code> is <code>true</code>.</p>
+</dd>
+<dt class="hdlist1">trustStorePassword</dt>
+<dd>
+<p>The trust store&#8217;s password.</p>
+</dd>
+</dl>
+</div>
+<div class="sect2">
+<h3 id="config-access-using-client-certificates"><a class="anchor" href="#config-access-using-client-certificates"></a><a class="link" href="#config-access-using-client-certificates">9.1. Config access using client certificates</a></h3>
+<div class="paragraph">
+<p>The web console supports authentication with client certificates, see the following steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add the <a href="#certificateloginmodule">certificate login module</a> to the <code>login.config</code> file, i.e.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">activemq-cert {
+ org.apache.activemq.artemis.spi.core.security.jaas.TextFileCertificateLoginModule required
+     debug=true
+     org.apache.activemq.jaas.textfiledn.user="cert-users.properties"
+     org.apache.activemq.jaas.textfiledn.role="cert-roles.properties";
+};</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Change the hawtio realm to match the realm defined in the <code>login.config</code> file for the <a href="#certificateloginmodule">certificate login module</a>.
+This is configured in the <code>artemis.profile</code> via the system property <code>-Dhawtio.role=activemq-cert</code>.</p>
+</li>
+<li>
+<p>Create a key pair for the client and import the public key in a truststore file.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">keytool -storetype pkcs12 -keystore client-keystore.p12 -storepass securepass -keypass securepass -alias client -genkey -keyalg "RSA" -keysize 2048 -dname "CN=ActiveMQ Artemis Client, OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -ext bc=ca:false -ext eku=cA
+keytool -storetype pkcs12 -keystore client-keystore.p12 -storepass securepass -alias client -exportcert -rfc &gt; client.crt
+keytool -storetype pkcs12 -keystore client-truststore.p12 -storepass securepass -keypass securepass -importcert -alias client-ca -file client.crt -noprompt</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Enable secure access using HTTPS protocol with client authentication, use the truststore file created in the previous step to set the <code>trustStorePath</code> and <code>trustStorePassword</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"https://localhost:8443"</span>
+            <span class="na">keyStorePath=</span><span class="s">"${artemis.instance}/etc/server-keystore.p12"</span>
+            <span class="na">keyStorePassword=</span><span class="s">"password"</span>
+            <span class="na">clientAuth=</span><span class="s">"true"</span>
+            <span class="na">trustStorePath=</span><span class="s">"${artemis.instance}/etc/client-truststore.p12"</span>
+            <span class="na">trustStorePassword=</span><span class="s">"password"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"jolokia"</span> <span class="na">war=</span><span class="s">"jolokia-war-1.3.5.war"</span><span class="nt">&gt;&lt;/app&gt;</span>
+   <span class="nt">&lt;/binding&gt;</span>
+<span class="nt">&lt;/web&gt;</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Use the private key created in the previous step to set up your client, i.e. if the client app is a browser install the private key in the browser.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="controlling-jms-objectmessage-deserialization"><a class="anchor" href="#controlling-jms-objectmessage-deserialization"></a><a class="link" href="#controlling-jms-objectmessage-deserialization">10. Controlling JMS ObjectMessage deserialization</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Artemis provides a simple class filtering mechanism with which a user can specify which packages are to be trusted and which are not. Objects whose classes are from trusted packages can be deserialized without problem, whereas those from 'not trusted' packages will be denied deserialization.</p>
+</div>
+<div class="paragraph">
+<p>Artemis keeps a <code>deny list</code> to keep track of packages that are not trusted and a <code>allow list</code> for trusted packages. By default both lists are empty, meaning any serializable object is allowed to be deserialized.
+If an object whose class matches one of the packages in deny list, it is not allowed to be deserialized.
+If it matches one in the allow list the object can be deserialized.
+If a package appears in both deny list and allow list, the one in deny list takes precedence.
+If a class neither matches with <code>deny list</code> nor with the <code>allow list</code>, the class deserialization will be denied unless the allow list is empty (meaning the user doesn&#8217;t specify the allow list at all).</p>
+</div>
+<div class="paragraph">
+<p>A class is considered as a 'match' if:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>its full name exactly matches one of the entries in the list.</p>
+</li>
+<li>
+<p>its package matches one of the entries in the list or is a sub-package of one of the entries.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, if a class full name is "org.apache.pkg1.Class1", some matching
+entries could be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.apache.pkg1.Class1</code> - exact match.</p>
+</li>
+<li>
+<p><code>org.apache.pkg1</code> - exact package match.</p>
+</li>
+<li>
+<p><code>org.apache</code>&#8201;&#8212;&#8201;sub package match.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A <code>*</code> means 'match-all' in a deny or allow list.</p>
+</div>
+<div class="sect2">
+<h3 id="config-via-connection-factories"><a class="anchor" href="#config-via-connection-factories"></a><a class="link" href="#config-via-connection-factories">10.1. Config via Connection Factories</a></h3>
+<div class="paragraph">
+<p>To specify the <em>allow</em> and <em>deny</em> lists one can use the URL parameters <code>deserializationDenyList</code> and <code>deserializationAllowList</code>.
+For example, using JMS:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ActiveMQConnectionFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQConnectionFactory</span><span class="o">(</span><span class="s">"vm://0?deserializationDenyList=org.apache.pkg1,org.some.pkg2"</span><span class="o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above statement creates a factory that has a deny list contains two forbidden packages, "org.apache.pkg1" and "org.some.pkg2", separated by a comma.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="config-via-system-properties"><a class="anchor" href="#config-via-system-properties"></a><a class="link" href="#config-via-system-properties">10.2. Config via system properties</a></h3>
+<div class="paragraph">
+<p>There are two system properties available for specifying deny list and allow list:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">org.apache.activemq.artemis.jms.deserialization.allowlist</dt>
+<dd>
+<p>comma separated list of entries for the allow list.</p>
+</dd>
+<dt class="hdlist1">org.apache.activemq.artemis.jms.deserialization.denylist</dt>
+<dd>
+<p>comma separated list of entries for the deny list.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Once defined, all JMS object message deserialization in the VM is subject to checks against the two lists.
+However if you create a ConnectionFactory and set a new set of deny/allow lists on it, the new values will override the system properties.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="config-for-resource-adapters"><a class="anchor" href="#config-for-resource-adapters"></a><a class="link" href="#config-for-resource-adapters">10.3. Config for resource adapters</a></h3>
+<div class="paragraph">
+<p>Message beans using a JMS resource adapter to receive messages can also control their object deserialization via properly configuring relevant properties for their resource adapters.
+There are two properties that you can configure with connection factories in a resource adapter:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">deserializationDenyList</dt>
+<dd>
+<p>comma separated values for deny list</p>
+</dd>
+<dt class="hdlist1">deserializationAllowList</dt>
+<dd>
+<p>comma separated values for allow list</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>These properties, once specified, are eventually set on the corresponding internal factories.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="masking-passwords"><a class="anchor" href="#masking-passwords"></a><a class="link" href="#masking-passwords">11. Masking Passwords</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For details about masking passwords in broker.xml please see the <a href="masking-passwords.html#masking-passwords">Masking Passwords</a> chapter.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="custom-security-manager"><a class="anchor" href="#custom-security-manager"></a><a class="link" href="#custom-security-manager">12. Custom Security Manager</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The underpinnings of the broker&#8217;s security implementation can be changed if so desired.
+The broker uses a component called a "security manager" to implement the actual authentication and authorization checks.
+By default, the broker uses <code>org.apache.activemq.artemis.spi.core.security.ActiveMQJAASSecurityManager</code> to provide JAAS integration, but users can provide their own implementation of <code>org.apache.activemq.artemis.spi.core.security.ActiveMQSecurityManager5</code> and configure it in <code>bootstrap.xml</code> using the <code>security-manager</code> element, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
+
+   <span class="nt">&lt;security-manager</span> <span class="na">class-name=</span><span class="s">"com.foo.MySecurityManager"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"myKey1"</span> <span class="na">value=</span><span class="s">"myValue1"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"myKey2"</span> <span class="na">value=</span><span class="s">"myValue2"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;/security-manager&gt;</span>
+
+   ...
+<span class="nt">&lt;/broker&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>security-manager</code> <a href="examples.html">example</a> demonstrates how to do this is more detail.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="per-acceptor-security-domains"><a class="anchor" href="#per-acceptor-security-domains"></a><a class="link" href="#per-acceptor-security-domains">13. Per-Acceptor Security Domains</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It&#8217;s possible to override the broker&#8217;s JAAS security domain by specifying a security domain on an individual <code>acceptor</code>.
+Simply use the <code>securityDomain</code> parameter and indicate which domain from your <code>login.config</code> to use, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"myAcceptor"</span><span class="nt">&gt;</span>tcp://127.0.0.1:61616?securityDomain=mySecurityDomain<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Any client connecting to this acceptor will be have security enforced using <code>mySecurityDomain</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
