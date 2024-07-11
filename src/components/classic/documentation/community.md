@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: Community 
+title: Community
 title-class: page-title-classic
 type: classic
 ---
@@ -11,13 +11,13 @@ type: classic
 *   [Books](books)
 *   [Contributing](../../../contributing)
 *   [FAQ](faq)
-    *   [Configuration](configuration)
-    *   [Developing ActiveMQ Classic](developing-activemq-classic)
-    *   [Errors](errors)
-    *   [General](general)
-    *   [JMS](jms)
-    *   [Persistence Questions](persistence-questions)
-    *   [Terminology](terminology)
+    *   [Configuration](faq#configuration)
+    *   [Developing ActiveMQ Classic](faq#developing-activemq-classic)
+    *   [Errors](faq#errors)
+    *   [General](faq#general)
+    *   [JMS](faq#jms)
+    *   [Persistence Questions](faq#persistence-questions)
+    *   [Terminology](faq#terminology)
     *   [Using Apache ActiveMQ Classic](using-activemq-classic-5)
 *   [PMC Templates](../../../pmc-templates)
 *   [Privacy Policy](../../../privacy-policy)
