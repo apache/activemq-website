@@ -28,7 +28,7 @@ properties:/foo/bar.properties
 properties:foo.properties
 properties:http://foo.com/foo.properties
 ```
-Here is [an example properties file](http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/config/broker.properties)
+Here is [an example properties file](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/resources/org/apache/activemq/config/broker.properties)
 ```
 ## ---------------------------------------------------------------------------
 ## Licensed to the Apache Software Foundation (ASF) under one or more

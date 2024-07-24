@@ -16,5 +16,5 @@ Typically in Apache ActiveMQ Classic we [create destinations on demand](how-do-i
 
 ### Example
 
-The following [example](http://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-core/src/test/resources/org/apache/activemq/broker/destinations-on-start.xml) shows how you can configure a number of destinations to be available at startup. <broker xmlns="http://activemq.apache.org/schema/core"> <destinations> <queue physicalName="FOO.BAR" /> <topic physicalName="SOME.TOPIC" /> </destinations> </broker>
+The following [example](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/resources/org/apache/activemq/broker/destinations-on-start.xml) shows how you can configure a number of destinations to be available at startup. <broker xmlns="http://activemq.apache.org/schema/core"> <destinations> <queue physicalName="FOO.BAR" /> <topic physicalName="SOME.TOPIC" /> </destinations> </broker>
 

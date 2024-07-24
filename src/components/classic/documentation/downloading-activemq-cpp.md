@@ -10,19 +10,15 @@ type: classic
 
 ActiveMQ CPP distributions are source-only. To get the source bundle for a particular release, go [here](download). Follow the instructions here only if you want the bleeding edge from trunk.
 
-Web Browsing of SVN
+Web Browsing of Git
 -------------------
 
-To browse via the web use the ViewVC interface:
+To browse the source tree directly:
 
-[http://svn.apache.org/viewvc/activemq/activemq-cpp/trunk/activemq-cpp](http://svn.apache.org/viewvc/activemq/activemq-cpp/trunk/activemq-cpp)
+[https://github.com/apache/activemq-cpp](https://github.com/apache/activemq-cpp)
 
-Or to browse the source tree directly:
-
-[https://svn.apache.org/repos/asf/activemq/activemq-cpp/trunk/activemq-cpp](https://svn.apache.org/repos/asf/activemq/activemq-cpp/trunk/activemq-cpp)
-
-Checking out from SVN 
+Checking out from Github 
 ----------------------
 
-svn co https://svn.apache.org/repos/asf/activemq/activemq-cpp/trunk/
+git checkout https://github.com/apache/activemq-cpp.git
 

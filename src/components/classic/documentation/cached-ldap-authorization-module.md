@@ -15,9 +15,9 @@ type: classic
 Initializing
 ------------
 
-We provide two ldif files for easy starting. The first one is for [Apache Directory Server](http://directory.apache.org/) ([ldif](https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-apacheds.ldif)), which we use in embedded mode for testing. For an example on how to initialize the embedded ApacheDS with this ldif file take a look at [CachedLDAPSecurityTest](https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/java/org/apache/activemq/security/CachedLDAPSecurityTest.java)
+We provide two ldif files for easy starting. The first one is for [Apache Directory Server](http://directory.apache.org/) ([ldif](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-apacheds.ldif)), which we use in embedded mode for testing. For an example on how to initialize the embedded ApacheDS with this ldif file take a look at [CachedLDAPSecurityTest](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/java/org/apache/activemq/security/CachedLDAPSecurityTest.java)
 
-The other one is for [OpenLDAP](http://www.openldap.org/) ([ldif](https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-openldap.ldif))
+The other one is for [OpenLDAP](http://www.openldap.org/) ([ldif](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-openldap.ldif))
 
 The provided ldif and examples assume `dc=activemq,dc=apache,dc=org` suffix to be used for entries, so the configuration similar to the one shown in the following snippet
 ```
@@ -63,7 +63,7 @@ For the OpenLDAP case, you should define more parameters
     </map>
 </authorizationPlugin>
 ```
-Full examples of configurations for [Apache DS](https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-apacheds.xml) and [OpenLDAP](https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-openldap.xml)
+Full examples of configurations for [Apache DS](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-apacheds.xml) and [OpenLDAP](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/resources/org/apache/activemq/security/activemq-openldap.xml)
 
 The list of all properties for `cachedLDAPAuthorizationMap`
 

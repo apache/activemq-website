@@ -1,11 +1,11 @@
 ---
 layout: default_md
-title: SVN 
+title: GIT 
 title-class: page-title-classic
 type: classic
 ---
 
-[Developers](developers) > [SVN](svn)
+[Developers](developers) > [GIT](git)
 
 
 ActiveMQ Classic 5

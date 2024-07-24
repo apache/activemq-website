@@ -38,7 +38,7 @@ The servlet both serves the required js files and handles the JMS requests and r
 Javascript API
 ==============
 
-The ajax featues of amq are provided on the client side by the [amq.js](https://svn.apache.org/repos/asf/activemq/trunk/activemq-web-demo/src/main/webapp/js/amq.js) script. Beginning with ActiveMQ Classic 5.4, this script utilizes one of three different adapters to support ajax communication with the server. Current [jQuery](http://jquery.org), [Prototype](http://prototypejs.org), and [Dojo](http://www.dojotoolkit.org) are supported, and recent versions of all three libraries are shipped with ActiveMQ Classic.
+The ajax featues of amq are provided on the client side by the [amq.js](https://github.com/apache/activemq/blob/main/activemq-web-demo/src/main/webapp/js/amq.js) script. Beginning with ActiveMQ Classic 5.4, this script utilizes one of three different adapters to support ajax communication with the server. Current [jQuery](http://jquery.org), [Prototype](http://prototypejs.org), and [Dojo](http://www.dojotoolkit.org) are supported, and recent versions of all three libraries are shipped with ActiveMQ Classic.
 ```
 <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="js/amq\_jquery\_adapter.js"></script>
@@ -66,7 +66,7 @@ where `myDestination` is the URL string address of the destination (e.g. `topic:
 Receiving messages
 ------------------
 
-To receive messages, the client must define a message handling function and register it with the [amq](https://svn.apache.org/repos/asf/activemq/trunk/activemq-web-demo/src/main/webapp/js/amq.js) object. For example:
+To receive messages, the client must define a message handling function and register it with the [amq](https://github.com/apache/activemq/tree/main/activemq-web-demo/src/main/webapp/js/amq.js) object. For example:
 ```
 var myHandler =
 {
@@ -96,7 +96,7 @@ Using AMQ Ajax in Multiple Browser Windows
 
 All windows or tabs in a single browser share the same `JSESSIONID` on the ActiveMQ Classic server. Unless the server can distinguish listeners from multiple windows, messages which were intended for 1 window will be delivered to another one instead. Effectively, this means that amq.js could be active in only a single browser window at any given time. Beginning in [ActiveMQ Classic 5.4.2](http://activemq.apache.orgOverview/DownloadOverview/Download/Overview/Download/activemq-542-release), this is resolved by allowing each call to `amq.init` to specify a unique `clientId`. When this is done, multiple windows in the same browser can happily co-exist. Each can have a separate set of message subscriptions on the broker with no interactions between them.
 
-In this example, we use the current time (at the time the web page is loaded) as a unique identifier. This is effective as long as two browser windows are not opened within the same millisecond, and is the approach used by the example [chat.md](https://svn.apache.org/repos/asf/activemq/trunk/activemq-web-demo/src/main/webappchat) included with ActiveMQ Classic. Other schemes to ensure the uniqueness of `clientId` can easily be devised. Note that this `clientId` need only be unique within a single session. (Browser windows opened in the same millisecond in separate browsers will not interact, since they are in different sessions.)
+In this example, we use the current time (at the time the web page is loaded) as a unique identifier. This is effective as long as two browser windows are not opened within the same millisecond, and is the approach used by the example [chat.md](https://github.com/apache/activemq/tree/main/activemq-web-demo/src/main/webappchat) included with ActiveMQ Classic. Other schemes to ensure the uniqueness of `clientId` can easily be devised. Note that this `clientId` need only be unique within a single session. (Browser windows opened in the same millisecond in separate browsers will not interact, since they are in different sessions.)
 ```
 org.activemq.Amq.init({
   uri: 'amq', 
@@ -116,12 +116,12 @@ How it works
 AjaxServlet and MessageListenerServlet
 --------------------------------------
 
-The ajax featues of amq are handled on the server side by the [AjaxServlet](https://svn.apache.org/repos/asf/activemq/trunk/activemq-web/src/main/java/org/apache/activemq/web/AjaxServlet.java) which extends the [MessageListenerServlet](https://svn.apache.org/repos/asf/activemq/trunk/activemq-web/src/main/java/org/apache/activemq/web/MessageListenerServlet.java). This servlet is responsible for tracking the existing clients (using a HttpSesssion) and lazily creating the AMQ and javax.jms objects required by the client to send and receive messages (eg. Destination, MessageConsumer, MessageAVailableListener). This servlet should be mapped to `/amq/*` in the web application context serving the Ajax client (this can be changed, but the client javascript `amq.uri` field needs to be updated to match.)
+The ajax featues of amq are handled on the server side by the [AjaxServlet](https://github.com/apache/activemq/tree/main/activemq-web/src/main/java/org/apache/activemq/web/AjaxServlet.java) which extends the [MessageListenerServlet](https://github.com/apache/activemq/tree/main/activemq-web/src/main/java/org/apache/activemq/web/MessageListenerServlet.java). This servlet is responsible for tracking the existing clients (using a HttpSesssion) and lazily creating the AMQ and javax.jms objects required by the client to send and receive messages (eg. Destination, MessageConsumer, MessageAVailableListener). This servlet should be mapped to `/amq/*` in the web application context serving the Ajax client (this can be changed, but the client javascript `amq.uri` field needs to be updated to match.)
 
 Client Sending messages
 -----------------------
 
-When a message is sent from the client it is encoded as the content of a POST request, using the API of one of the supported connection adapters (jQuery, Prototype, or Dojo) for [XmlHttpRequest](http://jibbering.com/2002/4/httprequest.html). The [amq](https://svn.apache.org/repos/asf/activemq/trunk/activemq-web-demo/src/main/webapp/js/amq.js) object may combine several sendMessage calls into a single POST if it can do so without adding additional delays (see polling below).
+When a message is sent from the client it is encoded as the content of a POST request, using the API of one of the supported connection adapters (jQuery, Prototype, or Dojo) for [XmlHttpRequest](http://jibbering.com/2002/4/httprequest.html). The [amq](https://github.com/apache/activemq/tree/main/activemq-web-demo/src/main/webapp/js/amq.js) object may combine several sendMessage calls into a single POST if it can do so without adding additional delays (see polling below).
 
 When the MessageListenerServlet receives a POST, the messages are decoded as `application/x-www-form-urlencoded` parameters with their type (in this case `send` as opposed to `listen` or `unlisten` see below) and destination. If a destination channel or topic do not exist, it is created. The message is sent to the destination as a TextMessage.
 

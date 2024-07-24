@@ -23,7 +23,7 @@ Make sure you do not use any strange characters in the names of brokers as they 
 Examples
 --------
 
-The default ActiveMQ Classic configuration: [current default config](http://svn.apache.org/repos/asf/activemq/trunk/assembly/src/release/conf/activemq.xml).
+The default ActiveMQ Classic configuration: [current default config](https://github.com/apache/activemq/blob/main/assembly/src/release/conf/activemq.xml).
 ```
 <beans
   xmlns="http://www.springframework.org/schema/beans"

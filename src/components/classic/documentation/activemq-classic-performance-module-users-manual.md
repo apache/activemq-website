@@ -15,7 +15,7 @@ This [Maven 2](http://maven.apache.org) plugin allows you to run performance tes
 
 ### Prerequisites
 
-Starting with ActiveMQ Classic 5.5 and above the plugin can be obtained from maven or if you download the src from SVN you can build it yourself. Start with a complete build of Apache ActiveMQ Classic and then do
+Starting with ActiveMQ Classic 5.5 and above the plugin can be obtained from maven or if you download the src from GIT you can build it yourself. Start with a complete build of Apache ActiveMQ Classic and then do
 ```
 cd activemq-tooling
 mvn clean install
