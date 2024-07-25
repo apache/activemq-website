@@ -47,9 +47,9 @@ export ACTIVEMQ_SSL_OPTS = -Djavax.net.ssl.keyStore=/path/to/broker.ks -Djavax.n
 
 Sometimes the use of javax.net.ssl.* system properties is not appropriate as they effect all SSL users in a JVM. ActiveMQ Classic 5.2.x adds an element to the that allows a broker specific set of SSL properties to be configured.
 
-The SslContext [test case](https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/java/org/apache/activemq/transport/tcp/SslContextBrokerServiceTest.java) validates starting an SSL transport listener using the configuration specified in the broker Xbean. The SslContext element is added to the broker as follows:
+The SslContext [test case](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/java/org/apache/activemq/transport/tcp/SslContextBrokerServiceTest.java) validates starting an SSL transport listener using the configuration specified in the broker Xbean. The SslContext element is added to the broker as follows:
 
-The SslContext is used to configure the [SslTransportFactory](https://svn.apache.org/repos/asf/activemq/trunk/activemq-client/src/main/java/org/apache/activemq/transport/tcp/SslTransportFactory.java) for that broker. Full details of the configuration options available can be seen in the [schema definition](http://activemq.apache.org/schema/core/activemq-core-5.2-SNAPSHOT.xsd) or in the accessors of [org.apache.activemq.spring.SpringSslContext](https://svn.apache.org/repos/asf/activemq/trunk/activemq-spring/src/main/java/org/apache/activemq/spring/SpringSslContext.java)
+The SslContext is used to configure the [SslTransportFactory](https://github.com/apache/activemq/tree/main/activemq-client/src/main/java/org/apache/activemq/transport/tcp/SslTransportFactory.java) for that broker. Full details of the configuration options available can be seen in the [schema definition](http://activemq.apache.org/schema/core/activemq-core-5.2-SNAPSHOT.xsd) or in the accessors of [org.apache.activemq.spring.SpringSslContext](https://github.com/apache/activemq/tree/main/activemq-spring/src/main/java/org/apache/activemq/spring/SpringSslContext.java)
 
 ### Starting the Client
 

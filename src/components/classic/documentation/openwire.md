@@ -19,7 +19,7 @@ OpenWire is our cross language [Wire Protocol](wire-protocol) to allow native ac
 
 OpenWire works by code generating language specific commands and marshaling code which understands the core OpenWire protocol. Then we can write language specific extensions for the low level protocol to provide a nice and easy to use client API in different languages.
 
-To give you an idea, [here](https://svn.apache.org/repos/asf/activemq/trunk/activemq-openwire-generator/src/main/java/org/apache/activemq/openwire/tool/) are the Java classes which code generate the C#, Java, C, and CPP client code.
+To give you an idea, [here](https://github.com/apache/activemq/tree/main/activemq-openwire-generator/src/main/java/org/apache/activemq/openwire/tool/) are the Java classes which code generate the C#, Java, C, and CPP client code.
 
 Since OpenWire automates the creation of language specific [Wire Protocol](wire-protocol) implementations; then its a matter of wrapping the language specific TCP/IP socket code and wrapping the API in some easy to use functions/classes.
 

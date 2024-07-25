@@ -89,7 +89,7 @@ If you wish you can use a URL instead using the **file:* or *http:** prefixes. F
 
 ### Using XBean
 
-If you are already using [XBean](http://geronimo.apache.org/xbean/) then you can just mix and match your Spring/XBean [XML configuration](https://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-core/src/test/resources/org/apache/activemq/xbean/activemq.xml) with ActiveMQ Classic's configuration.
+If you are already using [XBean](http://geronimo.apache.org/xbean/) then you can just mix and match your Spring/XBean [XML configuration](https://github.com/apache/activemq/tree/main/activemq-core/src/test/resources/org/apache/activemq/xbean/activemq.xml) with ActiveMQ Classic's configuration.
 ```
 <beans 
   xmlns="http://www.springframework.org/schema/beans" 

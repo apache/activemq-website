@@ -211,7 +211,7 @@ Configuring embedded brokers
 You can also use the XML Configuration to configure [embedded brokers](how-do-i-embed-a-broker-inside-a-connection). For example using the JNDI configuration mechanism you can do the following  
 [BrokerXmlConfigFromJNDITest](http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/java/org/apache/activemq/config/BrokerXmlConfigFromJNDITest.java)  
 Or of you want to explicitly configure the embedded broker via Java code you can do the following  
-[BrokerXmlConfigStartTest](https://svn.apache.org/repos/asf/activemq/trunk/assembly/src/test/java/org/apache/activemq/config/BrokerXmlConfigStartTest.java)
+[BrokerXmlConfigStartTest](https://github.com/apache/activemq/tree/main/assembly/src/test/java/org/apache/activemq/config/BrokerXmlConfigStartTest.java)
 
 User Submitted Configurations
 -----------------------------

@@ -184,7 +184,7 @@ Below is an even more complex example:
 ```
 *   Notice that the destination names use regular expressions. These match the number `000..999` at the end of each destination name.
 
-For more information, see the source code for the [DiscardingDLQBrokerPlugin](https://svn.apache.org/repos/asf/activemq/trunk/activemq-broker/src/main/java/org/apache/activemq/plugin/DiscardingDLQBrokerPlugin.java) and the [DiscardingDLQBroker](https://svn.apache.org/repos/asf/activemq/trunk/activemq-broker/src/main/java/org/apache/activemq/plugin/DiscardingDLQBroker.java)
+For more information, see the source code for the [DiscardingDLQBrokerPlugin](https://github.com/apache/activemq/tree/main/activemq-broker/src/main/java/org/apache/activemq/plugin/DiscardingDLQBrokerPlugin.java) and the [DiscardingDLQBroker](https://github.com/apache/activemq/tree/main/activemq-broker/src/main/java/org/apache/activemq/plugin/DiscardingDLQBroker.java)
 
 ### Broker Redelivery (v5.7)
 
