@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>High Availability and Failover</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,7 +15,7 @@
 <div id="header">
 <h1>High Availability and Failover</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.35.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.36.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#terminology">1. Terminology</a>
 <ul class="sectlevel2">
@@ -243,8 +243,17 @@ Network Attached Storage (NAS), like an <a href="#nfs-mount-recommendations">NFS
 <dl>
 <dt class="hdlist1">failover-on-shutdown</dt>
 <dd>
-<p>Whether the graceful shutdown of this primary broker will cause the backup to activate.
-Default is <code>false</code> which means that only a broker crash or forceful shutdown (e.g. using ctrl-c) will trigger the backup to activate.</p>
+<p>Whether the <em>graceful</em> shutdown of this broker will cause the backup to activate.</p>
+<div class="paragraph">
+<p>If <code>false</code> then the backup server will remain passive if this broker is shutdown gracefully (e.g. using <kbd>Ctrl-C</kbd>).
+Note that if <code>false</code> and you want failover to occur then you can use the management API as explained <a href="management.html#management">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If <code>true</code> then when this server is stopped the backup will activate.</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>false</code>.</p>
+</div>
 </dd>
 <dt class="hdlist1">wait-for-activation</dt>
 <dd>
@@ -284,9 +293,29 @@ Default is <code>true</code>.</p>
 </dd>
 <dt class="hdlist1">failover-on-shutdown</dt>
 <dd>
-<p>Whether the graceful shutdown of this primary broker will cause the backup to activate.
-Default is <code>false</code> which means that only a broker crash or forceful shutdown (e.g. using ctrl-c) will trigger the backup to activate.
-This only applies when this backup has activated due to its primary failing.</p>
+<p>Whether the <em>graceful</em> shutdown of this broker will cause the backup to activate.</p>
+<div class="paragraph">
+<p>If <code>false</code> then the backup server will remain passive if this broker is shutdown gracefully (e.g. using <kbd>Ctrl-C</kbd>).
+Note that if <code>false</code> and you want failover to occur then you can use the management API as explained <a href="management.html#management">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If <code>true</code> then when this server is stopped the backup will activate.</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>false</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This only applies when this backup has activated due to its primary failing.
+</td>
+</tr>
+</table>
+</div>
 </dd>
 <dt class="hdlist1">scale-down</dt>
 <dd>
@@ -1096,9 +1125,17 @@ The primary will only activate when it knows that it has the most up-to-date ver
 <dl>
 <dt class="hdlist1">failover-on-shutdown</dt>
 <dd>
-<p>If set to <code>true</code> then when this server is stopped normally the backup will become active assuming failover.
-If false then the backup server will remain passive.
-Note that if <code>false</code> and you want failover to occur then you can use the management API as explained at <a href="management.html#management">Management</a>.</p>
+<p>Whether the <em>graceful</em> shutdown of this broker will cause the backup to activate.</p>
+<div class="paragraph">
+<p>If <code>false</code> then the backup server will remain passive if this broker is shutdown gracefully (e.g. using <kbd>Ctrl-C</kbd>).
+Note that if <code>false</code> and you want failover to occur then you can use the management API as explained <a href="management.html#management">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If <code>true</code> then when this server is stopped the backup will activate.</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>false</code>.</p>
+</div>
 </dd>
 <dt class="hdlist1">wait-for-activation</dt>
 <dd>
@@ -1118,9 +1155,17 @@ Default is <code>true</code>.</p>
 <dl>
 <dt class="hdlist1">failover-on-shutdown</dt>
 <dd>
-<p>In the case of a backup that has become active then when set to <code>true</code> and this server is stopped normally the passive primary will become active assuming failover.
-If <code>false</code> then the primary server will remain passive.
-Note that if <code>false</code> and you want failover to occur then you can use the management API as explained at <a href="management.html#management">Management</a>.</p>
+<p>Whether the <em>graceful</em> shutdown of this broker will cause the backup to activate.</p>
+<div class="paragraph">
+<p>If <code>false</code> then the backup server will remain passive if this broker is shutdown gracefully (e.g. using <kbd>Ctrl-C</kbd>).
+Note that if <code>false</code> and you want failover to occur then you can use the management API as explained <a href="management.html#management">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If <code>true</code> then when this server is stopped the backup will activate.</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>false</code>.</p>
+</div>
 </dd>
 <dt class="hdlist1">allow-failback</dt>
 <dd>

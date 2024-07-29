@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Using Core</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Using Core</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.35.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.36.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#core-messaging-concepts">1. Core Messaging Concepts</a>
 <ul class="sectlevel2">
@@ -154,23 +154,22 @@ By not blocking and receiving send acknowledgements asynchronously you can creat
 For more information on this advanced feature please see the section <a href="send-guarantees.html#guarantees-of-sends-and-commits">Guarantees of sends and commits</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="identifying-your-session-for-management-and-debugging"><a class="anchor" href="#identifying-your-session-for-management-and-debugging"></a><a class="link" href="#identifying-your-session-for-management-and-debugging">2.3.1. Identifying your session for management and debugging</a></h4>
+<h4 id="identifying-your-client-application-for-management-and-debugging"><a class="anchor" href="#identifying-your-client-application-for-management-and-debugging"></a><a class="link" href="#identifying-your-client-application-for-management-and-debugging">2.3.1. Identifying your client application for management and debugging</a></h4>
 <div class="paragraph">
-<p>Assigning IDs to your core sessions can help you with monitoring and debugging the cluster using the <a href="management-console.html#management-console">management console</a>.</p>
+<p>Assigning IDs to your core session can help you with monitoring and debugging using the <a href="management-console.html#management-console">management console</a>, e.g.:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="java"> <span class="nc">ClientSession</span> <span class="n">session</span><span class="o">;</span>
- <span class="c1">// ...</span>
- <span class="n">session</span><span class="o">.</span><span class="na">addMetaData</span><span class="o">(</span><span class="nc">ClientSession</span><span class="o">.</span><span class="na">JMS_SESSION_IDENTIFIER_PROPERTY</span><span class="o">,</span> <span class="s">"jms-client-id"</span><span class="o">);</span>
- <span class="n">session</span><span class="o">.</span><span class="na">addMetaData</span><span class="o">(</span><span class="s">"jms-client-id"</span><span class="o">,</span> <span class="s">"my-session"</span><span class="o">);</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ServerLocator</span> <span class="n">locator</span> <span class="o">=</span> <span class="o">...</span>
+<span class="nc">ClientSessionFactory</span> <span class="n">csf</span> <span class="o">=</span> <span class="n">createSessionFactory</span><span class="o">(</span><span class="n">locator</span><span class="o">);</span>
+<span class="nc">ClientSession</span> <span class="n">session</span> <span class="o">=</span> <span class="n">csf</span><span class="o">.</span><span class="na">createSession</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="n">locator</span><span class="o">.</span><span class="na">isPreAcknowledge</span><span class="o">(),</span> <span class="n">locator</span><span class="o">.</span><span class="na">getAckBatchSize</span><span class="o">(),</span> <span class="s">"my-client-id"</span><span class="o">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Such ID will then appear in the <strong>Client ID</strong> column under the <strong>Connections</strong>, <strong>Consumers</strong> and <strong>Producers</strong> tabs.</p>
+<p>The value <code>my-client-id</code> will then appear in the <strong>Client ID</strong> column under the <strong>Connections</strong>, <strong>Consumers</strong>, and <strong>Producers</strong> tabs.</p>
 </div>
 <div class="paragraph">
-<p>If you are using the JMS API, the <code>setClientID</code> would give you the same effect.</p>
+<p>If you are using the JMS API then <code>setClientID</code> would give you the same effect.</p>
 </div>
 </div>
 </div>
