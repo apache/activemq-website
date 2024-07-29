@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Detecting Slow Consumers</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Detecting Slow Consumers</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.35.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#required-configuration">1. Required Configuration</a></li>
+<li><a href="#example">2. Example</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section we will discuss how Apache ActiveMQ Artemis can be configured to deal with slow consumers.
+A slow consumer with a server-side queue (e.g. JMS topic subscriber) can pose a significant problem for broker performance.
+If messages build up in the consumer&#8217;s server-side queue then memory will begin filling up and the broker may enter paging mode which would impact performance negatively.
+However, criteria can be set so that consumers which don&#8217;t acknowledge messages quickly enough can potentially be disconnected from the broker, which in the case of a non-durable JMS subscriber, would allow the broker to remove the subscription and all of its messages freeing up valuable server resources.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="required-configuration"><a class="anchor" href="#required-configuration"></a><a class="link" href="#required-configuration">1. Required Configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default the server will not detect slow consumers.
+If slow consumer detection is desired then see <a href="address-model.html#address-model">address model chapter</a> for more details on the required address settings.</p>
+</div>
+<div class="paragraph">
+<p>The calculation to determine whether or not a consumer is slow only inspects the number of messages a particular consumer has <em>acknowledged</em>.
+It doesn&#8217;t take into account whether or not flow control has been enabled on the consumer, whether or not the consumer is streaming a large message, etc.
+Keep this in mind when configuring slow consumer detection.</p>
+</div>
+<div class="paragraph">
+<p>Please note that slow consumer checks are performed using the scheduled thread pool and that each queue on the broker with slow consumer detection enabled will cause a new entry in the internal <code>java.util.concurrent.ScheduledThreadPoolExecutor</code> instance.
+If there are a high number of queues and the <code>slow-consumer-check-period</code> is relatively low then there may be delays in executing some of the checks.
+However, this will not impact the accuracy of the calculations used by the detection algorithm.
+See <a href="thread-pooling.html#thread-management">thread pooling</a> for more details about this pool.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example"><a class="anchor" href="#example"></a><a class="link" href="#example">2. Example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See the <a href="examples.html#slow-consumer">slow consumer example</a> which shows how to detect a slow consumer with Apache ActiveMQ Artemis.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
