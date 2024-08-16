@@ -139,6 +139,7 @@ Questions on configuring ActiveMQ Classic's JMS client or the Message Broker
 *   [How to configure a new database](how-to-configure-a-new-database)
 *   [How to deploy activemq-ra-version.rar to weblogic](how-to-deploy-activemq-ra-versionrar-to-weblogic)
 *   [How to disable multicast discovery](how-to-disable-multicast-discovery)
+*   [How to redact sensitive info on audit log](how-to-redact-sensitive-info-on-audit-log)
 
 ### Persistence Questions
 
