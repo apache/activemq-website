@@ -13,7 +13,7 @@ Architecture
 
 The following section walks through the main parts of Apache ActiveMQ Classic and links to the code to help you understand the layout
 
-![](assets/img/BrokerDiagram.png)
+![](../../../assets/img/BrokerDiagram.png)
 
 JMS Client
 ----------
