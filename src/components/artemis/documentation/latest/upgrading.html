@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Upgrading the Broker</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.36.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#general-upgrade-procedure">1. General Upgrade Procedure</a></li>
 <li><a href="#upgrading-tool">2. Upgrading tool</a></li>
@@ -65,7 +65,7 @@ It also simplifies updating to newer versions of Artemis.
 <p>Navigate to the <code>etc</code> folder of the broker instance that&#8217;s being upgraded</p>
 </li>
 <li>
-<p>Open <code>artemis.profile</code> (<code>artemis.profile.cmd</code> on Windows).
+<p>Open <code>artemis.profile</code> and <code>artemis-utility.profile</code> (<code>artemis.profile.cmd</code> and <code>artemis-utility.profile.cmd</code> on Windows).
 It contains a property which is relevant for the upgrade:</p>
 <div class="listingblock">
 <div class="content">
@@ -129,8 +129,8 @@ You should back up your existing broker instance before running the command.
 </div>
 </div>
 <div class="paragraph">
-<p>The broker instance <code>bin/artemis</code> script and <code>etc/artemis.profile</code>(<code>artemis.cmd</code> and <code>artemis.cmd.profile</code> on Windows) will be updated to the new versions, setting its ARTEMIS_HOME to refer to the new broker version home path.
-The tool will also create the new <code>&lt;instance&gt;/etc/log4j2.properties</code> configuration file if needed (e.g if you are migrating from a version prior to 2.27.0), and remove the old <code>&lt;instance&gt;/etc/logging.properties</code> file if present.</p>
+<p>The broker instance script <code>bin/artemis</code> plus profiles <code>etc/artemis.profile</code> and <code>etc/artemis-utility.profile</code> (<code>artemis.cmd</code>, <code>artemis.cmd.profile</code>, and <code>artemis-utility.cmd.profile</code> on Windows) will be updated to the new versions, setting its ARTEMIS_HOME to refer to the new broker version home path.
+The tool will also create the new <code>&lt;instance&gt;/etc/log4j2.properties</code> and <code>&lt;instance&gt;/etc/log4j2-default.properties</code> configuration files if needed (e.g if you are migrating from a version prior to 2.27.0), and remove the old <code>&lt;instance&gt;/etc/logging.properties</code> file if present.</p>
 </div>
 <div class="paragraph">
 <p>The <code>broker.xml</code> file and data are retained as-is.</p>
@@ -148,7 +148,7 @@ As such you should compare the old configuration files with the refreshed ones a
 The upgrade command itself will copy the older files it changes to an <code>old-config-bkp.</code> folder within the instance dir.</p>
 </div>
 <div class="paragraph">
-<p>Similarly, if you had customised the old <code>logging.properties</code> file you may need to prepare analogous changes for the new <code>log4j2.properties</code> file.</p>
+<p>Similarly, if you had customised the old <code>logging.properties</code> file you may need to prepare analogous changes for the new <code>log4j2.properties</code> and <code>log4j2-utility.properties</code> files.</p>
 </div>
 </td>
 </tr>
