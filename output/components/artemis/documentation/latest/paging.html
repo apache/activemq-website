@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Paging</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.36.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#page-files">1. Page Files</a>
 <ul class="sectlevel2">
@@ -468,7 +468,21 @@ This is to avoid a single destination using the entire disk in case their consum
 <p>You can configure either <code>page-limit-bytes</code> or <code>page-limit-messages</code>, along with <code>page-full-policy</code> on the address settings limiting how much data will be recorded in paging.</p>
 </div>
 <div class="paragraph">
-<p>If you configure <code>page-full-policy</code> as DROP, messages will be simplify dropped while the clients will not get any exceptions, while if you configured FAIL the producers will receive a JMS Exception for the error condition.</p>
+<p>If you configure <code>page-full-policy</code> as DROP, messages will be simply dropped while the clients will not get any exceptions, while if you configured FAIL the producers will receive a JMS Exception for the error condition.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>page-limit-bytes</code> is used to identify a maximum number of page files internally (i.e. <code>page-limit-bytes</code> / <code>page-size-bytes</code>) which is then compared against the current number of page files.
+If configured, <code>page-limit-bytes</code> must be equal or greater than <code>page-size-bytes</code> or it will cause immediate block.
+If the limit determined from <code>page-limit-bytes</code>, once converted to a number of pages, is less than the current number of page files in the store then paging will be blocked based on <code>page-full-policy</code> until the number of current page files drops to less than or equal to the calculated file limit. It will become blocked again once the number of page files is greater than the value determined by <code>page-limit-bytes</code> (<code>page-limit-bytes</code> / <code>page-size-bytes</code>).
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
