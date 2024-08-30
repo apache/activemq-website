@@ -25,9 +25,9 @@ JDK 21 support for Virtual Threads can lead to thread pinning in _synchronized_ 
 
 Technical factors:
 
- * ActiveMQ uses virtual thread-friendly locking for key performance related ares in the Queue class
- * ActiveMQ uses virtual thread-unfriendly _synchronized_ code blocks in many areas
- * JDK 23 is slated to address the thread pinning in _synchrnoized_ code blocks
+ * ActiveMQ currently (6.1.x) uses virtual thread-friendly locking for key data structures in the Queue class
+ * ActiveMQ currently (6.1.x) uses virtual thread-unfriendly _synchronized_ code blocks in many areas in the client and broker code
+ * JDK 23 is slated to address the thread pinning in _synchronized_ code blocks
  * JDK 25 is the next planned LTS release after JDK 21
  * Areas of ActiveMQ source code will need to be modernized to be more virtual thread friendly
  * New virtual-thread first implementations may be added using extension points in the broker, vs refactoring the existing stable components 
