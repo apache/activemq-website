@@ -60,5 +60,5 @@ User feedback is welcome! Please comment on the JIRAs with questions and comment
 
 JIRA|Status|Target Version|Completed Version|Feature|Notes
 ---|---|---
-[AMQ-9394](https://issues.apache.org/jira/browse/AMQ-9394) | PR [#1121](https://github.com/apache/activemq/pull/1121) | 6.2.0 | | Task Runner Factory | Tech Preview support to allow Virtual Thread Executor Service
+[AMQ-9394](https://issues.apache.org/jira/browse/AMQ-9394) | PR [#1172](https://github.com/apache/activemq/pull/1172) | 6.2.0 | | Task Runner Factory | Tech Preview support to allow Virtual Thread Executor Service
 
