@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Broker Connections</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Broker Connections</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#amqp-server-connections">1. AMQP Server Connections</a></li>
 <li><a href="#amqp-server-connection-operations">2. AMQP Server Connection Operations</a></li>
@@ -27,15 +27,22 @@
 <li><a href="#pre-existing-messages">4.3. Pre Existing Messages</a></li>
 </ul>
 </li>
-<li><a href="#dual-mirror-disaster-recovery">5. Dual Mirror (Disaster Recovery)</a></li>
-<li><a href="#example">6. Example</a></li>
-<li><a href="#senders-and-receivers">7. Senders and Receivers</a></li>
-<li><a href="#peers">8. Peers</a></li>
-<li><a href="#address-consideration">9. Address Consideration</a></li>
-<li><a href="#federation">10. Federation</a>
-<ul class="sectlevel4">
-<li><a href="#local-and-remote-address-federation">Local and remote address federation</a></li>
-<li><a href="#local-and-remote-queue-federation">Local and remote queue federation</a></li>
+<li><a href="#dual-mirror-disaster-recovery">5. Dual Mirror (Disaster Recovery)</a>
+<ul class="sectlevel2">
+<li><a href="#example">5.1. Example</a></li>
+</ul>
+</li>
+<li><a href="#senders-and-receivers">6. Senders and Receivers</a>
+<ul class="sectlevel2">
+<li><a href="#examples">6.1. Examples</a></li>
+</ul>
+</li>
+<li><a href="#peers">7. Peers</a></li>
+<li><a href="#address-consideration">8. Address Consideration</a></li>
+<li><a href="#federation">9. Federation</a>
+<ul class="sectlevel2">
+<li><a href="#local-and-remote-address-federation">9.1. Local and remote address federation</a></li>
+<li><a href="#local-and-remote-queue-federation">9.2. Local and remote queue federation</a></li>
 </ul>
 </li>
 </ul>
@@ -71,7 +78,7 @@ However, in the future, it might be expanded to other protocols.</p>
 This means that the broker can connect to another AMQP server (not necessarily ActiveMQ Artemis) and create elements on that connection.</p>
 </div>
 <div class="paragraph">
-<p>To define an AMQP broker connection, add an <code>&lt;amqp-connection&gt;</code> element within the <code>&lt;broker-connections</code> element in the <code>broker.xml</code> configuration file.
+<p>To define an AMQP broker connection, add an <code>&lt;amqp-connection&gt;</code> element within the <code>&lt;broker-connections&gt;</code> element in the <code>broker.xml</code> configuration file.
 For example:</p>
 </div>
 <div class="listingblock">
@@ -87,34 +94,33 @@ For example:</p>
 <dl>
 <dt class="hdlist1">uri</dt>
 <dd>
-<p>: tcp://host:myport[?options] (this is a required argument)</p>
+<p>tcp://host:myport[?options] (this is a required argument)</p>
 </dd>
 <dt class="hdlist1">name</dt>
 <dd>
-<p>: Name of the connection used for management purposes</p>
+<p>Name of the connection used for management purposes</p>
 </dd>
 <dt class="hdlist1">user</dt>
 <dd>
-<p>: User name with which to connect to the endpoint (this is an optional argument)</p>
+<p>Username with which to connect to the endpoint (this is an optional argument)</p>
 </dd>
 <dt class="hdlist1">password</dt>
 <dd>
-<p>: Password with which to connect to the endpoint (this is an optional argument)</p>
+<p>Password with which to connect to the endpoint (this is an optional argument)</p>
 </dd>
 <dt class="hdlist1">retry-interval</dt>
 <dd>
-<p>: Time, in milliseconds to wait before retrying a connection after an error.
+<p>Time, in milliseconds to wait before retrying a connection after an error.
 The default value is <code>5000</code>.</p>
 </dd>
 <dt class="hdlist1">reconnect-attempts</dt>
 <dd>
-<p>: default is -1 meaning infinite</p>
+<p>default is -1 meaning infinite</p>
 </dd>
 <dt class="hdlist1">auto-start</dt>
 <dd>
-<p> : Should the broker connection start automatically with the broker.
-Default is <code>true</code>.
-If false it is necessary to call a management operation to start it.</p>
+<p>Should the broker connection start automatically with the broker. Default is <code>true</code>.
+If <code>false</code> it is necessary to call a management operation to start it.</p>
 </dd>
 </dl>
 </div>
@@ -127,7 +133,7 @@ If false it is necessary to call a management operation to start it.</p>
 <td class="content">
 The connection URI options for transport settings, such as enabling and configuring TLS, are common with other Artemis connector URIs.
 See <a href="configuring-transports.html#configuring-netty-ssl">the transport doc</a> for more.
-An example configuration for a TLS AMQP broker-connection can be found in the broker <a href="examples.html">examples</a> at ./examples/features/broker-connection/amqp-sending-overssl.
+An example configuration for a TLS AMQP broker-connection can be found in the broker <a href="examples.html">examples</a> at <em>./examples/features/broker-connection/amqp-sending-overssl</em>.
 </td>
 </tr>
 </table>
@@ -152,7 +158,7 @@ If auto-start is disabled on the broker connection, the start of the broker conn
 </td>
 <td class="content">
 The target endpoint needs permission for all operations that are configured.
-Therefore, If a security manager is being used, ensure that you perform the configured operations with a user with sufficient permissions.
+Therefore, if a security manager is being used, ensure that you perform the configured operations with a user with sufficient permissions.
 </td>
 </tr>
 </table>
@@ -221,19 +227,21 @@ This is currently implemented by Apache Qpid Dispatch.</p>
 <div class="paragraph">
 <p>These are the attributes that are available on the amqp-connection XML element:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>reconnect-attempts: default is -1 (infinite).
+<div class="dlist">
+<dl>
+<dt class="hdlist1">reconnect-attempts</dt>
+<dd>
+<p>default is -1 (infinite).
 How many attempts will be done after a failed connection</p>
-</li>
-<li>
-<p>retry-interval: default is 5000, in milliseconds, the wait between each retry of a connection.</p>
-</li>
-</ul>
+</dd>
+<dt class="hdlist1">retry-interval</dt>
+<dd>
+<p>default is 5000, in milliseconds, the wait between each retry of a connection</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
-<p>It is also possible to specify alternate hosts on a broker connection by appending a comma separated list after a # at the end of the URI.
+<p>It is also possible to specify alternate hosts on a broker connection by appending a comma separated list after a <code>#</code> at the end of the URI.
 The broker connection would keep trying on the alternate list until one of the targets is available to connect.
 Example:</p>
 </div>
@@ -299,8 +307,8 @@ The system would try to connect to serverA, backupA, and backupB until it succes
 </ul>
 </div>
 <div class="paragraph">
-<p>By default every operation is sent asynchronously without blocking any clients.
-However if you set sync="true" on the mirror configuration, the clients will always wait for the mirror on every blocking operation.</p>
+<p>By default, every operation is sent asynchronously without blocking any clients.
+However, if you set <code>sync=true</code> on the mirror configuration the clients will always wait for the mirror on every blocking operation.</p>
 </div>
 <div class="sect2">
 <h3 id="mirror-configuration"><a class="anchor" href="#mirror-configuration"></a><a class="link" href="#mirror-configuration">4.1. Mirror configuration</a></h3>
@@ -312,45 +320,47 @@ However if you set sync="true" on the mirror configuration, the clients will alw
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">queue-removal</dt>
-<dd>
-<p>: Specifies whether a queue- or address-removal event is sent.
-The default value is <code>true</code>.</p>
-</dd>
 <dt class="hdlist1">message-acknowledgements</dt>
 <dd>
-<p>: Specifies whether message acknowledgements are sent.
+<p>Specifies whether message acknowledgements are sent.
 The default value is <code>true</code>.</p>
 </dd>
 <dt class="hdlist1">queue-creation</dt>
 <dd>
-<p>: Specifies whether a queue- or address-creation event is sent.
+<p>Specifies whether a queue- or address-creation event is sent.
+The default value is <code>true</code>.</p>
+</dd>
+<dt class="hdlist1">queue-removal</dt>
+<dd>
+<p>Specifies whether a queue- or address-removal event is sent.
 The default value is <code>true</code>.</p>
 </dd>
 <dt class="hdlist1">address-filter</dt>
 <dd>
-<p>: An optional comma-separated list of inclusion and/or exclusion filter entries used to govern which addresses (and related queues) mirroring events will be created for on this broker-connection.
+<p>An optional comma-separated list of inclusion and/or exclusion filter entries used to govern which addresses (and related queues) mirroring events will be created for on this broker-connection.
 That is, events will only be mirrored to the target broker for addresses that match the filter.
-An address is matched when it begins with an inclusion entry specified in this field, unless the address is also explicitly excluded by another entry.
-An exclusion entry is prefixed with <code>!</code> to denote any address beginning with that value does not match.
+An address is matched when it begins with an inclusion entry specified in this field, unless the address is also explicitly excluded by another entry.</p>
+<div class="paragraph">
+<p>An exclusion entry is prefixed with <code>!</code> to denote any address beginning with that value does not match.
 If no inclusion entry is specified in the list, all addresses not explicitly excluded will match.
 If the address-filter attribute is not specified, then all addresses (and related queues) will match and be mirrored.</p>
+</div>
 <div class="paragraph">
 <p>Examples:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>'eu' matches all addresses starting with 'eu'</p>
+<p><code>eu</code> matches all addresses starting with <code>eu</code></p>
 </li>
 <li>
-<p>'!eu' matches all address except for those starting with 'eu'</p>
+<p><code>!eu</code> matches all address except for those starting with <code>eu</code></p>
 </li>
 <li>
-<p>'eu.uk,eu.de' matches all addresses starting with either 'eu.uk' or 'eu.de'</p>
+<p><code>eu.uk,eu.de</code> matches all addresses starting with either <code>eu.uk</code> or <code>eu.de</code></p>
 </li>
 <li>
-<p>'eu,!eu.uk' matches all addresses starting with 'eu' but not those starting with 'eu.uk'</p>
+<p><code>eu,!eu.uk</code> matches all addresses starting with <code>eu</code> but not those starting with <code>eu.uk</code></p>
 </li>
 </ul>
 </div>
@@ -378,13 +388,13 @@ If the address-filter attribute is not specified, then all addresses (and relate
 </dd>
 <dt class="hdlist1">sync</dt>
 <dd>
-<p>By default is <code>false</code>.
-If set it to true any client blocking operation will be held until the mirror has confirmed receiving the operation.</p>
+<p>If set to <code>true</code> any client blocking operation will be held until the mirror has confirmed receiving the operation.
+Default is <code>false</code>.</p>
 <div class="ulist">
 <ul>
 <li>
 <p>Notice that a disconnected node would hold all operations from the client.
-If you set sync=true you must reconnect a mirror before performing any operations.</p>
+If you set <code>sync=true</code> you must reconnect a mirror before performing any operations.</p>
 </li>
 </ul>
 </div>
@@ -407,10 +417,10 @@ If you set sync=true you must reconnect a mirror before performing any operation
 <div class="sect2">
 <h3 id="store-and-forward-queue"><a class="anchor" href="#store-and-forward-queue"></a><a class="link" href="#store-and-forward-queue">4.2. Store and Forward Queue</a></h3>
 <div class="paragraph">
-<p>Mirror events are always stored on a local queue prefixed as "$ACTIVEMQ_ARTEMIS_MIRROR_" and then concatenated with the broker connection&#8217;s configured name.</p>
+<p>Mirror events are always stored on a local queue prefixed as <code>$ACTIVEMQ_ARTEMIS_MIRROR_</code> and then concatenated with the broker connection&#8217;s configured name.</p>
 </div>
 <div class="paragraph">
-<p>So, in the following configuration mirror events will be stored on a queue named "$ACTIVEMQ_ARTEMIS_MIRROR_brokerB".</p>
+<p>So, in the following configuration, mirror events will be stored on a queue named <code>$ACTIVEMQ_ARTEMIS_MIRROR_brokerB</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -422,12 +432,12 @@ If you set sync=true you must reconnect a mirror before performing any operation
 </div>
 </div>
 <div class="paragraph">
-<p>These messages are then transferred to brokerB:5672.
-A producer to the address $ACTIVEMQ_ARTEMIS_MIRROR_brokerB will be created towards brokerB.
+<p>These messages are then transferred to <em>brokerB:5672</em>.
+A producer to the address <code>$ACTIVEMQ_ARTEMIS_MIRROR_brokerB</code> will be created towards <em>brokerB</em>.
 If there is a security manager configured, security roles must be provided to the user on the broker connection.</p>
 </div>
 <div class="paragraph">
-<p>Notice the queue $ACTIVEMQ_ARTEMIS_MIRROR_brokerB will not actually exist on brokerB and so it wont be visible on the administration console.
+<p>Notice the queue <code>$ACTIVEMQ_ARTEMIS_MIRROR_brokerB</code> will not actually exist on <em>brokerB</em> and so it will not be visible on the administration console.
 The target broker will treat these messages accordingly as mirror events and perform the appropriate operations at the target broker.</p>
 </div>
 </div>
@@ -448,15 +458,15 @@ Previously existing messages will not be forwarded to other brokers.</p>
 Every sent message and every acknowledgement is asynchronously replicated to the mirrored broker.</p>
 </div>
 <div class="paragraph">
-<p>On the following diagram, there will be two servers called DataCenter1, and DataCenter2.
-In order to have a dual mirror configuration, it is necessary is to add the mirror broker connection on each broker.xml:</p>
+<p>On the following diagram there will be two servers called <em>DataCenter1</em>, and <em>DataCenter2</em>.
+In order to have a dual mirror configuration it is necessary to add the mirror broker connection on each <code>broker.xml</code>:</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/broker-connection-DR.jpg" alt="Broker Connection DR"></span> Figure 2.
 Broker Connection - Disaster Recovery.</p>
 </div>
 <div class="paragraph">
-<p>on DataCenter1, the following code should be added on broker.xml:</p>
+<p>On <em>DataCenter1</em> the following code should be added on <code>broker.xml</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -468,7 +478,7 @@ Broker Connection - Disaster Recovery.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The following xml should be added on DataCenter2&#8217;s broker.xml:</p>
+<p>The following xml snippet should be added on <em>DataCenter2</em>'s <code>broker.xml</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -481,26 +491,39 @@ Broker Connection - Disaster Recovery.</p>
 </div>
 <div class="paragraph">
 <p>The broker connections will replicate sends and acknowledgements to the other broker, no matter where they originated.
-If messages are sent on DC1 (DataCenter1) these will be automatically transferred to DC2 (DataCenter2).
-Messages acknowledgements received on DC2 will be automatically related back to DC1.
-The only exception to that rule would be if there were already consumers with pending messages on any server, where a mirrored acknowledgement will not prevent the message being consumed by both consumers.
-It is recommended to not have active consumers on both servers.</p>
+If messages are sent on DC1 (<em>DataCenter1</em>) these will be automatically transferred to DC2 (<em>DataCenter2</em>).
+Message acknowledgements received on DC2 will be automatically related back to DC1.</p>
+</div>
+<div class="paragraph">
+<p>The only exception to that rule would be if there were already consumers with pending messages on any server, where a mirrored acknowledgement will not prevent the message being consumed by both consumers.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>It is recommended to not have active consumers on both servers.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="example"><a class="anchor" href="#example"></a><a class="link" href="#example">5.1. Example</a></h3>
+<div class="paragraph">
+<p>There is an example as part of the distribution showing dual broker configuration (or disaster recovery) in <code>./examples/features/broker-connection/disaster-recovery</code>.</p>
+</div>
+<div class="paragraph">
+<p>On the provided example above, two brokers are configured to mirror each other and whatever happens in one broker is immediately copied over to the other broker.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="example"><a class="anchor" href="#example"></a><a class="link" href="#example">6. Example</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>There is an example as part of the distribution showing dual broker configuration (or disaster recovery) under ./examples/features/broker-connection/disaster-recovery.</p>
-</div>
-<div class="paragraph">
-<p>On the example two brokers are configured to mirror each other and whatever happens in one broker is immediately copied over to the other broker.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="senders-and-receivers"><a class="anchor" href="#senders-and-receivers"></a><a class="link" href="#senders-and-receivers">7. Senders and Receivers</a></h2>
+<h2 id="senders-and-receivers"><a class="anchor" href="#senders-and-receivers"></a><a class="link" href="#senders-and-receivers">6. Senders and Receivers</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>It is possible to connect an ActiveMQ Artemis broker to another AMQP endpoint simply by creating a sender or receiver broker connection element.</p>
@@ -525,17 +548,16 @@ When configuring a sender or receiver, the following properties can be set:</p>
 <dl>
 <dt class="hdlist1">address-match</dt>
 <dd>
-<p>: Match the sender or receiver to a specific address or <strong>set</strong> of addresses, using a wildcard expression</p>
+<p>Match the sender or receiver to a specific address or <strong>set</strong> of addresses, using a wildcard expression.</p>
 </dd>
 <dt class="hdlist1">queue-name</dt>
 <dd>
-<p>: Configure the sender or receiver for a specific queue</p>
+<p>Configure the sender or receiver for a specific queue.</p>
 </dd>
 </dl>
 </div>
-<div class="paragraph">
-<p>Some examples are shown below.</p>
-</div>
+<div class="sect2">
+<h3 id="examples"><a class="anchor" href="#examples"></a><a class="link" href="#examples">6.1. Examples</a></h3>
 <div class="paragraph">
 <p>Using address expressions:</p>
 </div>
@@ -618,8 +640,9 @@ This creates an infinite loop of sends and receives.
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
-<h2 id="peers"><a class="anchor" href="#peers"></a><a class="link" href="#peers">8. Peers</a></h2>
+<h2 id="peers"><a class="anchor" href="#peers"></a><a class="link" href="#peers">7. Peers</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The broker can be configured as a peer which connects to the <a href="https://qpid.apache.org/components/dispatch-router/">Apache Qpid Dispatch Router</a> and instructs it that the broker will act as a store-and-forward queue for a given AMQP waypoint address configured on the router.
@@ -634,7 +657,7 @@ This replaces the traditional need of a router-initiated connection and auto-lin
 </div>
 <div class="paragraph">
 <p>With a peer configuration, the same properties are present as when there are senders and receivers.
-For example, a configuration where queues with names beginning "queue." act as storage for the matching router waypoint address would be:</p>
+For example, a configuration where queues with names beginning <code>queue.</code> act as storage for the matching router waypoint address would be:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -701,11 +724,11 @@ The brokers peer configuration replaces these aspects of the router waypoint usa
 </div>
 </div>
 <div class="sect1">
-<h2 id="address-consideration"><a class="anchor" href="#address-consideration"></a><a class="link" href="#address-consideration">9. Address Consideration</a></h2>
+<h2 id="address-consideration"><a class="anchor" href="#address-consideration"></a><a class="link" href="#address-consideration">8. Address Consideration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>It is highly recommended that <code>address name</code> and <code>queue name</code> are the same.
-When a queue with its distinct name (as in the following example) is used, senders and receivers will always use the <code>address name</code> when creating the remote endpoint.</p>
+When a queue with its distinct name (as in the following example) is used senders and receivers will always use the <code>address</code> <code>name</code> when creating the remote endpoint.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -724,7 +747,7 @@ When a queue with its distinct name (as in the following example) is used, sende
 </div>
 </div>
 <div class="paragraph">
-<p>In the above example the <code>broker connection</code> would create an AMQP sender towards "queues.A".</p>
+<p>The above example would create an AMQP sender towards <code>queues.A</code>.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -733,7 +756,7 @@ When a queue with its distinct name (as in the following example) is used, sende
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-To avoid confusion it is recommended that <code>address name</code> and <code>queue name</code> are kept the same.
+To avoid confusion it is recommended that <code>address</code> <code>name</code> and <code>queue</code> <code>name</code> are kept the same.
 </td>
 </tr>
 </table>
@@ -741,13 +764,16 @@ To avoid confusion it is recommended that <code>address name</code> and <code>qu
 </div>
 </div>
 <div class="sect1">
-<h2 id="federation"><a class="anchor" href="#federation"></a><a class="link" href="#federation">10. Federation</a></h2>
+<h2 id="federation"><a class="anchor" href="#federation"></a><a class="link" href="#federation">9. Federation</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Broker federation allows the local broker to create remote receivers for addresses or queues that have local demand, conversely the broker connection can send federation configuration to the remote broker causing it to create receivers on the local broker based on remote demand on an address or queue over this same connection.</p>
+<p>Broker federation allows the local broker to create remote receivers for addresses or queues that have local demand.
+Conversely, the broker connection can send federation configuration to the remote broker causing it to create receivers on the local broker based on remote demand on an address or queue over this same connection.</p>
 </div>
 <div class="paragraph">
-<p>Add a <code>&lt;federation&gt;</code> element within the <code>&lt;amqp-connection&gt;</code> element to configure federation to the broker instance, the <code>&lt;amqp-connection&gt;</code> contains all the configuration for authentication and reconnection handling, see the above sections to configure those values.</p>
+<p>Add a <code>&lt;federation&gt;</code> element within the <code>&lt;amqp-connection&gt;</code> element to configure federation to the broker instance.
+The <code>&lt;amqp-connection&gt;</code> contains all the configuration for authentication and reconnection handling.
+See above sections to configure those values.</p>
 </div>
 <div class="paragraph">
 <p>The broker connection federation configuration consists of one or more policies that define either local or remote federation configurations for addresses or queues.</p>
@@ -776,13 +802,16 @@ To avoid confusion it is recommended that <code>address name</code> and <code>qu
 <span class="nt">&lt;/broker-connections&gt;</span></code></pre>
 </div>
 </div>
-<div class="sect4">
-<h5 id="local-and-remote-address-federation"><a class="anchor" href="#local-and-remote-address-federation"></a><a class="link" href="#local-and-remote-address-federation">Local and remote address federation</a></h5>
+<div class="sect2">
+<h3 id="local-and-remote-address-federation"><a class="anchor" href="#local-and-remote-address-federation"></a><a class="link" href="#local-and-remote-address-federation">9.1. Local and remote address federation</a></h3>
 <div class="paragraph">
-<p>Local or Remote address federation configures the local or remote broker to watch for demand on addresses and when demand exists it will create a consumer on the matching address on the opposing broker. Because the consumers are created on addresses on the opposing broker the authentication credentials supplied to the broker connection must have sufficient access to read from (local address federation) or write to the matching address (remote address federation) on the opposing broker.</p>
+<p>Local or Remote address federation configures the local or remote broker to watch for demand on addresses.
+When demand exists it will create a consumer on the matching address on the opposing broker.
+Because the consumers are created on addresses on the opposing broker, the authentication credentials supplied to the broker connection must have sufficient access to read from (local address federation) or write to the matching address (remote address federation) on the opposing broker.</p>
 </div>
 <div class="paragraph">
-<p>An example of address federation configuration is shown below, the local and remote address policies have identical configuration parameters only the policy element names are different.</p>
+<p>An example of address federation configuration is shown below.
+Local and remote address policies have identical configuration parameters, only the policy element names are different.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -811,42 +840,53 @@ To avoid confusion it is recommended that <code>address name</code> and <code>qu
 </dd>
 <dt class="hdlist1">include</dt>
 <dd>
-<p>The address-match pattern to use to match included addresses, multiple of these can be set. If none are set all addresses are matched.</p>
+<p>The address-match pattern to use to match included addresses, multiple of these can be set.
+If none are set all addresses are matched.</p>
 </dd>
 <dt class="hdlist1">exclude</dt>
 <dd>
-<p>The address-match pattern to use to match excluded addresses, multiple of these can be set or it can be omitted if no excludes are needed.</p>
+<p>The address-match pattern to use to match excluded addresses, multiple of these can be set, or it can be omitted if no excludes are needed.</p>
 </dd>
 <dt class="hdlist1">max-hops</dt>
 <dd>
-<p>The number of hops that a message can have made for it to be federated, the default value is zero and will work for most simple federatio0n deployments however is certain topologies a higher value may be required to prevent looping.</p>
+<p>The maximum number of hops that a message can perform to be federated.
+Default value is <code>0</code> and will work for most simple federation deployments.
+However, in certain topologies a higher value may be required to prevent looping.</p>
 </dd>
 <dt class="hdlist1">auto-delete</dt>
 <dd>
-<p>For address federation, a durable queue is created on the opposing broker for the matching address. This option is used to mark if the queue should be deleted once the initiating broker disconnects, and the delay and message count parameters have been met. This is useful if you want to automate the clean up, though you may wish to disable this if you want messages to queued for the opposing broker when it disconnects. The default value is <code>false</code> and the federation consumer queue will not be auto deleted.</p>
+<p>For address federation, a durable queue is created on the broker from which messages are being federated.
+Set this property to <code>true</code> to mark the queue for automatic deletion once the initiating broker disconnects and the delay and message count parameters are met.
+This is a useful option if you want to automate the cleanup of dynamically-created queues.
+The default value is <code>false</code>, which means that the queue is not automatically deleted.</p>
 </dd>
 <dt class="hdlist1">auto-delete-delay</dt>
 <dd>
-<p>The amount of time in milliseconds after the initiating broker has disconnected before the created queue can be eligible for <code>auto-delete</code>. The default value is zero if the option is omitted.</p>
+<p>The amount of time in milliseconds after the initiating broker has disconnected before the created queue can be eligible for <code>auto-delete</code>.
+The default value is <code>0</code> when option is omitted.</p>
 </dd>
 <dt class="hdlist1">auto-delete-message-count</dt>
 <dd>
-<p>The amount number messages in the remote queue that the message count must be equal or below before the initiating broker has disconnected before the queue can be eligible for auto deletion. The default value is zero if the option is omitted.</p>
+<p>After the initiating broker has disconnected, the maximum number of messages allowed in the remote queue for the queue to be eligible for automatic deletion.
+The default value is <code>0</code>.</p>
 </dd>
 <dt class="hdlist1">enable-divert-bindings</dt>
 <dd>
-<p>Setting to true will enable divert bindings to be listened for demand. If there is a divert binding with an address that matches the included addresses for the federation, any queue bindings that match the forward address of the divert will create demand. The default value for this option is <code>false</code>.</p>
+<p>Setting to <code>true</code> enables divert bindings to be listened-to for demand.
+If a divert binding with an address matches the included addresses for the address policy, any queue bindings that match the forwarding address of the divert creates demand. The default value is <code>false</code>.</p>
 </dd>
 </dl>
 </div>
 </div>
-<div class="sect4">
-<h5 id="local-and-remote-queue-federation"><a class="anchor" href="#local-and-remote-queue-federation"></a><a class="link" href="#local-and-remote-queue-federation">Local and remote queue federation</a></h5>
+<div class="sect2">
+<h3 id="local-and-remote-queue-federation"><a class="anchor" href="#local-and-remote-queue-federation"></a><a class="link" href="#local-and-remote-queue-federation">9.2. Local and remote queue federation</a></h3>
 <div class="paragraph">
-<p>Local or Remote queue federation configures the local or remote broker to watch for demand on queues and when demand exists it will create a consumer on the matching queue on the opposing broker. Because the consumers are created on queues on the opposing broker the authentication credentials supplied to the broker connection must have sufficient access to read from (local queue federation) or write to the matching queue (remote queue federation) on the opposing broker.</p>
+<p>Local or Remote queue federation configures the local or remote broker to watch for demand on queues and when demand exists it will create a consumer on the matching queue on the opposing broker.
+Because the consumers are created on queues on the opposing broker, the authentication credentials supplied to the broker connection must have sufficient access to read from (local queue federation) or write to the matching queue (remote queue federation) on the opposing broker.</p>
 </div>
 <div class="paragraph">
-<p>An example of queue federation configuration is shown below, the local and remote queue policies have identical configuration parameters only the policy element names are different.</p>
+<p>An example of queue federation configuration is shown below.
+Local and remote queue policies have identical configuration parameters, only the policy element names are different.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -866,19 +906,24 @@ To avoid confusion it is recommended that <code>address name</code> and <code>qu
 <dl>
 <dt class="hdlist1">name</dt>
 <dd>
-<p>The name of the policy, these names should be unique within a broker connection&#8217;s federation policy elements.</p>
+<p>The name of the policy.
+These names should be unique within a broker connection&#8217;s federation policy elements.</p>
 </dd>
 <dt class="hdlist1">include</dt>
 <dd>
-<p>The queue-match pattern to use to match included queues, multiple of these can be set. If none are set all queues are matched.</p>
+<p>The queue-match pattern to use to match included queues.
+Multiple of these can be set.
+If none are set all queues are matched.</p>
 </dd>
 <dt class="hdlist1">exclude</dt>
 <dd>
-<p>The queue-match pattern to use to match excluded queues, multiple of these can be set or it can be omitted if no excludes are needed.</p>
+<p>The queue-match pattern to use to match excluded queues.
+Multiple of these can be set, or it can be omitted if no excludes are needed.</p>
 </dd>
 <dt class="hdlist1">priority-adjustment</dt>
 <dd>
-<p>When federation consumers are created this value can be used to ensure that those federation consumers have a lower priority value than other local consumers on the same queue. The default value for this configuration option if not set is <code>-1</code>.</p>
+<p>When federation consumers are created this value can be used to ensure that those federation consumers have a lower priority value than other local consumers on the same queue.
+The default is <code>-1</code>.</p>
 </dd>
 <dt class="hdlist1">include-federated</dt>
 <dd>

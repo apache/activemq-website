@@ -43,7 +43,7 @@ Working with Responses
 
 When you create a connection, a producer and a consumer you will receive a Response to indicate the status of the request (such as did it work or fail). Since the protocol is asynchronous you can receive Response commands out of order; you could have multiple threads using the same connection/socket sending commands in parallel.
 
-So its usual in multi-threaded clients to have some kind of correlation Map to match Command ids with Response Ids so that you can know which operation in what thread worked or failed etc. See the Transport implementations in Java to see how we do that. e.g. see [ResponseCorrelator](https://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-core/src/main/java/org/apache/activemq/transport/ResponseCorrelator.java)
+So its usual in multi-threaded clients to have some kind of correlation Map to match Command ids with Response Ids so that you can know which operation in what thread worked or failed etc. See the Transport implementations in Java to see how we do that. e.g. see [ResponseCorrelator](https://github.com/apache/activemq/tree/main/activemq-core/src/main/java/org/apache/activemq/transport/ResponseCorrelator.java)
 
 IDs
 ---

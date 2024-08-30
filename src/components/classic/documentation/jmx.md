@@ -11,7 +11,7 @@ type: classic
 JMX
 ---
 
-Apache ActiveMQ Classic has extensive support for JMX to allow you to monitor and control the behavior of the broker via the [JMX MBeans](http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/jmx/package-summary.html).
+Apache ActiveMQ Classic has extensive support for JMX to allow you to monitor and control the behavior of the broker via the [JMX MBeans](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/jmx/package-summary.html).
 
 ### Using JMX to monitor Apache ActiveMQ Classic
 

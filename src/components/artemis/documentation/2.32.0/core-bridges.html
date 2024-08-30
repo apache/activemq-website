@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Core Bridges</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Core Bridges</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#configuring-core-bridges">1. Configuring Core Bridges</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The function of a bridge is to consume messages from a source queue, and forward them to a target address, typically on a different Apache ActiveMQ Artemis server.</p>
+</div>
+<div class="paragraph">
+<p>The source and target servers do not have to be in the same cluster which makes bridging suitable for reliably sending messages from one cluster to another, for instance across a WAN, or internet and where the connection may be unreliable.</p>
+</div>
+<div class="paragraph">
+<p>The bridge has built in resilience to failure so if the target server connection is lost, e.g. due to network failure, the bridge will retry connecting to the target until it comes back online.
+When it comes back online it will resume operation as normal.</p>
+</div>
+<div class="paragraph">
+<p>In summary, bridges are a way to reliably connect two separate Apache ActiveMQ Artemis servers together.
+With a core bridge both source and target servers must be Apache ActiveMQ Artemis servers.</p>
+</div>
+<div class="paragraph">
+<p>Bridges can be configured to provide <em>once and only once</em> delivery guarantees even in the event of the failure of the source or the target server.
+They do this by using duplicate detection (described in <a href="duplicate-detection.html#duplicate-message-detection">Duplicate Detection</a>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Although they have similar function, don&#8217;t confuse core bridges with JMS bridges!</p>
+</div>
+<div class="paragraph">
+<p>Core bridges are for linking an Apache ActiveMQ Artemis node with another Apache ActiveMQ Artemis node and do not use the JMS API.
+A JMS Bridge is used for linking any two JMS 1.1 compliant JMS providers.
+So, a JMS Bridge could be used for bridging to or from different JMS compliant messaging system.
+It&#8217;s always preferable to use a core bridge if you can.
+Core bridges use duplicate detection to provide <em>once and only once</em> guarantees.
+To provide the same guarantee using a JMS bridge you would have to use XA which has a higher overhead and is more complex to configure.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-core-bridges"><a class="anchor" href="#configuring-core-bridges"></a><a class="link" href="#configuring-core-bridges">1. Configuring Core Bridges</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Bridges are configured in <code>broker.xml</code>.
+Let&#8217;s kick off with an example (this is actually from the bridge example):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;bridge</span> <span class="na">name=</span><span class="s">"my-bridge"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;queue-name&gt;</span>sausage-factory<span class="nt">&lt;/queue-name&gt;</span>
+   <span class="nt">&lt;forwarding-address&gt;</span>mincing-machine<span class="nt">&lt;/forwarding-address&gt;</span>
+   <span class="nt">&lt;filter</span> <span class="na">string=</span><span class="s">"name='aardvark'"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;transformer-class-name&gt;</span>
+      org.apache.activemq.artemis.jms.example.HatColourChangeTransformer
+   <span class="nt">&lt;/transformer-class-name&gt;</span>
+   <span class="nt">&lt;retry-interval&gt;</span>1000<span class="nt">&lt;/retry-interval&gt;</span>
+   <span class="nt">&lt;ha&gt;</span>true<span class="nt">&lt;/ha&gt;</span>
+   <span class="nt">&lt;retry-interval-multiplier&gt;</span>1.0<span class="nt">&lt;/retry-interval-multiplier&gt;</span>
+   <span class="nt">&lt;initial-connect-attempts&gt;</span>-1<span class="nt">&lt;/initial-connect-attempts&gt;</span>
+   <span class="nt">&lt;reconnect-attempts&gt;</span>-1<span class="nt">&lt;/reconnect-attempts&gt;</span>
+   <span class="nt">&lt;failover-on-server-shutdown&gt;</span>false<span class="nt">&lt;/failover-on-server-shutdown&gt;</span>
+   <span class="nt">&lt;use-duplicate-detection&gt;</span>true<span class="nt">&lt;/use-duplicate-detection&gt;</span>
+   <span class="nt">&lt;confirmation-window-size&gt;</span>10000000<span class="nt">&lt;/confirmation-window-size&gt;</span>
+   <span class="nt">&lt;user&gt;</span>foouser<span class="nt">&lt;/user&gt;</span>
+   <span class="nt">&lt;password&gt;</span>foopassword<span class="nt">&lt;/password&gt;</span>
+   <span class="nt">&lt;routing-type&gt;</span>PASS<span class="nt">&lt;/routing-type&gt;</span>
+   <span class="nt">&lt;concurrency&gt;</span>1<span class="nt">&lt;/concurrency&gt;</span>
+   <span class="nt">&lt;static-connectors&gt;</span>
+      <span class="nt">&lt;connector-ref&gt;</span>remote-connector<span class="nt">&lt;/connector-ref&gt;</span>
+   <span class="nt">&lt;/static-connectors&gt;</span>
+   <span class="c">&lt;!-- alternative to static-connectors
+   &lt;discovery-group-ref discovery-group-name="bridge-discovery-group"/&gt;
+   --&gt;</span>
+<span class="nt">&lt;/bridge&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the above example we have shown all the parameters its possible to configure for a bridge.
+In practice you might use many of the defaults so it won&#8217;t be necessary to specify them all explicitly.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take a look at all the parameters in turn:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">name</dt>
+<dd>
+<p>All bridges must have a unique name in the server.</p>
+</dd>
+<dt class="hdlist1">queue-name</dt>
+<dd>
+<p>This is the unique name of the local queue that the bridge consumes from, it&#8217;s a mandatory parameter.</p>
+<div class="paragraph">
+<p>The queue must already exist by the time the bridge is instantiated at start-up.</p>
+</div>
+</dd>
+<dt class="hdlist1">forwarding-address</dt>
+<dd>
+<p>This is the address on the target server that the message will be forwarded to.
+If a forwarding address is not specified, then the original address of the message will be retained.</p>
+</dd>
+<dt class="hdlist1">filter-string</dt>
+<dd>
+<p>An optional filter string can be supplied.
+If specified then only messages which match the filter expression specified in the filter string will be forwarded.
+The filter string follows the ActiveMQ Artemis filter expression syntax described in <a href="filter-expressions.html#filter-expressions">Filter Expressions</a>.</p>
+</dd>
+<dt class="hdlist1">transformer-class-name</dt>
+<dd>
+<p>An <em>optional</em> transformer can be specified.
+This gives you the opportunity to transform the message&#8217;s header or body before forwarding it.
+See the <a href="transformers.html#transformers">transformer chapter</a> for more details about transformer-specific configuration.</p>
+</dd>
+<dt class="hdlist1">ha</dt>
+<dd>
+<p>This optional parameter determines whether or not this bridge should support high availability.
+True means it will connect to any available server in a cluster and support failover.
+The default value is <code>false</code>.</p>
+</dd>
+<dt class="hdlist1">retry-interval</dt>
+<dd>
+<p>This optional parameter determines the period in milliseconds between subsequent reconnection attempts, if the connection to the target server has failed.
+The default value is <code>2000</code> milliseconds.</p>
+</dd>
+<dt class="hdlist1">retry-interval-multiplier</dt>
+<dd>
+<p>This optional parameter determines a multiplier to apply to the time since the last retry to compute the time to the next retry.</p>
+<div class="paragraph">
+<p>This allows you to implement an <em>exponential backoff</em> between retry attempts.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take an example:</p>
+</div>
+<div class="paragraph">
+<p>If we set <code>retry-interval</code> to <code>1000</code> ms and we set <code>retry-interval-multiplier</code> to <code>2.0</code>, then, if the first reconnect attempt fails, we will wait <code>1000</code> ms then <code>2000</code> ms then <code>4000</code> ms between subsequent reconnection attempts.</p>
+</div>
+<div class="paragraph">
+<p>The default value is <code>1.0</code> meaning each reconnect attempt is spaced at equal intervals.</p>
+</div>
+</dd>
+<dt class="hdlist1">initial-connect-attempts</dt>
+<dd>
+<p>This optional parameter determines the total number of initial connect attempts the bridge will make before giving up and shutting down.
+A value of <code>-1</code> signifies an unlimited number of attempts.
+The default value is <code>-1</code>.</p>
+</dd>
+<dt class="hdlist1">reconnect-attempts</dt>
+<dd>
+<p>This optional parameter determines the total number of reconnect attempts the bridge will make before giving up and shutting down.
+A value of <code>-1</code> signifies an unlimited number of attempts.
+The default value is <code>-1</code>.</p>
+</dd>
+<dt class="hdlist1">use-duplicate-detection</dt>
+<dd>
+<p>This optional parameter determines whether the bridge will automatically insert a duplicate id property into each message that it forwards.</p>
+<div class="paragraph">
+<p>Doing so, allows the target server to perform duplicate detection on messages it receives from the source server.
+If the connection fails or server crashes, then, when the bridge resumes it will resend unacknowledged messages.
+This might result in duplicate messages being sent to the target server.
+By enabling duplicate detection allows these duplicates to be screened out and ignored.</p>
+</div>
+<div class="paragraph">
+<p>This allows the bridge to provide a <em>once and only once</em> delivery guarantee without using heavyweight methods such as XA (see <a href="duplicate-detection.html#duplicate-message-detection">Duplicate Detection</a> for more information).</p>
+</div>
+<div class="paragraph">
+<p>The default value for this parameter is <code>true</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">confirmation-window-size</dt>
+<dd>
+<p>This optional parameter determines the <code>confirmation-window-size</code> to use for the connection used to forward messages to the target node.
+This attribute is described in section <a href="client-failover.html#reconnection-and-failover-attributes">Client failover attributes</a></p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When using the bridge to forward messages to an address which uses the <code>BLOCK</code> <code>address-full-policy</code> from a queue which has a <code>max-size-bytes</code> set it&#8217;s important that <code>confirmation-window-size</code> is less than or equal to <code>max-size-bytes</code> to prevent the flow of messages from ceasing.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">producer-window-size</dt>
+<dd>
+<p>This optional parameter determines the producer flow control through the bridge.
+Use <code>-1</code> to disable.
+Default is <code>1048576</code> (i.e. 1MB).</p>
+</dd>
+<dt class="hdlist1">user</dt>
+<dd>
+<p>This optional parameter determines the user name to use when creating the bridge connection to the remote server.
+If it is not specified the default cluster user specified by <code>cluster-user</code> in <code>broker.xml</code> will be used.</p>
+</dd>
+<dt class="hdlist1">password</dt>
+<dd>
+<p>This optional parameter determines the password to use when creating the bridge connection to the remote server.
+If it is not specified the default cluster password specified by <code>cluster-password</code> in <code>broker.xml</code> will be used.</p>
+</dd>
+<dt class="hdlist1">routing-type</dt>
+<dd>
+<p>Bridges can apply a particular routing-type to the messages it forwards, strip the existing routing type, or simply pass the existing routing-type through.
+This is useful in situations where the message may have its routing-type set but you want to bridge it to an address using a different routing-type.
+It&#8217;s important to keep in mind that a message with the <code>anycast</code> routing-type will not actually be routed to queues using <code>multicast</code> and vice-versa.
+By configuring the <code>routing-type</code> of the bridge you have the flexibility to deal with any situation.
+Valid values are <code>ANYCAST</code>, <code>MULTICAST</code>, <code>PASS</code>, &amp; <code>STRIP</code>.
+The default is <code>PASS</code>.</p>
+</dd>
+<dt class="hdlist1">concurrency</dt>
+<dd>
+<p>For bridging high latency networks, and particularly for destinations with a high throughput, more workers might have to be commited to the bridge.
+This is done with the <code>concurrency</code> parameter.
+Increasing the concurrency will get reflected by more consumers and producers showing up on the bridged destination, allowing for increased parallelism across high latency networks.
+The default is <code>1</code>.</p>
+<div class="paragraph">
+<p>When using a <code>concurrency</code> value greater than 1 multiple bridges will be created and named with an index.
+For example, if a bridge named <code>myBridge</code> was configured with a <code>concurrency</code> of <code>3</code> then actually 3 bridges would be created named <code>myBridge-0</code>, <code>myBridge-1</code>, and <code>myBridge-2</code>.
+This is important to note for management operations as each bridge will have its own associated <code>BridgeControl</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">static-connectors</dt>
+<dd>
+<p>Pick either this or <code>discovery-group-ref</code> to connect the bridge to the target server.</p>
+<div class="paragraph">
+<p>The <code>static-connectors</code> is a list of <code>connector-ref</code> elements pointing to <code>connector</code> elements defined elsewhere.
+A <em>connector</em> encapsulates knowledge of what transport to use (TCP, SSL, HTTP etc) as well as the server connection parameters (host, port etc).
+For more information about what connectors are and how to configure them, please see <a href="configuring-transports.html#configuring-the-transport">Configuring the Transport</a>.</p>
+</div>
+</dd>
+<dt class="hdlist1">discovery-group-ref</dt>
+<dd>
+<p>Pick either this or <code>static-connector</code> to connect the bridge to the target server.</p>
+<div class="paragraph">
+<p>The <code>discovery-group-ref</code> element has one attribute - <code>discovery-group-name</code>.
+This attribute points to a <code>discovery-group</code> defined elsewhere.
+For more information about what discovery-groups are and how to configure them, please see <a href="clusters.html#clusters">Discovery Groups</a>.</p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

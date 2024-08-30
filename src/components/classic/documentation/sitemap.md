@@ -470,7 +470,7 @@ Developers
 *   [Sandbox](sandbox)
 *   [Source](source)
 *   [Source XRef](source-xref)
-*   [SVN](svn)
+*   [GIT](git)
 *   [Test Source XRef](test-source-xref)
 *   [Wire Protocol](wire-protocol)
 

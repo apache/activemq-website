@@ -39,7 +39,7 @@ We can now have a pool of consumers for each system which then compete for messa
 
 The out-of-the-box defaults are described above. Namely that the only virtual topics available must be within the **VirtualTopic.>** namespace and that the consumer queues are named **Consumer.*.VirtualTopic.>**.
 
-You can configure this to use whatever naming convention you wish. The following [example](https://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/broker/virtual/global-virtual-topics.xml) shows how to make all topics virtual topics. The example below is using the name **>** to indicate 'match all topics'. You could use this wildcard to apply different virtual topic policies in different hierarchies.
+You can configure this to use whatever naming convention you wish. The following [example](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/resources/org/apache/activemq/broker/virtual/global-virtual-topics.xml) shows how to make all topics virtual topics. The example below is using the name **>** to indicate 'match all topics'. You could use this wildcard to apply different virtual topic policies in different hierarchies.
 ```
 <destinationInterceptors> 
   <virtualDestinationInterceptor> 

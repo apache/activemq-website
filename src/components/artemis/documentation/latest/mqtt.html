@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>MQTT</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,7 +15,7 @@
 <div id="header">
 <h1>MQTT</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#mqtt-quality-of-service">1. MQTT Quality of Service</a></li>
 <li><a href="#mqtt-retain-messages">2. MQTT Retain Messages</a></li>
@@ -226,7 +226,8 @@ If you perform some custom validation of the client ID you can reject the client
 <h2 id="wildcard-subscriptions"><a class="anchor" href="#wildcard-subscriptions"></a><a class="link" href="#wildcard-subscriptions">7. Wildcard subscriptions</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>MQTT addresses are hierarchical much like a file system, and they use a special character (i.e. <code>/</code> by default) to separate hierarchical levels.
+<p>MQTT defines a special wildcard syntax for topic filters. This definition is found in section 4.7.1 of both the <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718107">3.1.1</a> and <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901242">5</a> specs.
+MQTT topics are hierarchical much like a file system, and they use a special character (i.e. <code>/</code> by default) to separate hierarchical levels.
 Subscribers are able to subscribe to specific topics or to whole branches of a hierarchy.</p>
 </div>
 <div class="paragraph">
@@ -254,9 +255,25 @@ For example <code>/uk/+/stores</code> would match <code>/uk/newcastle/stores</co
 </ul>
 </div>
 <div class="paragraph">
-<p>These MQTT-specific wildcards are automatically <em>translated</em> into the wildcard syntax used by ActiveMQ Artemis.
-These wildcards are configurable.
-See the <a href="wildcard-syntax.html#customizing-the-syntax">Wildcard Syntax</a> chapter for details about how to configure custom wildcards.</p>
+<p>This is <em>close</em> to the default  <a href="wildcard-syntax.html#wildcard-syntax">wildcard syntax</a>, but not exactly the same.
+Therefore, some conversion is necessary.
+This conversion isn&#8217;t free so <strong>if you want the best MQTT performance</strong> use <code>broker.xml</code> to configure the wildcard syntax to match MQTT&#8217;s, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;core&gt;</span>
+   ...
+   <span class="nt">&lt;wildcard-addresses&gt;</span>
+      <span class="nt">&lt;delimiter&gt;</span>/<span class="nt">&lt;/delimiter&gt;</span>
+      <span class="nt">&lt;any-words&gt;</span>#<span class="nt">&lt;/any-words&gt;</span>
+      <span class="nt">&lt;single-word&gt;</span>+<span class="nt">&lt;/single-word&gt;</span>
+   <span class="nt">&lt;/wildcard-addresses&gt;</span>
+   ...
+<span class="nt">&lt;/core&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Of course, changing the default syntax also means other clients on other protocols will need to follow this same syntax as well as the <code>match</code> values of your <code>address-setting</code> configuration elements.</p>
 </div>
 </div>
 </div>
@@ -355,7 +372,7 @@ This is effectively the same as setting the value to <code>65535</code>, but red
 <h2 id="topic-alias-maximum"><a class="anchor" href="#topic-alias-maximum"></a><a class="link" href="#topic-alias-maximum">12. Topic Alias Maximum</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>MQTT 5 introduced <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#" class="bare">https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#</a><em>Topic_Alias[topic aliasing].
+<p>MQTT 5 introduced <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#<em>Topic_Alias">topic aliasing</a>.
 This is an optimization for the size of <code>PUBLISH</code> control packets as a 2-byte integer value can now be substituted for the _name</em> of the topic which can potentially be quite long.</p>
 </div>
 <div class="paragraph">

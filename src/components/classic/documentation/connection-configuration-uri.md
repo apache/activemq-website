@@ -10,11 +10,11 @@ type: classic
 Connection Configuration URI
 ----------------------------
 
-An Apache ActiveMQ Classic connection can be configured by explicitly setting properties on the [ActiveMQConnection](http://activemq.apache.org/maven/apidocs/org/apache/activemq/ActiveMQConnection.html) or [ActiveMQConnectionFactory](http://activemq.apache.org/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) objects themselves via the bean properties or using the following URI syntax.
+An Apache ActiveMQ Classic connection can be configured by explicitly setting properties on the [ActiveMQConnection](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnection.html) or [ActiveMQConnectionFactory](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) objects themselves via the bean properties or using the following URI syntax.
 
 ### Example
 
-You set the property called `jms.$PROPERTY` on a regular connection URI. For example you can set the `brokerURL` on your [ActiveMQConnectionFactory](http://activemq.apache.org/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) to the following value to enable [Async Sends](async-sends)
+You set the property called `jms.$PROPERTY` on a regular connection URI. For example you can set the `brokerURL` on your [ActiveMQConnectionFactory](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) to the following value to enable [Async Sends](async-sends)
 ```
 tcp://localhost:61616?jms.useAsyncSend=true
 ```
@@ -54,11 +54,11 @@ Option Name|Default Value|Description
 
 You can also configure nested objects on the connection object using the given prefixes. See the javadoc for a breakdown of each individual property.
 
-Option Name|Object configured|See Also
----|---|---
-`jms.blobTransferPolicy.*`|[BlobTransferPolicy](http://activemq.apache.org/maven/apidocs/org/apache/activemq/blob/BlobTransferPolicy.html)|[Blob Message](#)
-`jms.prefetchPolicy.*`|[ActiveMQPrefetchPolicy](http://http//activemq.apache.org/maven/apidocs/org/apache/activemq/ActiveMQPrefetchPolicy.html)|[What is the Prefetch Limit For?](what-is-the-prefetch-limit-for)
-`jms.redeliveryPolicy.*`|[RedeliveryPolicy](http://activemq.apache.org/maven/apidocs/org/apache/activemq/RedeliveryPolicy.html)|[Redelivery Policy](redelivery-policy)
+Option Name| Object configured                                                                                                                                   |See Also
+---|-----------------------------------------------------------------------------------------------------------------------------------------------------|---
+`jms.blobTransferPolicy.*`| [BlobTransferPolicy](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/blob/BlobTransferPolicy.html)    |[Blob Message](#)
+`jms.prefetchPolicy.*`| [ActiveMQPrefetchPolicy](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQPrefetchPolicy.html) |[What is the Prefetch Limit For?](what-is-the-prefetch-limit-for)
+`jms.redeliveryPolicy.*`| [RedeliveryPolicy](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/RedeliveryPolicy.html)             |[Redelivery Policy](redelivery-policy)
 
 For example you could set
 ```

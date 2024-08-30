@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Configuration Reference</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Configuration Reference</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#broker-configuration">1. Broker Configuration</a>
 <ul class="sectlevel2">
@@ -341,7 +341,7 @@ Please consult your specific configuration to know which values will actually be
 <td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="ha.html#data-replication">check-for-live-server</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="ha.html#replication-configuration">check-for-active-server</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Used by a primary server to verify if there are other nodes with the same ID on the topology</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
 </tr>
@@ -556,7 +556,7 @@ If set to "true" the passwords are masked.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="ha.html#data-replication">max-saved-replicated-journals-size</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="ha.html#replication-configuration">max-saved-replicated-journals-size</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This specifies how many replication backup directories will be kept when server starts as replica.
 -1 Means no Limit;
 0 don&#8217;t keep a copy at all.</p></td>
@@ -830,6 +830,22 @@ In most cases this should be set to '1'.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">parameters to configure wildcard address matching format.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="view-permission-method-match-pattern"></a> view-permission-method-match-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parameter to configure the regular expression pattern to match <a href="management.html#fine-grained-rbac-on-management-messages">management</a> or <a href="management.html#jmx-authorization-in-broker-xml">JMX</a> operations that require the 'view' permission
+in your security-settings.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>^(get|is|count|list|browse|query).*$</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="management-message-rbac"></a> management-message-rbac</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parameter to enable security-settings RBAC on <a href="management.html#fine-grained-rbac-on-management-messages">management messages</a> sent to the management address.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="management-rbac-prefix"></a> management-rbac-prefix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parameter to configure the prefix for security-settings match addresses to control RBAC on <a href="management.html#jmx-authorization-in-broker-xml">JMX MBean operations</a> and optionally on <a href="management.html#fine-grained-rbac-on-management-messages">management messages</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mops (shorthand for management operations)</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1082,6 +1098,11 @@ see <code>auto-create-queues</code> &amp; <code>auto-create-addresses</code></p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="address-settings.html#address-settings">management-browse-page-size</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number of messages a management resource can browse</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">200</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="address-settings.html#address-settings">initial-queue-buffer-size</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of elements in the intermediate message buffer allocated for each queue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8192</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="address-model.html#non-durable-subscription-queue">default-purge-on-no-consumers</a></p></td>

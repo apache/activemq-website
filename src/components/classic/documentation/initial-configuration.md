@@ -52,7 +52,7 @@ One of the first things you might want to do is [start a broker](run-broker). On
 
 If you want to write your own application, you can just instantiate an [ActiveMQConnectionFactory](http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html), configure its properties directly and then you're ready to use the standard JMS API to create Connections, Sessions, MessageProducer and MessageConsumer instances.
 
-You can also take a look at our [unit tests](https://svn.apache.org/repos/asf/activemq/trunk/activemq-core/src/test/java/org/apache/activemq/) for more examples on how to use ActiveMQ Classic.
+You can also take a look at our [unit tests](https://github.com/apache/activemq/tree/main/activemq-core/src/test/java/org/apache/activemq/) for more examples on how to use ActiveMQ Classic.
 
 Additional Resources
 --------------------

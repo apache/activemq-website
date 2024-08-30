@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Core Bridges</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Core Bridges</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#configuring-core-bridges">1. Configuring Core Bridges</a></li>
 </ul>
@@ -71,27 +71,33 @@ To provide the same guarantee using a JMS bridge you would have to use XA which 
 <div class="sectionbody">
 <div class="paragraph">
 <p>Bridges are configured in <code>broker.xml</code>.
-Let&#8217;s kick off with an example (this is actually from the bridge example):</p>
+Let&#8217;s kick off with an example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;bridge</span> <span class="na">name=</span><span class="s">"my-bridge"</span><span class="nt">&gt;</span>
    <span class="nt">&lt;queue-name&gt;</span>sausage-factory<span class="nt">&lt;/queue-name&gt;</span>
    <span class="nt">&lt;forwarding-address&gt;</span>mincing-machine<span class="nt">&lt;/forwarding-address&gt;</span>
+   <span class="nt">&lt;ha&gt;</span>true<span class="nt">&lt;/ha&gt;</span>
    <span class="nt">&lt;filter</span> <span class="na">string=</span><span class="s">"name='aardvark'"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;transformer-class-name&gt;</span>
       org.apache.activemq.artemis.jms.example.HatColourChangeTransformer
    <span class="nt">&lt;/transformer-class-name&gt;</span>
-   <span class="nt">&lt;retry-interval&gt;</span>1000<span class="nt">&lt;/retry-interval&gt;</span>
-   <span class="nt">&lt;ha&gt;</span>true<span class="nt">&lt;/ha&gt;</span>
+   <span class="nt">&lt;min-large-message-size&gt;</span>102400<span class="nt">&lt;/min-large-message-size&gt;</span>
+   <span class="nt">&lt;check-period&gt;</span>30000<span class="nt">&lt;/check-period&gt;</span>
+   <span class="nt">&lt;connection-ttl&gt;</span>60000<span class="nt">&lt;/connection-ttl&gt;</span>
+   <span class="nt">&lt;retry-interval&gt;</span>2000<span class="nt">&lt;/retry-interval&gt;</span>
    <span class="nt">&lt;retry-interval-multiplier&gt;</span>1.0<span class="nt">&lt;/retry-interval-multiplier&gt;</span>
+   <span class="nt">&lt;max-retry-interval&gt;</span>2000<span class="nt">&lt;/max-retry-interval&gt;</span>
    <span class="nt">&lt;initial-connect-attempts&gt;</span>-1<span class="nt">&lt;/initial-connect-attempts&gt;</span>
    <span class="nt">&lt;reconnect-attempts&gt;</span>-1<span class="nt">&lt;/reconnect-attempts&gt;</span>
    <span class="nt">&lt;failover-on-server-shutdown&gt;</span>false<span class="nt">&lt;/failover-on-server-shutdown&gt;</span>
    <span class="nt">&lt;use-duplicate-detection&gt;</span>true<span class="nt">&lt;/use-duplicate-detection&gt;</span>
    <span class="nt">&lt;confirmation-window-size&gt;</span>10000000<span class="nt">&lt;/confirmation-window-size&gt;</span>
+   <span class="nt">&lt;producer-window-size&gt;</span>1048576<span class="nt">&lt;/producer-window-size&gt;</span>
    <span class="nt">&lt;user&gt;</span>foouser<span class="nt">&lt;/user&gt;</span>
    <span class="nt">&lt;password&gt;</span>foopassword<span class="nt">&lt;/password&gt;</span>
+   <span class="nt">&lt;reconnect-attempts-same-node&gt;</span>10<span class="nt">&lt;/reconnect-attempts-same-node&gt;</span>
    <span class="nt">&lt;routing-type&gt;</span>PASS<span class="nt">&lt;/routing-type&gt;</span>
    <span class="nt">&lt;concurrency&gt;</span>1<span class="nt">&lt;/concurrency&gt;</span>
    <span class="nt">&lt;static-connectors&gt;</span>
@@ -128,6 +134,12 @@ In practice you might use many of the defaults so it won&#8217;t be necessary to
 <p>This is the address on the target server that the message will be forwarded to.
 If a forwarding address is not specified, then the original address of the message will be retained.</p>
 </dd>
+<dt class="hdlist1">ha</dt>
+<dd>
+<p>This optional parameter determines whether or not this bridge should support high availability.
+True means it will connect to any available server in a cluster and support failover.
+The default value is <code>false</code>.</p>
+</dd>
 <dt class="hdlist1">filter-string</dt>
 <dd>
 <p>An optional filter string can be supplied.
@@ -140,11 +152,23 @@ The filter string follows the ActiveMQ Artemis filter expression syntax describe
 This gives you the opportunity to transform the message&#8217;s header or body before forwarding it.
 See the <a href="transformers.html#transformers">transformer chapter</a> for more details about transformer-specific configuration.</p>
 </dd>
-<dt class="hdlist1">ha</dt>
+<dt class="hdlist1">min-large-message-size</dt>
 <dd>
-<p>This optional parameter determines whether or not this bridge should support high availability.
-True means it will connect to any available server in a cluster and support failover.
-The default value is <code>false</code>.</p>
+<p>Any message larger than this size (in bytes) is considered a large message (to be sent in chunks).
+Supports byte notation like "K", "Mb", "MiB", "GB", etc.
+Default is <code>102400</code> (i.e. 100KiB).</p>
+</dd>
+<dt class="hdlist1">check-period</dt>
+<dd>
+<p>Sets the period (in milliseconds) used to check if the bridge client has failed to receive pings from the server.
+Use <code>-1</code> to disable this check.
+Default is <code>30000</code>.</p>
+</dd>
+<dt class="hdlist1">connection-ttl</dt>
+<dd>
+<p>How long (in milliseconds) the remote server will keep the connection alive in the absence of any data arriving from the bridge.
+This should be greater than the <code>check-period</code>.
+Default is <code>60000</code>.</p>
 </dd>
 <dt class="hdlist1">retry-interval</dt>
 <dd>
@@ -166,6 +190,11 @@ The default value is <code>2000</code> milliseconds.</p>
 <div class="paragraph">
 <p>The default value is <code>1.0</code> meaning each reconnect attempt is spaced at equal intervals.</p>
 </div>
+</dd>
+<dt class="hdlist1">max-retry-interval</dt>
+<dd>
+<p>This enforces a limit on <code>retry-interval</code> since it can grow due to <code>retry-interval-multiplier</code>.
+Default is <code>2000</code>.</p>
 </dd>
 <dt class="hdlist1">initial-connect-attempts</dt>
 <dd>
@@ -198,6 +227,7 @@ By enabling duplicate detection allows these duplicates to be screened out and i
 <dt class="hdlist1">confirmation-window-size</dt>
 <dd>
 <p>This optional parameter determines the <code>confirmation-window-size</code> to use for the connection used to forward messages to the target node.
+Supports byte notation like "K", "Mb", "MiB", "GB", etc.
 This attribute is described in section <a href="client-failover.html#reconnection-and-failover-attributes">Client failover attributes</a></p>
 <div class="admonitionblock warning">
 <table>
@@ -218,7 +248,8 @@ This attribute is described in section <a href="client-failover.html#reconnectio
 <dd>
 <p>This optional parameter determines the producer flow control through the bridge.
 Use <code>-1</code> to disable.
-Default is <code>1048576</code> (i.e. 1MB).</p>
+Supports byte notation like "K", "Mb", "MiB", "GB", etc.
+Default is <code>1048576</code> (i.e. 1MiB).</p>
 </dd>
 <dt class="hdlist1">user</dt>
 <dd>
@@ -229,6 +260,11 @@ If it is not specified the default cluster user specified by <code>cluster-user<
 <dd>
 <p>This optional parameter determines the password to use when creating the bridge connection to the remote server.
 If it is not specified the default cluster password specified by <code>cluster-password</code> in <code>broker.xml</code> will be used.</p>
+</dd>
+<dt class="hdlist1">reconnect-attempts-same-node</dt>
+<dd>
+<p>This configures the number of times reconnection attempts will be made to the same node on the topology before reverting back to the initial connector(s).
+Default is <code>10</code>.</p>
 </dd>
 <dt class="hdlist1">routing-type</dt>
 <dd>

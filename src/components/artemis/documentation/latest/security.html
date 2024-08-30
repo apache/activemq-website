@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Authentication &amp; Authorization</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,12 +15,13 @@
 <div id="header">
 <h1>Authentication &amp; Authorization</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#tracking-the-validated-user">1. Tracking the Validated User</a></li>
 <li><a href="#role-based-security-for-addresses">2. Role based security for addresses</a>
 <ul class="sectlevel2">
 <li><a href="#fine-grained-security-using-fully-qualified-queue-name">2.1. Fine-grained security using fully qualified queue name</a></li>
+<li><a href="#applying-view-and-edit-permissions-to-the-management-api">2.2. Applying <code>view</code> and <code>edit</code> permissions to the management api</a></li>
 </ul>
 </li>
 <li><a href="#security-setting-plugin">3. Security Setting Plugin</a>
@@ -160,6 +161,21 @@ Those permissions are:</p>
 </dl>
 </div>
 <div class="paragraph">
+<p>The following two permissions pertain to operations on the <a href="management.html#management">management apis</a> of the broker. They split management operations into two sets, read only for <code>view</code>, and <code>edit</code> for mutating operations. The split is controlled by a regular expression. Methods that match will require the <code>view</code> permission, all others require <code>edit</code>. The regular expression can be modified through the configuration attribute <a href="configuration-index.html#view-permission-method-match-pattern"><code>view-permission-method-match-pattern</code></a>. These permissions are applicable to the <a href="management.html#fine-grained-rbac-on-management-messages">management address</a> and to <a href="management.html#jmx-authorization-in-broker-xml">MBean access</a>. They are granted to match addresses prefixed with the <a href="configuration-index.html#management-rbac-prefix">management prefix</a>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">view</dt>
+<dd>
+<p>This permission allows access to a read-only subset of management operations.</p>
+</dd>
+<dt class="hdlist1">edit</dt>
+<dd>
+<p>This permission allows access to the mutating management operations, any operation not in the <code>view</code> set.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
 <p>For each permission, a list of roles who are granted that permission is specified.
 If the user has any of those roles, he/she will be granted that permission for that set of addresses.</p>
 </div>
@@ -266,11 +282,26 @@ You can do this using the fully qualified queue name (i.e. FQQN) in the <code>ma
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Wildcard matching doesn&#8217;t work in conjuction with FQQN.
+Wildcard matching doesn&#8217;t work in conjunction with FQQN.
 The explicit goal of using FQQN here is to be <em>exact</em>.
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="applying-view-and-edit-permissions-to-the-management-api"><a class="anchor" href="#applying-view-and-edit-permissions-to-the-management-api"></a><a class="link" href="#applying-view-and-edit-permissions-to-the-management-api">2.2. Applying <code>view</code> and <code>edit</code> permissions to the management api</a></h3>
+<div class="paragraph">
+<p>The <code>view</code> and <code>edit</code> permissions are optionally applied to the management apis of the broker.</p>
+</div>
+<div class="paragraph">
+<p>For RBAC on JMX MBean access they can replace the authorization section in management.xml as described at <a href="management.html#jmx-authorization-in-broker-xml">JMX authorization in broker.xml</a></p>
+</div>
+<div class="paragraph">
+<p>For RBAC on management resources accessed via messages sent to the management address, the additional permissions are enabled by configuring <a href="configuration-index.html#management-message-rbac"><code>management-message-rbac</code></a> as described at <a href="management.html#fine-grained-rbac-on-management-messages">Fine grained RBAC on management messages</a></p>
+</div>
+<div class="paragraph">
+<p>The split between operations that require the <code>view</code> and <code>edit</code> permissions can be controlled via <a href="configuration-index.html#view-permission-method-match-pattern">view-permission-method-match-pattern</a></p>
 </div>
 </div>
 </div>
@@ -586,7 +617,7 @@ In short, the file defines:</p>
 <p>the implementation class for the login module (e.g. <code>org.apache.activemq.artemis.spi.core.security.jaas.PropertiesLoginModule</code>)</p>
 </li>
 <li>
-<p>a flag which indicates whether the success of the login module is <code>required</code>, <code>requisite</code>, <code>sufficient</code>, or <code>optional</code> (see more details on these flags in the <a href="https://docs.oracle.com/javase/8/docs/api/javax/security/auth/login/Configuration.html">JavaDoc</a></p>
+<p>a flag which indicates whether the success of the login module is <code>required</code>, <code>requisite</code>, <code>sufficient</code>, or <code>optional</code> (see more details on these flags in the <a href="https://docs.oracle.com/javase/8/docs/api/javax/security/auth/login/Configuration.html">JavaDoc</a>)</p>
 </li>
 <li>
 <p>a list of configuration options specific to the login module implementation</p>
@@ -905,11 +936,6 @@ The default value is <code>broker-sasl-gssapi</code>.</p>
 <p>currently, the only supported value is a blank string.
 In future, this option will allow you to select the Secure Socket Layer (SSL) for the connection to the directory server.
 This option must be set explicitly to an empty string, because it has no default value.</p>
-</dd>
-<dt class="hdlist1">connectionPool</dt>
-<dd>
-<p>boolean, enable the LDAP connection pool property 'com.sun.jndi.ldap.connect.pool'.
-Note that the pool is <a href="https://docs.oracle.com/javase/jndi/tutorial/ldap/connect/config.html">configured at the jvm level with system properties</a>.</p>
 </dd>
 <dt class="hdlist1">connectionTimeout</dt>
 <dd>

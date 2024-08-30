@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Retroactive Addresses</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Retroactive Addresses</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.36.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#internal-retroactive-resources">1. Internal Retroactive Resources</a></li>
+<li><a href="#configuration">2. Configuration</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A "retroactive" address is an address that will preserve messages sent to it for queues which will be created on it in the future.
+This can be useful in, for example, publish-subscribe use cases where clients want to receive the messages sent to the address <em>before</em> they actually connected and created their multicast "subscription" queue.
+Typically messages sent to an address before a queue was created on it would simply be unavailable to those queues, but with a retroactive address a fixed number of messages can be preserved by the broker and automatically copied into queues subsequently created on the address.
+This works for both anycast and multicast queues.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="internal-retroactive-resources"><a class="anchor" href="#internal-retroactive-resources"></a><a class="link" href="#internal-retroactive-resources">1. Internal Retroactive Resources</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To implement this functionality the broker will create 4 internal resources for each retroactive address:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A non-exclusive <a href="diverts.html#diverting-and-splitting-message-flows">divert</a> to grab the messages from the retroactive address.</p>
+</li>
+<li>
+<p>An address to receive the messages from the divert.</p>
+</li>
+<li>
+<p><strong>Two</strong> <a href="ring-queues.html#ring-queue">ring queues</a> to hold the messages sent to the address by the divert - one for anycast and one for multicast.
+The general caveats for ring queues still apply here.
+See <a href="ring-queues.html#ring-queue">the chapter on ring queues</a> for more details.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>These resources are important to be aware of as they will show up in the web console and other management or metric views.
+They will be named according to the following pattern:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">&lt;internal-naming-prefix&gt;&lt;delimiter&gt;&lt;source-address&gt;&lt;delimiter&gt;(divert|address|queue&lt;delimiter&gt;(anycast|multicast))&lt;delimiter&gt;retro</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, if an address named <code>myAddress</code> had a <code>retroactive-message-count</code> of 10 and the default <code>internal-naming-prefix</code> (i.e. <code>$.artemis.internal.</code>) and the default delimiter (i.e. <code>.</code>) were being used then resources with these names would be created:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A divert on <code>myAddress</code> named <code>$.artemis.internal.myAddress.divert.retro</code></p>
+</li>
+<li>
+<p>An address named <code>$.artemis.internal.myAddress.address.retro</code></p>
+</li>
+<li>
+<p>A multicast queue on the address from step #2 named <code>$.artemis.internal.myAddress.queue.multicast.retro</code> with a <code>ring-size</code> of 10.</p>
+</li>
+<li>
+<p>An anycast queue on the address from step #2 named <code>$.artemis.internal.myAddress.queue.anycast.retro</code> with a <code>ring-size</code> of 10.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This pattern is important to note as it allows one to configure address-settings if necessary.
+To configure custom address-settings you&#8217;d use a match like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">*.*.*.&lt;source-address&gt;.*.retro</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using the same example as above the <code>match</code> would be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">*.*.*.myAddress.*.retro</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Changing the broker&#8217;s <code>internal-naming-prefix</code> once these retroactive resources are created will break the retroactive functionality.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">2. Configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To configure an address to be "retroactive" simply configure the <code>retroactive-message-count</code> <code>address-setting</code> to reflect the number of messages you want the broker to preserve, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-settings&gt;</span>
+   <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"orders"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;retroactive-message-count&gt;</span>100<span class="nt">&lt;/retroactive-message-count&gt;</span>
+   <span class="nt">&lt;/address-setting&gt;</span>
+<span class="nt">&lt;/address-settings&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The value for <code>retroactive-message-count</code> can be updated at runtime either via <code>broker.xml</code> or via the management API just like any other address-setting.
+However, if you <em>reduce</em> the value of <code>retroactive-message-count</code> an additional administrative step will be required since this functionality is implemented via ring queues.
+This is because a ring queue whose ring-size is reduced will not automatically delete messages from the queue to meet the new ring-size in order to avoid unintended message loss.
+Therefore, administrative action will be required in this case to manually reduce the number of messages in the ring queue via the management API.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

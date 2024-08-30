@@ -14,7 +14,7 @@ There is a great [article](https://medium.com/@bdarfler/efficient-lightweight-jm
 Configuring the JMS client
 --------------------------
 
-To configure an ActiveMQ Classic JMS client in Spring it is just a simple matter of configuring an instance of ActiveMQConnectionFactory within a standard Spring XML configuration file like any other bean. There are [several examples and test cases](https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/java/org/apache/activemq/spring/) available and [this one](https://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/xbean/spring.xml) shows how to construct an ActiveMQConnectionFactory in Spring which is then passed into a Spring JmsTemplate for use by some POJOs.
+To configure an ActiveMQ Classic JMS client in Spring it is just a simple matter of configuring an instance of ActiveMQConnectionFactory within a standard Spring XML configuration file like any other bean. There are [several examples and test cases](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/java/org/apache/activemq/spring/) available and [this one](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/resources/org/apache/activemq/xbean/spring.xml) shows how to construct an ActiveMQConnectionFactory in Spring which is then passed into a Spring JmsTemplate for use by some POJOs.
 
 e.g. the following fragment of XML shows us creating a JMS connection factory for ActiveMQ Classic connecting to a remote broker on a specific host name and port.
 ```

@@ -35,7 +35,7 @@ wireFormat.*||All the properties with this prefix are used to configure the wire
 
 ##### Example URIs
 
-To use the default value of "multicast://239.255.2.3:6155" with a default multicast group name of "default" from [MulticastDiscoveryAgent](http://activemq.apache.org/maven/apidocs/org/apache/activemq/transport/discovery/multicast/MulticastDiscoveryAgent.html#DEFAULT_DISCOVERY_URI_STRING) use
+To use the default value of "multicast://239.255.2.3:6155" with a default multicast group name of "default" from [MulticastDiscoveryAgent](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/transport/discovery/multicast/MulticastDiscoveryAgent.html#DEFAULT_DISCOVERY_URI_STRING) use
 ```
 multicast://default 
 ```

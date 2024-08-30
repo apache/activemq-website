@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Flow Control</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Flow Control</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.33.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#consumer-flow-control">1. Consumer Flow Control</a></li>
+<li><a href="#window-based-flow-control">2. Window-Based Flow Control</a>
+<ul class="sectlevel2">
+<li><a href="#fast-consumers">2.1. Fast consumers</a></li>
+<li><a href="#slow-consumers">2.2. Slow consumers</a></li>
+</ul>
+</li>
+<li><a href="#rate-limited-flow-control">3. Rate limited flow control</a></li>
+<li><a href="#producer-flow-control">4. Producer flow control</a>
+<ul class="sectlevel2">
+<li><a href="#window-based-flow-control-2">4.1. Window based flow control</a></li>
+<li><a href="#rate-limited-flow-control-2">4.2. Rate limited flow control</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Flow control is used to limit the flow of data between a client and server, or a server and another server in order to prevent the client or server being overwhelmed with data.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="consumer-flow-control"><a class="anchor" href="#consumer-flow-control"></a><a class="link" href="#consumer-flow-control">1. Consumer Flow Control</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This controls the flow of data between the server and the client as the client consumes messages.
+For performance reasons clients normally buffer messages before delivering to the consumer via the <code>receive()</code> method or asynchronously via a message listener.
+If the consumer cannot process messages as fast as they are being delivered and stored in the internal buffer, then you could end up with a situation where messages would keep building up possibly causing out of memory on the client if they cannot be processed in time.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="window-based-flow-control"><a class="anchor" href="#window-based-flow-control"></a><a class="link" href="#window-based-flow-control">2. Window-Based Flow Control</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, Apache ActiveMQ Artemis consumers buffer messages from the server in a client side buffer before the client consumes them.
+This improves performance: otherwise every time the client consumes a message, Apache ActiveMQ Artemis would have to go the server to request the next message.
+In turn, this message would then get sent to the client side, if one was available.</p>
+</div>
+<div class="paragraph">
+<p>A network round trip would be involved for <em>every</em> message and considerably reduce performance.</p>
+</div>
+<div class="paragraph">
+<p>To prevent this, Apache ActiveMQ Artemis pre-fetches messages into a buffer on each consumer.
+The total maximum size of messages (in bytes) that will be buffered on each consumer is determined by the <code>consumerWindowSize</code> parameter.</p>
+</div>
+<div class="paragraph">
+<p>By default, the <code>consumerWindowSize</code> is set to 1 MiB (1024 * 1024 bytes) unless overridden via (<a href="address-settings.html#address-settings">Address Settings</a>)</p>
+</div>
+<div class="paragraph">
+<p>The value can be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>-1</code> for an <em>unbounded</em> buffer</p>
+</li>
+<li>
+<p><code>0</code> to not buffer any messages.</p>
+</li>
+<li>
+<p><code>&gt;0</code> for a buffer with the given maximum size in bytes.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Setting the consumer window size can considerably improve performance depending on the messaging use case.
+As an example, let&#8217;s consider the two extremes:</p>
+</div>
+<div class="sect2">
+<h3 id="fast-consumers"><a class="anchor" href="#fast-consumers"></a><a class="link" href="#fast-consumers">2.1. Fast consumers</a></h3>
+<div class="paragraph">
+<p>Fast consumers can process messages as fast as they consume them (or even faster)</p>
+</div>
+<div class="paragraph">
+<p>To allow fast consumers, set the <code>consumerWindowSize</code> to -1.
+This will allow <em>unbounded</em> message buffering on the client side.</p>
+</div>
+<div class="paragraph">
+<p>Use this setting with caution: it can overflow the client memory if the consumer is not able to process messages as fast as it receives them.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="slow-consumers"><a class="anchor" href="#slow-consumers"></a><a class="link" href="#slow-consumers">2.2. Slow consumers</a></h3>
+<div class="paragraph">
+<p>Slow consumers takes significant time to process each message and it is desirable to prevent buffering messages on the client side so that they can be delivered to another consumer instead.</p>
+</div>
+<div class="paragraph">
+<p>Consider a situation where a queue has 2 consumers;
+1 of which is very slow.
+Messages are delivered in a round robin fashion to both consumers, the fast consumer processes all of its messages very quickly until its buffer is empty.
+At this point there are still messages awaiting to be processed in the buffer of the slow consumer thus preventing them being processed by the fast consumer.
+The fast consumer is therefore sitting idle when it could be processing the other messages.</p>
+</div>
+<div class="paragraph">
+<p>To allow slow consumers, set <code>consumerWindowSize</code> on the URI to 0 (for no buffer at all).
+This will prevent the slow consumer from buffering any messages on the client side.
+Messages will remain on the server side ready to be consumed by other consumers.</p>
+</div>
+<div class="paragraph">
+<p>Setting this to 0 can give deterministic distribution between multiple consumers on a queue.</p>
+</div>
+<div class="paragraph">
+<p>Most of the consumers cannot be clearly identified as fast or slow consumers but are in-between.
+In that case, setting the value of <code>consumerWindowSize</code> to optimize performance depends on the messaging use case and requires benchmarks to find the optimal value, but a value of 1MiB is fine in most cases.</p>
+</div>
+<div class="paragraph">
+<p>Please see <a href="examples.html#examples">the examples chapter</a> for an example which shows how to configure ActiveMQ Artemis to prevent consumer buffering when dealing with slow consumers.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rate-limited-flow-control"><a class="anchor" href="#rate-limited-flow-control"></a><a class="link" href="#rate-limited-flow-control">3. Rate limited flow control</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is also possible to control the <em>rate</em> at which a consumer can consume messages.
+This is a form of throttling and can be used to make sure that a consumer never consumes messages at a rate faster than the rate specified.
+This is configured using the <code>consumerMaxRate</code> URI parameter.</p>
+</div>
+<div class="paragraph">
+<p>The rate must be a positive integer to enable this functionality and is the maximum desired message consumption rate specified in units of messages per second.
+Setting this to <code>-1</code> disables rate limited flow control.
+The default value is <code>-1</code>.</p>
+</div>
+<div class="paragraph">
+<p>Please see <a href="examples.html#examples">the examples chapter</a> for a working example of limiting consumer rate.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Rate limited flow control can be used in conjunction with window based flow control.
+Rate limited flow control only effects how many messages a client can consume in a second and not how many messages are in its buffer.
+So if you had a slow rate limit and a high window based limit the clients internal buffer would soon fill up with messages.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="producer-flow-control"><a class="anchor" href="#producer-flow-control"></a><a class="link" href="#producer-flow-control">4. Producer flow control</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis also can limit the amount of data sent from a client to a server to prevent the server being overwhelmed.</p>
+</div>
+<div class="sect2">
+<h3 id="window-based-flow-control-2"><a class="anchor" href="#window-based-flow-control-2"></a><a class="link" href="#window-based-flow-control-2">4.1. Window based flow control</a></h3>
+<div class="paragraph">
+<p>In a similar way to consumer window based flow control, Apache ActiveMQ Artemis producers, by default, can only send messages to an address as long as they have sufficient credits to do so.
+The amount of credits required to send a message is given by the size of the message.</p>
+</div>
+<div class="paragraph">
+<p>As producers run low on credits they request more from the server, when the server sends them more credits they can send more messages.</p>
+</div>
+<div class="paragraph">
+<p>The amount of credits a producer requests in one go is known as the <em>window size</em> and it is controlled by the <code>producerWindowSize</code> URI parameter.</p>
+</div>
+<div class="paragraph">
+<p>The window size therefore determines the amount of bytes that can be in-flight at any one time before more need to be requested - this prevents the remoting connection from getting overloaded.</p>
+</div>
+<div class="sect3">
+<h4 id="blocking-core-producers"><a class="anchor" href="#blocking-core-producers"></a><a class="link" href="#blocking-core-producers">4.1.1. Blocking CORE Producers</a></h4>
+<div class="paragraph">
+<p>When using the CORE protocol (used by both the Artemis Core Client and Artemis JMS Client) the server will always aim give the same number of credits as have been requested.
+However, it is also possible to set a maximum size on any address, and the server will never send more credits to any one producer than what is available according to the address&#8217;s upper memory limit.
+Although a single producer will be issued more credits than available (at the time of issue) it is possible that more than 1 producer be associated with the same address and so it is theoretically possible that more credits are allocated across total producers than what is available.
+It is therefore possible to go over the address limit by approximately:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">total number of producers on address * producer window size</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, if I have a queue called "myqueue", I could set the maximum memory size to 10MiB, and the server will control the number of credits sent to any producers which are sending any messages to myqueue such that the total messages in the queue never exceeds 10MiB.</p>
+</div>
+<div class="paragraph">
+<p>When the address gets full, producers will block on the client side until more space frees up on the address, i.e. until messages are consumed from the queue thus freeing up space for more messages to be sent.</p>
+</div>
+<div class="paragraph">
+<p>We call this blocking producer flow control, and it&#8217;s an efficient way to prevent the server running out of memory due to producers sending more messages than can be handled at any time.</p>
+</div>
+<div class="paragraph">
+<p>It is an alternative approach to paging, which does not block producers but instead pages messages to storage.</p>
+</div>
+<div class="paragraph">
+<p>To configure an address with a maximum size and tell the server that you want to block producers for this address if it becomes full, you need to define an AddressSettings (<a href="address-settings.html#address-settings">Configuring Queues Via Address Settings</a>) block for the address and specify <code>max-size-bytes</code> and <code>address-full-policy</code></p>
+</div>
+<div class="paragraph">
+<p>The address block applies to all queues registered to that address.
+i.e. the total memory for all queues bound to that address will not exceed <code>max-size-bytes</code>.
+In the case of JMS topics this means the <em>total</em> memory of all subscriptions in the topic won&#8217;t exceed max-size-bytes.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-settings&gt;</span>
+   <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"exampleQueue"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;max-size-bytes&gt;</span>100000<span class="nt">&lt;/max-size-bytes&gt;</span>
+      <span class="nt">&lt;address-full-policy&gt;</span>BLOCK<span class="nt">&lt;/address-full-policy&gt;</span>
+   <span class="nt">&lt;/address-setting&gt;</span>
+<span class="nt">&lt;/address-settings&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above example would set the max size of the queue "exampleQueue" to be 100000 bytes and would block any producers sending to that address to prevent that max size being exceeded.</p>
+</div>
+<div class="paragraph">
+<p>Note the policy must be set to <code>BLOCK</code> to enable blocking producer flow control.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Note that in the default configuration all addresses are set to block producers after 10 MiB of message data is in the address.
+This means you cannot send more than 10MiB of message data to an address without it being consumed before the producers will be blocked.
+If you do not want this behaviour increase the <code>max-size-bytes</code> parameter or change the address full message policy.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Producer credits are allocated from the broker to the client.
+Flow control credit checking (i.e. checking a producer has enough credit) is done on the client side only.
+It is possible for the broker to over allocate credits, like in the multiple producer scenario outlined above.
+It is also possible for a misbehaving client to ignore the flow control credits issued by the broker and continue sending with out sufficient credit.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="blocking-amqp-producers"><a class="anchor" href="#blocking-amqp-producers"></a><a class="link" href="#blocking-amqp-producers">4.1.2. Blocking AMQP Producers</a></h4>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis ships with out of the box with 2 protocols that support flow control.
+Artemis CORE protocol and AMQP.
+Both protocols implement flow control slightly differently and therefore address full BLOCK policy behaves slightly different for clients that use each protocol respectively.</p>
+</div>
+<div class="paragraph">
+<p>As explained earlier in this chapter the CORE protocol uses a producer window size flow control system.
+Where credits (representing bytes) are allocated to producers, if a producer wants to send a message it should wait until it has enough byte credits available for it to send.
+AMQP flow control credits are not representative of bytes but instead represent the number of messages a producer is permitted to send (regardless of the message size).</p>
+</div>
+<div class="paragraph">
+<p>BLOCK for AMQP works mostly in the same way as the producer window size mechanism above.
+Artemis will issue 100 credits to a client at a time and refresh them when the clients credits reaches 30.
+The broker will stop issuing credits once an address is full.
+However, since AMQP credits represent whole messages and not bytes, it would be possible in some scenarios for an AMQP client to significantly exceed an address upper bound should the broker continue accepting messages until the clients credits are exhausted.
+For this reason there is an additional parameter available on address settings that specifies an upper bound on an address size in bytes.
+Once this upper bound is reach Artemis will start rejecting AMQP messages.
+This limit is the max-size-bytes-reject-threshold and is by default set to -1 (or no limit).
+This is additional parameter allows a kind of soft and hard limit, in normal circumstances the broker will utilize the max-size-bytes parameter using flow control to put back pressure on the client, but will protect the broker by rejecting messages once the address size is reached.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="rate-limited-flow-control-2"><a class="anchor" href="#rate-limited-flow-control-2"></a><a class="link" href="#rate-limited-flow-control-2">4.2. Rate limited flow control</a></h3>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis also allows the rate a producer can emit message to be limited, in units of messages per second.
+By specifying such a rate, Apache ActiveMQ Artemis will ensure that producer never produces messages at a rate higher than that specified.
+This is controlled by the <code>producerMaxRate</code> URL parameter.</p>
+</div>
+<div class="paragraph">
+<p>The <code>producerMaxRate</code> must be a positive integer to enable this functionality and is the maximum desired message production rate specified in units of messages per second.
+Setting this to <code>-1</code> disables rate limited flow control.
+The default value is <code>-1</code>.</p>
+</div>
+<div class="paragraph">
+<p>Please see <a href="examples.html#examples">the examples chapter</a> for a working example of limiting  producer rate.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

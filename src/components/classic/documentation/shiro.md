@@ -313,7 +313,7 @@ If you want to use ini configuration and you would prefer to have all configurat
 Design
 ------
 
-The Shiro plugin is a [BrokerPlugin](http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/BrokerPlugin.html) that inserts 3 [BrokerFilter](http://activemq.apache.org/maven/apidocs/org/apache/activemq/broker/BrokerFilter.html)s in the broker filter chain: the `SubjectFilter`, the `AuthenticationFilter` and the `AuthorizationFilter`
+The Shiro plugin is a [BrokerPlugin](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/BrokerPlugin.html) that inserts 3 [BrokerFilter](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/BrokerFilter.html)s in the broker filter chain: the `SubjectFilter`, the `AuthenticationFilter` and the `AuthorizationFilter`
 
 **SubjectFilter**
 
@@ -337,7 +337,7 @@ The ShiroPlugin installs and executes the `SubjectFilter` before all other Shiro
 The `SubjectFilter` is mostly a 'behind the scenes' component of the SubjectFilter, but it does offer some customization for advanced use cases:
 
 *   the ability to customize exactly how broker clients' `Subject` instances are created via a `ConnectionSubjectFactory` and
-*   the ability to customize how the ActiveMQ Classic ConnectionContext's [SecurityContext](http://activemq.apache.org/maven/apidocs/org/apache/activemq/security/SecurityContext.html) is constructed.
+*   the ability to customize how the ActiveMQ Classic ConnectionContext's [SecurityContext](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/security/SecurityContext.html) is constructed.
 
 Unless you're deeply familiar with ActiveMQ Classic's security model, you can safely skip to **Authentication** below.
 

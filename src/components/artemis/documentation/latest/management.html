@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Management</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Management</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#the-management-api">1. The Management API</a>
 <ul class="sectlevel2">
@@ -36,21 +36,22 @@
 <li><a href="#using-management-message-api">3. Using Management Message API</a>
 <ul class="sectlevel2">
 <li><a href="#configuring-management">3.1. Configuring Management</a></li>
-<li><a href="#example-2">3.2. Example</a></li>
+<li><a href="#fine-grained-rbac-on-management-messages">3.2. Fine grained RBAC on management messages</a></li>
+<li><a href="#management-example">3.3. Management Example</a></li>
 </ul>
 </li>
 <li><a href="#management-notifications">4. Management Notifications</a>
 <ul class="sectlevel2">
 <li><a href="#jmx-notifications">4.1. JMX Notifications</a></li>
 <li><a href="#notification-messages">4.2. Notification Messages</a></li>
-<li><a href="#example-3">4.3. Example</a></li>
+<li><a href="#example-2">4.3. Example</a></li>
 <li><a href="#notification-types-and-headers">4.4. Notification Types and Headers</a></li>
 </ul>
 </li>
 <li><a href="#message-counters">5. Message Counters</a>
 <ul class="sectlevel2">
 <li><a href="#configuring-message-counters">5.1. Configuring Message Counters</a></li>
-<li><a href="#example-4">5.2. Example</a></li>
+<li><a href="#example-3">5.2. Example</a></li>
 </ul>
 </li>
 </ul>
@@ -176,6 +177,10 @@ diverts) can be created or destroyed using the management operations <code>creat
 <p>Diverts can be updated using the management operation <code>updateDivert()</code>.</p>
 </div>
 </li>
+</ul>
+</div>
+<div id="force_failover" class="ulist">
+<ul>
 <li>
 <p>It is possible to stop the server and force failover to occur with any currently attached clients.</p>
 <div class="paragraph">
@@ -354,7 +359,7 @@ The acceptors parameters can be retrieved using the <code>AcceptorControl</code>
 <p>Diverts</p>
 <div class="paragraph">
 <p>They can be started or stopped using the <code>start()</code> or <code>stop()</code> method on the <code>DivertControl</code> interface.
-Diverts parameters can be retrieved using the <code>DivertControl</code> attributes (see <a href="diverts.html#diverting-and-splitting-message-flows">Diverting and Splitting Message Flows)</a>)</p>
+Diverts parameters can be retrieved using the <code>DivertControl</code> attributes (see <a href="diverts.html#diverting-and-splitting-message-flows">Diverting and Splitting Message Flows</a>)</p>
 </div>
 </li>
 <li>
@@ -437,12 +442,16 @@ It can be disabled by setting <code>jmx-management-enabled</code> to <code>false
 <div class="sect3">
 <h4 id="role-based-authorisation-for-jmx"><a class="anchor" href="#role-based-authorisation-for-jmx"></a><a class="link" href="#role-based-authorisation-for-jmx">2.1.1. Role Based Authorisation for JMX</a></h4>
 <div class="paragraph">
-<p>Although by default Artemis uses the Java Virtual Machine&#8217;s <code>Platform MBeanServer</code> this is guarded using role based authorisation that leverages the broker&#8217;s JAAS plugin support.
-This is configured via the <code>authorisation</code> element in the <code>management.xml</code> configuration file and can be used to restrict access to attributes and methods on MBeans.</p>
+<p>Artemis uses the Java Virtual Machine&#8217;s <code>Platform MBeanServer</code> by default. This is guarded using role based authorisation that leverages the broker&#8217;s JAAS plugin support.</p>
 </div>
 <div class="paragraph">
+<p>The RBAC used to restrict access to Mbeans and their operations can be configured in <code>one</code> of two ways. Via security-settings in broker.xml, described in <a href="#jmx-authorization-in-broker-xml">JMX authorization in broker.xml</a>, or via the <code>authorization</code> element in the <code>management.xml</code> that is described below.</p>
+</div>
+<div class="sect4">
+<h5 id="jmx-authorisation-in-management-xml"><a class="anchor" href="#jmx-authorisation-in-management-xml"></a><a class="link" href="#jmx-authorisation-in-management-xml">JMX authorisation in management.xml</a></h5>
+<div class="paragraph">
 <p>There are 3 elements within the <code>authorisation</code> element, <code>allowlist</code>, <code>default-access</code> and <code>role-access</code>.
-Lets discuss each in turn.</p>
+Let&#8217;s discuss each in turn.</p>
 </div>
 <div class="paragraph">
 <p>Allowlist contains a list of MBeans that will bypass the authorisation, this is typically used for any MBeans that are needed by the console to run etc.
@@ -502,7 +511,7 @@ The default configuration looks like:</p>
 <p>This contains 1 match and will be applied to any MBean that has the domain <code>org.apache.activemq.artemis</code>.
 Any access to any MBeans that have this domain are controlled by the <code>access</code> elements which contain a method and a set of roles.
 The method being invoked will be used to pick the closest matching method and the roles for this will be applied for access.
-For instance if you try the invoke a method called <code>listMessages</code> on an MBean with the <code>org.apache.activemq.artemis</code> domain then this would match the <code>access</code> with the method of <code>list*</code>.
+For instance if you try to invoke a method called <code>listMessages</code> on an MBean with the <code>org.apache.activemq.artemis</code> domain then this would match the <code>access</code> with the method of <code>list*</code>.
 You could also explicitly configure this by using the full method name, like so:</p>
 </div>
 <div class="listingblock">
@@ -565,15 +574,103 @@ You could also explicitly configure this by using the full method name, like so:
 </div>
 <div class="paragraph">
 <p>Access to JMX MBean attributes are converted to method calls so these are controlled via the <code>set*</code>, <code>get*</code> and <code>is*</code>.
-The <code>*</code> access is the catch all for everything other method that isn&#8217;t specifically matched.</p>
+The <code>*</code> access is the catch-all for everything other method that isn&#8217;t specifically matched.</p>
 </div>
 <div class="paragraph">
-<p>The <code>default-access</code> element is basically the catch all for every method call that isn&#8217;t handled via the <code>role-access</code> configuration.
+<p>The <code>default-access</code> element is basically the catch-all for every method call that isn&#8217;t handled via the <code>role-access</code> configuration.
 This has the same semantics as a <code>match</code> element.</p>
 </div>
 </div>
+</div>
 <div class="sect3">
-<h4 id="local-jmx-access-with-jconsole"><a class="anchor" href="#local-jmx-access-with-jconsole"></a><a class="link" href="#local-jmx-access-with-jconsole">2.1.2. Local JMX Access with JConsole</a></h4>
+<h4 id="jmx-authorization-in-broker-xml"><a class="anchor" href="#jmx-authorization-in-broker-xml"></a><a class="link" href="#jmx-authorization-in-broker-xml">2.1.2. JMX authorization in broker.xml</a></h4>
+<div class="paragraph">
+<p>The existing <a href="security.html#role-based-security-for-addresses">security-settings</a> in broker.xml can be used for JMX RBAC.</p>
+</div>
+<div class="paragraph">
+<p>Using the <code>view</code> and <code>edit</code> permissions on matches in security-settings provides an alternative to the authorization section in management.xml.
+Using a single security model based on addresses, with reloadable configuration, simplifies operation.</p>
+</div>
+<div class="paragraph">
+<p>An <a href="#artemis_rbac_mbean_server_guard">MBeanServer interceptor</a> that delegates to the broker security manager must be configured with a JVM system property that allows it to be added to all MBeanServers in the JVM.</p>
+</div>
+<div class="paragraph">
+<p>This is configured via a system property as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="sh"> java <span class="nt">-Djavax</span>.management.builder.initial<span class="o">=</span>org.apache.activemq.artemis.core.server.management.ArtemisRbacMBeanServerBuilder</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When this property is provided, the authorization section of management.xml <strong><em>MUST</em></strong> be omitted/removed as that depends on an alternative MBeanServer interceptor and builder.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The security-settings match addresses used for JMX RBAC use the <code>mops.</code> (shorthand for management operations) <a href="configuration-index.html#management-rbac-prefix">prefix</a>.</p>
+</div>
+<div class="paragraph">
+<p>The MBeanServer guard maps JMX MBean ObjectNames to a hierarchical address of the general form:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre class="nowrap">mops&lt;.jmx domain&gt;&lt;.type&gt;&lt;.component&gt;&lt;.name&gt;[.operation]</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+for the broker domain, the domain is omitted.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For example, to give the <code>admin</code> role <code>view</code> and <code>edit</code> permissions on all MBeans, use the following security-setting:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"mops.#"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"view"</span> <span class="na">roles=</span><span class="s">"admin"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"edit"</span> <span class="na">roles=</span><span class="s">"admin"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To grant the <code>managerRole</code> role <code>view</code> permission to just the <code>activemq.management</code> address, target the <code>address</code> component with name <code>activemq.management</code> and with <code>.*</code> to include all operations.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"mops.address.activemq.management.*"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"view"</span> <span class="na">roles=</span><span class="s">"managerRole"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To ensure no user has permission to <a href="#force_failover">force a failover</a> using the broker (server control) MBean, use the following that defines the empty roles set for a particular mutating operation on the <code>broker</code> component:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"mops.broker.forceFailover"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"edit"</span> <span class="na">roles=</span><span class="s">""</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="local-jmx-access-with-jconsole"><a class="anchor" href="#local-jmx-access-with-jconsole"></a><a class="link" href="#local-jmx-access-with-jconsole">2.1.3. Local JMX Access with JConsole</a></h4>
 <div class="paragraph">
 <p>Due to the authorisation which is enabled by default Apache ActiveMQ Artemis  can <em>not</em> be managed locally using JConsole when connecting as a <em>local  process</em>.
 This is because JConsole does not pass any authentication information when connecting this way which means the user cannot therefore be authorised  for any management operations.
@@ -581,9 +678,9 @@ In order to use JConsole the user will either have to disable authorisation by c
 </div>
 </div>
 <div class="sect3">
-<h4 id="remote-jmx-access"><a class="anchor" href="#remote-jmx-access"></a><a class="link" href="#remote-jmx-access">2.1.3. Remote JMX Access</a></h4>
+<h4 id="remote-jmx-access"><a class="anchor" href="#remote-jmx-access"></a><a class="link" href="#remote-jmx-access">2.1.4. Remote JMX Access</a></h4>
 <div class="paragraph">
-<p>By default remote JMX access to Artemis is disabled for security reasons.</p>
+<p>By default, remote JMX access to Artemis is disabled for security reasons.</p>
 </div>
 <div class="paragraph">
 <p>Artemis has a JMX agent which allows access to JMX MBeans remotely.
@@ -768,14 +865,27 @@ For a full guide as to how to use it refer to <a href="https://jolokia.org/docum
 <h3 id="jmx-and-the-web-console"><a class="anchor" href="#jmx-and-the-web-console"></a><a class="link" href="#jmx-and-the-web-console">2.4. JMX and the Web Console</a></h3>
 <div class="paragraph">
 <p>The web console that ships with Artemis uses Jolokia under the covers which in turn uses JMX.
-This will use the authentication configuration in the <code>management.xml</code> file as described in the previous section.
+This will use the authentication configuration as described in the <a href="#role-based-authorisation-for-jmx">Role Based Authorisation for JMX section</a>.
 This means that when MBeans are accessed via the console the credentials used to log into the console and the roles associated with them.
-By default access to the console is only allow via users with the <code>amq</code> role.
+By default, access to the console is only allow via users with the <code>amq</code> role.
 This is configured in the <code>artemis.profile</code> via the system property <code>-Dhawtio.role=amq</code>.
 You can configure multiple roles by changing this to <code>-Dhawtio.roles=amq,view,update</code>.</p>
 </div>
 <div class="paragraph">
 <p>If a user doesn&#8217;t have the correct role to invoke a specific operation then this will display an authorisation exception in the console.</p>
+</div>
+<div class="sect3">
+<h4 id="artemis_rbac_mbean_server_guard"><a class="anchor" href="#artemis_rbac_mbean_server_guard"></a><a class="link" href="#artemis_rbac_mbean_server_guard">2.4.1. ArtemisRbacMBeanServerBuilder and ArtemisRbacInvocationHandler</a></h4>
+<div class="paragraph">
+<p>The ArtemisRbacMBeanServerBuilder class, when configured as value for the system property <code>javax.management.builder.initial</code> will cause the ArtemisRbacInvocationHandler to be installed on every JMX MBeanServer in the JVM.
+The ArtemisRbacInvocationHandler intercepts all operations on the MBeanServer and chooses to guard a subsection of those operations.</p>
+</div>
+<div class="paragraph">
+<p>For guarded operations the <code>view</code> or <code>edit</code> permissions are required to make an invocation. If the current authenticated subject does not have the required roles to grant those permissions, a security exception is thrown.</p>
+</div>
+<div class="paragraph">
+<p>For query operations on the MBeanServer, the results of the query are limited to entries that have the required <code>view</code> permission.</p>
+</div>
 </div>
 </div>
 </div>
@@ -895,7 +1005,63 @@ This is also configured in broker.xml:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="example-2"><a class="anchor" href="#example-2"></a><a class="link" href="#example-2">3.2. Example</a></h3>
+<h3 id="fine-grained-rbac-on-management-messages"><a class="anchor" href="#fine-grained-rbac-on-management-messages"></a><a class="link" href="#fine-grained-rbac-on-management-messages">3.2. Fine grained RBAC on management messages</a></h3>
+<div class="paragraph">
+<p>There is optional RBAC on the content of management messages sent to the management address.
+RBAC is enabled through configuration by setting the attribute <a href="configuration-index.html#management-message-rbac">management-message-rbac</a> to <code>true</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>manage</code> permission is required to execute management operations via messages. The <code>view</code> and <code>edit</code> permissions must be used in conjunction with the <code>manage</code> permission.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When enabled, more fine-grained permissions on the content of management messages sent to the management address can be configured through the security-settings.</p>
+</div>
+<div class="paragraph">
+<p>The security-settings match addresses used for RBAC follow the general hierarchical form of: <a href="configuration-index.html#management-rbac-prefix">management-rbac-prefix</a>, component type, component name, operation. Where the values are extracted from the management message headers.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre class="nowrap">&lt;management-rbac-prefix&gt;.&lt;resource type&gt;.&lt;resource name&gt;.&lt;operation&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="configuration-index.html#view-permission-method-match-pattern">Immutable operations and attribute access</a> will require the <code>view</code> permission, all other operations will require the <code>edit</code> permission.</p>
+</div>
+<div class="paragraph">
+<p>In the following example the <code>dataImport</code> role can only access the id attribute of queues, which is the only management operation that is required by the <a href="using-cli.html#command-line-interface">data import</a> command line tool.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"mops.queue.*.getID"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"view"</span> <span class="na">roles=</span><span class="s">"dataImport"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"manage"</span> <span class="na">roles=</span><span class="s">"dataImport"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want the <code>admin</code> role to have full access, use a wildcard after the management-rbac-prefix and grant both the <code>view</code> and <code>edit</code> permissions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"mops.#"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"view"</span> <span class="na">roles=</span><span class="s">"admin"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"update"</span> <span class="na">roles=</span><span class="s">"admin"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"manage"</span> <span class="na">roles=</span><span class="s">"admin"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="management-example"><a class="anchor" href="#management-example"></a><a class="link" href="#management-example">3.3. Management Example</a></h3>
 <div class="paragraph">
 <p>See the <a href="examples.html#management">Management Example</a> which shows how to use JMS messages to manage the Apache ActiveMQ Artemis server.</p>
 </div>
@@ -1005,7 +1171,7 @@ Default value is <code>false</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="example-3"><a class="anchor" href="#example-3"></a><a class="link" href="#example-3">4.3. Example</a></h3>
+<h3 id="example-2"><a class="anchor" href="#example-2"></a><a class="link" href="#example-2">4.3. Example</a></h3>
 <div class="paragraph">
 <p>See the <a href="examples.html#management-notification">Management Notification Example</a> which shows how to use a JMS <code>MessageListener</code> to receive management notifications from ActiveMQ Artemis server.</p>
 </div>
@@ -1232,7 +1398,7 @@ For example, to retrieve message counters on a queue using JMX:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="example-4"><a class="anchor" href="#example-4"></a><a class="link" href="#example-4">5.2. Example</a></h3>
+<h3 id="example-3"><a class="anchor" href="#example-3"></a><a class="link" href="#example-3">5.2. Example</a></h3>
 <div class="paragraph">
 <p>See the <a href="examples.html#message-counter">Message Counter Example</a> which shows how to use message counters to retrieve information on a queue.</p>
 </div>

@@ -58,7 +58,7 @@ You can confiugure the various SQL datatypes - such as column sizes and so forth
 
 </broker>
 ```
-For more info on what attributes can be set on the statements element, see the [Statements class](http://activemq.apache.org/maven/apidocs/org/apache/activemq/store/jdbc/Statements.html). All the settable bean properties can be used as attributes of the <statements> element.
+For more info on what attributes can be set on the statements element, see the [Statements class](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/store/jdbc/Statements.html). All the settable bean properties can be used as attributes of the <statements> element.
 
 ### Using MySQL
 

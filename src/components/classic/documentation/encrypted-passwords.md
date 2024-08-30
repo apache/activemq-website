@@ -42,7 +42,7 @@ jdbc.password=ENC(eeWjNyX6FY8Fjp3E+F6qTytV11bZItDp)
 ```
 Note that we used `ENC()` to wrap our encrypted passwords. You can mix plain and encrypted passwords in your properties files, so encrypted ones must be wrapped this way.
 
-Finally, you need to instruct your property loader to encrypt variables when it loads properties to the memory. Instead of standard property loader we'll use the special one (see `\$ACTIVEMQ_HOME/conf/activemq-security.xml`) to achieve this.
+Finally, you need to instruct your property loader to decrypt variables when it loads properties to the memory. Instead of standard property loader we'll use the special one (see `\$ACTIVEMQ_HOME/conf/activemq-security.xml`) to achieve this.
 ```
 <bean id="environmentVariablesConfiguration" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
   <property name="algorithm" value="PBEWithMD5AndDES" />

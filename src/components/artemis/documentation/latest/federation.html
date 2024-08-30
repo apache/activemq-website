@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Federation</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Federation</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.32.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#benefits">1. Benefits</a>
 <ul class="sectlevel2">
@@ -60,10 +60,10 @@ This is only supported with multicast addresses.</p>
 <div class="sect2">
 <h3 id="wan"><a class="anchor" href="#wan"></a><a class="link" href="#wan">1.1. WAN</a></h3>
 <div class="paragraph">
-<p>The source and target servers do not have to be in the same cluster which makes federation suitable for reliably sending messages from one cluster to another, for instance across a WAN, between cloud regions or there internet and where the  connection may be unreliable.</p>
+<p>The source and target servers do not have to be in the same cluster which makes federation suitable for reliably sending messages from one cluster to another, for instance across a WAN, between cloud regions or where connection may be unreliable.</p>
 </div>
 <div class="paragraph">
-<p>Federation has built in resilience to failure so if the target server connection is lost, e.g. due to network failure, federation will retry connecting to the target until it comes back online.
+<p>Federation has built-in resilience to failure so if the target server connection is lost, e.g. due to network failure, federation will retry connecting to the target until it comes back online.
 When it comes back online it will resume operation as normal.</p>
 </div>
 </div>
@@ -89,13 +89,13 @@ When it comes back online it will resume operation as normal.</p>
 <p>Federation is applied by policies, that match address and queue names, and then apply.</p>
 </div>
 <div class="paragraph">
-<p>This means that federation can dynamically be applied as queues or addresses are added and removed,  without needing to hard configure each and every one.</p>
+<p>This means that federation can dynamically be applied as queues or addresses are added and removed, without need to individually configure them.</p>
 </div>
 <div class="paragraph">
-<p>Like wise policies are selective, in that they apply with multiple include and exclude matches.</p>
+<p>Likewise, policies are selective. They apply with multiple include and exclude matches.</p>
 </div>
 <div class="paragraph">
-<p>Mutliple policies can applied directly to multiple upstreams,  as well policies can be grouped into policy sets and then applied to upstreams to make managing easier.</p>
+<p>Multiple policies can be applied directly to multiple upstreams. Policies can be grouped into policy sets and then applied to upstreams to make managing easier.</p>
 </div>
 </div>
 </div>
@@ -104,14 +104,14 @@ When it comes back online it will resume operation as normal.</p>
 <h2 id="address-federation"><a class="anchor" href="#address-federation"></a><a class="link" href="#address-federation">2. Address Federation</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Address federation is like full multicast over the connected brokers, in that every message sent to address on <code>Broker-A</code> will be delivered to every queue on that broker, but like wise will be delivered to <code>Broker-B</code> and all attached queues there.</p>
+<p>Address federation is similar to full multicast over the connected brokers. Every message sent to address on <code>Broker-A</code> will be delivered to every queue on that broker, but also will be delivered to <code>Broker-B</code> and all their attached queues.</p>
 </div>
 <div class="paragraph">
 <div class="title">Address Federation</div>
 <p><span class="image"><img src="images/federation-address.png" alt="Address Federation"></span></p>
 </div>
 <div class="paragraph">
-<p>For further details please goto <a href="federation-address.html#address-federation">Address Federation</a>.</p>
+<p>For further details please see <a href="federation-address.html#address-federation">Address Federation</a>.</p>
 </div>
 </div>
 </div>
@@ -119,16 +119,16 @@ When it comes back online it will resume operation as normal.</p>
 <h2 id="queue-federation"><a class="anchor" href="#queue-federation"></a><a class="link" href="#queue-federation">3. Queue Federation</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Effectively, all federated queues act as a single logical queue, with multiple receivers on multiple machines.
-So federated queues can be used for load balancing.
-Typically if the brokers are in the same AZ you would look to cluster them, the advantage of queue federation is that it does not require clustering so is suitable for over WAN, cross-region, on-off prem.</p>
+<p>Federated queues act as a single logical queue with multiple receivers on multiple machines.
+They can be used for load balancing.
+If brokers are in the same Availability Zone you would look to cluster them. The advantage of queue federation is that it does not require clustering, so it is suitable for over WAN, cross-region or on/off-premises usage.</p>
 </div>
 <div class="paragraph">
 <div class="title">Queue Federation</div>
 <p><span class="image"><img src="images/federated-queue-symmetric.png" alt="Queue Federation"></span></p>
 </div>
 <div class="paragraph">
-<p>For further details please goto <a href="federation-queue.html#queue-federation">Queue Federation</a>.</p>
+<p>For further details please see <a href="federation-queue.html#queue-federation">Queue Federation</a>.</p>
 </div>
 </div>
 </div>
@@ -136,13 +136,23 @@ Typically if the brokers are in the same AZ you would look to cluster them, the 
 <h2 id="wan-full-mesh"><a class="anchor" href="#wan-full-mesh"></a><a class="link" href="#wan-full-mesh">4. WAN Full Mesh</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>With federation it is possible to provide a WAN mesh of brokers, replicating with Address Federation or routing and load balancing with Queue Federation.</p>
+<p>It is also possible to provide a WAN mesh of brokers, which can</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>replicate by Address Federation</p>
+</li>
+<li>
+<p>route and load balance using Queue Federation</p>
+</li>
+<li>
+<p>link distant producers and consumers</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Linking producers and consumers distant from each other.</p>
-</div>
-<div class="paragraph">
-<div class="title">Example possible full federation mesh</div>
+<div class="title">Example of possible full federation mesh</div>
 <p><span class="image"><img src="images/federated-world-wide-mesh.png" alt="WAN Full Mesh"></span></p>
 </div>
 </div>
@@ -151,10 +161,7 @@ Typically if the brokers are in the same AZ you would look to cluster them, the 
 <h2 id="configuring-federation"><a class="anchor" href="#configuring-federation"></a><a class="link" href="#configuring-federation">5. Configuring Federation</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Federation is configured in <code>broker.xml</code>.</p>
-</div>
-<div class="paragraph">
-<p>Sample:</p>
+<p>Example configuration in <code>broker.xml</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -191,13 +198,24 @@ Typically if the brokers are in the same AZ you would look to cluster them, the 
 <p>In the above example we have shown the basic key parameters needed to configure federation for a queue and address to multiple upstream.</p>
 </div>
 <div class="paragraph">
-<p>The example shows a broker <code>eu-north-1</code> connecting to two upstream brokers <code>eu-east-1</code> and <code>eu-west-1</code>,  and applying queue federation to queue <code>federated_queue</code> , and also applying address federation to <code>federated_address</code>.</p>
+<p>The example shows a broker <code>eu-north-1</code> connecting to two upstream brokers <code>eu-east-1</code> and <code>eu-west-1</code>.
+Applying queue federation to queue <code>federated_queue</code> and address federation to address <code>federated_address</code>.</p>
 </div>
 <div class="paragraph">
 <p><strong>It is important that federation name is globally unique.</strong></p>
 </div>
 <div class="paragraph">
-<p>There are many configuration options that you can apply these are detailed in the individual docs for <a href="federation-address.html#address-federation">Address Federation</a> and   <a href="federation-queue.html#queue-federation">Queue Federation</a>.</p>
+<p>There are many configuration options that you can apply. These are detailed in the individual docs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="federation-address.html#address-federation">Address Federation</a></p>
+</li>
+<li>
+<p><a href="federation-queue.html#queue-federation">Queue Federation</a></p>
+</li>
+</ul>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -216,8 +234,13 @@ Typically if the brokers are in the same AZ you would look to cluster them, the 
 <div class="sect2">
 <h3 id="large-messages"><a class="anchor" href="#large-messages"></a><a class="link" href="#large-messages">5.1. Large Messages</a></h3>
 <div class="paragraph">
-<p>If Federation has to process large messages, the default ackBatchSize and consumerWindowSize for the consumer will need to be changed to limit the number of in-flight messages and to enable large message flow.
-These options can be supplied as parameters on the referenced connector URI, for example:   <code>tcp://&lt;host&gt;:&lt;port&gt;?ackBatchSize=100&amp;consumerWindowSize=-1</code></p>
+<p>If federation has to process large messages, the default <code>ackBatchSize</code> and <code>consumerWindowSize</code> for the consumer will need to be changed to limit the number of in-flight messages and to enable large message flow.
+These options can be supplied as parameters on the referenced connector URI, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="url">tcp://&lt;host&gt;:&lt;port&gt;?ackBatchSize=100&amp;consumerWindowSize=-1</code></pre>
+</div>
 </div>
 </div>
 </div>
