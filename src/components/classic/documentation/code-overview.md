@@ -18,14 +18,14 @@ The following section walks through the main parts of Apache ActiveMQ Classic an
 JMS Client
 ----------
 
-The [org.apache.activemq](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/package-summary.html) package defines the core JMS client.
+The [org.apache.activemq](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/package-summary.html) package defines the core JMS client.
 
 Transport
 ---------
 
-The JMS client and the message broker use the [Transport](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/transport/Transport.html) abstraction for sending around command objects (like a distributed _Command Pattern_). A TransportChannel typically deals with some kind of networking mechanism (TCP sockets using BIO, using NIO, UDP / multicast, SSL over sockets, JXTA, EmberIO etc). See the [org.apache.activemq.transport](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/transport/package-summary.html) package for more details
+The JMS client and the message broker use the [Transport](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/transport/Transport.html) abstraction for sending around command objects (like a distributed _Command Pattern_). A TransportChannel typically deals with some kind of networking mechanism (TCP sockets using BIO, using NIO, UDP / multicast, SSL over sockets, JXTA, EmberIO etc). See the [org.apache.activemq.transport](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/transport/package-summary.html) package for more details
 
-So the TransportChannel is basically concerned with sending and receiving [Command](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/command/Command.html) objects (each instance represents some kind of _command_). Packet is defined in the [org.apache.activemq.command](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/command/package-summary.html) package which defines all the JMS Message implementations classes (which are Commands) along with a number of other kinds of packets, like subsciptions, message acknowledgements, transactions and so forth.
+So the TransportChannel is basically concerned with sending and receiving [Command](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/command/Command.html) objects (each instance represents some kind of _command_). Packet is defined in the [org.apache.activemq.command](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/command/package-summary.html) package which defines all the JMS Message implementations classes (which are Commands) along with a number of other kinds of packets, like subsciptions, message acknowledgements, transactions and so forth.
 
 WireFormat
 ----------
@@ -36,12 +36,12 @@ So all the Transport  implementations take a pluggable WireFormat implementatio
 
 So if you wish to provide your own binary, _on the wire_ protocol then we just need a WireFormat implementation of your protocol, then we can use this with any transport (TCP BIO, NIO, JXTA etc).
 
-We use [OpenWireFormat](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/openwire/OpenWireFormat.html) by default which is the most efficient & easiest format to use from Java code - so if both ends of the wire are Java then its highly recommended. Though other WireFormats are most welcome.
+We use [OpenWireFormat](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/openwire/OpenWireFormat.html) by default which is the most efficient & easiest format to use from Java code - so if both ends of the wire are Java then its highly recommended. Though other WireFormats are most welcome.
 
 Default Wire Format
 -------------------
 
-The default wire format writes a byte which indicates the kind of Command which is being sent (see the [CommandTypes](http://activemq.apache.org/maven/5.5.0/activemq-core/apidocs/org/apache/activemq/command/CommandTypes.html) interface which defines all the int constants for each type of command.
+The default wire format writes a byte which indicates the kind of Command which is being sent (see the [CommandTypes](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/command/CommandTypes.html) interface which defines all the int constants for each type of command.
 
 The core JMS Message types each have a unique byte ID for
 
@@ -52,14 +52,14 @@ The core JMS Message types each have a unique byte ID for
 *   BytesMessage
 *   StreamMessage
 
-Then in addition there are various other [types of command](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/command/package-summary.html) such as
+Then in addition there are various other [types of command](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/command/package-summary.html) such as
 
-*   [ConnectionInfo](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/command/ConnectionInfo.html) for when a new connection is established with a message broker
-*   [ConsumerInfo](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/command/ConsumerInfo.html) when a new consumer is created on a connection
-*   [MessageAck](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/command/MessageAck.html) to acknowledge a message ID
-*   [TransactionInfo](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/command/TransactionInfo.html) to denote a transaction
+*   [ConnectionInfo](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/command/ConnectionInfo.html) for when a new connection is established with a message broker
+*   [ConsumerInfo](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/command/ConsumerInfo.html) when a new consumer is created on a connection
+*   [MessageAck](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/command/MessageAck.html) to acknowledge a message ID
+*   [TransactionInfo](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/command/TransactionInfo.html) to denote a transaction
 
-There are a few others; the [org.apache.activemq.command](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/command/package-summary.html) package describes them in their gory detail.
+There are a few others; the [org.apache.activemq.command](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/command/package-summary.html) package describes them in their gory detail.
 
 Basically the DefaultWireFormat has a default encoding of each of these commands. So after the first byte which indicates the type of packet is written, there is a specific wire format per packet type.
 
@@ -68,7 +68,7 @@ For new wire formats it may be that you only need to support a small subset of t
 Message Broker
 ==============
 
-The APIs for the message broker (server side of the JMS client) are defined in the [org.apache.activemq.broker](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/broker/package-summary.html). There are various other packages which define different parts, from the message stores to the message routing and so forth.
+The APIs for the message broker (server side of the JMS client) are defined in the [org.apache.activemq.broker](https://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/package-summary.html). There are various other packages which define different parts, from the message stores to the message routing and so forth.
 
 To see an overview of these packages try the [JavaDocs](docs)
 
