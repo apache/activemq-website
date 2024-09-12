@@ -16,6 +16,7 @@ type: artemis
 * [ARTEMIS-4785](https://issues.apache.org/jira/browse/ARTEMIS-4785) - Isolate broker run command Log4j and profile config from other CLI commands
 * [ARTEMIS-4939](https://issues.apache.org/jira/browse/ARTEMIS-4939) - Allow configuring request &amp; response header sizes for embedded web server
 * [ARTEMIS-4952](https://issues.apache.org/jira/browse/ARTEMIS-4952) - JMX countMessages: groupBy not working on AMQP messages
+* [ARTEMIS-4954](https://issues.apache.org/jira/browse/ARTEMIS-4954) - AddressControl.pause() can pause the snf queue
 * [ARTEMIS-4959](https://issues.apache.org/jira/browse/ARTEMIS-4959) - moveMessages operation can move more messages than max messageCount
 * [ARTEMIS-4960](https://issues.apache.org/jira/browse/ARTEMIS-4960) - Ubuntu package name change preventing Docker image build
 * [ARTEMIS-4969](https://issues.apache.org/jira/browse/ARTEMIS-4969) - FQQN Security settings not honored when an AMQP Sender attaches
@@ -23,6 +24,10 @@ type: artemis
 * [ARTEMIS-4982](https://issues.apache.org/jira/browse/ARTEMIS-4982) - AMQP Large message files not removed immediately on failed sends
 * [ARTEMIS-4985](https://issues.apache.org/jira/browse/ARTEMIS-4985) - Message priority occasionally broken
 * [ARTEMIS-4986](https://issues.apache.org/jira/browse/ARTEMIS-4986) - Replication/Vote incompatibility between versions up to 2.31.2 (inclusive) and 2.32.0 - 2.36.0
+
+## New Features
+
+* [ARTEMIS-4809](https://issues.apache.org/jira/browse/ARTEMIS-4809) - Make intermediateMessageReferences initial capacity configurable
 
 ## Improvements
 
