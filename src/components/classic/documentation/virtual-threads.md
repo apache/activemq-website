@@ -44,7 +44,7 @@ To enable Virtual Threads in ActiveMQ Classic 6.x (and higher)
 3. Copy the lib/jdk21/activemq-client-jdk21-_version.jar to lib/activemq-client-_version_.jar
 3. Edit conf/activemq.xml
 
-    <broker ... virtualThreadTeaskRunner="true" .. >
+    <broker ... virtualThreadTaskRunner="true" .. >
 
 4. Run ActiveMQ Classic and confirm with the following log message:
 
