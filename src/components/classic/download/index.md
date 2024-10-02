@@ -16,7 +16,7 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
 | 6.2.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | 17+          | 6.1.11         | Log4j 2.23.1/Slf4j 2.0.13    | Jetty 11.0.22          | In dev       |         |        | Nov  24 |
 | 6.1.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | 17+          | 6.1.11         | Log4j 2.23.1/Slf4j 2.0.13    | Jetty 11.0.22          | **Stable**   | 6.1.3   | 6.1.4  | Nov  24 |
 | 6.0.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | 17+          | 6.0.17         | Log4j 2.22.0/Slf4j 2.0.9     | Jetty 11.0.18          | _Not Active_ | 6.0.1   |        |         |
-| 5.18.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | 11+          | 5.3.37         | Log4j 2.23.1/Slf4j 2.0.13    | Jetty 9.4.55.v20240627 | **Stable**   | 5.18.5  | 5.18.6 | Oct  24 |
+| 5.18.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | 11+          | 5.3.39         | Log4j 2.23.1/Slf4j 2.0.13    | Jetty 9.4.56.v20240826 | **Stable**   | 5.18.6  | 5.18.7 | Dec  24 |
 | 5.17.x | Javax JMS 1.1               | Javax JMS 1.1               | 11+          | 5.3.30         | Log4j 2.20.0/Slf4j 1.7.36    | Jetty 9.4.53.v20231009 | _Not Active_ | 5.17.6  |        |         |
 | 5.16.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.8          | 4.3.30.RELEASE | Reload4j 1.2.24/Slf4j 1.7.26 | Jetty 9.4.50.v20221201 | _Not Active_ | 5.16.7  |        |         |
 | 5.15.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.8          | 4.3.30.RELEASE | Log4j 1.2.17/Slf4j 1.7.32    | Jetty 9.4.39.v20210325 | _Not Active_ | 5.15.16 |        |         |
