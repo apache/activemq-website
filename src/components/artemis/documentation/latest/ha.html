@@ -78,7 +78,7 @@ These terms will be used throughout the documentation, configuration, source cod
 <div class="sect2">
 <h3 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">1.1. Configuration</a></h3>
 <div class="paragraph">
-<p>These nouns identify how the broker is <em>configured</em>, e.g. in <code>broker.xml</code>. The configuration allows brokers to be paired together as a <em>primary/backup</em> group (i.e. an <em>HA pair</em> of brokers.</p>
+<p>These nouns identify how the broker is <em>configured</em>, e.g. in <code>broker.xml</code>. The configuration allows brokers to be paired together as <em>primary/backup</em> (i.e. an <em>HA pair</em> of brokers).</p>
 </div>
 <div class="dlist">
 <dl>
@@ -86,9 +86,13 @@ These terms will be used throughout the documentation, configuration, source cod
 <dd>
 <p>This identifies the main broker in the high availability configuration.
 Oftentimes the hardware on this broker will be higher performance than the hardware on the backup broker.
-Typically, this broker is started before the backup and is active most of the time.
-Each primary server can have 1 or more backup servers.
-However, only one backup will take over the primary server&#8217;s work.</p>
+Typically, this broker is started before the backup and is active most of the time.</p>
+<div class="paragraph">
+<p>Each primary server can be paired with one backup server.
+Other backups can be configured, but the primary will only pair with one.
+When the primary fails the backup will take over.
+At this point if there are other backups configured then the backup that took over will pair with one of those.</p>
+</div>
 </dd>
 <dt class="hdlist1">backup</dt>
 <dd>
