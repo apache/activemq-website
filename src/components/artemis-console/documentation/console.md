@@ -4,30 +4,43 @@ title: ActiveMQ Artemis Console Documentation
 title-class: page-title-artemis
 type: artemis
 ---
-[Documentation](index) > [Getting Started](getting-started)
+[Documentation](index) > [Using The Console](console)
 
 <a id="connecting-to-the-broker"></a>
 ## Connecting To the Broker
 
 ### Adding A Connection
 
-Once you have navigated to the *connect* page click on the *Add connection* button and fill in the Jolokia endpoint configuration
-of your broker. You will be able to test the connection before creating:
+Once you have navigated to the *Connect* page click on the *Add connection* button and fill in the Jolokia endpoint configuration
+of your broker.
 
+The endpoint details will depend on your specific broker configuration, but can be easily found in a message printed to
+the console during broker startup. For instance, a fresh broker instance displaying startup message:
+
+    AMQ241002: Artemis Jolokia REST API available at http://localhost:8161/console/jolokia
+
+Would yield connection details of:
+
+    Host: localhost
+    Port: 8161
+    Path: /console/jolokia
+
+Configure these as needed for your specific broker instance. You can test the connection with the *Test connection* button before clicking *Add* to save the connection:
 <img src= "connect.png" width="1200" alt="Edit Connection Image" style="border: 2px solid grey;">
 
-Once the connection is added simply click the *Connect* button of your broker and this should open up a new tab and prompt for a login attempt.
-Login and ypu should see  the console to 2 Artemis Menu items.
+Once the connection is added simply click the *Connect* button for your broker and this should open up a new tab and prompt for a login attempt.
+Once logged in you should see the console with two Artemis menu items.
 
 <img src= "connected.png" width="1200" alt="Connection Image" style="border: 2px solid grey;">
 
 <a id="navigating-theartemis-views"></a>
 ## Navigating the Artemis Views
 
-There are 2 Artemis views that are available from the left hand menu the **Artemis** View and the **Artemis JMX** view.
-The former navigates around resources using a JMX tree and exposes the JMX Attributes and Operations of each MBean as well as
-functionality exposed. The second is a set of tabs that exposes similar functionality but in tabular gviews and is not 
-related to specific mbeans.
+There are two Artemis views that are available from the left hand menu the **Artemis** view and the **Artemis JMX** view.
+
+The [**Artemis JMX**](#artemis-jmx-view) view navigates around resources using a JMX tree and presents the JMX Attributes and Operations of each specific MBean as well as functionality exposed.
+
+The [**Artemis**](#artemis-view) view is a set of tabs that exposes functionality in tabular views for paginating over broker resources such as Addresses and Queues.
 
 <a id="artemis-jmx-view"></a>
 ### Artemis JMX View
@@ -44,7 +57,7 @@ MBean is selected in the tree a set of related tabs become visible
 
 #### Default Tabs
 
-All MBeans will show the following tabs by default which are exposed on all Mbeans.
+All MBeans will show the following tabs by default which are exposed on all MBeans.
 
 ##### Attributes
 
@@ -68,7 +81,7 @@ If the MBean selected is an Address MBean which are found under the *addresses* 
 ##### Create Queue
 
 This tab will allow the user to create queues that are bound to the address that is selected. It exposes the ability to 
-configure a sub set of available paramaters on the queue, however extra configuration not exposed  can be configured 
+configure a sub set of available parameters on the queue, however extra configuration not exposed  can be configured
 using a set of key/value pairs, for instance delay-before-dispatch or auto-delete.
 
 ##### Delete Address
@@ -88,9 +101,9 @@ It allows message headers to be added and a body. Note that the message type cre
 
 #### Queue Tabs
 
-If the MBean selected is a *Queue* MBean then teh following tabs are displayed.
+If the MBean selected is a *Queue* MBean then the following tabs are displayed.
 
-> NOTE: Queue MBeans are found under the  *Address* Mbean it is bound to.
+> NOTE: Queue MBeans are found under the  *Address* MBean it is bound to.
 >
 
 #### Browse Messages
@@ -234,7 +247,7 @@ value to filter on by clicking the *Search* button.
 
 Clicking on the *Queue Count* value will navigate to the **Address** tab and filter on that address 
 
-The 3 dots on teh right of each Address will allow the user to perform the following operations.
+The 3 dots on the right of each Address will allow the user to perform the following operations.
 
 ##### Show in Artemis JMX
 
@@ -246,7 +259,7 @@ This will open up a dialog showing all the Queues MBean attributes and allow edi
 
 ##### Operations
 
-This will open up a dialog showing all the Queues Mbean operations and allow execution of permissions allow. 
+This will open up a dialog showing all the Queues MBean operations and allow execution of permissions allow.
 
 ##### Delete Address
 
@@ -267,7 +280,7 @@ It allows message headers to be added and a body. Note that the message type cre
 ##### Create Queue
 
 This will open up a dialog which will allow the user to create queues that are bound to the address that is selected. It exposes the ability to
-configure a sub set of available paramaters on the queue, however extra configuration not exposed  can be configured
+configure a sub set of available parameters on the queue, however extra configuration not exposed  can be configured
 using a set of key/value pairs, for instance delay-before-dispatch or auto-delete.
 
 
@@ -296,11 +309,12 @@ This will then change the view to:
 
 <img src= "browse2.png" width="1200" alt="browse2 Image" style="border: 2px solid grey;">
 
-> NOTE: you can navigate to and from each view by using the *Queues* and the *Browse * button at th ebottom left hand corner.
-> 
+> NOTE: You can navigate to and from each view by using the *Queues* and the *Browse * button at the bottom left hand corner.
+
+
 #### Broker Diagram
 
-The **Broker Diagram** tab shows a visual representation of the Broker, its Addresses and Queue and any othe Broker that
+The **Broker Diagram** tab shows a visual representation of the Broker, its Addresses and Queue and any other Broker that
 may be in the Cluster. You can choose which Nodes to show by clicking on the *Node Options* dropdown.
 
 Clicking on the node will also fetch up the Attributes of the MBean associated with the node.
@@ -318,7 +332,7 @@ By default the console is locked down to 'localhost', pay particular attention t
 
 #### MBean Access
 
-Access to MBeans is configured in ActiveMQ Artemis, see the [Management via JMX](https://activemq.apache.org/components/artemis/documentation/) chapter.
+Access to MBeans is configured in ActiveMQ Artemis, see the [Management via JMX](https://activemq.apache.org/components/artemis/documentation/latest/management.html#management-via-jmx) chapter.
 
 Certain screen and tab visibility is controlled by the access to a specific JMX Operation, for instance the **Create Queue** 
 tab is only shown if the user has access to the create queue JMX operation.
@@ -326,24 +340,4 @@ tab is only shown if the user has access to the create queue JMX operation.
 ### Single Sign on
 
 Please refer to the [HawtIO Documentation](https://hawt.io/docs/oidc.html)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

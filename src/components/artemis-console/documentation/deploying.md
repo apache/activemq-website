@@ -4,12 +4,14 @@ title: ActiveMQ Artemis Console Documentation
 title-class: page-title-artemis
 type: artemis
 ---
-[Documentation](index) > [Getting Started](getting-started)
+[Documentation](index) > [Deploying](deploying)
 
 ## Deploying embedded in ActiveMQ Artemis
 
-Currently not supported. This will arrive in ActiveMQ Artemis 3.0. This is because the new console requires changes to use jakarta and other
-possible breaking changes
+Currently not supported. This will arrive in ActiveMQ Artemis 3.0. This is because the new console requires changes to use Jakarta APIs for the embedded
+web server and other possible breaking changes not suited to make in Artemis 2.x releases.
+
+Prior to Artemis 3.0 the new console is aimed at deployment in standalone server, e.g as outlined below for Jetty and Tomcat.
 
 ## Deploying in Jetty
 
@@ -36,9 +38,9 @@ java -Dhawtio.authenticationEnabled=false -jar $JETTY_HOME/start.jar
 
 > **_NOTE:_**  Since this is only running the Connect plugin Hawtio authentication is disabled. Authentication will take place on connection to the Artemis Broker. 
 
-Connect a browser to [http:/localhost:8080/console](http:/localhost:8080/console) or the URL you configured for Jetty.
+Connect a browser to [http://localhost:8080/console](http://localhost:8080/console) or the URL you configured for Jetty.
 
-The [connecting](connecting) chapter explains how to connect to a running broker
+The [connecting](console.html#connecting-to-the-broker) chapter explains how to connect to a running broker.
 
 For full information on deploying Applications in Jetty see [The Operations Guide](https://jetty.org/docs/jetty/12/operations-guide/index.html)
 
@@ -47,7 +49,7 @@ For full information on deploying Applications in Jetty see [The Operations Guid
 
 Firstly you will need to install [Tomcat Version 10](https://tomcat.apache.org/download-10.cgi).
 
-There are many ways to deploy a *WAR* file using Tomcat. The [Tomcat Documentation]{https://tomcat.apache.org/tomcat-10.1-doc) explains this in detail.
+There are many ways to deploy a *WAR* file using Tomcat. The [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc) explains this in detail.
 
 You will need to make sure  that the context path for the console is configured to be */console*, if the war were configured in 
 the tomcat *server.xml* this would look like:
@@ -63,6 +65,6 @@ you can disable authentication by setting the property:
 export CATALINA_OPTS="-Dhawtio.authenticationEnabled=false"
 ```
 
-Once Tomcat is started connect a browser to [http:/localhost:8080/console](http:/localhost:8080/console) or the URL you configured for tomcat.
+Once Tomcat is started connect a browser to [http://localhost:8080/console](http://localhost:8080/console) or the URL you configured for tomcat.
 
-The [connecting](connecting) chapter explains how to connect to a running broker
+The [connecting](console.html#connecting-to-the-broker) chapter explains how to connect to a running broker
