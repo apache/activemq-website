@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ActiveMQ</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script defer src="/js/fontawesome-all.min.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc"></script>
+    <script src="/js/jquery.slim.min.js" integrity="sha384-5AkRS45j4ukf+JbWAfHL8P4onPA9p0KwwP7pUdjSQA3ss9edbJUJc/XcYAiheSSz"></script>
+    <script src="/js/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"></script>
+    <script src="/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <!-- <a class="navbar-brand mr-auto" href="#"><img style="height: 50px" src="assets/img/apache-feather.png" /></a> -->
+        <a class="navbar-brand mr-auto" href="/"><img src="/assets/img/activemq_logo_black_small.png" style="height: 50px"/></a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="ml-auto collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/news">News</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownComponents" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Components<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdownComponents">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ Classic</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/artemis-console/">ActiveMQ Artemis Console</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/cms">CMS Client</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownCommunity" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Community<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownCommunity">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="/contact">Contact Us</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/contributing">Contribute</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/issues">Report Issues</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/support">Get Support</a></li>
+                                </ul>
+                            </div>
+                          </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarDropdownTeam" data-target="#" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/assets/img/feather.png" style="height:20px">Apache<span class="caret"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-center multi-column columns-1" aria-labelledby="navbarDropdownTeam">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <ul class="multi-column-dropdown">
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org">The Apache Software Foundation</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/licenses/">License</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/security-advisories">Security</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://www.apache.org/events/current-event">Events</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://people.apache.org/phonebook.html?pmc=activemq">PMC & Committers</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://whimsy.apache.org/board/minutes/ActiveMQ.html">Board Reports</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="https://privacy.apache.org/policies/privacy-policy-public.html">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+  <div class="page-title-artemis">
+    <div class="container">
+      <h1>ActiveMQ Artemis Console Documentation</h1>
+    </div>
+  </div>
+  <div class="container" >
+    <div class="row" style="margin-top: 30px">
+      <div class="col-12 artemis">
+        <p><a href="index">Documentation</a> &gt; <a href="console">Using The Console</a></p>
+
+<p><a id="connecting-to-the-broker"></a></p>
+<h2 id="connecting-to-the-broker">Connecting To the Broker</h2>
+
+<h3 id="adding-a-connection">Adding A Connection</h3>
+
+<p>Once you have navigated to the <em>Connect</em> page click on the <em>Add connection</em> button and fill in the Jolokia endpoint configuration
+of your broker.</p>
+
+<p>The endpoint details will depend on your specific broker configuration, but can be easily found in a message printed to
+the console during broker startup. For instance, a fresh broker instance displaying startup message:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AMQ241002: Artemis Jolokia REST API available at http://localhost:8161/console/jolokia
+</code></pre></div></div>
+
+<p>Would yield connection details of:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Host: localhost
+Port: 8161
+Path: /console/jolokia
+</code></pre></div></div>
+
+<p>Configure these as needed for your specific broker instance. You can test the connection with the <em>Test connection</em> button before clicking <em>Add</em> to save the connection:
+<img src="connect.png" width="1200" alt="Edit Connection Image" style="border: 2px solid grey;" /></p>
+
+<p>Once the connection is added simply click the <em>Connect</em> button for your broker and this should open up a new tab and prompt for a login attempt.
+Once logged in you should see the console with two Artemis menu items.</p>
+
+<p><img src="connected.png" width="1200" alt="Connection Image" style="border: 2px solid grey;" /></p>
+
+<p><a id="navigating-theartemis-views"></a></p>
+<h2 id="navigating-the-artemis-views">Navigating the Artemis Views</h2>
+
+<p>There are two Artemis views that are available from the left hand menu the <strong>Artemis</strong> view and the <strong>Artemis JMX</strong> view.</p>
+
+<p>The <a href="#artemis-jmx-view"><strong>Artemis JMX</strong></a> view navigates around resources using a JMX tree and presents the JMX Attributes and Operations of each specific MBean as well as functionality exposed.</p>
+
+<p>The <a href="#artemis-view"><strong>Artemis</strong></a> view is a set of tabs that exposes functionality in tabular views for paginating over broker resources such as Addresses and Queues.</p>
+
+<p><a id="artemis-jmx-view"></a></p>
+<h3 id="artemis-jmx-view">Artemis JMX View</h3>
+<p>Click <strong>Artemis JMX</strong> in the left navigation bar to see the Artemis JMX specific plugin. (The Artemis tab won’t appear if there is no 
+broker in this JVM). The Artemis plugin works very much the same as the JMX plugin however with a focus on interacting with an Artemis broker.</p>
+
+<h4 id="tree-view">Tree View</h4>
+<p>The tree view on the left-hand side shows the top level JMX tree of each broker instance running in the JVM. Expanding 
+the tree will show the various MBeans registered by Artemis that you can inspect via the Attributes tab. When a specific 
+MBean is selected in the tree a set of related tabs become visible</p>
+
+<p><img src="treeview.png" width="1200" alt="Connection Image" style="border: 2px solid grey;" /></p>
+
+<h4 id="default-tabs">Default Tabs</h4>
+
+<p>All MBeans will show the following tabs by default which are exposed on all MBeans.</p>
+
+<h5 id="attributes">Attributes</h5>
+
+<p>The <strong>Attributes</strong> tab shows all attributes that are configured on an MBean if permissions allow. Depending on the permissions of the user
+these may be editable.</p>
+
+<h5 id="operations">Operations</h5>
+
+<p>The <strong>Operations</strong> Tab exposes a list of JMX operations that the selected MBean exposes. Depending on a users permissions
+these can be executed by expanding each operation.</p>
+
+<h5 id="chart">Chart</h5>
+
+<p>The <strong>Chart</strong> tab allows you to view numerical data of an MBean along a time series.</p>
+
+<h4 id="address-tabs">Address Tabs</h4>
+
+<p>If the MBean selected is an Address MBean which are found under the <em>addresses</em> leaf in the tree then you will see the following tabs if permissions allow.</p>
+
+<h5 id="create-queue">Create Queue</h5>
+
+<p>This tab will allow the user to create queues that are bound to the address that is selected. It exposes the ability to 
+configure a sub set of available parameters on the queue, however extra configuration not exposed  can be configured
+using a set of key/value pairs, for instance delay-before-dispatch or auto-delete.</p>
+
+<h5 id="delete-address">Delete Address</h5>
+
+<p>The <strong>Delete</strong> tab allows you to delete an address completely.</p>
+
+<blockquote>
+  <p>NOTE: The Address can only be deleted if it has no queues and cannot be undone.</p>
+</blockquote>
+
+<h5 id="send-message">Send Message</h5>
+
+<p>This <strong>Send Message</strong> tab allows the user to send a message to an address, this in turn will route it to any queues that are bound to this address.</p>
+
+<p>It allows message headers to be added and a body. Note that the message type created is always a Text Message.</p>
+
+<blockquote>
+  <p>NOTE:  The sending of the message will be authenticated using the current logon user, unselect <em>use current logon user</em> to use a different user.</p>
+</blockquote>
+
+<h4 id="queue-tabs">Queue Tabs</h4>
+
+<p>If the MBean selected is a <em>Queue</em> MBean then the following tabs are displayed.</p>
+
+<blockquote>
+  <p>NOTE: Queue MBeans are found under the  <em>Address</em> MBean it is bound to.</p>
+
+</blockquote>
+
+<h4 id="browse-messages">Browse Messages</h4>
+
+<p>This allows the user to view a paginated list of the messages on the queue selected as well as being able
+to view, send and delete messages. Although the results size may be very large the console only fetches a single page
+anytime from the broker. The console will retrieve each page of messages afresh when the list is iterated over or the order or filters are changed.</p>
+
+<p><img src="browse.png" width="1200" alt="Connection Image" style="border: 2px solid grey;" /></p>
+
+<h5 id="filtering-messages">Filtering Messages</h5>
+
+<p>The <strong>Browse</strong> tab can also filter messages using the JMS Message Selector Syntax as described in the <a href="https://activemq.apache.org/components/artemis/documentation/latest/filter-expressions.html">Artemis Filter Expression Documentation</a>.  For instance if you wanted to filter on messages
+that contained the Message Header myheader which was set to octopus, you would enter <strong>myheader=’octopus’</strong> in the text box
+in the top left hand side of the tab and click search.</p>
+
+<h5 id="deleting-messages">Deleting Messages</h5>
+
+<p>Messages can be deleted in bulk by selecting the relevant checkbox of each message on the left hand side and clicking the
+<em>Delete</em> button. This will open up a dialog box to confirm deletion. Note that this operation cannot be undone.</p>
+
+<blockquote>
+  <p>NOTE: Messages can also be individually deleted by clickin on the 3 dots to the right of each message and clicking delete.</p>
+</blockquote>
+
+<h5 id="moving-messages">Moving Messages</h5>
+
+<p>Messages can be moved in bulk to another queue by selecting the relevant checkbox of each message on the left hand side and clicking the
+<em>Move</em> button. This will open up a dialog box that has a searchable drop down box for easy searching of available queues,
+simply start typing the name of the queue you want to move the messages too. Note that this operation cannot be undone.</p>
+
+<h5 id="resending-messages">Resending Messages</h5>
+
+<p>Messages can be resent to a different queue by clicking on the 3 dots to the right of the message and clicking <em>resend</em>.
+This will open up a dialog that allows you to send a copy of the message to a specific queue.</p>
+
+<h5 id="browse-a-message">Browse a Message</h5>
+
+<p>It is possible to view the contents of a message by clicking on the 3 dots to the right of the message and clicking the
+<em>view</em> button. This will open up a dialog box showing the body, headers and properties of the message.</p>
+
+<p><img src="viewmessage.png" width="600" alt="Connection Image" style="border: 2px solid grey;" /></p>
+
+<p>Note that the body of the message may not be viewable if it is not of type Text Message. All other messages are shown as
+bytes and will be transformed depending on the <strong>Browse Bytes Messages</strong> setting which can be set in the <strong>preferences</strong>.</p>
+
+<blockquote>
+  <p>NOTE: large messages are also truncated to protect the browser this can be configured in Artemis <a href="https://activemq.apache.org/components/artemis/documentation/latest/address-settings.html#address-settings">Address Settings</a></p>
+</blockquote>
+
+<blockquote>
+  <p>NOTE: The columns show can be configured by clicking on the <em>Manage Columns</em> link and selecting which columns should be shown.
+The column configuration is persisted to the browsers local storage and will be retrieved for each browser session.</p>
+</blockquote>
+
+<h5 id="delete-queue">Delete Queue</h5>
+
+<p>The <strong>Delete Queue</strong> tab allows you to either delete the whole queue or purge messages, that is remove all the messages in the queue.</p>
+
+<p>Both will open a dialog box to confirm the operation. This operation cannot be undone.</p>
+
+<h5 id="send-message-1">Send Message</h5>
+
+<p>This <strong>Send Message</strong> tab allows the user to send a message directly to a queue, Note that unlike the <strong>Send Message</strong> to 
+an address this will bypass any messages routing semantics and be placed directly on the queue.</p>
+
+<p>It allows message headers to be added and a body. Note that the message type created is always a Text Message.</p>
+
+<blockquote>
+  <p>NOTE:  The sending of the message will be authenticated using the current logon user, unselect <em>use current logon user</em> to use a different user.</p>
+</blockquote>
+
+<p><a id="artemis-view"></a></p>
+<h3 id="artemis-view">Artemis View</h3>
+
+<p>Click Artemis in the left navigation bar to see the Artemis specific plugin. (The Artemis tab won’t appear if there is no
+broker in this JVM). The <strong>Artemis View</strong> unlike the JMX view is more orientated around paginating over the Brokers resources 
+such as Addresses and Queue. The same functionality though is available as in the JMX view. The following tabs are available 
+in the Artemis view.</p>
+
+<p>All of the tabs in the <strong>Artemis View</strong> that show tabulated data will allow the user to configure which columns to show. This is persisted in the sessions local storage and available when a new session is started.</p>
+
+<h4 id="status">Status</h4>
+
+<p>The <strong>Status</strong> tab is the default tab shown after login and shows the basic state of the broker, including uptime, the 
+Address memory used and the type of Broker deployed. It also shows the status of each <strong>Acceptor</strong> configured as well as 
+the network status is a cluster of brokers. This Status refreshes every 5 seconds.</p>
+
+<h4 id="connections">Connections</h4>
+
+<p>The <strong>Connections</strong> tab lists all the connection to the broker.</p>
+
+<p><img src="connections.png" width="1200" alt="Connection Image" style="border: 2px solid grey;" /></p>
+
+<p>Connections can be ordered by clicking on the sort icon on the top left toolbar, selecting the Column to sort of and choosing 
+either <em>ascending</em> or <em>descending</em>.</p>
+
+<p>The list can also be filtered on multiple columns by choosing a column and operator from the dropdowns and entering a 
+value to filter on by clicking the <em>Search</em> button.</p>
+
+<p>Clicking on the <em>Session Count</em> value will navigate to the <strong>Sessions</strong> tab and automatically filter on the chosen connection.</p>
+
+<p>The Session can be closed if permissions allow by clicking on the 3 dots to the right of the clicking the <em>close</em> button.</p>
+
+<h4 id="sessions">Sessions</h4>
+
+<p>The <strong>Sessions</strong> tab will list all the session open on the Broker.</p>
+
+<p><img src="sessions.png" width="1200" alt="Sessions Image" style="border: 2px solid grey;" /></p>
+
+<p>Sessions can be ordered by clicking on the sort icon on the top left toolbar, selecting the Column to sort of and choosing
+either <em>ascending</em> or <em>descending</em>.</p>
+
+<p>The list can also be filtered on multiple columns by choosing a column and operator from the dropdowns and entering a
+value to filter on by clicking the <em>Search</em> button.</p>
+
+<p>Clicking on the <em>Connection ID</em> value will automatically navigate to the <strong>Connections</strong> tab and filter on that connection.</p>
+
+<p>Clicking on the <em>Consumer Count</em> will automatically navigate to the <strong>Consumers</strong> tab and filter on the consumer chosen.</p>
+
+<p>Clicking on the <em>Producer Count</em> will automatically navigate to the <strong>Producers</strong> tab and filter on the consumer chosen.</p>
+
+<p>The Session can be closed if permissions allow by clicking on the 3 dots to the right of the clicking the <em>close</em> button.</p>
+
+<h4 id="producers">Producers</h4>
+
+<p>The <strong>Producers</strong> tab will list all the producers open on the Broker.</p>
+
+<p><img src="producers.png" width="1200" alt="Producers Image" style="border: 2px solid grey;" /></p>
+
+<p>Producers can be ordered by clicking on the sort icon on the top left toolbar, selecting the Column to sort of and choosing
+either <em>ascending</em> or <em>descending</em>.</p>
+
+<p>The list can also be filtered on multiple columns by choosing a column and operator from the dropdowns and entering a
+value to filter on by clicking the <em>Search</em> button.</p>
+
+<p>Clicking on the <em>Session</em> value will navigate to the <strong>Sessions</strong> tab and filter on the session chosen.</p>
+
+<p>Clicking on the <em>Address</em> value will navigate to the <strong>Address</strong> tab and filter on that address</p>
+
+<h4 id="consumers">Consumers</h4>
+
+<p>The <strong>Consumers</strong> tab will list all the Consumers open on the Broker.</p>
+
+<p><img src="consumers.png" width="1200" alt="Consumers Image" style="border: 2px solid grey;" /></p>
+
+<p>Consumers can be ordered by clicking on the sort icon on the top left toolbar, selecting the Column to sort of and choosing
+either <em>ascending</em> or <em>descending</em>.</p>
+
+<p>The list can also be filtered on multiple columns by choosing a column and operator from the dropdowns and entering a
+value to filter on by clicking the <em>Search</em> button.</p>
+
+<p>Clicking on the <em>Session</em> value will navigate to the <strong>Sessions</strong> tab and filter on the session chosen.</p>
+
+<p>Clicking on the <em>Address</em> value will navigate to the <strong>Address</strong> tab and filter on that address</p>
+
+<p>Clicking on the <em>Queue</em> value will navigate to the <strong>Address</strong> tab and filter on that queue</p>
+
+<p>A consumer can be closed by clicking on the 3 dots to the right of the Consumer and clicking <em>close</em>.</p>
+
+<h4 id="addresses">Addresses</h4>
+
+<p>The <strong>Addresses</strong> tab will list all the Address on the Broker.</p>
+
+<p><img src="addresses.png" width="1200" alt="Addresses Image" style="border: 2px solid grey;" /></p>
+
+<p>Addresses can be ordered by clicking on the sort icon on the top left toolbar, selecting the Column to sort of and choosing
+either <em>ascending</em> or <em>descending</em>.</p>
+
+<p>The list can also be filtered on multiple columns by choosing a column and operator from the dropdowns and entering a
+value to filter on by clicking the <em>Search</em> button.</p>
+
+<p>Clicking on the <em>Queue Count</em> value will navigate to the <strong>Address</strong> tab and filter on that address</p>
+
+<p>The 3 dots on the right of each Address will allow the user to perform the following operations.</p>
+
+<h5 id="show-in-artemis-jmx">Show in Artemis JMX</h5>
+
+<p>This will navigate to the <strong>Artemis JMX</strong> view and automatically select the addresses MBean.</p>
+
+<h5 id="attributes-1">Attributes</h5>
+
+<p>This will open up a dialog showing all the Queues MBean attributes and allow editing if permissions allow.</p>
+
+<h5 id="operations-1">Operations</h5>
+
+<p>This will open up a dialog showing all the Queues MBean operations and allow execution of permissions allow.</p>
+
+<h5 id="delete-address-1">Delete Address</h5>
+
+<p>This will open up a dialog to confirm deletion of the Address if permissions allow.</p>
+
+<h5 id="send-message-2">Send Message</h5>
+
+<p>This will open up a dialog and allow the user to send a message to this queue if permissions allow.</p>
+
+<h5 id="create-queue-1">Create Queue</h5>
+
+<p>This will open up a dialog and allow the user to send a message to this queue if permissions allow. this in turn will route it to any queues that are bound to this address.</p>
+
+<p>It allows message headers to be added and a body. Note that the message type created is always a Text Message.</p>
+
+<blockquote>
+  <p>NOTE:  The sending of the message will be authenticated using the current logon user, unselect <em>use current logon user</em> to use a different user.</p>
+</blockquote>
+
+<h5 id="create-queue-2">Create Queue</h5>
+
+<p>This will open up a dialog which will allow the user to create queues that are bound to the address that is selected. It exposes the ability to
+configure a sub set of available parameters on the queue, however extra configuration not exposed  can be configured
+using a set of key/value pairs, for instance delay-before-dispatch or auto-delete.</p>
+
+<h4 id="queues">Queues</h4>
+
+<p>The <strong>Queues</strong> tab will list all the Address on the Broker.</p>
+
+<p><img src="queues.png" width="1200" alt="Queues Image" style="border: 2px solid grey;" /></p>
+
+<p>Queues can be ordered by clicking on the sort icon on the top left toolbar, selecting the Column to sort of and choosing
+either <em>ascending</em> or <em>descending</em>.</p>
+
+<p>The list can also be filtered on multiple columns by choosing a column and operator from the dropdowns and entering a
+value to filter on by clicking the <em>Search</em> button.</p>
+
+<p>Clicking on the <em>Address</em> value will navigate to the <strong>Addresses</strong> tab and filter on the address chosen.</p>
+
+<p>Clicking on the <em>Consumer Count</em> value will navigate to the <strong>Consumers</strong> tab and filter on the queue chosen.</p>
+
+<p>Clicking on the <em>Message Count</em> value will show a different view allowing the user to browse messages.</p>
+
+<p>This allows the user to view a paginated list of the messages on the queue selected as well as being able
+to view, send and delete messages. Although the results size may be very large the console only fetches a single page
+anytime from the broker. The console will retrieve each page of messages afresh when the list is iterated over or the order or filters are changed.</p>
+
+<p><img src="browse.png" width="1200" alt="Connection Image" style="border: 2px solid grey;" /></p>
+
+<h5 id="filtering-messages-1">Filtering Messages</h5>
+
+<p>The <strong>Browse</strong> tab can also filter messages using the JMS Message Selector Syntax as described in the <a href="https://activemq.apache.org/components/artemis/documentation/latest/filter-expressions.html">Artemis Filter Expression Documentation</a>.  For instance if you wanted to filter on messages
+that contained the Message Header myheader which was set to octopus, you would enter <strong>myheader=’octopus’</strong> in the text box
+in the top left hand side of the tab and click search.</p>
+
+<h5 id="deleting-messages-1">Deleting Messages</h5>
+
+<p>Messages can be deleted in bulk by selecting the relevant checkbox of each message on the left hand side and clicking the
+<em>Delete</em> button. This will open up a dialog box to confirm deletion. Note that this operation cannot be undone.</p>
+
+<blockquote>
+  <p>NOTE: Messages can also be individually deleted by clickin on the 3 dots to the right of each message and clicking delete.</p>
+</blockquote>
+
+<h5 id="moving-messages-1">Moving Messages</h5>
+
+<p>Messages can be moved in bulk to another queue by selecting the relevant checkbox of each message on the left hand side and clicking the
+<em>Move</em> button. This will open up a dialog box that has a searchable drop down box for easy searching of available queues,
+simply start typing the name of the queue you want to move the messages too. Note that this operation cannot be undone.</p>
+
+<h5 id="resending-messages-1">Resending Messages</h5>
+
+<p>Messages can be resent to a different queue by clicking on the 3 dots to the right of the message and clicking <em>resend</em>.
+This will open up a dialog that allows you to send a copy of the message to a specific queue.</p>
+
+<p>From the browse view of this tab you can then browse a single message by clicking on the 3 dots to the right of the message and clicking the <em>view</em> button.
+This will then change the view to:</p>
+
+<p><img src="browse2.png" width="1200" alt="browse2 Image" style="border: 2px solid grey;" /></p>
+
+<blockquote>
+  <p>NOTE: You can navigate to and from each view by using the <em>Queues</em> and the *Browse * button at the bottom left hand corner.</p>
+</blockquote>
+
+<h4 id="broker-diagram">Broker Diagram</h4>
+
+<p>The <strong>Broker Diagram</strong> tab shows a visual representation of the Broker, its Addresses and Queue and any other Broker that
+may be in the Cluster. You can choose which Nodes to show by clicking on the <em>Node Options</em> dropdown.</p>
+
+<p>Clicking on the node will also fetch up the Attributes of the MBean associated with the node.</p>
+
+<p><img src="diagram.png" width="1200" alt="Diagram Image" style="border: 2px solid grey;" /></p>
+
+<p><a id="security"></a></p>
+<h3 id="security">Security</h3>
+
+<h4 id="jolokia-access">Jolokia Access</h4>
+
+<p>The Jolokia JMX-HTTP bridge is secured via a policy file in the broker configuration directory: ‘etc/jolokia-access.xml’. 
+The contents of that file should be modified as described in the <a href="https://jolokia.org/features/security.html">Jolokia Security Guide</a>. 
+By default the console is locked down to ‘localhost’, pay particular attention to the ‘CORS’ restrictions when exposing the console web endpoint over the network.</p>
+
+<h4 id="mbean-access">MBean Access</h4>
+
+<p>Access to MBeans is configured in ActiveMQ Artemis, see the <a href="https://activemq.apache.org/components/artemis/documentation/latest/management.html#management-via-jmx">Management via JMX</a> chapter.</p>
+
+<p>Certain screen and tab visibility is controlled by the access to a specific JMX Operation, for instance the <strong>Create Queue</strong> 
+tab is only shown if the user has access to the create queue JMX operation.</p>
+
+<h3 id="single-sign-on">Single Sign on</h3>
+
+<p>Please refer to the <a href="https://hawt.io/docs/oidc.html">HawtIO Documentation</a></p>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row sitemap">
+  <div class="col-sm-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3">
+              <div >
+                <img class="float-left" style="max-height: 100px" src="/assets/img/activemq_logo_white_vertical_small.png"/>
+              </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 0px; margin-top: 30px; font-size: 65%" class="col-sm-6">
+              <p><a href="https://www.apache.org/foundation/marks/list/">Apache, ActiveMQ, Apache ActiveMQ</a>, the Apache feather logo, and the Apache ActiveMQ project logo are trademarks of The Apache Software Foundation. Copyright &copy; 2024, The Apache Software Foundation. Licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+            </div>
+            <div class="col-sm-3">
+              <div >
+                <a href="https://www.apache.org"><img class="float-right" style="margin-top: 10px; max-height: 80px" src="/assets/img/apache-logo-small.png"/></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
