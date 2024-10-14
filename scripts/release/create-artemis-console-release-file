@@ -26,11 +26,8 @@ template = \
 ---
 version: {version}
 release_date: {date_string}
-title: ActiveMQ Artemis {version}
+title: ActiveMQ Artemis Console {version}
 shortDescription: Bug fix release.
-# Docs subdir name for past-releases and previous-docs pages, 'latest' is always used on the main download page.
-docs_version: {version}
-java_version: 11+
 ---
 """
 
@@ -41,7 +38,7 @@ def create_release_file(version):
         exit("Version ({}) must have 3 components to pad, but only have: {}".format(version, str(padded_components)))
 
     padded_version = "-".join(padded_components)
-    output_path = "src/_artemis_releases/artemis-{}.md".format(padded_version)
+    output_path = "src/_artemis_console_releases/artemis-console-{}.md".format(padded_version)
 
     date_string = get_date_string()
 
@@ -55,7 +52,7 @@ def create_release_file(version):
 
 ARGS = _sys.argv
 if len(ARGS) < 2:
-    exit("Usage: ./scripts/release/create-artemis-release-file <version>")
+    exit("Usage: ./scripts/release/create-artemis-console-release-file <version>")
 
 version = ARGS[1]
 release_file = create_release_file(version)

@@ -24,26 +24,21 @@ from util import *
 template = \
 """
 ---
-version: {version}
-release_date: {date_string}
-title: ActiveMQ Artemis {version}
-shortDescription: Bug fix release.
-# Docs subdir name for past-releases and previous-docs pages, 'latest' is always used on the main download page.
-docs_version: {version}
-java_version: 11+
+layout: default_md
+title: ActiveMQ Artemis Console {version} Release Notes
+title-class: page-title-artemis
+type: artemis
 ---
+
+{release_notes}
+
 """
 
-def create_release_file(version):
-    padded_components = [component.zfill(2) for component in version.split(".")]
+def create_release_notes(version):
+    output_path = "src/components/artemis-console/download/release-notes-{}.md".format(version)
 
-    if len(padded_components) < 3:
-        exit("Version ({}) must have 3 components to pad, but only have: {}".format(version, str(padded_components)))
-
-    padded_version = "-".join(padded_components)
-    output_path = "src/_artemis_releases/artemis-{}.md".format(padded_version)
-
-    date_string = get_date_string()
+    jira_version = "console-{}".format(version)
+    release_notes = render_release_notes("artemis", jira_version)
 
     output = template.format(**locals())
     output = output.strip()
@@ -55,9 +50,9 @@ def create_release_file(version):
 
 ARGS = _sys.argv
 if len(ARGS) < 2:
-    exit("Usage: ./scripts/release/create-artemis-release-file <version>")
+    exit("Usage: ./scripts/release/create-artemis-console-release-notes <version>")
 
 version = ARGS[1]
-release_file = create_release_file(version)
+rn_file = create_release_notes(version)
 
-print("Release file generated at {}".format(release_file))
+print("Release notes generated to {}".format(rn_file))

@@ -4,21 +4,23 @@ title: Download ActiveMQ Artemis Console
 title-class: page-title-artemis
 type: artemis
 ---
+{% assign reversed_releases = site["artemis_console_releases"] | reverse %}
+{% if reversed_releases.size > 1 %}
+This is the current ActiveMQ Artemis Console release. For prior releases, please see the <a href="past_releases">past releases</a> page.
 
-This is the current ActiveMQ Artemis Console release.
+{% endif %}
+It is important to [verify the integrity](#verify-the-integrity-of-downloads) of the files you download.
 
-## ActiveMQ Artemis Console 1.0.0 (8th October 2024)
+{% for current_release_prefix in site.data.current_releases["artemis_console"] %}
+    {% for release in reversed_releases %}
+        {% if release.version contains current_release_prefix %}
+{% include artemis_console_release.md release=release is_current_release=true %}
+            {% break %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
 
-[Release Notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12315920&version=12354639) \| [Documentation](../documentation)
-
-
-|----------------------|--------------------------------------------------------|------------|-------------------|
-| tar.gz               | [apache-artemis-console-1.0.0-bin.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-bin.tar.gz&action=download) | [SHA512](https://downloads.apache.org/activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-bin.tar.gz.sha512) | [GPG Signature](https://downloads.apache.org/activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-bin.tar.gz.asc) |
-| ZIP                  | [apache-artemis-console-1.0.0-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-bin.zip&action=download)               | [SHA512](https://downloads.apache.org/activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-bin.zip.sha512) | [GPG Signature](https://downloads.apache.org/activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-bin.zip.asc) |
-| Source tar.gz  | [apache-artemis-console-1.0.0-source-release.tar.gz](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-source-release.tar.gz&action=download) | [SHA512](https://downloads.apache.org/activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-source-release.tar.gz.sha512) | [GPG Signature](https://downloads.apache.org/activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-source-release.tar.gz.asc) |
-| Source ZIP  | [apache-artemis-console-1.0.0-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-source-release.zip&action=download) | [SHA512](https://downloads.apache.org/activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-source-release.zip.sha512) | [GPG Signature](https://downloads.apache.org/activemq/activemq-artemis-console/1.0.0/apache-artemis-console-1.0.0-source-release.zip.asc) |
-
-
+--------------------------------------
 #### Verify the Integrity of Downloads
 
 {% include verify_download.md %}
