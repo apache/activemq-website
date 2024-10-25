@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Command Line Interface</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#getting-help">1. Getting Help</a></li>
 <li><a href="#bash-and-zsh-auto-complete">2. Bash and Zsh auto complete</a></li>
@@ -73,25 +73,28 @@ Of course, the shell also allows you to avoid retyping <code>./artemis</code> fo
 <span class="go">Usage: artemis [COMMAND]
 ActiveMQ Artemis Command Line
 Commands:
-</span><span class="gp">  help           use 'help &lt;command&gt;</span><span class="s1">' for more information
-</span><span class="go">  auto-complete  Generates the auto complete script file to be used in bash or
-                   zsh.
-  shell          JLine3 shell helping using the CLI
-  producer       Send message(s) to a broker.
-  transfer       Move messages from one destination towards another destination.
-  consumer       Consume messages from a queue.
-  browser        Browse messages on a queue.
-  mask           Mask a password and print it out.
-  version        Print version information.
-  perf           use 'help perf' for sub commands list
-  check          use 'help check' for sub commands list
-  queue          use 'help check' for sub commands list
-  address        use 'help address' for sub commands list
-  data           use 'help data' for sub commands list
-  create         Create a new broker instance.
-  upgrade        Update a broker instance to the current artemis.home, keeping
-                   all the data and broker.xml. Warning: backup your instance
-                   before using this command and compare the files.</span></code></pre>
+</span><span class="gp">  help        use 'help &lt;command&gt;</span><span class="s1">' for more information
+</span><span class="go">  pwd         Information on current folder and instance.
+  shell       JLine3 shell helping using the CLI
+  producer    Send message(s) to a broker.
+  transfer    Move messages from one destination towards another destination.
+  consumer    Consume messages from a queue.
+  browser     Browse messages on a queue.
+  mask        Mask a password and print it out.
+  version     Print version information.
+  perf        use 'help perf' for sub commands list
+  check       use 'help check' for sub commands list
+  queue       use 'help queue' for sub commands list
+  address     use 'help address' for sub commands list
+  connect     Connect to the broker validating credentials for commands.
+  disconnect  Clear previously typed user credentials.
+  data        use 'help data' for sub commands list
+  create      Create a new broker instance.
+  upgrade     Update a broker instance to the current artemis.home, keeping all
+                the data and broker.xml. Warning: backup your instance before
+                using this command and compare the files.
+  completion  Generates the auto complete script file to be used in bash or
+                zsh. Usage: source &lt;(./artemis completion)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -339,15 +342,7 @@ For example, <code>./artemis help create</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis auto-complete</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This will generate a file named <code>auto-complete-artemis.sh</code> that can be installed using:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">source</span> ./auto-complete-artemis.sh</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">source</span> &lt;<span class="o">(</span>./artemis completion<span class="o">)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -356,9 +351,9 @@ For example, <code>./artemis help create</code>:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis
-<span class="go">activation     browser        create         kill           perf-journal   run            transfer       version
-address        check          data           mask           producer       shell          upgrade
-auto-complete  consumer       help           perf           queue          stop           user</span></code></pre>
+<span class="go">activation    check         consumer      disconnect    mask          producer      run           transfer      version
+address       completion    create        help          perf          pwd           shell         upgrade
+browser       connect       data          kill          perf-journal  queue         stop          user</span></code></pre>
 </div>
 </div>
 <div class="paragraph">

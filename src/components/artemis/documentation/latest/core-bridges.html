@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Core Bridges</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#configuring-core-bridges">1. Configuring Core Bridges</a></li>
 </ul>
@@ -91,7 +91,6 @@ Let&#8217;s kick off with an example:</p>
    <span class="nt">&lt;max-retry-interval&gt;</span>2000<span class="nt">&lt;/max-retry-interval&gt;</span>
    <span class="nt">&lt;initial-connect-attempts&gt;</span>-1<span class="nt">&lt;/initial-connect-attempts&gt;</span>
    <span class="nt">&lt;reconnect-attempts&gt;</span>-1<span class="nt">&lt;/reconnect-attempts&gt;</span>
-   <span class="nt">&lt;failover-on-server-shutdown&gt;</span>false<span class="nt">&lt;/failover-on-server-shutdown&gt;</span>
    <span class="nt">&lt;use-duplicate-detection&gt;</span>true<span class="nt">&lt;/use-duplicate-detection&gt;</span>
    <span class="nt">&lt;confirmation-window-size&gt;</span>10000000<span class="nt">&lt;/confirmation-window-size&gt;</span>
    <span class="nt">&lt;producer-window-size&gt;</span>1048576<span class="nt">&lt;/producer-window-size&gt;</span>
@@ -106,6 +105,7 @@ Let&#8217;s kick off with an example:</p>
    <span class="c">&lt;!-- alternative to static-connectors
    &lt;discovery-group-ref discovery-group-name="bridge-discovery-group"/&gt;
    --&gt;</span>
+   <span class="nt">&lt;client-id&gt;</span>myClientID<span class="nt">&lt;/client-id&gt;</span>
 <span class="nt">&lt;/bridge&gt;</span></code></pre>
 </div>
 </div>
@@ -155,7 +155,7 @@ See the <a href="transformers.html#transformers">transformer chapter</a> for mor
 <dt class="hdlist1">min-large-message-size</dt>
 <dd>
 <p>Any message larger than this size (in bytes) is considered a large message (to be sent in chunks).
-Supports byte notation like "K", "Mb", "MiB", "GB", etc.
+Supports byte notation like "K", "MB", "MiB", "GB", etc.
 Default is <code>102400</code> (i.e. 100KiB).</p>
 </dd>
 <dt class="hdlist1">check-period</dt>
@@ -227,7 +227,7 @@ By enabling duplicate detection allows these duplicates to be screened out and i
 <dt class="hdlist1">confirmation-window-size</dt>
 <dd>
 <p>This optional parameter determines the <code>confirmation-window-size</code> to use for the connection used to forward messages to the target node.
-Supports byte notation like "K", "Mb", "MiB", "GB", etc.
+Supports byte notation like "K", "MB", "MiB", "GB", etc.
 This attribute is described in section <a href="client-failover.html#reconnection-and-failover-attributes">Client failover attributes</a></p>
 <div class="admonitionblock warning">
 <table>
@@ -248,7 +248,7 @@ This attribute is described in section <a href="client-failover.html#reconnectio
 <dd>
 <p>This optional parameter determines the producer flow control through the bridge.
 Use <code>-1</code> to disable.
-Supports byte notation like "K", "Mb", "MiB", "GB", etc.
+Supports byte notation like "K", "MB", "MiB", "GB", etc.
 Default is <code>1048576</code> (i.e. 1MiB).</p>
 </dd>
 <dt class="hdlist1">user</dt>
@@ -304,6 +304,12 @@ For more information about what connectors are and how to configure them, please
 This attribute points to a <code>discovery-group</code> defined elsewhere.
 For more information about what discovery-groups are and how to configure them, please see <a href="clusters.html#clusters">Discovery Groups</a>.</p>
 </div>
+</dd>
+<dt class="hdlist1">client-id</dt>
+<dd>
+<p>An optional identifier to use for the bridge connection.
+This can help with identifying the connection on the remote broker (e.g. via the web console).
+Default is empty (i.e. unset).</p>
 </dd>
 </dl>
 </div>

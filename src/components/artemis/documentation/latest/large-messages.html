@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Large Messages</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#configuring-the-server">1. Configuring the server</a></li>
 <li><a href="#configuring-the-core-client">2. Configuring the Core Client</a></li>
@@ -36,10 +36,8 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Apache ActiveMQ Artemis can be configured to store messages as files when these messages are beyond a configured value.</p>
-</div>
-<div class="paragraph">
-<p>Instead of keeping these messages in memory ActiveMQ Artemis will hold just a thin object on the queues with a reference to a file into a specific folder configured as large-messages-directory.</p>
+<p>Apache ActiveMQ Artemis can be configured to give special treatment to messages which are beyond a configured size.
+Instead of keeping the entire contents of these messages <em>in memory</em> the broker will hold just a thin object on the queues with a reference to the content (e.g. in a file or a database table).</p>
 </div>
 <div class="paragraph">
 <p>This is supported on Core Protocol and on the AMQP Protocol.</p>
@@ -50,30 +48,77 @@
 <h2 id="configuring-the-server"><a class="anchor" href="#configuring-the-server"></a><a class="link" href="#configuring-the-server">1. Configuring the server</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Large messages are stored on a disk directory on the server side, as configured on the main configuration file.</p>
-</div>
-<div class="paragraph">
-<p>The configuration property <code>large-messages-directory</code> specifies where large messages are stored.
-For JDBC persistence the <code>large-message-table</code> should be configured.</p>
+<p>When using the <a href="persistence.html#file-journal-default">file journal</a> large messages are stored on disk on the server.
+The configuration property <code>large-messages-directory</code> specifies where large messages are stored.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;configuration</span> <span class="na">xmlns=</span><span class="s">"urn:activemq"</span>
-   <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-   <span class="na">xsi:schemaLocation=</span><span class="s">"urn:activemq /schema/artemis-server.xsd"</span><span class="nt">&gt;</span>
-   <span class="nt">&lt;core</span> <span class="na">xmlns=</span><span class="s">"urn:activemq:core"</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="na">xsi:schemaLocation=</span><span class="s">"urn:activemq:core"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;configuration...&gt;</span>
+   <span class="nt">&lt;core...&gt;</span>
       ...
-      <span class="nt">&lt;large-messages-directory&gt;</span>/data/large-messages<span class="nt">&lt;/large-messages-directory&gt;</span>
+      <span class="nt">&lt;large-messages-directory&gt;</span>data/large-messages<span class="nt">&lt;/large-messages-directory&gt;</span>
       ...
    <span class="nt">&lt;/core&gt;</span>
 <span class="nt">&lt;/configuration&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>By default the large message directory is <code>data/largemessages</code> and <code>large-message-table</code> is configured as "LARGE_MESSAGE_TABLE".</p>
+<p>By default <code>large-messages-directory</code> is <code>data/largemessages</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For the best performance we recommend using the file journal with the large messages directory on a different physical volume to the message journal or paging directory.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>For the best performance we recommend using file store with large messages directory stored on a different physical volume to the message journal or paging directory.</p>
+<p>For <a href="persistence.html#jdbc-persistence">JDBC persistence</a> the <code>large-message-table</code> should be configured.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;configuration...&gt;</span>
+   <span class="nt">&lt;core...&gt;</span>
+      ...
+      <span class="nt">&lt;store&gt;</span>
+         <span class="nt">&lt;database-store&gt;</span>
+            ...
+            <span class="nt">&lt;large-message-table-name&gt;</span>LARGE_MESSAGES_TABLE<span class="nt">&lt;/large-message-table-name&gt;</span>
+            ...
+         <span class="nt">&lt;/database-store&gt;</span>
+      <span class="nt">&lt;/store&gt;</span>
+      ...
+   <span class="nt">&lt;/core&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default <code>large-message-table</code> is <code>LARGE_MESSAGE_TABLE</code>.</p>
+</div>
+<div class="paragraph">
+<p>By default when writing the final bytes to a large message all writes are synchronized to the storage medium.
+This can be configured via <code>large-message-sync</code>, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;configuration...&gt;</span>
+   <span class="nt">&lt;core...&gt;</span>
+      ...
+      <span class="nt">&lt;large-message-sync&gt;</span>true<span class="nt">&lt;/large-message-sync&gt;</span>
+      ...
+   <span class="nt">&lt;/core&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default <code>large-message-sync</code> is <code>true</code>.</p>
 </div>
 </div>
 </div>

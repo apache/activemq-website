@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>CDI Integration</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>CDI Integration</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#configuring-a-connection">1. Configuring a connection</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis provides a simple CDI integration.
+It can either use an embedded broker or connect to a remote broker.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-a-connection"><a class="anchor" href="#configuring-a-connection"></a><a class="link" href="#configuring-a-connection">1. Configuring a connection</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Configuration is provided by implementing the <code>ArtemisClientConfiguration</code> interface.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ArtemisClientConfiguration</span> <span class="o">{</span>
+   <span class="nc">String</span> <span class="nf">getHost</span><span class="o">();</span>
+
+   <span class="nc">Integer</span> <span class="nf">getPort</span><span class="o">();</span>
+
+   <span class="nc">String</span> <span class="nf">getUsername</span><span class="o">();</span>
+
+   <span class="nc">String</span> <span class="nf">getPassword</span><span class="o">();</span>
+
+   <span class="nc">String</span> <span class="nf">getUrl</span><span class="o">();</span>
+
+   <span class="nc">String</span> <span class="nf">getConnectorFactory</span><span class="o">();</span>
+
+   <span class="kt">boolean</span> <span class="nf">startEmbeddedBroker</span><span class="o">();</span>
+
+   <span class="kt">boolean</span> <span class="nf">isHa</span><span class="o">();</span>
+
+   <span class="kt">boolean</span> <span class="nf">hasAuthentication</span><span class="o">();</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There&#8217;s a default configuration out of the box, if none is specified.
+This will generate an embedded broker.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

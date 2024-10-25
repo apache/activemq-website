@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Management</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#the-management-api">1. The Management API</a>
 <ul class="sectlevel2">
@@ -30,7 +30,8 @@
 <li><a href="#configuring-jmx">2.1. Configuring JMX</a></li>
 <li><a href="#example">2.2. Example</a></li>
 <li><a href="#exposing-jmx-using-jolokia">2.3. Exposing JMX using Jolokia</a></li>
-<li><a href="#jmx-and-the-web-console">2.4. JMX and the Web Console</a></li>
+<li><a href="#management-method-option-syntax">2.4. Management Method Option Syntax</a></li>
+<li><a href="#jmx-and-the-web-console">2.5. JMX and the Web Console</a></li>
 </ul>
 </li>
 <li><a href="#using-management-message-api">3. Using Management Message API</a>
@@ -823,28 +824,33 @@ To manage several Apache ActiveMQ Artemis servers from the <em>same</em> MBeanSe
 <div class="sect2">
 <h3 id="exposing-jmx-using-jolokia"><a class="anchor" href="#exposing-jmx-using-jolokia"></a><a class="link" href="#exposing-jmx-using-jolokia">2.3. Exposing JMX using Jolokia</a></h3>
 <div class="paragraph">
-<p>The default Broker configuration ships with the <a href="https://jolokia.org">Jolokia</a> HTTP agent deployed as a web application.
+<p>The default broker configuration ships with the <a href="https://jolokia.org">Jolokia</a> HTTP agent deployed as a web application.
 Jolokia is a remote JMX-over-HTTP bridge that exposes MBeans.
-For a full guide as to how to use it refer to <a href="https://jolokia.org/documentation.html">Jolokia Documentation</a>, however a simple example to query the broker&#8217;s version would be to use a <code>curl</code> command like this:</p>
+For a full guide as to how to use it refer to <a href="https://jolokia.org/reference/html/manual/jolokia_protocol.html">Jolokia documentation</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="reading-an-attribute"><a class="anchor" href="#reading-an-attribute"></a><a class="link" href="#reading-an-attribute">2.3.1. Reading an Attribute</a></h4>
+<div class="paragraph">
+<p>A simple example to check whether a broker is active would be to use a <code>curl</code> command like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-v</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass http://localhost:8161/console/jolokia/read/org.apache.activemq.artemis:broker<span class="o">=</span><span class="se">\"</span>0.0.0.0<span class="se">\"</span>/Active</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-s</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass http://localhost:8161/console/jolokia/read/org.apache.activemq.artemis:broker<span class="o">=</span><span class="se">\"</span>0.0.0.0<span class="se">\"</span>/Active</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Or you could send a JSON formatted request instead of using the URL</p>
+<p>Or you could send a JSON formatted <code>POST</code> request instead of using the URL</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-v</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass <span class="nt">--header</span> <span class="s2">"Content-type: application/json"</span> <span class="nt">--request</span> POST <span class="nt">--data</span> <span class="s1">'{"attribute": "Active", "mbean": "org.apache.activemq.artemis:broker=\"0.0.0.0\"", "type": "read"}'</span> http://localhost:8161/console/jolokia</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-s</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass <span class="nt">--header</span> <span class="s2">"Content-type: application/json"</span> <span class="nt">--request</span> POST <span class="nt">--data</span> <span class="s1">'{"attribute": "Active", "mbean": "org.apache.activemq.artemis:broker=\"0.0.0.0\"", "type": "read"}'</span> http://localhost:8161/console/jolokia</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>By default it&#8217;s necessary to pass the <code>Origin</code> header due to the CORS checking which is configured in <code>etc/jolokia-access.xml</code>.</p>
+<p>By default it&#8217;s necessary to pass the <code>Origin</code> header due to the <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> checking which is configured in <code>etc/jolokia-access.xml</code>.</p>
 </div>
 <div class="paragraph">
-<p>Such a <code>curl</code> command would give you back something like the following (after formatting):</p>
+<p>Either such <code>curl</code> command would give you back something like the following (after formatting):</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -854,15 +860,648 @@ For a full guide as to how to use it refer to <a href="https://jolokia.org/docum
     </span><span class="nl">"attribute"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Version"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"read"</span><span class="w">
   </span><span class="p">},</span><span class="w">
-  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.24.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"true"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1663086398</span><span class="p">,</span><span class="w">
   </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w">
 </span><span class="p">}</span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>The value of the attribute is contained in <code>value</code> (i.e. <code>true</code>).
+You could easily parse this JSON data with a tool like <a href="https://jqlang.github.io/jq/"><code>jq</code></a> which is available in most Linux distributions, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-s</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass <span class="nt">--header</span> <span class="s2">"Content-type: application/json"</span> <span class="nt">--request</span> POST <span class="nt">--data</span> <span class="s1">'{"attribute": "Active", "mbean": "org.apache.activemq.artemis:broker=\"0.0.0.0\"", "type": "read"}'</span> http://localhost:8161/console/jolokia | jq <span class="nt">-r</span> <span class="s1">'.value'</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command would simply return:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="go">true</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See more details on Jolokia&#8217;s <code>read</code> functionality in the <a href="https://jolokia.org/reference/html/manual/jolokia_protocol.html#read">Jolokia documentation</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="executing-an-operation"><a class="anchor" href="#executing-an-operation"></a><a class="link" href="#executing-an-operation">2.3.2. Executing an Operation</a></h4>
+<div class="paragraph">
+<p>Aside from reading an attribute the next most common task is executing an operation.
+For example, you can list the connections to the broker with <code>curl</code> and parse the output with <code>jq</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-s</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass <span class="s2">"http://localhost:8161/console/jolokia/exec/org.apache.activemq.artemis:broker=</span><span class="se">\"</span><span class="s2">0.0.0.0</span><span class="se">\"</span><span class="s2">/listConnections/</span><span class="se">\"\"</span><span class="s2">/-1/-1"</span> | jq <span class="s1">'.value | fromjson'</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or you could send a JSON formatted <code>POST</code> request instead of using the URL</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-s</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass <span class="nt">--header</span> <span class="s2">"Content-type: application/json"</span> <span class="nt">--request</span> POST <span class="nt">--data</span> <span class="s1">'{"operation": "listConnections", "mbean": "org.apache.activemq.artemis:broker=\"0.0.0.0\"", "type": "exec", "arguments": [ "", -1, -1 ] }'</span> http://localhost:8161/console/jolokia | jq <span class="s1">'.value | fromjson'</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Either such command would give you back something like the following (after formatting):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"connectionID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bd8d4635"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"remoteAddress"</span><span class="p">:</span><span class="w"> </span><span class="s2">"127.0.0.1:55754"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"users"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"creationTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Wed Jan 1 12:00:00 CDT 2020"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"implementation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RemotingConnectionImpl"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"protocol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CORE"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"clientID"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"localAddress"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tcp:///127.0.0.1:61616"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"sessionCount"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"connectionID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2a7ac661"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"remoteAddress"</span><span class="p">:</span><span class="w"> </span><span class="s2">"127.0.0.1:54394"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"users"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"creationTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Wed Jan 1 12:00:00 CDT 2020"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"implementation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OpenWireConnection"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"protocol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OPENWIRE"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"clientID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID:myMachine-34439-1727292626395-0:1"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"localAddress"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tcp:///127.0.0.1:61616"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"sessionCount"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You could also leverage the <a href="#management-method-option-syntax">Management Method Option Syntax</a> to get more specific results.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-s</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass <span class="s2">"http://localhost:8161/console/jolokia/exec/org.apache.activemq.artemis:broker=</span><span class="se">\"</span><span class="s2">0.0.0.0</span><span class="se">\"</span><span class="s2">/listConnections/</span><span class="se">\{\"</span><span class="s2">field</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">protocol</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">operation</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">EQUALS</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">value</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">OPENWIRE</span><span class="se">\"\}</span><span class="s2">/-1/-1"</span> | jq <span class="s1">'.value | fromjson'</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or you could send a JSON formatted <code>POST</code> request instead of using the URL</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>curl <span class="nt">-s</span> <span class="nt">-H</span> <span class="s2">"Origin: http://localhost"</span> <span class="nt">-u</span> myUser:myPass <span class="nt">--header</span> <span class="s2">"Content-type: application/json"</span> <span class="nt">--request</span> POST <span class="nt">--data</span> <span class="s1">'{"operation": "listConnections", "mbean": "org.apache.activemq.artemis:broker=\"0.0.0.0\"", "type": "exec", "arguments": [ "{\"field\":\"protocol\",\"operation\":\"EQUALS\",\"value\":\"OPENWIRE\"}", -1, -1 ] }'</span> http://localhost:8161/console/jolokia | jq <span class="s1">'.value | fromjson'</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Either such command would give you back something like the following (after formatting):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"connectionID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2a7ac661"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"remoteAddress"</span><span class="p">:</span><span class="w"> </span><span class="s2">"127.0.0.1:54394"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"users"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"creationTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Wed Jan 1 12:00:00 CDT 2020"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"implementation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OpenWireConnection"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"protocol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OPENWIRE"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"clientID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ID:myMachine-34439-1727292626395-0:1"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"localAddress"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tcp:///127.0.0.1:61616"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"sessionCount"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See more details on Jolokia&#8217;s <code>exec</code> functionality in the <a href="https://jolokia.org/reference/html/manual/jolokia_protocol.html#exec">Jolokia documentation</a>.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="jmx-and-the-web-console"><a class="anchor" href="#jmx-and-the-web-console"></a><a class="link" href="#jmx-and-the-web-console">2.4. JMX and the Web Console</a></h3>
+<h3 id="management-method-option-syntax"><a class="anchor" href="#management-method-option-syntax"></a><a class="link" href="#management-method-option-syntax">2.4. Management Method Option Syntax</a></h3>
+<div class="paragraph">
+<p>When there are lots of these resources to manage it can sometimes be difficult to find a particular resource.
+For example, if there are 1,000 connections to the broker and you just want to manage one particular connection that is using a specific client ID.
+A handful of management operations support a special JSON syntax to filter results based on the following inputs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>field</code> (see the list of fields for each management operation below)</p>
+</li>
+<li>
+<p><code>operation</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>CONTAINS</code></p>
+</li>
+<li>
+<p><code>NOT_CONTAINS</code></p>
+</li>
+<li>
+<p><code>EQUALS</code></p>
+</li>
+<li>
+<p><code>NOT_EQUALS</code></p>
+</li>
+<li>
+<p><code>GREATER_THAN</code></p>
+</li>
+<li>
+<p><code>LESS_THAN</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>value</code></p>
+</li>
+<li>
+<p><code>sortField</code> (optional)</p>
+</li>
+<li>
+<p><code>sortOrder</code> (optional)</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>asc</code></p>
+</li>
+<li>
+<p><code>desc</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here are the methods which support this syntax along with the available fields:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">listConnections</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><code>connectionID</code></p>
+</li>
+<li>
+<p><code>clientID</code></p>
+</li>
+<li>
+<p><code>users</code></p>
+</li>
+<li>
+<p><code>protocol</code></p>
+</li>
+<li>
+<p><code>sessionCount</code></p>
+</li>
+<li>
+<p><code>remoteAddress</code></p>
+</li>
+<li>
+<p><code>localAddress</code></p>
+</li>
+<li>
+<p><code>sessionID</code></p>
+</li>
+<li>
+<p><code>creationTime</code></p>
+</li>
+<li>
+<p><code>implementation</code></p>
+</li>
+<li>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"protocol"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"operation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EQUALS"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OPENWIRE"</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">listSessions</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><code>id</code></p>
+</li>
+<li>
+<p><code>connectionID</code></p>
+</li>
+<li>
+<p><code>consumerCount</code></p>
+</li>
+<li>
+<p><code>producerCount</code></p>
+</li>
+<li>
+<p><code>user</code></p>
+</li>
+<li>
+<p><code>validatedUser</code></p>
+</li>
+<li>
+<p><code>protocol</code></p>
+</li>
+<li>
+<p><code>clientID</code></p>
+</li>
+<li>
+<p><code>localAddress</code></p>
+</li>
+<li>
+<p><code>remoteAddress</code></p>
+</li>
+<li>
+<p><code>creationTime</code></p>
+</li>
+<li>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"remoteAddress"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"operation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONTAINS"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"127.0.0.1"</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">listAddresses</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><code>id</code></p>
+</li>
+<li>
+<p><code>name</code></p>
+</li>
+<li>
+<p><code>routingTypes</code></p>
+</li>
+<li>
+<p><code>producerId</code></p>
+</li>
+<li>
+<p><code>queueCount</code></p>
+</li>
+<li>
+<p><code>internal</code></p>
+</li>
+<li>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"operation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CONTAINS"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"shipping"</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">listQueues</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><code>id</code></p>
+</li>
+<li>
+<p><code>name</code></p>
+</li>
+<li>
+<p><code>consumerID</code></p>
+</li>
+<li>
+<p><code>address</code></p>
+</li>
+<li>
+<p><code>maxConsumers</code></p>
+</li>
+<li>
+<p><code>filter</code></p>
+</li>
+<li>
+<p><code>messageCount</code></p>
+</li>
+<li>
+<p><code>consumerCount</code></p>
+</li>
+<li>
+<p><code>deliveringCount</code></p>
+</li>
+<li>
+<p><code>messagesAdded</code></p>
+</li>
+<li>
+<p><code>messagesAcked</code></p>
+</li>
+<li>
+<p><code>messagesExpired</code></p>
+</li>
+<li>
+<p><code>routingType</code></p>
+</li>
+<li>
+<p><code>user</code></p>
+</li>
+<li>
+<p><code>autoCreated</code></p>
+</li>
+<li>
+<p><code>durable</code></p>
+</li>
+<li>
+<p><code>paused</code></p>
+</li>
+<li>
+<p><code>temporary</code></p>
+</li>
+<li>
+<p><code>purgeOnNoConsumers</code></p>
+</li>
+<li>
+<p><code>messagesKilled</code></p>
+</li>
+<li>
+<p><code>directDeliver</code></p>
+</li>
+<li>
+<p><code>lastValue</code></p>
+</li>
+<li>
+<p><code>exclusive</code></p>
+</li>
+<li>
+<p><code>scheduledCount</code></p>
+</li>
+<li>
+<p><code>lastValueKey</code></p>
+</li>
+<li>
+<p><code>groupRebalance</code></p>
+</li>
+<li>
+<p><code>groupRebalancePauseDispatch</code></p>
+</li>
+<li>
+<p><code>groupBuckets</code></p>
+</li>
+<li>
+<p><code>groupFirstKey</code></p>
+</li>
+<li>
+<p><code>enabled</code></p>
+</li>
+<li>
+<p><code>ringSize</code></p>
+</li>
+<li>
+<p><code>consumersBeforeDispatch</code></p>
+</li>
+<li>
+<p><code>delayBeforeDispatch</code></p>
+</li>
+<li>
+<p><code>autoDelete</code></p>
+</li>
+<li>
+<p><code>internalQueue</code></p>
+</li>
+<li>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"consumerCount"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"operation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GREATER_THAN"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7"</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">listConsumers</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><code>id</code> or <code>consumerID</code></p>
+</li>
+<li>
+<p><code>sequentialId</code> or <code>sequentialId</code></p>
+</li>
+<li>
+<p><code>session</code> or <code>sessionID</code></p>
+</li>
+<li>
+<p><code>connection</code> or <code>connectionID</code></p>
+</li>
+<li>
+<p><code>queue</code> or <code>queueName</code></p>
+</li>
+<li>
+<p><code>filter</code></p>
+</li>
+<li>
+<p><code>address</code></p>
+</li>
+<li>
+<p><code>user</code></p>
+</li>
+<li>
+<p><code>validatedUser</code></p>
+</li>
+<li>
+<p><code>protocol</code></p>
+</li>
+<li>
+<p><code>clientID</code></p>
+</li>
+<li>
+<p><code>localAddress</code></p>
+</li>
+<li>
+<p><code>remoteAddress</code></p>
+</li>
+<li>
+<p><code>queueType</code></p>
+</li>
+<li>
+<p><code>browseOnly</code></p>
+</li>
+<li>
+<p><code>creationTime</code></p>
+</li>
+<li>
+<p><code>messagesInTransit</code> or <code>deliveringCount</code></p>
+</li>
+<li>
+<p><code>messagesInTransitSize</code></p>
+</li>
+<li>
+<p><code>messagesDelivered</code></p>
+</li>
+<li>
+<p><code>messagesDeliveredSize</code></p>
+</li>
+<li>
+<p><code>messagesAcknowledged</code></p>
+</li>
+<li>
+<p><code>messagesAcknowledgedAwaitingCommit</code></p>
+</li>
+<li>
+<p><code>lastDeliveredTime</code></p>
+</li>
+<li>
+<p><code>lastAcknowledgedTime</code></p>
+</li>
+<li>
+<p><code>status</code></p>
+</li>
+<li>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"messagesAcknowledged"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"operation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LESS_THAN"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">listProducers</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><code>id</code></p>
+</li>
+<li>
+<p><code>name</code></p>
+</li>
+<li>
+<p><code>session</code> or <code>sessionID</code></p>
+</li>
+<li>
+<p><code>connectionID</code></p>
+</li>
+<li>
+<p><code>address</code> or <code>destination</code></p>
+</li>
+<li>
+<p><code>user</code></p>
+</li>
+<li>
+<p><code>validatedUser</code></p>
+</li>
+<li>
+<p><code>protocol</code></p>
+</li>
+<li>
+<p><code>clientID</code></p>
+</li>
+<li>
+<p><code>localAddress</code></p>
+</li>
+<li>
+<p><code>remoteAddress</code></p>
+</li>
+<li>
+<p><code>creationTime</code></p>
+</li>
+<li>
+<p><code>msgSent</code></p>
+</li>
+<li>
+<p><code>msgSizeSent</code></p>
+</li>
+<li>
+<p><code>lastProducedMessageID</code></p>
+</li>
+<li>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"validatedUser"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"operation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EQUALS"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bob"</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="sect3">
+<h4 id="sorting"><a class="anchor" href="#sorting"></a><a class="link" href="#sorting">2.4.1. Sorting</a></h4>
+<div class="paragraph">
+<p>Results can be sorted by any field in either ascending (<code>asc</code>) or descending (<code>desc</code>) order.
+For example, use something like this in a call to <code>listConnections</code> to get all the AMQP connections with the newest connections first.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"protocol"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"operation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EQUALS"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AMQP"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"sortField"</span><span class="p">:</span><span class="w"> </span><span class="s2">"creationTime"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"sortOrder"</span><span class="p">:</span><span class="w"> </span><span class="s2">"desc"</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pagination"><a class="anchor" href="#pagination"></a><a class="link" href="#pagination">2.4.2. Pagination</a></h4>
+<div class="paragraph">
+<p>These methods also support <em>pagination</em>.
+In other words, the results can be divided into groups and then iterated through.
+The second parameter is the "page number" (i.e. which page to inspect) and the third parameter is the "page size" (i.e. how many results to return on each page).
+This is how, for example, the web console displays paginated results.</p>
+</div>
+<div class="paragraph">
+<p>To disable pagination pass <code>-1</code> for either page number of page size (or both).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="jmx-and-the-web-console"><a class="anchor" href="#jmx-and-the-web-console"></a><a class="link" href="#jmx-and-the-web-console">2.5. JMX and the Web Console</a></h3>
 <div class="paragraph">
 <p>The web console that ships with Artemis uses Jolokia under the covers which in turn uses JMX.
 This will use the authentication configuration as described in the <a href="#role-based-authorisation-for-jmx">Role Based Authorisation for JMX section</a>.
@@ -875,7 +1514,7 @@ You can configure multiple roles by changing this to <code>-Dhawtio.roles=amq,vi
 <p>If a user doesn&#8217;t have the correct role to invoke a specific operation then this will display an authorisation exception in the console.</p>
 </div>
 <div class="sect3">
-<h4 id="artemis_rbac_mbean_server_guard"><a class="anchor" href="#artemis_rbac_mbean_server_guard"></a><a class="link" href="#artemis_rbac_mbean_server_guard">2.4.1. ArtemisRbacMBeanServerBuilder and ArtemisRbacInvocationHandler</a></h4>
+<h4 id="artemis_rbac_mbean_server_guard"><a class="anchor" href="#artemis_rbac_mbean_server_guard"></a><a class="link" href="#artemis_rbac_mbean_server_guard">2.5.1. ArtemisRbacMBeanServerBuilder and ArtemisRbacInvocationHandler</a></h4>
 <div class="paragraph">
 <p>The ArtemisRbacMBeanServerBuilder class, when configured as value for the system property <code>javax.management.builder.initial</code> will cause the ArtemisRbacInvocationHandler to be installed on every JMX MBeanServer in the JVM.
 The ArtemisRbacInvocationHandler intercepts all operations on the MBeanServer and chooses to guard a subsection of those operations.</p>

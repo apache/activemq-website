@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Configuration Reference</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#broker-configuration">1. Broker Configuration</a>
 <ul class="sectlevel2">
@@ -195,8 +195,8 @@ The remove match value can be configured with a property key "remove.value".</p>
 <div class="content">
 <pre class="nowrap">securityEnabled=false
 acceptorConfigurations.tcp.factoryClassName=org.apache.activemq.artemis.core.remoting.impl.netty.NettyAcceptorFactory
-acceptorConfigurations.tcp.params.HOST=localhost
-acceptorConfigurations.tcp.params.PORT=61616</pre>
+acceptorConfigurations.tcp.params.host=localhost
+acceptorConfigurations.tcp.params.port=61616</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -410,6 +410,12 @@ This is a list</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Half of the JVM&#8217;s <code>-Xmx</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="paging.html#global-max-messages">global-max-messages</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of messages before all addresses will enter into their Full Policy configured.
+It works in conjunction with global-max-size, being watever value hits its maximum first.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="graceful-shutdown.html#graceful-server-shutdown">graceful-shutdown-enabled</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true means that graceful shutdown is enabled.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
@@ -525,14 +531,34 @@ The system will create as many files as needed however when reclaiming files it 
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ASYNCIO</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="data-retention.html#data-retention">journal-retention-directory</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">where to keep retained data including attributes for how long to keep it (<code>unit</code> &amp; <code>period</code>) and how much to keep (<code>storage-limit</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="persistence.html#configuring-the-message-journal">journal-datasync</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">It will use msync/fsync on journal operations.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">journal-device-block-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The size in bytes used by the storage device. This is usually translated as <code>fstat</code>/<code>st_blksize</code>, and this is a way to bypass the value returned as <code>st_blksize</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4096</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log-journal-write-rate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to log messages about the journal write rate.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="large-messages.html#large-messages">large-messages-directory</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the directory to store large messages.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data/largemessages</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="large-messages.html#configuring-the-server">large-message-sync</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">should sync large messages before closing the file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">log-delegate-factory-class-name</p></td>
@@ -566,8 +592,16 @@ If set to "true" the passwords are masked.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="paging.html#max-disk-usage">max-disk-usage</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The max percentage of data we should use from disks.
 The broker will block while the disk is full.
-Disable by setting -1.</p></td>
+Disable by setting <code>-1</code>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">90</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="paging.html#minimum-disk-free">min-disk-free</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Min free bytes on disk below which the system blocks or fails clients.
+Supports byte notation like "K", "MB", "GB", etc.
+Will override <code>max-disk-usage</code> if both are set.
+Disable by setting <code>-1</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="perf-tuning.html#performance-tuning">memory-measure-interval</a></p></td>
@@ -700,14 +734,24 @@ In most cases this should be set to '1'.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="security.html#authentication-authorization">security-enabled</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="security.html#basic-configuration">security-enabled</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true means that security is enabled.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="security.html#authentication-authorization">security-invalidation-interval</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="security.html#caching-security-operations">security-invalidation-interval</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">how long (in ms) to wait before invalidating the security cache.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="security.html#caching-security-operations">authentication-cache-size</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">how large to make the authentication cache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="security.html#caching-security-operations">authorization-cache-size</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">how large to make the authorization cache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">system-property-prefix</p></td>
@@ -722,6 +766,11 @@ In most cases this should be set to '1'.</p></td>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="security.html#tracking-the-validated-user">populate-validated-user</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">whether or not to add the name of the validated user to the messages that user sends.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="security.html#tracking-the-validated-user">reject-empty-validated-user</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true means that the server will not allow any message that doesn&#8217;t have a validated user, in JMS this is <code>JMSXUserID</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 <tr>
@@ -845,6 +894,68 @@ in your security-settings.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a id="management-rbac-prefix"></a> management-rbac-prefix</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">parameter to configure the prefix for security-settings match addresses to control RBAC on <a href="management.html#jmx-authorization-in-broker-xml">JMX MBean operations</a> and optionally on <a href="management.html#fine-grained-rbac-on-management-messages">management messages</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">mops (shorthand for management operations)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="address-model.html#temporary-queues">temporary-queue-namespace</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the namespace to use for looking up address settings for temporary queues</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="mqtt.html#automatic-subscription-clean-up">mqtt-session-scan-interval</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">how often (in ms) to scan for expired MQTT sessions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="mqtt.html#persistent-subscriptions">mqtt-session-state-persistence-timeout</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">how long (in ms) to wait to persist MQTT session state</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5000</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="federation.html#federation">federations</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a list of federation elements</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="connection-routers.html#connection-routers">connection-routers</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a list of connection-router elements</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mirror-ack-manager-queue-attempts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of times a mirror target would retry an acknowledgement on the queue before scanning page files for the message.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mirror-ack-manager-page-attempts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of times a mirror target would retry an acknowledgement on paging.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mirror-ack-manager-retry-delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Period in milliseconds for which retries are going to be exercised.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mirror-page-transaction</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should Mirror use Page Transactions When target destinations is paging?
+When a target queue on the mirror is paged, the mirror will not record a page transaction for every message.
+The default is <code>false</code>, and the overhead of paged messages will be smaller, but there is a possibility of eventual duplicates in case of interrupted communication between the mirror source and target.
+If you set this to <code>true</code> there will be a record stored on the journal for the page-transaction additionally to the record in the page store.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="management.html#suppressing-session-notifications">suppress-session-notifications</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to suppress <code>SESSION_CREATED</code> and <code>SESSION_CLOSED</code> notifications.
+Set to <code>true</code> to reduce notification overhead.
+However, these are required to enforce unique client ID utilization in a cluster for MQTT clients.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="address-settings.html#literal-matches">literal-match-markers</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The characters that mark a "literal" match.
+A literal match means the setting(s) will only apply to the exact match regardless of wildcards.
+If this setting is not omitted then it must be two characters - the start marker and the end marker.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
 </tr>
 </tbody>
 </table>
