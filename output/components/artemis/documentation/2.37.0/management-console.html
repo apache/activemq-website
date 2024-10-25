@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Management Console</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Management Console</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#login">1. Login</a></li>
+<li><a href="#security">2. Security</a></li>
+<li><a href="#console">3. Console</a>
+<ul class="sectlevel2">
+<li><a href="#navigation-menu">3.1. Navigation Menu</a></li>
+<li><a href="#navigation-tabs">3.2. Navigation Tabs</a></li>
+</ul>
+</li>
+<li><a href="#artemis-tab">4. Artemis Tab</a>
+<ul class="sectlevel2">
+<li><a href="#tree-view">4.1. Tree View</a></li>
+<li><a href="#key-operations">4.2. Key Operations</a></li>
+<li><a href="#status-logging">4.3. Status Logging</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis ships by default with a management console.
+It is powered by <a href="http://hawt.io">Hawt.io</a>.</p>
+</div>
+<div class="paragraph">
+<p>Its purpose is to expose the <a href="management.html#management">Management API</a> via a user friendly web ui.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="login"><a class="anchor" href="#login"></a><a class="link" href="#login">1. Login</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To access the management console use a browser and go to the URL <a href=""><a href="http://localhost:8161/console" class="bare">http://localhost:8161/console</a></a>.</p>
+</div>
+<div class="paragraph">
+<p>A login screen will be presented, if your broker is secure, you will need to use a user with admin role, if it is unsecure simply enter any user/password.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/console-login.png" alt="ActiveMQ Artemis Console Login">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="security"><a class="anchor" href="#security"></a><a class="link" href="#security">2. Security</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>That Jolokia JMX-HTTP bridge is secured via a policy file in the broker configuration directory: 'etc/jolokia-access.xml'.
+The contents of that file should be modified as described in the <a href="https://jolokia.org/features/security.html">Jolokia Security Guide</a>.
+By default the console is locked down to 'localhost', pay particular attention to the 'CORS' restrictions when exposing the console web endpoint over the network.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="console"><a class="anchor" href="#console"></a><a class="link" href="#console">3. Console</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once logged in you should be presented with a screen similar to.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/console-artemis-plugin.png" alt="ActiveMQ Artemis Console Artemis Plugin">
+</div>
+</div>
+<div class="sect2">
+<h3 id="navigation-menu"><a class="anchor" href="#navigation-menu"></a><a class="link" href="#navigation-menu">3.1. Navigation Menu</a></h3>
+<div class="paragraph">
+<p>On the top right is small menu area you will see some icons.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>question mark</code>
+This will open a menu with the following items</p>
+</li>
+<li>
+<p><code>Help</code> This will navigate to the console user guide</p>
+</li>
+<li>
+<p><code>About</code> this will load an about screen, here you will be able to see and validate versions</p>
+</li>
+<li>
+<p><code>person</code>
+will provide a drop down menu with</p>
+</li>
+<li>
+<p><code>Preferences</code> this will open the preferences page</p>
+</li>
+<li>
+<p><code>Log out</code> self descriptive.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="navigation-tabs"><a class="anchor" href="#navigation-tabs"></a><a class="link" href="#navigation-tabs">3.2. Navigation Tabs</a></h3>
+<div class="paragraph">
+<p>Running below the Navigation Menu you will see several default feature tabs.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Artemis</code> This is the core tab for Apache ActiveMQ Artemis specific functionality.
+The rest of this document will focus on this.</p>
+</li>
+<li>
+<p><code>Dashboard</code> Here you can create and save graphs and tables of metrics available via JMX, a default jvm health dashboard is provided.</p>
+</li>
+<li>
+<p><code>JMX</code> This exposes the raw Jolokia JMX so you can browse/access all the JMX endpoints exposed by the JVM.</p>
+</li>
+<li>
+<p><code>Threads</code> This allows you to monitor the thread usage and their state.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In previous versions there was a "Connect" tab which could be used to connect to a remote broker from the same console.
+This was disabled by default for security purposes, but it can be enabled again by removing <code>-Dhawtio.disableProxy=true</code> from <code>artemis.profile</code> (or <code>artemis.profile.cmd</code> on Windows).</p>
+</div>
+<div class="paragraph">
+<p>You can install further hawtio plugins if you wish to have further functionality.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="artemis-tab"><a class="anchor" href="#artemis-tab"></a><a class="link" href="#artemis-tab">4. Artemis Tab</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Click <code>Artemis</code> in the left navigation bar to see the Artemis specific plugin.
+(The Artemis tab won&#8217;t appear if there is no broker in this JVM).
+The Artemis plugin works very much the same as the JMX plugin however with a focus on interacting with an Artemis broker.</p>
+</div>
+<div class="sect2">
+<h3 id="tree-view"><a class="anchor" href="#tree-view"></a><a class="link" href="#tree-view">4.1. Tree View</a></h3>
+<div class="paragraph">
+<p>The tree view on the left-hand side shows the top level JMX tree of each broker instance running in the JVM.
+Expanding the tree will show the various MBeans registered by Artemis that you can inspect via the <strong>Attributes</strong> tab.</p>
+</div>
+<div class="sect3">
+<h4 id="acceptors"><a class="anchor" href="#acceptors"></a><a class="link" href="#acceptors">4.1.1. Acceptors</a></h4>
+<div class="paragraph">
+<p>This expands to show and expose details of the current configured acceptors.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="addresses"><a class="anchor" href="#addresses"></a><a class="link" href="#addresses">4.1.2. Addresses</a></h4>
+<div class="paragraph">
+<p>This expands to show the current configured available <code>addresses</code>.</p>
+</div>
+<div class="paragraph">
+<p>Under the address you can expand to find the <code>queues</code> for the address exposing attributes</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="key-operations"><a class="anchor" href="#key-operations"></a><a class="link" href="#key-operations">4.2. Key Operations</a></h3>
+<div class="sect3">
+<h4 id="creating-a-new-address"><a class="anchor" href="#creating-a-new-address"></a><a class="link" href="#creating-a-new-address">4.2.1. Creating a new Address</a></h4>
+<div class="paragraph">
+<p>To create a new address simply click on the broker or the address folder in the jmx tree and click on the create tab.</p>
+</div>
+<div class="paragraph">
+<p>Once you have created an address you should be able to <strong>Send</strong> to it by clicking on it in the jmx tree and clicking on the send tab.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="creating-a-new-queue"><a class="anchor" href="#creating-a-new-queue"></a><a class="link" href="#creating-a-new-queue">4.2.2. Creating a new Queue</a></h4>
+<div class="paragraph">
+<p>To create a new queue click on the address you want to bind the queue to and click on the create tab.</p>
+</div>
+<div class="paragraph">
+<p>Once you have created a queue you should be able to <strong>Send</strong> a message to it or <strong>Browse</strong> it or view the  <strong>Attributes</strong> or <strong>Charts</strong>.
+Simply click on the queue in th ejmx tree and click on the appropriate tab.</p>
+</div>
+<div class="paragraph">
+<p>You can also see a graphical view of all brokers, addresses, queues and their consumers using the <strong>Diagram</strong> tab.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="status-logging"><a class="anchor" href="#status-logging"></a><a class="link" href="#status-logging">4.3. Status Logging</a></h3>
+<div class="paragraph">
+<p>When the broker starts it will detect the presence of the web console and log status information, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">INFO  [org.apache.activemq.artemis] AMQ241002: Artemis Jolokia REST API available at http://localhost:8161/console/jolokia
+INFO  [org.apache.activemq.artemis] AMQ241004: Artemis Console available at http://localhost:8161/console</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The web console is detected by inspecting the value of the <code>&lt;display-name&gt;</code> tag in the war file&#8217;s <code>WEB-INF/web.xml</code> descriptor.
+By default it looks for <code>hawtio</code>.
+However, if this value is changed for any reason the broker can look for this new value by setting the following system property</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">-Dorg.apache.activemq.artemis.webConsoleDisplayName=newValue</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Broker Connections</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#amqp-server-connections">1. AMQP Server Connections</a></li>
 <li><a href="#amqp-server-connection-operations">2. AMQP Server Connection Operations</a></li>
@@ -43,6 +43,7 @@
 <ul class="sectlevel2">
 <li><a href="#local-and-remote-address-federation">9.1. Local and remote address federation</a></li>
 <li><a href="#local-and-remote-queue-federation">9.2. Local and remote queue federation</a></li>
+<li><a href="#examples-2">9.3. Examples</a></li>
 </ul>
 </li>
 </ul>
@@ -52,11 +53,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Instead of waiting for clients to connect, a broker can initiate a connection to another endpoint on a specific protocol.</p>
-</div>
-<div class="paragraph">
-<p>Currently, this feature supports only the AMQP protocol.
-However, in the future, it might be expanded to other protocols.</p>
+<p>Instead of waiting for clients to connect, a broker can also initiate a connection to another server.</p>
 </div>
 <div class="paragraph">
 <p>Broker connections are configured by the <code>&lt;broker-connections&gt;</code> XML element in the <code>broker.xml</code> configuration file.</p>
@@ -179,6 +176,17 @@ Therefore, if a security manager is being used, ensure that you perform the conf
 <ul>
 <li>
 <p>The broker uses an AMQP connection to another broker and duplicates messages and sends acknowledgements over the wire.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Federation</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Broker federation allows the local broker to create remote receivers for addresses or queues that have local demand.
+Conversely it can also send federation configuration to the remote broker causing it to create receivers on the local broker based on remote demand on an address or queue over this same connection.</p>
 </li>
 </ul>
 </div>
@@ -514,7 +522,7 @@ Message acknowledgements received on DC2 will be automatically related back to D
 <div class="sect2">
 <h3 id="example"><a class="anchor" href="#example"></a><a class="link" href="#example">5.1. Example</a></h3>
 <div class="paragraph">
-<p>There is an example as part of the distribution showing dual broker configuration (or disaster recovery) in <code>./examples/features/broker-connection/disaster-recovery</code>.</p>
+<p>There is an example as part of the broker <a href="examples.html">examples</a> showing dual broker configuration (or disaster recovery) in <code>./examples/features/broker-connection/disaster-recovery</code>.</p>
 </div>
 <div class="paragraph">
 <p>On the provided example above, two brokers are configured to mirror each other and whatever happens in one broker is immediately copied over to the other broker.</p>
@@ -930,6 +938,12 @@ The default is <code>-1</code>.</p>
 <p>Controls if consumers on a queue which come from federation instances should be counted when observing a queue for demand, by default this value is <code>false</code> and federation consumers are not counted.</p>
 </dd>
 </dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-2"><a class="anchor" href="#examples-2"></a><a class="link" href="#examples-2">9.3. Examples</a></h3>
+<div class="paragraph">
+<p>A number of examples for using the federation functionality in a variety of situations can be found in the broker <a href="examples.html">examples</a> under directory <em>./examples/features/broker-connection</em>.</p>
 </div>
 </div>
 </div>

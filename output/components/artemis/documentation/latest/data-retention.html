@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Data Retention</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.37.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
 <ul class="sectlevel3">
 <li><a href="#paging-and-large-messages">1. Paging and Large Messages</a></li>
 <li><a href="#non-persistent-messages">2. Non Persistent Messages</a></li>
@@ -31,13 +31,17 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you enable <code>journal-retention</code> on broker.xml, ActiveMQ Artemis will keep copy of every data that has passed through the broker on this folder.</p>
+<p>If you enable <code>journal-retention-directory</code> on broker.xml, ActiveMQ Artemis will keep copy of every data that has passed through the broker on this folder.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="xml">    ...
-      <span class="nt">&lt;journal-retention</span> <span class="na">unit=</span><span class="s">"DAYS"</span> <span class="na">directory=</span><span class="s">"history"</span> <span class="na">period=</span><span class="s">"365"</span> <span class="na">storage-limit=</span><span class="s">"10G"</span><span class="nt">/&gt;</span>
-    ...</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;configuration...&gt;</span>
+   <span class="nt">&lt;core...&gt;</span>
+      ...
+      <span class="nt">&lt;journal-retention-directory</span> <span class="na">unit=</span><span class="s">"DAYS"</span> <span class="na">period=</span><span class="s">"365"</span> <span class="na">storage-limit=</span><span class="s">"10G"</span><span class="nt">&gt;</span>history<span class="nt">&lt;/journal-retention-directory&gt;</span>
+      ...
+   <span class="nt">&lt;/core&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
