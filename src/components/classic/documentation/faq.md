@@ -161,7 +161,7 @@ Questions on specific kinds of errors. If you have seen a specific exception the
 *   [Could not find PacketReader for packet type - UNKNOWN PACKET TYPE](could-not-find-packetreader-for-packet-type-unknown-packet-type)
 *   Exceptions
     *   [certificate_unknown](certificateunknown)
-    *   [IOException - could not find class for resource](ioexception-could-not-find-class-for-reDevelopers/source)
+    *   [IOException - could not find class for resource](ioexception-could-not-find-class-for-resource)
     *   [java.io.InterruptedIOException](javaiointerruptedioexception)
     *   [java.io.IOException Failed to create database 'derbydb', see the next exception for details](javaioioexception-failed-to-create-database-derbydb-see-the-next-exception-for-details)
     *   [java.lang.NoSuchMethodError](javalangnosuchmethoderror)
