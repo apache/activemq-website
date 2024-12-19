@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Detecting Dead Connections</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Detecting Dead Connections</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#cleaning-up-resources-on-the-server">1. Cleaning up Resources on the Server</a></li>
+<li><a href="#closing-forgotten-resources">2. Closing Forgotten Resources</a></li>
+<li><a href="#detecting-failure-from-the-client">3. Detecting Failure from the Client</a></li>
+<li><a href="#configuring-asynchronous-connection-execution">4. Configuring Asynchronous Connection Execution</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section we will discuss connection time-to-live (TTL) and explain how Apache ActiveMQ Artemis deals with crashed clients and clients which have exited without cleanly closing their resources.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cleaning-up-resources-on-the-server"><a class="anchor" href="#cleaning-up-resources-on-the-server"></a><a class="link" href="#cleaning-up-resources-on-the-server">1. Cleaning up Resources on the Server</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before an Apache ActiveMQ Artemis client application exits it is considered good practice that it should close its resources in a controlled manner, using a <code>finally</code> block.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of a well behaved core client application closing its session and session factory in a finally block:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ServerLocator</span> <span class="n">locator</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="nc">ClientSessionFactory</span> <span class="n">sf</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="nc">ClientSession</span> <span class="n">session</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+<span class="k">try</span> <span class="o">{</span>
+   <span class="n">locator</span> <span class="o">=</span> <span class="nc">ActiveMQClient</span><span class="o">.</span><span class="na">createServerLocatorWithoutHA</span><span class="o">(..);</span>
+
+   <span class="n">sf</span> <span class="o">=</span> <span class="n">locator</span><span class="o">.</span><span class="na">createSessionFactory</span><span class="o">();</span>
+
+   <span class="n">session</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="na">createSession</span><span class="o">(...);</span>
+
+   <span class="o">...</span> <span class="k">do</span> <span class="n">some</span> <span class="n">stuff</span> <span class="n">with</span> <span class="n">the</span> <span class="n">session</span><span class="o">...</span>
+<span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">session</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">session</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+   <span class="o">}</span>
+
+   <span class="k">if</span> <span class="o">(</span><span class="n">sf</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">sf</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+   <span class="o">}</span>
+
+   <span class="k">if</span><span class="o">(</span><span class="n">locator</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">locator</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+   <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And here&#8217;s an example of a well behaved JMS client application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">Connection</span> <span class="n">jmsConnection</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+<span class="k">try</span> <span class="o">{</span>
+   <span class="nc">ConnectionFactory</span> <span class="n">jmsConnectionFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQConnectionFactory</span><span class="o">(</span><span class="s">"tcp://localhost:61616"</span><span class="o">);</span>
+
+   <span class="n">jmsConnection</span> <span class="o">=</span> <span class="n">jmsConnectionFactory</span><span class="o">.</span><span class="na">createConnection</span><span class="o">();</span>
+
+   <span class="o">...</span> <span class="k">do</span> <span class="n">some</span> <span class="n">stuff</span> <span class="n">with</span> <span class="n">the</span> <span class="n">connection</span><span class="o">...</span>
+<span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">connection</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">connection</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+   <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or with using auto-closeable feature from Java, which can save a few lines of code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="k">try</span> <span class="o">(</span>
+     <span class="nc">ActiveMQConnectionFactory</span> <span class="n">jmsConnectionFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQConnectionFactory</span><span class="o">(</span><span class="s">"tcp://localhost:61616"</span><span class="o">);</span>
+     <span class="nc">Connection</span> <span class="n">jmsConnection</span> <span class="o">=</span> <span class="n">jmsConnectionFactory</span><span class="o">.</span><span class="na">createConnection</span><span class="o">())</span> <span class="o">{</span>
+   <span class="o">...</span> <span class="k">do</span> <span class="n">some</span> <span class="n">stuff</span> <span class="n">with</span> <span class="n">the</span> <span class="n">connection</span><span class="o">...</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unfortunately users don&#8217;t always write well behaved applications, and sometimes clients just crash so they don&#8217;t have a chance to clean up their resources!</p>
+</div>
+<div class="paragraph">
+<p>If this occurs then it can leave server side resources, like sessions, hanging on the server.
+If these were not removed they would cause a resource leak on the server and over time this result in the server running out of memory or other resources.</p>
+</div>
+<div class="paragraph">
+<p>We have to balance the requirement for cleaning up dead client resources with the fact that sometimes the network between the client and the server can fail and then come back, allowing the client to reconnect.
+Apache ActiveMQ Artemis supports client reconnection, so we don&#8217;t want to clean up "dead" server side resources too soon or this will prevent any client from reconnecting, as it won&#8217;t be able to find its old sessions on the server.</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis makes all of this configurable via a <em>connection TTL</em>.
+Basically, the TTL determines how long the server will keep a connection alive in the absence of any data arriving from the client.
+The client will automatically send "ping" packets periodically to prevent the server from closing it down.
+If the server doesn&#8217;t receive any packets on a connection for the connection TTL time, then it will automatically close all the sessions on the server that relate to that connection.</p>
+</div>
+<div class="paragraph">
+<p>The connection TTL is configured on the URI using the <code>connectionTTL</code> parameter.</p>
+</div>
+<div class="paragraph">
+<p>The default value for connection ttl on an "unreliable" connection (e.g. a Netty connection using the <code>tcp</code> URL scheme) is <code>60000</code>ms, i.e. 1 minute.
+The default value for connection ttl on a "reliable" connection (e.g. an in-vm connection using the <code>vm</code> URL scheme) is <code>-1</code>.
+A value of <code>-1</code> for <code>connectionTTL</code> means the server will never time out the connection on the server side.</p>
+</div>
+<div class="paragraph">
+<p>If you do not wish clients to be able to specify their own connection TTL, you can override all values used by a global value set on the server side.
+This can be done by specifying the <code>connection-ttl-override</code> attribute in the server side configuration.
+The default value for <code>connection-ttl-override</code> is <code>-1</code> which means "do not override" (i.e. let clients use their own values).</p>
+</div>
+<div class="paragraph">
+<p>The logic to check connections for TTL violations runs periodically on the broker.
+By default, the checks are done every 2,000 milliseconds.
+However, this can be changed if necessary by using the  <code>connection-ttl-check-interval</code> attribute.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="closing-forgotten-resources"><a class="anchor" href="#closing-forgotten-resources"></a><a class="link" href="#closing-forgotten-resources">2. Closing Forgotten Resources</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As previously discussed, it&#8217;s important that all core client sessions and JMS connections are always closed explicitly in a <code>finally</code> block when you are finished using them.</p>
+</div>
+<div class="paragraph">
+<p>If you fail to do so, Apache ActiveMQ Artemis will detect this at garbage collection time, and log a warning (If you are using JMS the warning will involve a JMS connection).</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis will then close the connection / client session for you.</p>
+</div>
+<div class="paragraph">
+<p>Note that the log will also tell you the exact line of your user code where you created the JMS connection / client session that you later did not close.
+This will enable you to pinpoint the error in your code and correct it appropriately.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="detecting-failure-from-the-client"><a class="anchor" href="#detecting-failure-from-the-client"></a><a class="link" href="#detecting-failure-from-the-client">3. Detecting Failure from the Client</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the previous section we discussed how the client sends pings to the server and how "dead" connection resources are cleaned up by the server.
+There&#8217;s also another reason for pinging, and that&#8217;s for the <em>client</em> to be able to detect that the server or network has failed.</p>
+</div>
+<div class="paragraph">
+<p>As long as the client is receiving data from the server it will consider the connection to be still alive.</p>
+</div>
+<div class="paragraph">
+<p>If the client does not receive any packets for a configurable number of milliseconds then it will consider the connection failed and will either initiate failover, or call any <code>FailureListener</code> instances (or <code>ExceptionListener</code> instances if you are using JMS) depending on how  it has been configured.</p>
+</div>
+<div class="paragraph">
+<p>This is controlled by setting the <code>clientFailureCheckPeriod</code> parameter on the URI your client is using to connect, e.g. <code>tcp://localhost:61616?clientFailureCheckPeriod=30000</code>.</p>
+</div>
+<div class="paragraph">
+<p>The default value for client failure check period on an "unreliable" connection (e.g. a Netty connection) is <code>30000</code> ms, i.e. 30 seconds.
+The default value for client failure check period on a "reliable" connection (e.g. an in-vm connection) is <code>-1</code>.
+A value of <code>-1</code> means the client will never fail the connection on the client side if no data is received from the server.
+Typically this is much lower than connection TTL to allow clients to reconnect in case of transitory failure.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-asynchronous-connection-execution"><a class="anchor" href="#configuring-asynchronous-connection-execution"></a><a class="link" href="#configuring-asynchronous-connection-execution">4. Configuring Asynchronous Connection Execution</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Most packets received on the server side are executed on the remoting thread.
+These packets represent short-running operations and are always executed on the remoting thread for performance reasons.</p>
+</div>
+<div class="paragraph">
+<p>However, by default some kinds of packets are executed using a thread from a thread pool so that the remoting thread is not tied up for too long.
+Please note that processing operations asynchronously on another thread adds a little more latency.
+These packets are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.apache.activemq.artemis.core.protocol.core.impl.wireformat.RollbackMessage</code></p>
+</li>
+<li>
+<p><code>org.apache.activemq.artemis.core.protocol.core.impl.wireformat.SessionCloseMessage</code></p>
+</li>
+<li>
+<p><code>org.apache.activemq.artemis.core.protocol.core.impl.wireformat.SessionCommitMessage</code></p>
+</li>
+<li>
+<p><code>org.apache.activemq.artemis.core.protocol.core.impl.wireformat.SessionXACommitMessage</code></p>
+</li>
+<li>
+<p><code>org.apache.activemq.artemis.core.protocol.core.impl.wireformat.SessionXAPrepareMessage</code></p>
+</li>
+<li>
+<p><code>org.apache.activemq.artemis.core.protocol.core.impl.wireformat.SessionXARollbackMessage</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To disable asynchronous connection execution, set the parameter <code>async-connection-execution-enabled</code> in <code>broker.xml</code> to <code>false</code> (default value is <code>true</code>).</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

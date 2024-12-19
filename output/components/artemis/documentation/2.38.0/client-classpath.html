@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>The Client Classpath</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>The Client Classpath</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#maven-dependencies">1. Maven dependencies</a></li>
+<li><a href="#individual-client-dependencies">2. Individual client dependencies</a></li>
+<li><a href="#repackaged-all-clients">3. Repackaged '-all' clients</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="maven-dependencies"><a class="anchor" href="#maven-dependencies"></a><a class="link" href="#maven-dependencies">1. Maven dependencies</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The recommended way to define a client dependency for your java application is through a Maven dependency declaration.</p>
+</div>
+<div class="paragraph">
+<p>There are two dependencies you can choose from, <code>org.apache.activemq:artemis-jms-client</code> for JMS 2.0 or <code>org.apache.activemq:artemis-jakarta-client</code> for Jakarta Messaging 3.x.</p>
+</div>
+<div class="paragraph">
+<p>For JMS:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml">&#8230;&#8203;
+<span class="nt">&lt;dependency&gt;</span>
+   <span class="nt">&lt;groupId&gt;</span>org.apache.activemq<span class="nt">&lt;/groupId&gt;</span>
+   <span class="nt">&lt;artifactId&gt;</span>artemis-jms-client<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;version&gt;</span>2.38.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+&#8230;&#8203;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For Jakarta:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml">&#8230;&#8203;
+<span class="nt">&lt;dependency&gt;</span>
+   <span class="nt">&lt;groupId&gt;</span>org.apache.activemq<span class="nt">&lt;/groupId&gt;</span>
+   <span class="nt">&lt;artifactId&gt;</span>artemis-jakarta-client<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;version&gt;</span>2.38.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+&#8230;&#8203;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="individual-client-dependencies"><a class="anchor" href="#individual-client-dependencies"></a><a class="link" href="#individual-client-dependencies">2. Individual client dependencies</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you don&#8217;t wish to use a build tool such as Maven which manages the dependencies for you, you may also choose to add the specific dependency jars to your classpath, which are all included under ./lib on the main distribution.</p>
+</div>
+<div class="paragraph">
+<p>For more information of the clients individual dependencies, see:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="client-classpath-jms.html#artemis-jms-client-dependencies">JMS client dependencies</a></p>
+</li>
+<li>
+<p><a href="client-classpath-jakarta.html#artemis-jakarta-client-dependencies">Jakarta client dependencies</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="repackaged-all-clients"><a class="anchor" href="#repackaged-all-clients"></a><a class="link" href="#repackaged-all-clients">3. Repackaged '-all' clients</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Even though it is highly recommend to use the maven dependencies, in cases this isnt a possibility and neither is using the individual dependencies as detailed above then the all-inclusive repackaged jar could be used as an alternative.</p>
+</div>
+<div class="paragraph">
+<p>These jars are available at Maven Central:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-jms-client-all/2.38.0/">artemis-jms-client-all-2.38.0.jar</a></p>
+</li>
+<li>
+<p><a href="https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-jakarta-client-all/2.38.0/">artemis-jakarta-client-all-2.38.0.jar</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Whether you are using JMS or just the Core API simply add the <code>artemis-jms-client-all</code> jar to your client classpath.
+For Jakarta Messaging add the <code>artemis-jakarta-client-all</code> jar instead.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+These repackaged jars include all the <a href="client-classpath-jms.html#artemis-jms-client-dependencies">client&#8217;s dependencies</a>.
+Be careful with mixing other components jars in your application as they may clash with each other.
+Note also that the '-all' clients cant be embedded in the same JVM as the broker, for that you must use <code>artemis-jms-client</code> or <code>artemis-jakarta-client</code> as appropriate.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

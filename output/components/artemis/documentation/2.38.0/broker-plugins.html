@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Plugin Support</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Plugin Support</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#registering-a-plugin">1. Registering a Plugin</a></li>
+<li><a href="#registering-a-plugin-programmatically">2. Registering a Plugin Programmatically</a></li>
+<li><a href="#using-the-loggingactivemqserverplugin">3. Using the <code>LoggingActiveMQServerPlugin</code></a></li>
+<li><a href="#using-the-notificationactivemqserverplugin">4. Using the NotificationActiveMQServerPlugin</a></li>
+<li><a href="#using-the-brokermessageauthorizationplugin">5. Using the BrokerMessageAuthorizationPlugin</a></li>
+<li><a href="#using-the-connectionperiodicexpiryplugin">6. Using the ConnectionPeriodicExpiryPlugin</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis is designed to allow extra functionality to be added by creating a plugin.
+Multiple plugins can be registered at the same time and they will be chained together and executed in the order they are registered (i.e. the first plugin registered is always executed first).</p>
+</div>
+<div class="paragraph">
+<p>Creating a plugin is very simple.
+It requires:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Implementing the <a href="https://github.com/apache/activemq-artemis/blob/main/artemis-server/src/main/java/org/apache/activemq/artemis/core/server/plugin/ActiveMQServerPlugin.java"><code>ActiveMQServerPlugin</code></a> interface</p>
+</li>
+<li>
+<p>Making sure the plugin is <a href="using-server.html#adding-runtime-dependencies">on the classpath</a></p>
+</li>
+<li>
+<p>Registering it with the broker either via <a href="#registering-a-plugin">xml</a> or <a href="#registering-a-plugin-programmatically">programmatically</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Only the methods that you want to add behavior for need to be implemented as all of the interface methods are default methods.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="registering-a-plugin"><a class="anchor" href="#registering-a-plugin"></a><a class="link" href="#registering-a-plugin">1. Registering a Plugin</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To register a plugin with by XML you need to add the <code>broker-plugins</code> element at the <code>broker.xml</code>.
+It is also possible to pass configuration to a plugin using the <code>property</code> child element(s).
+These properties (zero to many) will be read and passed into the plugin&#8217;s <code>init(Map&lt;String, String&gt;)</code> operation after the plugin has been instantiated.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-plugins&gt;</span>
+   <span class="nt">&lt;broker-plugin</span> <span class="na">class-name=</span><span class="s">"some.plugin.UserPlugin"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"property1"</span> <span class="na">value=</span><span class="s">"val_1"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"property2"</span> <span class="na">value=</span><span class="s">"val_2"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;/broker-plugin&gt;</span>
+<span class="nt">&lt;/broker-plugins&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="registering-a-plugin-programmatically"><a class="anchor" href="#registering-a-plugin-programmatically"></a><a class="link" href="#registering-a-plugin-programmatically">2. Registering a Plugin Programmatically</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For registering a plugin programmatically you need to call the <code>registerBrokerPlugin()</code> method and pass in a new instance of your plugin.
+In the example below assuming your plugin is called <code>UserPlugin</code>, registering it looks like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="o">...</span>
+
+<span class="nc">Configuration</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ConfigurationImpl</span><span class="o">();</span>
+<span class="o">...</span>
+
+<span class="n">config</span><span class="o">.</span><span class="na">registerBrokerPlugin</span><span class="o">(</span><span class="k">new</span> <span class="nc">UserPlugin</span><span class="o">());</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using-the-loggingactivemqserverplugin"><a class="anchor" href="#using-the-loggingactivemqserverplugin"></a><a class="link" href="#using-the-loggingactivemqserverplugin">3. Using the <code>LoggingActiveMQServerPlugin</code></a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>LoggingActiveMQServerPlugin</code> logs specific broker events.</p>
+</div>
+<div class="paragraph">
+<p>You can select which events are logged by setting the following configuration properties to <code>true</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Trigger Event</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG_CONNECTION_EVENTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection is created/destroy.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG_SESSION_EVENTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Session is created/closed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG_CONSUMER_EVENTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Consumer is created/closed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG_DELIVERING_EVENTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message is delivered to a consumer and when a message is acknowledged by a consumer.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG_SENDING_EVENTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When a message has been sent to an address and when a message has been routed within the broker.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG_INTERNAL_EVENTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When a queue created/destroyed, when a message is expired, when a bridge is deployed and when a critical failure occurs.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG_ALL_EVENTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Includes all the above events.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>By default the <code>LoggingActiveMQServerPlugin</code> will not log any information.
+The logging is activated by setting one (or a selection) of the above configuration properties to <code>true</code>.</p>
+</div>
+<div class="paragraph">
+<p>To configure the plugin, you can add the following configuration to the broker.
+In the example below both <code>LOG_DELIVERING_EVENTS</code> and <code>LOG_SENDING_EVENTS</code> will be logged by the broker.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-plugins&gt;</span>
+   <span class="nt">&lt;broker-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.plugin.impl.LoggingActiveMQServerPlugin"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"LOG_DELIVERING_EVENTS"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"LOG_SENDING_EVENTS"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;/broker-plugin&gt;</span>
+<span class="nt">&lt;/broker-plugins&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Most events in the <code>LoggingActiveMQServerPlugin</code> follow a <code>beforeX</code> and <code>afterX</code> notification pattern (e.g <code>beforeCreateConsumer()</code> and <code>afterCreateConsumer()</code>).</p>
+</div>
+<div class="paragraph">
+<p>At Log Level <code>INFO</code>, the LoggingActiveMQServerPlugin logs an entry when an <code>afterX</code> notification occurs.
+By setting the logger <code>org.apache.activemq.artemis.core.server.plugin.impl</code> to <code>DEBUG</code>, log entries are generated for both <code>beforeX</code> and <code>afterX</code> notifications.
+Log level <code>DEBUG</code> will also log more information for a notification when available.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using-the-notificationactivemqserverplugin"><a class="anchor" href="#using-the-notificationactivemqserverplugin"></a><a class="link" href="#using-the-notificationactivemqserverplugin">4. Using the NotificationActiveMQServerPlugin</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The NotificationActiveMQServerPlugin can be configured to send extra notifications for specific broker events.</p>
+</div>
+<div class="paragraph">
+<p>You can select which notifications are sent by setting the following configuration properties to <code>true</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Property Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SEND_CONNECTION_NOTIFICATIONS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a notification when a Connection is created/destroy.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SEND_SESSION_NOTIFICATIONS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a notification when a Session is created/closed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SEND_ADDRESS_NOTIFICATIONS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a notification when an Address is added/removed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SEND_DELIVERED_NOTIFICATIONS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a notification when message is delivered to a consumer.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SEND_EXPIRED_NOTIFICATIONS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a notification when message has been expired by the broker.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>By default the NotificationActiveMQServerPlugin will not send any notifications.
+The plugin is activated by setting one (or a selection) of the above configuration properties to <code>true</code>.</p>
+</div>
+<div class="paragraph">
+<p>To configure the plugin, you can add the following configuration to the broker.
+In the example below both <code>SEND_CONNECTION_NOTIFICATIONS</code> and <code>SEND_SESSION_NOTIFICATIONS</code> will be sent by the broker.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-plugins&gt;</span>
+   <span class="nt">&lt;broker-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.plugin.impl.NotificationActiveMQServerPlugin"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"SEND_CONNECTION_NOTIFICATIONS"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"SEND_SESSION_NOTIFICATIONS"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;/broker-plugin&gt;</span>
+<span class="nt">&lt;/broker-plugins&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using-the-brokermessageauthorizationplugin"><a class="anchor" href="#using-the-brokermessageauthorizationplugin"></a><a class="link" href="#using-the-brokermessageauthorizationplugin">5. Using the BrokerMessageAuthorizationPlugin</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>BrokerMessageAuthorizationPlugin</code> filters messages sent to consumers based on if they have a role that matches the value specified in a message property.</p>
+</div>
+<div class="paragraph">
+<p>You can select which property will be used to specify the required role for consuming a message by setting the following configuration.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Property Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ROLE_PROPERTY</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Property name used to determine the role required to consume a message.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requiredRole</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If the message does not have a property matching the configured <code>ROLE_PROPERTY</code> then the message will be sent to any consumer.</p>
+</div>
+<div class="paragraph">
+<p>To configure the plugin, you can add the following configuration to the broker.
+In the example below <code>ROLE_PROPERTY</code> is set to <code>permissions</code> when that property is present messages will only be sent to consumers with a role matching its value.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-plugins&gt;</span>
+   <span class="nt">&lt;broker-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.plugin.impl.BrokerMessageAuthorizationPlugin"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"ROLE_PROPERTY"</span> <span class="na">value=</span><span class="s">"permissions"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;/broker-plugin&gt;</span>
+<span class="nt">&lt;/broker-plugins&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using-the-connectionperiodicexpiryplugin"><a class="anchor" href="#using-the-connectionperiodicexpiryplugin"></a><a class="link" href="#using-the-connectionperiodicexpiryplugin">6. Using the ConnectionPeriodicExpiryPlugin</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>ConnectionPeriodicExpiryPlugin</code> will implement a global expiry (and disconnect) for connections that live longer than <code>periodSeconds</code> on a matching acceptor basis.</p>
+</div>
+<div class="paragraph">
+<p>This plugin can be useful when credential rotation or credential validation must be enforced at regular intervals as authentication will be enforced on reconnect.</p>
+</div>
+<div class="paragraph">
+<p>The plugin requires the configuration of the <code>acceptorMatchRegex</code> to determine the acceptors to monitor. It is typical to separate client acceptors and federation or cluster acceptors such that only client connections will be subject to periodic expiry. The <code>acceptorMatchRegex</code> must be configured to match the name of the acceptor(s) whose connections will be subject to periodic expiry.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Property Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>acceptorMatchRegex</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the regular expression used to match against the names of acceptors to monitor</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>periodSeconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the max period, in seconds, that a connection can last</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">900 seconds (15 minutes)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>accuracyWindowSeconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">determines how often we check connections for expiry and also provides an upper bound on the random seconds we use to schedule a disconnect. Using a random second will potentially avoid many reconnects occurring at the exact same time. It must be positive value &gt; 0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30 seconds</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The plugin can be configured via xml in the normal broker-plugin way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-plugins&gt;</span>
+   <span class="nt">&lt;broker-plugin</span> <span class="na">class-name=</span><span class="s">"org.apache.activemq.artemis.core.server.plugin.impl.ConnectionPeriodicExpiryPlugin"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"acceptorMatchRegex"</span> <span class="na">value=</span><span class="s">"netty-client-acceptor"</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;/broker-plugin&gt;</span>
+<span class="nt">&lt;/broker-plugins&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

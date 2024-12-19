@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>High Availability and Failover</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>High Availability and Failover</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#terminology">1. Terminology</a>
+<ul class="sectlevel2">
+<li><a href="#configuration">1.1. Configuration</a></li>
+<li><a href="#runtime">1.2. Runtime</a></li>
+</ul>
+</li>
+<li><a href="#ha-policies">2. HA Policies</a>
+<ul class="sectlevel2">
+<li><a href="#shared-store">2.1. Shared Store</a></li>
+<li><a href="#replication">2.2. Replication</a></li>
+</ul>
+</li>
+<li><a href="#failing-back-to-primary-server">3. Failing Back to Primary Server</a>
+<ul class="sectlevel2">
+<li><a href="#failback-with-shared-store">3.1. Failback with Shared Store</a></li>
+<li><a href="#failback-with-replication">3.2. Failback with Replication</a></li>
+<li><a href="#all-shared-store-configuration">3.3. All Shared Store Configuration</a></li>
+<li><a href="#configuring-connectors-and-acceptors">3.4. Configuring Connectors and Acceptors</a></li>
+<li><a href="#remote-connectors">3.5. Remote Connectors</a></li>
+<li><a href="#configuring-directories">3.6. Configuring Directories</a></li>
+</ul>
+</li>
+<li><a href="#scaling-down">4. Scaling Down</a>
+<ul class="sectlevel2">
+<li><a href="#scale-down-with-groups">4.1. Scale Down with groups</a></li>
+<li><a href="#scale-down-and-backups">4.2. Scale Down and Backups</a></li>
+<li><a href="#scale-down-and-clients">4.3. Scale Down and Clients</a></li>
+</ul>
+</li>
+<li><a href="#client-failover">5. Client Failover</a>
+<ul class="sectlevel2">
+<li><a href="#handling-blocking-calls-during-failover">5.1. Handling Blocking Calls During Failover</a></li>
+<li><a href="#handling-failover-with-transactions">5.2. Handling Failover With Transactions</a></li>
+<li><a href="#getting-notified-of-connection-failure">5.3. Getting Notified of Connection Failure</a></li>
+<li><a href="#application-level-failover">5.4. Application-Level Failover</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>We define high availability (HA) as the <em>ability for the system to continue functioning after failure of one or more of the servers</em>.</p>
+</div>
+<div class="paragraph">
+<p>A part of high availability is <em>failover</em> which we define as the <em>ability for client connections to migrate from one server to another in event of server failure so client applications can continue to operate</em>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="terminology"><a class="anchor" href="#terminology"></a><a class="link" href="#terminology">1. Terminology</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to discuss both configuration and runtime behavior consistently we need to define a couple nouns and adjectives.
+These terms will be used throughout the documentation, configuration, source code, and runtime logs.</p>
+</div>
+<div class="sect2">
+<h3 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">1.1. Configuration</a></h3>
+<div class="paragraph">
+<p>These nouns identify how the broker is <em>configured</em>, e.g. in <code>broker.xml</code>. The configuration allows brokers to be paired together as <em>primary/backup</em> (i.e. an <em>HA pair</em> of brokers).</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">primary</dt>
+<dd>
+<p>This identifies the main broker in the high availability configuration.
+Oftentimes the hardware on this broker will be higher performance than the hardware on the backup broker.
+Typically, this broker is started before the backup and is active most of the time.</p>
+<div class="paragraph">
+<p>Each primary server can be paired with one backup server.
+Other backups can be configured, but the primary will only pair with one.
+When the primary fails the backup will take over.
+At this point if there are other backups configured then the backup that took over will pair with one of those.</p>
+</div>
+</dd>
+<dt class="hdlist1">backup</dt>
+<dd>
+<p>This identifies the broker that should take over when the primary broker fails in a high availability configuration.
+Oftentimes the hardware on this broker will be lower performance than the hardware on the primary broker.
+Typically, this broker is started after the primary and is passive most of the time.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="runtime"><a class="anchor" href="#runtime"></a><a class="link" href="#runtime">1.2. Runtime</a></h3>
+<div class="paragraph">
+<p>These adjectives describe the <em>behavior</em> of the broker at runtime. For example, you could have a <em>passive</em> primary or an <em>active</em> backup.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">active</dt>
+<dd>
+<p>This identifies a broker in a high-availability configuration which is accepting remote connections.
+For example, consider the scenario where the primary broker has failed and its backup has taken over.
+The backup would be described as <em>active</em> at that point since it is accepting remote connections.</p>
+</dd>
+<dt class="hdlist1">passive</dt>
+<dd>
+<p>This identifies a broker in a high-availability configuration which is <strong>not</strong> accepting remote connections.
+For example, consider the scenario where the primary broker was started and then the backup broker was started.
+The backup broker would be <em>passive</em> since it is not accepting remote connections.
+It is waiting for the primary to fail before it activates and begins accepting remote connections.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ha-policies"><a class="anchor" href="#ha-policies"></a><a class="link" href="#ha-policies">2. HA Policies</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis supports two main policies for backing up a server:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>shared store</strong></p>
+</li>
+<li>
+<p><strong>replication</strong></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These are configured via the <code>ha-policy</code> configuration element.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">What is Backed Up?</div>
+<div class="paragraph">
+<p>Only message data <strong>written to storage</strong> will survive failover.
+Any message data not written to storage will not be available after failover.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Clustering is Required</div>
+<div class="paragraph">
+<p>A proper <a href="clusters.html#clusters">cluster</a> configuration is required as a pre-requisite for an HA configuration.
+The cluster configuration allows the server to announce its presence to its primary/backup (or any other nodes in the cluster).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There is technically a third policy called <code>primary-only</code> which omits the backup entirely.
+This is used to configure <a href="#scaling-down"><code>scale-down</code></a>.
+This is the default policy if none is provided.</p>
+</div>
+<div class="sect2">
+<h3 id="shared-store"><a class="anchor" href="#shared-store"></a><a class="link" href="#shared-store">2.1. Shared Store</a></h3>
+<div class="paragraph">
+<p>When using a shared store both primary and backup servers share the <em>same</em> entire data directory using a shared file system.
+This includes the paging directory, journal directory, large messages, and bindings journal.</p>
+</div>
+<div class="paragraph">
+<p>When the primary server fails it will release its lock on the shared journal and allow the backup server to activate.
+The backup will then load the data from the shared file system and accept remote connections from clients.</p>
+</div>
+<div class="paragraph">
+<p>Typically, this will be some kind of high performance Storage Area Network (SAN).
+Network Attached Storage (NAS), like an <a href="#nfs-mount-recommendations">NFS mount</a>, is viable but won&#8217;t provide optimal performance.</p>
+</div>
+<div class="paragraph">
+<p>One main advantage of a shared store configuration is that no replication occurs between the primary and backup nodes which means it does not suffer any performance penalties due to the overhead of replication during normal operation.</p>
+</div>
+<div class="paragraph">
+<p>One potentially significant disadvantage of shared store versus replication is that it requires a shared file system, and when the backup server activates it needs to load the journal from the shared store which can take some time depending on the amount of data in the store and the speed of the store.</p>
+</div>
+<div class="paragraph">
+<p>If you require the highest performance during normal operation then acquire access to a fast SAN and deal with a slightly slower failover (depending on amount of data).</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">What About Split Brain?</div>
+<div class="paragraph">
+<p>Shared store configurations are naturally immune to <a href="network-isolation.html#network-isolation-split-brain">split-brain</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="shared-store-configuration"><a class="anchor" href="#shared-store-configuration"></a><a class="link" href="#shared-store-configuration">2.1.1. Shared Store Configuration</a></h4>
+<div class="paragraph">
+<p>Both primary &amp; backup servers must configure the location of journal directories to the <em>same shared location</em> (as explained in <a href="persistence.html#persistence">persistence documentation</a>).</p>
+</div>
+<div class="sect4">
+<h5 id="primary"><a class="anchor" href="#primary"></a><a class="link" href="#primary">Primary</a></h5>
+<div class="paragraph">
+<p>The primary broker needs this basic configuration in <code>broker.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;shared-store&gt;</span>
+      <span class="nt">&lt;primary/&gt;</span>
+   <span class="nt">&lt;/shared-store&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="additional-parameters"><a class="anchor" href="#additional-parameters"></a><a class="link" href="#additional-parameters">Additional parameters</a></h6>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">failover-on-shutdown</dt>
+<dd>
+<p>Whether the <em>graceful</em> shutdown of this broker will cause the backup to activate.</p>
+<div class="paragraph">
+<p>If <code>false</code> then the backup server will remain passive if this broker is shutdown gracefully (e.g. using <kbd>Ctrl-C</kbd>).
+Note that if <code>false</code> and you want failover to occur then you can use the management API as explained <a href="management.html#management">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If <code>true</code> then when this server is stopped the backup will activate.</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>false</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">wait-for-activation</dt>
+<dd>
+<p>This setting is only for <strong>embedded</strong> use cases where the primary broker has failed, the backup has activated, and the primary has been restarted.
+By default, when <code>org.apache.activemq.artemis.core.server.ActiveMQServer.start()</code> is invoked the broker will block until the primary broker actually takes over from the backup (i.e. either via failback or by the backup actually stopping).
+Setting <code>wait-for-activation</code> to <code>false</code> prevents <code>start()</code> from blocking so that control is returned to the caller.
+The caller can use <code>waitForActivation()</code> to wait until broker activates or just check the current status using <code>getState()</code>.
+Default is <code>true</code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="backup"><a class="anchor" href="#backup"></a><a class="link" href="#backup">Backup</a></h5>
+<div class="paragraph">
+<p>The backup needs this basic configuration in <code>broker.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;shared-store&gt;</span>
+      <span class="nt">&lt;backup/&gt;</span>
+   <span class="nt">&lt;/shared-store&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="additional-parameters-2"><a class="anchor" href="#additional-parameters-2"></a><a class="link" href="#additional-parameters-2">Additional parameters</a></h6>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">allow-failback</dt>
+<dd>
+<p>Whether this backup will automatically stop when its primary is restarted and requests to take over its place.
+The use case is when a primary server stops and its backup takes over its duties, later the primary server restarts and requests the now-active backup to stop so the primary can take over again.
+Default is <code>true</code>.</p>
+</dd>
+<dt class="hdlist1">failover-on-shutdown</dt>
+<dd>
+<p>Whether the <em>graceful</em> shutdown of this broker will cause the backup to activate.</p>
+<div class="paragraph">
+<p>If <code>false</code> then the backup server will remain passive if this broker is shutdown gracefully (e.g. using <kbd>Ctrl-C</kbd>).
+Note that if <code>false</code> and you want failover to occur then you can use the management API as explained <a href="management.html#management">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If <code>true</code> then when this server is stopped the backup will activate.</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>false</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This only applies when this backup has activated due to its primary failing.
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">scale-down</dt>
+<dd>
+<p>If provided then this backup will scale down rather than becoming active after fail over.
+This really only applies to colocated configurations where the backup will scale-down its messages to the primary broker in the same JVM.</p>
+</dd>
+<dt class="hdlist1">restart-backup</dt>
+<dd>
+<p>Will this backup restart after being stopped due to failback or scaling down.
+Default is <code>false</code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="nfs-mount-recommendations"><a class="anchor" href="#nfs-mount-recommendations"></a><a class="link" href="#nfs-mount-recommendations">NFS Mount Recommendations</a></h5>
+<div class="paragraph">
+<p>If you choose to implement your shared store configuration with NFS here are some recommended configuration options.
+These settings are designed for reliability and to help the broker detect problems with NFS quickly and shut itself down so that clients can failover to a working broker.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">sync</dt>
+<dd>
+<p>Specifies that all changes are immediately flushed to disk.</p>
+</dd>
+<dt class="hdlist1">intr</dt>
+<dd>
+<p>Allows NFS requests to be interrupted if the server is shut down or cannot be reached.</p>
+</dd>
+<dt class="hdlist1">noac</dt>
+<dd>
+<p>Disables attribute caching. This behavior is needed to achieve attribute cache coherence among multiple clients.</p>
+</dd>
+<dt class="hdlist1">soft</dt>
+<dd>
+<p>Specifies that if the NFS server is unavailable the error should be reported rather than waiting for the server to come back online.</p>
+</dd>
+<dt class="hdlist1">lookupcache=none</dt>
+<dd>
+<p>Disables lookup caching.</p>
+</dd>
+<dt class="hdlist1">timeo=n</dt>
+<dd>
+<p>The time, in deciseconds (i.e. tenths of a second), that the NFS client (i.e. the broker) waits for a response from the NFS server before it retries a request. For NFS over TCP the default <code>timeo</code> value is <code>600</code> (60 seconds). For NFS over UDP the client uses an adaptive algorithm to estimate an appropriate timeout value for frequently used request types, such as read and write requests.</p>
+</dd>
+<dt class="hdlist1">retrans=n</dt>
+<dd>
+<p>The number of times that the NFS client retries a request before it attempts further recovery action.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use reasonable values when you configure <code>timeo</code> and <code>retrans</code>. A default <code>timeo</code> wait time of 600 deciseconds (60 seconds) combined with a <code>retrans</code> value of 5 retries can result in a five-minute wait for the broker to detect an NFS disconnection. You likely don&#8217;t want all store-related operations on the broker to be blocked for that long while clients wait for responses. Tune these values to balance latency and reliability in your environment.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="replication"><a class="anchor" href="#replication"></a><a class="link" href="#replication">2.2. Replication</a></h3>
+<div class="paragraph">
+<p>When using replication, the primary and the backup servers do not share the same data directories.
+All data synchronization is done over the network.
+Therefore, all (durable) data received by the primary server will be duplicated to the backup.</p>
+</div>
+<div class="paragraph">
+<p>Note that upon start-up the backup server will first need to synchronize all existing data from the primary server before becoming capable of replacing the primary server should it fail.
+Therefore, unlike when using shared storage, a backup will not be <em>fully operational</em> until after it finishes synchronizing the data with its primary server.
+The time it takes for this to happen depends on the amount of data to be synchronized and the connection speed.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In general, synchronization occurs in parallel with current network traffic so this won&#8217;t cause any blocking for current clients.
+However, there is a critical moment at the end of this process where the replicating server must complete the synchronization and ensure the backup acknowledges this completion.
+This exchange between the replicating server and backup will block any journal related operations.
+The maximum length of time that this exchange will block is controlled by the <code>initial-replication-sync-timeout</code> configuration element.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Since replication will create a copy of the data at the backup then in case of a successful fail-over, the backup&#8217;s data will be newer than the primary&#8217;s data.
+If you configure your backup to allow failback to the primary then when the primary is restarted it will be passive and the active backup will synchronize its data with the passive primary before stopping to allow the passive primary to become active again.
+If both servers are shutdown then the administrator will have to determine which one has the latest data.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">An Important Difference From Shared Store</div>
+<div class="paragraph">
+<p>If a shared-store backup <strong>does not</strong> find a primary then it will just activate and service client requests like it is a primary.</p>
+</div>
+<div class="paragraph">
+<p>However, in the replication case, the backup just keeps waiting for a primary to pair with because the backup does not know whether its data is up-to-date.
+It cannot unilaterally decide to activate.
+To activate a replicating backup using its current data the administrator must change its configuration to make it a primary server by changing <code>backup</code> to <code>primary</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="split-brain"><a class="anchor" href="#split-brain"></a><a class="link" href="#split-brain">2.2.1. Split Brain</a></h4>
+<div class="paragraph">
+<p>"Split Brain" is a potential issue that is important to understand.
+<a href="network-isolation.html">A whole chapter</a> has been devoted to explaining what it is and how it can be mitigated at a high level.
+Once you read it you will understand the main differences between <strong>quorum voting</strong> and <strong>pluggable lock manager</strong> configurations which will be referenced in later sections.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="replication-configuration"><a class="anchor" href="#replication-configuration"></a><a class="link" href="#replication-configuration">2.2.2. Replication Configuration</a></h4>
+<div class="paragraph">
+<p>In a shared-store configuration brokers pair with each other based on their shared storage device.
+However, since replication configurations have no such shared storage device they must find each other another way.
+Servers can be grouped together explicitly using the same <code>group-name</code> in both the <code>primary</code> or the <code>backup</code> elements.
+A backup will only connect to a primary that shares the same node group name.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">A <code>group-name</code> Example</div>
+<div class="paragraph">
+<p>Suppose you have 5 primary servers and 6 backup servers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>primary1</code>, <code>primary2</code>, <code>primary3</code>: with <code>group-name=fish</code></p>
+</li>
+<li>
+<p><code>primary4</code>, <code>primary5</code>: with <code>group-name=bird</code></p>
+</li>
+<li>
+<p><code>backup1</code>, <code>backup2</code>, <code>backup3</code>, <code>backup4</code>: with <code>group-name=fish</code></p>
+</li>
+<li>
+<p><code>backup5</code>, <code>backup6</code>: with <code>group-name=bird</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>After joining the cluster the backups with <code>group-name=fish</code> will search for primary servers with <code>group-name=fish</code> to pair with.
+Since there is one backup too many, the <code>fish</code> will remain with one spare backup.</p>
+</div>
+<div class="paragraph">
+<p>The 2 backups with <code>group-name=bird</code> (<code>backup5</code> and <code>backup6</code>) will pair with primary servers <code>primary4</code> and <code>primary5</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If <code>group-name</code> is not configured then the backup will search for any primary that it can find the cluster.
+It tries to replicate with each primary until it finds a primary that has no current backup configured.
+If no primary server is available it will wait until the cluster topology changes and repeat the process.</p>
+</div>
+<div class="sect4">
+<h5 id="primary-2"><a class="anchor" href="#primary-2"></a><a class="link" href="#primary-2">Primary</a></h5>
+<div class="paragraph">
+<p>The primary broker needs this basic configuration in <code>broker.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;primary/&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="additional-parameters-3"><a class="anchor" href="#additional-parameters-3"></a><a class="link" href="#additional-parameters-3">Additional parameters</a></h6>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">group-name</dt>
+<dd>
+<p>If set, backup servers will only pair with primary servers with matching group-name.
+See <a href="#replication-configuration">above</a> for more details.
+Valid for both quorum voting and pluggable lock manager.</p>
+</dd>
+<dt class="hdlist1">cluster-name</dt>
+<dd>
+<p>Name of the <code>cluster-connection</code> to use for replication.
+This setting is only necessary if you configure multiple cluster connections.
+If configured then the connector configuration of the cluster configuration with this name will be used when connecting to the cluster to discover if an active server is already running, see <code>check-for-active-server</code>.
+If unset then the default cluster connections configuration is used (i.e. the first one configured).
+Valid for both quorum voting and pluggable lock manager.</p>
+</dd>
+<dt class="hdlist1">max-saved-replicated-journals-size</dt>
+<dd>
+<p>This option specifies how many replication backup directories will be kept when server starts as a passive backup.
+Every time when server starts as such all former data moves to <code>oldreplica.{id}</code> directory, where <code>{id}</code> is a growing backup index.
+This parameter sets the maximum number of such directories kept on disk.
+Valid for both quorum voting and pluggable lock manager.</p>
+</dd>
+<dt class="hdlist1">check-for-active-server</dt>
+<dd>
+<p>Whether to check the cluster for an active server using our own server ID when starting up.
+This is an important option to avoid split-brain when failover happens and the primary is restarted.
+Default is <code>false</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">initial-replication-sync-timeout</dt>
+<dd>
+<p>The amount of time the replicating server will wait at the completion of the initial replication process for the backup to acknowledge it has received all the necessary data.
+The default is <code>30000</code>; measured in milliseconds.
+Valid for both quorum voting and pluggable lock manager.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+During this interval any journal related operations will be blocked.
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">vote-on-replication-failure</dt>
+<dd>
+<p>Whether this primary broker should vote to remain active if replication is lost.
+Default is <code>false</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">quorum-size</dt>
+<dd>
+<p>The quorum size used for voting after replication loss, -1 means use the current cluster size
+Default is <code>-1</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">vote-retries</dt>
+<dd>
+<p>If we start as a backup and lose connection to the primary, how many times should we attempt to vote for quorum before restarting
+Default is <code>12</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">vote-retry-wait</dt>
+<dd>
+<p>How long to wait (in milliseconds) between each vote attempt.
+Default is <code>5000</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">quorum-vote-wait</dt>
+<dd>
+<p>How long to wait (in seconds) for vote results.
+Default is <code>30</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">retry-replication-wait</dt>
+<dd>
+<p>If we start as a backup how long to wait (in milliseconds) before trying to replicate again after failing to find a primary.
+Default is <code>2000</code>.
+Valid for both quorum voting and pluggable lock manager.</p>
+</dd>
+<dt class="hdlist1">manager</dt>
+<dd>
+<p>This element controls and is required for pluggable lock manager configuration.
+It has two sub-elements:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>class-name</code> - the name of the class implementing <code>org.apache.activemq.artemis.lockmanager.DistributedLockManager</code>.
+Default is <code>org.apache.activemq.artemis.lockmanager.zookeeper.CuratorDistributedLockManager</code> which <a href="#apache-zookeeper-integration">integrates with ZooKeeper</a>.</p>
+</li>
+<li>
+<p><code>properties</code> - a list of <code>property</code> elements each with <code>key</code> and <code>value</code> attributes for configuring the plugin.</p>
+<div class="paragraph">
+<p>Here&#8217;s a simple example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;primary&gt;</span>
+         <span class="nt">&lt;manager&gt;</span>
+            <span class="nt">&lt;class-name&gt;</span>org.foo.MyQuorumVotingPlugin<span class="nt">&lt;/class-name&gt;</span>
+            <span class="nt">&lt;properties&gt;</span>
+               <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"property1"</span> <span class="na">value=</span><span class="s">"value1"</span><span class="nt">/&gt;</span>
+               <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"property2"</span> <span class="na">value=</span><span class="s">"value2"</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/properties&gt;</span>
+         <span class="nt">&lt;/manager&gt;</span>
+      <span class="nt">&lt;/primary&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">coordination-id</dt>
+<dd>
+<p>This is for <a href="#competing-primary-brokers">Competing Primary Brokers</a>.
+Only valid when using pluggable lock manager.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="backup-2"><a class="anchor" href="#backup-2"></a><a class="link" href="#backup-2">Backup</a></h5>
+<div class="paragraph">
+<p>The backup needs this basic configuration in <code>broker.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;backup/&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="additional-parameters-4"><a class="anchor" href="#additional-parameters-4"></a><a class="link" href="#additional-parameters-4">Additional parameters</a></h6>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">group-name</dt>
+<dd>
+<p>If set, backup servers will only pair with primary servers with matching group-name.
+See <a href="#replication-configuration">above</a> for more details.
+Valid for both quorum voting and pluggable lock manager.</p>
+</dd>
+<dt class="hdlist1">cluster-name</dt>
+<dd>
+<p>Name of the <code>cluster-connection</code> to use for replication.
+This setting is only necessary if you configure multiple cluster connections.
+If configured then the connector configuration of the cluster configuration with this name will be used when connecting to the cluster to discover if an active server is already running, see <code>check-for-active-server</code>.
+If unset then the default cluster connections configuration is used (i.e. the first one configured).
+Valid for both quorum voting and pluggable lock manager.</p>
+</dd>
+<dt class="hdlist1">max-saved-replicated-journals-size</dt>
+<dd>
+<p>This option specifies how many replication backup directories will be kept when server starts as a passive backup.
+Every time when server starts as such all former data moves to <code>oldreplica.{id}</code> directory, where <code>{id}</code> is a growing backup index.
+This parameter sets the maximum number of such directories kept on disk.
+Valid for both quorum voting and pluggable lock manager.</p>
+</dd>
+<dt class="hdlist1">scale-down</dt>
+<dd>
+<p>If provided then this backup will scale down rather than becoming active after fail over.
+This really only applies to colocated configurations where the backup will scale-down its messages to the primary broker in the same JVM.</p>
+</dd>
+<dt class="hdlist1">restart-backup</dt>
+<dd>
+<p>Will this server, if a backup, restart once it has been stopped because of failback or scaling down.
+Default is <code>false</code>.</p>
+</dd>
+<dt class="hdlist1">allow-failback</dt>
+<dd>
+<p>Whether this backup will automatically stop when its primary is restarted and requests to take over its place.
+The use case is when a primary server stops and its backup takes over its duties, later the primary server restarts and requests the now-active backup to stop so the primary can take over again.
+Default is <code>true</code>.
+Valid for both quorum voting and pluggable lock manager.</p>
+</dd>
+<dt class="hdlist1">initial-replication-sync-timeout</dt>
+<dd>
+<p>After failover when the backup has activated this is enforced when the primary is restarted and connects as a backup (e.g. for failback).
+The amount of time the replicating server will wait at the completion of the initial replication process for the backup to acknowledge it has received all the necessary data.
+The default is <code>30000</code>; measured in milliseconds.
+Valid for both quorum voting and pluggable lock manager.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+during this interval any journal related operations will be blocked.
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">vote-on-replication-failure</dt>
+<dd>
+<p>Whether this primary broker should vote to remain active if replication is lost.
+Default is <code>false</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">quorum-size</dt>
+<dd>
+<p>The quorum size used for voting after replication loss, -1 means use the current cluster size
+Default is <code>-1</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">vote-retries</dt>
+<dd>
+<p>If we start as a backup and lose connection to the primary, how many times should we attempt to vote for quorum before restarting.
+Default is <code>12</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">vote-retry-wait</dt>
+<dd>
+<p>How long to wait (in milliseconds) between each vote attempt.
+Default is <code>5000</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">quorum-vote-wait</dt>
+<dd>
+<p>How long to wait (in seconds) for vote results.
+Default is <code>30</code>.
+Only valid for quorum voting.</p>
+</dd>
+<dt class="hdlist1">retry-replication-wait</dt>
+<dd>
+<p>If we start as a backup how long to wait (in milliseconds) before trying to replicate again after failing to find a primary.
+Default is <code>2000</code>.
+Valid for both quorum voting and pluggable lock manager.</p>
+</dd>
+<dt class="hdlist1">manager</dt>
+<dd>
+<p>This element controls and is required for pluggable lock manager configuration.
+It has two sub-elements:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>class-name</code> - the name of the class implementing <code>org.apache.activemq.artemis.lockmanager.DistributedLockManager</code>.
+Default is <code>org.apache.activemq.artemis.lockmanager.zookeeper.CuratorDistributedLockManager</code> which <a href="#apache-zookeeper-integration">integrates with ZooKeeper</a>.</p>
+</li>
+<li>
+<p><code>properties</code> - a list of <code>property</code> elements each with <code>key</code> and <code>value</code> attributes for configuring the plugin.</p>
+<div class="paragraph">
+<p>Here&#8217;s a simple example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;backup&gt;</span>
+         <span class="nt">&lt;manager&gt;</span>
+            <span class="nt">&lt;class-name&gt;</span>org.foo.MyQuorumVotingPlugin<span class="nt">&lt;/class-name&gt;</span>
+            <span class="nt">&lt;properties&gt;</span>
+               <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"property1"</span> <span class="na">value=</span><span class="s">"value1"</span><span class="nt">/&gt;</span>
+               <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"property2"</span> <span class="na">value=</span><span class="s">"value2"</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/properties&gt;</span>
+         <span class="nt">&lt;/manager&gt;</span>
+         <span class="nt">&lt;allow-failback&gt;</span>true<span class="nt">&lt;/allow-failback&gt;</span>
+      <span class="nt">&lt;/backup&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="apache-zookeeper-integration"><a class="anchor" href="#apache-zookeeper-integration"></a><a class="link" href="#apache-zookeeper-integration">2.2.3. Apache ZooKeeper Integration</a></h4>
+<div class="paragraph">
+<p>The default pluggable lock manager implementation uses <a href="https://curator.apache.org/">Apache Curator</a> to integrate with <a href="https://zookeeper.apache.org/">Apache ZooKeeper</a>.</p>
+</div>
+<div class="sect4">
+<h5 id="zookeeper-plugin-configuration"><a class="anchor" href="#zookeeper-plugin-configuration"></a><a class="link" href="#zookeeper-plugin-configuration">ZooKeeper Plugin Configuration</a></h5>
+<div class="paragraph">
+<p>Here&#8217;s a basic configuration example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;primary&gt;</span>
+         <span class="nt">&lt;manager&gt;</span>
+            <span class="nt">&lt;class-name&gt;</span>org.apache.activemq.artemis.lockmanager.zookeeper.CuratorDistributedLockManager<span class="nt">&lt;/class-name&gt;</span>
+            <span class="nt">&lt;properties&gt;</span>
+               <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"connect-string"</span> <span class="na">value=</span><span class="s">"127.0.0.1:6666,127.0.0.1:6667,127.0.0.1:6668"</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/properties&gt;</span>
+         <span class="nt">&lt;/manager&gt;</span>
+      <span class="nt">&lt;/primary&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+NOTE: The <code>class-name</code> isn&#8217;t technically required here since the default value is being used, but it is included for clarity.</p>
+</div>
+<div class="sect5">
+<h6 id="available-properties"><a class="anchor" href="#available-properties"></a><a class="link" href="#available-properties">Available Properties</a></h6>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="https://curator.apache.org/apidocs/org/apache/curator/framework/CuratorFrameworkFactory.Builder.html#connectString(java.lang.String)"><code>connect-string</code></a></dt>
+<dd>
+<p>(no default)</p>
+</dd>
+<dt class="hdlist1"><a href="https://curator.apache.org/apidocs/org/apache/curator/framework/CuratorFrameworkFactory.Builder.html#sessionTimeoutMs(int)"><code>session-ms</code></a></dt>
+<dd>
+<p>(default is 18000 ms)</p>
+</dd>
+<dt class="hdlist1"><a href="https://curator.apache.org/apidocs/org/apache/curator/framework/CuratorFrameworkFactory.Builder.html#simulatedSessionExpirationPercent(int)"><code>session-percent</code></a></dt>
+<dd>
+<p>(default is 33); should be &le; default (see <a href="https://cwiki.apache.org/confluence/display/CURATOR/TN14">TN14</a> for more info)</p>
+</dd>
+<dt class="hdlist1"><a href="https://curator.apache.org/apidocs/org/apache/curator/framework/CuratorFrameworkFactory.Builder.html#connectionTimeoutMs(int)"><code>connection-ms</code></a></dt>
+<dd>
+<p>(default is 8000 ms)</p>
+</dd>
+<dt class="hdlist1"><a href="https://curator.apache.org/apidocs/org/apache/curator/retry/RetryNTimes.html#%3Cinit%3E(int,int)"><code>retries</code></a></dt>
+<dd>
+<p>(default is 1)</p>
+</dd>
+<dt class="hdlist1"><a href="https://curator.apache.org/apidocs/org/apache/curator/retry/RetryNTimes.html#%3Cinit%3E(int,int)"><code>retries-ms</code></a></dt>
+<dd>
+<p>(default is 1000 ms)</p>
+</dd>
+<dt class="hdlist1"><a href="https://curator.apache.org/apidocs/org/apache/curator/framework/CuratorFrameworkFactory.Builder.html#namespace(java.lang.String)"><code>namespace</code></a></dt>
+<dd>
+<p>(no default)</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="improving-reliability"><a class="anchor" href="#improving-reliability"></a><a class="link" href="#improving-reliability">Improving Reliability</a></h5>
+<div class="paragraph">
+<p>Configuration of the ZooKeeper ensemble is the responsibility of the user, but here are few  <strong>suggestions to improve the reliability of the quorum service</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Broker <code>session_ms</code> must be <code>&ge; 2 * server tick time</code> and <code>&le; 20 * server tick time</code> as by  <a href="https://zookeeper.apache.org/doc/r3.6.3/zookeeperAdmin.html">ZooKeeper 3.6.3 admin guide</a>.
+This directly impacts how fast a backup can failover to an isolated/killed/unresponsive primary.
+The higher, the slower.</p>
+</li>
+<li>
+<p>GC on broker machine should allow keeping GC pauses within 1/3 of <code>session_ms</code> in order to let the ZooKeeper heartbeat protocol work reliably.
+If that is not possible, it is better to increase <code>session_ms</code>, accepting a slower failover.</p>
+</li>
+<li>
+<p>ZooKeeper must have enough resources to keep GC (and OS) pauses much smaller than server tick time.
+Please consider carefully if  a broker and ZooKeeper node should share the same physical machine depending on the expected load of the broker.</p>
+</li>
+<li>
+<p>Network isolation protection requires configuring &ge;3 ZooKeeper nodes</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As noted previously, <code>session-ms</code> affects the failover duration.
+The passive broker can activate after <code>session-ms</code> expires or if the active broker voluntary gives up its role (e.g. during a failback/manual broker stop, it happens immediately).</p>
+</div>
+<div class="paragraph">
+<p>For the former case (session expiration with active broker no longer present), the passive broker can detect an unresponsive active broker by using:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>cluster connection PINGs (affected by <a href="connection-ttl.html#detecting-dead-connections">connection-ttl</a> tuning)</p>
+</li>
+<li>
+<p>closed TCP connection notification (depends on TCP configuration and networking stack/topology)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The suggestion is to tune <code>connection-ttl</code> low enough to attempt failover as soon as possible, while taking in consideration that the whole fail-over duration cannot last less than the configured <code>session-ms</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>A backup still needs to carefully configure <a href="connection-ttl.html#detecting-dead-connections">connection-ttl</a> in order to promptly send a request to the quorum manager to become active before failing-over.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="competing-primary-brokers"><a class="anchor" href="#competing-primary-brokers"></a><a class="link" href="#competing-primary-brokers">2.2.4. Competing Primary Brokers</a></h4>
+<div class="paragraph">
+<p>When delegating quorum to pluggable implementation roles of primary &amp; backup are less important.
+It is possible to have two brokers <em>compete</em> for activation with the winner activating as primary and the loser taking the backup role.
+On restart, any peer server with the most up-to-date journal can activate.
+The key is that the brokers need to know in advance what identity they will coordinate on.
+In the replication <code>primary</code> <code>ha-policy</code> we can explicitly set the <code>coordination-id</code> to a common value for all peers in a cluster.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;primary&gt;</span>
+         <span class="nt">&lt;manager&gt;</span>
+            <span class="nt">&lt;class-name&gt;</span>org.apache.activemq.artemis.lockmanager.zookeeper.CuratorDistributedLockManager<span class="nt">&lt;/class-name&gt;</span>
+            <span class="nt">&lt;properties&gt;</span>
+               <span class="nt">&lt;property</span> <span class="na">key=</span><span class="s">"connect-string"</span> <span class="na">value=</span><span class="s">"127.0.0.1:6666,127.0.0.1:6667,127.0.0.1:6668"</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/properties&gt;</span>
+         <span class="nt">&lt;/manager&gt;</span>
+         <span class="nt">&lt;coordination-id&gt;</span>peer-journal-001<span class="nt">&lt;/coordination-id&gt;</span>
+      <span class="nt">&lt;/primary&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The string value provided as the <code>coordination-id</code> will be converted internally into a 16-byte UUID so it may not be immediately recognisable or human-readable. However, it will ensure that all "peers" coordinate.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="failing-back-to-primary-server"><a class="anchor" href="#failing-back-to-primary-server"></a><a class="link" href="#failing-back-to-primary-server">3. Failing Back to Primary Server</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After a primary server has failed and a backup taken has taken over its duties, you may want to restart the primary server and have clients fail back.</p>
+</div>
+<div class="sect2">
+<h3 id="failback-with-shared-store"><a class="anchor" href="#failback-with-shared-store"></a><a class="link" href="#failback-with-shared-store">3.1. Failback with Shared Store</a></h3>
+<div class="paragraph">
+<p>In case of shared storage you have a couple of options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Simply restart the primary and kill the backup.
+You can do this by killing the process itself.</p>
+</li>
+<li>
+<p>Alternatively you can set <code>allow-failback</code> to <code>true</code> on the backup which will force the backup that has become active to automatically stop.
+This configuration would look like:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;shared-store&gt;</span>
+      <span class="nt">&lt;backup&gt;</span>
+         <span class="nt">&lt;allow-failback&gt;</span>true<span class="nt">&lt;/allow-failback&gt;</span>
+      <span class="nt">&lt;/backup&gt;</span>
+   <span class="nt">&lt;/shared-store&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>It is also possible, in the case of shared store, to cause failover to occur on normal server shutdown, to enable this set the following property to true in the <code>ha-policy</code> configuration on either the <code>primary</code> or <code>backup</code> like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;shared-store&gt;</span>
+      <span class="nt">&lt;primary&gt;</span>
+         <span class="nt">&lt;failover-on-shutdown&gt;</span>true<span class="nt">&lt;/failover-on-shutdown&gt;</span>
+      <span class="nt">&lt;/primary&gt;</span>
+   <span class="nt">&lt;/shared-store&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default this is set to false, if by some chance you have set this to false but still want to stop the server normally and cause failover then you can do this by using the management API as explained at <a href="management.html#management">Management</a></p>
+</div>
+<div class="paragraph">
+<p>You can also force the active backup to shutdown when the primary comes back up allowing the primary to take over automatically by setting the following property in the <code>broker.xml</code> configuration file as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;shared-store&gt;</span>
+      <span class="nt">&lt;backup&gt;</span>
+         <span class="nt">&lt;allow-failback&gt;</span>true<span class="nt">&lt;/allow-failback&gt;</span>
+      <span class="nt">&lt;/backup&gt;</span>
+   <span class="nt">&lt;/shared-store&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="failback-with-replication"><a class="anchor" href="#failback-with-replication"></a><a class="link" href="#failback-with-replication">3.2. Failback with Replication</a></h3>
+<div class="paragraph">
+<p>As with shared storage the <code>allow-failback</code> option can be set for both quorum voting and pluggable lock manager replication configurations.</p>
+</div>
+<div class="sect3">
+<h4 id="quorum-voting"><a class="anchor" href="#quorum-voting"></a><a class="link" href="#quorum-voting">3.2.1. Quorum Voting</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;backup&gt;</span>
+         <span class="nt">&lt;allow-failback&gt;</span>true<span class="nt">&lt;/allow-failback&gt;</span>
+      <span class="nt">&lt;/backup&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With quorum voting replication you need to set an extra property <code>check-for-active-server</code> to <code>true</code> in the <code>primary</code> configuration.
+If set to <code>true</code> then during start-up the primary server will first search the cluster for another active server using its nodeID.
+If it finds one it will contact this server and try to "failback".
+Since this is a remote replication scenario the primary will have to synchronize its data with the backup server running with its ID. Once they are in sync it will request the other server (which it assumes it is a backup that has assumed its duties) to shutdown in order for it to take over.
+This is necessary because otherwise the primary server has no means to know whether there was a fail-over or not, and if there was, if the server that took its duties is still running or not.
+To configure this option at your <code>broker.xml</code> configuration file as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;primary&gt;</span>
+         <span class="nt">&lt;check-for-active-server&gt;</span>true<span class="nt">&lt;/check-for-active-server&gt;</span>
+      <span class="nt">&lt;/primary&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Be aware that if you restart a primary server after failover has occurred then <code>check-for-active-server</code> <strong>must</strong> be <code>true</code>.
+If not then the primary server will restart and serve the same messages that the backup has already handled causing duplicates.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pluggable-lock-manager"><a class="anchor" href="#pluggable-lock-manager"></a><a class="link" href="#pluggable-lock-manager">3.2.2. Pluggable Lock Manager</a></h4>
+<div class="paragraph">
+<p>One key difference between replication with quorum voting and replication with a lock manager is that with quorum voting if the primary cannot reach any active server with its nodeID then it activates unilaterally.
+With a pluggable lock manager the responsibilities of coordination are delegated to 3rd party. There are no unilateral decisions.
+The primary will only activate when it knows that it has the most up-to-date version of the journal identified by its nodeID.</p>
+</div>
+<div class="paragraph">
+<p>In short: <strong>a primary cannot activate without permission when using a pluggable lock manager</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;manager&gt;</span>
+        <span class="c">&lt;!-- some meaningful configuration --&gt;</span>
+      <span class="nt">&lt;/manager&gt;</span>
+      <span class="nt">&lt;primary&gt;</span>
+         <span class="c">&lt;!-- no need to check-for-active-server anymore --&gt;</span>
+      <span class="nt">&lt;/primary&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="all-shared-store-configuration"><a class="anchor" href="#all-shared-store-configuration"></a><a class="link" href="#all-shared-store-configuration">3.3. All Shared Store Configuration</a></h3>
+<div class="sect3">
+<h4 id="primary-3"><a class="anchor" href="#primary-3"></a><a class="link" href="#primary-3">3.3.1. Primary</a></h4>
+<div class="paragraph">
+<p>The following lists all the <code>ha-policy</code> configuration elements for HA strategy shared store for <code>primary</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">failover-on-shutdown</dt>
+<dd>
+<p>Whether the <em>graceful</em> shutdown of this broker will cause the backup to activate.</p>
+<div class="paragraph">
+<p>If <code>false</code> then the backup server will remain passive if this broker is shutdown gracefully (e.g. using <kbd>Ctrl-C</kbd>).
+Note that if <code>false</code> and you want failover to occur then you can use the management API as explained <a href="management.html#management">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If <code>true</code> then when this server is stopped the backup will activate.</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>false</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">wait-for-activation</dt>
+<dd>
+<p>If set to true then server startup will wait until it is activated.
+If set to false then server startup will be done in the background.
+Default is <code>true</code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="backup-3"><a class="anchor" href="#backup-3"></a><a class="link" href="#backup-3">3.3.2. Backup</a></h4>
+<div class="paragraph">
+<p>The following lists all the <code>ha-policy</code> configuration elements for HA strategy Shared Store for <code>backup</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">failover-on-shutdown</dt>
+<dd>
+<p>Whether the <em>graceful</em> shutdown of this broker will cause the backup to activate.</p>
+<div class="paragraph">
+<p>If <code>false</code> then the backup server will remain passive if this broker is shutdown gracefully (e.g. using <kbd>Ctrl-C</kbd>).
+Note that if <code>false</code> and you want failover to occur then you can use the management API as explained <a href="management.html#management">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>If <code>true</code> then when this server is stopped the backup will activate.</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>false</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">allow-failback</dt>
+<dd>
+<p>Whether a server will automatically stop when another places a request to take over its place.
+The use case is when the backup has failed over.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="colocated-backup-servers"><a class="anchor" href="#colocated-backup-servers"></a><a class="link" href="#colocated-backup-servers">3.3.3. Colocated Backup Servers</a></h4>
+<div class="paragraph">
+<p>It is also possible when running standalone to colocate backup servers in the same JVM as another primary server.
+Primary Servers can be configured to request another primary server in the cluster to start a backup server in the same JVM either using shared store or replication.
+The new backup server will inherit its configuration from the primary server creating it apart from its name, which will be set to <code>colocated_backup_n</code> where n is the number of backups the server has created, and any directories and its Connectors and Acceptors which are discussed later on in this chapter.
+A primary server can also be configured to allow requests from backups and also how many backups a primary server can start.
+This way you can evenly distribute backups around the cluster.
+This is configured via the <code>ha-policy</code> element in the <code>broker.xml</code> file like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;colocated&gt;</span>
+         <span class="nt">&lt;request-backup&gt;</span>true<span class="nt">&lt;/request-backup&gt;</span>
+         <span class="nt">&lt;max-backups&gt;</span>1<span class="nt">&lt;/max-backups&gt;</span>
+         <span class="nt">&lt;backup-request-retries&gt;</span>-1<span class="nt">&lt;/backup-request-retries&gt;</span>
+         <span class="nt">&lt;backup-request-retry-interval&gt;</span>5000<span class="nt">&lt;/backup-request-retry-interval&gt;</span>
+         <span class="nt">&lt;primary/&gt;</span>
+         <span class="nt">&lt;backup/&gt;</span>
+      <span class="nt">&lt;/colocated&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>the above example is configured to use replication, in this case the <code>primary</code> and <code>backup</code> configurations must match those for normal replication as in the previous chapter.
+<code>shared-store</code> is also supported</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/ha-colocated.png" alt="ActiveMQ Artemis ha-colocated.png">
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuring-connectors-and-acceptors"><a class="anchor" href="#configuring-connectors-and-acceptors"></a><a class="link" href="#configuring-connectors-and-acceptors">3.4. Configuring Connectors and Acceptors</a></h3>
+<div class="paragraph">
+<p>If the HA Policy is <code>colocated</code> then <code>connectors</code> and <code>acceptors</code> will be inherited from the primary server creating it and offset depending on the setting of <code>backup-port-offset</code> configuration element.
+If this is set to say 100 (which is the default) and a connector is using port 61616 then this will be set to 61716 for the first server created, 61816 for the second, and so on.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>for INVM connectors and Acceptors the id will have <code>colocated_backup_n</code> appended, where n is the backup server number.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="remote-connectors"><a class="anchor" href="#remote-connectors"></a><a class="link" href="#remote-connectors">3.5. Remote Connectors</a></h3>
+<div class="paragraph">
+<p>It may be that some of the Connectors configured are for external servers and hence should be excluded from the offset.
+for instance a connector used by the cluster connection to do quorum voting for a replicated backup server, these can be omitted from being offset by adding them to the <code>ha-policy</code> configuration like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;colocated&gt;</span>
+         ...
+         <span class="nt">&lt;excludes&gt;</span>
+            <span class="nt">&lt;connector-ref&gt;</span>remote-connector<span class="nt">&lt;/connector-ref&gt;</span>
+         <span class="nt">&lt;/excludes&gt;</span>
+         ...
+      <span class="nt">&lt;/colocated&gt;</span>
+   <span class="err">&lt;</span>/replication
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuring-directories"><a class="anchor" href="#configuring-directories"></a><a class="link" href="#configuring-directories">3.6. Configuring Directories</a></h3>
+<div class="paragraph">
+<p>Directories for the Journal, Large messages and Paging will be set according to what the HA strategy is.
+If shared store the requesting server will notify the target server of which directories to use.
+If replication is configured then directories will be inherited from the creating server but have the new backups name appended.</p>
+</div>
+<div class="paragraph">
+<p>The following table lists all the <code>ha-policy</code> configuration elements for colocated policy:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">request-backup</dt>
+<dd>
+<p>If true then the server will request a backup on another node</p>
+</dd>
+<dt class="hdlist1">backup-request-retries</dt>
+<dd>
+<p>How many times the primary server will try to request a backup, <code>-1</code> means for ever.</p>
+</dd>
+<dt class="hdlist1">backup-request-retry-interval</dt>
+<dd>
+<p>How long to wait for retries between attempts to request a backup server.</p>
+</dd>
+<dt class="hdlist1">max-backups</dt>
+<dd>
+<p>How many backups a primary server can create</p>
+</dd>
+<dt class="hdlist1">backup-port-offset</dt>
+<dd>
+<p>The offset to use for the Connectors and Acceptors when creating a new backup server.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scaling-down"><a class="anchor" href="#scaling-down"></a><a class="link" href="#scaling-down">4. Scaling Down</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An alternative to using primary/backup groups is to configure <em>scaledown</em>.
+When configured for scale down a server can copy all its messages and transaction state to another active server.
+The advantage of this is that you don&#8217;t need full backups to provide some form of HA, however there are disadvantages with this approach the first being that it only deals with a server being stopped and not a server crash.
+The caveat here is if you configure a backup to scale down.</p>
+</div>
+<div class="paragraph">
+<p>Another disadvantage is that it is possible to lose message ordering.
+This happens in the following scenario, say you have 2 active servers and messages are distributed evenly between the servers from a single producer, if one of the servers scales down then the messages sent back to the other server will be in the queue after the ones already there, so server 1 could have messages 1,3,5,7,9 and server 2 would have 2,4,6,8,10, if server 2 scales down the order in server 1 would be 1,3,5,7,9,2,4,6,8,10.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/ha-scaledown.png" alt="ActiveMQ Artemis ha-scaledown.png">
+</div>
+</div>
+<div class="paragraph">
+<p>The configuration for an active server to scale down would be something like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;primary-only&gt;</span>
+      <span class="nt">&lt;scale-down&gt;</span>
+         <span class="nt">&lt;connectors&gt;</span>
+            <span class="nt">&lt;connector-ref&gt;</span>server1-connector<span class="nt">&lt;/connector-ref&gt;</span>
+         <span class="nt">&lt;/connectors&gt;</span>
+      <span class="nt">&lt;/scale-down&gt;</span>
+   <span class="nt">&lt;/primary-only&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this instance the server is configured to use a specific connector to scale down, if a connector is not specified then the first INVM connector is chosen, this is to make scale down from a backup server easy to configure.
+It is also possible to use discovery to scale down, this would look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;primary-only&gt;</span>
+      <span class="nt">&lt;scale-down&gt;</span>
+         <span class="nt">&lt;discovery-group-ref</span> <span class="na">discovery-group-name=</span><span class="s">"my-discovery-group"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/scale-down&gt;</span>
+   <span class="nt">&lt;/primary-only&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="scale-down-with-groups"><a class="anchor" href="#scale-down-with-groups"></a><a class="link" href="#scale-down-with-groups">4.1. Scale Down with groups</a></h3>
+<div class="paragraph">
+<p>It is also possible to configure servers to only scale down to servers that belong in the same group.
+This is done by configuring the group like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;primary-only&gt;</span>
+      <span class="nt">&lt;scale-down&gt;</span>
+         ...
+         <span class="nt">&lt;group-name&gt;</span>my-group<span class="nt">&lt;/group-name&gt;</span>
+      <span class="nt">&lt;/scale-down&gt;</span>
+   <span class="nt">&lt;/primary-only&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this scenario only servers that belong to the group <code>my-group</code> will be scaled down to</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="scale-down-and-backups"><a class="anchor" href="#scale-down-and-backups"></a><a class="link" href="#scale-down-and-backups">4.2. Scale Down and Backups</a></h3>
+<div class="paragraph">
+<p>It is also possible to mix scale down with HA via backup servers.
+If a backup is configured to scale down then after failover has occurred, instead of starting fully the backup server will immediately scale down to another active server.
+The most appropriate configuration for this is using the <code>colocated</code> approach.
+It means that as you bring up primary servers they will automatically be backed up, and as they are shutdown their messages are made available on another active server.
+A typical configuration would look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;ha-policy&gt;</span>
+   <span class="nt">&lt;replication&gt;</span>
+      <span class="nt">&lt;colocated&gt;</span>
+         <span class="nt">&lt;backup-request-retries&gt;</span>44<span class="nt">&lt;/backup-request-retries&gt;</span>
+         <span class="nt">&lt;backup-request-retry-interval&gt;</span>33<span class="nt">&lt;/backup-request-retry-interval&gt;</span>
+         <span class="nt">&lt;max-backups&gt;</span>3<span class="nt">&lt;/max-backups&gt;</span>
+         <span class="nt">&lt;request-backup&gt;</span>false<span class="nt">&lt;/request-backup&gt;</span>
+         <span class="nt">&lt;backup-port-offset&gt;</span>33<span class="nt">&lt;/backup-port-offset&gt;</span>
+         <span class="nt">&lt;primary&gt;</span>
+            <span class="nt">&lt;group-name&gt;</span>purple<span class="nt">&lt;/group-name&gt;</span>
+            <span class="nt">&lt;check-for-active-server&gt;</span>true<span class="nt">&lt;/check-for-active-server&gt;</span>
+            <span class="nt">&lt;cluster-name&gt;</span>abcdefg<span class="nt">&lt;/cluster-name&gt;</span>
+         <span class="nt">&lt;/primary&gt;</span>
+         <span class="nt">&lt;backup&gt;</span>
+            <span class="nt">&lt;group-name&gt;</span>tiddles<span class="nt">&lt;/group-name&gt;</span>
+            <span class="nt">&lt;max-saved-replicated-journals-size&gt;</span>22<span class="nt">&lt;/max-saved-replicated-journals-size&gt;</span>
+            <span class="nt">&lt;cluster-name&gt;</span>33rrrrr<span class="nt">&lt;/cluster-name&gt;</span>
+            <span class="nt">&lt;restart-backup&gt;</span>false<span class="nt">&lt;/restart-backup&gt;</span>
+            <span class="nt">&lt;scale-down&gt;</span>
+               <span class="c">&lt;!--a grouping of servers that can be scaled down to--&gt;</span>
+               <span class="nt">&lt;group-name&gt;</span>boo!<span class="nt">&lt;/group-name&gt;</span>
+               <span class="c">&lt;!--either a discovery group--&gt;</span>
+               <span class="nt">&lt;discovery-group-ref</span> <span class="na">discovery-group-name=</span><span class="s">"wahey"</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/scale-down&gt;</span>
+         <span class="nt">&lt;/backup&gt;</span>
+      <span class="nt">&lt;/colocated&gt;</span>
+   <span class="nt">&lt;/replication&gt;</span>
+<span class="nt">&lt;/ha-policy&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="scale-down-and-clients"><a class="anchor" href="#scale-down-and-clients"></a><a class="link" href="#scale-down-and-clients">4.3. Scale Down and Clients</a></h3>
+<div class="paragraph">
+<p>When a server is stopping and preparing to scale down it will send a message to all its clients informing them which server it is scaling down to before disconnecting them.
+At this point the client will reconnect however this will only succeed once the server has completed the scaledown process.
+This is to ensure that any state such as queues or transactions are there for the client when it reconnects.
+The normal reconnect settings apply when the client is reconnecting so these should be high enough to deal with the time needed to scale down.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="client-failover"><a class="anchor" href="#client-failover"></a><a class="link" href="#client-failover">5. Client Failover</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis clients can be configured to receive knowledge of all primary and backup servers, so that in event of connection failure the client will detect this and reconnect to the backup server.
+The backup server will then automatically recreate any sessions and consumers that existed on each connection before failover, thus saving the user from having to hand-code manual reconnection logic.
+For further details see <a href="client-failover.html#core-client-failover">Client Failover</a></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">A Note on Seamless Failover</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis does not reproduce <em>full</em> server state between active and passive servers.
+When a core client automatically creates a new session on the backup that session won&#8217;t contain any information about messages already sent or acknowledged in the previous session.
+Any in-flight sends or acknowledgements at the time of failover will also be lost if they weren&#8217;t written to storage.</p>
+</div>
+<div class="paragraph">
+<p>Theoretically we could provide a 100% transparent, seamless failover which would avoid any lost messages or acknowledgements.
+However, this comes at a great cost: reproducing the full server state (including the queues, session, etc.).
+This would require every operation on the primary server to be reproduced on the backup server in the exact same global order to ensure a consistent state.
+This is extremely hard to do in a performant and scalable way, especially when one considers that multiple threads are changing the active server&#8217;s state concurrently.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to provide reproduce the full state machine using techniques such as <em>virtual synchrony</em>, but this does not scale well and effectively serializes all operations to a single thread, dramatically reducing concurrency.</p>
+</div>
+<div class="paragraph">
+<p>Other techniques for multi-threaded use-cases exist such as reproducing lock states or thread scheduling, but this is very hard to achieve at a Java level.</p>
+</div>
+<div class="paragraph">
+<p>Consequently, it has been decided that it worth not worth massively reducing performance and concurrency for the sake of 100% transparent failover.
+Even without 100% transparent failover, it is simple to guarantee <em>once and only once</em> delivery, even in the case of failure, by using a combination of duplicate detection and retrying of transactions.
+However, this is not 100% transparent to the client code.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="handling-blocking-calls-during-failover"><a class="anchor" href="#handling-blocking-calls-during-failover"></a><a class="link" href="#handling-blocking-calls-during-failover">5.1. Handling Blocking Calls During Failover</a></h3>
+<div class="paragraph">
+<p>If the client code is in a blocking call to the server, waiting for a response to continue its execution, when failover occurs, the new session will not have any knowledge of the call that was in progress.
+This call might otherwise hang for ever, waiting for a response that will never come.</p>
+</div>
+<div class="paragraph">
+<p>To prevent this, Apache ActiveMQ Artemis will unblock any blocking calls that were in progress at the time of failover by making them throw a <code>javax.jms.JMSException</code> (if using JMS), or a <code>ActiveMQException</code> with error code <code>ActiveMQException.UNBLOCKED</code>.
+It is up to the client code to catch this exception and retry any operations if desired.</p>
+</div>
+<div class="paragraph">
+<p>If the method being unblocked is a call to commit(), or prepare(), then the transaction will be automatically rolled back and Apache ActiveMQ Artemis will throw a <code>javax.jms.TransactionRolledBackException</code> (if using JMS), or a <code>ActiveMQException</code> with error code <code>ActiveMQException.TRANSACTION_ROLLED_BACK</code> if using the core API.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="handling-failover-with-transactions"><a class="anchor" href="#handling-failover-with-transactions"></a><a class="link" href="#handling-failover-with-transactions">5.2. Handling Failover With Transactions</a></h3>
+<div class="paragraph">
+<p>If the session is transactional and messages have already been sent or acknowledged in the current transaction, then the server cannot be sure that messages sent or acknowledgements have not been lost during the failover.</p>
+</div>
+<div class="paragraph">
+<p>Consequently the transaction will be marked as rollback-only, and any subsequent attempt to commit it will throw a <code>javax.jms.TransactionRolledBackException</code> (if using JMS), or a <code>ActiveMQException</code> with error code <code>ActiveMQException.TRANSACTION_ROLLED_BACK</code> if using the core API.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The caveat to this rule is when XA is used either via JMS or through the core API.
+If 2 phase commit is used and prepare has already been called then rolling back could cause a <code>HeuristicMixedException</code>.
+Because of this the commit will throw a <code>XAException.XA_RETRY</code> exception.
+This informs the Transaction Manager that it should retry the commit at some later point in time, a side effect of this is that any non persistent messages will be lost.
+To avoid this use persistent messages when using XA.
+With acknowledgements this is not an issue since they are flushed to the server before prepare gets called.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is up to the user to catch the exception, and perform any client side local rollback code as necessary.
+There is no need to manually rollback the session - it is already rolled back.
+The user can then just retry the transactional operations again on the same session.</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis ships with a fully functioning example demonstrating how to do this, please see <a href="examples.html#examples">the examples</a> chapter.</p>
+</div>
+<div class="paragraph">
+<p>If failover occurs when a commit call is being executed, the server, as previously described, will unblock the call to prevent a hang, since no response will come back.
+In this case it is not easy for the client to determine whether the transaction commit was actually processed before failure occurred.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If XA is being used either via JMS or through the core API then an <code>XAException.XA_RETRY</code> is thrown.
+This is to inform Transaction Managers that a retry should occur at some point.
+At some later point in time the Transaction Manager will retry the commit.
+If the original commit has not occurred then it will still exist and be committed, if it does not exist then it is assumed to have been committed although the transaction manager may log a warning.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To remedy this, the client can simply enable duplicate detection (<a href="duplicate-detection.html#duplicate-message-detection">Duplicate Message Detection</a>) in the transaction, and retry the transaction operations again after the call is unblocked.
+If the transaction had indeed been committed successfully before failover, then when the transaction is retried, duplicate detection will ensure that any durable messages resent in the transaction will be ignored on the server to prevent them getting sent more than once.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>By catching the rollback exceptions and retrying, catching unblocked calls and enabling duplicate detection, <em>once and only once</em> delivery guarantees can be provided for messages in the case of failure, guaranteeing 100% no loss or duplication of messages.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="handling-failover-with-non-transactional-sessions"><a class="anchor" href="#handling-failover-with-non-transactional-sessions"></a><a class="link" href="#handling-failover-with-non-transactional-sessions">5.2.1. Handling Failover With Non Transactional Sessions</a></h4>
+<div class="paragraph">
+<p>If the session is non transactional, messages or acknowledgements can be lost in the event of a failover.</p>
+</div>
+<div class="paragraph">
+<p>If you wish to provide <em>once and only once</em> delivery guarantees for non transacted sessions too, enable duplicate detection, and catch unblock exceptions as described in <a href="#handling-blocking-calls-during-failover">Handling Blocking Calls During Failover</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="use-client-connectors-to-fail-over"><a class="anchor" href="#use-client-connectors-to-fail-over"></a><a class="link" href="#use-client-connectors-to-fail-over">5.2.2. Use client connectors to fail over</a></h4>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis clients retrieve the backup connector from the topology updates that the cluster brokers send.
+If the connection options of the clients don&#8217;t match the options of the cluster brokers the clients can define a client connector that will be used in place of the connector in the topology.
+To define a client connector it must have a name that matches the name of the connector defined in the <code>cluster-connection</code> of the broker, i.e. supposing to have a primary broker with the cluster connector name <code>node-0</code> and a backup broker with the <code>cluster-connector</code> name <code>node-1</code> the client connection url must define 2 connectors with the names <code>node-0</code> and <code>node-1</code>:</p>
+</div>
+<div class="paragraph">
+<p>Primary broker config:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;connectors&gt;</span>
+   <span class="c">&lt;!-- Connector used to be announced through cluster connections and notifications --&gt;</span>
+   <span class="nt">&lt;connector</span> <span class="na">name=</span><span class="s">"node-0"</span><span class="nt">&gt;</span>tcp://localhost:61616<span class="nt">&lt;/connector&gt;</span>
+<span class="nt">&lt;/connectors&gt;</span>
+...
+<span class="nt">&lt;cluster-connections&gt;</span>
+   <span class="nt">&lt;cluster-connection</span> <span class="na">name=</span><span class="s">"my-cluster"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;connector-ref&gt;</span>node-0<span class="nt">&lt;/connector-ref&gt;</span>
+      ...
+   <span class="nt">&lt;/cluster-connection&gt;</span>
+<span class="nt">&lt;/cluster-connections&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Backup broker config</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;connectors&gt;</span>
+    <span class="c">&lt;!-- Connector used to be announced through cluster connections and notifications --&gt;</span>
+    <span class="nt">&lt;connector</span> <span class="na">name=</span><span class="s">"node-1"</span><span class="nt">&gt;</span>tcp://localhost:61617<span class="nt">&lt;/connector&gt;</span>
+<span class="nt">&lt;/connectors&gt;</span>
+<span class="nt">&lt;cluster-connections&gt;</span>
+   <span class="nt">&lt;cluster-connection</span> <span class="na">name=</span><span class="s">"my-cluster"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;connector-ref&gt;</span>node-1<span class="nt">&lt;/connector-ref&gt;</span>
+      ...
+   <span class="nt">&lt;/cluster-connection&gt;</span>
+<span class="nt">&lt;/cluster-connections&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Client connection url</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">(tcp://localhost:61616?name=node-0,tcp://localhost:61617?name=node-1)?ha=true&amp;reconnectAttempts=-1</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="getting-notified-of-connection-failure"><a class="anchor" href="#getting-notified-of-connection-failure"></a><a class="link" href="#getting-notified-of-connection-failure">5.3. Getting Notified of Connection Failure</a></h3>
+<div class="paragraph">
+<p>JMS provides a standard mechanism for getting notified asynchronously of connection failure: <code>java.jms.ExceptionListener</code>.
+Please consult the JMS javadoc or any good JMS tutorial for more information on how to use this.</p>
+</div>
+<div class="paragraph">
+<p>The Apache ActiveMQ Artemis core API also provides a similar feature in the form of the class <code>org.apache.activemq.artemis.core.client.SessionFailureListener</code></p>
+</div>
+<div class="paragraph">
+<p>Any ExceptionListener or SessionFailureListener instance will always be called by ActiveMQ Artemis on event of connection failure, <strong>irrespective</strong> of whether the connection was successfully failed over, reconnected or reattached, however you can find out if reconnect or reattach has happened by either the <code>failedOver</code> flag passed in on the <code>connectionFailed</code> on <code>SessionfailureListener</code> or by inspecting the error code on the <code>javax.jms.JMSException</code> which will be one of the following:</p>
+</div>
+<div class="paragraph">
+<p>JMSException error codes:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">FAILOVER</dt>
+<dd>
+<p>Failover has occurred and we have successfully reattached or reconnected.</p>
+</dd>
+<dt class="hdlist1">DISCONNECT</dt>
+<dd>
+<p>No failover has occurred and we are disconnected.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="application-level-failover"><a class="anchor" href="#application-level-failover"></a><a class="link" href="#application-level-failover">5.4. Application-Level Failover</a></h3>
+<div class="paragraph">
+<p>In some cases you may not want automatic client failover, and prefer to handle any connection failure yourself, and code your own manually reconnection logic in your own failure handler.
+We define this as <em>application-level</em> failover, since the failover is handled at the user application level.</p>
+</div>
+<div class="paragraph">
+<p>To implement application-level failover, if you&#8217;re using JMS then you need to set an <code>ExceptionListener</code> class on the JMS connection.
+The <code>ExceptionListener</code> will be called by Apache ActiveMQ Artemis in the event that connection failure is detected.
+In your <code>ExceptionListener</code>, you would close your old JMS connections, potentially look up new connection factory instances from JNDI and creating new connections.</p>
+</div>
+<div class="paragraph">
+<p>For a working example of application-level failover, please see <a href="examples.html#application-layer-failover">the Application-Layer Failover Example</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you are using the core API, then the procedure is very similar: you would set a <code>FailureListener</code> on the core <code>ClientSession</code> instances.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
