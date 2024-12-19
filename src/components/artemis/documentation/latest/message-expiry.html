@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="generator" content="Asciidoctor 2.0.23">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Message Expiry</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Message Expiry</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.39.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#core-api">1. Core API</a></li>
 <li><a href="#configuring-expiry-delay">2. Configuring Expiry Delay</a></li>
@@ -139,6 +139,27 @@ If <code>min-expiry-delay</code> is not defined then the message will not be cha
 </div>
 <div class="paragraph">
 <p>The default for both <code>min-expiry-delay</code> and <code>max-expiry-delay</code> is <code>-1</code> (i.e. disabled).</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>If you set expiry-delay, or min/max-expiry-delay, on the expiration target address beware of the following:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Messages will get a new expiration when moved to the expiry queue, rather than being set to 0 as usual, and so may disappear after the new expiration.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

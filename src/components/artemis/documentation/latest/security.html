@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="generator" content="Asciidoctor 2.0.23">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Authentication &amp; Authorization</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Authentication &amp; Authorization</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.38.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.39.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#basic-configuration">1. Basic Configuration</a></li>
 <li><a href="#caching-security-operations">2. Caching Security Operations</a></li>
@@ -378,8 +378,8 @@ However, there are two configuration details that will be specified for every im
 <div class="sect3">
 <h4 id="legacyldapsecuritysettingplugin"><a class="anchor" href="#legacyldapsecuritysettingplugin"></a><a class="link" href="#legacyldapsecuritysettingplugin">5.1.1. LegacyLDAPSecuritySettingPlugin</a></h4>
 <div class="paragraph">
-<p>This plugin will read the security information that was previously handled by <a href="http://activemq.apache.org/security.html"><code>LDAPAuthorizationMap</code></a> and the <a href="http://activemq.apache.org/cached-ldap-authorization-module.html"><code>cachedLDAPAuthorizationMap</code></a> in Apache ActiveMQ "Classic" and turn it into Artemis security settings where possible.
-The security implementations of ActiveMQ "Classic" and Artemis don&#8217;t match perfectly so some translation must occur to achieve near equivalent functionality.</p>
+<p>This plugin will read the security information that was previously handled by <a href="http://activemq.apache.org/security.html"><code>LDAPAuthorizationMap</code></a> and the <a href="http://activemq.apache.org/cached-ldap-authorization-module.html"><code>cachedLDAPAuthorizationMap</code></a> in Apache ActiveMQ Classic and turn it into Artemis security settings where possible.
+The security implementations of ActiveMQ Classic and Artemis don&#8217;t match perfectly so some translation must occur to achieve near equivalent functionality.</p>
 </div>
 <div class="paragraph">
 <p>Here is an example of the plugin&#8217;s configuration:</p>
@@ -518,16 +518,16 @@ The default  value is <code>false</code>.</p>
 <dt class="hdlist1">allowQueueAdminOnRead</dt>
 <dd>
 <p>Whether or not to map the legacy <code>read</code> permission to the <code>createDurableQueue</code>, <code>createNonDurableQueue</code>, and <code>deleteDurableQueue</code> permissions so that JMS clients can create durable and non-durable subscriptions without needing the <code>admin</code> permission.
-This was allowed in ActiveMQ "Classic".
+This was allowed in ActiveMQ Classic.
 The default value is <code>false</code>.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>The name of the queue or topic defined in LDAP will serve as the "match" for the security-setting, the permission value will be mapped from the ActiveMQ "Classic" type to the Artemis type, and the role will be mapped as-is.</p>
+<p>The name of the queue or topic defined in LDAP will serve as the "match" for the security-setting, the permission value will be mapped from the ActiveMQ Classic type to the Artemis type, and the role will be mapped as-is.</p>
 </div>
 <div class="paragraph">
-<p>ActiveMQ "Classic" only has 3 permission types - <code>read</code>, <code>write</code>, and <code>admin</code>.
+<p>ActiveMQ Classic only has 3 permission types - <code>read</code>, <code>write</code>, and <code>admin</code>.
 These permission types are described on their <a href="http://activemq.apache.org/security.html">website</a>.
 However, as described previously, ActiveMQ Artemis has 9 permission types - <code>createAddress</code>, <code>deleteAddress</code>, <code>createDurableQueue</code>, <code>deleteDurableQueue</code>, <code>createNonDurableQueue</code>, <code>deleteNonDurableQueue</code>, <code>send</code>, <code>consume</code>, <code>browse</code>, and <code>manage</code>.
 Here&#8217;s how the old types are mapped to the new types:</p>
@@ -554,11 +554,11 @@ Here&#8217;s how the old types are mapped to the new types:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>This mapping doesn&#8217;t include the Artemis <code>manage</code> permission type by default since there is no type analogous for that in ActiveMQ "Classic".
+<p>This mapping doesn&#8217;t include the Artemis <code>manage</code> permission type by default since there is no type analogous for that in ActiveMQ Classic.
 However, if <code>mapAdminToManage</code> is <code>true</code> then the legacy <code>admin</code> permission will be mapped to the <code>manage</code> permission.</p>
 </li>
 <li>
-<p>The <code>admin</code> permission in ActiveMQ "Classic" relates to whether or not the broker will auto-create a destination if it doesn&#8217;t exist and the user sends a message to it.
+<p>The <code>admin</code> permission in ActiveMQ Classic relates to whether or not the broker will auto-create a destination if it doesn&#8217;t exist and the user sends a message to it.
 Artemis automatically allows the automatic creation of a destination if the user has permission to send message to it.
 Therefore, the plugin will map the <code>admin</code> permission to the 6 aforementioned permissions in Artemis by default.
 If <code>mapAdminToManage</code> is <code>true</code> then the legacy <code>admin</code> permission will be mapped to the <code>manage</code> permission as well.</p>
