@@ -8,7 +8,7 @@ type: artemis
 
  - Please see the ["Versions"](https://activemq.apache.org/components/artemis/documentation/latest/versions.html) chapter in the User Guide for upgrade instructions.
 
-**Note**: This release requires use of Java 11 or above.
+**Note**: This release requires use of Java 17 or above.
 
 
 ## Bugs Fixed
