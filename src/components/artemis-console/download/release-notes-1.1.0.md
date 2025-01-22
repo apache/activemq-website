@@ -10,7 +10,6 @@ type: artemis
 
 * [ARTEMIS-5095](https://issues.apache.org/jira/browse/ARTEMIS-5095) - Resend Dialog broken
 * [ARTEMIS-5131](https://issues.apache.org/jira/browse/ARTEMIS-5131) - Add A Copy message button to console
-* [ARTEMIS-5160](https://issues.apache.org/jira/browse/ARTEMIS-5160) - Migrate console to PF 5 and latest hawtio
 * [ARTEMIS-5185](https://issues.apache.org/jira/browse/ARTEMIS-5185) - Move from craco server to webpack server for console
 * [ARTEMIS-5204](https://issues.apache.org/jira/browse/ARTEMIS-5204) - Backups not showing in console
 * [ARTEMIS-5213](https://issues.apache.org/jira/browse/ARTEMIS-5213) - Selecting only "show internal addresses" in the new console never shows these addresses
@@ -18,6 +17,7 @@ type: artemis
 
 ## Improvements
 
+* [ARTEMIS-5160](https://issues.apache.org/jira/browse/ARTEMIS-5160) - Migrate console to PF 5 and latest hawtio
 * [ARTEMIS-5175](https://issues.apache.org/jira/browse/ARTEMIS-5175) - Fix up text in console
 * [ARTEMIS-5186](https://issues.apache.org/jira/browse/ARTEMIS-5186) - UI Consistency Improvements
 * [ARTEMIS-5192](https://issues.apache.org/jira/browse/ARTEMIS-5192) - Reset selected items when changing page size in web console
