@@ -11,6 +11,7 @@ type: classic
 *   [Becoming a committer](https://infra.apache.org/new-committers-guide.html)
 *   [Benchmark Tests](benchmark-tests)
 *   [Building](building)
+*   [Testing your changes locally](testing-changes-locally)
 *   [Code Overview](code-overview)
 *   [Developer Guide](developer-guide)
     *   [Design Documents](design-documents)
