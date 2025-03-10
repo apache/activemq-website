@@ -1,5 +1,5 @@
 ---
-version: 6.1.5
+version: 6.1.6
 release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12355554
 release_date: 2025-03-7
 title: ActiveMQ Classic 6.1.6 Release
