@@ -3,7 +3,7 @@ layout: default_md
 title-class: page-title-nms
 type: nms
 version: 2.1.1
-release_date: 2024-02-16
+release_date: 2025-02-16
 release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12355665&projectId=12311201
 title: Apache.NMS.ActiveMQ 2.1.1 Release
 # The shortDescription is used on front page news entry and news feed pages
