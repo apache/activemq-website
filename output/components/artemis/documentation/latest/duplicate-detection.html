@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Duplicate Message Detection</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.39.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.40.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#using-duplicate-detection-for-message-sending">1. Using Duplicate Detection for Message Sending</a></li>
 <li><a href="#configuring-the-duplicate-id-cache">2. Configuring the Duplicate ID Cache</a></li>
@@ -85,26 +85,12 @@ If the server detects a duplicate message for any message in the transaction, th
 <p>The name of the property that you set is given by the value of <code>org.apache.activemq.artemis.api.core.Message.HDR_DUPLICATE_DETECTION_ID</code>, which is <code>_AMQ_DUPL_ID</code></p>
 </div>
 <div class="paragraph">
-<p>The value of the property can be of type <code>byte[]</code> or <code>SimpleString</code> if you&#8217;re using the core API.
-If you&#8217;re using JMS it must be a <code>String</code>, and its value should be unique.
+<p>When using JMS the value of the property must be a <code>String</code>, and similarly a string type would be used in other client APIs or protocols used with the broker.
+Its value should be unique.
 An easy way of generating a unique id is by generating a UUID.</p>
 </div>
 <div class="paragraph">
-<p>Here&#8217;s an example of setting the property using the core API:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="java"><span class="o">...</span>
-
-<span class="nc">ClientMessage</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createMessage</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-
-<span class="nc">SimpleString</span> <span class="n">myUniqueID</span> <span class="o">=</span> <span class="s">"This is my unique id"</span><span class="o">;</span>   <span class="c1">// Could use a UUID for this</span>
-
-<span class="n">message</span><span class="o">.</span><span class="na">setStringProperty</span><span class="o">(</span><span class="no">HDR_DUPLICATE_DETECTION_ID</span><span class="o">,</span> <span class="n">myUniqueID</span><span class="o">);</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And here&#8217;s an example using the JMS API:</p>
+<p>Here&#8217;s an example of setting the property using the JMS API:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -117,6 +103,23 @@ An easy way of generating a unique id is by generating a UUID.</p>
 <span class="n">message</span><span class="o">.</span><span class="na">setStringProperty</span><span class="o">(</span><span class="no">HDR_DUPLICATE_DETECTION_ID</span><span class="o">.</span><span class="na">toString</span><span class="o">(),</span> <span class="n">myUniqueID</span><span class="o">);</span>
 
 <span class="o">...</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If using the Artemis Core client the value of the property can be of type <code>byte[]</code> or <code>SimpleString</code>.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of setting the property using using the Core API:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="o">...</span>
+
+<span class="nc">ClientMessage</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createMessage</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+<span class="nc">SimpleString</span> <span class="n">myUniqueID</span> <span class="o">=</span> <span class="s">"This is my unique id"</span><span class="o">;</span>   <span class="c1">// Could use a UUID for this</span>
+
+<span class="n">message</span><span class="o">.</span><span class="na">setStringProperty</span><span class="o">(</span><span class="no">HDR_DUPLICATE_DETECTION_ID</span><span class="o">,</span> <span class="n">myUniqueID</span><span class="o">);</span></code></pre>
 </div>
 </div>
 </div>

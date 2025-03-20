@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Address Model</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Address Model</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.39.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#address">1. Address</a></li>
+<li><a href="#queue">2. Queue</a></li>
+<li><a href="#routing-type">3. Routing Type</a></li>
+<li><a href="#automatic-configuration">4. Automatic Configuration</a></li>
+<li><a href="#basic-manual-configuration">5. Basic Manual Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#anycast">5.1. Anycast</a></li>
+<li><a href="#multicast">5.2. Multicast</a></li>
+</ul>
+</li>
+<li><a href="#advanced-manual-configuration">6. Advanced Manual Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#fully-qualified-queue-names">6.1. Fully Qualified Queue Names</a></li>
+<li><a href="#disabled-queue">6.2. Disabled Queue</a></li>
+<li><a href="#temporary-queues">6.3. Temporary Queues</a></li>
+<li><a href="#other-advanced-configurations">6.4. Other Advanced Configurations</a></li>
+</ul>
+</li>
+<li><a href="#how-to-filter-messages">7. How to filter messages</a>
+<ul class="sectlevel2">
+<li><a href="#queue-filter">7.1. Queue Filter</a></li>
+<li><a href="#consumer-filters">7.2. Consumer Filters</a></li>
+</ul>
+</li>
+<li><a href="#alternate-ways-to-determine-routing-type">8. Alternate Ways to Determine Routing Type</a>
+<ul class="sectlevel2">
+<li><a href="#using-a-prefix-to-determine-routing-type">8.1. Using a Prefix to Determine Routing Type</a></li>
+<li><a href="#using-a-message-property-to-determine-routing-type">8.2. Using a Message Property to Determine Routing Type</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Every messaging protocol and API that Apache ActiveMQ Artemis supports defines a different set of messaging resources.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>JMS uses <em>queues</em> and <em>topics</em></p>
+</li>
+<li>
+<p>STOMP uses generic <em>destinations</em></p>
+</li>
+<li>
+<p>MQTT uses <em>topics</em></p>
+</li>
+<li>
+<p>AMQP uses generic <em>nodes</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In order to deal the the unique semantics and use-cases for each of these the broker has a flexible and powerful address model based on the following <em>core</em> set of resources:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>address</strong></p>
+</li>
+<li>
+<p><strong>queue</strong></p>
+</li>
+<li>
+<p><strong>routing type</strong></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="address"><a class="anchor" href="#address"></a><a class="link" href="#address">1. Address</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Messages are <em>sent</em> to an address.
+An address is given a unique name, a routing type, and zero or more queues.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="queue"><a class="anchor" href="#queue"></a><a class="link" href="#queue">2. Queue</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Messages are <em>consumed</em> from a queue.
+A queue is bound to an address.
+It is given a unique name and a routing type.
+There can be zero or more queues bound to one address.
+When a message is sent to an address it is routed to one or more of its queues based on the configured routing type.</p>
+</div>
+<div class="paragraph">
+<p>The name of the queue must be <em>globally</em> unique.
+For example, you can&#8217;t have a queue named <code>q1</code> on address <code>a1</code> and also a queue named <code>q1</code> address <code>a2</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="routing-type"><a class="anchor" href="#routing-type"></a><a class="link" href="#routing-type">3. Routing Type</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A routing type determines how messages are routed from an address to the queue(s) bound to that address.
+Two different routing types are supported, <strong>anycast</strong> and <strong>multicast</strong>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">If you want your messages routed to&#8230;&#8203;</th>
+<th class="tableblock halign-left valign-top">Use this routing type&#8230;&#8203;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a single queue on the address</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">anycast</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">every queue on the address</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">multicast</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+It is possible to define queues with a different routing type for the same address, but this typically results in an anti-pattern and is therefore not recommended.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="automatic-configuration"><a class="anchor" href="#automatic-configuration"></a><a class="link" href="#automatic-configuration">4. Automatic Configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default Apache ActiveMQ Artemis will automatically create addresses and queues to support the semantics of whatever protocol you&#8217;re using.
+The broker understands how to support each protocol&#8217;s functionality with the core resources so that in most cases no manual configuration is required.
+This saves you from having to preconfigure each address and queue before a client can connect to it.</p>
+</div>
+<div class="paragraph">
+<p>The broker can optionally be configured to automatically delete addresses and queues when they are no longer in use.</p>
+</div>
+<div class="paragraph">
+<p>Automatic creation and deletion is configured on a per address basis and is controlled by the following <a href="address-settings.html#address-settings"><code>address-setting</code></a> elements:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>auto-create-addresses</code></p>
+</li>
+<li>
+<p><code>auto-delete-addresses</code></p>
+</li>
+<li>
+<p><code>default-address-routing-type</code></p>
+</li>
+<li>
+<p><code>auto-create-queues</code></p>
+</li>
+<li>
+<p><code>auto-delete-queues</code></p>
+</li>
+<li>
+<p><code>default-queue-routing-type</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Automatic queue creation is for queues that <em>would not otherwise be created during normal operation</em>.
+For example, when a remote application creates a consumer on a JMS topic then a queue will be created representing that subscription as described in the <a href="jms-core-mapping.html">JMS-to-core mapping chapter</a>.
+This queue will be created regardless of how <code>auto-create-queues</code> is configured because it is required for <em>normal operation</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>See <a href="address-settings.html#address-settings">the documentation on address settings</a> for more details on these elements.</p>
+</div>
+<div class="paragraph">
+<p>Of course, automatic configuration can be disabled and everything can be configured manually.
+Read on for more details about manual configuration.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="basic-manual-configuration"><a class="anchor" href="#basic-manual-configuration"></a><a class="link" href="#basic-manual-configuration">5. Basic Manual Configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following examples show how to configure resources for basic anycast and  multicast use-cases.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Many of the details of these use-cases are protocol agnostic.
+The goal here is to demonstrate and explain the basic configuration elements and how the address model works fundamentally.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="anycast"><a class="anchor" href="#anycast"></a><a class="link" href="#anycast">5.1. Anycast</a></h3>
+<div class="paragraph">
+<p>The most common use-case for anycast semantics, sometimes referred to as  <a href="messaging-concepts.html#point-to-point">point-to-point</a>, involves applications following a "competing consumer" pattern to receive messages from a shared queue.
+The more consumers receiving messages the greater the overall message throughput.
+Multiple Java applications sharing a JMS queue is a classic example of this use-case.</p>
+</div>
+<div class="paragraph">
+<p>In this use-case the broker is configured, for example, with an address,  <code>address.foo</code> using the <code>anycast</code> routing type with just one queue, <code>q1</code>.
+When a producer sends a message to <code>address.foo</code> it is then routed to <code>q1</code> and finally dispatched to one of the consumers.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/anycast.png" alt="Anycast"></span> Figure 1.
+Anycast</p>
+</div>
+<div class="paragraph">
+<p>This is what the configuration for this use-case would look like in  <code>etc/broker.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"address.foo"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;anycast&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/anycast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For most protocols and APIs which support this kind of use-case (e.g. JMS,  AMQP, etc.) it is customary to use the <em>same name</em> when sending and consuming messages.
+In that case you&#8217;d use a configuration like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"orderQueue"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;anycast&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orderQueue"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/anycast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="multicast"><a class="anchor" href="#multicast"></a><a class="link" href="#multicast">5.2. Multicast</a></h3>
+<div class="paragraph">
+<p>The most common use-case for multicast semantics, sometimes referred to as  <a href="messaging-concepts.html#publish-subscribe">publish/subscribe</a> or "pub/sub", involves each application receiving every message sent to an address.
+Multiple applications consuming from a JMS topic is a classic example of this use-case.
+MQTT subscriptions is another supported example of multicast semantics.</p>
+</div>
+<div class="paragraph">
+<p>In this use-case the broker is configured with an address, <code>address.foo</code> using the <code>multicast</code> routing type with two queues, <code>q1</code> &amp; <code>q2</code>.
+When a producer sends a message to <code>address.foo</code> it is then routed to <em>both</em> <code>q1</code> &amp; <code>q2</code> so that ultimately both consumers receive the same messages.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/multicast.png" alt="Multicast"></span> Figure 2.
+Multicast</p>
+</div>
+<div class="paragraph">
+<p>This is what the configuration for this use-case would look like in <code>etc/broker.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"address.foo"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;multicast&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span><span class="nt">/&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q2"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/multicast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This basic configuration is simple and straight-forward, but there&#8217;s a problem.
+In a normal pub/sub use-case like with a JMS topic or with MQTT the number of subscribers <em>isn&#8217;t known ahead of time</em>.
+In that case, this is the recommended configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"address.foo"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;multicast/&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Define <code>&lt;multicast/&gt;</code> with no queues and the broker will automatically create queues for each subscription when the consumers connect to <code>address.foo</code>.
+Then when a message is sent to <code>address.foo</code> it will be routed to each queue for each subscriber and therefore each subscriber will get every message.
+These queues are often referred to as <em>subscription queues</em> for obvious reasons.</p>
+</div>
+<div class="paragraph">
+<p>These subscription queues are typically named based on the semantics of the protocol used to create them.
+For example, JMS supports durable and non-durable subscriptions.
+The queue for a non-durable subscription is named with a UUID, but the queue used for a durable subscription is named according to the JMS "client ID" and "subscription name." Similar conventions are used for AMQP, MQTT, STOMP, etc.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="advanced-manual-configuration"><a class="anchor" href="#advanced-manual-configuration"></a><a class="link" href="#advanced-manual-configuration">6. Advanced Manual Configuration</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="fully-qualified-queue-names"><a class="anchor" href="#fully-qualified-queue-names"></a><a class="link" href="#fully-qualified-queue-names">6.1. Fully Qualified Queue Names</a></h3>
+<div class="paragraph">
+<p>In most cases it&#8217;s not necessary or desirable to statically configure the aforementioned subscription queues.
+However, there are scenarios where a user may want to statically configure a subscription queue and later connect to that queue directly using a <strong>Fully Qualified Queue Name</strong> (FQQN).</p>
+</div>
+<div class="paragraph">
+<p>An FQQN uses a special syntax to specify <em>both</em> the address and the queue so that applications using protocols and APIs which don&#8217;t natively understand the address/queue separation (e.g. AMQP, JMS, etc.) can send messages or subscribe <em>directly</em> to a queue rather than being limited to the address.
+Applications simply need to use the address name and the queue name separated by <code>::</code> (e.g. <code>address::queue</code>).</p>
+</div>
+<div class="paragraph">
+<p>In this example, the address <code>a1</code> is configured with two queues: <code>q1</code>, <code>q2</code> as shown in the configuration below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"a1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;multicast&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span> <span class="nt">/&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q2"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/multicast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s a snippet of Java code using JMS which demonstrates the FQQN syntax:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">Queue</span> <span class="n">q1</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"a1::q1"</span><span class="o">);</span>
+<span class="nc">MessageConsumer</span> <span class="n">consumer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="n">q1</span><span class="o">);</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The string <code>::</code> should only be used for FQQN and not in any other context in address or queue names.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The examples below show how to use broker side configuration to statically configure a queue with publish subscribe behavior for shared, non-shared, durable and non-durable subscription behavior.</p>
+</div>
+<div class="sect3">
+<h4 id="shared-durable-subscription-queue-using-max-consumers"><a class="anchor" href="#shared-durable-subscription-queue-using-max-consumers"></a><a class="link" href="#shared-durable-subscription-queue-using-max-consumers">6.1.1. Shared, Durable Subscription Queue using <code>max-consumers</code></a></h4>
+<div class="paragraph">
+<p>The default behavior for queues is to not limit the number connected queue consumers.
+The <code>max-consumers</code> parameter of the queue element can be used to limit the number of connected consumers allowed at any one time.</p>
+</div>
+<div class="paragraph">
+<p>Open the file <code>etc/broker.xml</code> for editing.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"durable.foo"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;multicast&gt;</span>
+         <span class="c">&lt;!-- pre-configured shared durable subscription queue --&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span> <span class="na">max-consumers=</span><span class="s">"10"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;durable&gt;</span>true<span class="nt">&lt;/durable&gt;</span>
+         <span class="nt">&lt;/queue&gt;</span>
+      <span class="nt">&lt;/multicast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="non-shared-durable-subscription-queue"><a class="anchor" href="#non-shared-durable-subscription-queue"></a><a class="link" href="#non-shared-durable-subscription-queue">6.1.2. Non-shared, Durable Subscription Queue</a></h4>
+<div class="paragraph">
+<p>The broker can be configured to prevent more than one consumer from connecting to a queue at any one time.
+The subscriptions to queues configured this way are therefore "non-shared".
+To do this simply set the <code>max-consumers</code> parameter to <code>1</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"durable.foo"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;multicast&gt;</span>
+         <span class="c">&lt;!-- pre-configured non shared durable subscription queue --&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span> <span class="na">max-consumers=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;durable&gt;</span>true<span class="nt">&lt;/durable&gt;</span>
+         <span class="nt">&lt;/queue&gt;</span>
+      <span class="nt">&lt;/multicast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="non-durable-subscription-queue"><a class="anchor" href="#non-durable-subscription-queue"></a><a class="link" href="#non-durable-subscription-queue">6.1.3. Non-durable Subscription Queue</a></h4>
+<div class="paragraph">
+<p>Non-durable subscriptions are again usually managed by the relevant protocol manager, by creating and deleting temporary queues.</p>
+</div>
+<div class="paragraph">
+<p>If a user requires to pre-create a queue that behaves like a non-durable subscription queue the <code>purge-on-no-consumers</code> flag can be enabled on the queue.
+When <code>purge-on-no-consumers</code> is set to <code>true</code>.
+The queue will not start receiving messages until a consumer is attached.
+When the last consumer is detached from the queue.
+The queue is purged (its messages are removed) and will not receive any more messages until a new consumer is attached.</p>
+</div>
+<div class="paragraph">
+<p>Open the file <code>etc/broker.xml</code> for editing.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"non.shared.durable.foo"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;multicast&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orders1"</span> <span class="na">purge-on-no-consumers=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/multicast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="disabled-queue"><a class="anchor" href="#disabled-queue"></a><a class="link" href="#disabled-queue">6.2. Disabled Queue</a></h3>
+<div class="paragraph">
+<p>If a user requires to statically configure a queue and disable routing to it, for example where a queue needs to be defined so a consumer can bind, but you want to disable message routing to it for the time being.</p>
+</div>
+<div class="paragraph">
+<p>Or you need to stop message flow to the queue to allow investigation keeping the consumer bound, but don&#8217;t wish to have further messages routed to the queue to avoid message build up.</p>
+</div>
+<div class="paragraph">
+<p>When <code>enabled</code> is set to <code>true</code> the queue will have messages routed to it.
+(default)</p>
+</div>
+<div class="paragraph">
+<p>When <code>enabled</code> is set to <code>false</code> the queue will NOT have messages routed to it.</p>
+</div>
+<div class="paragraph">
+<p>Open the file <code>etc/broker.xml</code> for editing.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo.bar"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;multicast&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"orders1"</span> <span class="na">enabled=</span><span class="s">"false"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/multicast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Disabling all the queues on an address means that any message sent to that address will be silently dropped.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="temporary-queues"><a class="anchor" href="#temporary-queues"></a><a class="link" href="#temporary-queues">6.3. Temporary Queues</a></h3>
+<div class="paragraph">
+<p>For some protocols and APIs which only support monolithic "destinations" without the address/queue separation (e.g. AMQP, JMS, etc.) temporary queues are created by the broker using a UUID (i.e universally unique identifier) as the name for both the address and the queue.
+Because the name is a UUID it is impossible to create an <code>address-setting</code> for it whose <code>match</code> is anything but <code>#</code>.</p>
+</div>
+<div class="paragraph">
+<p>To solve this problem one can specify the <code>temporary-queue-namespace</code> in <code>broker.xml</code> and then create an <code>address-setting</code> whose <code>match</code> value corresponds to the configured <code>temporary-queue-namespace</code>.
+When the <code>temporary-queue-namespace</code> is set and a temporary queue is created then the broker will prepend the <code>temporary-queue-namespace</code> value along with the <code>delimiter</code> value configured in <code>wildcard-addresses</code> (defaults to <code>.</code>) to the address name and use that to lookup the associated <code>address-setting</code> values.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s a simple example configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;temporary-queue-namespace&gt;</span>temp<span class="nt">&lt;/temporary-queue-namespace&gt;</span>
+
+<span class="nt">&lt;address-settings&gt;</span>
+   <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"temp.#"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;enable-metrics&gt;</span>false<span class="nt">&lt;/enable-metrics&gt;</span>
+   <span class="nt">&lt;/address-setting&gt;</span>
+<span class="nt">&lt;/address-settings&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using this configuration any temporary queue will have metrics disabled.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This setting does <em>not</em> change the actual name of the temporary queue.
+It only changes the name used to <em>lookup</em> the address-settings.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="other-advanced-configurations"><a class="anchor" href="#other-advanced-configurations"></a><a class="link" href="#other-advanced-configurations">6.4. Other Advanced Configurations</a></h3>
+<div class="paragraph">
+<p>Each of the following advanced configurations have their own chapter so their details are not repeated here:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="exclusive-queues.html#exclusive-queues">Exclusive queues</a></p>
+</li>
+<li>
+<p><a href="last-value-queues.html#last-value-queues">Last Value queues</a></p>
+</li>
+<li>
+<p><a href="non-destructive-queues.html#non-destructive-queues">Non-Destructive queues</a></p>
+</li>
+<li>
+<p><a href="ring-queues.html#ring-queue">Ring queues</a></p>
+</li>
+<li>
+<p><a href="retroactive-addresses.html#retroactive-addresses">Retroactive addresses</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how-to-filter-messages"><a class="anchor" href="#how-to-filter-messages"></a><a class="link" href="#how-to-filter-messages">7. How to filter messages</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis supports the ability to filter messages using <a href="filter-expressions.html#filter-expressions">Filter Expressions</a>.</p>
+</div>
+<div class="paragraph">
+<p>Filters can be applied in two places - on a queue and on a consumer.</p>
+</div>
+<div class="paragraph">
+<p>Filtering messages on a queue increases performance vs.
+filtering on the consumer because the messages don&#8217;t need to be scanned.
+However, a queue filter is often not as flexible.</p>
+</div>
+<div class="sect2">
+<h3 id="queue-filter"><a class="anchor" href="#queue-filter"></a><a class="link" href="#queue-filter">7.1. Queue Filter</a></h3>
+<div class="paragraph">
+<p>When a filter is applied to a queue, messages are filtered <em>before</em> they are routed to the queue.
+To add a filter use the <code>filter</code> element when configuring a queue, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"filter"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;anycast&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"filter"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;filter</span> <span class="na">string=</span><span class="s">"color='red'"</span><span class="nt">/&gt;</span>
+         <span class="nt">&lt;/queue&gt;</span>
+      <span class="nt">&lt;/anycast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The filter defined above ensures that only messages with an attribute <code>"color='red'"</code> is sent to this queue.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="consumer-filters"><a class="anchor" href="#consumer-filters"></a><a class="link" href="#consumer-filters">7.2. Consumer Filters</a></h3>
+<div class="paragraph">
+<p>Consumer filters are applied <em>after</em> messages have routed to the queue and are defined using the appropriate client APIs.
+The following JMS example shows how consumer filters work.</p>
+</div>
+<div class="paragraph">
+<p>Define an address with a single queue, with no filter applied in <code>etc/broker.xml</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
+   <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"filter"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;anycast&gt;</span>
+         <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"filter"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/anycast&gt;</span>
+   <span class="nt">&lt;/address&gt;</span>
+<span class="nt">&lt;/addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then send some messages to the queue.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="o">...</span>
+<span class="c1">// Send some messages</span>
+<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">;</span> <span class="n">i</span> <span class="o">++)</span> <span class="o">{</span>
+  <span class="nc">TextMessage</span> <span class="n">redMessage</span> <span class="o">=</span> <span class="n">senderSession</span><span class="o">.</span><span class="na">createTextMessage</span><span class="o">(</span><span class="s">"Red"</span><span class="o">);</span>
+  <span class="n">redMessage</span><span class="o">.</span><span class="na">setStringProperty</span><span class="o">(</span><span class="s">"color"</span><span class="o">,</span> <span class="s">"red"</span><span class="o">);</span>
+  <span class="n">producer</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">redMessage</span><span class="o">)</span>
+
+  <span class="nc">TextMessage</span> <span class="n">greenMessage</span> <span class="o">=</span> <span class="n">senderSession</span><span class="o">.</span><span class="na">createTextMessage</span><span class="o">(</span><span class="s">"Green"</span><span class="o">);</span>
+  <span class="n">greenMessage</span><span class="o">.</span><span class="na">setStringProperty</span><span class="o">(</span><span class="s">"color"</span><span class="o">,</span> <span class="s">"green"</span><span class="o">);</span>
+  <span class="n">producer</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">greenMessage</span><span class="o">)</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At this point the queue would have 6 messages: red, green, red, green, red, green.</p>
+</div>
+<div class="paragraph">
+<p>Create a consumer with the filter <code>color='red'</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">MessageConsumer</span> <span class="n">redConsumer</span> <span class="o">=</span> <span class="n">redSession</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="n">queue</span><span class="o">,</span> <span class="s">"color='red'"</span><span class="o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>redConsumer</code> has a filter that only matches "red" messages.
+The <code>redConsumer</code> will receive 3 messages.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">red, red, red</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The resulting queue would now be</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">green, green, green</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="alternate-ways-to-determine-routing-type"><a class="anchor" href="#alternate-ways-to-determine-routing-type"></a><a class="link" href="#alternate-ways-to-determine-routing-type">8. Alternate Ways to Determine Routing Type</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Typically the routing type is determined either by the static XML configuration or by the <code>default-address-routing-type</code> and <code>default-queue-routing-type</code> <code>address-setting</code> elements used for <a href="#automatic-configuration">automatic address and queue creation</a>.
+However, there are two other ways to specify routing type:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a configurable prefix which client applications can use when sending messages or creating consumers</p>
+</li>
+<li>
+<p>a property client applications can set on the messages they send</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="using-a-prefix-to-determine-routing-type"><a class="anchor" href="#using-a-prefix-to-determine-routing-type"></a><a class="link" href="#using-a-prefix-to-determine-routing-type">8.1. Using a Prefix to Determine Routing Type</a></h3>
+<div class="paragraph">
+<p>These prefixes are configured using the <code>anycastPrefix</code> and <code>multicastPrefix</code>  parameters within the URL of the <code>acceptor</code> which the client is using.
+When multiple values are needed, these can be separated by a comma.</p>
+</div>
+<div class="sect3">
+<h4 id="configuring-an-anycast-prefix"><a class="anchor" href="#configuring-an-anycast-prefix"></a><a class="link" href="#configuring-an-anycast-prefix">8.1.1. Configuring an Anycast Prefix</a></h4>
+<div class="paragraph">
+<p>In <code>etc/broker.xml</code>, add the <code>anycastPrefix</code> to the URL of the desired <code>acceptor</code>.
+In the example below, the acceptor is configured to use <code>queue/</code> for the <code>anycastPrefix</code>.
+Client code can specify <code>queue/foo/</code> if the client wants anycast routing.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"artemis"</span><span class="nt">&gt;</span>tcp://0.0.0.0:61616?protocols=AMQP;anycastPrefix=queue/<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Consider, for example, a STOMP client that wants to send a message using  anycast semantics to a queue that doesn&#8217;t exist.
+Consider also that the broker is configured to auto-create addresses and queues, but the <code>default-address-routing-type</code> and <code>default-queue-routing-type</code> are both <code>MULTICAST</code>.
+Since the <code>anycastPrefix</code> is <code>queue/</code> it can just send a message to <code>queue/foo</code> and the broker will automatically create an address named <code>foo</code> with an anycast queue also named <code>foo</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="configuring-a-multicast-prefix"><a class="anchor" href="#configuring-a-multicast-prefix"></a><a class="link" href="#configuring-a-multicast-prefix">8.1.2. Configuring a Multicast Prefix</a></h4>
+<div class="paragraph">
+<p>In <code>etc/broker.xml</code>, add the <code>multicastPrefix</code> to the URL of the desired <code>acceptor</code>.
+In the example below, the acceptor is configured to use <code>topic/</code> for the <code>multicastPrefix</code>.
+Client code can specify <code>topic/foo/</code> if the client wants multicast routing.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"artemis"</span><span class="nt">&gt;</span>tcp://0.0.0.0:61616?protocols=AMQP;multicastPrefix=topic/<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Consider, for example, a STOMP client that wants to create a subscription with multicast semantics on an address that doesn&#8217;t exist.
+Consider also that the broker is configured to auto-create addresses and queues, but the <code>default-address-routing-type</code> and <code>default-queue-routing-type</code> are both <code>ANYCAST</code>.
+Since the <code>multicastPrefix</code> is <code>topic/</code> it can just subscribe to <code>topic/foo</code> and the broker will automatically create an address named <code>foo</code> with a multicast queue for the subscription.
+Any messages sent to <code>foo</code> will  then be routed to the subscription queue.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="using-a-message-property-to-determine-routing-type"><a class="anchor" href="#using-a-message-property-to-determine-routing-type"></a><a class="link" href="#using-a-message-property-to-determine-routing-type">8.2. Using a Message Property to Determine Routing Type</a></h3>
+<div class="paragraph">
+<p>The <code><em>AMQ_ROUTING_TYPE</code> property represents a <code>byte</code> value which will be used by the broker to determine the routing type when a message is _sent</em>.
+Use <code>0</code> for anycast routing or <code>1</code> for multicast routing.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A message will <strong>only</strong> be routed to queues which match its <code>_AMQ_ROUTING_TYPE</code> property value (if any).
+For example, if a message with an <code>_AMQ_ROUTING_TYPE</code> value of <code>1</code> (i.e. multicast) is sent to an address that only has anycast queues then the message won&#8217;t actually be routed to any of the queues since the routing types don&#8217;t match.
+If no <code>_AMQ_ROUTING_TYPE</code> is set then the message will be routed to all the queues on the address according to the queues' routing semantics.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

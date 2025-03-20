@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Intercepting Operations</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Intercepting Operations</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.39.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#implementing-the-interceptors">1. Implementing The Interceptors</a></li>
+<li><a href="#configuring-the-interceptors">2. Configuring The Interceptors</a></li>
+<li><a href="#interceptors-on-the-client-side">3. Interceptors on the Client Side</a></li>
+<li><a href="#examples">4. Examples</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis supports <em>interceptors</em> to intercept packets entering and exiting the server.
+Incoming and outgoing interceptors are be called for any packet entering or exiting the server respectively.
+This allows custom code to be executed, e.g. for auditing packets, filtering or other reasons.
+Interceptors can change the packets they intercept.
+This makes interceptors powerful, but also potentially dangerous.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="implementing-the-interceptors"><a class="anchor" href="#implementing-the-interceptors"></a><a class="link" href="#implementing-the-interceptors">1. Implementing The Interceptors</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All interceptors are protocol specific.</p>
+</div>
+<div class="paragraph">
+<p>An interceptor for the core protocol must implement the interface <code>Interceptor</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kn">package</span> <span class="nn">org.apache.activemq.artemis.api.core.interceptor</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Interceptor</span> <span class="o">{</span>
+   <span class="kt">boolean</span> <span class="nf">intercept</span><span class="o">(</span><span class="nc">Packet</span> <span class="n">packet</span><span class="o">,</span> <span class="nc">RemotingConnection</span> <span class="n">connection</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ActiveMQException</span><span class="o">;</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For stomp protocol an interceptor must implement the interface <code>StompFrameInterceptor</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kn">package</span> <span class="nn">org.apache.activemq.artemis.core.protocol.stomp</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">StompFrameInterceptor</span> <span class="kd">extends</span> <span class="nc">BaseInterceptor</span><span class="o">&lt;</span><span class="nc">StompFrame</span><span class="o">&gt;</span> <span class="o">{</span>
+   <span class="kt">boolean</span> <span class="nf">intercept</span><span class="o">(</span><span class="nc">StompFrame</span> <span class="n">stompFrame</span><span class="o">,</span> <span class="nc">RemotingConnection</span> <span class="n">connection</span><span class="o">);</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Likewise for MQTT protocol, an interceptor must implement the interface <code>MQTTInterceptor</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kn">package</span> <span class="nn">org.apache.activemq.artemis.core.protocol.mqtt</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MQTTInterceptor</span> <span class="kd">extends</span> <span class="nc">BaseInterceptor</span><span class="o">&lt;</span><span class="nc">MqttMessage</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="nf">intercept</span><span class="o">(</span><span class="nc">MqttMessage</span> <span class="n">mqttMessage</span><span class="o">,</span> <span class="nc">RemotingConnection</span> <span class="n">connection</span><span class="o">);</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The returned boolean value is important:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>if <code>true</code> is returned, the process continues normally</p>
+</li>
+<li>
+<p>if <code>false</code> is returned, the process is aborted, no other interceptors will be called and the packet will not be processed further by the server.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-the-interceptors"><a class="anchor" href="#configuring-the-interceptors"></a><a class="link" href="#configuring-the-interceptors">2. Configuring The Interceptors</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Both incoming and outgoing interceptors are configured in <code>broker.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;remoting-incoming-interceptors&gt;</span>
+   <span class="nt">&lt;class-name&gt;</span>org.apache.activemq.artemis.jms.example.LoginInterceptor<span class="nt">&lt;/class-name&gt;</span>
+   <span class="nt">&lt;class-name&gt;</span>org.apache.activemq.artemis.jms.example.AdditionalPropertyInterceptor<span class="nt">&lt;/class-name&gt;</span>
+<span class="nt">&lt;/remoting-incoming-interceptors&gt;</span>
+
+<span class="nt">&lt;remoting-outgoing-interceptors&gt;</span>
+   <span class="nt">&lt;class-name&gt;</span>org.apache.activemq.artemis.jms.example.LogoutInterceptor<span class="nt">&lt;/class-name&gt;</span>
+   <span class="nt">&lt;class-name&gt;</span>org.apache.activemq.artemis.jms.example.AdditionalPropertyInterceptor<span class="nt">&lt;/class-name&gt;</span>
+<span class="nt">&lt;/remoting-outgoing-interceptors&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See the documentation on <a href="using-server.html#adding-runtime-dependencies">adding runtime dependencies</a> to understand how to make your interceptor available to the broker.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="interceptors-on-the-client-side"><a class="anchor" href="#interceptors-on-the-client-side"></a><a class="link" href="#interceptors-on-the-client-side">3. Interceptors on the Client Side</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The interceptors can also be run on the Apache ActiveMQ Artemis client side to intercept packets either sent by the client to the server or by the server to the client.
+This is done by adding the interceptor to the <code>ServerLocator</code> with the <code>addIncomingInterceptor(Interceptor)</code> or <code>addOutgoingInterceptor(Interceptor)</code> methods.</p>
+</div>
+<div class="paragraph">
+<p>As noted above, if an interceptor returns <code>false</code> then the sending of the packet is aborted which means that no other interceptors are be called and the packet is not be processed further by the client.
+Typically this process happens transparently to the client (i.e. it has no idea if a packet was aborted or not).
+However, in the case of an outgoing packet that is sent in a <code>blocking</code> fashion a <code>ActiveMQException</code> will be thrown to the caller.
+The exception is thrown because blocking sends provide reliability and it is considered an error for them not to succeed.
+<code>Blocking</code> sends occurs when, for example, an application invokes <code>setBlockOnNonDurableSend(true)</code> or <code>setBlockOnDurableSend(true)</code> on its <code>ServerLocator</code> or if an application is using a JMS connection factory retrieved from JNDI that has either <code>block-on-durable-send</code> or <code>block-on-non-durable-send</code> set to <code>true</code>.
+Blocking is also used for packets dealing with transactions (e.g. commit, roll-back, etc.).
+The <code>ActiveMQException</code> thrown will contain the name of the interceptor that returned false.</p>
+</div>
+<div class="paragraph">
+<p>As on the server, the client interceptor classes (and their dependencies) must be added to the classpath to be properly instantiated and invoked.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="examples"><a class="anchor" href="#examples"></a><a class="link" href="#examples">4. Examples</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See the following examples which show how to use interceptors:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="examples.html#interceptor">Interceptor</a></p>
+</li>
+<li>
+<p><a href="examples.html#interceptor-amqp">Interceptor AMQP</a></p>
+</li>
+<li>
+<p><a href="examples.html#interceptor-client">Interceptor Client</a></p>
+</li>
+<li>
+<p><a href="examples.html#interceptor-mqtt">Interceptor MQTT</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

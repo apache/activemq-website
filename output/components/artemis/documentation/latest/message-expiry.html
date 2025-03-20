@@ -15,10 +15,16 @@
 <div id="header">
 <h1>Message Expiry</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.39.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.40.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#core-api">1. Core API</a></li>
-<li><a href="#configuring-expiry-delay">2. Configuring Expiry Delay</a></li>
+<li><a href="#configuring-expiry-delay">2. Configuring Expiry Delay</a>
+<ul class="sectlevel2">
+<li><a href="#never-expire">2.1. Never Expire</a></li>
+<li><a href="#modify-default-expiry">2.2. Modify Default Expiry</a></li>
+<li><a href="#enforce-an-expiry-range">2.3. Enforce an Expiry Range</a></li>
+</ul>
+</li>
 <li><a href="#configuring-expiry-addresses">3. Configuring Expiry Addresses</a></li>
 <li><a href="#configuring-automatic-creation-of-expiry-resources">4. Configuring Automatic Creation of Expiry Resources</a></li>
 <li><a href="#configuring-the-expiry-reaper-thread">5. Configuring The Expiry Reaper Thread</a></li>
@@ -81,7 +87,65 @@ These <em>expired</em> messages can later be consumed for further inspection.</p
 <h2 id="configuring-expiry-delay"><a class="anchor" href="#configuring-expiry-delay"></a><a class="link" href="#configuring-expiry-delay">2. Configuring Expiry Delay</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Default expiry delay can be configured in the address-setting configuration:</p>
+<p>There are multiple address-settings which you can use to modify the expiry delay for incoming messages:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>no-expiry</code></p>
+</li>
+<li>
+<p><code>expiry-delay</code></p>
+</li>
+<li>
+<p><code>max-expiry-delay</code> &amp; <code>min-expiry-delay</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>These settings are applied exclusively in this order of precedence. For example, if <code>no-expiry</code> is set and <code>expiry-delay</code> is also set then <code>expiry-delay</code> is ignored completely and <code>no-expiry</code> is enforced.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you set any of these values for the <code>expiry-address</code> then messages which expire will have corresponding new expiry delays potentially causing the expired messages to themselves expire and be removed completely from the broker.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at each of these in turn.</p>
+</div>
+<div class="sect2">
+<h3 id="never-expire"><a class="anchor" href="#never-expire"></a><a class="link" href="#never-expire">2.1. Never Expire</a></h3>
+<div class="paragraph">
+<p>If you want to force messages to <em>never</em> expire regardless of their existing settings then set <code>no-expiry</code> to <code>true</code>, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="c">&lt;!-- messages will never expire --&gt;</span>
+<span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"exampleQueue"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;no-expiry&gt;</span>true<span class="nt">&lt;/no-expiry&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, if <code>no-expiry</code> is set to <code>true</code> and a message which is using an expiration of <code>10</code> arrives then its expiration time of <code>10</code> will be changed to <code>0</code>.</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>false</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="modify-default-expiry"><a class="anchor" href="#modify-default-expiry"></a><a class="link" href="#modify-default-expiry">2.2. Modify Default Expiry</a></h3>
+<div class="paragraph">
+<p>To modify the expiry delay on a message using the <em>default expiration</em> (i.e. <code>0</code>) set <code>expiry-delay</code>, e.g.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -93,17 +157,17 @@ These <em>expired</em> messages can later be consumed for further inspection.</p
 </div>
 </div>
 <div class="paragraph">
-<p><code>expiry-delay</code> defines the expiration time in milliseconds that will be used for messages  which are using the default expiration time (i.e. 0).</p>
+<p>For example, if <code>expiry-delay</code> is set to <code>10</code> and a message which is using the default expiration time (i.e. <code>0</code>) arrives then its expiration time of <code>0</code> will be changed to <code>10</code>.
+However, if a message which is using an expiration time of <code>20</code> arrives then its expiration time will remain unchanged.</p>
 </div>
 <div class="paragraph">
-<p>For example, if <code>expiry-delay</code> is set to "10" and a message which is using the default  expiration time (i.e. 10) arrives then its expiration time of "0" will be changed to "10." However, if a message which is using an expiration time of "20" arrives then its expiration time will remain unchanged.
-Setting <code>expiry-delay</code> to "-1" will disable this feature.</p>
+<p>This value is measured in milliseconds. The default is <code>-1</code> (i.e. disabled).</p>
 </div>
-<div class="paragraph">
-<p>The default is <code>-1</code>.</p>
 </div>
+<div class="sect2">
+<h3 id="enforce-an-expiry-range"><a class="anchor" href="#enforce-an-expiry-range"></a><a class="link" href="#enforce-an-expiry-range">2.3. Enforce an Expiry Range</a></h3>
 <div class="paragraph">
-<p>If <code>expiry-delay</code> is <em>not set</em> then minimum and maximum expiry delay values can be configured in the address-setting configuration.</p>
+<p>To enforce a range of expiry delay values</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -119,26 +183,31 @@ Setting <code>expiry-delay</code> to "-1" will disable this feature.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Messages <em>without</em> an expiration will be set to <code>max-expiry-delay</code>.
-If <code>max-expiry-delay</code> is not defined then the message will be set to <code>min-expiry-delay</code>.
-If <code>min-expiry-delay</code> is not defined then the message will not be changed.</p>
+<p>Messages <em>without</em> an expiration will be set to <code>max-expiry-delay</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If <code>max-expiry-delay</code> is not defined then the message will be set to <code>min-expiry-delay</code>.</p>
 </li>
 <li>
-<p>Messages with an expiration <em>above</em> <code>max-expiry-delay</code> will be set to <code>max-expiry-delay</code></p>
+<p>If <code>min-expiry-delay</code> is not defined then the message will not be changed.</p>
+</li>
+</ul>
+</div>
 </li>
 <li>
-<p>Messages with an expiration <em>below</em> <code>min-expiry-delay</code> will be set to <code>min-expiry-delay</code></p>
+<p>Messages with an expiration <em>above</em> <code>max-expiry-delay</code> will be set to <code>max-expiry-delay</code>.</p>
 </li>
 <li>
-<p>Messages with an expiration <em>within</em> <code>min-expiry-delay</code> and <code>max-expiry-delay</code> range will not be changed</p>
+<p>Messages with an expiration <em>below</em> <code>min-expiry-delay</code> will be set to <code>min-expiry-delay</code>.</p>
 </li>
 <li>
-<p>Any value set for <code>expiry-delay</code> other than the default (i.e. <code>-1</code>) will override the aforementioned min/max settings.</p>
+<p>Messages with an expiration <em>within</em> <code>min-expiry-delay</code> and <code>max-expiry-delay</code> range will not be changed.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The default for both <code>min-expiry-delay</code> and <code>max-expiry-delay</code> is <code>-1</code> (i.e. disabled).</p>
+<p>These values are measured in milliseconds. The default for both is <code>-1</code> (i.e. disabled).</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -148,18 +217,12 @@ If <code>min-expiry-delay</code> is not defined then the message will not be cha
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>If you set expiry-delay, or min/max-expiry-delay, on the expiration target address beware of the following:</strong></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Messages will get a new expiration when moved to the expiry queue, rather than being set to 0 as usual, and so may disappear after the new expiration.</p>
-</li>
-</ul>
+<p>Setting a value of <code>0</code> for <code>max-expiry-delay</code> will cause messages to expire <em>immediately</em>.</p>
 </div>
 </td>
 </tr>
 </table>
+</div>
 </div>
 </div>
 </div>

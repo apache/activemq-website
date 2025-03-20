@@ -14,7 +14,7 @@
 <div id="header">
 <h1>Management Console</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.39.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.40.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#login">1. Login</a></li>
 <li><a href="#security">2. Security</a></li>
@@ -26,11 +26,22 @@
 </li>
 <li><a href="#artemis-tab">4. Artemis Tab</a>
 <ul class="sectlevel2">
-<li><a href="#tree-view">4.1. Tree View</a></li>
-<li><a href="#key-operations">4.2. Key Operations</a></li>
-<li><a href="#status-logging">4.3. Status Logging</a></li>
+<li><a href="#status-tab">4.1. Status Tab</a></li>
+<li><a href="#connections-tab">4.2. Connections Tab</a></li>
+<li><a href="#sessions-tab">4.3. Sessions Tab</a></li>
+<li><a href="#producers-tab">4.4. Producers Tab</a></li>
+<li><a href="#consumers-tab">4.5. Consumers Tab</a></li>
+<li><a href="#addresses-tab">4.6. Addresses Tab</a></li>
+<li><a href="#queues-tab">4.7. Queues Tab</a></li>
 </ul>
 </li>
+<li><a href="#artemis-jmx-tab">5. Artemis JMX Tab</a>
+<ul class="sectlevel2">
+<li><a href="#tree-view">5.1. Tree View</a></li>
+<li><a href="#key-operations-2">5.2. Key Operations</a></li>
+</ul>
+</li>
+<li><a href="#status-logging">6. Status Logging</a></li>
 </ul>
 </div>
 </div>
@@ -93,17 +104,22 @@ By default the console is locked down to 'localhost', pay particular attention t
 <li>
 <p><code>question mark</code>
 This will open a menu with the following items</p>
-</li>
+<div class="ulist">
+<ul>
 <li>
 <p><code>Help</code> This will navigate to the console user guide</p>
 </li>
 <li>
 <p><code>About</code> this will load an about screen, here you will be able to see and validate versions</p>
 </li>
+</ul>
+</div>
+</li>
 <li>
 <p><code>person</code>
 will provide a drop down menu with</p>
-</li>
+<div class="ulist">
+<ul>
 <li>
 <p><code>Preferences</code> this will open the preferences page</p>
 </li>
@@ -112,26 +128,29 @@ will provide a drop down menu with</p>
 </li>
 </ul>
 </div>
+</li>
+</ul>
+</div>
 </div>
 <div class="sect2">
 <h3 id="navigation-tabs"><a class="anchor" href="#navigation-tabs"></a><a class="link" href="#navigation-tabs">3.2. Navigation Tabs</a></h3>
 <div class="paragraph">
-<p>Running below the Navigation Menu you will see several default feature tabs.</p>
+<p>Running below the Navigation Menu you will see several default feature tabs. The 1st 2 are specific to Artemis. The rest of
+this document will feature on these 2 tabs.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>Artemis</code> This is the core tab for Apache ActiveMQ Artemis specific functionality.
-The rest of this document will focus on this.</p>
+<p><code>Artemis</code> This shows detailed information of Apache ActiveMQ Artemis specific functionality in a tabular format.</p>
 </li>
 <li>
-<p><code>Dashboard</code> Here you can create and save graphs and tables of metrics available via JMX, a default jvm health dashboard is provided.</p>
+<p><code>Artemis JMX</code> This is a JMX view of Apache ActiveMQ Artemis specific functionality.</p>
 </li>
 <li>
 <p><code>JMX</code> This exposes the raw Jolokia JMX so you can browse/access all the JMX endpoints exposed by the JVM.</p>
 </li>
 <li>
-<p><code>Threads</code> This allows you to monitor the thread usage and their state.</p>
+<p><code>Runtime</code> This allows you to monitor the thread usage and their state as well as view metrics etc..</p>
 </li>
 </ul>
 </div>
@@ -149,15 +168,14 @@ This was disabled by default for security purposes, but it can be enabled again 
 <h2 id="artemis-tab"><a class="anchor" href="#artemis-tab"></a><a class="link" href="#artemis-tab">4. Artemis Tab</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Click <code>Artemis</code> in the left navigation bar to see the Artemis specific plugin.
-(The Artemis tab won&#8217;t appear if there is no broker in this JVM).
-The Artemis plugin works very much the same as the JMX plugin however with a focus on interacting with an Artemis broker.</p>
+<p>Click <code>Artemis</code> in the left navigation bar to see the Artemis specific plugin. The Artemis tab shows view of information
+in a tabular format.
+(The Artemis tab won&#8217;t appear if there is no broker in this JVM).</p>
 </div>
 <div class="sect2">
-<h3 id="tree-view"><a class="anchor" href="#tree-view"></a><a class="link" href="#tree-view">4.1. Tree View</a></h3>
+<h3 id="status-tab"><a class="anchor" href="#status-tab"></a><a class="link" href="#status-tab">4.1. Status Tab</a></h3>
 <div class="paragraph">
-<p>The tree view on the left-hand side shows the top level JMX tree of each broker instance running in the JVM.
-Expanding the tree will show the various MBeans registered by Artemis that you can inspect via the <strong>Attributes</strong> tab.</p>
+<p>The Status tan shows the basic health of the broker.</p>
 </div>
 <div class="sect3">
 <h4 id="acceptors"><a class="anchor" href="#acceptors"></a><a class="link" href="#acceptors">4.1.1. Acceptors</a></h4>
@@ -166,19 +184,81 @@ Expanding the tree will show the various MBeans registered by Artemis that you c
 </div>
 </div>
 <div class="sect3">
-<h4 id="addresses"><a class="anchor" href="#addresses"></a><a class="link" href="#addresses">4.1.2. Addresses</a></h4>
+<h4 id="broker-network"><a class="anchor" href="#broker-network"></a><a class="link" href="#broker-network">4.1.2. Broker Network</a></h4>
 <div class="paragraph">
-<p>This expands to show the current configured available <code>addresses</code>.</p>
-</div>
-<div class="paragraph">
-<p>Under the address you can expand to find the <code>queues</code> for the address exposing attributes</p>
+<p>This expands to show and expose details of the current Cluster of Brokers.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="key-operations"><a class="anchor" href="#key-operations"></a><a class="link" href="#key-operations">4.2. Key Operations</a></h3>
+<h3 id="connections-tab"><a class="anchor" href="#connections-tab"></a><a class="link" href="#connections-tab">4.2. Connections Tab</a></h3>
+<div class="paragraph">
+<p>This shows a table of all the brokers connections from clients and other Brokers.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sessions-tab"><a class="anchor" href="#sessions-tab"></a><a class="link" href="#sessions-tab">4.3. Sessions Tab</a></h3>
+<div class="paragraph">
+<p>This shows a table of all sessions that belong ti connected clients.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="producers-tab"><a class="anchor" href="#producers-tab"></a><a class="link" href="#producers-tab">4.4. Producers Tab</a></h3>
+<div class="paragraph">
+<p>This shows a table of all client producers including message sent information.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="consumers-tab"><a class="anchor" href="#consumers-tab"></a><a class="link" href="#consumers-tab">4.5. Consumers Tab</a></h3>
+<div class="paragraph">
+<p>This shows a table of all client consumers including message delivered information.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="addresses-tab"><a class="anchor" href="#addresses-tab"></a><a class="link" href="#addresses-tab">4.6. Addresses Tab</a></h3>
+<div class="paragraph">
+<p>This shows a table of all the Broker&#8217;s addresses</p>
+</div>
 <div class="sect3">
-<h4 id="creating-a-new-address"><a class="anchor" href="#creating-a-new-address"></a><a class="link" href="#creating-a-new-address">4.2.1. Creating a new Address</a></h4>
+<h4 id="key-operations"><a class="anchor" href="#key-operations"></a><a class="link" href="#key-operations">4.6.1. Key Operations</a></h4>
+<div class="sect4">
+<h5 id="creating-a-new-address"><a class="anchor" href="#creating-a-new-address"></a><a class="link" href="#creating-a-new-address">Creating a new Address</a></h5>
+<div class="paragraph">
+<p>To create a new address simply click on the 'Create Address' button and filling in the form presented</p>
+</div>
+<div class="paragraph">
+<p>You can also perform operations on an address by clicking on the 3 dots and choosing the appropriate operation.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="queues-tab"><a class="anchor" href="#queues-tab"></a><a class="link" href="#queues-tab">4.7. Queues Tab</a></h3>
+<div class="paragraph">
+<p>This shows a table of all the Broker&#8217;s queues</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="artemis-jmx-tab"><a class="anchor" href="#artemis-jmx-tab"></a><a class="link" href="#artemis-jmx-tab">5. Artemis JMX Tab</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Click <code>Artemis JMX</code> in the left navigation bar to see the Artemis JMX specific plugin.
+(The Artemis JMX tab won&#8217;t appear if there is no broker in this JVM).
+The Artemis JMX plugin works very much the same as the JMX plugin however with a focus on interacting with an Artemis broker.</p>
+</div>
+<div class="sect2">
+<h3 id="tree-view"><a class="anchor" href="#tree-view"></a><a class="link" href="#tree-view">5.1. Tree View</a></h3>
+<div class="paragraph">
+<p>The tree view on the left-hand side shows the top level JMX tree of each broker instance running in the JVM.
+Expanding the tree will show the various MBeans registered by Artemis that you can inspect via the <strong>Attributes</strong> tab.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="key-operations-2"><a class="anchor" href="#key-operations-2"></a><a class="link" href="#key-operations-2">5.2. Key Operations</a></h3>
+<div class="sect3">
+<h4 id="creating-a-new-address-2"><a class="anchor" href="#creating-a-new-address-2"></a><a class="link" href="#creating-a-new-address-2">5.2.1. Creating a new Address</a></h4>
 <div class="paragraph">
 <p>To create a new address simply click on the broker or the address folder in the jmx tree and click on the create tab.</p>
 </div>
@@ -187,7 +267,7 @@ Expanding the tree will show the various MBeans registered by Artemis that you c
 </div>
 </div>
 <div class="sect3">
-<h4 id="creating-a-new-queue"><a class="anchor" href="#creating-a-new-queue"></a><a class="link" href="#creating-a-new-queue">4.2.2. Creating a new Queue</a></h4>
+<h4 id="creating-a-new-queue"><a class="anchor" href="#creating-a-new-queue"></a><a class="link" href="#creating-a-new-queue">5.2.2. Creating a new Queue</a></h4>
 <div class="paragraph">
 <p>To create a new queue click on the address you want to bind the queue to and click on the create tab.</p>
 </div>
@@ -200,8 +280,11 @@ Simply click on the queue in th ejmx tree and click on the appropriate tab.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="status-logging"><a class="anchor" href="#status-logging"></a><a class="link" href="#status-logging">4.3. Status Logging</a></h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="status-logging"><a class="anchor" href="#status-logging"></a><a class="link" href="#status-logging">6. Status Logging</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>When the broker starts it will detect the presence of the web console and log status information, e.g.:</p>
 </div>
@@ -219,7 +302,6 @@ However, if this value is changed for any reason the broker can look for this ne
 <div class="listingblock">
 <div class="content">
 <pre class="nowrap">-Dorg.apache.activemq.artemis.webConsoleDisplayName=newValue</pre>
-</div>
 </div>
 </div>
 </div>
