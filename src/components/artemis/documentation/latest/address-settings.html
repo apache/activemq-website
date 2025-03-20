@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Address Settings</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.39.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.40.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#literal-matches">1. Literal Matches</a>
 <ul class="sectlevel2">
@@ -63,7 +63,10 @@ In this way settings can be "layered" so that configuration details don&#8217;t 
       <span class="nt">&lt;auto-create-expiry-resources&gt;</span>false<span class="nt">&lt;/auto-create-expiry-resources&gt;</span>
       <span class="nt">&lt;expiry-queue-prefix&gt;&lt;/expiry-queue-prefix&gt;</span>
       <span class="nt">&lt;expiry-queue-suffix&gt;&lt;/expiry-queue-suffix&gt;</span>
-      <span class="nt">&lt;expiry-delay&gt;</span>123<span class="nt">&lt;/expiry-delay&gt;</span>
+      <span class="nt">&lt;no-expiry&gt;</span>false<span class="nt">&lt;/no-expiry&gt;</span>
+      <span class="nt">&lt;expiry-delay&gt;</span>-1<span class="nt">&lt;/expiry-delay&gt;</span>
+      <span class="nt">&lt;min-expiry-delay&gt;</span>-1<span class="nt">&lt;/min-expiry-delay&gt;</span>
+      <span class="nt">&lt;max-expiry-delay&gt;</span>-1<span class="nt">&lt;/max-expiry-delay&gt;</span>
       <span class="nt">&lt;redelivery-delay&gt;</span>5000<span class="nt">&lt;/redelivery-delay&gt;</span>
       <span class="nt">&lt;redelivery-delay-multiplier&gt;</span>1.0<span class="nt">&lt;/redelivery-delay-multiplier&gt;</span>
       <span class="nt">&lt;redelivery-collision-avoidance-factor&gt;</span>0.0<span class="nt">&lt;/redelivery-collision-avoidance-factor&gt;</span>
@@ -165,13 +168,27 @@ Read more in the chapter about <a href="message-expiry.html#message-expiry">mess
 Default is empty.
 Read more in the chapter about <a href="message-expiry.html#message-expiry">message expiry</a>.</p>
 </dd>
+<dt class="hdlist1">no-expiry</dt>
+<dd>
+<p>If <code>true</code> this overrides the expiration time for <em>all</em> messages so that they never expire.
+The default is <code>false</code>.
+Read more about <a href="message-expiry.html#configuring-expiry-delay">message expiry</a>.</p>
+</dd>
 <dt class="hdlist1">expiry-delay</dt>
 <dd>
-<p>The expiration time that will be used for messages which are using the default expiration time (i.e. 0).
-For example, if <code>expiry-delay</code> is set to "10" and a message which is using the default expiration time (i.e. 0) arrives then its expiration time of "0" will be changed to "10." However, if a message which is using an expiration time of "20" arrives then its expiration time will remain unchanged.
-Setting <code>expiry-delay</code> to "-1" will disable this feature.
-The default is "-1".
-Read more about <a href="message-expiry.html#configuring-expiry-addresses">message expiry</a>.</p>
+<p>The expiration time that will be used for messages which are using the default expiration time (i.e. <code>0</code>).
+For example, if <code>expiry-delay</code> is set to <code>10</code> and a message which is using the default expiration time (i.e. <code>0</code>) arrives then its expiration time of <code>0</code> will be changed to <code>10</code>.
+However, if a message which is using an expiration time of <code>20</code> arrives then its expiration time will remain unchanged.
+Setting <code>expiry-delay</code> to <code>-1</code> will disable this feature.
+The default is <code>-1</code>.
+Read more about <a href="message-expiry.html#configuring-expiry-delay">message expiry</a>.</p>
+</dd>
+<dt class="hdlist1">min-expiry-delay</dt>
+<dt class="hdlist1">max-expiry-delay</dt>
+<dd>
+<p>These are applied if the aforementioned <code>expiry-delay</code> isn&#8217;t set.
+Unlike <code>expiry-delay</code>, they can impact the expiration of a message even if that message is using a non-default expiration time.
+There are a <a href="message-expiry.html#configuring-expiry-delay">handful of rules</a> which dictate the behavior of these settings.</p>
 </dd>
 <dt class="hdlist1">max-delivery-attempts</dt>
 <dd>

@@ -15,7 +15,7 @@
 <div id="header">
 <h1>High Availability and Failover</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.39.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.40.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#terminology">1. Terminology</a>
 <ul class="sectlevel2">
@@ -1344,6 +1344,29 @@ It is also possible to use discovery to scale down, this would look like:</p>
    <span class="nt">&lt;/primary-only&gt;</span>
 <span class="nt">&lt;/ha-policy&gt;</span></code></pre>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Moving messages from one broker to another during scale-down involves an internal transaction.
+By default this transaction is only committed once per queue.
+However, as the number of messages in the queue grows so does the memory requirements for the transaction.
+At some point the memory requirements for the transaction will exceed the limits of the available heap.</p>
+</div>
+<div class="paragraph">
+<p>In order to deal with this you can configure the <code>commit-interval</code> in the <code>scale-down</code> element.
+This will allow the transaction to be committed every so often which will free the memory from the transaction.
+It must be greater than <code>0</code> or <code>-1</code>.
+It is <code>-1</code> by default (i.e. don&#8217;t commit until all the messages in the queue are scaled-down).</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="scale-down-with-groups"><a class="anchor" href="#scale-down-with-groups"></a><a class="link" href="#scale-down-with-groups">4.1. Scale Down with groups</a></h3>

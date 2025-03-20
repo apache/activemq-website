@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Connection Routers</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Connection Routers</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.39.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#target-broker">1. Target Broker</a></li>
+<li><a href="#keys">2. Keys</a></li>
+<li><a href="#pools">3. Pools</a>
+<ul class="sectlevel2">
+<li><a href="#cluster-pool">3.1. Cluster Pool</a></li>
+<li><a href="#discovery-pool">3.2. Discovery Pool</a></li>
+<li><a href="#static-pool">3.3. Static Pool</a></li>
+<li><a href="#defining-pools">3.4. Defining pools</a></li>
+</ul>
+</li>
+<li><a href="#policies">4. Policies</a></li>
+<li><a href="#cache">5. Cache</a></li>
+<li><a href="#defining-connection-routers">6. Defining connection routers</a></li>
+<li><a href="#key-values">7. Key values</a></li>
+<li><a href="#connection-router-workflow">8. Connection Router Workflow</a></li>
+<li><a href="#data-gravity">9. Data gravity</a></li>
+<li><a href="#redirection">10. Redirection</a>
+<ul class="sectlevel2">
+<li><a href="#native-redirect-sequence">10.1. Native Redirect Sequence</a></li>
+<li><a href="#management-api-redirect-sequence">10.2. Management API Redirect Sequence</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis connection routers allow incoming client connections to be distributed across multiple <a href="#target-broker">target brokers</a>.
+The target brokers are grouped in <a href="#pools">pools</a> and the connection routers use a <a href="#keys">key</a> to select a target broker from a pool of brokers according to a <a href="#policies">policy</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="target-broker"><a class="anchor" href="#target-broker"></a><a class="link" href="#target-broker">1. Target Broker</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Target broker is a broker that can accept incoming client connections and is local or remote.
+The local target is a special target that represents the same broker hosting the connection router.
+The remote target is another reachable broker.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="keys"><a class="anchor" href="#keys"></a><a class="link" href="#keys">2. Keys</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The connection router uses a key to select a target broker.
+It is a string retrieved from an incoming client connection, the supported key types are:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">CLIENT_ID</dt>
+<dd>
+<p>is the JMS client ID.</p>
+</dd>
+<dt class="hdlist1">SNI_HOST</dt>
+<dd>
+<p>is the hostname indicated by the client in the SNI extension of the TLS protocol.</p>
+</dd>
+<dt class="hdlist1">SOURCE_IP</dt>
+<dd>
+<p>is the source IP address of the client.</p>
+</dd>
+<dt class="hdlist1">USER_NAME</dt>
+<dd>
+<p>is the username indicated by the client.</p>
+</dd>
+<dt class="hdlist1">ROLE_NAME</dt>
+<dd>
+<p>is a role associated with the authenticated user of the connection.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="pools"><a class="anchor" href="#pools"></a><a class="link" href="#pools">3. Pools</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The pool is a group of target brokers with periodic checks on their state.
+It provides a list of ready target brokers to distribute incoming client connections only when it is active.
+A pool becomes active when the minimum number of target brokers, as defined by the <code>quorum-size</code> parameter, become ready.
+When it is not active, it doesn&#8217;t provide any target avoiding weird distribution at startup or after a restart.
+Including the local broker in the target pool allows broker hosting the router to accept incoming client connections as well.
+By default, a pool doesn&#8217;t include the local broker, to include it as a target the <code>local-target-enabled</code> parameter must be <code>true</code>.
+There are three pool types: <a href="#cluster-pool">cluster pool</a>, <a href="#discovery-pool">discovery pool</a> and <a href="#static-pool">static pool</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="cluster-pool"><a class="anchor" href="#cluster-pool"></a><a class="link" href="#cluster-pool">3.1. Cluster Pool</a></h3>
+<div class="paragraph">
+<p>The cluster pool uses a <a href="clusters.html#configuring-cluster-connections">cluster connection</a> to get the target brokers to add.
+Let&#8217;s take a look at a cluster pool example from broker.xml that uses a cluster connection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;pool&gt;</span>
+  <span class="nt">&lt;cluster-connection&gt;</span>cluster1<span class="nt">&lt;/cluster-connection&gt;</span>
+<span class="nt">&lt;/pool&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="discovery-pool"><a class="anchor" href="#discovery-pool"></a><a class="link" href="#discovery-pool">3.2. Discovery Pool</a></h3>
+<div class="paragraph">
+<p>The discovery pool uses a <a href="clusters.html#discovery-groups">discovery group</a> to discover the target brokers to add.
+Let&#8217;s take a look at a discovery pool example from broker.xml that uses a discovery group:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;pool&gt;</span>
+    <span class="nt">&lt;discovery-group-ref</span> <span class="na">discovery-group-name=</span><span class="s">"dg1"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/pool&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="static-pool"><a class="anchor" href="#static-pool"></a><a class="link" href="#static-pool">3.3. Static Pool</a></h3>
+<div class="paragraph">
+<p>The static pool uses a list of static connectors to define the target brokers to add.
+Let&#8217;s take a look at a static pool example from broker.xml that uses a list of static connectors:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;pool&gt;</span>
+    <span class="nt">&lt;static-connectors&gt;</span>
+        <span class="nt">&lt;connector-ref&gt;</span>connector1<span class="nt">&lt;/connector-ref&gt;</span>
+        <span class="nt">&lt;connector-ref&gt;</span>connector2<span class="nt">&lt;/connector-ref&gt;</span>
+        <span class="nt">&lt;connector-ref&gt;</span>connector3<span class="nt">&lt;/connector-ref&gt;</span>
+    <span class="nt">&lt;/static-connectors&gt;</span>
+<span class="nt">&lt;/pool&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="defining-pools"><a class="anchor" href="#defining-pools"></a><a class="link" href="#defining-pools">3.4. Defining pools</a></h3>
+<div class="paragraph">
+<p>A pool is defined by the <code>pool</code> element that includes the following items:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>username</code> element defines the username to connect to the target broker;</p>
+</li>
+<li>
+<p>the <code>password</code> element defines the password to connect to the target broker;</p>
+</li>
+<li>
+<p>the <code>check-period</code> element defines how often to check the target broker, measured in milliseconds, default is <code>5000</code>;</p>
+</li>
+<li>
+<p>the <code>quorum-size</code> element defines the minimum number of ready targets to activate the pool, default is <code>1</code>;</p>
+</li>
+<li>
+<p>the <code>quorum-timeout</code> element defines the timeout to get the minimum number of ready targets, measured in milliseconds, default is <code>3000</code>;</p>
+</li>
+<li>
+<p>the <code>local-target-enabled</code> element defines whether the pool has to include a local target, default is <code>false</code>;</p>
+</li>
+<li>
+<p>the <code>cluster-connection</code> element defines the <a href="clusters.html#configuring-cluster-connections">cluster connection</a> used by the <a href="#cluster-pool">cluster pool</a>.</p>
+</li>
+<li>
+<p>the <code>static-connectors</code> element defines a list of static connectors used by the <a href="#static-pool">static pool</a>;</p>
+</li>
+<li>
+<p>the <code>discovery-group</code> element defines the <a href="clusters.html#discovery-groups">discovery group</a> used by the <a href="#discovery-pool">discovery pool</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take a look at a pool example from broker.xml:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;pool&gt;</span>
+    <span class="nt">&lt;quorum-size&gt;</span>2<span class="nt">&lt;/quorum-size&gt;</span>
+    <span class="nt">&lt;check-period&gt;</span>1000<span class="nt">&lt;/check-period&gt;</span>
+    <span class="nt">&lt;local-target-enabled&gt;</span>true<span class="nt">&lt;/local-target-enabled&gt;</span>
+    <span class="nt">&lt;static-connectors&gt;</span>
+        <span class="nt">&lt;connector-ref&gt;</span>connector1<span class="nt">&lt;/connector-ref&gt;</span>
+        <span class="nt">&lt;connector-ref&gt;</span>connector2<span class="nt">&lt;/connector-ref&gt;</span>
+        <span class="nt">&lt;connector-ref&gt;</span>connector3<span class="nt">&lt;/connector-ref&gt;</span>
+    <span class="nt">&lt;/static-connectors&gt;</span>
+<span class="nt">&lt;/pool&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="policies"><a class="anchor" href="#policies"></a><a class="link" href="#policies">4. Policies</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The policy defines how to select a broker from a pool and allows <a href="#key-values">key values</a> transformation.
+The included policies are:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">FIRST_ELEMENT</dt>
+<dd>
+<p> to select the first target broker from the pool which is ready.
+It is useful to select the ready target brokers according to the priority defined with their sequence order, ie supposing there are 2 target brokers this policy selects the second target broker only when the first target broker isn&#8217;t ready.</p>
+</dd>
+<dt class="hdlist1">ROUND_ROBIN</dt>
+<dd>
+<p>to select a target sequentially from a pool, this policy is useful to evenly distribute;</p>
+</dd>
+<dt class="hdlist1">CONSISTENT_HASH</dt>
+<dd>
+<p> to select a target by a key.
+This policy always selects the same target broker for the same key until it is removed from the pool.</p>
+</dd>
+<dt class="hdlist1">LEAST_CONNECTIONS</dt>
+<dd>
+<p> to select the targets with the fewest active connections.
+This policy helps you maintain an equal distribution of active connections with the target brokers.</p>
+</dd>
+<dt class="hdlist1">CONSISTENT_HASH_MODULO` to transform a key value to a number from 0 to N-1, it takes a single `modulo</dt>
+<dd>
+<p> property to configure the bound N.
+One use case is <code>CLIENT_ID</code> sharding across a cluster of N brokers.
+With a consistent hash % N transformation, each client id can map exclusively to just one of the brokers.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>A policy is defined by the <code>policy</code> element.
+Let&#8217;s take a look at a policy example from broker.xml:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;policy</span> <span class="na">name=</span><span class="s">"FIRST_ELEMENT"</span><span class="nt">/&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cache"><a class="anchor" href="#cache"></a><a class="link" href="#cache">5. Cache</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The connection router provides a cache with a timeout to improve the stickiness of the target broker selected, returning the same target broker for a key value as long as it is present in the cache and is ready.
+So a connection router with the cache enabled doesn&#8217;t strictly follow the configured policy.
+By default, the cache is not enabled.</p>
+</div>
+<div class="paragraph">
+<p>A cache is defined by the <code>cache</code> element that includes the following items:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>persisted</code> element defines whether the cache has to persist entries, default is <code>false</code>;</p>
+</li>
+<li>
+<p>the <code>timeout</code> element defines the timeout before removing entries, measured in milliseconds, setting 0 will disable the timeout, default is <code>0</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take a look at a cache example from broker.xml:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;cache&gt;</span>
+  <span class="nt">&lt;persisted&gt;</span>true<span class="nt">&lt;/persisted&gt;</span>
+  <span class="nt">&lt;timeout&gt;</span>60000<span class="nt">&lt;/timeout&gt;</span>
+<span class="nt">&lt;/cache&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="defining-connection-routers"><a class="anchor" href="#defining-connection-routers"></a><a class="link" href="#defining-connection-routers">6. Defining connection routers</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A connection router is defined by the <code>connection-router</code> element, it includes the following items:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>name</code> attribute defines the name of the connection router and is used to reference the router from an acceptor;</p>
+</li>
+<li>
+<p>the <code>key-type</code> element defines what type of key to select a target broker, the supported values are: <code>CLIENT_ID</code>, <code>SNI_HOST</code>, <code>SOURCE_IP</code>, <code>USER_NAME</code>, <code>ROLE_NAME</code>, default is <code>SOURCE_IP</code>, see <a href="#keys">Keys</a> for further details;</p>
+</li>
+<li>
+<p>the <code>key-filter</code> element defines a regular expression to filter the resolved <a href="#key-values">key values</a>;</p>
+</li>
+<li>
+<p>the <code>local-target-filter</code> element defines a regular expression to match the <a href="#key-values">key values</a> that have to return a local target, the <a href="#key-values">key value</a> could be equal to the special string <code>NULL</code> if the value of the key is undefined or it doesn&#8217;t match the <code>key-filter</code>;</p>
+</li>
+<li>
+<p>the <code>pool</code> element defines the pool to group the target brokers, see <a href="#pools">pools</a>;</p>
+</li>
+<li>
+<p>the <code>policy</code> element defines the policy used to select the target brokers from the pool, see <a href="#policies">policies</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take a look at some connection router examples from broker.xml:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;connection-routers&gt;</span>
+    <span class="nt">&lt;connection-router</span> <span class="na">name=</span><span class="s">"local-partition"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;key-type&gt;</span>CLIENT_ID<span class="nt">&lt;/key-type&gt;</span>
+         <span class="nt">&lt;key-filter&gt;</span>^.{3}<span class="nt">&lt;/key-filter&gt;</span>
+         <span class="nt">&lt;local-target-filter&gt;</span>^FOO.*<span class="nt">&lt;/local-target-filter&gt;</span>
+    <span class="nt">&lt;/connection-router&gt;</span>
+    <span class="nt">&lt;connection-router</span> <span class="na">name=</span><span class="s">"simple-router"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;policy</span> <span class="na">name=</span><span class="s">"FIRST_ELEMENT"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;pool&gt;</span>
+            <span class="nt">&lt;static-connectors&gt;</span>
+                <span class="nt">&lt;connector-ref&gt;</span>connector1<span class="nt">&lt;/connector-ref&gt;</span>
+                <span class="nt">&lt;connector-ref&gt;</span>connector2<span class="nt">&lt;/connector-ref&gt;</span>
+                <span class="nt">&lt;connector-ref&gt;</span>connector3<span class="nt">&lt;/connector-ref&gt;</span>
+            <span class="nt">&lt;/static-connectors&gt;</span>
+        <span class="nt">&lt;/pool&gt;</span>
+    <span class="nt">&lt;/connection-router&gt;</span>
+    <span class="nt">&lt;connection-router</span> <span class="na">name=</span><span class="s">"consistent-hash-router"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;key-type&gt;</span>USER_NAME<span class="nt">&lt;/key-type&gt;</span>
+        <span class="nt">&lt;local-target-filter&gt;</span>admin<span class="nt">&lt;/local-target-filter&gt;</span>
+        <span class="nt">&lt;policy</span> <span class="na">name=</span><span class="s">"CONSISTENT_HASH"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;pool&gt;</span>
+            <span class="nt">&lt;local-target-enabled&gt;</span>true<span class="nt">&lt;/local-target-enabled&gt;</span>
+            <span class="nt">&lt;discovery-group-ref</span> <span class="na">discovery-group-name=</span><span class="s">"dg1"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/pool&gt;</span>
+    <span class="nt">&lt;policy</span> <span class="na">name=</span><span class="s">"CONSISTENT_HASH"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/connection-router&gt;</span>
+    <span class="nt">&lt;connection-router</span> <span class="na">name=</span><span class="s">"evenly-balance"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;key-type&gt;</span>CLIENT_ID<span class="nt">&lt;/key-type&gt;</span>
+      <span class="nt">&lt;key-filter&gt;</span>^.{3}<span class="nt">&lt;/key-filter&gt;</span>
+      <span class="nt">&lt;policy</span> <span class="na">name=</span><span class="s">"LEAST_CONNECTIONS"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;pool&gt;</span>
+        <span class="nt">&lt;username&gt;</span>guest<span class="nt">&lt;/username&gt;</span>
+        <span class="nt">&lt;password&gt;</span>guest<span class="nt">&lt;/password&gt;</span>
+        <span class="nt">&lt;discovery-group-ref</span> <span class="na">discovery-group-name=</span><span class="s">"dg2"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/pool&gt;</span>
+    <span class="nt">&lt;/connection-router&gt;</span>
+<span class="nt">&lt;/connection-routers&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="key-values"><a class="anchor" href="#key-values"></a><a class="link" href="#key-values">7. Key values</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The key value is retrieved from the incoming client connection.
+If the incoming client connection has no value for the key type used, the key value is set to the special string <code>NULL</code>.
+If the incoming client connection has a value for the key type used, the key value retrieved can be sequentially manipulated using a <code>key-filter</code> and a <code>policy</code>.
+If a <code>key-filter</code> is defined and the filter fails to match, the value is set to the special string <code>NULL</code>.
+If a <code>policy</code> with a key transformation is defined, the key value is set to the transformed value.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="connection-router-workflow"><a class="anchor" href="#connection-router-workflow"></a><a class="link" href="#connection-router-workflow">8. Connection Router Workflow</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The connection router workflow include the following steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Retrieve the <a href="#key-values">key value</a> from the incoming connection;</p>
+</li>
+<li>
+<p>Return the local target broker if the key value matches the local filter;</p>
+</li>
+<li>
+<p>Delegate to the <a href="#pools">pool</a>:</p>
+</li>
+<li>
+<p>Return the cached target broker if it is ready;</p>
+</li>
+<li>
+<p>Get ready/active target brokers from the pool;</p>
+</li>
+<li>
+<p>Select one target broker using the <a href="#policies">policy</a>;</p>
+</li>
+<li>
+<p>Add the selected broker in the <a href="#cache">cache</a>;</p>
+</li>
+<li>
+<p>Return the selected broker.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take a look at flowchart of the connection router workflow: <span class="image"><img src="images/connection_router_workflow.png" alt="Connection Router Workflow"></span></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="data-gravity"><a class="anchor" href="#data-gravity"></a><a class="link" href="#data-gravity">9. Data gravity</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The first router configuration: <code>local-partition</code>, demonstrates the simplest use case, that of preserving <code>data gravity</code> by confining a subset of application data to a given broker.
+Each broker is given a subset of keys that it will exclusively service or reject.
+If brokers are behind a round-robin load-balancer or have full knowledge of the broker urls, <code>their</code> broker will eventually respond.
+The <code>local-target-filter</code> regular expression determines the granularity of partition that is best for preserving <code>data gravity</code> for your applications.</p>
+</div>
+<div class="paragraph">
+<p>The challenge is in providing a consistent <a href="#keys">key</a> in all related application connections.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+the concept of <code>data gravity</code> tries to capture the reality that while addresses are shared by multiple applications, it is best to keep related addresses and their data co-located on a single broker.
+Typically, applications should <code>connect</code> to the data rather than the data moving to whatever broker the application connects too.
+This is particularly true when the amount of data (backlog) is large, the cost of movement to follow consumers outweighs the cost of delivery to the application.
+With the 'data gravity' mindset, operators are less concerned with numbers of connections and more concerned with applications and the addresses they need to interact with.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="redirection"><a class="anchor" href="#redirection"></a><a class="link" href="#redirection">10. Redirection</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis provides a native redirection for supported clients and a new management API for other clients.
+The native redirection can be enabled per acceptor and is supported only for AMQP, CORE and OPENWIRE clients.
+The acceptor with the <code>router</code> url parameter will redirect the incoming connections.
+The <code>router</code> url parameter specifies the name of the connection router to use, ie the following acceptor will redirect the incoming CORE client connections using the connection router with the name <code>simple-router</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"artemis"</span><span class="nt">&gt;</span>tcp://0.0.0.0:61616?router=simple-router;protocols=CORE<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="native-redirect-sequence"><a class="anchor" href="#native-redirect-sequence"></a><a class="link" href="#native-redirect-sequence">10.1. Native Redirect Sequence</a></h3>
+<div class="paragraph">
+<p>The clients supporting the native redirection connect to the acceptor with the redirection enabled.
+The acceptor sends to the client the target broker to redirect if it is ready and closes the connection.
+The client connects to the target broker if it has received one before getting disconnected otherwise it connected again to the acceptor with the redirection enabled.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/native_redirect_sequence.png" alt="Native Redirect Sequence">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="management-api-redirect-sequence"><a class="anchor" href="#management-api-redirect-sequence"></a><a class="link" href="#management-api-redirect-sequence">10.2. Management API Redirect Sequence</a></h3>
+<div class="paragraph">
+<p>The clients not supporting the native redirection queries the management API of connection router to get the target broker to redirect.
+If the API returns a target broker the client connects to it otherwise the client queries again the API.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/management_api_redirect_sequence.png" alt="Management API Redirect Sequence">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
