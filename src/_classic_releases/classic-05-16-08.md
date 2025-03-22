@@ -11,7 +11,7 @@ shortDescription: >
 redirect_from:
 - /../../../activemq-5016008-release
 ---
-Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. It's an important release, switching including several resolved [issues]({{ page.release_notes }}).
+Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}. It's an important release, including several resolved [issues]({{ page.release_notes }}).
 
 <div class="alert alert-warning">
 This is the last intended Classic 5.16.x release. Users should upgrade to the current stream for ongoing releases, as noted in May 2022.
