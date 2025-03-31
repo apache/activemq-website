@@ -52,11 +52,9 @@ However, it can also host other web applications.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
-   <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"activemq-branding"</span> <span class="na">war=</span><span class="s">"activemq-branding.war"</span><span class="nt">/&gt;</span>
-      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"artemis-plugin"</span> <span class="na">war=</span><span class="s">"artemis-plugin.war"</span><span class="nt">/&gt;</span>
-      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"console"</span> <span class="na">war=</span><span class="s">"console.war"</span><span class="nt">/&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span> <span class="na">rootRedirectLocation=</span><span class="s">"console"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;binding</span> <span class="na">name=</span><span class="s">"artemis"</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;app</span> <span class="na">name=</span><span class="s">"console"</span> <span class="na">url=</span><span class="s">"console"</span> <span class="na">war=</span><span class="s">"console.war"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;/binding&gt;</span>
 <span class="nt">&lt;/web&gt;</span></code></pre>
 </div>
@@ -288,11 +286,9 @@ Default values are based on these implementations.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
-   <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"activemq-branding"</span> <span class="na">war=</span><span class="s">"activemq-branding.war"</span><span class="nt">/&gt;</span>
-      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"artemis-plugin"</span> <span class="na">war=</span><span class="s">"artemis-plugin.war"</span><span class="nt">/&gt;</span>
-      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"console"</span> <span class="na">war=</span><span class="s">"console.war"</span><span class="nt">/&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span> <span class="na">rootRedirectLocation=</span><span class="s">"console"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;binding</span> <span class="na">name=</span><span class="s">"artemis"</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;app</span> <span class="na">name=</span><span class="s">"console"</span> <span class="na">url=</span><span class="s">"console"</span> <span class="na">war=</span><span class="s">"console.war"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;/binding&gt;</span>
    <span class="nt">&lt;request-log</span> <span class="na">filename=</span><span class="s">"${artemis.instance}/log/http-access-yyyy_MM_dd.log"</span> <span class="na">append=</span><span class="s">"true"</span> <span class="na">extended=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/web&gt;</span></code></pre>
@@ -327,9 +323,9 @@ java -Dwebconfig.bindings.my-binding.apps.my-app.war=my-app.war</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"activemq-branding"</span> <span class="na">war=</span><span class="s">"activemq-branding.war"</span><span class="nt">/&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span> <span class="na">rootRedirectLocation=</span><span class="s">"console"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"console"</span> <span class="na">war=</span><span class="s">"console.war"</span><span class="nt">/&gt;</span>
 ...</code></pre>
 </div>
 </div>
@@ -340,7 +336,7 @@ java -Dwebconfig.bindings.my-binding.apps.my-app.war=my-app.war</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="nowrap">java -Dwebconfig.bindings."http://localhost:8161".apps."activemq-branding".war=my-branding.war</pre>
+<pre class="nowrap">java -Dwebconfig.bindings."http://localhost:8161".apps."console".war=my-console.war</pre>
 </div>
 </div>
 </div>
@@ -356,11 +352,9 @@ Set the <code>customizer</code> attribute via the <code>web</code> element to en
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span> <span class="na">customizer=</span><span class="s">"org.eclipse.jetty.server.ForwardedRequestCustomizer"</span><span class="nt">&gt;</span>
-   <span class="nt">&lt;binding</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"activemq-branding"</span> <span class="na">war=</span><span class="s">"activemq-branding.war"</span><span class="nt">/&gt;</span>
-      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"artemis-plugin"</span> <span class="na">war=</span><span class="s">"artemis-plugin.war"</span><span class="nt">/&gt;</span>
-      <span class="nt">&lt;app</span> <span class="na">url=</span><span class="s">"console"</span> <span class="na">war=</span><span class="s">"console.war"</span><span class="nt">/&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span> <span class="na">rootRedirectLocation=</span><span class="s">"console"</span> <span class="na">customizer=</span><span class="s">"org.eclipse.jetty.server.ForwardedRequestCustomizer"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;binding</span> <span class="na">name=</span><span class="s">"artemis"</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;app</span> <span class="na">name=</span><span class="s">"console"</span> <span class="na">url=</span><span class="s">"console"</span> <span class="na">war=</span><span class="s">"console.war"</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;/binding&gt;</span>
 <span class="nt">&lt;/web&gt;</span></code></pre>
 </div>
