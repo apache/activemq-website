@@ -68,3 +68,27 @@ export CATALINA_OPTS="-Dhawtio.authenticationEnabled=false"
 Once Tomcat is started connect a browser to [http://localhost:8080/console](http://localhost:8080/console) or the URL you configured for tomcat.
 
 The [connecting](console.html#connecting-to-the-broker) chapter explains how to connect to a running broker
+
+## Running from the cli (JBang)
+
+You can install and run Hawtio from CLI using JBang. If you don’t have JBang locally yet, first install it following: https://www.jbang.dev/download/
+
+Now you can install the latest Hawtio on your machine using the [jbang](https://www.jbang.dev/) command:
+
+```shell
+jbang app install hawtio@hawtio/hawtio
+```
+
+This will allow you to deploy Artemis Console using the following command:
+
+```shell
+hawtio --war-location /pathto/artemis-console-war.war --context-path /console
+```
+
+The command will automatically open the console at [http://localhost:8080/hawtio/](http://localhost:8080/console/).
+
+For a full list of configuration options run:
+
+```shell
+hawtio --help
+```
