@@ -15,7 +15,7 @@
 <div id="header">
 <h1>Broker Connections</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.40.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#amqp-server-connections">1. AMQP Server Connections</a></li>
 <li><a href="#amqp-server-connection-operations">2. AMQP Server Connection Operations</a></li>
@@ -43,7 +43,13 @@
 <ul class="sectlevel2">
 <li><a href="#local-and-remote-address-federation">9.1. Local and remote address federation</a></li>
 <li><a href="#local-and-remote-queue-federation">9.2. Local and remote queue federation</a></li>
-<li><a href="#examples-2">9.3. Examples</a></li>
+</ul>
+</li>
+<li><a href="#bridges">10. Bridges</a>
+<ul class="sectlevel2">
+<li><a href="#bridging-from-remote-addresses-and-queues">10.1. Bridging from remote addresses and queues</a></li>
+<li><a href="#bridging-to-remote-addresses-and-queues">10.2. Bridging to remote addresses and queues</a></li>
+<li><a href="#examples-2">10.3. Examples</a></li>
 </ul>
 </li>
 </ul>
@@ -187,6 +193,16 @@ Therefore, if a security manager is being used, ensure that you perform the conf
 <li>
 <p>Broker federation allows the local broker to create remote receivers for addresses or queues that have local demand.
 Conversely it can also send federation configuration to the remote broker causing it to create receivers on the local broker based on remote demand on an address or queue over this same connection.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Bridges</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The broker uses a set of configured policies to either send messages to or receive messages from a remote AMQP peer for addresses and queues on the local broker.</p>
 </li>
 </ul>
 </div>
@@ -940,8 +956,192 @@ The default is <code>-1</code>.</p>
 </dl>
 </div>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bridges"><a class="anchor" href="#bridges"></a><a class="link" href="#bridges">10. Bridges</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AMQP Bridges allows the local broker to create remote receivers for addresses or queues that have local demand and match configured policy constraints. Conversely the broker can create remote senders for addresses or queues that exist on the local broker and match configured policy constraints.</p>
+</div>
+<div class="paragraph">
+<p>Add a <code>&lt;bridge&gt;</code> element within the <code>&lt;amqp-connection&gt;</code> element to configure AMQP bridge to the broker instance.
+The <code>&lt;amqp-connection&gt;</code> contains all the configuration for authentication and reconnection handling.
+See above sections to configure those values.</p>
+</div>
+<div class="paragraph">
+<p>The broker connection bridge configuration consists of one or more policies that define either send-to or receive-from bridge configurations for addresses or queues.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+  <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"bridge-example"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;bridge</span> <span class="na">name=</span><span class="s">"example-bridge"</span><span class="nt">&gt;</span>
+       <span class="nt">&lt;bridge-from-address</span> <span class="na">name=</span><span class="s">"example-bridge-from-address-policy"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"local-address.#"</span> <span class="nt">/&gt;</span>
+         <span class="nt">&lt;exclude</span> <span class="na">address-match=</span><span class="s">"local-address.excluded"</span> <span class="nt">/&gt;</span>
+       <span class="nt">&lt;/bridge-from-address&gt;</span>
+       <span class="nt">&lt;bridge-from-queue</span> <span class="na">name=</span><span class="s">"example-bridge-from-queue-policy"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"address"</span> <span class="na">queue-match=</span><span class="s">"local-queue"</span> <span class="nt">/&gt;</span>
+       <span class="nt">&lt;/bridge-from-queue&gt;</span>
+       <span class="nt">&lt;bridge-to-address</span> <span class="na">name=</span><span class="s">"example-bridge-to-address-policy"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"outgoing-address"</span> <span class="nt">/&gt;</span>
+       <span class="nt">&lt;/bridge-to-address&gt;</span>
+       <span class="nt">&lt;bridge-to-queue</span> <span class="na">name=</span><span class="s">"example-bridge-to-queue-policy"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"#"</span> <span class="na">queue-match=</span><span class="s">"outbound-queue"</span> <span class="nt">/&gt;</span>
+         <span class="nt">&lt;exclude</span> <span class="na">address-match=</span><span class="s">"#"</span> <span class="na">queue-match=</span><span class="s">"local-queue-excluded"</span> <span class="nt">/&gt;</span>
+       <span class="nt">&lt;/bridge-to-queue&gt;</span>
+    <span class="nt">&lt;/bridge&gt;</span>
+  <span class="nt">&lt;/amqp-connection&gt;</span>
+<span class="nt">&lt;/broker-connections&gt;</span></code></pre>
+</div>
+</div>
 <div class="sect2">
-<h3 id="examples-2"><a class="anchor" href="#examples-2"></a><a class="link" href="#examples-2">9.3. Examples</a></h3>
+<h3 id="bridging-from-remote-addresses-and-queues"><a class="anchor" href="#bridging-from-remote-addresses-and-queues"></a><a class="link" href="#bridging-from-remote-addresses-and-queues">10.1. Bridging from remote addresses and queues</a></h3>
+<div class="paragraph">
+<p>Bridging from a remote address or queue involves monitoring a local address or queue for demand and reacting when demand is added or removed. When demand exists the bridge will create a receiver on the matching address or queue on the opposing AMQP peer. Because the receivers are created on addresses and queues on the opposing peer, the authentication credentials supplied to the broker connection must have sufficient access to the bridged address or queue on the remote peer in order to consume messages from them.</p>
+</div>
+<div class="paragraph">
+<p>An example of AMQP address and queue bridge from configurations are shown below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+  <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"bridge-example"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;bridge</span> <span class="na">name=</span><span class="s">"example-bridge"</span><span class="nt">&gt;</span>
+       <span class="nt">&lt;bridge-from-address</span> <span class="na">name=</span><span class="s">"example-bridge-from-address-policy"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"local-address.#"</span> <span class="nt">/&gt;</span>
+         <span class="nt">&lt;exclude</span> <span class="na">address-match=</span><span class="s">"local-address.excluded"</span> <span class="nt">/&gt;</span>
+       <span class="nt">&lt;/bridge-from-address&gt;</span>
+       <span class="nt">&lt;bridge-from-queue</span> <span class="na">name=</span><span class="s">"example-bridge-from-queue-policy"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"address"</span> <span class="na">queue-match=</span><span class="s">"local-queue"</span> <span class="nt">/&gt;</span>
+       <span class="nt">&lt;/bridge-from-queue&gt;</span>
+    <span class="nt">&lt;/bridge&gt;</span>
+  <span class="nt">&lt;/amqp-connection&gt;</span>
+<span class="nt">&lt;/broker-connections&gt;</span></code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">name</dt>
+<dd>
+<p>The name of the policy. These names should be unique within a broker connection&#8217;s bridge policy elements.</p>
+</dd>
+<dt class="hdlist1">include</dt>
+<dd>
+<p>The address-match or queue-match pattern to use to match included addresses and queues. Multiple of these can be set but if none is set then no matches would be made.</p>
+</dd>
+<dt class="hdlist1">exclude</dt>
+<dd>
+<p>The address-match or queue-match pattern to use to match excluded addresses and queues. Multiple of these can be set, or it can be omitted if no excludes are needed.</p>
+</dd>
+<dt class="hdlist1">priority</dt>
+<dd>
+<p>A configured priority value which if set is applied remote receiver created by this bridge policy, this value is added to the receiver link properties and if supported will influence the priority assigned on the remote.</p>
+</dd>
+<dt class="hdlist1">priority-adjustment</dt>
+<dd>
+<p>When bridge receivers are created this value can be used to ensure that those bridge receivers have a lower priority value than other receivers on the same address or queue. The default is <code>-1</code>.</p>
+</dd>
+<dt class="hdlist1">includeDivertBindings</dt>
+<dd>
+<p>Should the bridge from address policy include divert bindings in the checks that control if a remote receiver is created to bridge from an address.</p>
+</dd>
+<dt class="hdlist1">filter</dt>
+<dd>
+<p>Optional filter string that is validated as a JMS selector string and is applied to the receiver that is bridging messages from and address or queue on the remote peer.</p>
+</dd>
+<dt class="hdlist1">remoteAddress</dt>
+<dd>
+<p>An optional override of address that is set as the address in the Source configuration of the AMQP receiver that is bridging messages from the remote peer. The default action is to assign either the address or queue name depending on whether the policy is bridging an address or queue.</p>
+</dd>
+<dt class="hdlist1">remoteAddressPrefix</dt>
+<dd>
+<p>An optional address prefix that is set on the address in the Source configuration of the AMQP receiver that is bridging messages from the remote peer. The default value is <code>null</code> and no prefix is applied to the source address.</p>
+</dd>
+<dt class="hdlist1">remoteAddressSuffix</dt>
+<dd>
+<p>An optional address suffix that is set on the address in the Source configuration of the AMQP receiver that is bridging messages from the remote peer. The default value is <code>null</code> and no suffix is applied to the source address.</p>
+</dd>
+<dt class="hdlist1">remoteTerminusCapabilities</dt>
+<dd>
+<p>Optional set of remote source capabilities that are set on the receiver when bridging an address or queue from the remote peer. The capabilities are configured as a comma delimited list whose default value is <code>null</code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bridging-to-remote-addresses-and-queues"><a class="anchor" href="#bridging-to-remote-addresses-and-queues"></a><a class="link" href="#bridging-to-remote-addresses-and-queues">10.2. Bridging to remote addresses and queues</a></h3>
+<div class="paragraph">
+<p>Bridging to a remote address or queue involves monitoring for the existence of a local address or queue amd reacting when one is added or removed. When the target address or queue exists the bridge will create a sender on the matching address or queue on the opposing AMQP peer. Because the senders are created on addresses and queues on the opposing peer, the authentication credentials supplied to the broker connection must have sufficient access to the bridged address or queue on the remote peer in order to produce messages to them.</p>
+</div>
+<div class="paragraph">
+<p>An example of AMQP address and queue bridge to configurations are shown below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+  <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"bridge-example"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;bridge</span> <span class="na">name=</span><span class="s">"example-bridge"</span><span class="nt">&gt;</span>
+       <span class="nt">&lt;bridge-to-address</span> <span class="na">name=</span><span class="s">"example-bridge-to-address-policy"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"outgoing-address"</span> <span class="nt">/&gt;</span>
+       <span class="nt">&lt;/bridge-to-address&gt;</span>
+       <span class="nt">&lt;bridge-to-queue</span> <span class="na">name=</span><span class="s">"example-bridge-to-queue-policy"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"#"</span> <span class="na">queue-match=</span><span class="s">"outbound-queue"</span> <span class="nt">/&gt;</span>
+         <span class="nt">&lt;exclude</span> <span class="na">address-match=</span><span class="s">"#"</span> <span class="na">queue-match=</span><span class="s">"local-queue-excluded"</span> <span class="nt">/&gt;</span>
+       <span class="nt">&lt;/bridge-to-queue&gt;</span>
+    <span class="nt">&lt;/bridge&gt;</span>
+  <span class="nt">&lt;/amqp-connection&gt;</span>
+<span class="nt">&lt;/broker-connections&gt;</span></code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">name</dt>
+<dd>
+<p>The name of the policy. These names should be unique within a broker connection&#8217;s bridge policy elements.</p>
+</dd>
+<dt class="hdlist1">include</dt>
+<dd>
+<p>The address-match or queue-match pattern to use to match included addresses and queues. Multiple of these can be set but if none is set then no matches would be made.</p>
+</dd>
+<dt class="hdlist1">exclude</dt>
+<dd>
+<p>The address-match or queue-match pattern to use to match excluded addresses and queues. Multiple of these can be set, or it can be omitted if no excludes are needed.</p>
+</dd>
+<dt class="hdlist1">priority</dt>
+<dd>
+<p>A configured priority value which if set is applied local receiver created by this bridge policy, this value is added to the receiver link properties and if supported will influence the priority assigned on the local server.</p>
+</dd>
+<dt class="hdlist1">priority-adjustment</dt>
+<dd>
+<p>When bridge senders are created this value can be used to ensure that those bridge senders have a lower priority value than other senders on the same address or queue. The default is <code>-1</code>.</p>
+</dd>
+<dt class="hdlist1">filter</dt>
+<dd>
+<p>Optional filter string that is validated as a JMS selector string and is applied to the sender that is bridging messages to an address or queue on the remote peer.</p>
+</dd>
+<dt class="hdlist1">remoteAddress</dt>
+<dd>
+<p>An optional override of address that is set as the address in the Target configuration of the AMQP sender that is bridging messages to the remote peer. The default action is to assign either the address or queue name depending on whether the policy is bridging an address or queue.</p>
+</dd>
+<dt class="hdlist1">remoteAddressPrefix</dt>
+<dd>
+<p>An optional address prefix that is set on the address in the Target configuration of the AMQP sender that is bridging messages to the remote peer. The default value is <code>null</code> and no prefix is applied to the target address.</p>
+</dd>
+<dt class="hdlist1">remoteAddressSuffix</dt>
+<dd>
+<p>An optional address suffix that is set on the address in the Target configuration of the AMQP sender that is bridging messages to the remote peer. The default value is <code>null</code> and no suffix is applied to the target address.</p>
+</dd>
+<dt class="hdlist1">remoteTerminusCapabilities</dt>
+<dd>
+<p>Optional set of remote target capabilities that are set on the sender when bridging an address or queue to the remote peer. The capabilities are configured as a comma delimited list whose default value is <code>null</code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-2"><a class="anchor" href="#examples-2"></a><a class="link" href="#examples-2">10.3. Examples</a></h3>
 <div class="paragraph">
 <p>A number of examples for using the federation functionality in a variety of situations can be found in the broker <a href="examples.html">examples</a> under directory <em>./examples/features/broker-connection</em>.</p>
 </div>
