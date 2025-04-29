@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Using the Server</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Using the Server</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.40.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#installation">1. Installation</a></li>
+<li><a href="#creating-a-broker-instance">2. Creating a Broker Instance</a>
+<ul class="sectlevel2">
+<li><a href="#options">2.1. Options</a></li>
+</ul>
+</li>
+<li><a href="#starting-and-stopping-a-broker-instance">3. Starting and Stopping a Broker Instance</a></li>
+<li><a href="#configuration-files">4. Configuration Files</a>
+<ul class="sectlevel2">
+<li><a href="#bootstrap-configuration-file">4.1. Bootstrap Configuration File</a></li>
+<li><a href="#broker-configuration-file">4.2. Broker configuration file</a></li>
+</ul>
+</li>
+<li><a href="#other-use-cases">5. Other Use-Cases</a>
+<ul class="sectlevel2">
+<li><a href="#system-property-or-environment-variable-substitution">5.1. System Property or Environment Variable Substitution</a></li>
+<li><a href="#windows-server">5.2. Windows Server</a></li>
+<li><a href="#adding-bootstrap-dependencies">5.3. Adding Bootstrap Dependencies</a></li>
+<li><a href="#adding-runtime-dependencies">5.4. Adding Runtime Dependencies</a></li>
+<li><a href="#library-path">5.5. Library Path</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter will familiarise you with how to use the Apache ActiveMQ Artemis server.</p>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll show where it is, how to start and stop it, and we&#8217;ll describe the directory layout and what all the files are and what they do.</p>
+</div>
+<div class="paragraph">
+<p>This document will refer to the full path of the directory where the ActiveMQ distribution has been extracted to as <code>${ARTEMIS_HOME}</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="installation"><a class="anchor" href="#installation"></a><a class="link" href="#installation">1. Installation</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can get the latest release from the <a href="https://activemq.apache.org/components/artemis/download/">Download</a> page.</p>
+</div>
+<div class="paragraph">
+<p>The following highlights some important folders on the distribution:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">|___ bin
+|
+|___ lib
+|
+|___ schema
+|
+|___ web</pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">bin</dt>
+<dd>
+<p>binaries and scripts needed to run ActiveMQ Artemis.</p>
+</dd>
+<dt class="hdlist1">lib</dt>
+<dd>
+<p>jars and libraries needed to run ActiveMQ Artemis</p>
+</dd>
+<dt class="hdlist1">schema</dt>
+<dd>
+<p>XML Schemas used to validate ActiveMQ Artemis configuration files</p>
+</dd>
+<dt class="hdlist1">web</dt>
+<dd>
+<p>The folder where the web context is loaded when the broker runs.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="creating-a-broker-instance"><a class="anchor" href="#creating-a-broker-instance"></a><a class="link" href="#creating-a-broker-instance">2. Creating a Broker Instance</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A broker <em>instance</em> is the directory containing all the configuration and runtime data, such as logs and message journal, associated with a broker process.
+It is recommended that you do <em>not</em> create the instance directory under <code>${ARTEMIS_HOME}</code>.
+This separation is encouraged so that you can more easily upgrade when the next version of ActiveMQ Artemis is released.</p>
+</div>
+<div class="paragraph">
+<p>On Unix systems, it is a common convention to store this kind of runtime data under the <code>/var/lib</code> directory.
+For example, to create an instance at <code>/var/lib/mybroker</code>, run the following commands in your command line shell:</p>
+</div>
+<div class="paragraph">
+<p>Before the broker is used, a broker instance must be created.
+This process requires the use of the <a href="using-cli.html#command-line-interface">Command Line Interface</a> which is better explained in its own chapter.</p>
+</div>
+<div class="paragraph">
+<p>In the following example a broker instance named <code>mybroker</code> will be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">cd</span> /var/lib
+<span class="gp">$</span><span class="w"> </span><span class="k">${</span><span class="nv">ARTEMIS_HOME</span><span class="k">}</span>/bin/artemis create mybroker</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A broker instance directory will contain the following sub directories:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">bin</dt>
+<dd>
+<p>holds execution scripts associated with this instance.</p>
+</dd>
+<dt class="hdlist1">data</dt>
+<dd>
+<p>holds the data files used for storing persistent messages</p>
+</dd>
+<dt class="hdlist1">etc</dt>
+<dd>
+<p>hold the instance configuration files</p>
+</dd>
+<dt class="hdlist1">lib</dt>
+<dd>
+<p>holds any custom runtime Java dependencies like transformers, plugins, interceptors, etc.</p>
+</dd>
+<dt class="hdlist1">log</dt>
+<dd>
+<p>holds rotating log files</p>
+</dd>
+<dt class="hdlist1">tmp</dt>
+<dd>
+<p>holds temporary files that are safe to delete between broker runs</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>At this point you may want to adjust the default configuration located in the <code>etc</code> directory.</p>
+</div>
+<div class="sect2">
+<h3 id="options"><a class="anchor" href="#options"></a><a class="link" href="#options">2.1. Options</a></h3>
+<div class="paragraph">
+<p>There are several options you can use when creating an instance.
+For a full list of options use the <code>help</code> command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis <span class="nb">help </span>create
+<span class="go">Usage: artemis create [--aio] [--allow-anonymous] [--autocreate] [--autodelete]
+                      [--backup] [--blocking] [--clustered]
+                      [--disable-persistence] [--failover-on-shutdown]
+                      [--force] [--jdbc] [--linux] [--mapped] [--nio]
+                      [--no-amqp-acceptor] [--no-autocreate] [--no-autotune]
+                      [--no-fsync] [--no-hornetq-acceptor] [--no-mqtt-acceptor]
+                      [--no-stomp-acceptor] [--no-web] [--paging]
+                      [--relax-jolokia] [--replicated] [--require-login]
+                      [--shared-store] [--silent] [--slave]
+                      [--support-advisory]
+                      [--suppress-internal-management-objects]
+                      [--use-client-auth] [--verbose] [--windows]
+</span><span class="gp">                      [--addresses=&lt;addresses&gt;</span><span class="o">]</span>
+<span class="gp">                      [--cluster-password=&lt;clusterPassword&gt;</span><span class="o">]</span>
+<span class="gp">                      [--cluster-user=&lt;clusterUser&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--data</span><span class="o">=</span>&lt;data&gt;]
+<span class="gp">                      [--default-port=&lt;defaultPort&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--encoding</span><span class="o">=</span>&lt;encoding&gt;]
+<span class="gp">                      [--etc=&lt;etc&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--global-max-messages</span><span class="o">=</span>&lt;globalMaxMessages&gt;]
+<span class="gp">                      [--global-max-size=&lt;globalMaxSize&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--home</span><span class="o">=</span>&lt;home&gt;]
+<span class="gp">                      [--host=&lt;host&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--http-host</span><span class="o">=</span>&lt;httpHost&gt;]
+<span class="gp">                      [--http-port=&lt;httpPort&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--java-memory</span><span class="o">=</span>&lt;javaMemory&gt;]
+<span class="gp">                      [--jdbc-bindings-table-name=&lt;jdbcBindings&gt;</span><span class="o">]</span>
+<span class="gp">                      [--jdbc-connection-url=&lt;jdbcURL&gt;</span><span class="o">]</span>
+<span class="gp">                      [--jdbc-driver-class-name=&lt;jdbcClassName&gt;</span><span class="o">]</span>
+<span class="gp">                      [--jdbc-large-message-table-name=&lt;jdbcLargeMessages&gt;</span><span class="o">]</span>
+<span class="gp">                      [--jdbc-lock-expiration=&lt;jdbcLockExpiration&gt;</span><span class="o">]</span>
+<span class="gp">                      [--jdbc-lock-renew-period=&lt;jdbcLockRenewPeriod&gt;</span><span class="o">]</span>
+<span class="gp">                      [--jdbc-message-table-name=&lt;jdbcMessages&gt;</span><span class="o">]</span>
+<span class="gp">                      [--jdbc-network-timeout=&lt;jdbcNetworkTimeout&gt;</span><span class="o">]</span>
+<span class="gp">                      [--jdbc-node-manager-table-name=&lt;jdbcNodeManager&gt;</span><span class="o">]</span>
+<span class="gp">                      [--jdbc-page-store-table-name=&lt;jdbcPageStore&gt;</span><span class="o">]</span>
+<span class="gp">                      [--journal-device-block-size=&lt;journalDeviceBlockSize&gt;</span><span class="o">]</span>
+<span class="gp">                      [--journal-retention=&lt;retentionDays&gt;</span><span class="o">]</span>
+<span class="gp">                      [--journal-retention-max-bytes=&lt;retentionMaxBytes&gt;</span><span class="o">]</span>
+<span class="gp">                      [--max-hops=&lt;maxHops&gt;</span><span class="o">]</span>
+<span class="gp">                      [--message-load-balancing=&lt;messageLoadBalancing&gt;</span><span class="o">]</span>
+<span class="gp">                      [--name=&lt;name&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--password</span><span class="o">=</span>&lt;password&gt;] <span class="o">[</span><span class="nt">--ping</span><span class="o">=</span>&lt;ping&gt;]
+<span class="gp">                      [--port-offset=&lt;portOffset&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--queues</span><span class="o">=</span>&lt;queues&gt;]
+<span class="gp">                      [--role=&lt;role&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--security-manager</span><span class="o">=</span>&lt;securityManager&gt;]
+<span class="gp">                      [--ssl-key=&lt;sslKey&gt;</span><span class="o">]</span>
+<span class="gp">                      [--ssl-key-password=&lt;sslKeyPassword&gt;</span><span class="o">]</span>
+<span class="gp">                      [--ssl-trust=&lt;sslTrust&gt;</span><span class="o">]</span>
+<span class="gp">                      [--ssl-trust-password=&lt;sslTrustPassword&gt;</span><span class="o">]</span>
+<span class="gp">                      [--staticCluster=&lt;staticNode&gt;</span><span class="o">]</span> <span class="o">[</span><span class="nt">--user</span><span class="o">=</span>&lt;user&gt;]
+<span class="gp">                      [--java-options=&lt;javaOptions&gt;</span><span class="o">]</span>... &lt;directory&gt;
+<span class="go">Create a new broker instance.
+</span><span class="gp">      &lt;directory&gt;</span><span class="w">            </span>The instance directory to hold the broker<span class="s1">'s
+</span><span class="go">                               configuration and data. Path must be writable.
+</span><span class="gp">      --addresses=&lt;addresses&gt;</span><span class="w">
+</span><span class="go">                             A comma separated list of addresses with the
+                               option to specify a routing type, e.g.
+                               --addresses myAddress1,myAddress2:anycast.
+                               Routing-type default: multicast.
+      --aio                  Set the journal as asyncio.
+      --allow-anonymous      Allow connections from users with no security
+                               credentials. Opposite of --require-login.
+                               Default: input.
+      --autocreate           Allow automatic creation of addresses &amp; queues.
+                               Default: true.
+      --autodelete           Allow automatic deletion of addresses &amp; queues.
+                               Default: false.
+      --backup               Be a backup broker. Valid for shared store or
+                               replication.
+      --blocking             Block producers when address becomes full.
+                               Opposite of --paging. Default: false.
+</span><span class="gp">      --cluster-password=&lt;clusterPassword&gt;</span><span class="w">
+</span><span class="go">                             The password to use for clustering. Default: input.
+</span><span class="gp">      --cluster-user=&lt;clusterUser&gt;</span><span class="w">
+</span><span class="go">                             The user to use for clustering. Default: input.
+      --clustered            Enable clustering.
+</span><span class="gp">      --data=&lt;data&gt;</span><span class="w">          </span>Directory where ActiveMQ data are stored. Paths
+<span class="go">                               can be absolute or relative to artemis.instance
+                               directory. Default: data.
+</span><span class="gp">      --default-port=&lt;defaultPort&gt;</span><span class="w">
+</span><span class="go">                             The port number to use for the main 'artemis'
+                               acceptor. Default: 61616.
+      --disable-persistence  Disable message persistence to the journal
+</span><span class="gp">      --encoding=&lt;encoding&gt;</span><span class="w">  </span>The encoding that text files should use. Default:
+<span class="go">                               UTF-8.
+</span><span class="gp">      --etc=&lt;etc&gt;</span><span class="w">            </span>Directory where ActiveMQ configuration is located.
+<span class="go">                               Paths can be absolute or relative to artemis.
+                               instance directory. Default: etc.
+      --failover-on-shutdown Whether broker shutdown will trigger failover for
+                               clients using the core protocol. Valid only for
+                               shared store. Default: false.
+      --force                Overwrite configuration at destination directory.
+</span><span class="gp">      --global-max-messages=&lt;globalMaxMessages&gt;</span><span class="w">
+</span><span class="go">                             Maximum number of messages that will be accepted
+                               in memory before using address full policy mode.
+                               Default: undefined.
+</span><span class="gp">      --global-max-size=&lt;globalMaxSize&gt;</span><span class="w">
+</span><span class="go">                             Maximum amount of memory which message data may
+                               consume. Default: half of the JVM's max memory.
+</span><span class="gp">      --home=&lt;home&gt;</span><span class="w">          </span>Directory where ActiveMQ Artemis is installed.
+<span class="gp">      --host=&lt;host&gt;</span><span class="w">          </span>Broker<span class="s1">'s host name. Default: 0.0.0.0 or input if
+</span><span class="go">                               clustered).
+</span><span class="gp">      --http-host=&lt;httpHost&gt;</span><span class="w"> </span>Embedded web server<span class="s1">'s host name. Default:
+</span><span class="go">                               localhost.
+</span><span class="gp">      --http-port=&lt;httpPort&gt;</span><span class="w"> </span>Embedded web server<span class="s1">'s port. Default: 8161.
+</span><span class="gp">      --java-memory=&lt;javaMemory&gt;</span><span class="w">
+</span><span class="go">                             Define the -Xmx memory parameter for the broker.
+                               Default: 2G.
+</span><span class="gp">      --java-options=&lt;javaOptions&gt;</span><span class="w">
+</span><span class="go">                             Extra Java options to be passed to the profile.
+      --jdbc                 Store message data in JDBC instead of local files.
+</span><span class="gp">      --jdbc-bindings-table-name=&lt;jdbcBindings&gt;</span><span class="w">
+</span><span class="go">                             Name of the jdbc bindings table.
+</span><span class="gp">      --jdbc-connection-url=&lt;jdbcURL&gt;</span><span class="w">
+</span><span class="go">                             The URL used for the database connection.
+</span><span class="gp">      --jdbc-driver-class-name=&lt;jdbcClassName&gt;</span><span class="w">
+</span><span class="go">                             JDBC driver classname.
+</span><span class="gp">      --jdbc-large-message-table-name=&lt;jdbcLargeMessages&gt;</span><span class="w">
+</span><span class="go">                             Name of the large messages table.
+</span><span class="gp">      --jdbc-lock-expiration=&lt;jdbcLockExpiration&gt;</span><span class="w">
+</span><span class="go">                             Lock expiration (in milliseconds).
+</span><span class="gp">      --jdbc-lock-renew-period=&lt;jdbcLockRenewPeriod&gt;</span><span class="w">
+</span><span class="go">                             Lock Renew Period (in milliseconds).
+</span><span class="gp">      --jdbc-message-table-name=&lt;jdbcMessages&gt;</span><span class="w">
+</span><span class="go">                             Name of the jdbc messages table.
+</span><span class="gp">      --jdbc-network-timeout=&lt;jdbcNetworkTimeout&gt;</span><span class="w">
+</span><span class="go">                             Network timeout (in milliseconds).
+</span><span class="gp">      --jdbc-node-manager-table-name=&lt;jdbcNodeManager&gt;</span><span class="w">
+</span><span class="go">                             Name of the jdbc node manager table.
+</span><span class="gp">      --jdbc-page-store-table-name=&lt;jdbcPageStore&gt;</span><span class="w">
+</span><span class="go">                             Name of the page store messages table.
+</span><span class="gp">      --journal-device-block-size=&lt;journalDeviceBlockSize&gt;</span><span class="w">
+</span><span class="go">                             The block size of the journal's storage device.
+                               Default: 4096.
+</span><span class="gp">      --journal-retention=&lt;retentionDays&gt;</span><span class="w">
+</span><span class="gp">                             Configure journal retention in days. If &gt;</span><span class="w"> </span>0 <span class="k">then</span>
+<span class="go">                               enable journal-retention-directory from broker.
+                               xml allowing replay options.
+</span><span class="gp">      --journal-retention-max-bytes=&lt;retentionMaxBytes&gt;</span><span class="w">
+</span><span class="go">                             Maximum number of bytes to keep in the retention
+                               directory.
+      --linux, --cygwin      Force Linux or Cygwin script creation. Default:
+                               based on your actual system.
+      --mapped               Set the journal as mapped.
+</span><span class="gp">      --max-hops=&lt;maxHops&gt;</span><span class="w">   </span>Number of hops on the cluster configuration.
+<span class="gp">      --message-load-balancing=&lt;messageLoadBalancing&gt;</span><span class="w">
+</span><span class="go">                             Message load balancing policy for cluster.
+                               Default: ON_DEMAND. Valid values: ON_DEMAND,
+                               STRICT, OFF, OFF_WITH_REDISTRIBUTION.
+</span><span class="gp">      --name=&lt;name&gt;</span><span class="w">          </span>The name of the broker. Default: same as host name.
+<span class="go">      --nio                  Set the journal as nio.
+      --no-amqp-acceptor     Disable the AMQP specific acceptor.
+      --no-autocreate        Disable auto creation for addresses &amp; queues.
+      --no-autotune          Disable auto tuning of the journal-buffer-timeout
+                               in broker.xml.
+      --no-fsync             Disable usage of fdatasync (channel.force(false)
+                               from Java NIO) on the journal.
+      --no-hornetq-acceptor  Disable the HornetQ specific acceptor.
+      --no-mqtt-acceptor     Disable the MQTT specific acceptor.
+      --no-stomp-acceptor    Disable the STOMP specific acceptor.
+      --no-web               Whether to omit the web-server definition from
+                               bootstrap.xml.
+      --paging               Page messages to disk when address becomes full.
+                               Opposite of --blocking. Default: true.
+</span><span class="gp">      --password=&lt;password&gt;</span><span class="w">  </span>The user<span class="s1">'s password. Default: input.
+</span><span class="gp">      --ping=&lt;ping&gt;</span><span class="w">          </span><span class="s1">A comma separated string to be passed on to the
+</span><span class="go">                               broker config as network-check-list. The broker
+                               will shutdown when all these addresses are
+                               unreachable.
+</span><span class="gp">      --port-offset=&lt;portOffset&gt;</span><span class="w">
+</span><span class="go">                             How much to off-set the ports of every acceptor.
+</span><span class="gp">      --queues=&lt;queues&gt;</span><span class="w">      </span>A comma separated list of queues with the option
+<span class="go">                               to specify a routing type, e.g. --queues
+                               myQueue1,myQueue2:multicast. Routing-type
+                               default: anycast.
+      --relax-jolokia        Disable strict checking in jolokia-access.xml.
+      --replicated           Enable broker replication.
+      --require-login        Require security credentials from users for
+                               connection. Opposite of --allow-anonymous.
+</span><span class="gp">      --role=&lt;role&gt;</span><span class="w">          </span>The name <span class="k">for </span>the role created. Default: amq.
+<span class="gp">      --security-manager=&lt;securityManager&gt;</span><span class="w">
+</span><span class="go">                             Which security manager to use - jaas or basic.
+                               Default: jaas.
+      --shared-store         Enable broker shared store.
+      --silent               Disable all the inputs, and make a best guess for
+                               any required input.
+      --slave                Deprecated for removal. Use 'backup' instead.
+</span><span class="gp">      --ssl-key=&lt;sslKey&gt;</span><span class="w">     </span>Embedded web server<span class="s1">'s key store path.
+</span><span class="gp">      --ssl-key-password=&lt;sslKeyPassword&gt;</span><span class="w">
+</span><span class="go">                             The key store's password.
+</span><span class="gp">      --ssl-trust=&lt;sslTrust&gt;</span><span class="w"> </span>The trust store path <span class="k">in case</span> of client
+<span class="go">                               authentication.
+</span><span class="gp">      --ssl-trust-password=&lt;sslTrustPassword&gt;</span><span class="w">
+</span><span class="go">                             The trust store's password.
+</span><span class="gp">      --staticCluster, --static-cluster=&lt;staticNode&gt;</span><span class="w">
+</span><span class="go">                             Cluster node connectors list separated by comma, e.
+                               g. "tcp://server:61616,tcp://server2:61616,tcp:
+                               //server3:61616".
+      --support-advisory     Support advisory messages for the OpenWire
+                               protocol.
+      --suppress-internal-management-objects
+                             Do not register any advisory addresses/queues for
+                               the OpenWire protocol with the broker's
+                               management service.
+      --use-client-auth      Require client certificate authentication when
+                               connecting to the embedded web server.
+</span><span class="gp">      --user=&lt;user&gt;</span><span class="w">          </span>The username. Default: input.
+<span class="go">      --verbose              Print additional information.
+      --windows              Force Windows script creation. Default: based on
+                               your actual system.</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Some of these options may be mandatory in certain configurations and the system may ask you for additional input, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>./artemis create /usr/server
+<span class="go">Creating ActiveMQ Artemis instance at: /usr/server
+
+--user:
+What is the default username?
+admin
+
+--password: is mandatory with this configuration:
+What is the default password?
+
+
+--allow-anonymous | --require-login:
+Allow anonymous access?, valid values are Y, N, True, False
+y
+
+Auto tuning journal ...
+done! Your system can make 250 writes per millisecond, your journal-buffer-timeout will be 4000
+
+You can now start the broker by executing:
+
+   "/usr/server" run
+
+Or you can run the broker in the background using:
+
+   "/usr/server" start</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="starting-and-stopping-a-broker-instance"><a class="anchor" href="#starting-and-stopping-a-broker-instance"></a><a class="link" href="#starting-and-stopping-a-broker-instance">3. Starting and Stopping a Broker Instance</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Assuming you created the broker instance under <code>/var/lib/mybroker</code> all you need to do start running the broker instance is execute:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="go">/var/lib/mybroker/bin/artemis run</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To stop the Apache ActiveMQ Artemis instance you will use the same <code>artemis</code> script, but with the <code>stop</code> argument.
+Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="go">/var/lib/mybroker/bin/artemis stop</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please note that Apache ActiveMQ Artemis requires a Java 11 or later.</p>
+</div>
+<div class="paragraph">
+<p>By default the <code>etc/bootstrap.xml</code> configuration is used.
+The configuration can be changed e.g. by running <code>./artemis run -- xml:path/to/bootstrap.xml</code> or another config of your choosing.</p>
+</div>
+<div class="paragraph">
+<p>Environment variables are used to provide ease of changing ports, hosts and data directories used and can be found in <code>etc/artemis.profile</code> on linux and <code>etc\artemis.profile.cmd</code> on Windows.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration-files"><a class="anchor" href="#configuration-files"></a><a class="link" href="#configuration-files">4. Configuration Files</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>These are the files you&#8217;re likely to find in the <code>etc</code> directory of a default broker instance with a short explanation of what they configure.
+Scroll down further for additional details as appropriate.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">artemis.profile</dt>
+<dd>
+<p>system properties and JVM arguments (e.g. <code>Xmx</code>, <code>Xms</code>,  etc.)</p>
+</dd>
+<dt class="hdlist1">artemis-roles.properties</dt>
+<dd>
+<p>user/role mapping for the default <a href="security.html#propertiesloginmodule">properties-based JAAS login module</a></p>
+</dd>
+<dt class="hdlist1">artemis-users.properties</dt>
+<dd>
+<p>user/password for the default <a href="security.html#propertiesloginmodule">properties-based JAAS login module</a></p>
+</dd>
+<dt class="hdlist1">bootstrap.xml</dt>
+<dd>
+<p>embedded web server, security, location of <code>broker.xml</code></p>
+</dd>
+<dt class="hdlist1">broker.xml</dt>
+<dd>
+<p>core broker configuration, e.g. acceptors, addresses, queues, diverts, clustering; <a href="configuration-index.html#configuration-reference">full reference</a></p>
+</dd>
+<dt class="hdlist1">jolokia-access.xml</dt>
+<dd>
+<p><a href="https://jolokia.org/reference/html/manual/security.html">security for Jolokia</a>, specifically Cross-Origin Resource Sharing (CORS)</p>
+</dd>
+<dt class="hdlist1">log4j2.properties</dt>
+<dd>
+<p><a href="logging.html#logging">logging config</a> like levels, log file locations, etc.</p>
+</dd>
+<dt class="hdlist1">login.config</dt>
+<dd>
+<p>standard Java configuration for JAAS <a href="security.html#authentication-authorization">security</a></p>
+</dd>
+<dt class="hdlist1">management.xml</dt>
+<dd>
+<p>remote connectivity and <a href="management.html#role-based-authorisation-for-jmx">security for JMX MBeans</a></p>
+</dd>
+</dl>
+</div>
+<div class="sect2">
+<h3 id="bootstrap-configuration-file"><a class="anchor" href="#bootstrap-configuration-file"></a><a class="link" href="#bootstrap-configuration-file">4.1. Bootstrap Configuration File</a></h3>
+<div class="paragraph">
+<p>The <code>bootstrap.xml</code> file is very simple.
+Let&#8217;s take a look at an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker</span> <span class="na">xmlns=</span><span class="s">"http://activemq.apache.org/schema"</span><span class="nt">&gt;</span>
+
+   <span class="nt">&lt;jaas-security</span> <span class="na">domain=</span><span class="s">"activemq"</span><span class="nt">/&gt;</span>
+
+   <span class="nt">&lt;server</span> <span class="na">configuration=</span><span class="s">"file:/path/to/broker.xml"</span><span class="nt">/&gt;</span>
+
+   <span class="nt">&lt;web</span> <span class="na">path=</span><span class="s">"web"</span> <span class="na">rootRedirectLocation=</span><span class="s">"console"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;binding</span> <span class="na">name=</span><span class="s">"artemis"</span> <span class="na">uri=</span><span class="s">"http://localhost:8161"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;app</span> <span class="na">name=</span><span class="s">"console"</span> <span class="na">url=</span><span class="s">"console"</span> <span class="na">war=</span><span class="s">"console.war"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/binding&gt;</span>
+   <span class="nt">&lt;/web&gt;</span>
+<span class="nt">&lt;/broker&gt;</span></code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">jaas-security</dt>
+<dd>
+<p>Configures JAAS-based security for the server.
+The <code>domain</code> attribute refers to the relevant login module entry in <code>login.config</code>.
+If different behavior is needed then a custom security manager can be configured by replacing <code>jaas-security</code> with <code>security-manager</code>.
+See the "Custom Security Manager" section in the <a href="security.html#authentication-authorization">security chapter</a> for more details.</p>
+</dd>
+<dt class="hdlist1">server</dt>
+<dd>
+<p>Instantiates a core server using the configuration file from the <code>configuration</code> attribute.
+This is the main broker POJO necessary to do all the real messaging work.</p>
+</dd>
+<dt class="hdlist1">web</dt>
+<dd>
+<p>Configures an embedded web server for things like the admin console.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="broker-configuration-file"><a class="anchor" href="#broker-configuration-file"></a><a class="link" href="#broker-configuration-file">4.2. Broker configuration file</a></h3>
+<div class="paragraph">
+<p>The configuration for the Apache ActiveMQ Artemis core broker is contained in <code>broker.xml</code>.</p>
+</div>
+<div class="paragraph">
+<p>There are many attributes which you can configure for Apache ActiveMQ Artemis.
+In most cases the defaults will do fine, in fact every attribute can be defaulted which means a file with a single empty <code>configuration</code> element is a valid configuration file.
+The different configuration will be explained throughout the manual or you can refer to the configuration reference <a href="configuration-index.html#configuration-reference">here</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="other-use-cases"><a class="anchor" href="#other-use-cases"></a><a class="link" href="#other-use-cases">5. Other Use-Cases</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="system-property-or-environment-variable-substitution"><a class="anchor" href="#system-property-or-environment-variable-substitution"></a><a class="link" href="#system-property-or-environment-variable-substitution">5.1. System Property or Environment Variable Substitution</a></h3>
+<div class="paragraph">
+<p>It is possible to use system property or environment variable substitution in all the configuration files by replacing a value with the name of the system property or the environment variable.
+Here is an example of this with a connector configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;connector</span> <span class="na">name=</span><span class="s">"netty"</span><span class="nt">&gt;</span>tcp://${activemq.remoting.netty.host:localhost}:${activemq.remoting.netty.port:61616}<span class="nt">&lt;/connector&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here you can see we have replaced 2 values with system properties <code>activemq.remoting.netty.host</code> and <code>activemq.remoting.netty.port</code>.
+These values will be replaced by the value found in the system property if there is one, if not they default back to <code>localhost</code> or <code>61616</code> respectively.
+It is also possible to not supply a default (i.e. <code>${activemq.remoting.netty.host}</code>), however the system property <em>must</em> be supplied in that case.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="windows-server"><a class="anchor" href="#windows-server"></a><a class="link" href="#windows-server">5.2. Windows Server</a></h3>
+<div class="paragraph">
+<p>On windows you will have the option to run ActiveMQ Artemis as a service.
+Just use the following command to install it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap"> $ ./artemis-service.exe install</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The create process should give you a hint of the available commands available for the artemis-service.exe</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="adding-bootstrap-dependencies"><a class="anchor" href="#adding-bootstrap-dependencies"></a><a class="link" href="#adding-bootstrap-dependencies">5.3. Adding Bootstrap Dependencies</a></h3>
+<div class="paragraph">
+<p>Bootstrap dependencies like logging handlers must be accessible by the log manager at boot time.
+Package the dependency in a jar and put it on the boot classpath before of log manager jar.
+This can be done appending the jar at the variable <code>JAVA_ARGS</code>, defined in <code>artemis.profile</code>, with the option <code>-Xbootclasspath/a</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+the environment variable <code>JAVA_ARGS_APPEND</code> can be used to append or override options.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="adding-runtime-dependencies"><a class="anchor" href="#adding-runtime-dependencies"></a><a class="link" href="#adding-runtime-dependencies">5.4. Adding Runtime Dependencies</a></h3>
+<div class="paragraph">
+<p>Runtime dependencies like transformers, broker plugins, JDBC drivers, password decoders, etc. must be accessible by the broker at runtime.
+Package the dependency in a jar, and put it on the broker&#8217;s classpath.
+This can be done by placing the jar file in the <code>lib</code> directory of the broker distribution itself,
+by placing the jar file in the <code>lib</code> directory of the broker instance,
+by setting the system property <code>artemis.extra.libs</code> with the directory that contains the jar file, or
+by setting the environment variable <code>ARTEMIS_EXTRA_LIBS</code> with the directory that contains the jar file,
+A broker instance does not have a <code>lib</code> directory by default so it may need to be created.
+It should be on the "top" level with the <code>bin</code>, <code>data</code>, <code>log</code>, etc.
+directories.
+The system property <code>artemis.extra.libs</code> is a comma separated list of directories that contains jar files, i.e.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code>-Dartemis.extra.libs=/usr/local/share/java/lib1,/usr/local/share/java/lib2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The environment variable <code>ARTEMIS_EXTRA_LIBS</code> is a comma separated list of directories that contains jar files and
+is ignored if the system property <code>artemis.extra.libs</code> is defined, i.e.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code>export ARTEMIS_EXTRA_LIBS=/usr/local/share/java/lib1,/usr/local/share/java/lib2</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="library-path"><a class="anchor" href="#library-path"></a><a class="link" href="#library-path">5.5. Library Path</a></h3>
+<div class="paragraph">
+<p>If you&#8217;re using the <a href="libaio.html#libaio-native-libraries">Asynchronous IO Journal</a> on Linux, you need to specify <code>java.library.path</code> as a property on your Java options.
+This is done automatically in the scripts.</p>
+</div>
+<div class="paragraph">
+<p>If you don&#8217;t specify <code>java.library.path</code> at your Java options then the JVM will use the environment variable <code>LD_LIBRARY_PATH</code>.</p>
+</div>
+<div class="paragraph">
+<p>You will need to make sure libaio is installed on Linux.
+For more information refer to the <a href="libaio.html#runtime-dependencies">libaio chapter</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
