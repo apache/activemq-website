@@ -30,7 +30,7 @@ ActiveMQ Classic uses Maven 3 to Build. We recommend you download and install [M
 
 ### Doing a Quick Build
 ```
-mvn -Dtest=false -DfailIfNoTests=false clean install 
+mvn -DskipTests -DfailIfNoTests=false clean install 
 ```
 ### Using an IDE
 
