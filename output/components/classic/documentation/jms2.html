@@ -93,7 +93,9 @@
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p><strong>ActiveMQ Classic 5.x &amp; 6.x support for Jakarta Messaging 3.1 &amp; JMS 2.0 is in progress</strong>. If you need full support for Jakarta Messaging 3.1 or JMS 2.0 we recommend <a href="/components/artemis">ActiveMQ Artemis</a>.</p>
+        <p><strong>ActiveMQ Classic 5.x &amp; 6.x support for Jakarta Messaging 3.1 &amp; JMS 2.0 is in progress</strong>. This work commenced in late 2019 via <a href="https://issues.apache.org/jira/browse/AMQ-7309">AMQ-7309</a>.</p>
+
+<p>If you need full support for Jakarta Messaging 3.1 or JMS 2.0 we recommend <a href="/components/artemis">ActiveMQ Artemis</a>.</p>
 
 <h3 id="transition-approach">Transition Approach</h3>
 
@@ -191,42 +193,18 @@
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-7309">AMQ-7309</a></td>
       <td style="text-align: center">✅</td>
+      <td>5.16.0</td>
       <td>5.18.0</td>
-      <td>5.18.0</td>
-      <td>JMS v2.0 API dependency</td>
-      <td>ActiveMQ Classic will ship with a JMS v2.0 dependency jar</td>
+      <td>JMS 2.0 API dependency</td>
+      <td>ActiveMQ Classic will ship with a JMS 2.0 dependency jar</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8322">AMQ-8322</a></td>
       <td style="text-align: center">✅</td>
+      <td>5.17.0</td>
       <td>5.18.0</td>
-      <td>5.18.0</td>
-      <td>JMSContext</td>
-      <td>Simplified JMS Context object support</td>
-    </tr>
-    <tr>
-      <td><a href="https://issues.apache.org/jira/browse/AMQ-8322">AMQ-8322</a></td>
-      <td style="text-align: center">✅</td>
-      <td>5.18.0</td>
-      <td>5.18.0</td>
-      <td>JMSRuntimeException</td>
-      <td>Convert JMSExceptions to be JMSRuntimeExceptions</td>
-    </tr>
-    <tr>
-      <td><a href="https://issues.apache.org/jira/browse/AMQ-8322">AMQ-8322</a></td>
-      <td style="text-align: center">✅</td>
-      <td>5.18.0</td>
-      <td>5.18.0</td>
-      <td>JMSConsumer</td>
-      <td>Consume messages</td>
-    </tr>
-    <tr>
-      <td><a href="https://issues.apache.org/jira/browse/AMQ-8322">AMQ-8322</a></td>
-      <td style="text-align: center">✅</td>
-      <td>5.18.0</td>
-      <td>5.18.0</td>
-      <td>JMSProducer</td>
-      <td>Produce messages</td>
+      <td><code class="language-plaintext highlighter-rouge">JMSContext</code>, <code class="language-plaintext highlighter-rouge">JMSConsumer</code>, <code class="language-plaintext highlighter-rouge">JMSProducer</code>, &amp; <code class="language-plaintext highlighter-rouge">JMSRuntimeException</code></td>
+      <td>Simplified JMS API support</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8321">AMQ-8321</a></td>
@@ -234,20 +212,28 @@
       <td>5.18.0</td>
       <td>5.18.0</td>
       <td>GetBody/isBodyAssignable</td>
-      <td>Support for checking body type using a Class&lt;?&gt;</td>
+      <td>Support for checking body type using a <code class="language-plaintext highlighter-rouge">Class&lt;?&gt;</code></td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8325">AMQ-8325</a></td>
       <td style="text-align: center">✅</td>
-      <td>6.0.0, 5.18.3</td>
-      <td>6.0.0, 5.18.3</td>
+      <td>5.18.3, 6.0.0</td>
+      <td>5.18.3, 6.0.0</td>
       <td>XA Connection methods</td>
-      <td>Updated methods when using XA Transactions</td>
+      <td>Updated methods when using XA transactions</td>
+    </tr>
+    <tr>
+      <td><a href="https://issues.apache.org/jira/browse/AMQ-8494">AMQ-8494</a></td>
+      <td style="text-align: center">✅</td>
+      <td>5.17.1</td>
+      <td>5.18.0</td>
+      <td>Implement <code class="language-plaintext highlighter-rouge">CLIENT_ACKNOWLEDGEMENT</code> mode</td>
+      <td>Client ack requires special handling w/ the simplified JMSContext API</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8464">AMQ-8464</a></td>
       <td style="text-align: center">❌</td>
-      <td>6.2.0</td>
+      <td>5.17.1</td>
       <td> </td>
       <td>JMSConsumer</td>
       <td><code class="language-plaintext highlighter-rouge">.receiveBody(Class&lt;T&gt;)</code> methods</td>
@@ -263,10 +249,10 @@
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8324">AMQ-8324</a></td>
       <td style="text-align: center">❌</td>
-      <td>6.2.0</td>
+      <td>5.17.0</td>
       <td> </td>
       <td>JMSProducer features</td>
-      <td>Completion Listener async send support</td>
+      <td><code class="language-plaintext highlighter-rouge">CompletionListener</code> async send support</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8323">AMQ-8323</a></td>
@@ -275,6 +261,14 @@
       <td> </td>
       <td>Shared Topic Consumer</td>
       <td>Multi-consumer (queue-like) consuming from topic subscriptions</td>
+    </tr>
+    <tr>
+      <td><a href="https://issues.apache.org/jira/browse/AMQ-9451">AMQ-9451</a></td>
+      <td style="text-align: center">❌</td>
+      <td>6.2.0</td>
+      <td> </td>
+      <td>Pooled <code class="language-plaintext highlighter-rouge">ConnectionFactory</code></td>
+      <td>Support for JMSContext in activemq-jms-pool</td>
     </tr>
   </tbody>
 </table>
@@ -291,9 +285,9 @@
   </thead>
   <tbody>
     <tr>
-      <td>JMSProducer</td>
+      <td><code class="language-plaintext highlighter-rouge">JMSProducer</code></td>
       <td>disableMessageID</td>
-      <td>ActiveMQ Classic does not support the optional feature of disabling MessageID</td>
+      <td>ActiveMQ Classic does not support the optional feature of disabling JMS message ID</td>
     </tr>
   </tbody>
 </table>
