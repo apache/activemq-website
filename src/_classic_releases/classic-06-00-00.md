@@ -11,7 +11,7 @@ redirect_from:
 Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
 
 It's a major release for the project, especially bringing:
-- Jakarta Messaging 3.1, JMS 2.0, JMS 1.1 support (new features will come in the 6.x series)
+- [Partial Jakarta Messaging 3.1 & JMS 2.0 support]({{site.baseurl}}/components/classic/documentation/jms2) (new features will come in the 6.x series)
 - Jakarta EE namespace support
 - JDK17/20/21 support
 - Spring 6.x support

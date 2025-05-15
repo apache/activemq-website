@@ -5,7 +5,9 @@ title-class: page-title-classic
 type: classic
 ---
 
-**ActiveMQ Classic 5.x & 6.x support for Jakarta Messaging 3.1 & JMS 2.0 is in progress**. If you need full support for Jakarta Messaging 3.1 or JMS 2.0 we recommend [ActiveMQ Artemis]({{site.baseurl}}/components/artemis).
+**ActiveMQ Classic 5.x & 6.x support for Jakarta Messaging 3.1 & JMS 2.0 is in progress**. This work commenced in late 2019 via [AMQ-7309](https://issues.apache.org/jira/browse/AMQ-7309).
+
+If you need full support for Jakarta Messaging 3.1 or JMS 2.0 we recommend [ActiveMQ Artemis]({{site.baseurl}}/components/artemis).
 
 ### Transition Approach
 
@@ -67,22 +69,21 @@ User feedback is welcome! Please comment on the JIRAs with questions and comment
 
 JIRA|Status|Target Version|Completed Version|Feature|Notes
 ---|:---:|---|---|---|---
-[AMQ-7309](https://issues.apache.org/jira/browse/AMQ-7309) | ✅ | 5.18.0 | 5.18.0 | JMS v2.0 API dependency | ActiveMQ Classic will ship with a JMS v2.0 dependency jar
-[AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | ✅ | 5.18.0 | 5.18.0 | JMSContext | Simplified JMS Context object support
-[AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | ✅ | 5.18.0 | 5.18.0 | JMSRuntimeException | Convert JMSExceptions to be JMSRuntimeExceptions
-[AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | ✅ | 5.18.0 | 5.18.0 | JMSConsumer | Consume messages
-[AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | ✅ | 5.18.0 | 5.18.0 | JMSProducer | Produce messages
-[AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | ✅ | 5.18.0 | 5.18.0 | GetBody/isBodyAssignable | Support for checking body type using a Class<?>
-[AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | ✅ | 6.0.0, 5.18.3 | 6.0.0, 5.18.3 | XA Connection methods | Updated methods when using XA Transactions
-[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | ❌ | 6.2.0 | | JMSConsumer | `.receiveBody(Class<T>)` methods
+[AMQ-7309](https://issues.apache.org/jira/browse/AMQ-7309) | ✅ | 5.16.0 | 5.18.0 | JMS 2.0 API dependency | ActiveMQ Classic will ship with a JMS 2.0 dependency jar
+[AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | ✅ | 5.17.0 | 5.18.0 | `JMSContext`, `JMSConsumer`, `JMSProducer`, &amp; `JMSRuntimeException` | Simplified JMS API support
+[AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | ✅ | 5.18.0 | 5.18.0 | GetBody/isBodyAssignable | Support for checking body type using a `Class<?>`
+[AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | ✅ | 5.18.3, 6.0.0 | 5.18.3, 6.0.0 | XA Connection methods | Updated methods when using XA transactions
+[AMQ-8494](https://issues.apache.org/jira/browse/AMQ-8494) | ✅ | 5.17.1 | 5.18.0 | Implement `CLIENT_ACKNOWLEDGEMENT` mode | Client ack requires special handling w/ the simplified JMSContext API
+[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | ❌ | 5.17.1 | | JMSConsumer | `.receiveBody(Class<T>)` methods
 [AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | ❌ | 6.2.0 | | Delivery Delay | Support for Message DeliveryDelay feature
-[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | ❌ | 6.2.0 | | JMSProducer features | Completion Listener async send support
+[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | ❌ | 5.17.0 | | JMSProducer features | `CompletionListener` async send support
 [AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | ❌ | | | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions
+[AMQ-9451](https://issues.apache.org/jira/browse/AMQ-9451) | ❌ | 6.2.0 | | Pooled `ConnectionFactory` | Support for JMSContext in activemq-jms-pool 
 
 ### Feature notes
 
 JMS Object|Feature|Notes
 ---|---|---
-JMSProducer | disableMessageID | ActiveMQ Classic does not support the optional feature of disabling MessageID
+`JMSProducer` | disableMessageID | ActiveMQ Classic does not support the optional feature of disabling JMS message ID
 
 
