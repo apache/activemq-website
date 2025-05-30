@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.23">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Apache ActiveMQ Artemis Hacking Guide</title>
 <link rel="stylesheet" href="css/asciidoctor.css">
@@ -25,67 +25,55 @@
 <li><a href="#adding-new-dependencies">1.4. Adding New Dependencies</a></li>
 </ul>
 </li>
-<li><a href="#ide-integration">2. IDE Integration</a>
+<li><a href="#building">2. Building</a>
 <ul class="sectlevel2">
-<li><a href="#intellij-idea">2.1. IntelliJ IDEA</a></li>
-<li><a href="#eclipse">2.2. Eclipse</a></li>
+<li><a href="#full-release">2.1. Full Release</a></li>
+<li><a href="#full-release-without-docs">2.2. Full Release without docs</a></li>
+<li><a href="#only-docs">2.3. Only docs</a></li>
+<li><a href="#offline">2.4. Offline</a></li>
+<li><a href="#building-the-async-io-library">2.5. Building the ASYNC IO library</a></li>
+<li><a href="#open-web-application-security-project-owasp-report">2.6. Open Web Application Security Project (OWASP) Report</a></li>
+<li><a href="#snapshot-builds">2.7. Snapshot Builds</a></li>
 </ul>
 </li>
-<li><a href="#building">3. Building</a>
+<li><a href="#tests">3. Tests</a>
 <ul class="sectlevel2">
-<li><a href="#full-release">3.1. Full Release</a></li>
-<li><a href="#full-release-without-docs">3.2. Full Release without docs</a></li>
-<li><a href="#only-docs">3.3. Only docs</a></li>
-<li><a href="#offline">3.4. Offline</a></li>
-<li><a href="#building-the-async-io-library">3.5. Building the ASYNC IO library</a></li>
-<li><a href="#open-web-application-security-project-owasp-report">3.6. Open Web Application Security Project (OWASP) Report</a></li>
+<li><a href="#running-tests">3.1. Running Tests</a></li>
+<li><a href="#writing-tests">3.2. Writing Tests</a></li>
+<li><a href="#writing-web-tests">3.3. Writing Web Tests</a></li>
+<li><a href="#keys-for-writing-good-tests">3.4. Keys for writing good tests</a></li>
 </ul>
 </li>
-<li><a href="#tests">4. Tests</a>
+<li><a href="#code-coverage-report">4. Code coverage report</a>
 <ul class="sectlevel2">
-<li><a href="#running-tests">4.1. Running Tests</a></li>
-<li><a href="#writing-tests">4.2. Writing Tests</a></li>
-<li><a href="#writing-web-tests">4.3. Writing Web Tests</a></li>
-<li><a href="#keys-for-writing-good-tests">4.4. Keys for writing good tests</a></li>
+<li><a href="#getting-jacoco-exec-files">4.1. Getting JaCoCo exec files</a></li>
+<li><a href="#generate-jacoco-reports">4.2. Generate JaCoCo reports</a></li>
+<li><a href="#merge-jacoco-exec-files-to-one">4.3. Merge JaCoCo exec files to one</a></li>
 </ul>
 </li>
-<li><a href="#code-coverage-report">5. Code coverage report</a>
+<li><a href="#validating-releases">5. Validating releases</a>
 <ul class="sectlevel2">
-<li><a href="#getting-jacoco-exec-files">5.1. Getting JaCoCo exec files</a></li>
-<li><a href="#generate-jacoco-reports">5.2. Generate JaCoCo reports</a></li>
-<li><a href="#merge-jacoco-exec-files-to-one">5.3. Merge JaCoCo exec files to one</a></li>
+<li><a href="#setting-up-the-maven-repository">5.1. Setting up the maven repository</a></li>
+<li><a href="#using-the-examples">5.2. Using the examples</a></li>
 </ul>
 </li>
-<li><a href="#code-formatting">6. Code Formatting</a>
+<li><a href="#notes-for-maintainers">6. Notes for Maintainers</a>
 <ul class="sectlevel2">
-<li><a href="#idea">6.1. IDEA</a></li>
-<li><a href="#eclipse-2">6.2. Eclipse</a></li>
-<li><a href="#editorconfig">6.3. EditorConfig</a></li>
+<li><a href="#using-the-dev-profile">6.1. Using the <code>dev</code> profile.</a></li>
+<li><a href="#commit-messages">6.2. Commit Messages</a></li>
+<li><a href="#configuring-git-repositories">6.3. Configuring Git repositories</a></li>
+<li><a href="#merging-and-pushing-pull-requests">6.4. Merging and pushing pull requests</a></li>
+<li><a href="#using-the-automated-script">6.5. Using the automated script</a></li>
+<li><a href="#use-a-separate-branch-for-your-changes">6.6. Use a separate branch for your changes</a></li>
+<li><a href="#notes">6.7. Notes</a></li>
 </ul>
 </li>
-<li><a href="#validating-releases">7. Validating releases</a>
+<li><a href="#history">7. History</a>
 <ul class="sectlevel2">
-<li><a href="#setting-up-the-maven-repository">7.1. Setting up the maven repository</a></li>
-<li><a href="#using-the-examples">7.2. Using the examples</a></li>
+<li><a href="#rebasing-original-donation">7.1. Rebasing original donation</a></li>
 </ul>
 </li>
-<li><a href="#notes-for-maintainers">8. Notes for Maintainers</a>
-<ul class="sectlevel2">
-<li><a href="#using-the-dev-profile">8.1. Using the dev profile.</a></li>
-<li><a href="#commit-messages">8.2. Commit Messages</a></li>
-<li><a href="#configuring-git-repositories">8.3. Configuring Git repositories</a></li>
-<li><a href="#merging-and-pushing-pull-requests">8.4. Merging and pushing pull requests</a></li>
-<li><a href="#using-the-automated-script">8.5. Using the automated script</a></li>
-<li><a href="#use-a-separate-branch-for-your-changes">8.6. Use a separate branch for your changes</a></li>
-<li><a href="#notes">8.7. Notes</a></li>
-</ul>
-</li>
-<li><a href="#history">9. History</a>
-<ul class="sectlevel2">
-<li><a href="#rebasing-original-donation">9.1. Rebasing original donation</a></li>
-</ul>
-</li>
-<li><a href="#legal-notice">10. Legal Notice</a></li>
+<li><a href="#legal-notice">8. Legal Notice</a></li>
 </ul>
 </div>
 </div>
@@ -127,7 +115,7 @@ Follow the steps below to get set up with GitHub, etc.</p>
 <p>Clone your newly forked copy onto your local workspace:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh"><span class="nv">$ </span>git clone git@github.com:&lt;your-user-name&gt;/activemq-artemis.git
+<pre class="rouge highlight nowrap"><code data-lang="sh"><span class="nv">$ </span>git clone git@github.com:&lt;your-user-name&gt;/activemq-artemis.git
 Cloning into <span class="s1">'activemq-artemis'</span>...
 remote: Counting objects: 63800, <span class="k">done</span><span class="nb">.</span>
 remote: Compressing objects: 100% <span class="o">(</span>722/722<span class="o">)</span>, <span class="k">done</span><span class="nb">.</span>
@@ -144,7 +132,7 @@ Checking connectivity... <span class="k">done</span><span class="nb">.</span>
 <p>Add a remote reference to <code>upstream</code> for pulling future updates</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh"><span class="nv">$ </span>git remote add upstream https://github.com/apache/activemq-artemis</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="sh"><span class="nv">$ </span>git remote add upstream https://github.com/apache/activemq-artemis</code></pre>
 </div>
 </div>
 </li>
@@ -156,7 +144,7 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh"><span class="nv">$ </span>mvn <span class="nt">-Pdev</span> <span class="nb">install</span>
+<pre class="rouge highlight nowrap"><code data-lang="sh"><span class="nv">$ </span>mvn <span class="nt">-Pdev</span> <span class="nb">install</span>
 ...
 <span class="o">[</span>INFO] <span class="nt">------------------------------------------------------------------------</span>
 <span class="o">[</span>INFO] Reactor Summary:
@@ -195,7 +183,7 @@ For example:</p>
 <p>Create a topic branch in your local git repo to do your work</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git checkout <span class="nt">-b</span> my_cool_feature</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git checkout <span class="nt">-b</span> my_cool_feature</code></pre>
 </div>
 </div>
 </li>
@@ -203,7 +191,7 @@ For example:</p>
 <p>Make the changes and commit one or more times</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git commit</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git commit</code></pre>
 </div>
 </div>
 <div id="commitMessageDetails" class="paragraph">
@@ -230,7 +218,7 @@ These lines should be wrapped at 72 characters.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>ARTEMIS-123 Add new commit msg format to README
+<pre class="nowrap">ARTEMIS-123 Add new commit msg format to README
 
 Adds a description of the new commit message format as well as examples
 of well formatted commit messages to the README.md.  This is required
@@ -246,7 +234,7 @@ do and why the commit was added.</pre>
 <p>Occasionally you&#8217;ll want to push your commit(s) to GitHub for safe-keeping and/or sharing with others.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git push origin my_cool_feature</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git push origin my_cool_feature</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -260,7 +248,7 @@ do and why the commit was added.</pre>
 <p>Once you&#8217;re finished coding your feature/fix then rebase your branch against the latest main (applies your patches  on top of main)</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git fetch upstream
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git fetch upstream
 <span class="gp">$</span><span class="w"> </span>git rebase <span class="nt">-i</span> upstream/main</code></pre>
 </div>
 </div>
@@ -269,7 +257,7 @@ do and why the commit was added.</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git push <span class="nt">-f</span> origin my_cool_feature</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git push <span class="nt">-f</span> origin my_cool_feature</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -311,7 +299,7 @@ Therefore you&#8217;ll want to make sure that you  either work in a branch that 
 <p>Pulling updates from upstream</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git pull <span class="nt">--rebase</span> upstream main</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git pull <span class="nt">--rebase</span> upstream main</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -324,7 +312,7 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git fetch upstream
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git fetch upstream
 <span class="gp">$</span><span class="w"> </span>git pull</code></pre>
 </div>
 </div>
@@ -333,7 +321,7 @@ For example:</p>
 <p>Pushing pulled updates (or local commits if you aren&#8217;t using topic branches) to your private GitHub repo (origin)</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git push
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git push
 <span class="go">Counting objects: 192, done.
 Delta compression using up to 4 threads.
 Compressing objects: 100% (44/44), done.
@@ -367,272 +355,7 @@ This allows ActiveMQ Artemis developers to keep track of all dependencies and li
 </div>
 </div>
 <div class="sect1">
-<h2 id="ide-integration"><a class="anchor" href="#ide-integration"></a><a class="link" href="#ide-integration">2. IDE Integration</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>There a few files useful for IDE integration under ./etc/ide-settings on a checked out folder.
-This folder is not part of the source distribution, but it can be easily obtained:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://github.com/apache/activemq-artemis/tree/main/etc/ide-settings" class="bare">https://github.com/apache/activemq-artemis/tree/main/etc/ide-settings</a></p>
-</li>
-</ul>
-</div>
-<div class="sect2">
-<h3 id="intellij-idea"><a class="anchor" href="#intellij-idea"></a><a class="link" href="#intellij-idea">2.1. IntelliJ IDEA</a></h3>
-<div class="sect3">
-<h4 id="importing-the-project"><a class="anchor" href="#importing-the-project"></a><a class="link" href="#importing-the-project">2.1.1. Importing the Project</a></h4>
-<div class="paragraph">
-<p>The following steps show how to open the ActiveMQ Artemis maven project in IntelliJ IDEA and setup the correct maven profile to allow running of JUnit tests from within the IDE.
-(Steps are based on version: 2018.2)</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Starting from a clean clone</p>
-</li>
-<li>
-<p>Build the activemq-artemis source using the maven 'dev' profile:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Pdev</span> <span class="nb">install</span> <span class="nt">-DskipTests</span></code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Await and ensure the outcome is <code>BUILD SUCCESS</code></p>
-</li>
-<li>
-<p>Launch IntelliJ</p>
-</li>
-<li>
-<p>From the 'Welcome to IntelliJ IDEA' screen select 'Open'</p>
-</li>
-<li>
-<p>From the 'Open File or Project' screen select the <code>pom.xml</code> file in the cloned <code>activemq-artemis</code> directory</p>
-</li>
-<li>
-<p>From the 'Open Project' screen select 'Open as Project'</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>This should open the main IntelliJ IDEA window where you will notice some background tasks running via the bottom status bar.
-These background tasks should successfully import and index the project automatically.</p>
-</div>
-<div class="paragraph">
-<p>Once the project has been imported and IntelliJ IDEA has caught up importing all the relevant dependencies, you should be able to run JUnit tests from with the IDE.
-Select any test class in the tests -&gt; integration tests folder.
-Right click on the class in the project tab and click "Run &lt;classname&gt;".
-If the "Run &lt;classname&gt;" option is present then you&#8217;re all set to go.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="note-about-ibm-jdk-on-idea"><a class="anchor" href="#note-about-ibm-jdk-on-idea"></a><a class="link" href="#note-about-ibm-jdk-on-idea">2.1.2. Note about IBM JDK on IDEA</a></h4>
-<div class="paragraph">
-<p>If you are running IBM JDK it may be a little tricky to get it working.</p>
-</div>
-<div class="paragraph">
-<p>After you add the JDK to the IDE, add also the <code>vm.jar</code> specific to your platform under that JDK (e.g. <code>JAVA_HOME/jre/lib/amd64/default/jclSC180/vm.jar</code>).</p>
-</div>
-<div class="paragraph">
-<p>There&#8217;s a <a href="https://stackoverflow.com/questions/27906481/can-intellij-14-be-used-to-work-with-ibm-jdk-1-7/32852361#32852361">StackOverflow question</a> about this that could be useful in case you are running into this issue.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="style-templates-and-inspection-settings-for-idea"><a class="anchor" href="#style-templates-and-inspection-settings-for-idea"></a><a class="link" href="#style-templates-and-inspection-settings-for-idea">2.1.3. Style Templates and Inspection Settings for IDEA</a></h4>
-<div class="paragraph">
-<p>We have shared the style templates that are good for this project.
-If you want to apply them use these steps:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>File-&gt;Import Settings</p>
-</li>
-<li>
-<p>Select the file under ./artemis-cloned-folder/etc/ide-settings/idea/IDEA-style.jar</p>
-</li>
-<li>
-<p>Select both Code Style Templates and File templates (it&#8217;s the default option)</p>
-</li>
-<li>
-<p>Select OK and restart IDEA</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Alternatively you can copy <code>artemis-codestyle.xml</code> under your home settings at <code>IntelliJIdea15/codestyles</code>.</p>
-</div>
-<div class="sect4">
-<h5 id="to-import-inspection-settings"><a class="anchor" href="#to-import-inspection-settings"></a><a class="link" href="#to-import-inspection-settings">To import inspection settings:</a></h5>
-<div class="ulist">
-<ul>
-<li>
-<p>File-&gt;Settings-&gt;Editor-&gt;Inspections-&gt;Manage-&gt;Import</p>
-</li>
-<li>
-<p>Select the file <code>./artemis-cloned-folder/etc/ide-settings/idea/artemis-inspections.xml</code></p>
-</li>
-<li>
-<p>Select OK</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="issue-my-junit-tests-are-not-runnable-with-in-the-ide"><a class="anchor" href="#issue-my-junit-tests-are-not-runnable-with-in-the-ide"></a><a class="link" href="#issue-my-junit-tests-are-not-runnable-with-in-the-ide">2.1.4. Issue: My JUnit tests are not runnable with in the IDE.</a></h4>
-<div class="paragraph">
-<p>If the "Run &lt;classname&gt;" or "Run all tests" option is not present it is likely that the default profile has not been imported properly.
-To (re)import the "tests" Maven profile in an existing project do the following:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Open the Maven Projects Tool Window: View -&gt; Tool Windows -&gt; Maven Projects</p>
-</li>
-<li>
-<p>Select the "profiles" drop down</p>
-</li>
-<li>
-<p>Unselect then reselect the checkbox next to "tests".</p>
-</li>
-<li>
-<p>Click on the "Reimport all maven projects" button in the top left hand corner of the window.
-It looks like a circular blue arrow.</p>
-</li>
-<li>
-<p>Wait for IDEA to reload and try running a JUnit test again.
-The option to run should now be present.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="eclipse"><a class="anchor" href="#eclipse"></a><a class="link" href="#eclipse">2.2. Eclipse</a></h3>
-<div class="paragraph">
-<p>We recommend using Eclipse Kepler (4.3), due to the built-in support for Maven and Git.
-Note that there are still some Maven plugins used by sub-projects (e.g. documentation) which are not supported even in Eclipse Kepler (4.3).</p>
-</div>
-<div class="paragraph">
-<p>Eclipse <a href="https://eclipse.org/m2e/">m2e</a> is already included in "Eclipse IDE for Java Developers", or it can be installed from <a href="http://download.eclipse.org/releases/kepler">Eclipse Kepler release repository</a>.</p>
-</div>
-<div class="sect3">
-<h4 id="git-setup"><a class="anchor" href="#git-setup"></a><a class="link" href="#git-setup">2.2.1. Git setup</a></h4>
-<div class="paragraph">
-<p>It is strongly recommended to turn off the auto-updating of <code>.gitignore</code> files by the Git Team extension.
-Otherwise, it generates new <code>.gitignore</code> files in many directories that are not needed due to the top level <code>.gitignore</code> file.
-To turn it off, go to Preferences-&gt;Team-&gt;Git-&gt;Projects and deselect the "Automatically ignore derived resources" checkbox.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="schema-setup"><a class="anchor" href="#schema-setup"></a><a class="link" href="#schema-setup">2.2.2. Schema setup</a></h4>
-<div class="paragraph">
-<p>For proper schema validation you can add the Artemis schemas to your Eclipse XML Catalog</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Open: Window -&gt; Preferences -&gt; XML -&gt; XML Catalog</p>
-</li>
-<li>
-<p>Select Add -&gt; Workspace -&gt; Navigate to artemis-server and select src/main/resources/schema/artemis-server.xsd -&gt; click OK</p>
-</li>
-<li>
-<p>Repeat the above steps and add src/main/resources/schema/artemis-configuration.xsd</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="checkstyle-setup"><a class="anchor" href="#checkstyle-setup"></a><a class="link" href="#checkstyle-setup">2.2.3. Checkstyle setup</a></h4>
-<div class="paragraph">
-<p>You can import the Artemis Checkstyle template into eclipse to do Checkstyle validation.
-As a prerequisite you need to make sure the Checkstyle plugin is installed into Eclipse which you can get form the Eclipse Marketplace.
-You also will need to configure Sevntu-Checkstyle.
-See <a href="https://sevntu-checkstyle.github.io/sevntu.checkstyle/" class="bare">https://sevntu-checkstyle.github.io/sevntu.checkstyle/</a> for instructions.
-Then to configure the template:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Open: Window -&gt; Preferences -&gt; Checkstyle</p>
-</li>
-<li>
-<p>Select New -&gt; "Project Relative Configuration" in the "Type" dropdown</p>
-</li>
-<li>
-<p>Give the configuration a name and under location put "/artemis-pom/etc/checkstyle.xml" then hit ok</p>
-</li>
-<li>
-<p>You should now see your new configuration in the list of Checkstyle profiles.
-You can select the new configuration as the default if you want.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="annotation-pre-processing"><a class="anchor" href="#annotation-pre-processing"></a><a class="link" href="#annotation-pre-processing">2.2.4. Annotation Pre-Processing</a></h4>
-<div class="paragraph">
-<p>ActiveMQ Artemis uses <a href="https://developer.jboss.org/wiki/JBossLoggingTooling">JBoss Logging</a> and that requires source code generation from Java annotations.
-In order for it to 'just work' in Eclipse you need to install the <em>Maven Integration for Eclipse JDT Annotation Processor Toolkit</em> <a href="https://github.com/jbosstools/m2e-apt">m2e-apt</a>.
-See this <a href="https://community.jboss.org/en/tools/blog/2012/05/20/annotation-processing-support-in-m2e-or-m2e-apt-100-is-out">JBoss blog post</a>  for details.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="running-tests-from-eclipse"><a class="anchor" href="#running-tests-from-eclipse"></a><a class="link" href="#running-tests-from-eclipse">2.2.5. Running tests from Eclipse</a></h4>
-<div class="paragraph">
-<p>Setting up annotation pre-processing in the above section is all you need to run tests in the "unit-tests" project as that will properly add the generated logger to the source.
-However, one more step is needed to run tests in other projects such as "performance-tests" or "integration-tests" that have a dependency on "unit-tests".
-Currently m2eclipse does not properly link the generated source annotations folder from "unit-tests" which causes the logger that is generated to not be available.
-To simplest way to fix this is to manually add a project dependency on "unit-tests" to each of the projects where you want to run a test class from:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Right click on the test project (i.e. integration-tests): Properties -&gt; Java Build Path -&gt; Projects -&gt; Add</p>
-</li>
-<li>
-<p>Select the "unit-tests" project and click Ok</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>You should now be able to run tests assuming that the annotation pre-processing was set up properly in the previous step.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="m2e-connector-for-javacc-maven-plugin"><a class="anchor" href="#m2e-connector-for-javacc-maven-plugin"></a><a class="link" href="#m2e-connector-for-javacc-maven-plugin">2.2.6. M2E Connector for Javacc-Maven-Plugin</a></h4>
-<div class="paragraph">
-<p>Eclipse Indigo (3.7) has out-of-the-box support for it.</p>
-</div>
-<div class="paragraph">
-<p>As of this writing, Eclipse Kepler (4.3) still lacks support for Maven&#8217;s javacc plugin.
-The available <a href="https://github.com/objectledge/maven-extensions">m2e connector for javacc-maven-plugin</a> requires a downgrade of Maven components to be installed.
-manual installation instructions (as of this writing you need to use the development update site).
-See <a href="https://dev.eclipse.org/mhonarc/lists/m2e-users/msg02725.html">this post</a> for how to do this with Eclipse Juno (4.2).</p>
-</div>
-<div class="paragraph">
-<p>The current recommended solution for Eclipse Kepler is to mark <code>javacc-maven-plugin</code> as ignored by Eclipse, run Maven from the command line and then modify the project <code>activemq-core-client</code> adding the folder <code>target/generated-sources/javacc</code> to its build path.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="use-project-working-sets"><a class="anchor" href="#use-project-working-sets"></a><a class="link" href="#use-project-working-sets">2.2.7. Use <em>Project Working Sets</em></a></h4>
-<div class="paragraph">
-<p>Importing all ActiveMQ Artemis subprojects will create <em>too many</em> projects in Eclipse, cluttering your <em>Package Explorer</em> and <em>Project Explorer</em> views.
-One way to address that is to use <a href="https://help.eclipse.org/juno/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Fconcepts%2Fcworkset.htm">Eclipse&#8217;s Working Sets</a> feature.
-A good introduction to it can be found at a <a href="https://dzone.com/articles/categorise-projects-package">Dzone article on Eclipse Working Sets</a>.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="building"><a class="anchor" href="#building"></a><a class="link" href="#building">3. Building</a></h2>
+<h2 id="building"><a class="anchor" href="#building"></a><a class="link" href="#building">2. Building</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>We use Apache Maven to build the code, distribution, etc. and to manage dependencies.</p>
@@ -645,13 +368,13 @@ A good introduction to it can be found at a <a href="https://dzone.com/articles/
 This is specially true for the <a href="https://maven.apache.org/plugins-archives/maven-site-plugin-3.3/maven-3.html">'site' plugin</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="full-release"><a class="anchor" href="#full-release"></a><a class="link" href="#full-release">3.1. Full Release</a></h3>
+<h3 id="full-release"><a class="anchor" href="#full-release"></a><a class="link" href="#full-release">2.1. Full Release</a></h3>
 <div class="paragraph">
 <p>To build the full release with the documentation &amp; JavaDocs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Prelease</span> package</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Prelease</span> package</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -659,7 +382,7 @@ This is specially true for the <a href="https://maven.apache.org/plugins-archive
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Prelease</span> <span class="nb">install</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Prelease</span> <span class="nb">install</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -667,30 +390,30 @@ This is specially true for the <a href="https://maven.apache.org/plugins-archive
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Prelease</span> package <span class="nt">-DskipTests</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Prelease</span> package <span class="nt">-DskipTests</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="full-release-without-docs"><a class="anchor" href="#full-release-without-docs"></a><a class="link" href="#full-release-without-docs">3.2. Full Release without docs</a></h3>
+<h3 id="full-release-without-docs"><a class="anchor" href="#full-release-without-docs"></a><a class="link" href="#full-release-without-docs">2.2. Full Release without docs</a></h3>
 <div class="paragraph">
 <p>It is possible to build a distribution without the manuals and Javadocs.
 simply run</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn package</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn package</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="only-docs"><a class="anchor" href="#only-docs"></a><a class="link" href="#only-docs">3.3. Only docs</a></h3>
+<h3 id="only-docs"><a class="anchor" href="#only-docs"></a><a class="link" href="#only-docs">2.3. Only docs</a></h3>
 <div class="paragraph">
 <p>From the <code>artemis-website</code> module run:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Prelease</span> package</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Prelease</span> package</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -702,16 +425,28 @@ Output will be placed in the <code>target/classes/user-manual</code>, <code>targ
 </div>
 </div>
 <div class="sect2">
-<h3 id="offline"><a class="anchor" href="#offline"></a><a class="link" href="#offline">3.4. Offline</a></h3>
+<h3 id="offline"><a class="anchor" href="#offline"></a><a class="link" href="#offline">2.4. Offline</a></h3>
+<div class="paragraph">
+<p>Maven dependency:go-offline can be used to download various things the build needs. This necessitates some properties the build doesnt normally need set, so to make this work a helper profile called <code>go-offline</code> exists to have the os-maven-plugin set these properties based on the current environment. To run these together, do:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn dependency:go-offline
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn dependency:go-offline <span class="nt">-Pgo-offline</span>
+<span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-o</span> ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively you can simply specify the needed properties directly, based on your environment preference. For example, on a Linux x86-64 environment you could run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn dependency:go-offline <span class="nt">-Dos</span>.detected.name<span class="o">=</span>linux <span class="nt">-Dos</span>.detected.arch<span class="o">=</span>x86_64 <span class="nt">-Dos</span>.detected.classifier<span class="o">=</span>linux-x86_64
 <span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-o</span> ...</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-the-async-io-library"><a class="anchor" href="#building-the-async-io-library"></a><a class="link" href="#building-the-async-io-library">3.5. Building the ASYNC IO library</a></h3>
+<h3 id="building-the-async-io-library"><a class="anchor" href="#building-the-async-io-library"></a><a class="link" href="#building-the-async-io-library">2.5. Building the ASYNC IO library</a></h3>
 <div class="paragraph">
 <p>ActiveMQ Artemis provides the <code>ASYNCIO</code> <code>journal-type</code> which interacts with the Linux kernel libaio library. The ASYNCIO journal type should be used where possible as it is far superior in terms of performance.</p>
 </div>
@@ -723,32 +458,41 @@ Output will be placed in the <code>target/classes/user-manual</code>, <code>targ
 </div>
 </div>
 <div class="sect2">
-<h3 id="open-web-application-security-project-owasp-report"><a class="anchor" href="#open-web-application-security-project-owasp-report"></a><a class="link" href="#open-web-application-security-project-owasp-report">3.6. Open Web Application Security Project (OWASP) Report</a></h3>
+<h3 id="open-web-application-security-project-owasp-report"><a class="anchor" href="#open-web-application-security-project-owasp-report"></a><a class="link" href="#open-web-application-security-project-owasp-report">2.6. Open Web Application Security Project (OWASP) Report</a></h3>
 <div class="paragraph">
 <p>If you wish to generate a report for dependency CVEs you may build with the <code>-Powasp</code> profile, e.g.:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Powasp</span> verify <span class="nt">-DskipTests</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Powasp</span> verify <span class="nt">-DskipTests</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The output will be under <code>./target/dependency-check-report.html</code> for <strong>each</strong> sub-module.</p>
+<p>The output for every module will be aggregated in <code>./target/dependency-check-report.html</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="snapshot-builds"><a class="anchor" href="#snapshot-builds"></a><a class="link" href="#snapshot-builds">2.7. Snapshot Builds</a></h3>
+<div class="paragraph">
+<p>Snapshot builds are available at <a href="https://repository.apache.org/content/repositories/snapshots/org/apache/activemq/apache-artemis/" class="bare">https://repository.apache.org/content/repositories/snapshots/org/apache/activemq/apache-artemis/</a>.</p>
+</div>
+<div class="paragraph">
+<p>These are built by <a href="https://ci-builds.apache.org/job/ActiveMQ/job/ActiveMQ-Artemis-SNAPSHOT-Deploy/">this Apache CI job</a>.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="tests"><a class="anchor" href="#tests"></a><a class="link" href="#tests">4. Tests</a></h2>
+<h2 id="tests"><a class="anchor" href="#tests"></a><a class="link" href="#tests">3. Tests</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="running-tests"><a class="anchor" href="#running-tests"></a><a class="link" href="#running-tests">4.1. Running Tests</a></h3>
+<h3 id="running-tests"><a class="anchor" href="#running-tests"></a><a class="link" href="#running-tests">3.1. Running Tests</a></h3>
 <div class="paragraph">
 <p>To run the unit tests:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh"><span class="nv">$ </span>mvn <span class="nt">-Ptests</span> <span class="nb">test</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="sh"><span class="nv">$ </span>mvn <span class="nt">-Ptests</span> <span class="nb">test</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -756,7 +500,7 @@ Output will be placed in the <code>target/classes/user-manual</code>, <code>targ
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh"><span class="nv">$ </span>mvn <span class="nb">install </span>site</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="sh"><span class="nv">$ </span>mvn <span class="nb">install </span>site</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -764,7 +508,7 @@ Output will be placed in the <code>target/classes/user-manual</code>, <code>targ
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="sh"><span class="nv">$ </span>mvn <span class="nt">-Ptests</span> <span class="nt">-DfailIfNoTests</span><span class="o">=</span><span class="nb">false</span> <span class="nt">-Dtest</span><span class="o">=</span>&lt;test-name&gt; <span class="nb">test</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="sh"><span class="nv">$ </span>mvn <span class="nt">-Ptests</span> <span class="nt">-DfailIfNoTests</span><span class="o">=</span><span class="nb">false</span> <span class="nt">-Dtest</span><span class="o">=</span>&lt;test-name&gt; <span class="nb">test</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -772,7 +516,7 @@ Output will be placed in the <code>target/classes/user-manual</code>, <code>targ
 </div>
 </div>
 <div class="sect2">
-<h3 id="writing-tests"><a class="anchor" href="#writing-tests"></a><a class="link" href="#writing-tests">4.2. Writing Tests</a></h3>
+<h3 id="writing-tests"><a class="anchor" href="#writing-tests"></a><a class="link" href="#writing-tests">3.2. Writing Tests</a></h3>
 <div class="paragraph">
 <p>The broker is comprised of POJOs so it&#8217;s simple to configure and run a broker instance and test particular functionality.
 Even complex test-cases involving multiple clustered brokers are relatively easy to write.
@@ -796,20 +540,21 @@ This class does all the setup of a simple server automatically and provides the 
 </div>
 </div>
 <div class="sect2">
-<h3 id="writing-web-tests"><a class="anchor" href="#writing-web-tests"></a><a class="link" href="#writing-web-tests">4.3. Writing Web Tests</a></h3>
+<h3 id="writing-web-tests"><a class="anchor" href="#writing-web-tests"></a><a class="link" href="#writing-web-tests">3.3. Writing Web Tests</a></h3>
 <div class="paragraph">
 <p>The broker has a web console based on <a href="https://github.com/hawtio/hawtio">hawtio</a> and the <code>smoke-tests</code> are used to test it.
 For instance, the <a href="https://github.com/apache/activemq-artemis/blob/main/tests/smoke-tests/src/test/java/org/apache/activemq/artemis/tests/smoke/console/ConsoleTest.java">ConsoleTest</a> checks the web console using the <a href="https://github.com/SeleniumHQ/selenium">selenium framework</a>.
-The tests can be executed using a remote server, local browsers or <a href="https://www.testcontainers.org/modules/webdriver_containers">testcontainers</a>.
+The tests can be executed on the Chrome and Firefox browsers by using a remote server, local browsers or <a href="https://www.testcontainers.org/modules/webdriver_containers">testcontainers</a>.
+To configure the browsers on which execute the tests set the <code>webdriver.browsers</code> property with the comma-separated list of the browsers, i.e. <code>-Dwebdriver.browsers=chrome,firefox</code>.
 To use a remote server set the <code>webdriver.remote.server</code> property with the URL of the server, ie -Dwebdriver.remote.server=http://localhost:4444/wd/hub To use your local Google Chrome browser download the <a href="https://chromedriver.chromium.org/">WebDriver for Chrome</a> and set the <code>webdriver.chrome.driver</code> property with the WebDriver path, ie <code>-Dwebdriver.chrome.driver=/home/artemis/chromedriver_linux64/chromedriver</code>.
 To use your local Firefox browser download the <a href="https://github.com/mozilla/geckodriver/">WebDriver for Firefox</a> and set the <code>webdriver.gecko.driver</code> property with the WebDriver path, ie <code>-Dwebdriver.gecko.driver=/home/artemis/geckodriver-linux64/geckodriver</code>.
 To use <a href="https://www.testcontainers.org/modules/webdriver_containers">testcontainers</a> install docker.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="keys-for-writing-good-tests"><a class="anchor" href="#keys-for-writing-good-tests"></a><a class="link" href="#keys-for-writing-good-tests">4.4. Keys for writing good tests</a></h3>
+<h3 id="keys-for-writing-good-tests"><a class="anchor" href="#keys-for-writing-good-tests"></a><a class="link" href="#keys-for-writing-good-tests">3.4. Keys for writing good tests</a></h3>
 <div class="sect3">
-<h4 id="use-logger-debug"><a class="anchor" href="#use-logger-debug"></a><a class="link" href="#use-logger-debug">4.4.1. Use logger.debug</a></h4>
+<h4 id="use-logger-debug"><a class="anchor" href="#use-logger-debug"></a><a class="link" href="#use-logger-debug">3.4.1. Use logger.debug</a></h4>
 <div class="ulist">
 <ul>
 <li>
@@ -819,7 +564,7 @@ To use <a href="https://www.testcontainers.org/modules/webdriver_containers">tes
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTest</span> <span class="o">{</span>
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTest</span> <span class="o">{</span>
 <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">org</span><span class="o">.</span><span class="na">slf4j</span><span class="o">.</span><span class="na">Logger</span> <span class="n">log</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="na">slf4j</span><span class="o">.</span><span class="na">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">$CLASS_NAME</span><span class="err">$</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 
      <span class="nd">@Test</span>
@@ -841,7 +586,7 @@ Debug information should be called through <code>logger.debug</code>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="avoid-leaks"><a class="anchor" href="#avoid-leaks"></a><a class="link" href="#avoid-leaks">4.4.2. Avoid leaks</a></h4>
+<h4 id="avoid-leaks"><a class="anchor" href="#avoid-leaks"></a><a class="link" href="#avoid-leaks">3.4.2. Avoid leaks</a></h4>
 <div class="paragraph">
 <p>An important task for any test-case is to clean up all the resources it creates when it runs.
 This includes the server instance itself and any resources created to connect to it (e.g. instances of <code>ServerLocator</code>, <code>ClientSessionFactory</code>, <code>ClientSession</code>, etc.).
@@ -868,7 +613,7 @@ If you choose <em>not</em> to use this method then use <code>org.apache.activemq
 </div>
 </div>
 <div class="sect3">
-<h4 id="create-configurations"><a class="anchor" href="#create-configurations"></a><a class="link" href="#create-configurations">4.4.3. Create configurations</a></h4>
+<h4 id="create-configurations"><a class="anchor" href="#create-configurations"></a><a class="link" href="#create-configurations">3.4.3. Create configurations</a></h4>
 <div class="paragraph">
 <p>There are numerous methods in <code>org.apache.activemq.artemis.tests.util.ActiveMQTestBase</code> to create a configuration.
 These methods are named like create&#42;Config(..).
@@ -879,7 +624,7 @@ Each one creates a slightly different configuration but there is a lot of  overl
 </div>
 </div>
 <div class="sect3">
-<h4 id="look-at-other-test-cases"><a class="anchor" href="#look-at-other-test-cases"></a><a class="link" href="#look-at-other-test-cases">4.4.4. Look at other test-cases</a></h4>
+<h4 id="look-at-other-test-cases"><a class="anchor" href="#look-at-other-test-cases"></a><a class="link" href="#look-at-other-test-cases">3.4.4. Look at other test-cases</a></h4>
 <div class="paragraph">
 <p>If you need ideas on how to configure something or test something try looking through the test-suite at other test-cases which may be similar.
 This is one of the best ways to learn how the test-suite works and how you can leverage the testing infrastructure to test your particular case.</p>
@@ -889,10 +634,10 @@ This is one of the best ways to learn how the test-suite works and how you can l
 </div>
 </div>
 <div class="sect1">
-<h2 id="code-coverage-report"><a class="anchor" href="#code-coverage-report"></a><a class="link" href="#code-coverage-report">5. Code coverage report</a></h2>
+<h2 id="code-coverage-report"><a class="anchor" href="#code-coverage-report"></a><a class="link" href="#code-coverage-report">4. Code coverage report</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="getting-jacoco-exec-files"><a class="anchor" href="#getting-jacoco-exec-files"></a><a class="link" href="#getting-jacoco-exec-files">5.1. Getting JaCoCo exec files</a></h3>
+<h3 id="getting-jacoco-exec-files"><a class="anchor" href="#getting-jacoco-exec-files"></a><a class="link" href="#getting-jacoco-exec-files">4.1. Getting JaCoCo exec files</a></h3>
 <div class="paragraph">
 <p>Before you can generate code coverage report by JaCoCo tool, you need to get data about what lines of code were executed during testing.
 These information are collected by JaCoCo agent and stored in JaCoCo exec files.
@@ -900,15 +645,15 @@ All you need to do is run the tests with <code>jacoco</code> maven profile.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nb">test</span> <span class="nt">-Ptests</span>,jacoco</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nb">test</span> <span class="nt">-Ptests</span>,jacoco</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="generate-jacoco-reports"><a class="anchor" href="#generate-jacoco-reports"></a><a class="link" href="#generate-jacoco-reports">5.2. Generate JaCoCo reports</a></h3>
+<h3 id="generate-jacoco-reports"><a class="anchor" href="#generate-jacoco-reports"></a><a class="link" href="#generate-jacoco-reports">4.2. Generate JaCoCo reports</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn verify <span class="nt">-Pjacoco-generate-report</span> <span class="nt">-DskipTests</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn verify <span class="nt">-Pjacoco-generate-report</span> <span class="nt">-DskipTests</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -917,59 +662,24 @@ After the command was executed, in directory <code>target/jacoco-report</code> y
 </div>
 </div>
 <div class="sect2">
-<h3 id="merge-jacoco-exec-files-to-one"><a class="anchor" href="#merge-jacoco-exec-files-to-one"></a><a class="link" href="#merge-jacoco-exec-files-to-one">5.3. Merge JaCoCo exec files to one</a></h3>
+<h3 id="merge-jacoco-exec-files-to-one"><a class="anchor" href="#merge-jacoco-exec-files-to-one"></a><a class="link" href="#merge-jacoco-exec-files-to-one">4.3. Merge JaCoCo exec files to one</a></h3>
 <div class="paragraph">
 <p>Since ActiveMQ Artemis is divided into several modules, exec files are generated for each module separately.
 If you need to merge them together to have all data in one place, you can do it by command below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn jacoco:merge <span class="nt">-N</span> <span class="nt">-Pjacoco</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn jacoco:merge <span class="nt">-N</span> <span class="nt">-Pjacoco</span></code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="code-formatting"><a class="anchor" href="#code-formatting"></a><a class="link" href="#code-formatting">6. Code Formatting</a></h2>
+<h2 id="validating-releases"><a class="anchor" href="#validating-releases"></a><a class="link" href="#validating-releases">5. Validating releases</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="idea"><a class="anchor" href="#idea"></a><a class="link" href="#idea">6.1. IDEA</a></h3>
-<div class="paragraph">
-<p>If you completed the step described on <a href="#style-templates-and-inspection-settings-for-idea">idea instructions</a>, and selected the code style accordingly you should be ready to go.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="eclipse-2"><a class="anchor" href="#eclipse-2"></a><a class="link" href="#eclipse-2">6.2. Eclipse</a></h3>
-<div class="paragraph">
-<p>Eclipse code formatting and (basic) project configuration files can be found at the <code>etc/</code> folder.
-You should manually  copy them <em>after importing all your projects</em>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">for settings_dir in `find . -type d -name .settings`;</span><span class="w"> </span><span class="k">do</span>
-<span class="gp">\cp -v etc/ide-settings/eclipse/org.eclipse.jdt.* $</span>settings_dir
-<span class="go">done</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Do not use the <a href="https://maven.apache.org/plugins/maven-eclipse-plugin/">maven-eclipse-plugin</a> to copy the files as it  conflicts with <a href="https://eclipse.org/m2e/">m2e</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="editorconfig"><a class="anchor" href="#editorconfig"></a><a class="link" href="#editorconfig">6.3. EditorConfig</a></h3>
-<div class="paragraph">
-<p>For editors supporting <a href="http://editorconfig.org/">EditorConfig</a>, a settings file is provided in etc/ide-settings/editorconfig.ini.
-Copy it to your Artemis top level directory and <a href="http://editorconfig.org/#file-location">name it .editorconfig</a></p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="validating-releases"><a class="anchor" href="#validating-releases"></a><a class="link" href="#validating-releases">7. Validating releases</a></h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="setting-up-the-maven-repository"><a class="anchor" href="#setting-up-the-maven-repository"></a><a class="link" href="#setting-up-the-maven-repository">7.1. Setting up the maven repository</a></h3>
+<h3 id="setting-up-the-maven-repository"><a class="anchor" href="#setting-up-the-maven-repository"></a><a class="link" href="#setting-up-the-maven-repository">5.1. Setting up the maven repository</a></h3>
 <div class="paragraph">
 <p>When a release is proposed a maven repository is staged.</p>
 </div>
@@ -986,7 +696,7 @@ The easiest way we have found is to change your maven settings at <code>~/.m2/se
 <div class="listingblock">
 <div class="title">~/.m2/settings.xml</div>
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;</span>
 <span class="nt">&lt;settings&gt;</span>
    <span class="nt">&lt;profiles&gt;</span>
       <span class="nt">&lt;profile&gt;</span>
@@ -1033,7 +743,7 @@ The easiest way we have found is to change your maven settings at <code>~/.m2/se
 </div>
 </div>
 <div class="sect2">
-<h3 id="using-the-examples"><a class="anchor" href="#using-the-examples"></a><a class="link" href="#using-the-examples">7.2. Using the examples</a></h3>
+<h3 id="using-the-examples"><a class="anchor" href="#using-the-examples"></a><a class="link" href="#using-the-examples">5.2. Using the examples</a></h3>
 <div class="paragraph">
 <p>The Apache ActiveMQ Artemis examples will create servers and use most of the maven components as real application were supposed to do.
 You can do this by running these examples after the <code>.m2</code> profile installations for the staged repository.</p>
@@ -1045,7 +755,7 @@ You can do this by running these examples after the <code>.m2</code> profile ins
 </div>
 </div>
 <div class="sect1">
-<h2 id="notes-for-maintainers"><a class="anchor" href="#notes-for-maintainers"></a><a class="link" href="#notes-for-maintainers">8. Notes for Maintainers</a></h2>
+<h2 id="notes-for-maintainers"><a class="anchor" href="#notes-for-maintainers"></a><a class="link" href="#notes-for-maintainers">6. Notes for Maintainers</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>ActiveMQ Artemis committers have write access to the Apache ActiveMQ Artemis repositories and will be responsible for acknowledging and pushing commits contributed via pull requests on GitHub.</p>
@@ -1061,7 +771,7 @@ Currently the <a href="https://builds.apache.org/job/ActiveMQ-Artemis-PR-Build/"
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Pfast-tests</span> <span class="nb">install</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Pfast-tests</span> <span class="nb">install</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1074,25 +784,25 @@ Having additional eyes looking at significant changes prior to committing to the
 If it cannot be fixed in a reasonable amount of time the commit can be reverted and re-reviewed.</p>
 </div>
 <div class="sect2">
-<h3 id="using-the-dev-profile"><a class="anchor" href="#using-the-dev-profile"></a><a class="link" href="#using-the-dev-profile">8.1. Using the dev profile.</a></h3>
+<h3 id="using-the-dev-profile"><a class="anchor" href="#using-the-dev-profile"></a><a class="link" href="#using-the-dev-profile">6.1. Using the <code>dev</code> profile.</a></h3>
 <div class="paragraph">
-<p>Developers are encouraged also to use the Dev profile, which will activate checkstyle during the build:</p>
+<p>Developers are encouraged to use the <code>dev</code> profile which will activate <a href="https://checkstyle.org/">CheckStyle</a> during the build:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Pdev</span> <span class="nb">install</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>mvn <span class="nt">-Pdev</span> <span class="nb">install</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="commit-messages"><a class="anchor" href="#commit-messages"></a><a class="link" href="#commit-messages">8.2. Commit Messages</a></h3>
+<h3 id="commit-messages"><a class="anchor" href="#commit-messages"></a><a class="link" href="#commit-messages">6.2. Commit Messages</a></h3>
 <div class="paragraph">
 <p>Please ensure the commit messages follow the 50/72 format as described <a href="#commitMessageDetails">here</a>.
 This format follows the recommendation from the <a href="https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project">official Git book</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuring-git-repositories"><a class="anchor" href="#configuring-git-repositories"></a><a class="link" href="#configuring-git-repositories">8.3. Configuring Git repositories</a></h3>
+<h3 id="configuring-git-repositories"><a class="anchor" href="#configuring-git-repositories"></a><a class="link" href="#configuring-git-repositories">6.3. Configuring Git repositories</a></h3>
 <div class="paragraph">
 <p>Aside from the traditional <code>origin</code> and <code>upstream</code> repositories committers will need an additional reference for the canonical Apache git repository where they will be merging and pushing pull-requests.
 For the purposes of this document, let&#8217;s assume these ref/repo associations already exist as described in the <a href="code.html">Working with the Code</a> section:</p>
@@ -1111,7 +821,7 @@ For the purposes of this document, let&#8217;s assume these ref/repo association
 Here we call it <code>apache</code>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git remote add apache https://gitbox.apache.org/repos/asf/activemq-artemis.git</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git remote add apache https://gitbox.apache.org/repos/asf/activemq-artemis.git</code></pre>
 </div>
 </div>
 </li>
@@ -1121,7 +831,7 @@ We are using <code>upstream</code> as the remote repo name (as noted above), but
 Just be sure to edit all references to the remote repo name so it&#8217;s consistent.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="go"> [remote "upstream"]
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="go"> [remote "upstream"]
      url = git@github.com:apache/activemq-artemis.git
      fetch = +refs/heads/*:refs/remotes/upstream/*
      fetch = +refs/pull/*/head:refs/remotes/upstream/pr/*</span></code></pre>
@@ -1135,7 +845,7 @@ Just be sure to edit all references to the remote repo name so it&#8217;s consis
 </div>
 </div>
 <div class="sect2">
-<h3 id="merging-and-pushing-pull-requests"><a class="anchor" href="#merging-and-pushing-pull-requests"></a><a class="link" href="#merging-and-pushing-pull-requests">8.4. Merging and pushing pull requests</a></h3>
+<h3 id="merging-and-pushing-pull-requests"><a class="anchor" href="#merging-and-pushing-pull-requests"></a><a class="link" href="#merging-and-pushing-pull-requests">6.4. Merging and pushing pull requests</a></h3>
 <div class="paragraph">
 <p>Here are the basic commands to retrieve pull requests, merge, and push them to the canonical Apache repository:</p>
 </div>
@@ -1145,7 +855,7 @@ Just be sure to edit all references to the remote repo name so it&#8217;s consis
 <p>Download all the remote branches etc. including all the pull requests.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git fetch <span class="nt">--all</span>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git fetch <span class="nt">--all</span>
 <span class="go">Fetching origin
 Fetching upstream
 remote: Counting objects: 566, done.
@@ -1162,7 +872,7 @@ From github.com:apache/activemq-artemis
 <p>Checkout the pull request you wish to review</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git checkout <span class="nb">pr</span>/105 <span class="nt">-B</span> 105</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git checkout <span class="nb">pr</span>/105 <span class="nt">-B</span> 105</code></pre>
 </div>
 </div>
 </li>
@@ -1170,7 +880,7 @@ From github.com:apache/activemq-artemis
 <p>Rebase the branch against main, so the merge would happen at the top of the current main</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git pull <span class="nt">--rebase</span> apache main</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git pull <span class="nt">--rebase</span> apache main</code></pre>
 </div>
 </div>
 </li>
@@ -1178,7 +888,7 @@ From github.com:apache/activemq-artemis
 <p>Once you&#8217;ve reviewed the change and are ready to merge checkout <code>main</code>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git checkout main</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git checkout main</code></pre>
 </div>
 </div>
 </li>
@@ -1186,7 +896,7 @@ From github.com:apache/activemq-artemis
 <p>Ensure you are up to date on your main also.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git pull <span class="nt">--rebase</span> apache main</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git pull <span class="nt">--rebase</span> apache main</code></pre>
 </div>
 </div>
 </li>
@@ -1194,7 +904,7 @@ From github.com:apache/activemq-artemis
 <p>We actually recommend checking out main again, to make sure you wouldn&#8217;t add any extra commits by accident:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git fetch apache
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git fetch apache
 <span class="gp">$</span><span class="w"> </span>git checkout apache/main <span class="nt">-B</span> main</code></pre>
 </div>
 </div>
@@ -1206,7 +916,7 @@ The "#105" shows up as a link in the GitHub UI for navigating to the PR from the
 This will ensure the github pull request is closed even if the commit ID changed due to eventual rebases.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git merge <span class="nt">--no-ff</span> 105 <span class="nt">-m</span> <span class="s2">"This closes #105"</span></code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git merge <span class="nt">--no-ff</span> 105 <span class="nt">-m</span> <span class="s2">"This closes #105"</span></code></pre>
 </div>
 </div>
 </li>
@@ -1214,7 +924,7 @@ This will ensure the github pull request is closed even if the commit ID changed
 <p>Push to the canonical Apache repo.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git push apache main</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git push apache main</code></pre>
 </div>
 </div>
 </li>
@@ -1222,7 +932,7 @@ This will ensure the github pull request is closed even if the commit ID changed
 </div>
 </div>
 <div class="sect2">
-<h3 id="using-the-automated-script"><a class="anchor" href="#using-the-automated-script"></a><a class="link" href="#using-the-automated-script">8.5. Using the automated script</a></h3>
+<h3 id="using-the-automated-script"><a class="anchor" href="#using-the-automated-script"></a><a class="link" href="#using-the-automated-script">6.5. Using the automated script</a></h3>
 <div class="paragraph">
 <p>If you followed the naming conventions described here you can use the <code>scripts/rebase-PR.sh</code> script to automate the merging process.
 This will execute the exact steps described on this previous section.</p>
@@ -1233,7 +943,7 @@ This will execute the exact steps described on this previous section.</p>
 <p>Simply use:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>&lt;checkout-directory&gt;/scripts/merge-pr.sh &lt;PR number&gt; Message on the PR</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>&lt;checkout-directory&gt;/scripts/merge-pr.sh &lt;PR number&gt; Message on the PR</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1241,7 +951,7 @@ This will execute the exact steps described on this previous section.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">pwd</span>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span><span class="nb">pwd</span>
 <span class="go">/checkouts/apache-activemq-artemis
 
 </span><span class="gp">$</span><span class="w"> </span>./scripts/merge-PR.sh 175 ARTEMIS-229 address on Security Interface</code></pre>
@@ -1255,7 +965,7 @@ This will execute the exact steps described on this previous section.</p>
 <p>After this you can push to the canonical Apache repo.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git push apache main</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git push apache main</code></pre>
 </div>
 </div>
 </li>
@@ -1263,7 +973,7 @@ This will execute the exact steps described on this previous section.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="use-a-separate-branch-for-your-changes"><a class="anchor" href="#use-a-separate-branch-for-your-changes"></a><a class="link" href="#use-a-separate-branch-for-your-changes">8.6. Use a separate branch for your changes</a></h3>
+<h3 id="use-a-separate-branch-for-your-changes"><a class="anchor" href="#use-a-separate-branch-for-your-changes"></a><a class="link" href="#use-a-separate-branch-for-your-changes">6.6. Use a separate branch for your changes</a></h3>
 <div class="paragraph">
 <p>It is recommended that you work away from main for two reasons:</p>
 </div>
@@ -1281,7 +991,7 @@ Minimize your risks by working on a branch away from main.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="notes"><a class="anchor" href="#notes"></a><a class="link" href="#notes">8.7. Notes</a></h3>
+<h3 id="notes"><a class="anchor" href="#notes"></a><a class="link" href="#notes">6.7. Notes</a></h3>
 <div class="paragraph">
 <p>The GitHub mirror repository (i.e. <code>upstream</code>) is cloning the canonical Apache repository.
 Because of this there may be a slight delay between when a commit is pushed to the Apache repo and when that commit is reflected in the GitHub mirror.
@@ -1290,7 +1000,7 @@ You can wait for the mirror to update before performing the steps above or you c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git branch main <span class="nt">-u</span> apache/main</code></pre>
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git branch main <span class="nt">-u</span> apache/main</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1301,7 +1011,7 @@ You can wait for the mirror to update before performing the steps above or you c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git checkout main
+<pre class="rouge highlight nowrap"><code data-lang="console"><span class="gp">$</span><span class="w"> </span>git checkout main
 <span class="gp">$</span><span class="w"> </span>git branch apache_main <span class="nt">--track</span> apache/main
 <span class="gp">$</span><span class="w"> </span>git pull
 <span class="gp">$</span><span class="w"> </span>git merge <span class="nt">--no-ff</span> <span class="nb">pr</span>/105
@@ -1312,7 +1022,7 @@ You can wait for the mirror to update before performing the steps above or you c
 </div>
 </div>
 <div class="sect1">
-<h2 id="history"><a class="anchor" href="#history"></a><a class="link" href="#history">9. History</a></h2>
+<h2 id="history"><a class="anchor" href="#history"></a><a class="link" href="#history">7. History</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Apache ActiveMQ Artemis project was started in October 2014.
@@ -1364,7 +1074,7 @@ The top 10 committers are highlighted here:</p>
 <p>For more information please visit the <a href="https://github.com/hornetq/hornetq/tree/apache-donation">HornetQ GitHub project</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="rebasing-original-donation"><a class="anchor" href="#rebasing-original-donation"></a><a class="link" href="#rebasing-original-donation">9.1. Rebasing original donation</a></h3>
+<h3 id="rebasing-original-donation"><a class="anchor" href="#rebasing-original-donation"></a><a class="link" href="#rebasing-original-donation">7.1. Rebasing original donation</a></h3>
 <div class="paragraph">
 <p>It may be useful to look at the donation history combined with the artemis history.
 It is the case when eventually looking at old changes.</p>
@@ -1383,7 +1093,7 @@ It is the case when eventually looking at old changes.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="legal-notice"><a class="anchor" href="#legal-notice"></a><a class="link" href="#legal-notice">10. Legal Notice</a></h2>
+<h2 id="legal-notice"><a class="anchor" href="#legal-notice"></a><a class="link" href="#legal-notice">8. Legal Notice</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements.
