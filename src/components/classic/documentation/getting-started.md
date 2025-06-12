@@ -39,6 +39,7 @@ The Getting Started Guide for ActiveMQ Classic 5.x document contains the followi
 *   [Stopping ActiveMQ Classic](#StoppingActiveMQClassic)
 *   [Configuring ActiveMQ Classic](#ConfiguringActiveMQClassic)
 *   [Additional Resources](#AdditionalResources)
+*   [Docker Image](docker-image)
 
 Pre-Installation Requirements
 -----------------------------
