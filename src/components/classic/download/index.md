@@ -31,8 +31,8 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
     <tr style="background-color: #dff0d8;">
       <td>6.1.x</td>
       <td><strong>Stable - Supported</strong></td>
-      <td>6.1.6</td>
-      <td>Mar 10th, 2025</td>
+      <td>6.1.7</td>
+      <td>Jun 22nd, 2025</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>6.0.x</td>
@@ -119,8 +119,8 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
 
 | Series | Broker JMS API Support      | Client JMS API Client       | Java Version | Spring Version | Logging Support              | Web Support            | Status       | Last    | Next   | ETA     |
 |--------|-----------------------------|-----------------------------|--------------|----------------|------------------------------|------------------------|--------------|---------|--------|---------|
-| 6.2.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | 17+          | 6.2.3          | Log4j 2.24.3/Slf4j 2.0.16    | Jetty 11.0.24          | In dev       |         |        | Dec  24 |
-| 6.1.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | 17+          | 6.1.16         | Log4j 2.24.3/Slf4j 2.0.16    | Jetty 11.0.24          | **Stable - Supported**   | 6.1.6   | 6.1.7  | Jun  25 |
+| 6.2.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | 17+          | 6.2.8          | Log4j 2.24.3/Slf4j 2.0.16    | Jetty 11.0.25          | In dev       |         |        | Dec  24 |
+| 6.1.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | 17+          | 6.1.21         | Log4j 2.24.3/Slf4j 2.0.16    | Jetty 11.0.25          | **Stable - Supported**   | 6.1.7   | 6.1.8  | Sep  25 |
 | 6.0.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | 17+          | 6.0.17         | Log4j 2.22.0/Slf4j 2.0.9     | Jetty 11.0.18          | _Deprecated_ | 6.0.1   |        |         |
 | 5.19.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | 11+          | 5.3.39         | Log4j 2.24.3/Slf4j 2.0.16    | Jetty 9.4.57.v20241219 | **Stable - Supported**   | 5.19.0  | 5.19.1 | Jun  25 |
 | 5.18.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | 11+          | 5.3.39         | Log4j 2.24.1/Slf4j 2.0.13    | Jetty 9.4.57.v20241219 | _Deprecated_   | 5.18.7  |         |        |
