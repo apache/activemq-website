@@ -17,16 +17,16 @@ It is important to [verify the integrity]({{site.baseurl}}/components/artemis/do
 
 [Release Notes](release-notes-native-1.0.2)
 
-Source Distribution:|[apache-artemis-native-1.0.2-source-release.zip](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.asc)|
+Source Distribution:|[apache-artemis-native-1.0.2-source-release.zip](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.sha512)|[ASC Signature](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.2/activemq-artemis-native-1.0.2-source-release.zip.asc)|
 
 #### ActiveMQ Artemis Native Layer 1.0.1  (Oct 24th, 2019)
 
 [Release Notes](release-notes-native-1.0.1)
 
-Source Distribution:|[apache-artemis-native-1.0.1-source-release.zip](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.1/activemq-artemis-native-1.0.1-source-release.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.1/activemq-artemis-native-1.0.1-source-release.zip.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.1/activemq-artemis-native-1.0.1-source-release.zip.asc)|
+Source Distribution:|[apache-artemis-native-1.0.1-source-release.zip](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.1/activemq-artemis-native-1.0.1-source-release.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.1/activemq-artemis-native-1.0.1-source-release.zip.sha512)|[ASC Signature](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.1/activemq-artemis-native-1.0.1-source-release.zip.asc)|
 
 #### ActiveMQ Artemis Native Layer 1.0.0  (March 7th, 2019)
 
 [Release Notes](release-notes-native-1.0.0)
 
-Source Distribution:|[apache-artemis-native-1.0.0-source-release.zip](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.0/activemq-artemis-native-1.0.0-source-release.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.0/activemq-artemis-native-1.0.0-source-release.zip.sha512)|[GPG Signature](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.0/activemq-artemis-native-1.0.0-source-release.zip.asc)|
+Source Distribution:|[apache-artemis-native-1.0.0-source-release.zip](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.0/activemq-artemis-native-1.0.0-source-release.zip)|[SHA512](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.0/activemq-artemis-native-1.0.0-source-release.zip.sha512)|[ASC Signature](https://archive.apache.org/dist/activemq/activemq-artemis-native/1.0.0/activemq-artemis-native-1.0.0-source-release.zip.asc)|

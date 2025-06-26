@@ -13,7 +13,7 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
 
 [Release Notes](release-notes-native-2.0.0)
 
-Source Distribution:|[apache-artemis-native-2.0.0-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-native/2.0.0/activemq-artemis-native-2.0.0-source-release.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis-native/2.0.0/activemq-artemis-native-2.0.0-source-release.zip.sha512)|[GPG Signature](https://downloads.apache.org/activemq/activemq-artemis-native/2.0.0/activemq-artemis-native-2.0.0-source-release.zip.asc)|
+Source Distribution:|[apache-artemis-native-2.0.0-source-release.zip](https://www.apache.org/dyn/closer.cgi?filename=activemq/activemq-artemis-native/2.0.0/activemq-artemis-native-2.0.0-source-release.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/activemq-artemis-native/2.0.0/activemq-artemis-native-2.0.0-source-release.zip.sha512)|[ASC Signature](https://downloads.apache.org/activemq/activemq-artemis-native/2.0.0/activemq-artemis-native-2.0.0-source-release.zip.asc)|
 
 This is the native layer used by ActiveMQ Artemis for storage. The main broker binary archive [downloads](./) already include a pre-compiled version of this component.
 <br/>
