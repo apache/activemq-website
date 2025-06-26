@@ -132,23 +132,26 @@ This is the last intended Classic 5.16.x release. Users should upgrade to the cu
 
 <h2 id="verify-the-integrity-of-downloads">Verify the Integrity of Downloads</h2>
 
-<p>It is essential that you verify the integrity of the downloaded files using the PGP signature or SHA checksum.</p>
+<p>It is essential that you verify the integrity of the downloaded files using the ASC signature or SHA checksum.</p>
 
-<p>The PGP signatures can be verified using PGP or GPG. Begin by following these steps:</p>
+<p>The ASC signatures can be verified using PGP or GPG. Begin by following these steps:</p>
 
 <ol>
   <li>Download the <a href="https://downloads.apache.org/activemq/KEYS">KEYS</a> file.</li>
-  <li>Download the .asc signature for the relevant distribution file.</li>
-  <li>Verify the signature using one the following sets of commands, depending on your use of PGP or GPG:
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gpg --import KEYS
-$ gpg --verify &lt;file-name&gt;.asc &lt;file-name&gt;
-
-$ pgpk -a KEYS
-$ pgpv &lt;file-name&gt;.asc
-
-$ pgp -ka KEYS
-$ pgp &lt;file-name&gt;.asc
-</code></pre></div>    </div>
+  <li>Download the <code class="language-plaintext highlighter-rouge">.asc</code> signature for the relevant distribution file.</li>
+  <li>Verify the signature.
+    <ul>
+      <li>If using GPG:
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ gpg --import KEYS
+ $ gpg --verify &lt;file-name&gt;.asc &lt;file-name&gt;
+</code></pre></div>        </div>
+      </li>
+      <li>If using PGP:
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ pgp -ka KEYS
+ $ pgp &lt;file-name&gt;.asc
+</code></pre></div>        </div>
+      </li>
+    </ul>
   </li>
 </ol>
 
