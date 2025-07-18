@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>AMQP</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const pathSegments = window.location.pathname.split('/');
+                if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+                    var message = document.createElement("div");
+                    message.style.margin = "20px";
+                    message.style.textAlign = "center";
+                    message.style.backgroundColor = "#FFFFE0";
+                    message.textContent = "Please be aware that this documentation is out of date. ";
+
+                    var link = document.createElement("a");
+                    link.href = "../latest";
+                    link.textContent = "Here is the latest documentation.";
+                    message.appendChild(link);
+
+                    document.body.insertBefore(message, document.body.firstChild);
+                }
+            });
+        </script>
+    </head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>AMQP</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#examples">1. Examples</a></li>
+<li><a href="#message-conversions">2. Message Conversions</a></li>
+<li><a href="#intercepting-and-changing-messages">3. Intercepting and changing messages</a></li>
+<li><a href="#amqp-and-security">4. AMQP and security</a></li>
+<li><a href="#amqp-and-destinations">5. AMQP and destinations</a></li>
+<li><a href="#amqp-and-multicast-addresses-topics">6. AMQP and Multicast Addresses (Topics)</a></li>
+<li><a href="#amqp-and-coordinations-handling-transactions">7. AMQP and Coordinations - Handling Transactions</a></li>
+<li><a href="#amqp-scheduling-message-delivery">8. AMQP scheduling message delivery</a></li>
+<li><a href="#dlq-and-expiry-transfer">9. DLQ and Expiry transfer</a></li>
+<li><a href="#filtering-on-message-annotations">10. Filtering on Message Annotations</a></li>
+<li><a href="#configuring-amqp-idle-timeout">11. Configuring AMQP Idle Timeout</a>
+<ul class="sectlevel2">
+<li><a href="#disabling-keep-alive-checks">11.1. Disabling Keep alive checks</a></li>
+</ul>
+</li>
+<li><a href="#web-sockets">12. Web Sockets</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis supports the <a href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=amqp">AMQP 1.0</a> specification.
+By default there are <code>acceptor</code> elements configured to accept AMQP connections on ports <code>61616</code> and <code>5672</code>.</p>
+</div>
+<div class="paragraph">
+<p>See the general <a href="protocols-interoperability.html#protocols-and-interoperability">Protocols and Interoperability</a> chapter for details on configuring an <code>acceptor</code> for AMQP.</p>
+</div>
+<div class="paragraph">
+<p>You can use <em>any</em> AMQP 1.0 compatible clients.</p>
+</div>
+<div class="paragraph">
+<p>A short list includes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://qpid.apache.org/download.html">qpid clients</a></p>
+</li>
+<li>
+<p><a href="https://blogs.apache.org/activemq/entry/using-net-libraries-with-activemq">.NET Clients</a></p>
+</li>
+<li>
+<p><a href="https://github.com/noodlefrenzy/node-amqp10">Javascript NodeJS</a></p>
+</li>
+<li>
+<p><a href="https://github.com/grs/rhea">Java Script RHEA</a></p>
+</li>
+<li>
+<p>&#8230;&#8203;
+and many others.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="examples"><a class="anchor" href="#examples"></a><a class="link" href="#examples">1. Examples</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We have a few examples as part of the <a href="examples.html">Artemis examples</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>.NET:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>./examples/protocols/amqp/dotnet</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>ProtonCPP</p>
+<div class="ulist">
+<ul>
+<li>
+<p>./examples/protocols/amqp/proton-cpp</p>
+</li>
+<li>
+<p>./examples/protocols/amqp/proton-clustered-cpp</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Ruby</p>
+<div class="ulist">
+<ul>
+<li>
+<p>./examples/protocols/amqp/proton-ruby</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Java (Using the qpid JMS Client)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>./examples/protocols/amqp/queue</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Interceptors</p>
+<div class="ulist">
+<ul>
+<li>
+<p>./examples/features/standard/interceptor-amqp</p>
+</li>
+<li>
+<p>./examples/features/standard/broker-plugin</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="message-conversions"><a class="anchor" href="#message-conversions"></a><a class="link" href="#message-conversions">2. Message Conversions</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The broker will not perform any message conversion to any other protocols when sending AMQP and receiving AMQP.</p>
+</div>
+<div class="paragraph">
+<p>However if you intend your message to be received by an AMQP JMS Client, you must follow the <a href="https://www.oasis-open.org/committees/download.php/53086/amqp-bindmap-jms-v1.0-wd05.pdf">JMS Mapping Conventions</a>.
+If you send a body type that is not recognized by this specification the conversion between AMQP and any other protocol will make it a Binary Message.
+Make sure you follow these conventions if you intend to cross protocols or languages.
+Especially on the message body.</p>
+</div>
+<div class="paragraph">
+<p>A compatibility setting allows aligning the naming convention of AMQP queues (JMS Durable and Shared Subscriptions) with CORE.
+For backwards compatibility reasons, you need to explicitly enable this via broker configuration:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">amqp-use-core-subscription-naming</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><code>true</code> - use queue naming convention that is aligned with CORE.</p>
+</li>
+<li>
+<p><code>false</code> (default) - use older naming convention.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="intercepting-and-changing-messages"><a class="anchor" href="#intercepting-and-changing-messages"></a><a class="link" href="#intercepting-and-changing-messages">3. Intercepting and changing messages</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We don&#8217;t recommend changing messages at the server&#8217;s side for a few reasons:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>AMQP messages are meant to be immutable</p>
+</li>
+<li>
+<p>The message won&#8217;t be the original message the user sent</p>
+</li>
+<li>
+<p>AMQP has the possibility of signing messages.
+The signature would be broken.</p>
+</li>
+<li>
+<p>For performance reasons.
+We try not to re-encode (or even decode) messages.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If regardless these recommendations you still need and want to intercept and change AMQP messages, look at the aforementioned interceptor examples.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="amqp-and-security"><a class="anchor" href="#amqp-and-security"></a><a class="link" href="#amqp-and-security">4. AMQP and security</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Apache ActiveMQ Artemis Server accepts the PLAIN, ANONYMOUS, and GSSAPI SASL mechanism.
+These are implemented on the broker&#8217;s <a href="security.html#authentication-authorization">security</a> infrastructure.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="amqp-and-destinations"><a class="anchor" href="#amqp-and-destinations"></a><a class="link" href="#amqp-and-destinations">5. AMQP and destinations</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If an AMQP Link is dynamic then a temporary queue will be created and either the remote source or remote target address will be set to the name of the temporary queue.
+If the Link is not dynamic then the address of the remote  target or source will be used for the queue.
+In case it does not exist,  it will be auto-created if the settings allow.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="amqp-and-multicast-addresses-topics"><a class="anchor" href="#amqp-and-multicast-addresses-topics"></a><a class="link" href="#amqp-and-multicast-addresses-topics">6. AMQP and Multicast Addresses (Topics)</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Although AMQP has no notion of "topics" it is still possible to treat AMQP consumers or receivers as subscriptions rather than just consumers on a queue.
+By default any receiving link that attaches to an address that has only <code>multicast</code> enabled will be treated as a subscription and a corresponding subscription queue will be created.
+If the Terminus Durability is either <code>UNSETTLED_STATE</code> or <code>CONFIGURATION</code> then the queue will be made durable (similar to a JMS durable subscription) and given a name made up from the container id and the link name, something like <code>my-container-id:my-link-name</code>.
+If the Terminus Durability is configured as <code>NONE</code> then a volatile <code>multicast</code> queue will be created.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="amqp-and-coordinations-handling-transactions"><a class="anchor" href="#amqp-and-coordinations-handling-transactions"></a><a class="link" href="#amqp-and-coordinations-handling-transactions">7. AMQP and Coordinations - Handling Transactions</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An AMQP links target can also be a Coordinator.
+A Coordinator is used to handle transactions.
+If a coordinator is used then the underlying server session will be transacted and will be either rolled back or committed via the coordinator.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>AMQP allows the use of multiple transactions per session, <code>amqp:multi-txns-per-ssn</code>, however in this version of Apache ActiveMQ Artemis will only support single transactions per session.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="amqp-scheduling-message-delivery"><a class="anchor" href="#amqp-scheduling-message-delivery"></a><a class="link" href="#amqp-scheduling-message-delivery">8. AMQP scheduling message delivery</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An AMQP message can provide scheduling information that controls the time in the future when the message will be delivered at the earliest.
+This information is provided by adding a message annotation to the sent message.</p>
+</div>
+<div class="paragraph">
+<p>There are two different message annotations that can be used to schedule a message for later delivery:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">x-opt-delivery-time</dt>
+<dd>
+<p>The specified value must be a positive long corresponding to the time the message should be made available for delivery (in milliseconds).</p>
+</dd>
+<dt class="hdlist1">x-opt-delivery-delay</dt>
+<dd>
+<p>The specified value must be a positive long corresponding to the amount of milliseconds after the broker receives the given message before it should be made available for delivery.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>If both annotations are present in the same message then the broker will prefer the more specific <code>x-opt-delivery-time</code> value.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dlq-and-expiry-transfer"><a class="anchor" href="#dlq-and-expiry-transfer"></a><a class="link" href="#dlq-and-expiry-transfer">9. DLQ and Expiry transfer</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AMQP Messages will be copied before transferred to a DLQ or ExpiryQueue and will receive properties and annotations during this process.</p>
+</div>
+<div class="paragraph">
+<p>The broker also keeps an internal only property (called extra property) that is not exposed to the clients, and those will also be filled during this process.</p>
+</div>
+<div class="paragraph">
+<p>Here is a list of Annotations and Property names AMQP Messages will receive when transferred:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Annotation name</th>
+<th class="tableblock halign-left valign-top">Internal Property Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>x-opt-ORIG-MESSAGE-ID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_AMQ_ORIG_MESSAGE_ID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The original message ID before the transfer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>x-opt-ACTUAL-EXPIRY</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_AMQ_ACTUAL_EXPIRY</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When the expiry took place.
+Milliseconds since epoch times</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>x-opt-ORIG-QUEUE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_AMQ_ORIG_QUEUE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The original queue name before the transfer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>x-opt-ORIG-ADDRESS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_AMQ_ORIG_ADDRESS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The original address name before the transfer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="filtering-on-message-annotations"><a class="anchor" href="#filtering-on-message-annotations"></a><a class="link" href="#filtering-on-message-annotations">10. Filtering on Message Annotations</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is possible to filter on messaging annotations if you use the prefix "m." before the annotation name.</p>
+</div>
+<div class="paragraph">
+<p>For example if you want to filter messages sent to a specific destination, you could create your filter accordingly to this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ConnectionFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JmsConnectionFactory</span><span class="o">(</span><span class="s">"amqp://localhost:5672"</span><span class="o">);</span>
+<span class="nc">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="na">createConnection</span><span class="o">();</span>
+<span class="nc">Session</span> <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="na">createSession</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="nc">Session</span><span class="o">.</span><span class="na">AUTO_ACKNOWLEDGE</span><span class="o">);</span>
+<span class="n">connection</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="n">javax</span><span class="o">.</span><span class="na">jms</span><span class="o">.</span><span class="na">Queue</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"my-DLQ"</span><span class="o">);</span>
+<span class="nc">MessageConsumer</span> <span class="n">consumer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="n">queue</span><span class="o">,</span> <span class="s">"\"m.x-opt-ORIG-ADDRESS\"='ORIGINAL_PLACE'"</span><span class="o">);</span>
+<span class="nc">Message</span> <span class="n">message</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="na">receive</span><span class="o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The broker will set internal properties.
+If you intend to filter after DLQ or Expiry you may choose the internal property names:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="c1">// Replace the consumer creation on the previous example:</span>
+<span class="nc">MessageConsumer</span> <span class="n">consumer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="n">queue</span><span class="o">,</span> <span class="s">"_AMQ_ORIG_ADDRESS='ORIGINAL_PLACE'"</span><span class="o">);</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-amqp-idle-timeout"><a class="anchor" href="#configuring-amqp-idle-timeout"></a><a class="link" href="#configuring-amqp-idle-timeout">11. Configuring AMQP Idle Timeout</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is possible to configure the AMQP Server&#8217;s IDLE Timeout by setting the property amqpIdleTimeout in milliseconds on the acceptor.</p>
+</div>
+<div class="paragraph">
+<p>This will make the server to send an AMQP frame open to the client, with your configured timeout / 2.</p>
+</div>
+<div class="paragraph">
+<p>So, if you configured your AMQP Idle Timeout to be 60000, the server will tell the client to send frames every 30,000 milliseconds.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>.... ;amqpIdleTimeout=<span class="nt">&lt;configured-timeout&gt;</span>; ..... <span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="disabling-keep-alive-checks"><a class="anchor" href="#disabling-keep-alive-checks"></a><a class="link" href="#disabling-keep-alive-checks">11.1. Disabling Keep alive checks</a></h3>
+<div class="paragraph">
+<p>if you set amqpIdleTimeout=0 that will tell clients to not sending keep alive packets towards the server.
+On this case you will rely on TCP to determine when the socket needs to be closed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>.... ;amqpIdleTimeout=0; ..... <span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This contains a real example for configuring amqpIdleTimeout:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp"</span><span class="nt">&gt;</span>tcp://0.0.0.0:5672?amqpIdleTimeout=0;tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;directDeliver=false;batchDelay=10<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="web-sockets"><a class="anchor" href="#web-sockets"></a><a class="link" href="#web-sockets">12. Web Sockets</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis also supports AMQP over <a href="https://html.spec.whatwg.org/multipage/web-sockets.html">Web Sockets</a>.
+Modern web browsers which support Web Sockets can send and receive AMQP messages.</p>
+</div>
+<div class="paragraph">
+<p>AMQP over Web Sockets is supported via a normal AMQP acceptor:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"amqp-ws-acceptor"</span><span class="nt">&gt;</span>tcp://localhost:5672?protocols=AMQP<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this configuration, Apache ActiveMQ Artemis will accept AMQP connections over Web Sockets on the port <code>5672</code>.
+Web browsers can then connect to <code>ws://&lt;server&gt;:5672</code> using a Web Socket to send and receive AMQP messages.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -10,31 +10,31 @@
 <link rel="stylesheet" href="css/asciidoctor.css">
 <link rel="stylesheet" href="css/font-awesome.css">
 <link rel="stylesheet" href="css/rouge-github.css">
-    <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const pathSegments = window.location.pathname.split('/');
-                if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
-                    var message = document.createElement("div");
-                    message.style.margin = "20px";
-                    message.style.textAlign = "center";
-                    message.style.backgroundColor = "#FFFFE0";
-                    message.textContent = "Please be aware that this documentation is out of date. ";
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
 
-                    var link = document.createElement("a");
-                    link.href = "../latest";
-                    link.textContent = "Here is the latest documentation.";
-                    message.appendChild(link);
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
 
-                    document.body.insertBefore(message, document.body.firstChild);
-                }
-            });
-        </script>
-    </head>
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
 <body class="book toc2 toc-left">
 <div id="header">
 <h1>Network Isolation (Split Brain)</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#pluggable-lock-manager">1. Pluggable Lock Manager</a></li>
 <li><a href="#quorum-voting">2. Quorum Voting</a>
@@ -133,7 +133,7 @@ There must be at least three HA pairs to establish a proper quorum with quorum v
 <div class="sect2">
 <h3 id="voting-mechanics"><a class="anchor" href="#voting-mechanics"></a><a class="link" href="#voting-mechanics">2.1. Voting Mechanics</a></h3>
 <div class="paragraph">
-<p>When the replication connection between a primary and backup is lost the backup and/or the primary may initiate a vote.</p>
+<p>When the replication connection between an active broker and a passive broker is lost the passive and/or the active broker may initiate a vote.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -152,21 +152,21 @@ For a 4 node cluster this would be 3 affirmatives and so on.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="backup-voting"><a class="anchor" href="#backup-voting"></a><a class="link" href="#backup-voting">2.1.1. Backup Voting</a></h4>
+<h4 id="passive-voting"><a class="anchor" href="#passive-voting"></a><a class="link" href="#passive-voting">2.1.1. Passive Voting</a></h4>
 <div class="paragraph">
-<p>If a backup loses its replication connection to its primary it will initiate a quorum vote in order to decide whether to activate or not.
-It will keep voting until it either receives a vote allowing it to start or it detects that the primary is still active.
-In the latter case it will then restart as a backup.</p>
+<p>If a passive broker loses its replication connection to the active broker it will initiate a quorum vote in order to decide whether to activate or not.
+It will keep voting until it either receives a vote allowing it to start or it detects that the previously connected broker is still active.
+In the latter case it will then restart as passive.</p>
 </div>
 <div class="paragraph">
 <p>See the section on <a href="ha.html#replication-configuration">Replication Configuration</a> for more details on configuration.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="primary-voting"><a class="anchor" href="#primary-voting"></a><a class="link" href="#primary-voting">2.1.2. Primary Voting</a></h4>
+<h4 id="active-voting"><a class="anchor" href="#active-voting"></a><a class="link" href="#active-voting">2.1.2. Active Voting</a></h4>
 <div class="paragraph">
-<p>By default, if the primary server loses its replication connection to the backup then it will just carry on and wait for a backup to reconnect and start replicating again.
-However, this may mean that the primary remains active even though the backup has activated so this behavior is configurable via the <code>vote-on-replication-failure</code> property.</p>
+<p>By default, if the active broker loses its replication connection to the passive broker then it will just carry on and wait for a passive to reconnect and start replicating again.
+However, this may mean that it remains active even though the passive broker has activated so this behavior is configurable via the <code>vote-on-replication-failure</code> property.</p>
 </div>
 <div class="paragraph">
 <p>See the section on <a href="ha.html#replication-configuration">Replication Configuration</a> for more details on configuration.</p>

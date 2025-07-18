@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Wildcard Syntax</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
+
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
+
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Wildcard Syntax</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#matching-any-word">1. Matching Any Word</a></li>
+<li><a href="#matching-a-single-word">2. Matching a Single Word</a></li>
+<li><a href="#customizing-the-syntax">3. Customizing the Syntax</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis uses a specific syntax for representing wildcards in security settings, address settings and when creating consumers.</p>
+</div>
+<div class="paragraph">
+<p>The syntax is similar to that used by <a href="https://www.amqp.org">AMQP</a>.</p>
+</div>
+<div class="paragraph">
+<p>An Apache ActiveMQ Artemis wildcard expression contains <strong>words separated by a delimiter</strong>.
+The default delimiter is <code>.</code> (full stop).</p>
+</div>
+<div class="paragraph">
+<p>The special characters <code>#</code> and <code>*</code> also have special meaning and can take the place of a <strong>word</strong>.</p>
+</div>
+<div class="paragraph">
+<p>To be clear, the wildcard characters cannot be used like wildcards in a <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression</a>.
+They operate exclusively on <strong>words separated by a delimiter</strong>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="matching-any-word"><a class="anchor" href="#matching-any-word"></a><a class="link" href="#matching-any-word">1. Matching Any Word</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The character <code>#</code> means "match any sequence of zero or more words".</p>
+</div>
+<div class="paragraph">
+<p>So the wildcard <code>news.europe.#</code> would match:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>news.europe</code></p>
+</li>
+<li>
+<p><code>news.europe.sport</code></p>
+</li>
+<li>
+<p><code>news.europe.politics</code></p>
+</li>
+<li>
+<p><code>news.europe.politics.regional</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>But <code>news.europe.#</code> would <em>not</em> match:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>news.usa</code></p>
+</li>
+<li>
+<p><code>news.usa.sport</code></p>
+</li>
+<li>
+<p><code>entertainment</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="matching-a-single-word"><a class="anchor" href="#matching-a-single-word"></a><a class="link" href="#matching-a-single-word">2. Matching a Single Word</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The character <code>*</code> means "match a single word".</p>
+</div>
+<div class="paragraph">
+<p>The wildcard <code>news.*</code> would match:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>news.europe</code></p>
+</li>
+<li>
+<p><code>news.usa</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>But <code>news.*</code> would <em>not</em> match:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>news.europe.sport</code></p>
+</li>
+<li>
+<p><code>news.usa.sport</code></p>
+</li>
+<li>
+<p><code>news.europe.politics.regional</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The wildcard <code>news.*.sport</code> would match:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>news.europe.sport</code></p>
+</li>
+<li>
+<p><code>news.usa.sport</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>But <code>news.*.sport</code> would <em>not</em> match:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>news.europe.politics</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="customizing-the-syntax"><a class="anchor" href="#customizing-the-syntax"></a><a class="link" href="#customizing-the-syntax">3. Customizing the Syntax</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It&#8217;s possible to further configure the syntax of the wildcard addresses using the broker configuration.
+For that, the <code>&lt;wildcard-addresses&gt;</code> configuration tag is used.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;wildcard-addresses&gt;</span>
+   <span class="nt">&lt;routing-enabled&gt;</span>true<span class="nt">&lt;/routing-enabled&gt;</span>
+   <span class="nt">&lt;delimiter&gt;</span>.<span class="nt">&lt;/delimiter&gt;</span>
+   <span class="nt">&lt;any-words&gt;</span>#<span class="nt">&lt;/any-words&gt;</span>
+   <span class="nt">&lt;single-word&gt;</span>*<span class="nt">&lt;/single-word&gt;</span>
+<span class="nt">&lt;/wildcard-addresses&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example above shows the default configuration.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

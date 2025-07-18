@@ -29,31 +29,12 @@
         }
     });
 </script>
-    <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const pathSegments = window.location.pathname.split('/');
-                if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
-                    var message = document.createElement("div");
-                    message.style.margin = "20px";
-                    message.style.textAlign = "center";
-                    message.style.backgroundColor = "#FFFFE0";
-                    message.textContent = "Please be aware that this documentation is out of date. ";
-
-                    var link = document.createElement("a");
-                    link.href = "../latest";
-                    link.textContent = "Here is the latest documentation.";
-                    message.appendChild(link);
-
-                    document.body.insertBefore(message, document.body.firstChild);
-                }
-            });
-        </script>
-    </head>
+</head>
 <body class="book toc2 toc-left">
 <div id="header">
 <h1>Address Model</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#address">1. Address</a></li>
 <li><a href="#queue">2. Queue</a></li>
@@ -69,7 +50,7 @@
 <ul class="sectlevel2">
 <li><a href="#fully-qualified-queue-names">6.1. Fully Qualified Queue Names</a></li>
 <li><a href="#disabled-queue">6.2. Disabled Queue</a></li>
-<li><a href="#temporary-queues">6.3. Temporary Queues</a></li>
+<li><a href="#uuid-resources">6.3. UUID Resources</a></li>
 <li><a href="#other-advanced-configurations">6.4. Other Advanced Configurations</a></li>
 </ul>
 </li>
@@ -371,7 +352,7 @@ These queues are often referred to as <em>subscription queues</em> for obvious r
 <div class="paragraph">
 <p>These subscription queues are typically named based on the semantics of the protocol used to create them.
 For example, JMS supports durable and non-durable subscriptions.
-The queue for a non-durable subscription is named with a UUID, but the queue used for a durable subscription is named according to the JMS "client ID" and "subscription name." Similar conventions are used for AMQP, MQTT, STOMP, etc.</p>
+The queue for a non-durable subscription is named with a <a href="#uuid-formats">UUID</a>, but the queue used for a durable subscription is named according to the JMS "client ID" and "subscription name." Similar conventions are used for AMQP, MQTT, STOMP, etc.</p>
 </div>
 </div>
 </div>
@@ -547,31 +528,28 @@ The queue is purged (its messages are removed) and will not receive any more mes
 </div>
 </div>
 <div class="sect2">
-<h3 id="temporary-queues"><a class="anchor" href="#temporary-queues"></a><a class="link" href="#temporary-queues">6.3. Temporary Queues</a></h3>
+<h3 id="uuid-resources"><a class="anchor" href="#uuid-resources"></a><a class="link" href="#uuid-resources">6.3. UUID Resources</a></h3>
 <div class="paragraph">
-<p>For some protocols and APIs which only support monolithic "destinations" without the address/queue separation (e.g. AMQP, JMS, etc.) temporary queues are created by the broker using a UUID (i.e universally unique identifier) as the name for both the address and the queue.
-Because the name is a UUID it is impossible to create an <code>address-setting</code> for it whose <code>match</code> is anything but <code>#</code>.</p>
+<p>Some protocols and APIs support creating anonymous (i.e. unnamed) resources (e.g. a JMS queue created via <a href="https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createTemporaryQueue--"><code>createTemporaryQueue</code></a> or a JMS topic created via <a href="https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#createTemporaryTopic--"><code>createTemporaryTopic</code></a>).
+These resources are ultimately created using a UUID (i.e universally unique identifier) as the name for both the address and the queue (as necessary).
+However, since the name is a UUID it is impossible to create an <code>address-setting</code> or <code>security-setting</code> for it whose <code>match</code> is anything but <code>#</code>.</p>
 </div>
 <div class="paragraph">
-<p>To solve this problem one can specify the <code>temporary-queue-namespace</code> in <code>broker.xml</code> and then create an <code>address-setting</code> whose <code>match</code> value corresponds to the configured <code>temporary-queue-namespace</code>.
-When the <code>temporary-queue-namespace</code> is set and a temporary queue is created then the broker will prepend the <code>temporary-queue-namespace</code> value along with the <code>delimiter</code> value configured in <code>wildcard-addresses</code> (defaults to <code>.</code>) to the address name and use that to lookup the associated <code>address-setting</code> values.</p>
-</div>
-<div class="paragraph">
-<p>Here&#8217;s a simple example configuration:</p>
+<p>To enable more specific configurations one can specify the <code>uuid-namespace</code> in <code>broker.xml</code> and then create an <code>address-setting</code> or <code>security-setting</code> whose <code>match</code> value corresponds to the configured <code>uuid-namespace</code>, e.g.:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;temporary-queue-namespace&gt;</span>temp<span class="nt">&lt;/temporary-queue-namespace&gt;</span>
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;uuid-namespace&gt;</span>uuid<span class="nt">&lt;/uuid-namespace&gt;</span>
 
 <span class="nt">&lt;address-settings&gt;</span>
-   <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"temp.#"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"uuid.#"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;enable-metrics&gt;</span>false<span class="nt">&lt;/enable-metrics&gt;</span>
    <span class="nt">&lt;/address-setting&gt;</span>
 <span class="nt">&lt;/address-settings&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Using this configuration any temporary queue will have metrics disabled.</p>
+<p>Any resource named using a UUID will have metrics disabled using this configuration. The default <code>uuid-namespace</code> is empty.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -580,11 +558,69 @@ When the <code>temporary-queue-namespace</code> is set and a temporary queue is 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This setting does <em>not</em> change the actual name of the temporary queue.
-It only changes the name used to <em>lookup</em> the address-settings.
+<div class="paragraph">
+<p>This setting does <em>not</em> change the actual name of the resource.
+It only changes the name used to <em>lookup</em> address-settings or security-settings.</p>
+</div>
 </td>
 </tr>
 </table>
+</div>
+<div class="sect3">
+<h4 id="uuid-formats"><a class="anchor" href="#uuid-formats"></a><a class="link" href="#uuid-formats">6.3.1. UUID Formats</a></h4>
+<div class="paragraph">
+<p>The broker supports two different UUID formats - Core and OpenWire</p>
+</div>
+<div class="sect4">
+<h5 id="core-uuid"><a class="anchor" href="#core-uuid"></a><a class="link" href="#core-uuid">Core UUID</a></h5>
+<div class="paragraph">
+<p>A Core UUID is a 36-character string that follows the pattern <code>X-X-X-X-X</code> where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The first group consists of 8 hex characters.</p>
+</li>
+<li>
+<p>The second, third, and fourth groups consist of 4 hex characters each.</p>
+</li>
+<li>
+<p>The fifth group consists of 12 hex characters.</p>
+</li>
+<li>
+<p>A hyphen separates each group of hex characters.</p>
+</li>
+<li>
+<p>A "hex character" is one of the following: <code>abcdef0123456789</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example: <code>c7ef2580-210f-11f0-bef5-3ce1a1d12939</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="openwire-uuid"><a class="anchor" href="#openwire-uuid"></a><a class="link" href="#openwire-uuid">OpenWire UUID</a></h5>
+<div class="paragraph">
+<p>An OpenWire UUID is a variable length string that follows the pattern <code>X-X-X-X:X:X</code> where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The first group is a prefix of arbitrary content and length. The default prefix is <code>ID:</code> plus hostname.</p>
+</li>
+<li>
+<p>The second, third, and fourth groups consist of digits separated from each other by a <code>-</code> character.</p>
+</li>
+<li>
+<p>The fifth and sixth group consists of digits separated from each previous group by a <code>:</code> character.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example: <code>ID:localhost-45187-1745501083698-10000:1:10001</code>.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">

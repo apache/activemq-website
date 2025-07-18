@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Embedding Apache ActiveMQ Artemis</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
+
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
+
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Embedding Apache ActiveMQ Artemis</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#embedding-with-xml-configuration">1. Embedding with XML configuration</a></li>
+<li><a href="#embedding-with-programmatic-configuration">2. Embedding with programmatic configuration</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis is designed as set of simple Plain Old Java Objects (POJOs).
+This means Apache ActiveMQ Artemis can be instantiated and run in any dependency injection framework such as Spring or Google Guice.
+It also means that if you have an application that could use messaging functionality internally then it can <em>directly instantiate</em> Apache ActiveMQ Artemis clients and servers in its own application code to perform that functionality.
+We call this <em>embedding</em> Apache ActiveMQ Artemis.</p>
+</div>
+<div class="paragraph">
+<p>Examples of applications that might want to do this include any application that needs very high performance, transactional, persistent messaging but doesn&#8217;t want the hassle of writing it all from scratch.</p>
+</div>
+<div class="paragraph">
+<p>Embedding Apache ActiveMQ Artemis can be done in very few easy steps - supply a <code>broker.xml</code> on the classpath or instantiate the configuration object, instantiate the server, start it, and you have a Apache ActiveMQ Artemis running in your JVM.
+It&#8217;s as simple and easy as that.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="embedding-with-xml-configuration"><a class="anchor" href="#embedding-with-xml-configuration"></a><a class="link" href="#embedding-with-xml-configuration">1. Embedding with XML configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The simplest way to embed Apache ActiveMQ Artemis is to use the embedded wrapper class and configure Apache ActiveMQ Artemis through <code>broker.xml</code>.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s a simple example <code>broker.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;configuration</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="na">xmlns=</span><span class="s">"urn:activemq"</span> <span class="na">xsi:schemaLocation=</span><span class="s">"urn:activemq /schema/artemis-server.xsd"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;core</span> <span class="na">xmlns=</span><span class="s">"urn:activemq:core"</span><span class="nt">&gt;</span>
+
+      <span class="nt">&lt;persistence-enabled&gt;</span>false<span class="nt">&lt;/persistence-enabled&gt;</span>
+
+      <span class="nt">&lt;security-enabled&gt;</span>false<span class="nt">&lt;/security-enabled&gt;</span>
+
+      <span class="nt">&lt;acceptors&gt;</span>
+         <span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"in-vm"</span><span class="nt">&gt;</span>vm://0<span class="nt">&lt;/acceptor&gt;</span>
+      <span class="nt">&lt;/acceptors&gt;</span>
+   <span class="nt">&lt;/core&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kn">import</span> <span class="nn">org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ</span><span class="o">;</span>
+
+<span class="o">...</span>
+
+<span class="nc">EmbeddedActiveMQ</span> <span class="n">embedded</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">EmbeddedActiveMQ</span><span class="o">();</span>
+<span class="n">embedded</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+<span class="nc">ServerLocator</span> <span class="n">serverLocator</span> <span class="o">=</span>  <span class="nc">ActiveMQClient</span><span class="o">.</span><span class="na">createServerLocator</span><span class="o">(</span><span class="s">"vm://0"</span><span class="o">);</span>
+<span class="nc">ClientSessionFactory</span> <span class="n">factory</span> <span class="o">=</span>  <span class="n">serverLocator</span><span class="o">.</span><span class="na">createSessionFactory</span><span class="o">();</span>
+<span class="nc">ClientSession</span> <span class="n">session</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="na">createSession</span><span class="o">();</span>
+
+<span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="nc">QueueConfiguration</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"example"</span><span class="o">));</span>
+
+<span class="nc">ClientProducer</span> <span class="n">producer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createProducer</span><span class="o">(</span><span class="s">"example"</span><span class="o">);</span>
+<span class="nc">ClientMessage</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createMessage</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="n">message</span><span class="o">.</span><span class="na">getBody</span><span class="o">().</span><span class="na">writeString</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">);</span>
+<span class="n">producer</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+
+<span class="n">session</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="nc">ClientConsumer</span> <span class="n">consumer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="s">"example"</span><span class="o">);</span>
+<span class="nc">ClientMessage</span> <span class="n">msgReceived</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="na">receive</span><span class="o">();</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"message = "</span> <span class="o">+</span> <span class="n">msgReceived</span><span class="o">.</span><span class="na">getBody</span><span class="o">().</span><span class="na">readString</span><span class="o">());</span>
+<span class="n">session</span><span class="o">.</span><span class="na">close</span><span class="o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>EmbeddedActiveMQ</code> class has a few additional setter methods that allow you to specify a different config file name as well as other properties.
+See the javadocs for this class for more details.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="embedding-with-programmatic-configuration"><a class="anchor" href="#embedding-with-programmatic-configuration"></a><a class="link" href="#embedding-with-programmatic-configuration">2. Embedding with programmatic configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can follow this step-by-step guide to programmatically embed a broker instance.</p>
+</div>
+<div class="paragraph">
+<p>Create the <code>Configuration</code> object.
+This contains configuration information for an Apache ActiveMQ Artemis instance.
+The setter methods of this class allow you to programmatically set configuration options as described in the <a href="configuration-index.html#configuration-reference">Server Configuration</a> section.</p>
+</div>
+<div class="paragraph">
+<p>The acceptors are configured through <code>Configuration</code>.
+Just add the acceptor URL the same way you would through the main configuration file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kn">import</span> <span class="nn">org.apache.activemq.artemis.core.config.Configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.activemq.artemis.core.config.impl.ConfigurationImpl</span><span class="o">;</span>
+
+<span class="o">...</span>
+
+<span class="nc">Configuration</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ConfigurationImpl</span><span class="o">();</span>
+
+<span class="n">config</span><span class="o">.</span><span class="na">addAcceptorConfiguration</span><span class="o">(</span><span class="s">"in-vm"</span><span class="o">,</span> <span class="s">"vm://0"</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">addAcceptorConfiguration</span><span class="o">(</span><span class="s">"tcp"</span><span class="o">,</span> <span class="s">"tcp://127.0.0.1:61616"</span><span class="o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You need to instantiate an instance of <code>org.apache.activemq.artemis.api.core.server.embedded.EmbeddedActiveMQ</code> and add the configuration object to it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="kn">import</span> <span class="nn">org.apache.activemq.artemis.api.core.server.ActiveMQ</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ</span><span class="o">;</span>
+
+<span class="o">...</span>
+
+<span class="nc">EmbeddedActiveMQ</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">EmbeddedActiveMQ</span><span class="o">();</span>
+<span class="n">server</span><span class="o">.</span><span class="na">setConfiguration</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+
+<span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You also have the option of instantiating <code>ActiveMQServerImpl</code> directly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ActiveMQServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQServerImpl</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+<span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Scheduled Messages</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
+
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
+
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Scheduled Messages</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#scheduled-delivery-property">1. Scheduled Delivery Property</a></li>
+<li><a href="#example">2. Example</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Scheduled messages differ from normal messages in that they won&#8217;t be delivered until a specified time in the future, at the earliest.</p>
+</div>
+<div class="paragraph">
+<p>To do this, a special property is set on the message before sending it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scheduled-delivery-property"><a class="anchor" href="#scheduled-delivery-property"></a><a class="link" href="#scheduled-delivery-property">1. Scheduled Delivery Property</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The property name used to identify a scheduled message is <code>"_AMQ_SCHED_DELIVERY"</code> (or the constant <code>Message.HDR_SCHEDULED_DELIVERY_TIME</code>).</p>
+</div>
+<div class="paragraph">
+<p>The specified value must be a positive <code>long</code> corresponding to the time the message must be delivered (in milliseconds).
+An example of sending a scheduled message using the JMS API is as follows.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">TextMessage</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createTextMessage</span><span class="o">(</span><span class="s">"This is a scheduled message message which will be delivered in 5 sec."</span><span class="o">);</span>
+<span class="n">message</span><span class="o">.</span><span class="na">setLongProperty</span><span class="o">(</span><span class="s">"_AMQ_SCHED_DELIVERY"</span><span class="o">,</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="mi">5000</span><span class="o">);</span>
+<span class="n">producer</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+
+<span class="o">...</span>
+
+<span class="c1">// message will not be received immediately but 5 seconds later</span>
+<span class="nc">TextMessage</span> <span class="n">messageReceived</span> <span class="o">=</span> <span class="o">(</span><span class="nc">TextMessage</span><span class="o">)</span> <span class="n">consumer</span><span class="o">.</span><span class="na">receive</span><span class="o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Scheduled messages can also be sent using the core API, by setting the same property on the core message before sending.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example"><a class="anchor" href="#example"></a><a class="link" href="#example">2. Example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See the <a href="examples.html#scheduled-message">Scheduled Message Example</a> which shows how scheduled messages can be used with JMS.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

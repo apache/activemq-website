@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Mapping JMS Concepts to the Core API</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const pathSegments = window.location.pathname.split('/');
+                if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+                    var message = document.createElement("div");
+                    message.style.margin = "20px";
+                    message.style.textAlign = "center";
+                    message.style.backgroundColor = "#FFFFE0";
+                    message.textContent = "Please be aware that this documentation is out of date. ";
+
+                    var link = document.createElement("a");
+                    link.href = "../latest";
+                    link.textContent = "Here is the latest documentation.";
+                    message.appendChild(link);
+
+                    document.body.insertBefore(message, document.body.firstChild);
+                }
+            });
+        </script>
+    </head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Mapping JMS Concepts to the Core API</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#jms-topic">1. JMS Topic</a></li>
+<li><a href="#jms-queue">2. JMS Queue</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter describes how JMS destinations are mapped to the Apache ActiveMQ Artemis address model.
+If you haven&#8217;t already done so, please read about the <a href="address-model.html">address model</a> as it introduces concepts which are referenced here.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="jms-topic"><a class="anchor" href="#jms-topic"></a><a class="link" href="#jms-topic">1. JMS Topic</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A JMS topic is implemented as a <a href="address-model.html#address"><strong>address</strong></a> where the name of the address is the same as the name of the JMS topic.</p>
+</div>
+<div class="paragraph">
+<p>A subscription on that JMS topic is represented as a <a href="address-model.html#multicast"><strong>multicast</strong></a> <a href="address-model.html#queue"><strong>queue</strong></a> on the corresponding address. The queue is named according to the whether the subscription is durable and according to the client ID and subscription named provided via the JMS API.</p>
+</div>
+<div class="paragraph">
+<p>Typically there is just one consumer per queue, but there can be multiple consumers on a queue when using JMS shared topic subscriptions.
+Any messages sent to the JMS topic is therefore routed to every multicast queue bound to the corresponding address and then dispatched to any consumers on those queues (i.e. JMS topic subscriber).
+If there are no queues on the address then the message is simply dropped.</p>
+</div>
+<div class="paragraph">
+<p>This effectively achieves JMS pub/sub semantics.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="jms-queue"><a class="anchor" href="#jms-queue"></a><a class="link" href="#jms-queue">2. JMS Queue</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Likewise, a JMS queue is implemented as an <a href="address-model.html#address"><strong>address</strong></a> where the name of the address is the same as the name of the JMS queue.</p>
+</div>
+<div class="paragraph">
+<p>However, there will be just one <a href="address-model.html#anycast"><strong>anycast</strong></a> <a href="address-model.html#queue"><strong>queue</strong></a> on the corresponding address. All JMS consumers on this queue will <em>share</em> the messages in the queue. The queue is named the same as the address.</p>
+</div>
+<div class="paragraph">
+<p>This effectively achieves JMS point-to-point semantics.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

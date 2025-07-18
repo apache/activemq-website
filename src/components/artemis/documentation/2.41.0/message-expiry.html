@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Message Expiry</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const pathSegments = window.location.pathname.split('/');
+                if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+                    var message = document.createElement("div");
+                    message.style.margin = "20px";
+                    message.style.textAlign = "center";
+                    message.style.backgroundColor = "#FFFFE0";
+                    message.textContent = "Please be aware that this documentation is out of date. ";
+
+                    var link = document.createElement("a");
+                    link.href = "../latest";
+                    link.textContent = "Here is the latest documentation.";
+                    message.appendChild(link);
+
+                    document.body.insertBefore(message, document.body.firstChild);
+                }
+            });
+        </script>
+    </head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Message Expiry</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#core-api">1. Core API</a></li>
+<li><a href="#configuring-expiry-delay">2. Configuring Expiry Delay</a>
+<ul class="sectlevel2">
+<li><a href="#never-expire">2.1. Never Expire</a></li>
+<li><a href="#modify-default-expiry">2.2. Modify Default Expiry</a></li>
+<li><a href="#enforce-an-expiry-range">2.3. Enforce an Expiry Range</a></li>
+</ul>
+</li>
+<li><a href="#configuring-expiry-addresses">3. Configuring Expiry Addresses</a></li>
+<li><a href="#configuring-automatic-creation-of-expiry-resources">4. Configuring Automatic Creation of Expiry Resources</a></li>
+<li><a href="#configuring-the-expiry-reaper-thread">5. Configuring The Expiry Reaper Thread</a></li>
+<li><a href="#example">6. Example</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Messages can be set with an optional <em>time to live</em> when sending them.</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis will not deliver a message to a consumer after it&#8217;s time-to-live has been exceeded.
+If the message hasn&#8217;t been delivered by the time that time-to-live is reached the server can discard it.</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis&#8217;s addresses can be assigned an expiry address so that, when messages are expired, they are removed from the queue and sent to the expiry address.
+Many different queues can be bound to an expiry address.
+These <em>expired</em> messages can later be consumed for further inspection.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="core-api"><a class="anchor" href="#core-api"></a><a class="link" href="#core-api">1. Core API</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Using Apache ActiveMQ Artemis Core API, you can set an expiration time directly on the message:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="c1">// message will expire in 5000ms from now</span>
+<span class="n">message</span><span class="o">.</span><span class="na">setExpiration</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="mi">5000</span><span class="o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>JMS MessageProducer allows to set a TimeToLive for the messages it sent:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="c1">// messages sent by this producer will be retained for 5s (5000ms) before expiration</span>
+<span class="n">producer</span><span class="o">.</span><span class="na">setTimeToLive</span><span class="o">(</span><span class="mi">5000</span><span class="o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Expired messages get <a href="copied-message-properties.html#properties-for-copied-messages">special properties</a> plus this additional property:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">_AMQ_ACTUAL_EXPIRY</dt>
+<dd>
+<p>a Long property containing the <em>actual expiration time</em> of the expired message</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-expiry-delay"><a class="anchor" href="#configuring-expiry-delay"></a><a class="link" href="#configuring-expiry-delay">2. Configuring Expiry Delay</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are multiple address-settings which you can use to modify the expiry delay for incoming messages:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>no-expiry</code></p>
+</li>
+<li>
+<p><code>expiry-delay</code></p>
+</li>
+<li>
+<p><code>max-expiry-delay</code> &amp; <code>min-expiry-delay</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>These settings are applied exclusively in this order of precedence. For example, if <code>no-expiry</code> is set and <code>expiry-delay</code> is also set then <code>expiry-delay</code> is ignored completely and <code>no-expiry</code> is enforced.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you set any of these values for the <code>expiry-address</code> then messages which expire will have corresponding new expiry delays potentially causing the expired messages to themselves expire and be removed completely from the broker.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at each of these in turn.</p>
+</div>
+<div class="sect2">
+<h3 id="never-expire"><a class="anchor" href="#never-expire"></a><a class="link" href="#never-expire">2.1. Never Expire</a></h3>
+<div class="paragraph">
+<p>If you want to force messages to <em>never</em> expire regardless of their existing settings then set <code>no-expiry</code> to <code>true</code>, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="c">&lt;!-- messages will never expire --&gt;</span>
+<span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"exampleQueue"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;no-expiry&gt;</span>true<span class="nt">&lt;/no-expiry&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, if <code>no-expiry</code> is set to <code>true</code> and a message which is using an expiration of <code>10</code> arrives then its expiration time of <code>10</code> will be changed to <code>0</code>.</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>false</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="modify-default-expiry"><a class="anchor" href="#modify-default-expiry"></a><a class="link" href="#modify-default-expiry">2.2. Modify Default Expiry</a></h3>
+<div class="paragraph">
+<p>To modify the expiry delay on a message using the <em>default expiration</em> (i.e. <code>0</code>) set <code>expiry-delay</code>, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="c">&lt;!-- expired messages in exampleQueue will be sent to the expiry address expiryQueue --&gt;</span>
+<span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"exampleQueue"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;expiry-address&gt;</span>expiryQueue<span class="nt">&lt;/expiry-address&gt;</span>
+   <span class="nt">&lt;expiry-delay&gt;</span>10<span class="nt">&lt;/expiry-delay&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, if <code>expiry-delay</code> is set to <code>10</code> and a message which is using the default expiration time (i.e. <code>0</code>) arrives then its expiration time of <code>0</code> will be changed to <code>10</code>.
+However, if a message which is using an expiration time of <code>20</code> arrives then its expiration time will remain unchanged.</p>
+</div>
+<div class="paragraph">
+<p>This value is measured in milliseconds. The default is <code>-1</code> (i.e. disabled).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="enforce-an-expiry-range"><a class="anchor" href="#enforce-an-expiry-range"></a><a class="link" href="#enforce-an-expiry-range">2.3. Enforce an Expiry Range</a></h3>
+<div class="paragraph">
+<p>To enforce a range of expiry delay values</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"exampleQueue"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;min-expiry-delay&gt;</span>10<span class="nt">&lt;/min-expiry-delay&gt;</span>
+   <span class="nt">&lt;max-expiry-delay&gt;</span>100<span class="nt">&lt;/max-expiry-delay&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Semantics are as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Messages <em>without</em> an expiration will be set to <code>max-expiry-delay</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If <code>max-expiry-delay</code> is not defined then the message will be set to <code>min-expiry-delay</code>.</p>
+</li>
+<li>
+<p>If <code>min-expiry-delay</code> is not defined then the message will not be changed.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Messages with an expiration <em>above</em> <code>max-expiry-delay</code> will be set to <code>max-expiry-delay</code>.</p>
+</li>
+<li>
+<p>Messages with an expiration <em>below</em> <code>min-expiry-delay</code> will be set to <code>min-expiry-delay</code>.</p>
+</li>
+<li>
+<p>Messages with an expiration <em>within</em> <code>min-expiry-delay</code> and <code>max-expiry-delay</code> range will not be changed.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These values are measured in milliseconds. The default for both is <code>-1</code> (i.e. disabled).</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Setting a value of <code>0</code> for <code>max-expiry-delay</code> will cause messages to expire <em>immediately</em>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-expiry-addresses"><a class="anchor" href="#configuring-expiry-addresses"></a><a class="link" href="#configuring-expiry-addresses">3. Configuring Expiry Addresses</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Expiry address are defined in the address-setting configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="c">&lt;!-- expired messages in exampleQueue will be sent to the expiry address expiryQueue --&gt;</span>
+<span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"exampleQueue"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;expiry-address&gt;</span>expiryQueue<span class="nt">&lt;/expiry-address&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If messages are expired and no expiry address is specified, messages are simply removed from the queue and dropped.
+Address <a href="wildcard-syntax.html#wildcard-syntax">wildcards</a> can be used to configure expiry address for a set of addresses.</p>
+</div>
+<div class="paragraph">
+<p>If a wildcard is used to configure the expiry address for a set of addresses and you want to <em>unset</em> the expiry address for a particular addess (or set of addresses) then you can do so, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"#"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;expiry-address&gt;</span>expiryQueue<span class="nt">&lt;/expiry-address&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span>
+<span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"exampleQueue"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;expiry-address/&gt;</span> <span class="c">&lt;!-- unset expiry-address so messages which expire from queues bound to matching addresses are dropped --&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-automatic-creation-of-expiry-resources"><a class="anchor" href="#configuring-automatic-creation-of-expiry-resources"></a><a class="link" href="#configuring-automatic-creation-of-expiry-resources">4. Configuring Automatic Creation of Expiry Resources</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It&#8217;s common to segregate expired messages by their original address.
+For example, a message sent to the <code>stocks</code> address that expired for some reason might be ultimately routed to the <code>EXP.stocks</code> queue, and likewise a message sent to the <code>orders</code> address that expired might be routed to the <code>EXP.orders</code> queue.</p>
+</div>
+<div class="paragraph">
+<p>Using this pattern can make it easy to track and administrate expired messages.
+However, it can pose a challenge in environments which predominantly use auto-created addresses and queues.
+Typically administrators in those environments don&#8217;t want to manually create an <code>address-setting</code> to configure the <code>expiry-address</code> much less the actual <code>address</code> and <code>queue</code> to hold the expired messages.</p>
+</div>
+<div class="paragraph">
+<p>The solution to this problem is to set the <code>auto-create-expiry-resources</code> <code>address-setting</code> to <code>true</code> (it&#8217;s <code>false</code> by default) so that the broker will create the <code>address</code> and <code>queue</code> to deal with the expired messages automatically.
+The <code>address</code> created will be the one defined by the <code>expiry-address</code>.
+A <code>MULTICAST</code> <code>queue</code> will be created on that <code>address</code>.
+It will be named by the <code>address</code> to which the message was previously sent, and it will have a filter defined using the property <code>_AMQ_ORIG_ADDRESS</code> so that it will only receive messages sent to the relevant <code>address</code>.
+The <code>queue</code> name can be configured with a prefix and suffix.
+See the relevant settings in the table below:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><code>address-setting</code></th>
+<th class="tableblock halign-left valign-top">default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>expiry-queue-prefix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EXP.</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>expiry-queue-suffix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(empty string)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Here is an example configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;address-setting</span> <span class="na">match=</span><span class="s">"#"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;expiry-address&gt;</span>expiryAddress<span class="nt">&lt;/expiry-address&gt;</span>
+   <span class="nt">&lt;auto-create-expiry-resources&gt;</span>true<span class="nt">&lt;/auto-create-expiry-resources&gt;</span>
+   <span class="nt">&lt;expiry-queue-prefix&gt;&lt;/expiry-queue-prefix&gt;</span> <span class="c">&lt;!-- override the default --&gt;</span>
+   <span class="nt">&lt;expiry-queue-suffix&gt;</span>.EXP<span class="nt">&lt;/expiry-queue-suffix&gt;</span>
+<span class="nt">&lt;/address-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The queue holding the expired messages can be accessed directly either by using the queue&#8217;s name by itself (e.g. when using the core client) or by using the fully qualified queue name (e.g. when using a JMS client) just like any other queue.
+Also, note that the queue is auto-created which means it will be auto-deleted as per the relevant <code>address-settings</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-the-expiry-reaper-thread"><a class="anchor" href="#configuring-the-expiry-reaper-thread"></a><a class="link" href="#configuring-the-expiry-reaper-thread">5. Configuring The Expiry Reaper Thread</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A reaper thread will periodically inspect the queues to check if messages have expired.</p>
+</div>
+<div class="paragraph">
+<p>The reaper thread can be configured with the following properties in <code>broker.xml</code></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">message-expiry-scan-period</dt>
+<dd>
+<p>How often the queues will be scanned to detect expired messages (in milliseconds, default is 30000ms, set to <code>-1</code> to disable the reaper thread)</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example"><a class="anchor" href="#example"></a><a class="link" href="#example">6. Example</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See the <a href="examples.html#message-expiration">Message Expiration Example</a> which shows how message expiry is configured and used with JMS.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
