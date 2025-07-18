@@ -67,7 +67,7 @@ PRIOR_DOCS=$WEBSITE_DIR/src/components/artemis/documentation/$PRIOR_VERSION/
 
 LATEST_JAVADOCS=$WEBSITE_DIR/src/components/artemis/documentation/javadocs/javadoc-latest/
 NEW_DOCS=$RELEASE_DIR/artemis-website/target/classes/user-manual/
-NEW_JAVADOCS=$RELEASE_DIR/artemis-website/target/apidocs/
+NEW_JAVADOCS=$RELEASE_DIR/artemis-website/target/reports/apidocs/
 
 
 
