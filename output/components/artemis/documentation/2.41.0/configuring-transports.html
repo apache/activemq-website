@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Configuring the Transport</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const pathSegments = window.location.pathname.split('/');
+                if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+                    var message = document.createElement("div");
+                    message.style.margin = "20px";
+                    message.style.textAlign = "center";
+                    message.style.backgroundColor = "#FFFFE0";
+                    message.textContent = "Please be aware that this documentation is out of date. ";
+
+                    var link = document.createElement("a");
+                    link.href = "../latest";
+                    link.textContent = "Here is the latest documentation.";
+                    message.appendChild(link);
+
+                    document.body.insertBefore(message, document.body.firstChild);
+                }
+            });
+        </script>
+    </head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Configuring the Transport</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#acceptors">1. Acceptors</a></li>
+<li><a href="#connectors">2. Connectors</a></li>
+<li><a href="#configuring-the-transport-directly-from-the-client">3. Configuring the Transport Directly from the Client</a></li>
+<li><a href="#configuring-the-netty-transport">4. Configuring the Netty transport</a>
+<ul class="sectlevel2">
+<li><a href="#single-port-support">4.1. Single Port Support</a></li>
+<li><a href="#configuring-netty-tcp">4.2. Configuring Netty TCP</a></li>
+<li><a href="#configuring-netty-native-transport">4.3. Configuring Netty Native Transport</a></li>
+<li><a href="#configuring-netty-ssl">4.4. Configuring Netty SSL</a></li>
+<li><a href="#configuring-netty-http">4.5. Configuring Netty HTTP</a></li>
+<li><a href="#configuring-netty-socks-proxy">4.6. Configuring Netty SOCKS Proxy</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this chapter we&#8217;ll describe the concepts required for understanding Apache ActiveMQ Artemis transports and where and how they&#8217;re configured.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="acceptors"><a class="anchor" href="#acceptors"></a><a class="link" href="#acceptors">1. Acceptors</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>One of the most important concepts in Apache ActiveMQ Artemis transports is the <em>acceptor</em>.
+Let&#8217;s dive straight in and take a look at an acceptor defined in xml in the configuration file <code>broker.xml</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"netty"</span><span class="nt">&gt;</span>tcp://localhost:61617<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Acceptors are always defined inside an <code>acceptors</code> element.
+There can be one or more acceptors defined in the <code>acceptors</code> element.
+There&#8217;s no upper limit to the number of acceptors per server.</p>
+</div>
+<div class="paragraph">
+<p>Each acceptor defines a way in which connections can be made to the Apache ActiveMQ Artemis server.</p>
+</div>
+<div class="paragraph">
+<p>In the above example we&#8217;re defining an acceptor that uses <a href="https://netty.io/">Netty</a> to listen for connections at port <code>61617</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>acceptor</code> element contains a <code>URL</code> that defines the kind of Acceptor to create along with its configuration.
+The <code>schema</code> part of the <code>URL</code> defines the Acceptor type which can either be <code>tcp</code> or <code>vm</code> which is <code>Netty</code> or an In VM Acceptor respectively.
+For <code>Netty</code> the host and the port of the <code>URL</code> define what host and port the <code>acceptor</code> will bind to.
+For In VM the <code>Authority</code> part of the <code>URL</code> defines a unique server id.</p>
+</div>
+<div class="paragraph">
+<p>The <code>acceptor</code> can also be configured with a set of key=value pairs used to configure the specific transport, the set of valid key=value pairs depends on the specific transport be used and are passed straight through to the underlying transport.
+These are set on the <code>URL</code> as part of the query, like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"netty"</span><span class="nt">&gt;</span>tcp://localhost:61617?sslEnabled=true;keyStorePath=/path<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="connectors"><a class="anchor" href="#connectors"></a><a class="link" href="#connectors">2. Connectors</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Whereas acceptors are used on the server to define how we accept connections, connectors are used to define how to connect to a server.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at a connector defined in our <code>broker.xml</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;connector</span> <span class="na">name=</span><span class="s">"netty"</span><span class="nt">&gt;</span>tcp://localhost:61617<span class="nt">&lt;/connector&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Connectors can be defined inside a <code>connectors</code> element.
+There can be one or more connectors defined in the <code>connectors</code> element.
+There&#8217;s no upper limit to the number of connectors per server.</p>
+</div>
+<div class="paragraph">
+<p>A <code>connector</code> is used when the server acts as a client itself, e.g.:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>When one server is bridged to another</p>
+</li>
+<li>
+<p>When a server takes part in a cluster</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In these cases the server needs to know how to connect to other servers.
+That&#8217;s defined by <code>connectors</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-the-transport-directly-from-the-client"><a class="anchor" href="#configuring-the-transport-directly-from-the-client"></a><a class="link" href="#configuring-the-transport-directly-from-the-client">3. Configuring the Transport Directly from the Client</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>How do we configure a core <code>ClientSessionFactory</code> with the information that it needs to connect with a server?</p>
+</div>
+<div class="paragraph">
+<p>Connectors are also used indirectly when configuring a core <code>ClientSessionFactory</code> to directly talk to a server.
+Although in this case there&#8217;s no need to define such a connector in the server side configuration, instead we just specify the appropriate URI.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of creating a <code>ClientSessionFactory</code> which will connect directly to the acceptor we defined earlier in this chapter, it uses the standard Netty TCP transport and will try and connect on port 61617 to localhost (default):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ServerLocator</span> <span class="n">locator</span> <span class="o">=</span> <span class="nc">ActiveMQClient</span><span class="o">.</span><span class="na">createServerLocator</span><span class="o">(</span><span class="s">"tcp://localhost:61617"</span><span class="o">);</span>
+
+<span class="nc">ClientSessionFactory</span> <span class="n">sessionFactory</span> <span class="o">=</span> <span class="n">locator</span><span class="o">.</span><span class="na">createSessionFactory</span><span class="o">();</span>
+
+<span class="nc">ClientSession</span> <span class="n">session</span> <span class="o">=</span> <span class="n">sessionFactory</span><span class="o">.</span><span class="na">createSession</span><span class="o">(...);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Similarly, if you&#8217;re using JMS, you can configure the JMS connection factory directly on the client side:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ConnectionFactory</span> <span class="n">connectionFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActiveMQConnectionFactory</span><span class="o">(</span><span class="s">"tcp://localhost:61617"</span><span class="o">);</span>
+
+<span class="nc">Connection</span> <span class="n">jmsConnection</span> <span class="o">=</span> <span class="n">connectionFactory</span><span class="o">.</span><span class="na">createConnection</span><span class="o">();</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-the-netty-transport"><a class="anchor" href="#configuring-the-netty-transport"></a><a class="link" href="#configuring-the-netty-transport">4. Configuring the Netty transport</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Out of the box, Apache ActiveMQ Artemis currently uses <a href="https://netty.io/">Netty</a>, a high performance low level network library.</p>
+</div>
+<div class="paragraph">
+<p>Our Netty transport can be configured in several different ways;
+to use straightforward TCP sockets, SSL, or to tunnel over HTTP or HTTPS..</p>
+</div>
+<div class="paragraph">
+<p>We believe this caters for the vast majority of transport requirements.</p>
+</div>
+<div class="sect2">
+<h3 id="single-port-support"><a class="anchor" href="#single-port-support"></a><a class="link" href="#single-port-support">4.1. Single Port Support</a></h3>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis supports using a single port for all protocols, Apache ActiveMQ Artemis will automatically detect which protocol is being used CORE, AMQP, STOMP, MQTT or OPENWIRE and use the appropriate Apache ActiveMQ Artemis handler.
+It will also detect whether protocols such as HTTP or Web Sockets are being used and also use the appropriate decoders.
+Web Sockets are supported for AMQP, STOMP, and MQTT.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to limit which protocols are supported by using the <code>protocols</code> parameter on the Acceptor like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"netty"</span><span class="nt">&gt;</span>tcp://localhost:61617?protocols=CORE,AMQP<span class="nt">&lt;/acceptor&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuring-netty-tcp"><a class="anchor" href="#configuring-netty-tcp"></a><a class="link" href="#configuring-netty-tcp">4.2. Configuring Netty TCP</a></h3>
+<div class="paragraph">
+<p>Netty TCP is a simple unencrypted TCP sockets based transport.
+If you&#8217;re running connections across an untrusted network please bear in mind this transport is unencrypted.
+You may want to look at the SSL or HTTPS configurations.</p>
+</div>
+<div class="paragraph">
+<p>With the Netty TCP transport all connections are initiated from the client side (i.e. the server does not initiate any connections to the client).
+This works well with firewall policies that typically only allow connections to be initiated in one direction.</p>
+</div>
+<div class="paragraph">
+<p>All the valid keys for the <code>tcp</code> URL scheme used for Netty are defined in the class <code>org.apache.activemq.artemis.core.remoting.impl.netty.TransportConstants</code>.
+Most parameters can be used either with acceptors or connectors, some only work with acceptors.
+The following parameters can be used to configure Netty for simple TCP:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>host</code> and <code>port</code> parameters are only used in the core API, in XML configuration these are set in the URI host and port.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">host</dt>
+<dd>
+<p>This specifies the host name or IP address to connect to (when configuring a connector) or to listen on (when configuring an acceptor).
+The default value for this property is <code>localhost</code>.
+When configuring acceptors, multiple hosts or IP addresses can be specified by separating them with commas.
+It is also possible to specify <code>0.0.0.0</code> to accept connection from all the host&#8217;s network interfaces.
+It&#8217;s not valid to specify multiple addresses when specifying the host for a connector;
+a connector makes a connection to one specific address.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Don&#8217;t forget to specify a host name or IP address!
+If you want your server able to accept connections from other nodes you must specify a hostname or IP address at which the acceptor will bind and listen for incoming connections.
+The default is localhost which of course is not accessible from remote nodes!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">port</dt>
+<dd>
+<p>This specified the port to connect to (when configuring a connector) or to listen on (when configuring an acceptor).
+The default value for this property is <code>61616</code>.</p>
+</dd>
+<dt class="hdlist1">tcpNoDelay</dt>
+<dd>
+<p>If this is <code>true</code> then <a href="https://en.wikipedia.org/wiki/Nagle%27s_algorithm">Nagle&#8217;s algorithm</a> will be disabled.
+This is a <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/net/socketOpt.html">Java (client) socket option</a>.
+The default value for this property is <code>true</code>.</p>
+</dd>
+<dt class="hdlist1">tcpSendBufferSize</dt>
+<dd>
+<p>This parameter determines the size of the TCP send buffer in bytes.
+The default value for this property is <code>32768</code> bytes (32KiB).</p>
+<div class="paragraph">
+<p>TCP buffer sizes should be tuned according to the bandwidth and latency of your network.
+Here&#8217;s a good link that explains the theory behind <a href="http://www-didc.lbl.gov/TCP-tuning/">this</a>.</p>
+</div>
+<div class="paragraph">
+<p>In summary TCP send/receive buffer sizes should be calculated as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">buffer_size = bandwidth * RTT.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where bandwidth is in <em>bytes per second</em> and network round trip time (RTT) is in seconds.
+RTT can be easily measured using the <code>ping</code> utility.</p>
+</div>
+<div class="paragraph">
+<p>For fast networks you may want to increase the buffer sizes from the defaults.</p>
+</div>
+</dd>
+<dt class="hdlist1">tcpReceiveBufferSize</dt>
+<dd>
+<p>This parameter determines the size of the TCP receive buffer in bytes.
+The default value for this property is <code>32768</code> bytes (32KiB).</p>
+</dd>
+<dt class="hdlist1">writeBufferLowWaterMark</dt>
+<dd>
+<p>This parameter determines the low water mark of the Netty write buffer.
+Once the number of bytes queued in the write buffer exceeded the high water mark and then dropped down below this value, Netty&#8217;s channel will start to be writable again.
+The default value for this property is <code>32768</code> bytes (32KiB).</p>
+</dd>
+<dt class="hdlist1">writeBufferHighWaterMark</dt>
+<dd>
+<p>This parameter determines the high water mark of the Netty write buffer.
+If the number of bytes queued in the write buffer exceeds this value, Netty&#8217;s channel will start to be not writable.
+The default value for this property is <code>131072</code> bytes (128KiB).</p>
+</dd>
+<dt class="hdlist1">batchDelay</dt>
+<dd>
+<p>Before writing packets to the transport, Apache ActiveMQ Artemis can be configured to batch up writes for a maximum of <code>batchDelay</code> milliseconds.
+This can increase overall throughput for very small messages.
+It does so at the expense of an increase in average latency for message transfer.
+The default value for this property is <code>0</code> ms.</p>
+</dd>
+<dt class="hdlist1">directDeliver</dt>
+<dd>
+<p>When a message arrives on the server and is delivered to waiting consumers, by default, the delivery is done on the same thread as that on which the message arrived.
+This gives good latency in environments with relatively small messages and a small number of consumers, but at the cost of overall throughput and scalability - especially on multi-core machines.
+If you want the lowest latency and a possible reduction in throughput then you can use the default value for <code>directDeliver</code> (i.e. <code>true</code>).
+If you are willing to take some small extra hit on latency but want the highest throughput set <code>directDeliver</code> to <code>false</code>.</p>
+</dd>
+<dt class="hdlist1">nioRemotingThreads</dt>
+<dd>
+<p>This is deprecated.
+It is replaced by <code>remotingThreads</code>, if you are using this please update your configuration.</p>
+</dd>
+<dt class="hdlist1">remotingThreads</dt>
+<dd>
+<p>Apache ActiveMQ Artemis will, by default, use a number of threads equal to three times the number of cores (or hyper-threads) as reported by <code>Runtime.getRuntime().availableProcessors()</code> for processing incoming packets.
+If you want to override this value, you can set the number of threads by specifying this parameter.
+The default value for this parameter is <code>-1</code> which means use the value from <code>Runtime.getRuntime().availableProcessors()</code> * 3.</p>
+</dd>
+<dt class="hdlist1">localAddress</dt>
+<dd>
+<p>When configured a Netty Connector it is possible to specify which local address the client will use when connecting to the remote address.
+This is typically used in the Application Server or when running Embedded to control which address is used for outbound connections.
+If the local-address is not set then the connector will use any local address available</p>
+</dd>
+<dt class="hdlist1">localPort</dt>
+<dd>
+<p>When configured a Netty Connector it is possible to specify which local port the client will use when connecting to the remote address.
+This is typically used in the Application Server or when running Embedded to control which port is used for outbound connections.
+If the local-port default is used, which is 0, then the connector will let the system pick up an ephemeral port.
+valid ports are 0 to 65535</p>
+</dd>
+<dt class="hdlist1">connectionsAllowed</dt>
+<dd>
+<p>This is only valid for acceptors.
+It limits the number of connections which the acceptor will allow.
+When this limit is reached a DEBUG level message is issued to the log, and the connection is refused.
+The type of client in use will determine what happens when the connection is refused.
+In the case of a <code>core</code> client, it will result in a <code>org.apache.activemq.artemis.api.core.ActiveMQConnectionTimedOutException</code>.
+Default value is -1 (unlimited)</p>
+</dd>
+<dt class="hdlist1">handshake-timeout</dt>
+<dd>
+<p>Prevents an unauthorised client opening a large number of connections and just keeping them open.
+As connections each require a file handle this consumes resources that are then unavailable to other clients.
+Once the connection is authenticated, the usual rules can be enforced regarding resource consumption.
+Default value is set to 10 seconds.
+Each integer is valid value.
+When set value to zero or negative integer this feature is turned off.
+Changing value needs to restart server to take effect.</p>
+</dd>
+<dt class="hdlist1">autoStart</dt>
+<dd>
+<p>Determines whether or not an acceptor will start automatically when the broker is started.
+Default value is <code>true</code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuring-netty-native-transport"><a class="anchor" href="#configuring-netty-native-transport"></a><a class="link" href="#configuring-netty-native-transport">4.3. Configuring Netty Native Transport</a></h3>
+<div class="paragraph">
+<p>Netty Native Transport support exists for selected OS platforms.
+This allows Apache ActiveMQ Artemis to use native sockets/io instead of Java NIO.</p>
+</div>
+<div class="paragraph">
+<p>These Native transports add features specific to a particular platform, generate less garbage, and generally improve performance when compared to Java NIO based transport.</p>
+</div>
+<div class="paragraph">
+<p>Both Clients and Server can benefit from this.</p>
+</div>
+<div class="paragraph">
+<p>Current Supported Platforms.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux running 64bit JVM</p>
+</li>
+<li>
+<p>MacOS running 64bit JVM</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis will by default enable the corresponding native transport if a supported platform is detected.</p>
+</div>
+<div class="paragraph">
+<p>If running on an unsupported platform or any issues loading native libs, Apache ActiveMQ Artemis will fallback onto Java NIO.</p>
+</div>
+<div class="sect3">
+<h4 id="linux-native-transport"><a class="anchor" href="#linux-native-transport"></a><a class="link" href="#linux-native-transport">4.3.1. Linux Native Transport</a></h4>
+<div class="paragraph">
+<p>On supported Linux platforms Epoll is used, @see <a href="https://en.wikipedia.org/wiki/Epoll" class="bare">https://en.wikipedia.org/wiki/Epoll</a>.</p>
+</div>
+<div class="paragraph">
+<p>The following properties are specific to this native transport:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">useEpoll</dt>
+<dd>
+<p>enables the use of epoll if a supported linux platform is running a 64bit JVM is detected.
+Setting this to <code>false</code> will force the use of Java NIO instead of epoll.
+Default is <code>true</code></p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="macos-native-transport"><a class="anchor" href="#macos-native-transport"></a><a class="link" href="#macos-native-transport">4.3.2. MacOS Native Transport</a></h4>
+<div class="paragraph">
+<p>On supported MacOS platforms KQueue is used, @see <a href="https://en.wikipedia.org/wiki/Kqueue" class="bare">https://en.wikipedia.org/wiki/Kqueue</a>.</p>
+</div>
+<div class="paragraph">
+<p>The following properties are specific to this native transport:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">useKQueue</dt>
+<dd>
+<p>enables the use of kqueue if a supported MacOS platform running a 64bit JVM is detected.
+Setting this to <code>false</code> will force the use of Java NIO instead of kqueue.
+Default is <code>true</code></p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuring-netty-ssl"><a class="anchor" href="#configuring-netty-ssl"></a><a class="link" href="#configuring-netty-ssl">4.4. Configuring Netty SSL</a></h3>
+<div class="paragraph">
+<p>Netty SSL is similar to the Netty TCP transport but it provides additional security by encrypting TCP connections using the Secure Sockets Layer SSL</p>
+</div>
+<div class="paragraph">
+<p>Please see the <a href="examples.html">examples</a> for a full working example of using Netty SSL.</p>
+</div>
+<div class="paragraph">
+<p>Netty SSL uses all the same properties as Netty TCP but adds the following additional properties:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">sslContext</dt>
+<dd>
+<p>An optional cache key only evaluated if <code>org.apache.activemq.artemis.core.remoting.impl.ssl.CachingSSLContextFactory</code> is active, to cache the initial created SSL context and reuse it.
+If not specified CachingSSLContextFactory will automatically calculate a cache key based on the given keystore/truststore parameters.
+See <a href="#configuring-an-sslcontextfactory">Configuring an SSLContextFactory</a> for more details.</p>
+</dd>
+<dt class="hdlist1">sslEnabled</dt>
+<dd>
+<p>Must be <code>true</code> to enable SSL.
+Default is <code>false</code>.</p>
+</dd>
+<dt class="hdlist1">sslAutoReload</dt>
+<dd>
+<p>Must be <code>true</code> to have the broker 'watch' an acceptors keyStorePath and/or trustStorePath and invoke reload() on update.
+The watch period is controlled by <a href="config-reload.html#configuration-reload">the configuration reload feature</a>.
+Default is <code>false</code>.</p>
+</dd>
+<dt class="hdlist1">keyStorePath</dt>
+<dd>
+<p>When used on an <code>acceptor</code> this is the path to the SSL key store on the server which holds the server&#8217;s certificates (whether self-signed or signed by an authority).</p>
+<div class="paragraph">
+<p>When used on a <code>connector</code> this is the path to the client-side SSL key store which holds the client certificates.
+This is only relevant for a <code>connector</code> if you are using 2-way SSL (i.e. mutual authentication).
+Although this value is configured on the server, it is downloaded and used by the client.
+If the client needs to use a different path from that set on the server then it can override the server-side setting by either using the customary "javax.net.ssl.keyStore" system property or the ActiveMQ-specific "org.apache.activemq.ssl.keyStore" system property.
+The ActiveMQ-specific system property is useful if another component on the client is already making use of the standard Java system property.</p>
+</div>
+</dd>
+<dt class="hdlist1">keyStorePassword</dt>
+<dd>
+<p>When used on an <code>acceptor</code> this is the password for the server-side keystore.</p>
+<div class="paragraph">
+<p>When used on a <code>connector</code> this is the password for the client-side keystore.
+This is only relevant for a <code>connector</code> if you are using 2-way SSL (i.e. mutual authentication).
+Although this value can be configured on the server, it is downloaded and used by the client.
+If the client needs to use a different password from that set on the server then it can override the server-side setting by either using the customary "javax.net.ssl.keyStorePassword" system property or the ActiveMQ-specific "org.apache.activemq.ssl.keyStorePassword" system property.
+The ActiveMQ-specific system property is useful if another component on the client is already making use of the standard Java system property.</p>
+</div>
+</dd>
+<dt class="hdlist1">keyStoreType</dt>
+<dd>
+<p>The type of keystore being used.
+For example, <code>JKS</code>, <code>JCEKS</code>, <code>PKCS12</code>, <code>PEM</code> etc.
+This value can also be set via the "javax.net.ssl.keyStoreType" system property or the ActiveMQ-specific "org.apache.activemq.ssl.keyStoreType" system property.
+The ActiveMQ-specific system property is useful if another component on the  client is already making use of the standard Java system property.
+Default is <code>JKS</code>.</p>
+</dd>
+<dt class="hdlist1">keyStoreProvider</dt>
+<dd>
+<p>The provider used for the keystore.
+For example, <code>SUN</code>, <code>SunJCE</code>, etc.
+This  value can also be set via the "javax.net.ssl.keyStoreProvider" system property or the ActiveMQ-specific "org.apache.activemq.ssl.keyStoreProvider" system property.
+The ActiveMQ-specific system property is useful if another component on the client is already making use of the standard Java system property.
+Default is <code>null</code>.</p>
+</dd>
+<dt class="hdlist1">keyStoreAlias</dt>
+<dd>
+<p>When used on an <code>acceptor</code> this is the alias to select from the SSL key store (specified via <code>keyStorePath</code>) to present to the client when it connects.</p>
+<div class="paragraph">
+<p>When used on a <code>connector</code> this is the alias to select from the SSL key store (specified via <code>keyStorePath</code>) to present to the server when the client connects to it.
+This is only relevant for a <code>connector</code> when using 2-way SSL (i.e. mutual authentication).</p>
+</div>
+<div class="paragraph">
+<p>Default is <code>null</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">trustStorePath</dt>
+<dd>
+<p>When used on an <code>acceptor</code> this is the path to the server-side SSL key store that holds the keys of all the clients that the server trusts.
+This is only relevant for an <code>acceptor</code> if you are using 2-way SSL (i.e. mutual authentication).</p>
+<div class="paragraph">
+<p>When used on a <code>connector</code> this is the path to the client-side SSL key store which holds the public keys of all the servers that the client trusts.
+Although this value can be configured on the server, it is downloaded and used by the client.
+If the client needs to use a different path from that set on the server then it can override the server-side setting by either using the customary "javax.net.ssl.trustStore" system property or the ActiveMQ-specific "org.apache.activemq.ssl.trustStore" system property.
+The ActiveMQ-specific system property is useful if another component on the client is already making use of the standard Java system property.</p>
+</div>
+</dd>
+<dt class="hdlist1">trustStorePassword</dt>
+<dd>
+<p>When used on an <code>acceptor</code> this is the password for the server-side trust store.
+This is only relevant for an <code>acceptor</code> if you are using 2-way SSL (i.e. mutual authentication).</p>
+<div class="paragraph">
+<p>When used on a <code>connector</code> this is the password for the client-side truststore.
+Although this value can be configured on the server, it is downloaded and used by the client.
+If the client needs to use a different password from that set on the server then it can override the server-side setting by either using the customary "javax.net.ssl.trustStorePassword" system property or the ActiveMQ-specific "org.apache.activemq.ssl.trustStorePassword" system property.
+The ActiveMQ-specific system property is useful if another component on the client is already making use of the standard Java system property.</p>
+</div>
+</dd>
+<dt class="hdlist1">trustStoreType</dt>
+<dd>
+<p>The type of truststore being used.
+For example, <code>JKS</code>, <code>JCEKS</code>, <code>PKCS12</code>, <code>PEM</code> etc.
+This value can also be set via the "javax.net.ssl.trustStoreType" system property or the ActiveMQ-specific "org.apache.activemq.ssl.trustStoreType" system property.
+The ActiveMQ-specific system property is useful if another component on the client is already making use of the standard Java system property.
+Default is <code>JKS</code>.</p>
+</dd>
+<dt class="hdlist1">trustStoreProvider</dt>
+<dd>
+<p>The provider used for the truststore.
+For example, <code>SUN</code>, <code>SunJCE</code>, etc.
+This value can also be set via the "javax.net.ssl.trustStoreProvider" system property or the ActiveMQ-specific "org.apache.activemq.ssl.trustStoreProvider" system property.
+The ActiveMQ-specific system property is useful if another component on the client is already making use of the standard Java system property.
+Default is <code>null</code>.</p>
+</dd>
+<dt class="hdlist1">enabledCipherSuites</dt>
+<dd>
+<p>Whether used on an <code>acceptor</code> or <code>connector</code> this is a comma separated list of cipher suites used for SSL communication.
+The default value is <code>null</code> which means the JVM&#8217;s default will be used.</p>
+</dd>
+<dt class="hdlist1">enabledProtocols</dt>
+<dd>
+<p>Whether used on an <code>acceptor</code> or <code>connector</code> this is a comma separated list of protocols used for SSL communication.
+The default value is <code>null</code> which means the JVM&#8217;s default will be used.</p>
+</dd>
+<dt class="hdlist1">needClientAuth</dt>
+<dd>
+<p>This property is only for an <code>acceptor</code>.
+It tells a client connecting to this acceptor that 2-way SSL is required.
+Valid values are <code>true</code> or <code>false</code>.
+Default is <code>false</code>.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This property takes precedence over <code>wantClientAuth</code> and if its value is set to true then <code>wantClientAuth</code> will be ignored.
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">wantClientAuth</dt>
+<dd>
+<p>This property is only for an <code>acceptor</code>.
+It tells a client connecting to this acceptor that 2-way SSL is requested but not required.
+Valid values are <code>true</code> or <code>false</code>.
+Default is <code>false</code>.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If the property <code>needClientAuth</code> is set to <code>true</code> then that property will take precedence and this property will be ignored.
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">verifyHost</dt>
+<dd>
+<p>When used on a <code>connector</code> the <code>CN</code> or Subject Alternative Name values of the server&#8217;s SSL certificate will be compared with the hostname being connected to in order to verify a match.
+This is useful for both 1-way and 2-way SSL.</p>
+<div class="paragraph">
+<p>When used on an <code>acceptor</code> the <code>CN</code> or Subject Alternative Name values of the connecting client&#8217;s SSL certificate will be compared to its hostname to verify a match.
+This is useful only for 2-way SSL.</p>
+</div>
+<div class="paragraph">
+<p>Valid values are <code>true</code> or <code>false</code>.
+Default is <code>true</code> for connectors, and <code>false</code> for acceptors.</p>
+</div>
+</dd>
+<dt class="hdlist1">trustAll</dt>
+<dd>
+<p>When used on a <code>connector</code> the client will trust the provided server certificate implicitly, regardless of any configured trust store.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This setting is primarily for testing purposes only and should not be used in production.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Valid values are <code>true</code> or <code>false</code>.
+Default is <code>false</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">forceSSLParameters</dt>
+<dd>
+<p>When used on a <code>connector</code> any SSL settings that are set as parameters on the connector will be used instead of JVM system properties including both javax.net.ssl and ActiveMQ system properties to configure the SSL context for this connector.</p>
+<div class="paragraph">
+<p>Valid values are <code>true</code> or <code>false</code>.
+Default is <code>false</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">useDefaultSslContext</dt>
+<dd>
+<p>Only valid on a <code>connector</code>.
+Allows the <code>connector</code> to use the "default" SSL context (via <code>SSLContext.getDefault()</code>) which can be set programmatically by the client (via <code>SSLContext.setDefault(SSLContext)</code>).
+If set to <code>true</code> all other SSL related parameters except for <code>sslEnabled</code> are ignored.</p>
+<div class="paragraph">
+<p>Valid values are <code>true</code> or <code>false</code>.
+Default is <code>false</code>.</p>
+</div>
+</dd>
+<dt class="hdlist1">sslProvider</dt>
+<dd>
+<p>Used to change the SSL Provider between <code>JDK</code> and <code>OPENSSL</code>.
+The default is <code>JDK</code>.
+If used with <code>OPENSSL</code> you can add <code>netty-tcnative</code> to your classpath to use the native installed openssl.
+This can be useful if you want to use special ciphersuite - elliptic curve combinations which are support through openssl but not through the JDK provider.
+See <a href="https://en.wikipedia.org/wiki/Comparison_of_TLS_implementations" class="bare">https://en.wikipedia.org/wiki/Comparison_of_TLS_implementations</a> for more information&#8217;s.</p>
+</dd>
+<dt class="hdlist1">sniHost</dt>
+<dd>
+<p>When used on an <code>acceptor</code> the <code>sniHost</code> is a <em>regular expression</em> used to match the <a href="https://tools.ietf.org/html/rfc6066"><code>server_name</code></a> extension on incoming SSL connections.
+If the name doesn&#8217;t match then the connection to the acceptor will be rejected.
+A WARN message will be logged if this happens.
+If the incoming connection doesn&#8217;t include the <code>server_name</code> extension then the connection will be accepted.</p>
+<div class="paragraph">
+<p>When used on a <code>connector</code> the <code>sniHost</code> value is used for the <code>server_name</code> extension on the SSL connection.</p>
+</div>
+</dd>
+<dt class="hdlist1">trustManagerFactoryPlugin</dt>
+<dd>
+<p>This is valid on either an <code>acceptor</code> or <code>connector</code>.
+It defines the name of the class which implements <code>org.apache.activemq.artemis.api.core.TrustManagerFactoryPlugin</code>.
+This is a simple interface with a single method which returns a <code>javax.net.ssl.TrustManagerFactory</code>.
+The <code>TrustManagerFactory</code> will be used when the underlying <code>javax.net.ssl.SSLContext</code> is initialized.
+This allows fine-grained customization of who/what the broker &amp; client trusts.</p>
+<div class="paragraph">
+<p>This value takes precedence of all other SSL parameters which apply to the trust manager (i.e. <code>trustAll</code>, <code>truststoreProvider</code>, <code>truststorePath</code>, <code>truststorePassword</code>, <code>crlPath</code>).</p>
+</div>
+<div class="paragraph">
+<p>Any plugin specified will need to be placed on the <a href="using-server.html#adding-runtime-dependencies">broker&#8217;s classpath</a>.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="sect3">
+<h4 id="configuring-an-sslcontextfactory"><a class="anchor" href="#configuring-an-sslcontextfactory"></a><a class="link" href="#configuring-an-sslcontextfactory">4.4.1. Configuring an SSLContextFactory</a></h4>
+<div class="paragraph">
+<p>If you use <code>JDK</code> as SSL provider (the default), you can configure which SSLContextFactory to use.
+Currently the following two implementations are provided:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.apache.activemq.artemis.core.remoting.impl.ssl.DefaultSSLContextFactory</code> (registered by the default)</p>
+</li>
+<li>
+<p><code>org.apache.activemq.artemis.core.remoting.impl.ssl.CachingSSLContextFactory</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You may also create your own implementation of  <code>org.apache.activemq.artemis.spi.core.remoting.ssl.SSLContextFactory</code>.</p>
+</div>
+<div class="paragraph">
+<p>The implementations are loaded by a <code>java.util.ServiceLoader</code>, thus you need to declare your implementation in a <code>META-INF/services/org.apache.activemq.artemis.spi.core.remoting.ssl.SSLContextFactory</code> file.
+If several implementations are available, the one with the highest <code>priority</code> will be selected.</p>
+</div>
+<div class="paragraph">
+<p>So for example, if you want to use <code>org.apache.activemq.artemis.core.remoting.impl.ssl.CachingSSLContextFactory</code> you need to add a <code>META-INF/services/org.apache.activemq.artemis.spi.core.remoting.ssl.SSLContextFactory</code> file to your classpath with the content <code>org.apache.activemq.artemis.core.remoting.impl.ssl.CachingSSLContextFactory</code>.</p>
+</div>
+<div class="paragraph">
+<p>A similar mechanism exists for the <code>OPENSSL</code> SSL provider in which case you can configure an OpenSSLContextFactory.
+Currently the following two implementations are provided:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>org.apache.activemq.artemis.core.remoting.impl.ssl.DefaultOpenSSLContextFactory</code> (registered by the default)</p>
+</li>
+<li>
+<p><code>org.apache.activemq.artemis.core.remoting.impl.ssl.CachingOpenSSLContextFactory</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You may also create your own implementation of  <code>org.apache.activemq.artemis.spi.core.remoting.ssl.OpenSSLContextFactory</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuring-netty-http"><a class="anchor" href="#configuring-netty-http"></a><a class="link" href="#configuring-netty-http">4.5. Configuring Netty HTTP</a></h3>
+<div class="paragraph">
+<p>Netty HTTP tunnels packets over the HTTP protocol.
+It can be useful in scenarios where firewalls only allow HTTP traffic to pass.</p>
+</div>
+<div class="paragraph">
+<p>Please see the examples for a full working example of using Netty HTTP.</p>
+</div>
+<div class="paragraph">
+<p>Netty HTTP uses the same properties as Netty TCP but adds the following additional properties:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">httpEnabled</dt>
+<dd>
+<p>Activates http on the client.
+This is not needed on the broker.
+With single port support Apache ActiveMQ Artemis will now automatically detect if http is being used and configure itself.</p>
+</dd>
+<dt class="hdlist1">httpClientIdleTime</dt>
+<dd>
+<p>How long a client can be idle before sending an empty http request to keep the connection alive</p>
+</dd>
+<dt class="hdlist1">httpClientIdleScanPeriod</dt>
+<dd>
+<p>How often, in milliseconds, to scan for idle clients</p>
+</dd>
+<dt class="hdlist1">httpResponseTime</dt>
+<dd>
+<p>How long the server can wait before sending an empty http response to keep the connection alive</p>
+</dd>
+<dt class="hdlist1">httpServerScanPeriod</dt>
+<dd>
+<p>How often, in milliseconds, to scan for clients needing responses</p>
+</dd>
+<dt class="hdlist1">httpRequiresSessionId</dt>
+<dd>
+<p>If <code>true</code> the client will wait after the first call to receive a session id.
+Used the http connector is connecting to servlet acceptor (not recommended)</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuring-netty-socks-proxy"><a class="anchor" href="#configuring-netty-socks-proxy"></a><a class="link" href="#configuring-netty-socks-proxy">4.6. Configuring Netty SOCKS Proxy</a></h3>
+<div class="paragraph">
+<p>All these parameters are only applicable to a <code>connector</code> and/or client URL.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Using a loop-back address (e.g. <code>localhost</code> or <code>127.0.0.1</code>) as the target of the <code>connector</code> or URL will circumvent the application of these configuration properties.
+In other words, no SOCKS proxy support will be configured even if these properties are set.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">socksEnabled</dt>
+<dd>
+<p>Whether or not to enable SOCKS support on the <code>connector</code>.</p>
+</dd>
+<dt class="hdlist1">socksHost</dt>
+<dd>
+<p>The name of the SOCKS server to use.</p>
+</dd>
+<dt class="hdlist1">socksPort</dt>
+<dd>
+<p>The port of the SOCKS server to use.</p>
+</dd>
+<dt class="hdlist1">socksVersion</dt>
+<dd>
+<p>The version of SOCKS to use.
+Must be an integer.
+Default is <code>5</code>.</p>
+</dd>
+<dt class="hdlist1">socksUsername</dt>
+<dd>
+<p>The username to use when connecting to the <code>socksHost</code>.</p>
+</dd>
+<dt class="hdlist1">socksPassword</dt>
+<dd>
+<p>The password to use when connecting to the <code>socksHost</code>.
+Only applicable if the <code>socksVersion</code> is <code>5</code>.</p>
+</dd>
+<dt class="hdlist1">socksRemoteDNS</dt>
+<dd>
+<p>Whether or not to create remote destination socket unresolved and disable DNS resolution.
+Default is <code>false</code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

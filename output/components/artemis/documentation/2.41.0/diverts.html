@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Diverting and Splitting Message Flows</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const pathSegments = window.location.pathname.split('/');
+                if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+                    var message = document.createElement("div");
+                    message.style.margin = "20px";
+                    message.style.textAlign = "center";
+                    message.style.backgroundColor = "#FFFFE0";
+                    message.textContent = "Please be aware that this documentation is out of date. ";
+
+                    var link = document.createElement("a");
+                    link.href = "../latest";
+                    link.textContent = "Here is the latest documentation.";
+                    message.appendChild(link);
+
+                    document.body.insertBefore(message, document.body.firstChild);
+                }
+            });
+        </script>
+    </head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Diverting and Splitting Message Flows</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#exclusive-divert">1. Exclusive Divert</a></li>
+<li><a href="#non-exclusive-divert">2. Non-exclusive Divert</a></li>
+<li><a href="#composite-divert">3. Composite Divert</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis allows you to configure objects called <em>diverts</em> with some simple server configuration.
+Diverts allow you to transparently divert messages routed to one address to one or more other addresses, without making any changes to any client application logic.</p>
+</div>
+<div class="paragraph">
+<p>Diverts can be <em>exclusive</em> or <em>non-exclusive</em>.</p>
+</div>
+<div class="paragraph">
+<p>An <a href="#exclusive-divert"><em>exclusive</em></a> divert routes messages the new address(es) only.
+Messages are not routed to the old address at all.</p>
+</div>
+<div class="paragraph">
+<p>A <a href="#non-exclusive-divert"><em>non-exclusive</em></a> divert routes messags to the old address and a <em>copy</em> of the messages are also sent to the new address(es).
+Think of non-exclusive divert as <em>splitting</em> message flow, e.g. there may be a requirement to monitor every order sent to an order queue.</p>
+</div>
+<div class="paragraph">
+<p>Multiple diverts can be configured for a single address.
+When an address has both exclusive and non-exclusive diverts configured, the exclusive ones are processed first.
+If any of the exclusive diverts diverted the message, the non-exclusive ones are not processed.</p>
+</div>
+<div class="paragraph">
+<p>Diverts can also be configured to have an optional message filter.
+If specified then only messages that match the filter will be diverted.</p>
+</div>
+<div class="paragraph">
+<p>Diverts can apply a particular routing-type to the message, strip the existing routing type, or simply pass the existing routing-type through.
+This is useful in situations where the message may have its routing-type set but you want to divert it to an address using a different routing-type.
+It&#8217;s important to keep in mind that a message with the <code>anycast</code> routing-type will not actually be routed to queues using <code>multicast</code> and vice-versa.
+By configuring the <code>routing-type</code> of the divert you have the flexibility to deal with any situation.
+Valid values are <code>ANYCAST</code>, <code>MULTICAST</code>, <code>PASS</code>, &amp; <code>STRIP</code>.
+The default is <code>STRIP</code>.</p>
+</div>
+<div class="paragraph">
+<p>Diverts can also be configured to apply a <a href="transformers.html#transformers"><code>Transformer</code></a>.
+If specified, all diverted messages will have the opportunity of being transformed by the <code>Transformer</code>.
+When an address has multiple diverts configured, all of them receive the same, original message.
+This means that the results of a transformer on a message are not directly available for other diverts or their filters on the same address.
+See the documentation on <a href="using-server.html#adding-runtime-dependencies">adding runtime dependencies</a> to  understand how to make your transformer available to the broker.</p>
+</div>
+<div class="paragraph">
+<p>A divert will only divert a message to an address on the <em>same server</em>.
+If you want to divert to an address on a different server a common pattern would be to divert to a local "store-and-forward" queue and then set up a <a href="core-bridges.html#core-bridges">bridge</a> which consumes from that queue and forwards to an address on a different server.</p>
+</div>
+<div class="paragraph">
+<p>Diverts are therefore a very sophisticated concept which when combined with bridges can be used to create interesting and complex routings.
+The set of diverts on a server can be thought of as a type of routing table for messages.
+Combining diverts with bridges allows you to create a distributed network of reliable routing connections between multiple geographically distributed servers, creating your global messaging mesh.</p>
+</div>
+<div class="paragraph">
+<p>Diverts are defined as xml in the <code>broker.xml</code> file at the <code>core</code> attribute level.
+There can be zero or more diverts in the file.</p>
+</div>
+<div class="paragraph">
+<p>Diverted messages get <a href="copied-message-properties.html#properties-for-copied-messages">special properties</a>.</p>
+</div>
+<div class="paragraph">
+<p>Please see the <a href="examples.html">examples</a> for a full working example at ./examples/features/standard/divert/ showing you how to configure and use diverts.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take a look at some divert examples&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="exclusive-divert"><a class="anchor" href="#exclusive-divert"></a><a class="link" href="#exclusive-divert">1. Exclusive Divert</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s take a look at an exclusive divert.
+An exclusive divert diverts all matching messages that are routed to the old address to the new address.
+Matching messages do not get routed to the old address.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s some example xml configuration for an exclusive divert, it&#8217;s taken from the divert example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;divert</span> <span class="na">name=</span><span class="s">"prices-divert"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;address&gt;</span>priceUpdates<span class="nt">&lt;/address&gt;</span>
+   <span class="nt">&lt;forwarding-address&gt;</span>priceForwarding<span class="nt">&lt;/forwarding-address&gt;</span>
+   <span class="nt">&lt;filter</span> <span class="na">string=</span><span class="s">"office='New York'"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;transformer-class-name&gt;</span>
+      org.apache.activemq.artemis.jms.example.AddForwardingTimeTransformer
+   <span class="nt">&lt;/transformer-class-name&gt;</span>
+   <span class="nt">&lt;exclusive&gt;</span>true<span class="nt">&lt;/exclusive&gt;</span>
+<span class="nt">&lt;/divert&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We define a divert called <code>prices-divert</code> that will divert any messages sent to the address <code>priceUpdates</code> to another local address  <code>priceForwarding</code>.</p>
+</div>
+<div class="paragraph">
+<p>We also specify a message filter string so only messages with the message property <code>office</code> with value <code>New York</code> will get diverted, all other messages will continue to be routed to the normal address.
+The filter string is optional, if not specified then all messages will be considered matched.</p>
+</div>
+<div class="paragraph">
+<p>In this example a transformer class is specified without any configuration properties.
+Again this is optional, and if specified the transformer will be executed for each matching message.
+This allows you to change the messages body or properties before it is diverted.
+In this example the transformer simply adds a header that records the time the divert happened.
+See the <a href="transformers.html#transformers">transformer chapter</a> for more details about transformer-specific configuration.</p>
+</div>
+<div class="paragraph">
+<p>This example is actually diverting messages to a local store and forward queue, which is configured with a bridge which forwards the message to an address on another ActiveMQ Artemis server.
+Please see the example for more details.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="non-exclusive-divert"><a class="anchor" href="#non-exclusive-divert"></a><a class="link" href="#non-exclusive-divert">2. Non-exclusive Divert</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now we&#8217;ll take a look at a non-exclusive divert.
+Non exclusive diverts are the same as exclusive diverts, but they only forward a <em>copy</em> of the message to the new address.
+The original message continues to the old address</p>
+</div>
+<div class="paragraph">
+<p>You can therefore think of non-exclusive diverts as <em>splitting</em> a message flow.</p>
+</div>
+<div class="paragraph">
+<p>Non exclusive diverts can be configured in the same way as exclusive diverts with an optional filter and transformer, here&#8217;s an example non-exclusive divert, again from the divert example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;divert</span> <span class="na">name=</span><span class="s">"order-divert"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;address&gt;</span>orders<span class="nt">&lt;/address&gt;</span>
+   <span class="nt">&lt;forwarding-address&gt;</span>spyTopic<span class="nt">&lt;/forwarding-address&gt;</span>
+   <span class="nt">&lt;exclusive&gt;</span>false<span class="nt">&lt;/exclusive&gt;</span>
+<span class="nt">&lt;/divert&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above divert example takes a copy of every message sent to the address <code>orders</code> and sends it to a local address called <code>spyTopic</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="composite-divert"><a class="anchor" href="#composite-divert"></a><a class="link" href="#composite-divert">3. Composite Divert</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A <em>composite</em> divert is one which forwards messages to multiple addresses.
+This pattern is sometimes referred to as <em>fan-out</em>.
+Configuration is simple.
+Just use a comma separated list in <code>forwarding-address</code>, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;divert</span> <span class="na">name=</span><span class="s">"shipping-divert"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;address&gt;</span>shipping<span class="nt">&lt;/address&gt;</span>
+   <span class="nt">&lt;forwarding-address&gt;</span>dallas, chicago, denver<span class="nt">&lt;/forwarding-address&gt;</span>
+   <span class="nt">&lt;exclusive&gt;</span>false<span class="nt">&lt;/exclusive&gt;</span>
+<span class="nt">&lt;/divert&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -10,31 +10,31 @@
 <link rel="stylesheet" href="css/asciidoctor.css">
 <link rel="stylesheet" href="css/font-awesome.css">
 <link rel="stylesheet" href="css/rouge-github.css">
-    <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const pathSegments = window.location.pathname.split('/');
-                if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
-                    var message = document.createElement("div");
-                    message.style.margin = "20px";
-                    message.style.textAlign = "center";
-                    message.style.backgroundColor = "#FFFFE0";
-                    message.textContent = "Please be aware that this documentation is out of date. ";
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
 
-                    var link = document.createElement("a");
-                    link.href = "../latest";
-                    link.textContent = "Here is the latest documentation.";
-                    message.appendChild(link);
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
 
-                    document.body.insertBefore(message, document.body.firstChild);
-                }
-            });
-        </script>
-    </head>
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
 <body class="book toc2 toc-left">
 <div id="header">
 <h1>Broker Connections</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#amqp-server-connections">1. AMQP Server Connections</a></li>
 <li><a href="#amqp-server-connection-operations">2. AMQP Server Connection Operations</a></li>
@@ -1028,7 +1028,7 @@ See above sections to configure those values.</p>
 <pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
   <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://HOST:PORT"</span> <span class="na">name=</span><span class="s">"bridge-example"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;bridge</span> <span class="na">name=</span><span class="s">"example-bridge"</span><span class="nt">&gt;</span>
-       <span class="nt">&lt;bridge-from-address</span> <span class="na">name=</span><span class="s">"example-bridge-from-address-policy"</span><span class="nt">&gt;</span>
+       <span class="nt">&lt;bridge-from-address</span> <span class="na">name=</span><span class="s">"example-bridge-from-address-policy"</span> <span class="na">priority=</span><span class="s">"-2"</span><span class="nt">&gt;</span>
          <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"local-address.#"</span> <span class="nt">/&gt;</span>
          <span class="nt">&lt;exclude</span> <span class="na">address-match=</span><span class="s">"local-address.excluded"</span> <span class="nt">/&gt;</span>
        <span class="nt">&lt;/bridge-from-address&gt;</span>
@@ -1040,19 +1040,14 @@ See above sections to configure those values.</p>
 <span class="nt">&lt;/broker-connections&gt;</span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>The set of common policy attributes for bridge from address and queue policies:</p>
+</div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">name</dt>
 <dd>
 <p>The name of the policy. These names should be unique within a broker connection&#8217;s bridge policy elements.</p>
-</dd>
-<dt class="hdlist1">include</dt>
-<dd>
-<p>The address-match or queue-match pattern to use to match included addresses and queues. Multiple of these can be set but if none is set then no matches would be made.</p>
-</dd>
-<dt class="hdlist1">exclude</dt>
-<dd>
-<p>The address-match or queue-match pattern to use to match excluded addresses and queues. Multiple of these can be set, or it can be omitted if no excludes are needed.</p>
 </dd>
 <dt class="hdlist1">priority</dt>
 <dd>
@@ -1088,6 +1083,36 @@ See above sections to configure those values.</p>
 </dd>
 </dl>
 </div>
+<div class="paragraph">
+<p>Policy attributes that apply to AMQP bridge from address policies only:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">enable-divert-bindings</dt>
+<dd>
+<p>Instructs the receive from address policy to look at diverts that matching address would forward to and check for demand on those diverts when processing demand on the matched address. By default this option is <code>false</code> and diverts are not checked.</p>
+</dd>
+<dt class="hdlist1">use-durable-subscriptions</dt>
+<dd>
+<p>Instructs the receive from address policy that it should use an JMS over AMQP mapped durable subscription to create the remote receiver which is meant to result in a durable address subscription being created for receivers on addresses that have local demand. By adding a durable subscription the remote will accumulate messages when the broker connection if down and will recover stored messages if the remote server is shutdown and restarted. By default this option is set to <code>false</code> to avoid unwanted accumulation of remote messages and if enabled intervention may be needed from remote management to remove old subscriptions or clear space as needed.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Configuration policy elements of which more than one entry per policy is allowed:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">include</dt>
+<dd>
+<p>The address-match or queue-match pattern to use to match included addresses and queues. Multiple of these can be set but if none is set then no matches would be made.</p>
+</dd>
+<dt class="hdlist1">exclude</dt>
+<dd>
+<p>The address-match or queue-match pattern to use to match excluded addresses and queues. Multiple of these can be set, or it can be omitted if no excludes are needed.</p>
+</dd>
+</dl>
+</div>
 </div>
 <div class="sect2">
 <h3 id="bridging-to-remote-addresses-and-queues"><a class="anchor" href="#bridging-to-remote-addresses-and-queues"></a><a class="link" href="#bridging-to-remote-addresses-and-queues">10.2. Bridging to remote addresses and queues</a></h3>
@@ -1105,7 +1130,7 @@ See above sections to configure those values.</p>
        <span class="nt">&lt;bridge-to-address</span> <span class="na">name=</span><span class="s">"example-bridge-to-address-policy"</span><span class="nt">&gt;</span>
          <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"outgoing-address"</span> <span class="nt">/&gt;</span>
        <span class="nt">&lt;/bridge-to-address&gt;</span>
-       <span class="nt">&lt;bridge-to-queue</span> <span class="na">name=</span><span class="s">"example-bridge-to-queue-policy"</span><span class="nt">&gt;</span>
+       <span class="nt">&lt;bridge-to-queue</span> <span class="na">name=</span><span class="s">"example-bridge-to-queue-policy"</span> <span class="na">priority=</span><span class="s">"1"</span><span class="nt">&gt;</span>
          <span class="nt">&lt;include</span> <span class="na">address-match=</span><span class="s">"#"</span> <span class="na">queue-match=</span><span class="s">"outbound-queue"</span> <span class="nt">/&gt;</span>
          <span class="nt">&lt;exclude</span> <span class="na">address-match=</span><span class="s">"#"</span> <span class="na">queue-match=</span><span class="s">"local-queue-excluded"</span> <span class="nt">/&gt;</span>
        <span class="nt">&lt;/bridge-to-queue&gt;</span>
@@ -1114,19 +1139,14 @@ See above sections to configure those values.</p>
 <span class="nt">&lt;/broker-connections&gt;</span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>The set of common policy attributes for bridge to address and queue policies:</p>
+</div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">name</dt>
 <dd>
 <p>The name of the policy. These names should be unique within a broker connection&#8217;s bridge policy elements.</p>
-</dd>
-<dt class="hdlist1">include</dt>
-<dd>
-<p>The address-match or queue-match pattern to use to match included addresses and queues. Multiple of these can be set but if none is set then no matches would be made.</p>
-</dd>
-<dt class="hdlist1">exclude</dt>
-<dd>
-<p>The address-match or queue-match pattern to use to match excluded addresses and queues. Multiple of these can be set, or it can be omitted if no excludes are needed.</p>
 </dd>
 <dt class="hdlist1">priority</dt>
 <dd>
@@ -1155,6 +1175,32 @@ See above sections to configure those values.</p>
 <dt class="hdlist1">remoteTerminusCapabilities</dt>
 <dd>
 <p>Optional set of remote target capabilities that are set on the sender when bridging an address or queue to the remote peer. The capabilities are configured as a comma delimited list whose default value is <code>null</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Policy attributes that apply to AMQP bridge to address policies only:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">use-durable-subscriptions</dt>
+<dd>
+<p>Instructs the send to address policy that bindings created on local addresses that match the configured policy includes should create a durable address binding which will be reloaded on server restart and will store messages that were sent to the address while the broker connection is down. The option is <code>false</code> by default and a volatile binding is created on the local address that is deleted whenever the broker connection is down so that messages are not retained.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Configuration policy elements of which more than one entry per policy is allowed:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">include</dt>
+<dd>
+<p>The address-match or queue-match pattern to use to match included addresses and queues. Multiple of these can be set but if none is set then no matches would be made.</p>
+</dd>
+<dt class="hdlist1">exclude</dt>
+<dd>
+<p>The address-match or queue-match pattern to use to match excluded addresses and queues. Multiple of these can be set, or it can be omitted if no excludes are needed.</p>
 </dd>
 </dl>
 </div>

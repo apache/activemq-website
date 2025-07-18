@@ -10,31 +10,31 @@
 <link rel="stylesheet" href="css/asciidoctor.css">
 <link rel="stylesheet" href="css/font-awesome.css">
 <link rel="stylesheet" href="css/rouge-github.css">
-    <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const pathSegments = window.location.pathname.split('/');
-                if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
-                    var message = document.createElement("div");
-                    message.style.margin = "20px";
-                    message.style.textAlign = "center";
-                    message.style.backgroundColor = "#FFFFE0";
-                    message.textContent = "Please be aware that this documentation is out of date. ";
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
 
-                    var link = document.createElement("a");
-                    link.href = "../latest";
-                    link.textContent = "Here is the latest documentation.";
-                    message.appendChild(link);
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
 
-                    document.body.insertBefore(message, document.body.firstChild);
-                }
-            });
-        </script>
-    </head>
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
 <body class="book toc2 toc-left">
 <div id="header">
 <h1>Authentication &amp; Authorization</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#basic-configuration">1. Basic Configuration</a></li>
 <li><a href="#caching-security-operations">2. Caching Security Operations</a></li>
@@ -79,6 +79,7 @@
 <li><a href="#masking-passwords">13. Masking Passwords</a></li>
 <li><a href="#custom-security-manager">14. Custom Security Manager</a></li>
 <li><a href="#per-acceptor-security-domains">15. Per-Acceptor Security Domains</a></li>
+<li><a href="#uuid-resources">16. UUID Resources</a></li>
 </ul>
 </div>
 </div>
@@ -300,10 +301,10 @@ For example, consider an address with multiple queues:</p>
 <div class="content">
 <pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;addresses&gt;</span>
    <span class="nt">&lt;address</span> <span class="na">name=</span><span class="s">"foo"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;anycast&gt;</span>
+      <span class="nt">&lt;multicast&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q1"</span> <span class="nt">/&gt;</span>
          <span class="nt">&lt;queue</span> <span class="na">name=</span><span class="s">"q2"</span> <span class="nt">/&gt;</span>
-      <span class="nt">&lt;/anycast&gt;</span>
+      <span class="nt">&lt;/multicast&gt;</span>
    <span class="nt">&lt;/address&gt;</span>
 <span class="nt">&lt;/addresses&gt;</span></code></pre>
 </div>
@@ -329,8 +330,41 @@ You can do this using the fully qualified queue name (i.e. FQQN) in the <code>ma
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Wildcard matching doesn&#8217;t work in conjunction with FQQN.
-The explicit goal of using FQQN here is to be <em>exact</em>.
+<div class="paragraph">
+<p>You cannot limit the <code>send</code> permission using a <code>security-setting</code> on the FQQN in conjuction with another on the address as a whole, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"foo"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"send"</span> <span class="na">roles=</span><span class="s">"fooRole"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span>
+<span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"foo::q1"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"send"</span> <span class="na">roles=</span><span class="s">"q1Role"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span>
+<span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"foo::q2"</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"send"</span> <span class="na">roles=</span><span class="s">"q2Role"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/security-setting&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Messages sent to <code>foo</code> by users in <code>fooRole</code> will be routed to both <code>q1</code> and <code>q2</code> regardless of if <code>fooRole</code> is also in <code>q1Role</code> or <code>q2Role</code>.
+The <code>q1Role</code> and <code>q2Role</code> requirement will only be enforced when a user attempts to send a message to the corresponding specific FQQN.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Wildcard matching doesn&#8217;t work in conjunction with FQQN.
+The explicit goal of using FQQN here is to be <em>exact</em>.</p>
+</div>
 </td>
 </tr>
 </table>
@@ -2171,6 +2205,33 @@ Simply use the <code>securityDomain</code> parameter and indicate which domain f
 </div>
 <div class="paragraph">
 <p>Any client connecting to this acceptor will be have security enforced using <code>mySecurityDomain</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="uuid-resources"><a class="anchor" href="#uuid-resources"></a><a class="link" href="#uuid-resources">16. UUID Resources</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>uuid-namespace</code> value can be used with a <code>security-setting</code> match just as it can with an <a href="address-model.html#uuid-resources"><code>address-setting</code></a>.
+For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;uuid-namespace&gt;</span>uuid<span class="nt">&lt;/uuid-namespace&gt;</span>
+
+<span class="nt">&lt;security-settings&gt;</span>
+   <span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"uuid.#"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"createAddress"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"createNonDurableQueue"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"deleteAddress"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;permission</span> <span class="na">type=</span><span class="s">"deleteNonDurableQueue"</span> <span class="na">roles=</span><span class="s">"myRole"</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;/security-setting&gt;</span>
+<span class="nt">&lt;/security-settings&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using this configuration any user in <code>myRole</code> can create and delete all the resources necessary to deal with, for example, temporary JMS queues or topics.
+However, users without <code>myRole</code> will not be able to create or delete those resources.</p>
 </div>
 </div>
 </div>

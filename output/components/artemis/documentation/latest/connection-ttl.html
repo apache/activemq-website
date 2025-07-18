@@ -10,31 +10,31 @@
 <link rel="stylesheet" href="css/asciidoctor.css">
 <link rel="stylesheet" href="css/font-awesome.css">
 <link rel="stylesheet" href="css/rouge-github.css">
-    <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const pathSegments = window.location.pathname.split('/');
-                if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
-                    var message = document.createElement("div");
-                    message.style.margin = "20px";
-                    message.style.textAlign = "center";
-                    message.style.backgroundColor = "#FFFFE0";
-                    message.textContent = "Please be aware that this documentation is out of date. ";
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
 
-                    var link = document.createElement("a");
-                    link.href = "../latest";
-                    link.textContent = "Here is the latest documentation.";
-                    message.appendChild(link);
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
 
-                    document.body.insertBefore(message, document.body.firstChild);
-                }
-            });
-        </script>
-    </head>
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
 <body class="book toc2 toc-left">
 <div id="header">
 <h1>Detecting Dead Connections</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.41.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#cleaning-up-resources-on-the-server">1. Cleaning up Resources on the Server</a></li>
 <li><a href="#closing-forgotten-resources">2. Closing Forgotten Resources</a></li>
@@ -139,12 +139,12 @@ The client will automatically send "ping" packets periodically to prevent the se
 If the server doesn&#8217;t receive any packets on a connection for the connection TTL time, then it will automatically close all the sessions on the server that relate to that connection.</p>
 </div>
 <div class="paragraph">
-<p>The connection TTL is configured on the URI using the <code>connectionTTL</code> parameter.</p>
+<p>The connection TTL is configured on the URI using the <code>connectionTtl</code> parameter.</p>
 </div>
 <div class="paragraph">
 <p>The default value for connection ttl on an "unreliable" connection (e.g. a Netty connection using the <code>tcp</code> URL scheme) is <code>60000</code>ms, i.e. 1 minute.
 The default value for connection ttl on a "reliable" connection (e.g. an in-vm connection using the <code>vm</code> URL scheme) is <code>-1</code>.
-A value of <code>-1</code> for <code>connectionTTL</code> means the server will never time out the connection on the server side.</p>
+A value of <code>-1</code> for <code>connectionTtl</code> means the server will never time out the connection on the server side.</p>
 </div>
 <div class="paragraph">
 <p>If you do not wish clients to be able to specify their own connection TTL, you can override all values used by a global value set on the server side.

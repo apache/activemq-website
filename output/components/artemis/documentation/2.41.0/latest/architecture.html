@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Core Architecture</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
+
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
+
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Core Architecture</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#standalone-broker">1. Standalone Broker</a></li>
+<li><a href="#embedded-broker">2. Embedded Broker</a></li>
+<li><a href="#integrated-with-a-javajakarta-ee-application-server">3. Integrated with a Java/Jakarta EE application server</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis core is designed simply as set of Plain Old Java Objects (POJOs) - we hope you like its clean-cut design.</p>
+</div>
+<div class="paragraph">
+<p>Each Apache ActiveMQ Artemis server has its own ultra high performance persistent journal, which it uses for message and other persistence.</p>
+</div>
+<div class="paragraph">
+<p>Using a high performance journal allows outrageous persistence message performance, something not achievable when using a relational database for persistence (although JDBC is still an option if necessary).</p>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis clients, potentially on different physical machines, interact with the Apache ActiveMQ Artemis broker.
+Apache ActiveMQ Artemis currently ships three API implementations for messaging at the client side:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Core client API.
+This is a simple intuitive Java API that is aligned with the Artemis internal Core.
+Allowing more control of broker objects (e.g direct creation of addresses and queues).
+The Core API also offers a full set of messaging functionality without some of the complexities of JMS.</p>
+</li>
+<li>
+<p>JMS 2.0 client API.
+The standard JMS API is available at the client side.
+This client is also compliant with the Jakarta Messaging 2.0 specification.</p>
+</li>
+<li>
+<p>Jakarta Messaging 3.0 client API.
+This is essentially the same as the JMS 2.0 API.
+The only difference is the package names use <code>jakarta</code> insead of <code>javax</code>.
+This difference was introduced due to the move from Oracle&#8217;s Java EE to Eclipse&#8217;s Jakarta EE.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis also provides different protocol implementations on the server so you can use respective clients for these protocols:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>AMQP</p>
+</li>
+<li>
+<p>OpenWire</p>
+</li>
+<li>
+<p>MQTT</p>
+</li>
+<li>
+<p>STOMP</p>
+</li>
+<li>
+<p>HornetQ (for use with HornetQ clients).</p>
+</li>
+<li>
+<p>Core (Artemis CORE protocol)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>JMS semantics are implemented by a JMS facade layer on the client side.</p>
+</div>
+<div class="paragraph">
+<p>The Apache ActiveMQ Artemis broker does not speak JMS and in fact does not know anything about JMS, it is a protocol agnostic messaging server designed to be used with multiple different protocols.</p>
+</div>
+<div class="paragraph">
+<p>When a user uses the JMS API on the client side, all JMS interactions are translated into operations on the Apache ActiveMQ Artemis core client API before being transferred over the wire using the core protocol.</p>
+</div>
+<div class="paragraph">
+<p>The broker always just deals with core API interactions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="standalone-broker"><a class="anchor" href="#standalone-broker"></a><a class="link" href="#standalone-broker">1. Standalone Broker</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The normal stand-alone messaging broker configuration comprises a core messaging broker and a number of protocol managers that provide support for the various protocol mentioned earlier.</p>
+</div>
+<div class="paragraph">
+<p>The standalone broker configuration uses <a href="https://picocli.info/">picocli</a> for bootstrapping the broker.</p>
+</div>
+<div class="paragraph">
+<p>For more information on server configuration files see <a href="configuration-index.html#configuration-reference">Server Configuration</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="embedded-broker"><a class="anchor" href="#embedded-broker"></a><a class="link" href="#embedded-broker">2. Embedded Broker</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis core is designed as a set of simple POJOs so if you have an application that requires messaging functionality internally but you don&#8217;t want to expose that as an Apache ActiveMQ Artemis broker you can directly instantiate and embed brokers in your own application.</p>
+</div>
+<div class="paragraph">
+<p>Read more about <a href="embedding-activemq.html#embedding-apache-activemq-artemis">embedding Apache ActiveMQ Artemis</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="integrated-with-a-javajakarta-ee-application-server"><a class="anchor" href="#integrated-with-a-javajakarta-ee-application-server"></a><a class="link" href="#integrated-with-a-javajakarta-ee-application-server">3. Integrated with a Java/Jakarta EE application server</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis provides its own fully functional Java Connector Architecture (JCA) adaptor which enables it to be integrated easily into any Java/Jakarta EE (henceforth just "EE") compliant application server or servlet engine.</p>
+</div>
+<div class="paragraph">
+<p>EE application servers provide Message Driven Beans (MDBs), which are a special type of Enterprise Java Beans (EJBs) that can process messages from sources such as JMS systems or mail systems.</p>
+</div>
+<div class="paragraph">
+<p>Probably the most common use of an MDB is to consume messages from a JMS messaging system.</p>
+</div>
+<div class="paragraph">
+<p>According to the EE specification an application server uses a JCA adapter to integrate with a JMS messaging system so it can consume messages for MDBs.</p>
+</div>
+<div class="paragraph">
+<p>However, the JCA adapter is not only used by the EE application server for <em>consuming</em> messages via MDBs, it is also used when sending message to the JMS messaging system e.g. from inside an EJB or servlet.</p>
+</div>
+<div class="paragraph">
+<p>When integrating with a JMS messaging system from inside an EE application server it is always recommended that this is done via a JCA adaptor.
+In fact, communicating with a JMS messaging system directly, without using JCA would be illegal according to the EE specification.</p>
+</div>
+<div class="paragraph">
+<p>The application server&#8217;s JCA service provides extra functionality such as connection pooling and automatic transaction enlistment, which are desirable when using messaging, say, from inside an EJB.
+It is possible to talk to a JMS messaging system directly from an EJB, MDB or servlet without going through a JCA adapter, but this is not recommended since you will not be able to take advantage of the JCA features, such as caching of JMS sessions, which can result in poor performance.</p>
+</div>
+<div class="paragraph">
+<p>Note that all communication between EJB sessions or entity beans and Message Driven beans go through the adaptor and not directly to Apache ActiveMQ Artemis.</p>
+</div>
+<div class="paragraph">
+<p>The large arrow with the prohibited sign shows an EJB session bean talking directly to the Apache ActiveMQ Artemis server.
+This is not recommended as you&#8217;ll most likely end up creating a new connection and session every time you want to interact from the EJB, which is an anti-pattern.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
