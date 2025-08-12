@@ -22,10 +22,17 @@ ActiveMQ Classic uses a combination of Jetty's Server and SslSocketConnector obj
 
 [http://host:port](http://host:port) [https://host:port](https://host:port)
 
+By default, in case of error, the complete stack trace is sent to the client.
+
+If, for security reason, you don't want to send the stack trace detail to the client, you can use `wireFormat.sendStackTrace=false` option.
+
 #### Example URI
 
+```
 http://localhost
+http://0.0.0.0:8080?wireFormat.sendStackTrace=false
 https://localhost:8080
+```
 
 #### Dependencies
 
