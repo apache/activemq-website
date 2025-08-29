@@ -19,5 +19,5 @@ The effect of this difference is that persistent messaging is usually slower tha
 ### See also
 
 *   [Async Sends](async-sends)
-*   [How do I disable persistence](how-do-i-disable-Features/persistence)
+*   [How do I disable persistence](how-do-i-disable-persistence)
 
