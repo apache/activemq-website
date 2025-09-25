@@ -24,6 +24,7 @@ If you want to get your hands on the code here are the repos for all our compone
 |Artemis|[activemq-artemis](https://gitbox.apache.org/repos/asf/activemq-artemis.git)|[activemq-artemis](https://github.com/apache/activemq-artemis)|
 |Artemis Examples|[activemq-artemis-examples](https://gitbox.apache.org/repos/asf/activemq-artemis-examples.git)|[activemq-artemis-examples](https://github.com/apache/activemq-artemis-examples)|
 |Artemis Native|[activemq-artemis-native](https://gitbox.apache.org/repos/asf/activemq-artemis-native.git)|[activemq-artemis-native](https://github.com/apache/activemq-artemis-native)|
+|Artemis Console|[activemq-artemis-console](https://gitbox.apache.org/repos/asf/activemq-artemis-console.git)|[activemq-artemis-native](https://github.com/apache/activemq-artemis-console)|
 |NMS API|[activemq-nms-api](https://gitbox.apache.org/repos/asf/activemq-nms-api.git)|[activemq-nms-api](https://github.com/apache/activemq-nms-api)|
 |NMS AMQP|[activemq-nms-amqp](https://gitbox.apache.org/repos/asf/activemq-nms-amqp.git)|[activemq-nms-amqp](https://github.com/apache/activemq-nms-amqp)|
 |NMS EMS|[activemq-nms-ems](https://gitbox.apache.org/repos/asf/activemq-nms-ems.git)|[activemq-nms-ems](https://github.com/apache/activemq-nms-ems)|
