@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Libaio Native Libraries</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
+
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
+
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Libaio Native Libraries</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#runtime-dependencies">1. Runtime dependencies</a></li>
+<li><a href="#compiling-the-native-libraries">2. Compiling the native libraries</a></li>
+<li><a href="#compilation-dependencies">3. Compilation dependencies</a></li>
+<li><a href="#invoking-the-compilation">4. Invoking the compilation</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis distributes a native library, used as a bridge for its fast journal, between Apache ActiveMQ Artemis and Linux libaio.</p>
+</div>
+<div class="paragraph">
+<p><code>libaio</code> is a library, developed as part of the Linux kernel project.
+With <code>libaio</code> we submit writes to the operating system where they are processed asynchronously.
+Some time later the OS will call our code back when they have been processed.</p>
+</div>
+<div class="paragraph">
+<p>We use this in our high performance journal if configured to do so, please see <a href="persistence.html#persistence">Persistence</a>.</p>
+</div>
+<div class="paragraph">
+<p>These are the native libraries distributed by Apache ActiveMQ Artemis:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>libartemis-native-64.so - x86 64 bits</p>
+</li>
+<li>
+<p>We distributed a 32-bit version until early 2017.
+While it&#8217;s not available on the distribution any longer it should still be possible to compile to a 32-bit environment if needed.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When using libaio, Apache ActiveMQ Artemis will always try loading these files as long as they are on the <a href="using-server.html#library-path">library path</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="runtime-dependencies"><a class="anchor" href="#runtime-dependencies"></a><a class="link" href="#runtime-dependencies">1. Runtime dependencies</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you just want to use the provided native binaries you need to install the required libaio dependency.</p>
+</div>
+<div class="paragraph">
+<p>You can install libaio using the following steps as the root user:</p>
+</div>
+<div class="paragraph">
+<p>Using yum, (e.g. on Fedora or Red Hat Enterprise Linux):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">yum install libaio</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using aptitude, (e.g. on Ubuntu or Debian system):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">apt-get install libaio1</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="compiling-the-native-libraries"><a class="anchor" href="#compiling-the-native-libraries"></a><a class="link" href="#compiling-the-native-libraries">2. Compiling the native libraries</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the case that you are using Linux on a platform other than x86_32 or x86_64 (for example Itanium 64 bits or IBM Power) you may need to compile the native library, since we do not distribute binaries for those platforms with the release.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="compilation-dependencies"><a class="anchor" href="#compilation-dependencies"></a><a class="link" href="#compilation-dependencies">3. Compilation dependencies</a></h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The native layer is only available on Linux.
+If you are in a platform other than Linux the native compilation will not work</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>These are the required linux packages to be installed for the compilation to work:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>gcc - C Compiler</p>
+</li>
+<li>
+<p>gcc-c&#43;&#43; or g&#43;&#43; - Extension to gcc with support for C&#43;&#43;</p>
+</li>
+<li>
+<p>libtool - Tool for link editing native libraries</p>
+</li>
+<li>
+<p>libaio - library to disk asynchronous IO kernel functions</p>
+</li>
+<li>
+<p>libaio-dev - Compilation support for libaio</p>
+</li>
+<li>
+<p>cmake</p>
+</li>
+<li>
+<p>A full JDK installed with the environment variable JAVA_HOME set to   its location</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To perform this installation on RHEL or Fedora, you can simply type this at a command line:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre class="nowrap">sudo yum install libtool gcc-c++ gcc libaio libaio-devel cmake</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or on Debian systems:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre class="nowrap">sudo apt-get install libtool gcc-g++ gcc libaio libaio- cmake</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You could find a slight variation of the package names depending on the version and Linux distribution.
+(for example gcc-c&#43;&#43; on Fedora versus g&#43;&#43; on Debian systems)</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="invoking-the-compilation"><a class="anchor" href="#invoking-the-compilation"></a><a class="link" href="#invoking-the-compilation">4. Invoking the compilation</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the source distribution or git clone, in the <code>artemis-native</code> directory, execute the shell script <code>compile-native.sh</code>.
+This script will invoke the proper commands to perform the native build.</p>
+</div>
+<div class="paragraph">
+<p>If you want more information refer to the <a href="https://cmake.org">cmake web pages</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

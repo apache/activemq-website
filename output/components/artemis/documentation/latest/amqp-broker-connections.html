@@ -34,7 +34,7 @@
 <div id="header">
 <h1>Broker Connections</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.43.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#amqp-server-connections">1. AMQP Server Connections</a></li>
 <li><a href="#amqp-server-connection-operations">2. AMQP Server Connection Operations</a></li>
@@ -285,25 +285,55 @@ How many attempts will be done after a failed connection</p>
 </div>
 <div class="paragraph">
 <p>It is also possible to specify alternate hosts on a broker connection by appending a comma separated list after a <code>#</code> at the end of the URI.
-The broker connection would keep trying on the alternate list until one of the targets is available to connect.
-Example:</p>
+The broker connection would keep trying on the alternate list until one of the targets is available to connect.</p>
+</div>
+<div class="paragraph">
+<p>For example, a backup broker can be specified like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
-  <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://ServerA:5672#BackupA:5672,BackupB:5672"</span> <span class="na">name=</span><span class="s">"ServerA"</span> <span class="na">reconnect-attempts=</span><span class="s">"-1"</span> <span class="na">retry-interval=</span><span class="s">"5000"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://ServerA:5672#tcp://BackupA:5672"</span> <span class="na">name=</span><span class="s">"MyBrokerConnection"</span> <span class="na">reconnect-attempts=</span><span class="s">"-1"</span> <span class="na">retry-interval=</span><span class="s">"5000"</span><span class="nt">&gt;</span>
     ...
   <span class="nt">&lt;/amqp-connection&gt;</span>
 <span class="nt">&lt;/broker-connections&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/broker-connection-failover.jpg" alt="Broker Connection Failover"></span> Figure 1.
-Broker Connection - Reconnecting and Failover.</p>
+<p>To specify more than 2 elements use a comma separated list after the first pair, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;broker-connections&gt;</span>
+  <span class="nt">&lt;amqp-connection</span> <span class="na">uri=</span><span class="s">"tcp://ServerA:5672#tcp://BackupA:5672,tcp://BackupB:5672"</span> <span class="na">name=</span><span class="s">"MyBrokerConnection"</span> <span class="na">reconnect-attempts=</span><span class="s">"-1"</span> <span class="na">retry-interval=</span><span class="s">"5000"</span><span class="nt">&gt;</span>
+    ...
+  <span class="nt">&lt;/amqp-connection&gt;</span>
+<span class="nt">&lt;/broker-connections&gt;</span></code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/broker-connection-failover.jpg" alt="broker connection failover">
+</div>
+<div class="title">Figure 1. Broker Connection - Reconnecting and Failover</div>
 </div>
 <div class="paragraph">
 <p>The previous example portrays a case of connection failure towards ServerA.
-The system would try to connect to serverA, backupA, and backupB until it successfully connects to one of these nodes.</p>
+The system would try to connect to ServerA, BackupA, and BackupB until it successfully connects to one of these nodes.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+For failover on mirrored brokers, all nodes in the list must be high-available (HA) failover nodes.
+Specifying independents nodes in the mirror list can cause consistency issues between the message
+sent to the mirror and the acknowledgements received on the mirror.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

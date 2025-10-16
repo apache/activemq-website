@@ -33,7 +33,7 @@
 <div id="header">
 <h1>Libaio Native Libraries</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.43.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#runtime-dependencies">1. Runtime dependencies</a></li>
 <li><a href="#compiling-the-native-libraries">2. Compiling the native libraries</a></li>
@@ -79,26 +79,69 @@ While it&#8217;s not available on the distribution any longer it should still be
 <h2 id="runtime-dependencies"><a class="anchor" href="#runtime-dependencies"></a><a class="link" href="#runtime-dependencies">1. Runtime dependencies</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you just want to use the provided native binaries you need to install the required libaio dependency.</p>
+<p>If you just want to use the provided native binaries you need to install the required libaio dependency.
+You can install libaio using the following steps either as the root user or using <code>sudo</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>On Fedora, CentOS, Rocky Linux, Red Hat Enterprise Linux, etc.:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">dnf install libaio</pre>
+</div>
+</div>
+</li>
+<li>
+<p>On Ubuntu, Debian, etc.:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">apt install &lt;package-name&gt;</pre>
+</div>
 </div>
 <div class="paragraph">
-<p>You can install libaio using the following steps as the root user:</p>
+<p>The value for <code>&lt;package-name&gt;</code> will depend on which Linux distribution version you&#8217;re using:</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Linux Distro Version</th>
+<th class="tableblock halign-left valign-top">Package Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ubuntu 22.04 (and earlier)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">libaio1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ubuntu 24.04 (and later)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">libaio1t64</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debian 12 (and earlier)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">libaio1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debian 13 (and later)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">libaio1t64</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>Using yum, (e.g. on Fedora or Red Hat Enterprise Linux):</p>
+<p>Since the package name in later versions of Ubuntu and Debian is different you&#8217;ll also need to create a symlink on these versions so that the ActiveMQ Artemis Native library can find the shared library at the expected location, e.g.:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="nowrap">yum install libaio</pre>
+<pre class="nowrap">ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/libaio.so.1</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Using aptitude, (e.g. on Ubuntu or Debian system):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="nowrap">apt-get install libaio1</pre>
-</div>
+</li>
+</ul>
 </div>
 </div>
 </div>

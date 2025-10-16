@@ -34,7 +34,7 @@
 <div id="header">
 <h1>Connection Routers</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.43.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#target-broker">1. Target Broker</a></li>
 <li><a href="#keys">2. Keys</a></li>
@@ -54,8 +54,8 @@
 <li><a href="#data-gravity">9. Data gravity</a></li>
 <li><a href="#redirection">10. Redirection</a>
 <ul class="sectlevel2">
-<li><a href="#native-redirect-sequence">10.1. Native Redirect Sequence</a></li>
-<li><a href="#management-api-redirect-sequence">10.2. Management API Redirect Sequence</a></li>
+<li><a href="#native-redirection">10.1. Native Redirection</a></li>
+<li><a href="#management-api-redirection">10.2. Management API Redirection</a></li>
 </ul>
 </li>
 </ul>
@@ -466,22 +466,45 @@ With the 'data gravity' mindset, operators are less concerned with numbers of co
 <h2 id="redirection"><a class="anchor" href="#redirection"></a><a class="link" href="#redirection">10. Redirection</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Apache ActiveMQ Artemis provides a native redirection for supported clients and a new management API for other clients.
-The native redirection can be enabled per acceptor and is supported only for AMQP, CORE and OPENWIRE clients.
+<p>Apache ActiveMQ Artemis provides a protocol-native redirection as well as a management API for other clients using a messaging protocol which doesn&#8217;t support redirection.</p>
+</div>
+<div class="sect2">
+<h3 id="native-redirection"><a class="anchor" href="#native-redirection"></a><a class="link" href="#native-redirection">10.1. Native Redirection</a></h3>
+<div class="paragraph">
+<p>Native redirection is supported for applications using one of the following protocols:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>AMQP 1.0</p>
+</li>
+<li>
+<p><a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Server_redirection">MQTT 5</a></p>
+</li>
+<li>
+<p>Core</p>
+</li>
+<li>
+<p>OpenWire</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Native redirection is configurable on a per-acceptor basis.
 The acceptor with the <code>router</code> url parameter will redirect the incoming connections.
-The <code>router</code> url parameter specifies the name of the connection router to use, ie the following acceptor will redirect the incoming CORE client connections using the connection router with the name <code>simple-router</code>:</p>
+The <code>router</code> url parameter specifies the name of the connection router to use.
+For example, the following acceptor will redirect incoming Core client connections using the connection router with the name <code>simple-router</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;acceptor</span> <span class="na">name=</span><span class="s">"artemis"</span><span class="nt">&gt;</span>tcp://0.0.0.0:61616?router=simple-router;protocols=CORE<span class="nt">&lt;/acceptor&gt;</span></code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="native-redirect-sequence"><a class="anchor" href="#native-redirect-sequence"></a><a class="link" href="#native-redirect-sequence">10.1. Native Redirect Sequence</a></h3>
 <div class="paragraph">
-<p>The clients supporting the native redirection connect to the acceptor with the redirection enabled.
-The acceptor sends to the client the target broker to redirect if it is ready and closes the connection.
-The client connects to the target broker if it has received one before getting disconnected otherwise it connected again to the acceptor with the redirection enabled.</p>
+<p>Here&#8217;s how it works.
+Applications using a protocol supporting native redirection connect to the acceptor with the router enabled.
+The acceptor redirects the connection to the target broker and closes the connection.
+The client then establishes a connection to the target broker.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -490,15 +513,63 @@ The client connects to the target broker if it has received one before getting d
 </div>
 </div>
 <div class="sect2">
-<h3 id="management-api-redirect-sequence"><a class="anchor" href="#management-api-redirect-sequence"></a><a class="link" href="#management-api-redirect-sequence">10.2. Management API Redirect Sequence</a></h3>
+<h3 id="management-api-redirection"><a class="anchor" href="#management-api-redirection"></a><a class="link" href="#management-api-redirection">10.2. Management API Redirection</a></h3>
 <div class="paragraph">
-<p>The clients not supporting the native redirection queries the management API of connection router to get the target broker to redirect.
-If the API returns a target broker the client connects to it otherwise the client queries again the API.</p>
+<p>Applications using a protocol not supporting native redirection can query the management API of connection router to get the target broker to redirect.
+If the API returns a target broker the client connects to it otherwise the client can query the API again.</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="images/management_api_redirect_sequence.png" alt="Management API Redirect Sequence">
 </div>
+</div>
+<div class="paragraph">
+<p>The relevant <code>ConnectionRouterControl</code> MBean is named like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">org.apache.activemq.artemis:broker="&lt;brokerName&gt;",component=connection-routers,name="&lt;routerName&gt;"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Therefore, if your broker was named <code>myBroker</code> and your <code>connection-router</code> was named <code>myRouter</code> then the MBean name would be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">org.apache.activemq.artemis:broker="myBroker",component=connection-routers,name="myRouter"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The API has two operations both of which take a single input parameter - <a href="#key-values">key</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>getTarget</code>: returns a <code>javax.management.openmbean.CompositeData</code> object</p>
+</li>
+<li>
+<p><code>getTargetAsJSON</code>: returns a JSON string</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both return values contain the following data:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>connector</code>: where to connect</p>
+</li>
+<li>
+<p><code>nodeID</code>: the UUID of the broker</p>
+</li>
+<li>
+<p><code>local</code>: whether the target is the local broker hosting the router</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This API can be accessed over <a href="management.html#exposing-jmx-using-jolokia">HTTP via Jolokia</a>.</p>
 </div>
 </div>
 </div>
