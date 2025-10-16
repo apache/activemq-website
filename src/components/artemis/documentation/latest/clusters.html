@@ -34,7 +34,7 @@
 <div id="header">
 <h1>Clusters</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.43.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#overview">1. Overview</a></li>
 <li><a href="#performance-considerations">2. Performance Considerations</a></li>
@@ -1080,6 +1080,31 @@ The default value is <code>-1</code>.</p>
 </div>
 <div class="paragraph">
 <p>It often makes sense to introduce a delay before redistributing as it&#8217;s a common case that a consumer closes but another one quickly is created on the same queue, in such a case you probably don&#8217;t want to redistribute immediately since the new consumer will arrive shortly.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The broker uses internal store-and-forward queues to handle message which need to be sent to other nodes in the cluster.
+Clients <strong>should not</strong> directly send messages to these store-and-forward queues.
+If a client sends a message to a store-and-forward queue it will be sent to the corresponding dead-letter address.
+It&#8217;s possible to prevent clients from sending any messages to these internal queues by revoking all security permissions using the following <code>security-setting</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="xml"><span class="nt">&lt;security-setting</span> <span class="na">match=</span><span class="s">"$.artemis.internal.sf.#"</span><span class="nt">/&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This configuration will not impact the internal processes which manage the store-and-foward queues.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

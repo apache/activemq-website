@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Artemis on Apache Karaf</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
+
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
+
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Artemis on Apache Karaf</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#installation">1. Installation</a></li>
+<li><a href="#configuration">2. Configuration</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis is OSGi ready.
+Below you can find instruction on how to install and configure broker on Apache Karaf OSGi container.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="installation"><a class="anchor" href="#installation"></a><a class="link" href="#installation">1. Installation</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis provides features that makes it easy to install the broker on Apache Karaf (4.x or later).
+First you need to define the feature URL, like</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="sh">karaf@root<span class="o">()&gt;</span> feature:repo-add mvn:org.apache.activemq/artemis-features/1.3.0-SNAPSHOT/xml/features</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will add Artemis related features</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">karaf@root()&gt; feature:list | grep artemis
+artemis                       | 1.3.0.SNAPSHOT   |          | Uninstalled | artemis-1.3.0-SNAPSHOT   | Full ActiveMQ Artemis broker with default configuration
+netty-core                    | 4.0.32.Final     |          | Uninstalled | artemis-1.3.0-SNAPSHOT   | Netty libraries
+artemis-core                  | 1.3.0.SNAPSHOT   |          | Uninstalled | artemis-1.3.0-SNAPSHOT   | ActiveMQ Artemis broker libraries
+artemis-amqp                  | 1.3.0.SNAPSHOT   |          | Uninstalled | artemis-1.3.0-SNAPSHOT   | ActiveMQ Artemis AMQP protocol libraries
+artemis-stomp                 | 1.3.0.SNAPSHOT   |          | Uninstalled | artemis-1.3.0-SNAPSHOT   | ActiveMQ Artemis Stomp protocol libraries
+artemis-mqtt                  | 1.3.0.SNAPSHOT   |          | Uninstalled | artemis-1.3.0-SNAPSHOT   | ActiveMQ Artemis MQTT protocol libraries
+artemis-hornetq               | 1.3.0.SNAPSHOT   |          | Uninstalled | artemis-1.3.0-SNAPSHOT   | ActiveMQ Artemis HornetQ protocol libraries</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Feature named <code>artemis</code> contains full broker installation, so running</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre class="nowrap">feature:install artemis</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will install and run the broker.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">2. Configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The broker is installed as <code>org.apache.activemq.artemis</code> OSGi component, so it&#8217;s configured through <code>${KARAF_BASE}/etc/org.apache.activemq.artemis.cfg</code> file.
+An example of the file looks like</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre class="nowrap">config=file:etc/artemis.xml
+name=local
+domain=karaf
+rolePrincipalClass=org.apache.karaf.jaas.boot.principal.RolePrincipal</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">config</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Location of the configuration file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">${KARAF_BASE}/etc/artemis.xml</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the broker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">domain</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JAAS domain to use for security</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">karaf</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rolePrincipalClass</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Class name used for role authorization purposes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.apache.karaf.jaas.boot.principal.RolePrincipal</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The default broker configuration file is located in <code>${KARAF_BASE}/etc/artemis.xml</code></p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

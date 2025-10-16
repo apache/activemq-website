@@ -34,7 +34,7 @@
 <div id="header">
 <h1>High Availability and Failover</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.43.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#terminology">1. Terminology</a>
 <ul class="sectlevel2">
@@ -218,13 +218,9 @@ The backup will then load the data from the shared file system and accept remote
 Network Attached Storage (NAS), like an <a href="#nfs-mount-recommendations">NFS mount</a>, is viable but won&#8217;t provide optimal performance.</p>
 </div>
 <div class="paragraph">
-<p>One main advantage of a shared store configuration is that no replication occurs between the primary and backup nodes which means it does not suffer any performance penalties due to the overhead of replication during normal operation.</p>
-</div>
-<div class="paragraph">
-<p>One potentially significant disadvantage of shared store versus replication is that it requires a shared file system, and when the backup server activates it needs to load the journal from the shared store which can take some time depending on the amount of data in the store and the speed of the store.</p>
-</div>
-<div class="paragraph">
-<p>If you require the highest performance during normal operation then acquire access to a fast SAN and deal with a slightly slower failover (depending on amount of data).</p>
+<p>One main advantage of a shared store configuration is that no replication occurs between the primary and backup nodes which means it does not suffer any performance penalties due to the overhead of replication during normal operation.
+The main disadvantage is that shared stores are typically less performant than local file stores. In particular, because the journal is always read in full on startup, the difference in read latency between local and shared storage can be a significant startup overhead. The shared store may need to be optimised for reads of size journal-file-size.
+If you require the highest performance then acquire access to a fast SAN.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -377,6 +373,21 @@ These settings are designed for reliability and to help the broker detect proble
 <dt class="hdlist1">soft</dt>
 <dd>
 <p>Specifies that if the NFS server is unavailable the error should be reported rather than waiting for the server to come back online.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <a href="https://linux.die.net/man/5/nfs">NFS documentation</a> notes the potential for "silent data corruption" when using <code>soft</code>.
+This can be safely ignored in the case of ActiveMQ Artemis.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </dd>
 <dt class="hdlist1">lookupcache=none</dt>
 <dd>

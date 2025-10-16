@@ -34,7 +34,7 @@
 <div id="header">
 <h1>Authentication &amp; Authorization</h1>
 <div id="toc" class="toc2">
-<div id="toctitle"><a href="index.html">User Manual for 2.42.0</a></div>
+<div id="toctitle"><a href="index.html">User Manual for 2.43.0</a></div>
 <ul class="sectlevel1">
 <li><a href="#basic-configuration">1. Basic Configuration</a></li>
 <li><a href="#caching-security-operations">2. Caching Security Operations</a></li>
@@ -573,6 +573,24 @@ The default  value is <code>false</code>.</p>
 <p>Whether or not to map the legacy <code>read</code> permission to the <code>createDurableQueue</code>, <code>createNonDurableQueue</code>, and <code>deleteDurableQueue</code> permissions so that JMS clients can create durable and non-durable subscriptions without needing the <code>admin</code> permission.
 This was allowed in ActiveMQ Classic.
 The default value is <code>false</code>.</p>
+</dd>
+<dt class="hdlist1">anyWordsWildcardConversion</dt>
+<dd>
+<p>This is a 1-character value that should match the <code>any-words</code> <a href="wildcard-syntax.html#customizing-the-syntax">wildcard syntax</a> setting defined for the broker.
+The plugin will translate any <code>&lt;</code> or <code>$</code> character to this value in an LDAP entry defining a destination name.
+The default value is <code>#</code>.</p>
+</dd>
+<dt class="hdlist1">singleWordWildcardConversion</dt>
+<dd>
+<p>This is a 1-character value that should match the <code>single-word</code> <a href="wildcard-syntax.html#customizing-the-syntax">wildcard syntax</a> setting defined for the broker.
+The plugin will translate any <code>*</code> character to this value in an LDAP entry defining a destination name.
+The default value is <code>*</code>.</p>
+</dd>
+<dt class="hdlist1">delimiterWildcardConversion</dt>
+<dd>
+<p>This is a 1-character value that should match the <code>delimiter</code> <a href="wildcard-syntax.html#customizing-the-syntax">wildcard syntax</a> setting defined for the broker.
+The plugin will translate any <code>.</code> character to this value in an LDAP entry defining a destination name.
+The default value is <code>.</code>.</p>
 </dd>
 </dl>
 </div>
@@ -2013,7 +2031,7 @@ This is needed only if <code>clientAuth</code> is <code>true</code>.</p>
 </li>
 <li>
 <p>Change the hawtio realm to match the realm defined in the <code>login.config</code> file for the <a href="#certificateloginmodule">certificate login module</a>.
-This is configured in the <code>artemis.profile</code> via the system property <code>-Dhawtio.role=activemq-cert</code>.</p>
+This is configured in the <code>artemis.profile</code> via the system property <code>-Dhawtio.realm=activemq-cert</code>.</p>
 </li>
 <li>
 <p>Create a key pair for the client and import the public key in a truststore file.</p>
