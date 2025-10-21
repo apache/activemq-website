@@ -48,7 +48,7 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
     </tr>
     <tr style="background-color: #dff0d8;">
       <td>5.18.x</td>
-      <td><em>Deprecated</em></td>
+      <td><strong>Stable - Supported</strong></td>
       <td>5.18.7</td>
       <td>Mar 19nd, 2025</td>
     </tr>
