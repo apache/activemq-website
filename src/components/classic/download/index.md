@@ -31,8 +31,8 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
     <tr style="background-color: #dff0d8;">
       <td>6.1.x</td>
       <td><strong>Stable - Supported</strong></td>
-      <td>6.1.7</td>
-      <td>Jun 22nd, 2025</td>
+      <td>6.1.8</td>
+      <td>Oct 22nd, 2025</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>6.0.x</td>
