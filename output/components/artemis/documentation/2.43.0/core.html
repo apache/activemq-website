@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<title>Using Core</title>
+<link rel="stylesheet" href="css/asciidoctor.css">
+<link rel="stylesheet" href="css/font-awesome.css">
+<link rel="stylesheet" href="css/rouge-github.css">
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pathSegments = window.location.pathname.split('/');
+        if (window.location.hostname == "activemq.apache.org" && pathSegments[pathSegments.length - 2] != "latest") {
+            var message = document.createElement("div");
+            message.style.margin = "20px";
+            message.style.textAlign = "center";
+            message.style.backgroundColor = "#FFFFE0";
+            message.textContent = "Please be aware that this documentation is out of date. ";
+
+            var link = document.createElement("a");
+            link.href = "../latest";
+            link.textContent = "Here is the latest documentation.";
+            message.appendChild(link);
+
+            document.body.insertBefore(message, document.body.firstChild);
+        }
+    });
+</script>
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Using Core</h1>
+<div id="toc" class="toc2">
+<div id="toctitle"><a href="index.html">User Manual for 2.43.0</a></div>
+<ul class="sectlevel1">
+<li><a href="#core-messaging-concepts">1. Core Messaging Concepts</a>
+<ul class="sectlevel2">
+<li><a href="#message">1.1. Message</a></li>
+</ul>
+</li>
+<li><a href="#core-api">2. Core API</a>
+<ul class="sectlevel2">
+<li><a href="#serverlocator">2.1. ServerLocator</a></li>
+<li><a href="#clientsessionfactory">2.2. ClientSessionFactory</a></li>
+<li><a href="#clientsession">2.3. ClientSession</a></li>
+<li><a href="#clientconsumer">2.4. ClientConsumer</a></li>
+<li><a href="#clientproducer">2.5. ClientProducer</a></li>
+</ul>
+</li>
+<li><a href="#a-simple-example-of-using-core">3. A simple example of using Core</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache ActiveMQ Artemis core is a messaging system with its own API.
+We call this the <em>core API</em>.</p>
+</div>
+<div class="paragraph">
+<p>If you don&#8217;t want to use the JMS API or any of the other supported protocols you can use the core API directly.
+The core API provides all the functionality of JMS but without much of the complexity.
+It also provides features that are not available using JMS.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="core-messaging-concepts"><a class="anchor" href="#core-messaging-concepts"></a><a class="link" href="#core-messaging-concepts">1. Core Messaging Concepts</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some of the core messaging concepts are similar to JMS concepts, but core messaging concepts are also different in some ways as well.
+In general the core API is simpler than the JMS API, since we remove distinctions between queues, topics and subscriptions.
+We&#8217;ll discuss each of the major core messaging concepts in turn, but to see the API in detail please consult the Javadoc.</p>
+</div>
+<div class="paragraph">
+<p>Also refer to the <a href="address-model.html#address-model">address model</a> chapter for a high-level overview of these concepts as well as configuration details.</p>
+</div>
+<div class="sect2">
+<h3 id="message"><a class="anchor" href="#message"></a><a class="link" href="#message">1.1. Message</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>A message is the unit of data which is sent between clients and servers.</p>
+</li>
+<li>
+<p>A message has a body which is a buffer containing convenient methods for reading and writing data into it.</p>
+</li>
+<li>
+<p>A message has a set of properties which are key-value pairs.
+Each property key is a string and property values can be of type integer, long, short, byte, byte[], String, double, float or boolean.</p>
+</li>
+<li>
+<p>A message has an <em>address</em> it is being sent to.
+When the message arrives on the server it is routed to any queues that are bound to the address.
+The routing semantics (i.e. anycast or multicast) are determined by the "routing type" of the address and queue.
+If the queues are bound with any filter, the message will only be routed to that queue if the filter matches.
+An address may have many queues bound to it or even none.
+There may also be entities other than queues (e.g. <em>diverts</em>) bound to addresses.</p>
+</li>
+<li>
+<p>Messages can be either durable or non durable.
+Durable messages in a durable queue will survive a server crash or restart.
+Non durable messages will never survive a server crash or restart.</p>
+</li>
+<li>
+<p>Messages can be specified with a priority value between 0 and 9.
+0 represents the lowest priority and 9 represents the highest.
+The broker will attempt to deliver higher priority messages before lower priority ones.</p>
+</li>
+<li>
+<p>Messages can be specified with an optional expiry time.
+The broker will not deliver messages after its expiry time has been exceeded.</p>
+</li>
+<li>
+<p>Messages also have an optional timestamp which represents the time the message was sent.</p>
+</li>
+<li>
+<p>Apache ActiveMQ Artemis also supports the sending/consuming of very large messages much larger than can fit in available RAM at any one time.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="core-api"><a class="anchor" href="#core-api"></a><a class="link" href="#core-api">2. Core API</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="serverlocator"><a class="anchor" href="#serverlocator"></a><a class="link" href="#serverlocator">2.1. ServerLocator</a></h3>
+<div class="paragraph">
+<p>Clients use <code>ServerLocator</code> instances to create <code>ClientSessionFactory</code> instances.
+<code>ServerLocator</code> instances are used to locate servers and create connections to them.</p>
+</div>
+<div class="paragraph">
+<p>In JMS terms think of a <code>ServerLocator</code> in the same way you would a JMS Connection Factory.</p>
+</div>
+<div class="paragraph">
+<p><code>ServerLocator</code> instances are created using the <code>ActiveMQClient</code> factory class.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="clientsessionfactory"><a class="anchor" href="#clientsessionfactory"></a><a class="link" href="#clientsessionfactory">2.2. ClientSessionFactory</a></h3>
+<div class="paragraph">
+<p>Clients use <code>ClientSessionFactory</code> instances to create <code>ClientSession</code> instances.
+<code>ClientSessionFactory</code> instances are basically the connection to a server</p>
+</div>
+<div class="paragraph">
+<p>In JMS terms think of them as JMS Connections.</p>
+</div>
+<div class="paragraph">
+<p><code>ClientSessionFactory</code> instances are created using the <code>ServerLocator</code> class.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="clientsession"><a class="anchor" href="#clientsession"></a><a class="link" href="#clientsession">2.3. ClientSession</a></h3>
+<div class="paragraph">
+<p>A client uses a <code>ClientSession</code>for consuming and producing messages and for grouping them in transactions.
+<code>ClientSession</code> instances can support both transactional and non transactional semantics and also provide an <code>XAResource</code> interface so messaging operations can be performed as part of a <a href="http://www.oracle.com/technetwork/java/javaee/tech/jta-138684.html">JTA</a> transaction.</p>
+</div>
+<div class="paragraph">
+<p><code>ClientSession</code> instances group <code>ClientConsumer</code> instances and <code>ClientProducer</code> instances.</p>
+</div>
+<div class="paragraph">
+<p><code>ClientSession</code> instances can be registered with an optional <code>SendAcknowledgementHandler</code>.
+This allows your client code to be notified asynchronously when sent messages have successfully reached the server.
+This unique Apache ActiveMQ Artemis feature, allows you to have full guarantees that sent messages have reached the server without having to block on each message sent until a response is received.
+Blocking on each messages sent is costly since it requires a network round trip for each message sent.
+By not blocking and receiving send acknowledgements asynchronously you can create true end to end asynchronous systems which is not possible using the standard JMS API.
+For more information on this advanced feature please see the section <a href="send-guarantees.html#guarantees-of-sends-and-commits">Guarantees of sends and commits</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="identifying-your-client-application-for-management-and-debugging"><a class="anchor" href="#identifying-your-client-application-for-management-and-debugging"></a><a class="link" href="#identifying-your-client-application-for-management-and-debugging">2.3.1. Identifying your client application for management and debugging</a></h4>
+<div class="paragraph">
+<p>Assigning IDs to your core session can help you with monitoring and debugging using the <a href="management-console.html#management-console">management console</a>, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ServerLocator</span> <span class="n">locator</span> <span class="o">=</span> <span class="o">...</span>
+<span class="nc">ClientSessionFactory</span> <span class="n">csf</span> <span class="o">=</span> <span class="n">createSessionFactory</span><span class="o">(</span><span class="n">locator</span><span class="o">);</span>
+<span class="nc">ClientSession</span> <span class="n">session</span> <span class="o">=</span> <span class="n">csf</span><span class="o">.</span><span class="na">createSession</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="n">locator</span><span class="o">.</span><span class="na">isPreAcknowledge</span><span class="o">(),</span> <span class="n">locator</span><span class="o">.</span><span class="na">getAckBatchSize</span><span class="o">(),</span> <span class="s">"my-client-id"</span><span class="o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The value <code>my-client-id</code> will then appear in the <strong>Client ID</strong> column under the <strong>Connections</strong>, <strong>Consumers</strong>, and <strong>Producers</strong> tabs.</p>
+</div>
+<div class="paragraph">
+<p>If you are using the JMS API then <code>setClientID</code> would give you the same effect.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="clientconsumer"><a class="anchor" href="#clientconsumer"></a><a class="link" href="#clientconsumer">2.4. ClientConsumer</a></h3>
+<div class="paragraph">
+<p>Clients use <code>ClientConsumer</code> instances to consume messages from a queue.
+Core messaging supports both synchronous and asynchronous message consumption semantics.
+<code>ClientConsumer</code> instances can be configured with an optional filter expression and will only consume messages which match that expression.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="clientproducer"><a class="anchor" href="#clientproducer"></a><a class="link" href="#clientproducer">2.5. ClientProducer</a></h3>
+<div class="paragraph">
+<p>Clients create <code>ClientProducer</code> instances on <code>ClientSession</code> instances so they can send messages.
+<code>ClientProducer</code> instances can specify an address to which all sent messages are routed, or they can have no specified address, and the address is specified at send time for the message.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please note that <code>ClientSession</code>, <code>ClientProducer</code> and <code>ClientConsumer</code> instances are <em>designed to be re-used</em>.</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s an anti-pattern to create new <code>ClientSession</code>, <code>ClientProducer</code> and <code>ClientConsumer</code> instances for each message you produce or consume.
+If you do this, your application will perform very poorly.
+This is  discussed further in the section on performance tuning <a href="perf-tuning.html#performance-tuning">Performance Tuning</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a-simple-example-of-using-core"><a class="anchor" href="#a-simple-example-of-using-core"></a><a class="link" href="#a-simple-example-of-using-core">3. A simple example of using Core</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here&#8217;s a very simple program using the core messaging API to send and receive a message.
+Logically it&#8217;s comprised of two sections: firstly setting up the producer to write a message to an <em>address</em>, and secondly, creating a <em>queue</em> for the consumer using anycast routing, creating the consumer, and <em>starting</em> it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight nowrap"><code data-lang="java"><span class="nc">ServerLocator</span> <span class="n">locator</span> <span class="o">=</span> <span class="nc">ActiveMQClient</span><span class="o">.</span><span class="na">createServerLocator</span><span class="o">(</span><span class="s">"vm://0"</span><span class="o">);</span>
+
+<span class="c1">// In this simple example, we just use one session for both producing and receiving</span>
+
+<span class="nc">ClientSessionFactory</span> <span class="n">factory</span> <span class="o">=</span>  <span class="n">locator</span><span class="o">.</span><span class="na">createSessionFactory</span><span class="o">();</span>
+<span class="nc">ClientSession</span> <span class="n">session</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="na">createSession</span><span class="o">();</span>
+
+<span class="c1">// A producer is associated with an address ...</span>
+
+<span class="nc">ClientProducer</span> <span class="n">producer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createProducer</span><span class="o">(</span><span class="s">"example"</span><span class="o">);</span>
+<span class="nc">ClientMessage</span> <span class="n">message</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createMessage</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="n">message</span><span class="o">.</span><span class="na">getBodyBuffer</span><span class="o">().</span><span class="na">writeString</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">);</span>
+
+<span class="c1">// We need a queue attached to the address ...</span>
+
+<span class="n">session</span><span class="o">.</span><span class="na">createQueue</span><span class="o">(</span><span class="s">"example"</span><span class="o">,</span> <span class="nc">RoutingType</span><span class="o">.</span><span class="na">ANYCAST</span><span class="o">,</span> <span class="s">"example"</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+
+<span class="c1">// And a consumer attached to the queue ...</span>
+
+<span class="nc">ClientConsumer</span> <span class="n">consumer</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">createConsumer</span><span class="o">(</span><span class="s">"example"</span><span class="o">);</span>
+
+<span class="c1">// Once we have a queue, we can send the message ...</span>
+
+<span class="n">producer</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+
+<span class="c1">// We need to start the session before we can -receive- messages ...</span>
+
+<span class="n">session</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="nc">ClientMessage</span> <span class="n">msgReceived</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="na">receive</span><span class="o">();</span>
+
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"message = "</span> <span class="o">+</span> <span class="n">msgReceived</span><span class="o">.</span><span class="na">getBodyBuffer</span><span class="o">().</span><span class="na">readString</span><span class="o">());</span>
+
+<span class="n">session</span><span class="o">.</span><span class="na">close</span><span class="o">();</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
