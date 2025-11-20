@@ -1,17 +1,13 @@
 ---
 layout: default_md
-title: ActiveMQ Classic Jakarta Messaging 3.1 &amp; JMS 2.0 Support
+title: ActiveMQ Jakarta Messaging 3.1 &amp; JMS 2.0 Support
 title-class: page-title-classic
 type: classic
 ---
 
-**ActiveMQ Classic 5.x & 6.x support for Jakarta Messaging 3.1 & JMS 2.0 is in progress**. This work commenced in late 2019 via [AMQ-7309](https://issues.apache.org/jira/browse/AMQ-7309).
-
-If you need full support for Jakarta Messaging 3.1 or JMS 2.0 we recommend [ActiveMQ Artemis]({{site.baseurl}}/components/artemis).
-
 ### Transition Approach
 
-Initially, ActiveMQ Classic clients will not support all JMS 2.0 functionality and will throw an `UnsupportedOperationException` (`RuntimeException`) for unsupported methods and features, such as those for async send with a `CompletionListener`, sending messages with a delivery delay, and using shared topic consumers.
+Initially, ActiveMQ clients will not support all JMS 2.0 functionality and will throw an `UnsupportedOperationException` (`RuntimeException`) for unsupported methods and features, such as those for async send with a `CompletionListener`, sending messages with a delivery delay, and using shared topic consumers.
 
 As features are implemented in subsequent releases, these exceptions will be replaced with fully functional methods, examples and unit tests. See later/below for more details on implementation progress.
 
@@ -23,7 +19,7 @@ Support for JMS 2.0 also enables building upon this for transition to Jakarta Me
  * Required for Spring 6
  * Required for Jakarta EE 9 + 10.
  * JMS API Java package name-change only
- * ActiveMQ Classic package names do not change
+ * ActiveMQ package names do not change
 
 This allows for a dependency-update-only approach to the transition without having to re-code going forward!
 
@@ -45,7 +41,7 @@ import jakarta.jms.ConnectionFactory
 import jakarta.jms.Message
 import jakarta.jms...
 ```
-To use the Jakarta transition client available with ActiveMQ Classic 5.18.x in Maven:
+To use the Jakarta transition client available with ActiveMQ 5.18.x in Maven:
 ```xml
 <dependency>
   <groupId>org.apache.activemq</groupId>
@@ -53,7 +49,7 @@ To use the Jakarta transition client available with ActiveMQ Classic 5.18.x in M
   <version>${activemq.version}</version>
 </dependency>
 ```
-Note: With ActiveMQ Classic 6.x the `activemq-client-jakarta` module is removed as it is no longer needed.
+Note: With ActiveMQ 6.x the `activemq-client-jakarta` module is removed as it is no longer needed.
 
 ### Spring bean usage
 
@@ -69,21 +65,19 @@ User feedback is welcome! Please comment on the JIRAs with questions and comment
 
 JIRA|Status|Target Version|Completed Version|Feature|Notes
 ---|:---:|---|---|---|---
-[AMQ-7309](https://issues.apache.org/jira/browse/AMQ-7309) | ✅ | 5.16.0 | 5.18.0 | JMS 2.0 API dependency | ActiveMQ Classic will ship with a JMS 2.0 dependency jar
+[AMQ-7309](https://issues.apache.org/jira/browse/AMQ-7309) | ✅ | 5.16.0 | 5.18.0 | JMS 2.0 API dependency | ActiveMQ will ship with a JMS 2.0 dependency jar
 [AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | ✅ | 5.17.0 | 5.18.0 | `JMSContext`, `JMSConsumer`, `JMSProducer`, &amp; `JMSRuntimeException` | Simplified JMS API support
 [AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | ✅ | 5.18.0 | 5.18.0 | GetBody/isBodyAssignable | Support for checking body type using a `Class<?>`
 [AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | ✅ | 5.18.3, 6.0.0 | 5.18.3, 6.0.0 | XA Connection methods | Updated methods when using XA transactions
 [AMQ-8494](https://issues.apache.org/jira/browse/AMQ-8494) | ✅ | 5.17.1 | 5.18.0 | Implement `CLIENT_ACKNOWLEDGEMENT` mode | Client ack requires special handling w/ the simplified JMSContext API
-[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | ❌ | 5.17.1 | | JMSConsumer | `.receiveBody(Class<T>)` methods
-[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | ❌ | 6.2.0 | | Delivery Delay | Support for Message DeliveryDelay feature
-[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | ❌ | 5.17.0 | | JMSProducer features | `CompletionListener` async send support
+[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | ❌ | 6.4.0 | | JMSConsumer | `.receiveBody(Class<T>)` methods
+[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | ❌ | 6.3.0 | | Delivery Delay | Support for Message DeliveryDelay feature
+[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | ❌ | 6.4.0 | | JMSProducer features | `CompletionListener` async send support
 [AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | ❌ | | | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions
-[AMQ-9451](https://issues.apache.org/jira/browse/AMQ-9451) | ❌ | 6.2.0 | | Pooled `ConnectionFactory` | Support for JMSContext in activemq-jms-pool 
+[AMQ-9451](https://issues.apache.org/jira/browse/AMQ-9451) | ❌ | 6.5.0 | | Pooled `ConnectionFactory` | Support for JMSContext in activemq-jms-pool
 
 ### Feature notes
 
 JMS Object|Feature|Notes
 ---|---|---
-`JMSProducer` | disableMessageID | ActiveMQ Classic does not support the optional feature of disabling JMS message ID
-
-
+`JMSProducer` | disableMessageID | ActiveMQ does not support the optional and rarely used JMS Specification feature to disable JMS message ID

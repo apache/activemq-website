@@ -22,7 +22,7 @@ We can help you much quicker if you try the following:
 
 |Component|Issue Tracker|
 |---|---|
-|Classic|[https://issues.apache.org/jira/projects/AMQ](https://issues.apache.org/jira/projects/AMQ)|
+|ActiveMQ|[https://issues.apache.org/jira/projects/AMQ](https://issues.apache.org/jira/projects/AMQ)|
 |Artemis|[https://issues.apache.org/jira/projects/ARTEMIS](https://issues.apache.org/jira/projects/ARTEMIS)|
 |NMS|[https://issues.apache.org/jira/projects/AMQNET](https://issues.apache.org/jira/projects/AMQNET)|
 |CMS|[https://issues.apache.org/jira/projects/AMQCPP](https://issues.apache.org/jira/projects/AMQCPP)|

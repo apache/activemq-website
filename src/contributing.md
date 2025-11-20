@@ -20,7 +20,7 @@ If you want to get your hands on the code here are the repos for all our compone
 
 |Component|Apache Git Repository|GitHub Mirror|
 |---|---|
-|Classic|[activemq](https://gitbox.apache.org/repos/asf/activemq.git)|[activemq](https://github.com/apache/activemq)|
+|ActiveMQ|[activemq](https://gitbox.apache.org/repos/asf/activemq.git)|[activemq](https://github.com/apache/activemq)|
 |Artemis|[activemq-artemis](https://gitbox.apache.org/repos/asf/activemq-artemis.git)|[activemq-artemis](https://github.com/apache/activemq-artemis)|
 |Artemis Examples|[activemq-artemis-examples](https://gitbox.apache.org/repos/asf/activemq-artemis-examples.git)|[activemq-artemis-examples](https://github.com/apache/activemq-artemis-examples)|
 |Artemis Native|[activemq-artemis-native](https://gitbox.apache.org/repos/asf/activemq-artemis-native.git)|[activemq-artemis-native](https://github.com/apache/activemq-artemis-native)|
