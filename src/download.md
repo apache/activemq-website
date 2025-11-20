@@ -7,7 +7,7 @@ type: main
 
 Select the component you wish you download to view its current or previous release downloads:
 
-[ActiveMQ Classic](components/classic/download)
+[ActiveMQ](components/classic/download)
 
 [ActiveMQ Artemis](components/artemis/download)
 
