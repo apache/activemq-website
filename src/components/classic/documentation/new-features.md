@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: New Features in ActiveMQ Classic
+title: New Features in ActiveMQ
 title-class: page-title-classic
 type: classic
 ---

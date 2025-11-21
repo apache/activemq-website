@@ -1,12 +1,12 @@
 ---
 layout: project_default_md
-project_name: ActiveMQ Classic
+project_name: ActiveMQ
 project_info: The Tried and Trusted Open Source Message Broker
 project_class: classic
 project_color: pink
 ---
 
-Apache ActiveMQ&reg; Classic is a popular and powerful open source messaging and [Integration Patterns](documentation/enterprise-integration-patterns) server.
+Apache ActiveMQ&reg; is a popular and powerful open source messaging and [Integration Patterns](documentation/enterprise-integration-patterns) server.
 
 It supports many [Cross Language Clients and Protocols](documentation/cross-language-clients), comes with easy to use [Enterprise Integration Patterns](documentation/enterprise-integration-patterns) and many [advanced features](documentation/features) while [partially supporting Jakarta Messaging 3.1 & JMS 2.0](documentation/jms2) and fully supporting JMS 1.1 and J2EE 1.4+\. Apache ActiveMQ is released under the [Apache](http://www.apache.org/) [2.0 License](http://www.apache.org/licenses/LICENSE-2.0)
 
