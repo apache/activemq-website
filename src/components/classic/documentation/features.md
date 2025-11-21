@@ -1,13 +1,13 @@
 ---
 layout: default_md
-title: Apache ActiveMQ Classic Features
+title: Apache ActiveMQ Features
 title-class: page-title-classic
 type: classic
 ---
 
  [Features](features)
 
-Apache ActiveMQ Classic is packed with features; to get an idea you might want to look at the [Features Overview](features-overview) otherwise here is the list of all of the main features...
+Apache ActiveMQ is packed with features; to get an idea you might want to look at the [Features Overview](features-overview) otherwise here is the list of all of the main features...
 
 *   [Active Groups](active-groups)
 *   [ActiveMQ Classic Real Time](activemq-classic-real-time)

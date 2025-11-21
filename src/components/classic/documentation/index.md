@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic Documentation
+title: ActiveMQ Documentation
 title-class: page-title-classic
 type: classic
 ---
