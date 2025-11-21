@@ -1,11 +1,11 @@
 ---
 layout: default_md
-title: Download ActiveMQ Classic
+title: Download ActiveMQ
 title-class: page-title-classic
 type: classic
 ---
 
-These are the current ActiveMQ Classic releases. For prior releases, please see the [past releases](../documentation/download-archives) page.
+These are the current ActiveMQ releases. For prior releases, please see the [past releases](../documentation/download-archives) page.
 
 It is important to [verify the integrity](#verify-the-integrity-of-downloads) of the files you download.
 

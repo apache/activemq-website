@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: Getting Started with ActiveMQ Classic
+title: Getting Started with ActiveMQ
 title-class: page-title-classic
 type: classic
 ---
