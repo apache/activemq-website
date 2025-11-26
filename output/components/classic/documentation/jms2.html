@@ -34,7 +34,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <ul class="multi-column-dropdown">
-                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ Classic</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" href="/components/classic">ActiveMQ</a></li>
                                     <li class="nav-item"><a class="dropdown-item" href="/components/artemis/">ActiveMQ Artemis</a></li>
                                     <li class="nav-item"><a class="dropdown-item" href="/components/artemis-console/">ActiveMQ Artemis Console</a></li>
                                     <li class="nav-item"><a class="dropdown-item" href="/components/nms">NMS Clients</a></li>
@@ -87,19 +87,15 @@
 <div class="content">
   <div class="page-title-classic">
     <div class="container">
-      <h1>ActiveMQ Classic Jakarta Messaging 3.1 &amp; JMS 2.0 Support</h1>
+      <h1>ActiveMQ Jakarta Messaging 3.1 &amp; JMS 2.0 Support</h1>
     </div>
   </div>
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p><strong>ActiveMQ Classic 5.x &amp; 6.x support for Jakarta Messaging 3.1 &amp; JMS 2.0 is in progress</strong>. This work commenced in late 2019 via <a href="https://issues.apache.org/jira/browse/AMQ-7309">AMQ-7309</a>.</p>
+        <h3 id="transition-approach">Transition Approach</h3>
 
-<p>If you need full support for Jakarta Messaging 3.1 or JMS 2.0 we recommend <a href="/components/artemis">ActiveMQ Artemis</a>.</p>
-
-<h3 id="transition-approach">Transition Approach</h3>
-
-<p>Initially, ActiveMQ Classic clients will not support all JMS 2.0 functionality and will throw an <code class="language-plaintext highlighter-rouge">UnsupportedOperationException</code> (<code class="language-plaintext highlighter-rouge">RuntimeException</code>) for unsupported methods and features, such as those for async send with a <code class="language-plaintext highlighter-rouge">CompletionListener</code>, sending messages with a delivery delay, and using shared topic consumers.</p>
+<p>Initially, ActiveMQ clients will not support all JMS 2.0 functionality and will throw an <code class="language-plaintext highlighter-rouge">UnsupportedOperationException</code> (<code class="language-plaintext highlighter-rouge">RuntimeException</code>) for unsupported methods and features, such as those for async send with a <code class="language-plaintext highlighter-rouge">CompletionListener</code>, sending messages with a delivery delay, and using shared topic consumers.</p>
 
 <p>As features are implemented in subsequent releases, these exceptions will be replaced with fully functional methods, examples and unit tests. See later/below for more details on implementation progress.</p>
 
@@ -112,7 +108,7 @@
   <li>Required for Spring 6</li>
   <li>Required for Jakarta EE 9 + 10.</li>
   <li>JMS API Java package name-change only</li>
-  <li>ActiveMQ Classic package names do not change</li>
+  <li>ActiveMQ package names do not change</li>
 </ul>
 
 <p>This allows for a dependency-update-only approach to the transition without having to re-code going forward!</p>
@@ -158,14 +154,14 @@
 <span class="kn">import</span> <span class="nn">jakarta.jms.Message</span>
 <span class="kn">import</span> <span class="nn">jakarta.jms...</span>
 </code></pre></div></div>
-<p>To use the Jakarta transition client available with ActiveMQ Classic 5.18.x in Maven:</p>
+<p>To use the Jakarta transition client available with ActiveMQ 5.18.x in Maven:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.apache.activemq<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>activemq-client-jakarta<span class="nt">&lt;/artifactId&gt;</span>
   <span class="nt">&lt;version&gt;</span>${activemq.version}<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div></div>
-<p>Note: With ActiveMQ Classic 6.x the <code class="language-plaintext highlighter-rouge">activemq-client-jakarta</code> module is removed as it is no longer needed.</p>
+<p>Note: With ActiveMQ 6.x the <code class="language-plaintext highlighter-rouge">activemq-client-jakarta</code> module is removed as it is no longer needed.</p>
 
 <h3 id="spring-bean-usage">Spring bean usage</h3>
 
@@ -196,7 +192,7 @@
       <td>5.16.0</td>
       <td>5.18.0</td>
       <td>JMS 2.0 API dependency</td>
-      <td>ActiveMQ Classic will ship with a JMS 2.0 dependency jar</td>
+      <td>ActiveMQ will ship with a JMS 2.0 dependency jar</td>
     </tr>
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8322">AMQ-8322</a></td>
@@ -233,7 +229,7 @@
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8464">AMQ-8464</a></td>
       <td style="text-align: center">❌</td>
-      <td>5.17.1</td>
+      <td>6.4.0</td>
       <td> </td>
       <td>JMSConsumer</td>
       <td><code class="language-plaintext highlighter-rouge">.receiveBody(Class&lt;T&gt;)</code> methods</td>
@@ -241,7 +237,7 @@
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8320">AMQ-8320</a></td>
       <td style="text-align: center">❌</td>
-      <td>6.2.0</td>
+      <td>6.3.0</td>
       <td> </td>
       <td>Delivery Delay</td>
       <td>Support for Message DeliveryDelay feature</td>
@@ -249,7 +245,7 @@
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-8324">AMQ-8324</a></td>
       <td style="text-align: center">❌</td>
-      <td>5.17.0</td>
+      <td>6.4.0</td>
       <td> </td>
       <td>JMSProducer features</td>
       <td><code class="language-plaintext highlighter-rouge">CompletionListener</code> async send support</td>
@@ -265,7 +261,7 @@
     <tr>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-9451">AMQ-9451</a></td>
       <td style="text-align: center">❌</td>
-      <td>6.2.0</td>
+      <td>6.5.0</td>
       <td> </td>
       <td>Pooled <code class="language-plaintext highlighter-rouge">ConnectionFactory</code></td>
       <td>Support for JMSContext in activemq-jms-pool</td>
@@ -287,11 +283,10 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">JMSProducer</code></td>
       <td>disableMessageID</td>
-      <td>ActiveMQ Classic does not support the optional feature of disabling JMS message ID</td>
+      <td>ActiveMQ does not support the optional and rarely used JMS Specification feature to disable JMS message ID</td>
     </tr>
   </tbody>
 </table>
-
 
       </div>
     </div>
