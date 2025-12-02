@@ -23,7 +23,6 @@ We can help you much quicker if you try the following:
 |Component|Issue Tracker|
 |---|---|
 |ActiveMQ|[https://issues.apache.org/jira/projects/AMQ](https://issues.apache.org/jira/projects/AMQ)|
-|Artemis|[https://issues.apache.org/jira/projects/ARTEMIS](https://issues.apache.org/jira/projects/ARTEMIS)|
 |NMS|[https://issues.apache.org/jira/projects/AMQNET](https://issues.apache.org/jira/projects/AMQNET)|
 |CMS|[https://issues.apache.org/jira/projects/AMQCPP](https://issues.apache.org/jira/projects/AMQCPP)|
 
@@ -48,3 +47,9 @@ Unsubscribe|[issues-unsubscribe@activemq.apache.org](mailto:issues-unsubscribe@a
 Web Interface|[https://lists.apache.org/list.html?issues@activemq.apache.org](https://lists.apache.org/list.html?issues@activemq.apache.org)
 Apache Archive|[http://mail-archives.apache.org/mod_mbox/activemq-issues/](http://mail-archives.apache.org/mod_mbox/activemq-issues/)
 Mark Mail Archive|[http://activemq.markmail.org/search/list:org.apache.activemq.issues](http://activemq.markmail.org/search/list:org.apache.activemq.issues)
+
+#### Artemis
+
+<div class="alert alert-warning">
+  For Artemis, consult the <a href="https://artemis.apache.org" class="alert-link">Apache Artemis</a> website.
+</div>

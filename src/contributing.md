@@ -21,10 +21,6 @@ If you want to get your hands on the code here are the repos for all our compone
 |Component|Apache Git Repository|GitHub Mirror|
 |---|---|
 |ActiveMQ|[activemq](https://gitbox.apache.org/repos/asf/activemq.git)|[activemq](https://github.com/apache/activemq)|
-|Artemis|[activemq-artemis](https://gitbox.apache.org/repos/asf/activemq-artemis.git)|[activemq-artemis](https://github.com/apache/activemq-artemis)|
-|Artemis Examples|[activemq-artemis-examples](https://gitbox.apache.org/repos/asf/activemq-artemis-examples.git)|[activemq-artemis-examples](https://github.com/apache/activemq-artemis-examples)|
-|Artemis Native|[activemq-artemis-native](https://gitbox.apache.org/repos/asf/activemq-artemis-native.git)|[activemq-artemis-native](https://github.com/apache/activemq-artemis-native)|
-|Artemis Console|[activemq-artemis-console](https://gitbox.apache.org/repos/asf/activemq-artemis-console.git)|[activemq-artemis-native](https://github.com/apache/activemq-artemis-console)|
 |NMS API|[activemq-nms-api](https://gitbox.apache.org/repos/asf/activemq-nms-api.git)|[activemq-nms-api](https://github.com/apache/activemq-nms-api)|
 |NMS AMQP|[activemq-nms-amqp](https://gitbox.apache.org/repos/asf/activemq-nms-amqp.git)|[activemq-nms-amqp](https://github.com/apache/activemq-nms-amqp)|
 |NMS EMS|[activemq-nms-ems](https://gitbox.apache.org/repos/asf/activemq-nms-ems.git)|[activemq-nms-ems](https://github.com/apache/activemq-nms-ems)|
@@ -47,3 +43,9 @@ If you're interested in becoming a "committer" please check out this [this guide
 |---|---|---|---|---|
 |Commits|[commits-subscribe@activemq.apache.org](mailto:commits-subscribe@activemq.apache.org)|[commits-unsubscribe@activemq.apache.org](mailto:commits-unsubscribe@activemq.apache.org)|[Apache](https://lists.apache.org/list.html?commits@activemq.apache.org), [Apache 2](http://mail-archives.apache.org/mod_mbox/activemq-commits/), [Markmail](http://activemq.markmail.org/search/list:org.apache.activemq.commits)|notifications when the project source code gets updated|
 |Gitbox|[gitbox-subscribe@activemq.apache.org](mailto:gitbox-subscribe@activemq.apache.org)|[gitbox-unsubscribe@activemq.apache.org](mailto:gitbox-unsubscribe@activemq.apache.org)|[Apache](https://lists.apache.org/list.html?gitbox@activemq.apache.org), [Apache 2](http://mail-archives.apache.org/mod_mbox/activemq-gitbox/), [Markmail](http://activemq.markmail.org/search/list:org.apache.activemq.gitbox)|comments and other events for pull-requests|
+
+#### Artemis
+
+<div class="alert alert-warning">
+  For Artemis, consult the <a href="https://artemis.apache.org" class="alert-link">Apache Artemis</a> website.
+</div>

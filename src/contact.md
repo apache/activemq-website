@@ -36,3 +36,9 @@ If you're curious you can [read more](https://apache.org/foundation/mailinglists
 #### Chat
 
 If for some reason a mailing list doesn't work for you then you can potentially chat with other community members in real-time using **[Slack](https://slack.com/)**. Access to the [ASF Slack](https://the-asf.slack.com) requires an invitation. If you want an invitation to the ActiveMQ Slack channel simply send a request to the [users mailing list](#mailing).
+
+#### Artemis
+
+<div class="alert alert-warning">
+  For Artemis, consult the <a href="https://artemis.apache.org" class="alert-link">Apache Artemis</a> website.
+</div>

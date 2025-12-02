@@ -30,3 +30,6 @@ mean-time, development and releases will continue on existing paths.
 Stay tuned for more updates,
 
 The Apache ActiveMQ PMC
+
+
+UPDATE: The new [Apache Artemis website](https://artemis.apache.org) is now live. Head there for more details such as mailing list information etc.
