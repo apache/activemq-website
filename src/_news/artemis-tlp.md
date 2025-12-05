@@ -31,5 +31,6 @@ Stay tuned for more updates,
 
 The Apache ActiveMQ PMC
 
-
-UPDATE: The new [Apache Artemis website](https://artemis.apache.org) is now live. Head there for more details such as mailing list information etc.
+<div class="alert alert-warning">
+UPDATE: The new <a href="https://artemis.apache.org" class="alert-link">Apache Artemis</a> website is now live. Head there for more details such as mailing list information etc.
+</div>
