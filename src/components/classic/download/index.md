@@ -43,8 +43,8 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
     <tr style="background-color: #dff0d8;">
       <td>5.19.x</td>
       <td><strong>Stable - Supported</strong></td>
-      <td>5.19.1</td>
-      <td>Oct 11th, 2025</td>
+      <td>5.19.2</td>
+      <td></td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>5.18.x</td>
@@ -122,7 +122,7 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
 | 6.2.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.2.12         | Log4j 2.25.2/Slf4j 2.0.17    | Jetty 11.0.26          | **Stable - Supported**   | 6.2.0   | 6.2.1  | Jan  26 |
 | 6.1.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.1.21         | Log4j 2.25.2/Slf4j 2.0.17    | Jetty 11.0.26          | _Deprecated_ | 6.1.8   |  | |
 | 6.0.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.0.17         | Log4j 2.22.0/Slf4j 2.0.9     | Jetty 11.0.18          | _Deprecated_ | 6.0.1   |        |         |
-| 5.19.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.24.3/Slf4j 2.0.16    | Jetty 9.4.58.v20250814 | **Stable - Supported**   | 5.19.1  | 5.19.2 | Jan  26 |
+| 5.19.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.25.3/Slf4j 2.0.17    | Jetty 9.4.58.v20250814 | **Stable - Supported**   | 5.19.2  | | |
 | 5.18.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.24.1/Slf4j 2.0.13    | Jetty 9.4.57.v20241219 | _Deprecated_ | 5.18.7  |         |        |
 | 5.17.x | Javax JMS 1.1               | Javax JMS 1.1               | [11,23)          | 5.3.33         | Log4j 2.23.1/Slf4j 1.7.36    | Jetty 9.4.54.v20240208 | _Deprecated_ | 5.17.7  |        |         |
 | 5.16.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.8          | 4.3.30.RELEASE | Reload4j 1.2.24/Slf4j 1.7.36 | Jetty 9.4.53.v20231009 | _Deprecated_ | 5.16.8  |        |         |
