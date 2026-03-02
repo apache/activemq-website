@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How can I enable detailed logging | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>How can I enable detailed logging</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  How can I enable detailed logging
+</nav>
+<div class="component-body">
+  <h2 id="how-can-i-enable-detailed-logging">How can I enable detailed logging</h2>
+<p>We use <a href="https://www.slf4j.org/">slf4j</a> which allows the underlying logging implementation to be statically bound at startup.</p>
+<p>By default we ship with log4j but feel free to make your own choice.</p>
+<p>If you&rsquo;ve got log4j.jar on your classpath you can use a log4j.properties file to configure the logging levels. See the <a href="https://github.com/apache/activemq/blob/main/activemq-broker/src/test/resources/log4j.properties">log4j.properties example</a> for the kind of thing you&rsquo;ll need.</p>
+<p>e.g. adding the following to your log4j.properties will enable tracing of ActiveMQ Classic code:</p>
+<p>in 4.x</p>
+<pre tabindex="0"><code>log4j.logger.org.apache.activemq=INFO
+log4j.logger.org.apache.activemq.spring=WARN
+</code></pre><p>in 3.x</p>
+<pre tabindex="0"><code>log4j.logger.org.activemq=TRACE
+</code></pre><h3 id="getting-help-on-log4j">Getting help on log4j</h3>
+<p>Since ActiveMQ Classic 5.17.0, ActiveMQ Classic uses <a href="https://logging.apache.org/log4j/2.x/index.html">log4j2</a>. You can find log4j2 documentation <a href="https://logging.apache.org/log4j/2.x/manual/index.html">here</a>.</p>
+<p>ActiveMQ Classic 5.16.4+ uses <a href="https://reload4j.qos.ch/">reload4j</a>, a fork of log4j1 containing important security fixes, with the same configuration as log4j1.</p>
+<p>Before ActiveMQ Classic 5.16.4, ActiveMQ Classic uses <a href="https://logging.apache.org/log4j/1.2/manual.html">log4j1</a>.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

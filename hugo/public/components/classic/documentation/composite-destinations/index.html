@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Composite Destinations | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>Composite Destinations</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  Composite Destinations
+</nav>
+<div class="component-body">
+  <p>As of version 1.1, ActiveMQ Classic supports a technology we call <em>composite destinations</em>. This allows a single virtual JMS Destination to be used to represent a collection of JMS Destinations.</p>
+<p>For example you can use composite destinations to send a message to 12 physical queues in one operation. Or send a message to one topic and one queue in one operation.</p>
+<p>We do this using a simple separator of &ldquo;,&rdquo; allowing a number of destinations to be specified when creating a destintation, or registering destinations in JNDI. e.g. the destination</p>
+<pre tabindex="0"><code>FOO.A,FOO.B,FOO.C
+</code></pre><p>Represents 3 different destinations. This could be used with a queue or topic to represent a set of 3 destinations. e.g.</p>
+<pre tabindex="0"><code>// send to 3 queues as one logical operation
+Queue queue = new ActiveMQQueue(&#34;FOO.A,FOO.B,FOO.C&#34;);
+producer.send(queue, someMessage);
+</code></pre><p>If you wish to mix and match the types of destination, you can use a prefix of <code>queue://</code> or <code>topic://</code> to differentiate the type of destination. e.g. to publish on a queue but also make a notification on a topic as well you could use</p>
+<pre tabindex="0"><code>// send to queues and topic one logical operation
+Queue queue = new ActiveMQQueue(&#34;FOO.A,topic://NOTIFY.FOO.A&#34;);
+producer.send(queue, someMessage);
+</code></pre><p>Composite destinations can also be configured on the <a href="virtual-destinations">broker side</a>, such that messages sent to a single destination by the client will be transparently copied to multiple physical destinations.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

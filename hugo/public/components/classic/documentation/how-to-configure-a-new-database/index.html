@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to configure a new database | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>How to configure a new database</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  How to configure a new database
+</nav>
+<div class="component-body">
+  <p>ActiveMQ Classic explicity supports Derby, Axion, HSQL, Oracle, and SQLServer. Below are the steps on how to configure a new database.</p>
+<ol>
+<li>
+<p>Modify activemq.xml found in the directory &ldquo;activemq_home/conf&rdquo; by editing or adding a JDBC DataSource Configuration, e.g.:</p>
+<pre tabindex="0"><code>&lt;bean id=&#34;mysql-ds&#34; class=&#34;org.apache.commons.dbcp.BasicDataSource&#34; destroy-method=&#34;close&#34;&gt;
+  &lt;property name=&#34;driverClassName&#34; value=&#34;com.mysql.jdbc.Driver&#34;/&gt;
+  &lt;property name=&#34;url&#34; value=&#34;jdbc:mysql://localhost/activemq&#34;/&gt;
+  &lt;property name=&#34;username&#34; value=&#34;activemq&#34;/&gt;
+  &lt;property name=&#34;password&#34; value=&#34;activemq&#34;/&gt;
+  &lt;property name=&#34;poolPreparedStatements&#34; value=&#34;true&#34;/&gt;
+&lt;/bean&gt;
+</code></pre><p><strong>For AMQ 3.x</strong></p>
+<pre tabindex="0"><code>&lt;bean id=&#34;mssql-ds&#34; class=&#34;org.apache.commons.dbcp.BasicDataSource&#34; destroy-method=&#34;close&#34;&gt;
+    &lt;property name=&#34;driverClassName&#34;&gt;
+        &lt;value&gt;com.microsoft.jdbc.sqlserver.SQLServerDriver&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property name=&#34;url&#34;&gt;
+        &lt;value&gt;jdbc:microsoft:sqlserver://localhost:1433;DatabaseName=activedb&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property name=&#34;username&#34;&gt;
+        &lt;value&gt;sa&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property name=&#34;password&#34;&gt;
+        &lt;value&gt;&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property name=&#34;poolPreparedStatements&#34;&gt;
+        &lt;value&gt;true&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+</code></pre></li>
+<li>
+<p>Set the datasource reference to use the new jdbc configuration e.g <code>&lt;jdbcPersistence dataSourceRef=&quot;mssql-ds&quot;/&gt;</code></p>
+</li>
+<li>
+<p>Place the jdbc driver in the directory &ldquo;activemq_home/lib/optional&rdquo;.</p>
+</li>
+</ol>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How can I support auto reconnection | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>How can I support auto reconnection</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  How can I support auto reconnection
+</nav>
+<div class="component-body">
+  <h2 id="how-can-i-support-auto-reconnection">How can I support auto reconnection?</h2>
+<p>Networks are unreliable and sockets do get dropped from time to time (it could be a network glitch, dodgy router, firewall, or someone could even just restart a broker).</p>
+<p>You often want a JMS client to automatically handle the fact that the connection to the broker was lost such that the JMS client either reconnnects to the same broker when it becomes available, or reconnects to another broker in the cluster.</p>
+<p>Its easy to perform auto-reconnection. In Apache ActiveMQ Classic using the <a href="failover-transport-reference">failover transport</a> in which the JMS client (connection) will automatically reconnect to the broker if there is a socket exception.</p>
+<p>Just use the following connection URI (setting the brokerURL in the <code>ActiveMQConnectionFactory</code>)</p>
+<pre tabindex="0"><code>failover:tcp://host:port 
+</code></pre><p>You can use a list of URIs to specify which machines to connect to and use discovery to find the brokers to connect to. More details on this see <a href="configuring-transports">Configuring Transports</a></p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

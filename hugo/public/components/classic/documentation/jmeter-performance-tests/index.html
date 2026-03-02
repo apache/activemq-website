@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JMeter Performance Tests | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>JMeter Performance Tests</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  JMeter Performance Tests
+</nav>
+<div class="component-body">
+  <h2 id="jmeter-performance-tests">JMeter Performance Tests</h2>
+<p>You can use JMeter to test the performance of your ActiveMQ Classic Server. Please refer to the <a href="http://jmeter.apache.org/">JMeter site</a> for detailed instructions on using this software.</p>
+<h3 id="building-a-test-plan">Building a Test Plan</h3>
+<p><strong>For a Producer Sampler:</strong></p>
+<ol>
+<li>Add a Thread Group.</li>
+<li>Add the producer sampler &ldquo;Producer Sampler&rdquo; from the Sampler menu.</li>
+<li>Highlight the Producer Sampler then right click to add the producer listener &ldquo;View Producer Results&rdquo; from the Listener menu.</li>
+<li>Go to the Thread Group element and set the Number of Threads, Ramp-Up Period and Loop Count to 1.</li>
+</ol>
+<p><strong>For a Consumer Sampler:</strong></p>
+<ol>
+<li>Add a Thread Group.</li>
+<li>Add the consumer sampler &ldquo;Consumer Sampler&rdquo; from the Sampler menu.</li>
+<li>Highlight the Consumer Sampler then right click to add the consumer listener &ldquo;View Consumer Results&rdquo; from the Listener menu.</li>
+<li>Go to the Thread Group element and set the Number of Threads, Ramp-Up Period and Loop Count to 1.</li>
+</ol>
+<h3 id="the-jmeter-performance-test-module">The JMeter Performance Test Module</h3>
+<p><strong>1. JMeter Producer Sampler</strong></p>
+<p>The Producer Sampler sends messages to an ActiveMQ Classic Server. Parameters:</p>
+<ul>
+<li>Server URL (e.g. <code>tcp://localhost:61616</code>)</li>
+<li>Duration (min)</li>
+<li>Ramp Up (min)</li>
+<li>No. of Producer</li>
+<li>No. of Subject (must be ≤ No. of Producer)</li>
+<li>Message Size (bytes)</li>
+<li>Delivery Mode - Default is Non-Persistent</li>
+<li>Messaging Domain - Default is Topic</li>
+<li>Message Interval - Default/Custom</li>
+</ul>
+<p><strong>2. JMeter Producer Listener</strong></p>
+<p>Provides statistics with the number of messages sent and average messages per second.</p>
+<p><strong>3. JMeter Consumer Sampler</strong></p>
+<p>Parameters:</p>
+<ul>
+<li>Server URL (e.g. <code>tcp://localhost:61616</code>)</li>
+<li>Duration (min)</li>
+<li>Ramp Up (min)</li>
+<li>No. of Consumer</li>
+<li>No. of Subject (must be ≤ No. of Consumer)</li>
+<li>Delivery Mode - Default is non-Durable</li>
+<li>Messaging Domain - Default is Topic</li>
+</ul>
+<p><strong>4. JMeter Consumer Listener</strong></p>
+<p>Provides statistics with the number of messages received and average messages per second.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

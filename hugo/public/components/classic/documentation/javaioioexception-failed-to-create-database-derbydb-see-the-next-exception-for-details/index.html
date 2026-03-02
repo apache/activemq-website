@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>java.io.IOException Failed to create database &#39;derbydb&#39;, see the next exception for details | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>java.io.IOException Failed to create database &#39;derbydb&#39;, see the next exception for details</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  java.io.IOException Failed to create database &#39;derbydb&#39;, see the next exception for details
+</nav>
+<div class="component-body">
+  <p>If you get an error like this</p>
+<pre tabindex="0"><code>Jun 19, 2006 10:35:27 PM org.apache.activemq.broker.BrokerService getBroker
+INFO: ActiveMQ Classic 4.0 JMS Message Broker (localhost) is starting
+Jun 19, 2006 10:35:27 PM org.apache.activemq.broker.BrokerService getBroker
+INFO: For help or more information please see: http://incubator.apache.org/activemq/
+java.io.IOException: Failed to create database &#39;derbydb&#39;, see the next exception for details.
+       at org.apache.activemq.util.IOExceptionSupport.create(IOExceptionSupport.java:42)
+       at org.apache.activemq.store.jdbc.TransactionContext.getConnection(TransactionContext.java:58)
+       at org.apache.activemq.store.jdbc.JDBCPersistenceAdapter.createAdapter(JDBCPersistenceAdapter.java:229)
+       at org.apache.activemq.store.jdbc.JDBCPersistenceAdapter.getAdapter(JDBCPersistenceAdapter.java:213)
+       at org.apache.activemq.store.jdbc.JDBCPersistenceAdapter.start(JDBCPersistenceAdapter.java:139)
+       at org.apache.activemq.store.journal.JournalPersistenceAdapter.start(JournalPersistenceAdapter.java:215)
+       at org.apache.activemq.broker.BrokerService.createRegionBroker(BrokerService.java:930)
+       at org.apache.activemq.broker.BrokerService.createBroker(BrokerService.java:888)
+       at org.apache.activemq.broker.BrokerService.getBroker(BrokerService.java:458)
+       at org.apache.activemq.broker.BrokerService.addConnector(BrokerService.java:143)
+       at org.apache.activemq.broker.BrokerService.addConnector(BrokerService.java:133)
+       at com.ic.ntn.message.HelloWorld$HelloWorldBroker.run(HelloWorld.java:92)
+       at java.lang.Thread.run(Thread.java:595)
+Caused by: SQL Exception: Failed to create database &#39;derbydb&#39;, see the next exception for details.
+       at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
+       at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
+       at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
+       at org.apache.derby.impl.jdbc.EmbedConnection.newSQLException(Unknown Source)
+       at org.apache.derby.impl.jdbc.EmbedConnection.createDatabase(Unknown Source)
+       at org.apache.derby.impl.jdbc.EmbedConnection.&lt;init&gt;(Unknown Source)
+       at org.apache.derby.impl.jdbc.EmbedConnection30.&lt;init&gt;(Unknown Source)
+       at org.apache.derby.jdbc.Driver30.getNewEmbedConnection(Unknown Source)
+       at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+       at org.apache.derby.jdbc.EmbeddedDataSource.getConnection(Unknown Source)
+       at org.apache.derby.jdbc.EmbeddedDataSource.getConnection(Unknown Source)
+       at org.apache.activemq.store.jdbc.TransactionContext.getConnection(TransactionContext.java:54)
+       ... 11 more
+</code></pre><p>Then the error is probably that the JDBC driver (Apache Derby by default) could not write to the persistent file area.</p>
+<h3 id="workaround">Workaround</h3>
+<p>Create a directory for the broker to write its files. e.g. in Java code call <a href="http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/broker/BrokerService.html#setDataDirectory(java.io.File)">setDataDirectory</a></p>
+<pre tabindex="0"><code>File dir = new File(&#34;foo&#34;);
+dir.mkdir();
+broker.setDataDirectory(dir);
+</code></pre><p>or in XML use</p>
+<pre tabindex="0"><code>&lt;broker dataDirectory=&#34;foo&#34;&gt;...
+</code></pre><h3 id="see">See</h3>
+<ul>
+<li><a href="how-do-i-embed-a-broker-inside-a-connection">How do I embed a Broker inside a Connection</a></li>
+</ul>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

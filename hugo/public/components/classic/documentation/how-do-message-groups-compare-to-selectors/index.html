@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How do Message Groups compare to Selectors | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>How do Message Groups compare to Selectors</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  How do Message Groups compare to Selectors
+</nav>
+<div class="component-body">
+  <p>Selectors are just filters. Message Groups are a way of grouping messages together to the same consumer to partition your application or insure ordering is maintained.</p>
+<p>Now you could implement message groups by hand, by having each consumer use its own selector for a specific header. e.g. if you had consumers A, B, C; you could use the values &ldquo;A&rdquo;, &ldquo;B&rdquo;, &ldquo;C&rdquo; as values of the JMSXGroupID header (or any other header name you like).</p>
+<p>Then if consumer A used <code>JMXGroupID = 'A'</code> as a selector it would be the only consumer getting the A messages; ditto for B and C.</p>
+<p>So that kinda simulates message groups a little. The downside is</p>
+<ul>
+<li>
+<p>you have to know the set of consumers that are running to know what values of A, B or C you can put on the header. So if you start up a new consumer D, you have to change the producer to now be aware of D. Wtih message groups you can use any string whatsoever - typically the string will come from your business such as a product code, a customer ID, a stock ticker name or something (or some combination of data such as IBM and NASDAQ and Tuesday).</p>
+</li>
+<li>
+<p>if for whatever reason consumer B stops running, noone consumes any messages for B - you have to know to restart B manually. With message groups things auto-partition and load balance for you with immediate failover.</p>
+</li>
+<li>
+<p>there&rsquo;s nothing to stop you accidentally creating 2 threads with the same selector - or 2 processes on the network starting up with the same selector and accidentally consuming from the same group of messages which completely breaks ordering; with message groups you don&rsquo;t have to worry about this - since it guarrentees that only 1 thread in your entire system will process messages from one group at once in order - irrespective how many consumers you start.</p>
+</li>
+</ul>
+<p>So in general; you can manually partition yourself using selectors. Message Groups however are a self-partitioning and auto-failvoer mechanism which also guarrentees that a single thread will process a specific message group at once, in order.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

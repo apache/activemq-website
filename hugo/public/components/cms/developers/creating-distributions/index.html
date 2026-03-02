@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creating ActiveMQ-CPP Distributions | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>Creating ActiveMQ-CPP Distributions</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/cms/">CMS Client</a> &rsaquo;
+  Creating ActiveMQ-CPP Distributions
+</nav>
+<div class="component-body">
+  <h3 id="background">Background</h3>
+<p>Apache mirrors everything under <code>/www/www.apache.org/dist</code>. Release archives go under <code>activemq/activemq-cpp/source/</code>. Allow ~24 hours for mirrors to sync before announcing.</p>
+<p>Download links use the Apache CGI mirror script:</p>
+<pre tabindex="0"><code>http://www.apache.org/dyn/closer.cgi/activemq/activemq-cpp/source/activemq-cpp-X.Y-src.zip
+</code></pre><h3 id="creating-a-distribution-step-by-step">Creating a Distribution (step-by-step)</h3>
+<ol>
+<li>Create a pre-release download page with a disclaimer and temporary link.</li>
+<li>Call a vote on the dev list (<code>[VOTE]</code> in subject). Wait 3 days; proceed with ≥3 +1s and no -1s.</li>
+<li>Create source archives (<code>.zip</code>, <code>.tar.gz</code>). Remove <code>.svn</code> directories first:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rm -rf <span style="color:#e6db74">`</span>find . -type d -name .svn<span style="color:#e6db74">`</span>
+</span></span></code></pre></div></li>
+<li>Sign the archives:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gpg --armor --output foo.tar.gz.asc --detach-sig foo.tar.gz
+</span></span><span style="display:flex;"><span>gpg --armor --output foo.zip.asc --detach-sig foo.zip
+</span></span></code></pre></div></li>
+<li>Copy archives to <code>/www/www.apache.org/dist/activemq/activemq-cpp/source/</code> on the Apache server.</li>
+<li>Wait 24 hours for mirrors to sync.</li>
+<li>Update download page links to use the CGI mirror script path.</li>
+<li>Generate Doxygen API docs and place under <code>/www/activemq.apache.org/cms/api_docs/</code>.</li>
+<li>Announce on the <code>dev</code> and <code>users</code> mailing lists.</li>
+</ol>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

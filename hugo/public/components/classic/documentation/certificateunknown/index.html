@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>certificate_unknown | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>certificate_unknown</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  certificate_unknown
+</nav>
+<div class="component-body">
+  <p>If you get an error something like this&hellip;</p>
+<pre tabindex="0"><code>javax.jms.JMSException: start failed: Received fatal alert: certificate_unknown
+       at org.activemq.transport.tcp.TcpTransportChannel.start(TcpTransportChannel.java:200)
+       at org.activemq.broker.impl.BrokerConnectorImpl.addClient(BrokerConnectorImpl.java:308)
+       at org.activemq.transport.TransportServerChannelSupport.addClient(TransportServerChannelSupp
+       at org.activemq.transport.tcp.TcpTransportServerChannel.run(TcpTransportServerChannel.java:1
+       at java.lang.Thread.run(Unknown Source)
+Caused by: javax.net.ssl.SSLHandshakeException: Received fatal alert: certificate_unknown
+       at com.sun.net.ssl.internal.ssl.Alerts.getSSLException(Unknown Source)
+       at com.sun.net.ssl.internal.ssl.Alerts.getSSLException(Unknown Source)
+       at com.sun.net.ssl.internal.ssl.SSLSocketImpl.recvAlert(Unknown Source)
+       at com.sun.net.ssl.internal.ssl.SSLSocketImpl.readRecord(Unknown Source)
+       at com.sun.net.ssl.internal.ssl.SSLSocketImpl.performInitialHandshake(Unknown Source)
+       at com.sun.net.ssl.internal.ssl.SSLSocketImpl.readDataRecord(Unknown Source)
+       at com.sun.net.ssl.internal.ssl.AppInputStream.read(Unknown Source)
+       at java.io.BufferedInputStream.fill(Unknown Source) 
+</code></pre><p>when you are trying to use SSL to connect to ActiveMQ Classic then the &ldquo;certificate_unknown&rdquo; error shows on the broker when the client doesn&rsquo;t trust the broker&rsquo;s certificate. On the client, I would see an error as well: &ldquo;No trusted certificate found&rdquo;.</p>
+<h3 id="fix">Fix</h3>
+<p>Make sure that you exported the broker&rsquo;s certificate (step 2 in <a href="how-do-i-use-ssl">How do I use SSL</a>) and imported it on the client into a truststore (step 4). If you did those, did you specify the javax.net.ssl.trustStore system property when you started your client VM?</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

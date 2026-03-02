@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How do I use Ivy with ActiveMQ Classic | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>How do I use Ivy with ActiveMQ Classic</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  How do I use Ivy with ActiveMQ Classic
+</nav>
+<div class="component-body">
+  <pre tabindex="0"><code>&lt;ivyconf&gt;
+        &lt;!--loads properties file as ivy variables, 0..n--&gt;
+        &lt;properties file=&#34;${ivy.conf.dir}/ivyconf-file.properties&#34; /&gt;
+        &lt;!--configures ivy with some defaults, 0..1--&gt;
+        &lt;conf defaultResolver=&#34;localChain&#34; checkUpToDate=&#34;false&#34; /&gt;
+
+        &lt;!--typedef:defines new types in ivy--&gt;
+        &lt;!--latest-strategies: defines latest strategies--&gt;
+        &lt;!--conflict-managers: defines conflicts managers--&gt;
+
+        &lt;!--defines dependency resolvers--&gt;
+        &lt;resolvers&gt;
+             &lt;chain name=&#34;localChain&#34; returnFirst=&#34;false&#34;&gt;
+                 &lt;filesystem name=&#34;internal&#34; latest=&#34;latest-revision&#34;&gt;
+                        &lt;ivy pattern=&#34;${repository.dir}/[organisation]/[module]/[type]s/ivy-[revision].xml&#34; /&gt;
+                        &lt;artifact pattern=&#34;${repository.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]&#34; /&gt;
+                &lt;/filesystem&gt;
+                &lt;ivyrep name=&#34;ivyrep&#34;/&gt;
+             &lt;/chain&gt;
+             &lt;ibiblio name=&#34;ibiblio&#34; pattern=&#34;[organisation]/jars/[module]-[revision].[ext]&#34;/&gt;
+        &lt;/resolvers&gt;
+
+        &lt;!--defines rules between modules and dependency resolvers--&gt;
+        &lt;modules&gt;
+                &lt;module organisation=&#34;verticon&#34; name=&#34;.*&#34; resolver=&#34;internal&#34; /&gt;
+                &lt;module organisation=&#34;mandarax&#34; name=&#34;.*&#34; resolver=&#34;internal&#34; /&gt;
+                &lt;module organisation=&#34;geronimo-spec&#34; name=&#34;.*&#34; resolver=&#34;ibiblio&#34; /&gt;
+                &lt;module organisation=&#34;tomcat&#34; name=&#34;.*&#34; resolver=&#34;ibiblio&#34; /&gt;
+        &lt;/modules&gt;
+
+&lt;/ivyconf&gt;
+</code></pre>
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

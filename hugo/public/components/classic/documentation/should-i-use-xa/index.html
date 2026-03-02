@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Should I use XA | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>Should I use XA</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  Should I use XA
+</nav>
+<div class="component-body">
+  <h2 id="should-i-use-xa-transactions-two-phase-commit">Should I use XA transactions (two phase commit?)</h2>
+<p>A common use of JMS is to consume messages from a queue or topic, process them using a database or EJB, then acknowledge / commit the message.</p>
+<p>If you are using more than one resource; e.g. reading a JMS message and writing to a database, you really should use XA - its purpose is to provide atomic transactions for multiple transactional resources. For example there is a small window from when you complete updating the database and your changes are committed up to the point at which you commit/acknowledge the message; if there is a network/hardware/process failure inside that window, the message will be redelivered and you may end up processing duplicates.</p>
+<p>The problem with XA is it can be a bit slow; as the XA protocol requires multiple syncs to disk to ensure it can always recover properly under every possible failure scenario. This adds significant cost (in terms of latency, performance, resources and complexity). Also quite a few EJB servers and databases don&rsquo;t actually properly support XA! <img src="https://cwiki.apache.org/confluence/s/en_GB/5997/6f42626d00e36f53fe51440403446ca61552e2a2.1/_/images/icons/emoticons/smile.png" alt="(smile)"></p>
+<p>Be Careful</p>
+<p>ActiveMQ Classic does not currently support XA Transaction suspend / resume semantics.</p>
+<h3 id="an-alternative-to-xa">An alternative to XA</h3>
+<p>So a good optimisation is to use regular JMS transactions - with no XA - and just perform some duplicate message detection in your code to check you have not already processed the message.</p>
+<p>For example you can use an <a href="http://activemq.apache.org/camel/idempotent-consumer.html">Idempotent Consumer</a> from the <a href="enterprise-integration-patterns">Enterprise Integration Patterns</a> to solve this scenario.</p>
+<p>Or in pseudocode you could use something like the following&hellip;</p>
+<pre tabindex="0"><code>onMessage
+try {
+  if I have not processed this message successfully before {
+    do some stuff in the database / with EJBs etc
+    jdbc.commit() (unless auto-commit is enabled on the JDBC)
+  }
+  jms.commit()
+} catch (Exception e) {
+  jms.rollback()
+}
+</code></pre><p>This leads to <strong>much</strong> better performance since you are not performing many slow syncs to disk (per transaction!) for the XA protocol. The only downside with this approach is it means you have to use some application specific logic to detect if you&rsquo;ve processed the message before or not. However its quite common that you&rsquo;ll have some way of detecting this. e.g. if the message contains a purchase order and version; have you stored that purchase order and version in the database yet?</p>
+<p>So provided the message has some kind of ID and version, you can often detect duplicates yourself and so not require to pay the performance cost of XA</p>
+<p>It may also be worth reading <a href="should-i-use-transactions">Should I use transactions</a>.</p>
+<h3 id="further-optimisation">Further optimisation</h3>
+<p>Performing duplicate detection can add a performance overhead. e.g. doing a database query to see if you&rsquo;ve processed the purchase order before etc. Most of the time things will work; its only in rare circumstances (ilke if a server crashes mid-way processing some messages) that messages get redelivered.</p>
+<p>So you can use the <a href="http://java.sun.com/j2ee/1.4/docs/api/javax/jms/Message.html#getJMSRedelivered()">Message.getJMSRedelivered()</a> method to detect if a message has been redelivered and only if its been redelivered then perform the duplicate detection check.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

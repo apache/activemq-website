@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMQP | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>AMQP</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  AMQP
+</nav>
+<div class="component-body">
+  <p>ActiveMQ Classic supports the <a href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=amqp">AMQP 1.0</a> protocol which is an OASIS standard.</p>
+<blockquote>
+<p><strong>Availability</strong></p>
+<p>Available from ActiveMQ Classic version <a href="activemq-580-release">5.8</a> onward.</p>
+</blockquote>
+<h3 id="enabling-the-activemq-classic-broker-for-amqp">Enabling the ActiveMQ Classic Broker for AMQP</h3>
+<p>To enable AMQP protocol support on the broker add the following transport connector configuration referencing the <code>amqp</code> scheme in its URI:</p>
+<pre tabindex="0"><code>&lt;transportConnectors&gt;
+   &lt;transportConnector name=&#34;amqp&#34; uri=&#34;amqp://0.0.0.0:5672&#34;/&gt;
+&lt;/transportConnectors&gt;
+</code></pre><p>It is enabled in the default ActiveMQ Classic server configuration. For more help see <a href="run-broker">Run Broker</a>.</p>
+<h3 id="security">Security</h3>
+<p>The AMQP implementation fully supports an <a href="security">ActiveMQ Classic security</a> mechanism. This allows the broker to accept plain SASL authentication. Authorization policies are applied to a destination when it&rsquo;s accessed (read/write).</p>
+<blockquote>
+<p><strong>SSL</strong></p>
+<p>For additional security AMQP can be configured to run over SSL as described in the following section.</p>
+</blockquote>
+<h3 id="enabling-amqp-over-nio">Enabling AMQP over NIO</h3>
+<p>For better scalability (and performance) the AMQP protocol should be configured to use NIO, rather than the default of TCP. To use NIO use the transport scheme <code>amqp+nio</code> instead of <code>amqp</code>.</p>
+<p>Example:</p>
+<pre tabindex="0"><code>&lt;transportConnector name=&#34;amqp+nio&#34; uri=&#34;amqp+nio://localhost:5672&#34;/&gt;
+</code></pre><p>This transport uses the <a href="configuring-transports#TheNIOTransport">NIO transport</a> underneath and will generally use much less threads than the standard connector. This connector can help if you want to use <a href="how-do-i-configure-10s-of-1000s-of-queues-in-a-single-broker">large number of queues</a></p>
+<h3 id="enabling-amqp-over-ssl">Enabling AMQP over SSL</h3>
+<p>It&rsquo;s easy to configure ActiveMQ Classic to use AMQP over a SSL connection. To use SSL use the transport scheme <code>amqp+ssl</code> instead of <code>amqp</code>.</p>
+<p>Example:</p>
+<pre tabindex="0"><code>&lt;transportConnector name=&#34;amqp+ssl&#34; uri=&#34;amqp+ssl://localhost:5671&#34;/&gt;
+</code></pre><p>For more details on using SSL with ActiveMQ Classic, see the following article (<a href="how-do-i-use-ssl">How do I use SSL</a>).</p>
+<h3 id="working-with-destinations-with-amqp">Working with Destinations with AMQP</h3>
+<p>You should prefix destination address with <code>queue://</code> to use queue based destinations or <code>topic://</code> to use topic based destinations. The destination type defaults to queue when the destination prefix is omitted.</p>
+<h3 id="prefetch-size-and-credit">Prefetch Size and Credit</h3>
+<p>When AMQP receiver connects to the broker it&rsquo;s mapped to the JMS consumer. This JMS consumer has to have appropriate <a href="what-is-the-prefetch-limit-for">prefetch size</a> set. The broker will honor the credit set by the client or use the default value of <code>1000</code> if client doesn&rsquo;t set it.</p>
+<p>Example: tuning the default <code>prefetch</code> size:</p>
+<pre tabindex="0"><code>&lt;transportConnector name=&#34;amqp&#34; uri=&#34;amqp://0.0.0.0:5672?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&amp;amp;transport.prefetch=10&#34;/&gt;
+</code></pre><p>In this case, client preference will be ignored and the configured value will be used.</p>
+<p>You can also tune broker-side <code>amqp</code> receiver link that handles incoming messages. It will use credit of <code>1000</code> messages by default, but you can override this by using <code>producerCredit</code> property, like </p>
+<pre tabindex="0"><code>&lt;transportConnector name=&#34;amqp&#34; uri=&#34;amqp://0.0.0.0:5672?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&amp;amp;transport.producerCredit=10000&#34;/&gt;
+</code></pre><h3 id="mapping-to-jms">Mapping to JMS</h3>
+<p>There are three basic conversion strategies that can be used with AMQP and inter-operating with the JMS API.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Strategy</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>native</code></td>
+          <td>(<strong>Default</strong>) Wraps the bytes of the AMQP message into a JMS <code>BytesMessage</code> and maps the headers of the AMQP message to headers on the JMS message.</td>
+      </tr>
+      <tr>
+          <td><code>raw</code></td>
+          <td>Wraps the bytes of the AMQP message into a JMS <code>BytesMessage</code>.</td>
+      </tr>
+      <tr>
+          <td><code>jms</code></td>
+          <td>Maps headers of the AMQP message to JMS message headers and the body of the AMQP message to the JMS body.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Set the <strong>transformer</strong> transport option on the <code>transportConnector</code> to the desired mapping strategy. For example, to inter-operate with JMS at the payload level, set the <code>transformer</code> option to <code>jms</code>:</p>
+<pre tabindex="0"><code>&lt;transportConnector name=&#34;amqp&#34; uri=&#34;amqp://localhost:5672?transport.transformer=jms&#34;/&gt;
+</code></pre><h4 id="how-amqp-message-headers-are-mapped-to-jms-headers">How AMQP Message Headers are Mapped to JMS Headers</h4>
+<p>The following headers are mapped regardless of the transformer used:</p>
+<table>
+  <thead>
+      <tr>
+          <th>AMQP Message</th>
+          <th>JMS Message</th>
+          <th>Notes</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>JMS_AMQP_NATIVE</code></td>
+          <td>Will be set to <code>true</code> if the transformer is <code>native</code> or <code>raw</code>, <code>false</code> otherwise.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>message-format</code></td>
+          <td><code>JMS_AMQP_MESSAGE_FORMAT</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p>The following header mappings apply when the transformer is either <code>native</code> or <code>jms</code>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>AMQP Message</th>
+          <th>JMS Message</th>
+          <th>Notes</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>application-properties.JMSXGroupID</code></td>
+          <td><code>JMSXGroupID</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>application-properties.JMSXGroupSequence</code></td>
+          <td><code>JMSXGroupSequence</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>application-properties.JMSXUserID</code></td>
+          <td><code>JMSXUserID</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>application-properties.**name</code></td>
+          <td><code>name</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>delivery-annotations.**name</code></td>
+          <td><code>JMS_AMQP_DA_**name</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>footer.**name</code></td>
+          <td><code>JMS_AMQP_FT_**name</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>header.deliveryCount</code></td>
+          <td><code>JMSXDeliveryCount</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>header.durable</code></td>
+          <td><code>JMSDeliveryMode</code></td>
+          <td><code>javax.jms.Message.DEFAULT_DELIVERY_MODE</code> if not set.</td>
+      </tr>
+      <tr>
+          <td><code>header.first-acquirer</code></td>
+          <td><code>JMS_AMQP_FirstAcquirer</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>header.priority</code></td>
+          <td><code>JMSPriority</code></td>
+          <td><code>javax.jms.Message.DEFAULT_PRIORITY</code> if not set.</td>
+      </tr>
+      <tr>
+          <td><code>header.ttl</code></td>
+          <td><code>JMSExpiration</code></td>
+          <td><code>javax.jms.Message.DEFAULT_TIME_TO_LIVE</code> if not set.</td>
+      </tr>
+      <tr>
+          <td><code>message-annotations.**name</code></td>
+          <td><code>JMS_AMQP_MA_**name</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>message-annotations.x-opt-jms-type</code></td>
+          <td><code>JMSType</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>message-annotations.x-opt-reply-type</code></td>
+          <td>Type of the <code>JMSReplyTo</code></td>
+          <td>Comma separated list of <code>queue</code>, <code>topic</code>, or <code>temporary</code>. Defaults to <code>queue</code> if not set.</td>
+      </tr>
+      <tr>
+          <td><code>message-annotations.x-opt-to-type</code></td>
+          <td>Type of the <code>JMSDestination</code></td>
+          <td>Comma separated list of <code>queue</code>, <code>topic</code>, or <code>temporary</code>. Defaults to <code>queue</code> if not set.</td>
+      </tr>
+      <tr>
+          <td><code>properties.content-encoding</code></td>
+          <td><code>JMS_AMQP_ContentEncoding</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>properties.content-type</code></td>
+          <td><code>JMS_AMQP_ContentType</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>properties.correlation-id</code></td>
+          <td><code>JMSCorrelationID</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>properties.creation-time</code></td>
+          <td><code>JMSTimestamp</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>properties.group-sequence</code></td>
+          <td><code>JMSXGroupSequence</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>properties.message-id</code></td>
+          <td><code>JMSMessageID</code></td>
+          <td>Auto generated if not set.</td>
+      </tr>
+      <tr>
+          <td><code>properties.reply-to</code></td>
+          <td><code>JMSReplyTo</code></td>
+          <td>The name of the <code>JMSReplyTo</code></td>
+      </tr>
+      <tr>
+          <td><code>properties.reply-to-group-id</code></td>
+          <td><code>JMS_AMQP_ReplyToGroupID</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>properties.subject</code></td>
+          <td><code>JMS_AMQP_Subject</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>properties.to</code></td>
+          <td><code>JMSDestination</code></td>
+          <td>The name of the <code>JMSDestination</code></td>
+      </tr>
+      <tr>
+          <td><code>properties.user-id</code></td>
+          <td><code>JMSXUserID</code></td>
+          <td><code>properties.user-id</code> is decoded as a UTF-8 String.</td>
+      </tr>
+  </tbody>
+</table>
+<p>AMQP property value types are converted as follows:</p>
+<table>
+  <thead>
+      <tr>
+          <th>AMQP Type</th>
+          <th>Java Type</th>
+          <th>Notes</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>binary</code></td>
+          <td><code>String</code></td>
+          <td>Hex encoding of the binary value</td>
+      </tr>
+      <tr>
+          <td><code>bool</code></td>
+          <td><code>Boolean</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>byte</code></td>
+          <td><code>Byte</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>double</code></td>
+          <td><code>Double</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>float</code></td>
+          <td><code>Float</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>int</code></td>
+          <td><code>Integer</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>long</code></td>
+          <td><code>Long</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>short</code></td>
+          <td><code>Short</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>symbol</code></td>
+          <td><code>String</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>ubyte</code></td>
+          <td><code>Byte</code> or <code>Short</code></td>
+          <td><code>Short</code> is used if: <code>value &gt;</code> <code>Byte.MAX_VALUE</code></td>
+      </tr>
+      <tr>
+          <td><code>uint</code></td>
+          <td><code>Integer</code> or <code>Long</code></td>
+          <td><code>Long</code> is used if: <code>value &gt;</code> <code>Integer.MAX_VALUE</code></td>
+      </tr>
+      <tr>
+          <td><code>ulong</code></td>
+          <td><code>Long</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>ushort</code></td>
+          <td><code>Short</code> or <code>Integer</code></td>
+          <td><code>Integer</code> is used if: <code>value &gt;</code> <code>Short.MAX_VALUE</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="how-a-amqp-messages-body-is-mapped-to-a-jms-message">How a AMQP Messages Body is Mapped to a JMS Message</h4>
+<p>If the transformer is set to <code>jms</code> then the JMS message type will depend on the body type of the AMQP message.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Body Type</th>
+          <th>JMS Message Type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>AmqpSequence</code></td>
+          <td><code>StreamMessage</code></td>
+      </tr>
+      <tr>
+          <td><code>AmqpValue</code></td>
+          <td><code>ObjectMessage</code></td>
+      </tr>
+      <tr>
+          <td><code>AmqpValue</code> holding a <code>null</code></td>
+          <td><code>Message</code></td>
+      </tr>
+      <tr>
+          <td><code>AmqpValue</code> holding a <code>String</code></td>
+          <td><code>TextMessage</code></td>
+      </tr>
+      <tr>
+          <td><code>AmqpValue</code> holding a <code>binary</code></td>
+          <td><code>BytesMessage</code></td>
+      </tr>
+      <tr>
+          <td><code>AmqpValue</code> holding a <code>list</code></td>
+          <td><code>StreamMessage</code></td>
+      </tr>
+      <tr>
+          <td><code>Data</code></td>
+          <td><code>BytesMessage</code></td>
+      </tr>
+      <tr>
+          <td><code>null</code></td>
+          <td><code>Message</code></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="amqp-10-client-library">AMQP 1.0 client library</h3>
+<p>You can use <a href="http://qpid.apache.org/proton/">Apache Qpid Proton</a>.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

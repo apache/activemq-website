@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stomp | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>Stomp</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  Stomp
+</nav>
+<div class="component-body">
+  <p>ActiveMQ Classic supports the <a href="http://stomp.github.com/">Stomp</a> protocol and the Stomp - JMS mapping. This makes it easy to write a client in pure <a href="#">Ruby</a>, <a href="#">Perl</a>, <a href="#">Python</a> or <a href="#">PHP</a> for working with ActiveMQ Classic.</p>
+<p>Please see the <a href="http://stomp.github.io/">Stomp site</a> for more details</p>
+<p>Spec Compliance</p>
+<p>ActiveMQ Classic v5.6 implements the Stomp v1.1 spec except for allowing spaces at the beginning or end of message header keys, they are preserved in the header values however. In future releases this will not be the case, clients should be updated and user code checked to ensure that spaces in the headers are there intentionally and not as a accident or a client &ldquo;feature&rdquo;.</p>
+<h3 id="enabling-the-activemq-classic-broker-for-stomp">Enabling the ActiveMQ Classic Broker for Stomp</h3>
+<p>To enable STOMP protocol support in the broker add a transport connector definition whose URI scheme is <code>stomp</code>.</p>
+<p>Example:</p>
+<pre tabindex="0"><code>&lt;transportConnectors&gt;
+   &lt;transportConnector name=&#34;stomp&#34; uri=&#34;stomp://localhost:61613&#34;/&gt;
+&lt;/transportConnectors&gt;
+</code></pre><p>To see a full example, try <a href="http://svn.apache.org/repos/asf/activemq/trunk/assembly/src/release/example/conf/activemq.xml">this XML</a>. If you save that XML as <code>foo.xml</code> then you can run stomp via the command line as</p>
+<pre tabindex="0"><code>activemq xbean:foo.xml
+</code></pre><p>For more help see <a href="run-broker">Run Broker</a>.</p>
+<h3 id="the-stomp-wire-format">The Stomp Wire Format</h3>
+<p>Stomp uses a text based wire format that can be configured with the following options.  All options can be configured on a Brokers transport bind URI.</p>
+<p>Parameter Name|Default Value|Description
+&mdash;|&mdash;|
+<code>maxDataLength</code>|<code>104857600</code>|Maximum size of the message body (content) that can be sent.
+<code>maxFrameSize</code>|<code>MAX_LONG</code>|<strong>From ActiveMQ Classic 5.12.0</strong>: maximum frame size that can be sent. A Stomp frame includes a command, optional headers, and an optional body. Can help help prevent OOM DOS attacks</p>
+<p>Example:</p>
+<pre tabindex="0"><code>&lt;transportConnector name=&#34;stomp+ssl&#34; uri=&#34;stomp+ssl://localhost:61612?wireFormat.maxFrameSize=1000000&#34;/&gt;
+</code></pre><blockquote>
+<p><strong>Use the Correct Prefix!</strong></p>
+<p>Wire format options must have the prefix <code>wireFormat.</code> to take effect, e.g., <code>wireFormat.`maxDataLength`=100000</code>. Options missing this prefix will be ignored.</p>
+</blockquote>
+<h3 id="security">Security</h3>
+<p><strong>From ActiveMQ Classic 5.1</strong>: Stomp fully supports <a href="security">ActiveMQ Classic&rsquo;s security</a> mechanism. This means that the <code>CONNECT</code> command will return an <code>ERROR</code> STOMP frame on unsuccessful authentication. Also, the authorization policies will be applied when you try to access (read/write) certain destinations. If you use synchronous operations (by using <a href="http://stomp.github.com/stomp-specification-1.1.html#RECEIPT">receipts</a>), you can expect an <code>ERROR</code> frame in case of unauthorized access attempt. In other case, operations will be discarded but the client will not be informed of errors. This applies to all errors that can occur broker-side.</p>
+<blockquote>
+<p><strong>SSL</strong></p>
+<p>For additional security, you can use Stomp over SSL as described in the following section.</p>
+</blockquote>
+<h3 id="enabling-stomp-over-nio">Enabling Stomp over NIO</h3>
+<p><strong>From ActiveMQ Classic 5.3</strong>: for better scalability and performance the Stomp protocol can be configured to be run over the NIO transport. The <a href="configuring-transports.md">NIO transport</a> will use far fewer threads than the corresponding TCP connector. This can help when support for a <a href="how-do-i-configure-10s-of-1000s-of-queues-in-a-single-broker">large number of queues</a> is required. To use NIO change the URI scheme of the transport connector to <code>stomp+nio</code>.</p>
+<p>Example:</p>
+<pre tabindex="0"><code>&lt;transportConnector name=&#34;stomp+nio&#34; uri=&#34;stomp+nio://localhost:61612&#34;/&gt;
+</code></pre><h3 id="enabling-stomp-over-ssl">Enabling Stomp over SSL</h3>
+<p>To configure ActiveMQ Classic to use Stomp over an SSL connection change the URI scheme to <code>stomp+ssl</code>.</p>
+<p>Example:</p>
+<pre tabindex="0"><code>&lt;transportConnector name=&#34;stomp+ssl&#34; uri=&#34;stomp+ssl://localhost:61612&#34;/&gt;
+</code></pre><p>For more details on using SSL with ActiveMQ Classic see the following article (<a href="http://activemq.apache.org/how-do-i-use-ssl">How do I use SSL</a>). An example of using Stomp over SSL on the client side can be found in the <a href="http://stomp.fusesource.org/documentation/php/book.html#SSL">PHP Stomp client example</a>.</p>
+<h3 id="heart-beat-grace-period">Heart-Beat Grace Period</h3>
+<p>The STOMP protocol (version 1.1 or greater) <a href="http://stomp.github.io/stomp-specification-1.2.html#Heart-beating">defines the concept of heart beats</a> as a method by which a client and broker can determine the health of the underlying TCP connection between them. ActiveMQ Classic supports STOMP heart beating provided the client is using version 1.1 (or greater) of the protocol.</p>
+<p><strong>Before ActiveMQ Classic 5.9.0</strong>: enforcement of the &lsquo;read&rsquo; heart-beat timeout (that is, a heart-beat sent from the client to the broker) was strict. In other words, the broker was intolerant of late arriving read heart-beats from the client. This resulted in the broker concluding that the client was no longer present causing it to close its side of the client&rsquo;s connection when the client failed to honor it&rsquo;s configured heart-beat settings.</p>
+<p><strong>From ActiveMQ Classic 5.9.0</strong>: the timeout enforcement for read heart-beats is now configurable via a new transport option <code>transport.hbGracePeriodMultiplier</code>:</p>
+<pre tabindex="0"><code>&lt;transportConnectors&gt;
+   &lt;transportConnector name=&#34;stomp&#34; uri=&#34;stomp://localhost:61613?transport.hbGracePeriodMultiplier=1.5&#34;/&gt;
+&lt;/transportConnectors&gt;
+</code></pre><p>This multiplier is used to calculate the effective read heart-beat timeout the broker will enforce for each client&rsquo;s connection. The multiplier is applied to the read-timeout interval the client specifies in its <code>CONNECT</code> frame:</p>
+<pre tabindex="0"><code>&lt;client specified read heart-beat interval&gt; * &lt;grace periodmultiplier&gt; == &lt;broker enforced read heart-beat timeout interval&gt;
+</code></pre><p>For backward compatibility, if the grace period multiplier is not configured the default enforcement mode remains strict, e.g., <code>transport.hbGracePeriodMultiplier=1.0</code>. Attempts to configure the grace period multiplier to a value less than, or equal to <code>1.0</code> will be silently ignored.</p>
+<p>STOMP clients that wish to be tolerant of late arriving heart-beats from the broker must implement their own solution for doing so.</p>
+<ul>
+<li>
+<p>Please check the <a href="http://stomp.github.io/stomp-specification-1.2.html#Heart-beating">STOMP specification</a> for the details on heart-beating</p>
+</li>
+<li>
+<p>The JIRA that implemented this: <a href="https://issues.apache.org/jira/browse/AMQ-4674">ActiveMQ Classic 5.x does not support the notion of a grace-period for heart beats as supported by the STOMP protocol</a></p>
+</li>
+</ul>
+<h3 id="working-with-destinations-with-stomp">Working with Destinations with Stomp</h3>
+<p>Note that the prefix in stomp <code>/queue/</code> or <code>/topic/</code> is removed from the string before passing it to ActiveMQ Classic as a JMS destination. Also note that the default separator in MOM systems is <code>.</code> (dot). Whilst <code>FOO.BAR</code> is the normal syntax to identify a queue type destination the Stomp equivalent is <code>/queue/FOO.BAR</code></p>
+<blockquote>
+<p><strong>Be careful about starting destinations with <code>/</code></strong></p>
+<p>If in Stomp world you use <code>/queue/foo/bar</code> then in a JMS world the queue would be called <code>foo/bar</code> not <code>/foo/bar</code>.</p>
+</blockquote>
+<blockquote>
+<p><strong>Persistent Messaging in STOMP</strong></p>
+<p>STOMP messages are non-persistent by default. To use persistent messaging add the following STOMP header to all <code>SEND</code> requests: <code>persistent:true</code>. This default is the opposite of that for JMS messages.</p>
+</blockquote>
+<h3 id="working-with-jms-textbytes-messages-and-stomp">Working with JMS Text/Bytes Messages and Stomp</h3>
+<p>Stomp is a very simple protocol - that&rsquo;s part of the beauty of it! As such, it does not have knowledge of JMS messages such as <code>TextMessage</code>&rsquo;s or <code>BytesMessage</code>&rsquo;s. The protocol does however support a <code>content-length</code> header. To provide more robust interaction between STOMP and JMS clients, ActiveMQ Classic keys off of the inclusion of this header to determine what message type to create when sending from Stomp to JMS. The logic is simple:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Inclusion of content-length header</th>
+          <th>Resulting Message</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>yes</td>
+          <td><code>BytesMessage</code></td>
+      </tr>
+      <tr>
+          <td>no</td>
+          <td><code>TextMessage</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>This same logic can be followed when going from JMS to Stomp, as well. A Stomp client could be written to key off of the inclusion of the <code>content-length</code> header to determine what type of message structure to provide to the user.</p>
+<h3 id="message-transformations">Message Transformations</h3>
+<p>The <code>transformation</code> message header on <code>SEND</code> and <code>SUBSCRIBE</code> messages could be used to instruct ActiveMQ Classic to transform messages from text to the format of your desire. Currently, ActiveMQ Classic comes with a transformer that can transform XML/JSON text to Java objects, but you can add your own transformers as well.</p>
+<p>Here&rsquo;s a quick example of how to use built-in transformer (taken from test cases)</p>
+<pre tabindex="0"><code>private String xmlObject = &#34;&lt;pojo&gt;\n&#34; 
+        + &#34;  &lt;name&gt;Dejan&lt;/name&gt;\n&#34;
+        + &#34;  &lt;city&gt;Belgrade&lt;/city&gt;\n&#34; 
+        + &#34;&lt;/pojo&gt;&#34;;
+
+public void testTransformationReceiveXMLObject() throws Exception {
+	
+    MessageProducer producer = session.createProducer(new ActiveMQQueue(&#34;USERS.&#34; + getQueueName()));
+    ObjectMessage message = session.createObjectMessage(new SamplePojo(&#34;Dejan&#34;, &#34;Belgrade&#34;));
+    producer.send(message);
+	
+    String frame = &#34;CONNECT\n&#34; + &#34;login: system\n&#34; + &#34;passcode: manager\n\n&#34; + Stomp.NULL;
+    stompConnection.sendFrame(frame);
+
+    frame = stompConnection.receiveFrame();
+    assertTrue(frame.startsWith(&#34;CONNECTED&#34;));
+
+    frame = &#34;SUBSCRIBE\n&#34; + &#34;destination:/queue/USERS.&#34; + getQueueName() + &#34;\n&#34; + &#34;ack:auto&#34; + &#34;\n&#34; + &#34;transformation:jms-object-xml\n\n&#34; + Stomp.NULL;
+    stompConnection.sendFrame(frame);
+    
+    frame = stompConnection.receiveFrame();
+
+    assertTrue(frame.trim().endsWith(xmlObject));
+    
+    frame = &#34;DISCONNECT\n&#34; + &#34;\n\n&#34; + Stomp.NULL;
+    stompConnection.sendFrame(frame);
+}     
+</code></pre><blockquote>
+<p><strong>Dependencies</strong></p>
+<p>ActiveMQ Classic uses <a href="http://xstream.codehaus.org">XStream</a> for its transformation needs. Since it&rsquo;s the optional dependency you have to add it to broker&rsquo;s classpath by putting the appropriate JAR into the <code>lib/</code> folder. Additionally, if you plan to use JSON transformations you have to add <a href="http://jettison.codehaus.org/">Jettison</a> JSON parser to the classpath.</p>
+</blockquote>
+<p>In order to create your own transformer, you have to do the following:</p>
+<ol>
+<li>
+<p>Build your transformer by implementing a <a href="http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/transport/stomp/FrameTranslator.html">FrameTranslator</a> interface</p>
+</li>
+<li>
+<p>Associate it with the appropriate header value by creating a file named as a value you want to use in the <code>META-INF/services/org/apache/activemq/transport/frametranslator/</code> folder of your JAR which will contain the value <code>class=_fully qualified classname of your transformer_</code></p>
+</li>
+</ol>
+<p>For example the built-in transformer contains the following value:</p>
+<pre tabindex="0"><code>class=org.apache.activemq.transport.stomp.XStreamFrameTranslator
+</code></pre><p>in the <code>META-INF/services/org/apache/activemq/transport/frametranslator/jms-xml</code> file.</p>
+<h3 id="debugging">Debugging</h3>
+<p>In case you want to debug Stomp communication between broker and clients you should configure the Stomp connector with the <code>trace</code> parameter, like this:</p>
+<pre tabindex="0"><code>&lt;transportConnectors&gt;
+   &lt;transportConnector name=&#34;stomp&#34; uri=&#34;stomp://localhost:61613?trace=true&#34;/&gt;
+&lt;/transportConnectors&gt;
+</code></pre><p>This will instruct the broker to trace all packets it sends and receives.</p>
+<p>Furthermore, you have to enable tracing for the appropriate log. You can achieve that by adding the following to your <code>conf/log4j.properties</code></p>
+<pre tabindex="0"><code>log4j.logger.org.apache.activemq.transport.stomp=TRACE
+</code></pre><p>Finally, you will probably want to keep these messages in the separate file instead of polluting the standard broker&rsquo;s log. You can achieve that with the following log4j configuration:</p>
+<pre tabindex="0"><code>log4j.appender.stomp=org.apache.log4j.RollingFileAppender
+log4j.appender.stomp.file=${activemq.base}/data/stomp.log
+log4j.appender.stomp.maxFileSize=1024KB
+log4j.appender.stomp.maxBackupIndex=5
+log4j.appender.stomp.append=true
+log4j.appender.stomp.layout=org.apache.log4j.PatternLayout
+log4j.appender.stomp.layout.ConversionPattern=%d \[%-15.15t\] %-5p %-30.30c{1} - %m%n
+
+log4j.logger.org.apache.activemq.transport.stomp=TRACE, stomp
+log4j.additivity.org.apache.activemq.transport.stomp=false
+
+# Enable these two lines and disable the above two if you want the frame IO ONLY (e.g., no heart beat messages, inactivity monitor etc).
+#log4j.logger.org.apache.activemq.transport.stomp.StompIO=TRACE, stomp
+#log4j.additivity.org.apache.activemq.transport.stomp.StompIO=false
+</code></pre><p>After this, all your Stomp packets will be logged to the <code>data/stomp.log</code></p>
+<h3 id="java-api">Java API</h3>
+<p><strong>From ActiveMQ Classic 5.2</strong>: there is a simple Java Stomp API distributed with ActiveMQ Classic. Note that this API is provided purely for testing purposes and you should always consider using standard JMS API from Java instead of this one. The following code snippet provides a simple example of using this API:</p>
+<pre tabindex="0"><code>StompConnection connection = new StompConnection();
+connection.open(&#34;localhost&#34;, 61613);
+		
+connection.connect(&#34;system&#34;, &#34;manager&#34;);
+StompFrame connect = connection.receive();
+
+if(!connect.getAction().equals(Stomp.Responses.CONNECTED)) {
+	throw new Exception (&#34;Not connected&#34;);
+}
+		
+connection.begin(&#34;tx1&#34;);
+connection.send(&#34;/queue/test&#34;, &#34;message1&#34;, &#34;tx1&#34;, null);
+connection.send(&#34;/queue/test&#34;, &#34;message2&#34;, &#34;tx1&#34;, null);
+connection.commit(&#34;tx1&#34;);
+	
+connection.subscribe(&#34;/queue/test&#34;, Subscribe.AckModeValues.CLIENT);
+	
+connection.begin(&#34;tx2&#34;);
+	
+StompFrame message = connection.receive();
+System.out.println(message.getBody());
+connection.ack(message, &#34;tx2&#34;);
+	
+message = connection.receive();
+System.out.println(message.getBody());
+connection.ack(message, &#34;tx2&#34;);
+	
+connection.commit(&#34;tx2&#34;);
+		
+connection.disconnect();
+</code></pre><p>This example is part of the standard ActiveMQ Classic distribution. You can run it from the <code>./example</code> folder with:</p>
+<pre tabindex="0"><code>ant stomp
+</code></pre><h3 id="stomp-extensions-for-jms-message-semantics">Stomp Extensions for JMS Message Semantics</h3>
+<p>Note that STOMP is designed to be as simple as possible - so any scripting language/platform can message any other with minimal effort. STOMP allows pluggable headers on each request such as sending &amp; receiving messages. ActiveMQ Classic has several extensions to the Stomp protocol, so that JMS semantics can be supported by Stomp clients. An OpenWire JMS producer can send messages to a Stomp consumer, and a Stomp producer can send messages to an OpenWire JMS consumer. And Stomp to Stomp configurations, can use the richer JMS message control.</p>
+<p>STOMP supports the following standard JMS properties on <code>SENT</code> messages:</p>
+<table>
+  <thead>
+      <tr>
+          <th>STOMP Header</th>
+          <th>JMS Header</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>correlation-id</code></td>
+          <td><code>JMSCorrelationID</code></td>
+          <td>Good consumers will add this header to any responses they send.</td>
+      </tr>
+      <tr>
+          <td><code>expires</code></td>
+          <td><code>JMSExpiration</code></td>
+          <td>Expiration time of the message.</td>
+      </tr>
+      <tr>
+          <td><code>JMSXGroupID</code></td>
+          <td><code>JMSXGroupID</code></td>
+          <td>Specifies the <a href="message-groups">Message Groups.</a></td>
+      </tr>
+      <tr>
+          <td><code>JMSXGroupSeq</code></td>
+          <td><code>JMSXGroupSeq</code></td>
+          <td>Optional header that specifies the sequence number in the <a href="message-groups">Message Groups.</a></td>
+      </tr>
+      <tr>
+          <td><code>persistent</code></td>
+          <td><code>JMSDeliveryMode</code></td>
+          <td>Whether or not the message is persistent.</td>
+      </tr>
+      <tr>
+          <td><code>priority</code></td>
+          <td><code>JMSPriority</code></td>
+          <td>Priority on the message.</td>
+      </tr>
+      <tr>
+          <td><code>reply-to</code></td>
+          <td><code>JMSReplyTo</code></td>
+          <td>Destination you should send replies to.</td>
+      </tr>
+      <tr>
+          <td><code>type</code></td>
+          <td><code>JMSType</code></td>
+          <td>Type of the message.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="activemq-classic-extensions-to-stomp">ActiveMQ Classic Extensions to STOMP</h3>
+<p>You can add custom headers to STOMP commands to configure the ActiveMQ Classic protocol. Here are some examples:</p>
+<p>Verb|Header|Type|Description
+&mdash;|&mdash;|&mdash;
+<code>CONNECT</code>|<code>client-id</code>|<code>string</code>|Specifies the JMS clientID which is used in combination with the <code>activemq.subcriptionName</code> to denote a durable subscriber.
+<code>SUBSCRIBE</code>|<code>activemq.dispatchAsync</code>|<code>boolean</code>|Should messages be dispatched synchronously or asynchronously from the producer thread for non-durable topics in the broker? For fast consumers set this to <code>false</code>. For slow consumers set it to <code>true</code> so that dispatching will not block fast consumers.
+<code>SUBSCRIBE</code>|<code>activemq.exclusive</code>|<code>boolean</code>|I would like to be an <a href="exclusive-consumer">Exclusive Consumer</a> on the queue.
+<code>SUBSCRIBE</code>|<code>activemq.maximumPendingMessageLimit</code>|<code>int</code>|For <a href="slow-consumer-handling">Slow Consumer Handling</a> on non-durable topics by dropping old messages - we can set a maximum-pending limit, such that once a slow consumer backs up to this high water mark we begin to discard old messages.
+<code>SUBSCRIBE</code>|<code>activemq.noLocal</code>|<code>boolean</code>|Specifies whether or not locally sent messages should be ignored for subscriptions. Set to <code>true</code> to filter out locally sent messages.
+<code>SUBSCRIBE</code>|<code>activemq.prefetchSize</code>|<code>int</code>|Specifies the maximum number of pending messages that will be dispatched to the client. Once this maximum is reached no more messages are dispatched until the client acknowledges a message. Set to a low value &gt; <strong>1</strong> for fair distribution of messages across consumers when processing messages can be slow. <strong>Note</strong>: if your STOMP client is implemented using a dynamic scripting language like Ruby, say, then this parameter <strong><em>must</em></strong> be set to <code>1</code> as there is no notion of a client-side message size to be sized. STOMP does not support a value of <code>0</code>.
+<code>SUBSCRIBE</code>|<code>activemq.priority</code>|<code>byte</code>|Sets the priority of the consumer so that dispatching can be weighted in priority order.
+<code>SUBSCRIBE</code>|<code>activemq.retroactive</code>|<code>boolean</code>|For non-durable topics make this subscription <a href="retroactive-consumer">retroactive</a>.
+<code>SUBSCRIBE</code>|<code>activemq.subscriptionName</code>|<code>string</code>|For durable topic subscriptions you must specify the same <code>activemq.client-id</code> on the connection and <code>activemq.subcriptionName</code> on the subscribe prior to v5.7.0. <strong>Note</strong>: the spelling <code>subcriptionName</code> NOT <code>subscriptionName</code>. This is not intuitive, but it is how it is implemented in ActiveMQ Classic 4.x. For the 5.0 release of ActiveMQ Classic, both <code>subcriptionName</code> and <code>subscriptionName</code> will be supported (<code>subcriptionName</code> was removed as of v5.6.0).
+<code>SUBSCRIBE</code>|<code>selector</code>|<code>string</code>|Specifies a JMS Selector using SQL 92 syntax as specified in the JMS 1.1 specification. This allows a filter to be applied to each message as part of the subscription.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

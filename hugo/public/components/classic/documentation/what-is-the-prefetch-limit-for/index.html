@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What is the Prefetch Limit For? | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>What is the Prefetch Limit For?</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  What is the Prefetch Limit For?
+</nav>
+<div class="component-body">
+  <p>One of the design goals of ActiveMQ Classic is to be a highly performant message bus. This means using a <a href="seda">SEDA</a> architecture to perform as much work as possible asynchronously. To make efficient use of network resources the broker utilizes a &lsquo;push&rsquo; model to dispatch messages to consumers. This ensures that a consumer always has a local buffer of messages ready to process. The alternative would be for consumers to explicitly pull messages from the broker. Pulling messages individually is not very efficient and can increase the per message latency significantly.</p>
+<p>However, there is a danger that without limiting the number of messages that are pushed to a consumer its client-side resources could become exhausted. This is the natural consequence of message consumption typically being much slower than message delivery. To avoid this situation ActiveMQ Classic therefore employs a <strong>prefetch limit</strong> to limit the maximum number of messages that can be dispatched to an individual consumer at once. The consumer in turn uses the prefetch limit to size its prefetch message buffer.</p>
+<p>Once the broker has dispatched a prefetch limit number of messages to a consumer it will not dispatch any more messages to that consumer until the consumer has acknowledged at least 50% of the prefetched messages, e.g., prefetch/2, that it received. When the broker has received said acknowledgements it will dispatch a further prefetch/2 number of messages to the consumer to &rsquo;top-up&rsquo;, as it were, its prefetch buffer. Note that it&rsquo;s possible to specify a prefetch limit on a per consumer basis (see below).</p>
+<p>Large prefetch values are recommended for high performance with high message volumes. However, for lower message volumes, where each message takes a long time to process, the prefetch should be set to 1. This ensures that a consumer is only processing one message at a time. Specifying a prefetch limit of zero, however, will cause the consumer to poll for messages, one at a time, instead of the message being pushed to the consumer.</p>
+<blockquote>
+<p><strong>What is a Slow Consumer?</strong></p>
+<p>A slow consumer is one that has more than twice its configured prefetch limit number of messages pending.</p>
+</blockquote>
+<blockquote>
+<p><strong>Implementing Consumers Using a Dynamic Language</strong></p>
+<p>Consumers that are unable to cache prefetched messages must set their prefetch to 1. An example of such a consumer is one implemented using a scripting language like Ruby, say, that connects via STOMP. In this case there&rsquo;s no notion of a client-side message buffer.</p>
+</blockquote>
+<h3 id="specifying-the-prefetchpolicy">Specifying the PrefetchPolicy</h3>
+<p>You can specify an instance of the <a href="http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQPrefetchPolicy.html">ActiveMQPrefetchPolicy</a> on an <a href="http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html">ActiveMQConnectionFactory</a> or <a href="http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnection.html">ActiveMQConnection</a>. This allows you to configure all the individual prefetch values; as each different quality of service has a different value. e.g.</p>
+<ul>
+<li>
+<p>persistent queues (default value: <code>1000</code>)</p>
+</li>
+<li>
+<p>non-persistent queues (default value: <code>1000</code>)</p>
+</li>
+<li>
+<p>persistent topics (default value: <code>100</code>)</p>
+</li>
+<li>
+<p>non-persistent topics (default value: <code>Short.MAX_VALUE - 1</code>)</p>
+</li>
+</ul>
+<p>The prefetch limit can also be configured on the connection URI used to establish a connection the broker. To change the prefetch limit for all consumer types configure a connection URI as follows:</p>
+<pre tabindex="0"><code>tcp://localhost:61616?jms.prefetchPolicy.all=50
+</code></pre><p>To change the prefetch limit for queue consumers only configure the connection URI as follows:</p>
+<pre tabindex="0"><code>tcp://localhost:61616?jms.prefetchPolicy.queuePrefetch=1
+</code></pre><p>It can also be configured on a per consumer basis using <a href="destination-options">Destination Options</a>:</p>
+<pre tabindex="0"><code>queue = new ActiveMQQueue(&#34;TEST.QUEUE?consumer.prefetchSize=10&#34;);
+consumer = session.createConsumer(queue);
+</code></pre><h3 id="pooled-consumers-and-prefetch">Pooled Consumers and Prefetch</h3>
+<p>Consuming messages from a pool of consumers an be problematic due to prefetch. Unconsumed prefetched messages are only released when a consumer is closed, but with a pooled consumer the close is deferred (for reuse) till the consumer pool closes. This leaves prefetched messages unconsumed till the consumer is reused. This feature can be desirable from a performance perspective. However, it can lead to out-of-order message delivery when there is more than one consumer in the pool. For this reason, the <a href="http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/jms/pool/PooledConnectionFactory.html">org.apache.activemq.pool.PooledConnectionFactory</a> does <strong>not</strong> pool consumers.</p>
+<p>Pooling consumers is supported by Springs CachingConnectionFactory (although turned off by default). In case you use the CachingConnectionFactory with multiple consumer threads configured in Springs DefaultMessageListenerContainer (DMLC) then you either want to turn off consumer pooling in the CachingConnectionFactory (its off by default) or you may want to use a prefetch of 0 when pooling consumers. In this way, the consumer will poll for messages on each call to <code>receive(timeout)</code>. Its generally recommended to turn off consumer caching in Springs CachingConnectionFactory and any other frameworks that allow to pool JMS consumers.</p>
+<p>Note that Springs DefaultMessageListenerContainer (DMLC) and its <code>CACHE_CONSUMER</code> cache level is not affected by this problem! Springs DMLC does not pool consumers in the sense that it does not use an internal pool with multiple consumer instances. Instead it caches the consumer, i.e. it re-uses the same JMS consumer object to receive all messages for the life time of the DMLC instance. So it behaves pretty much like properly hand written JMS code, where you create the JMS connection, session, consumer and then use this consumer instance to receive all your messages.<br>
+Hence there is no problem with using  <code>CACHE_CONSUMER</code> in Springs DMLC, even with multiple consumer threads, unless you are using XA transactions. XA transactions do not work with <code>CACHE_CONSUMER</code>. However local JMS transactions and non-transacted consumers are just fine to use  <code>CACHE_CONSUMER</code> in Springs DMLC.</p>
+<p>Also note that Camel&rsquo;s <a href="http://camel.apache.org/FAQ/jms.html">JMS</a> or <a href="http://camel.apache.org/activemq.html">ActiveMQ Classic</a> components use Springs DMLC internally. So everything said above about Springs DMLC and  <code>CACHE_CONSUMER</code> applies to these two Camel components as well.</p>
+<h3 id="ram-vs-performance-trade-off">Ram vs. Performance Trade-off</h3>
+<p>Setting a relatively high value of prefetch leads to higher performance. Therefore the default values are typically greater than 1000 and much higher for topics and higher still for the non-persistent messages. The prefetch size dictates how many messages will be held in RAM on the client so if your RAM is limited you may want to set a low value such as 1 or 10 etc.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

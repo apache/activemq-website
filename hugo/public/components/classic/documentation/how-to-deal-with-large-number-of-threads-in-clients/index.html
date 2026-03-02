@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to deal with large number of threads in clients | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>How to deal with large number of threads in clients</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  How to deal with large number of threads in clients
+</nav>
+<div class="component-body">
+  <p>If you study thread allocation in ActiveMQ Classic clients, you&rsquo;ll notice that by default there is one thread allocated by every session. This basically means that session will use its <a href="http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ThreadPoolExecutor.html">ThreadPoolExecutor</a> to execute its tasks. Up until version 5.7 this executor was unbound which could lead to OOM problems in rare case where are a large number of busy sessions in the same JVM could cause uncontrollable spikes in thread creation.</p>
+<p>In 5.7 we bounded this executor to a maximum of 1000 threads by default, which we believe should be enough for most use cases. In case of large number of busy sessions, each of them could end up using large number of threads and eventually OOM your application. There are couple of things you can do. The first obvious thing is to decrease the max thread limit a session can use, like this:</p>
+<pre tabindex="0"><code>ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(&#34;tcp://localhost:61616&#34;);
+connectionFactory.setMaxThreadPoolSize(10);
+Connection conn = connectionFactory.createConnection();
+conn.start();
+</code></pre><p>On the other hand this can lead to the scenario where a single session exaust its max thread number. A default behavior of <code>ThreadPoolExecutor</code> in this case is to throw an exception, so you&rsquo;ll notice it. A workaround for this scenario is to provide a rejected task handler that will synchronize the execution with the calling thread, like this</p>
+<pre tabindex="0"><code>ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(&#34;tcp://localhost:61616&#34;);
+connectionFactory.setRejectedTaskHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+Connection conn = connectionFactory.createConnection();
+conn.start();
+</code></pre><p>This will prevent the <code>ThreadPoolExecutor</code> from throwing an exception when it reaches its bound. Instead it will execute the rejected task in the calling thread.</p>
+<p>Finally, you can eliminate these threads completly, you can do that by setting <code>alwaysSessionAsync</code> property to false</p>
+<pre tabindex="0"><code>ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(&#34;tcp://localhost:61616&#34;);
+connectionFactory.setAlwaysSessionAsync(false);
+Connection conn = connectionFactory.createConnection();
+conn.start();
+</code></pre><p>However you need to have in mind that this approach can affect performance of the whole system.</p>
+<p>So there you go. In the unlikely scenario where your application has trouble with the number of threads created by JMS session, you can use one of the shown techniques to deal with it. As always there&rsquo;s no silver bullet for all scenarios, so measure and tune for your system.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

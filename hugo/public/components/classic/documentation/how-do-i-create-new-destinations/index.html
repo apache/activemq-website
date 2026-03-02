@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How do I create new destinations | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>How do I create new destinations</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  How do I create new destinations
+</nav>
+<div class="component-body">
+  <p>In ActiveMQ Classic you do <strong>not</strong> have to create destinations up front before you can use them. The ActiveMQ Classic broker auto-creates the physical resources associated with a destination on demand (i.e. when messages are sent to a new destination on a broker).</p>
+<p>This means that a client can create a new Queue or Topic dynamically either by</p>
+<ul>
+<li>calling createQueue() or createTopic() on a JMS Session</li>
+<li>creating an instance of ActiveMQTopic or ActiveMQQueue and possibly registering them in JNDI</li>
+</ul>
+<p>and the broker will automatically create the physical destinations for you. This avoids spending large amounts of time creating every individual destination you wish to use and possibly then exposing it in some JNDI provider.</p>
+<p>In addition, if you are using JNDI to lookup connection factory and destinations, you can specify which destinations you wish to create by default using the properties file. See the <a href="jndi-support">JNDI Support</a> for more details.</p>
+<h3 id="creating-destinations-on-startup">Creating destinations on startup</h3>
+<p>Its completely optional but as of 4.1 you can <a href="configure-startup-destinations">Configure Startup Destinations</a> to specify which destinations are automatically created when the broker starts.</p>
+<h3 id="limiting-creation-of-destinations">Limiting creation of destinations</h3>
+<p>If you need to restrict access or creation of destinations then please use the <a href="security">Security</a> option to disable destinations being auto-created for certain users.</p>
+<p>Client side destination objects are not the same as server side resources</p>
+<p>Note that the ActiveMQ Classic Broker will only create server side resources for destinations when messages are actually sent to them. So you can create as many instances of ActiveMQTopic and ActiveMQQueue on a client without any real overhead until you actually send messages to them on a broker. So a JMS client creating a new ActiveMQQueue POJO does not mean you are creating server side queue resources.</p>
+<p>Think of the ActiveMQQueue and ActiveMQTopic classes as like java.net.URL. They are just names which refer to server side resources which are auto-created when they are used.<br>
+This means that different clients creating different ActiveMQQueue instances will communicate with the same physical queue on a JMS broker if the name is the same.</p>
+<p>You can browse the currently available queues and topics using <a href="jmx">JMX</a>. You can also use the <a href="jmx">JMX</a> MBeans to create the destinations you require.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

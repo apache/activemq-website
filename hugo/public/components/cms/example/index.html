@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ActiveMQ-CPP Example | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>ActiveMQ-CPP Example</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/cms/">CMS Client</a> &rsaquo;
+  ActiveMQ-CPP Example
+</nav>
+<div class="component-body">
+  <p>The example below creates two classes — <code>HelloWorldConsumer</code> and <code>HelloWorldProducer</code> — each running in its own thread. The Producer sends <code>TextMessage</code> objects to the broker; the Consumer receives them asynchronously.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;activemq/library/ActiveMQCPP.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;activemq/core/ActiveMQConnectionFactory.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cms/Connection.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cms/Session.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cms/TextMessage.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cms/MessageListener.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;decaf/lang/Thread.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;decaf/lang/Runnable.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;decaf/util/concurrent/CountDownLatch.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;memory&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> activemq<span style="color:#f92672">::</span>core;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> decaf<span style="color:#f92672">::</span>util<span style="color:#f92672">::</span>concurrent;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> decaf<span style="color:#f92672">::</span>lang;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> cms;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloWorldProducer</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Runnable {
+</span></span><span style="display:flex;"><span>    string brokerURI;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> numMessages;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> useTopic;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    HelloWorldProducer(<span style="color:#66d9ef">const</span> string<span style="color:#f92672">&amp;</span> uri, <span style="color:#66d9ef">int</span> n, <span style="color:#66d9ef">bool</span> topic <span style="color:#f92672">=</span> false)
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">:</span> brokerURI(uri), numMessages(n), useTopic(topic) {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span>() {
+</span></span><span style="display:flex;"><span>        auto_ptr<span style="color:#f92672">&lt;</span>ConnectionFactory<span style="color:#f92672">&gt;</span> cf(
+</span></span><span style="display:flex;"><span>            ConnectionFactory<span style="color:#f92672">::</span>createCMSConnectionFactory(brokerURI));
+</span></span><span style="display:flex;"><span>        auto_ptr<span style="color:#f92672">&lt;</span>Connection<span style="color:#f92672">&gt;</span> connection(cf<span style="color:#f92672">-&gt;</span>createConnection());
+</span></span><span style="display:flex;"><span>        connection<span style="color:#f92672">-&gt;</span>start();
+</span></span><span style="display:flex;"><span>        auto_ptr<span style="color:#f92672">&lt;</span>Session<span style="color:#f92672">&gt;</span> session(connection<span style="color:#f92672">-&gt;</span>createSession(Session<span style="color:#f92672">::</span>AUTO_ACKNOWLEDGE));
+</span></span><span style="display:flex;"><span>        auto_ptr<span style="color:#f92672">&lt;</span>Destination<span style="color:#f92672">&gt;</span> dest(useTopic
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">?</span> session<span style="color:#f92672">-&gt;</span>createTopic(<span style="color:#e6db74">&#34;TEST.FOO&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">:</span> session<span style="color:#f92672">-&gt;</span>createQueue(<span style="color:#e6db74">&#34;TEST.FOO&#34;</span>));
+</span></span><span style="display:flex;"><span>        auto_ptr<span style="color:#f92672">&lt;</span>MessageProducer<span style="color:#f92672">&gt;</span> producer(session<span style="color:#f92672">-&gt;</span>createProducer(dest.get()));
+</span></span><span style="display:flex;"><span>        producer<span style="color:#f92672">-&gt;</span>setDeliveryMode(DeliveryMode<span style="color:#f92672">::</span>NON_PERSISTENT);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> numMessages; <span style="color:#f92672">++</span>i) {
+</span></span><span style="display:flex;"><span>            auto_ptr<span style="color:#f92672">&lt;</span>TextMessage<span style="color:#f92672">&gt;</span> msg(session<span style="color:#f92672">-&gt;</span>createTextMessage(<span style="color:#e6db74">&#34;Hello world!&#34;</span>));
+</span></span><span style="display:flex;"><span>            producer<span style="color:#f92672">-&gt;</span>send(msg.get());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        connection<span style="color:#f92672">-&gt;</span>close();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloWorldConsumer</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> MessageListener, <span style="color:#66d9ef">public</span> Runnable {
+</span></span><span style="display:flex;"><span>    string brokerURI;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> numMessages;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> useTopic;
+</span></span><span style="display:flex;"><span>    CountDownLatch latch;
+</span></span><span style="display:flex;"><span>    CountDownLatch doneLatch;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    HelloWorldConsumer(<span style="color:#66d9ef">const</span> string<span style="color:#f92672">&amp;</span> uri, <span style="color:#66d9ef">int</span> n, <span style="color:#66d9ef">bool</span> topic <span style="color:#f92672">=</span> false)
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">:</span> brokerURI(uri), numMessages(n), useTopic(topic), latch(<span style="color:#ae81ff">1</span>), doneLatch(n) {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">waitUntilReady</span>() { latch.await(); }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span>() {
+</span></span><span style="display:flex;"><span>        auto_ptr<span style="color:#f92672">&lt;</span>ConnectionFactory<span style="color:#f92672">&gt;</span> cf(
+</span></span><span style="display:flex;"><span>            ConnectionFactory<span style="color:#f92672">::</span>createCMSConnectionFactory(brokerURI));
+</span></span><span style="display:flex;"><span>        auto_ptr<span style="color:#f92672">&lt;</span>Connection<span style="color:#f92672">&gt;</span> connection(cf<span style="color:#f92672">-&gt;</span>createConnection());
+</span></span><span style="display:flex;"><span>        connection<span style="color:#f92672">-&gt;</span>start();
+</span></span><span style="display:flex;"><span>        auto_ptr<span style="color:#f92672">&lt;</span>Session<span style="color:#f92672">&gt;</span> session(connection<span style="color:#f92672">-&gt;</span>createSession(Session<span style="color:#f92672">::</span>AUTO_ACKNOWLEDGE));
+</span></span><span style="display:flex;"><span>        auto_ptr<span style="color:#f92672">&lt;</span>Destination<span style="color:#f92672">&gt;</span> dest(useTopic
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">?</span> session<span style="color:#f92672">-&gt;</span>createTopic(<span style="color:#e6db74">&#34;TEST.FOO&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">:</span> session<span style="color:#f92672">-&gt;</span>createQueue(<span style="color:#e6db74">&#34;TEST.FOO&#34;</span>));
+</span></span><span style="display:flex;"><span>        auto_ptr<span style="color:#f92672">&lt;</span>MessageConsumer<span style="color:#f92672">&gt;</span> consumer(session<span style="color:#f92672">-&gt;</span>createConsumer(dest.get()));
+</span></span><span style="display:flex;"><span>        consumer<span style="color:#f92672">-&gt;</span>setMessageListener(<span style="color:#66d9ef">this</span>);
+</span></span><span style="display:flex;"><span>        latch.countDown();
+</span></span><span style="display:flex;"><span>        doneLatch.await(<span style="color:#ae81ff">30000</span>);
+</span></span><span style="display:flex;"><span>        connection<span style="color:#f92672">-&gt;</span>close();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onMessage</span>(<span style="color:#66d9ef">const</span> Message<span style="color:#f92672">*</span> message) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> TextMessage<span style="color:#f92672">*</span> tm <span style="color:#f92672">=</span> <span style="color:#66d9ef">dynamic_cast</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">const</span> TextMessage<span style="color:#f92672">*&gt;</span>(message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (tm) cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Received: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> tm<span style="color:#f92672">-&gt;</span>getText() <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>        doneLatch.countDown();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    activemq<span style="color:#f92672">::</span>library<span style="color:#f92672">::</span>ActiveMQCPP<span style="color:#f92672">::</span>initializeLibrary();
+</span></span><span style="display:flex;"><span>    string brokerURI <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;failover:(tcp://localhost:61616)&#34;</span>;
+</span></span><span style="display:flex;"><span>    HelloWorldProducer producer(brokerURI, <span style="color:#ae81ff">2000</span>, true);
+</span></span><span style="display:flex;"><span>    HelloWorldConsumer consumer(brokerURI, <span style="color:#ae81ff">2000</span>, true);
+</span></span><span style="display:flex;"><span>    Thread consumerThread(<span style="color:#f92672">&amp;</span>consumer);
+</span></span><span style="display:flex;"><span>    consumerThread.start();
+</span></span><span style="display:flex;"><span>    consumer.waitUntilReady();
+</span></span><span style="display:flex;"><span>    Thread producerThread(<span style="color:#f92672">&amp;</span>producer);
+</span></span><span style="display:flex;"><span>    producerThread.start();
+</span></span><span style="display:flex;"><span>    producerThread.join();
+</span></span><span style="display:flex;"><span>    consumerThread.join();
+</span></span><span style="display:flex;"><span>    activemq<span style="color:#f92672">::</span>library<span style="color:#f92672">::</span>ActiveMQCPP<span style="color:#f92672">::</span>shutdownLibrary();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

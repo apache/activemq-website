@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How do I use JMS efficiently | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>How do I use JMS efficiently</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  How do I use JMS efficiently
+</nav>
+<div class="component-body">
+  <h2 id="how-do-i-use-jms-efficiently">How do I use JMS efficiently?</h2>
+<p>JMS is designed for high performance. In particular its design is such that you are meant to create a number of objects up front on the startup of your application and then resuse them throughout your application. e.g. its a good idea to create upfront and then reuse the following</p>
+<ul>
+<li>Connection</li>
+<li>Session</li>
+<li>MessageProducer</li>
+<li>MessageConsumer</li>
+</ul>
+<p>The reason is that each create &amp; destroy of the above objects typically requires an individual request &amp; response with the JMS broker to ensure it worked. e.g. creating a connection, session, producer, then sending a message, then closing everything down again - could result in 7 request-responses with the server!</p>
+<p>Note a little trick - you can reuse the same MessageProducer for sending messages to different destinations; just create it with a null destination and specify it on the send method.</p>
+<p>MessageProducer instances that are created with a null destination are anonymous producers and as such the broker cannot fire an advisory for producer when these are created. This means that when the pooled MessageProducer is in use no advisories for producers will ever be sent.</p>
+<h3 id="using-pooling-with-jms">Using Pooling with JMS</h3>
+<p>To use JMS efficiently we recommend you use <a href="http://activemq.apache.org/camel/">Camel</a> to hide the JMS API and <a href="http://activemq.apache.org/camel/bean-integration.html">bind the messaging to your beans</a>.</p>
+<p>Alternatively try using Spring&rsquo;s <a href="http://static.springsource.org/spring/docs/2.5.x/reference/FAQ/jms.md#Community/FAQ/jms.mdp">MessageListenerContainer</a> for consuming messages and <a href="http://static.springsource.org/spring/docs/2.5.x/reference/FAQ/jms.md#jms-jmstemplate">JmsTemplate</a> for sending - but be [aware of the gotchas](<a href="http://activemq.apache.org">http://activemq.apache.org</a>Connectivity/Containers/Spring SupportConnectivity/Containers/Spring Support/Connectivity/Containers/Spring Support/jmstemplate-gotchas)</p>
+<h3 id="other-performance-tips">Other performance tips</h3>
+<p>Also see</p>
+<ul>
+<li><a href="should-i-use-transactions">Should I use transactions</a></li>
+<li><a href="should-i-use-xa">Should I use XA</a></li>
+</ul>
+<h3 id="java-connector-architecture">Java Connector Architecture</h3>
+<p><a href="http://java.sun.com/j2ee/connector/">Java Connector Architecture</a> supports the pooling of JMS connections, sessions and MessageListeners, parallel message processing, thread pooling and transaction &amp; exception handling, through the use of a JCA <a href="resource-adapter">Resource Adapter</a>.</p>
+<p>All of these benefits are also available through Spring&rsquo;s MessageListenerContiner <strong>except</strong> for the XA transactions. If you need XA support then you must use JCA</p>
+<p>Typically JCA is used in a J2EE container via MDBs; though there is a POJO Spring based <a href="jca-container">JCA Container</a> you can use, which is simple and lightweight and easy to embed inside Tomcat or any J2SE application.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

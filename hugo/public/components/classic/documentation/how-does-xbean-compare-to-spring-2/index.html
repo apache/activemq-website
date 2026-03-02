@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How does XBean compare to Spring 2 | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>How does XBean compare to Spring 2</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  How does XBean compare to Spring 2
+</nav>
+<div class="component-body">
+  <p>Spring 2.0 has introduced the ability to handle custom XML languages inside the spring.xml. This is something we developed <a href="http://geronimo.apache.org/xbean/">XBean</a> for way back in the Spring 1.x days.</p>
+<p>The Spring hook requires component developers to write their own XML handling, processing DOMs and so forth. On various projects like ActiveMQ Classic, Jencks, Jetty, ServiceMix, XFire - we didn&rsquo;t want to have to spend time hand-crafting parsing of XML code. So XBean is used to auto-create the parsing code along with an XSD and reference documentation for how to configure these services in custom XML languages.</p>
+<p>So you can think of XBean as being like a JAXB2 tool for working inside Spring XML files</p>
+<h3 id="spring-versions-supported">Spring versions supported</h3>
+<p>So you can use XBean in Spring 1.x or Spring 2.x (for Spring 2.0 support you need XBean 2.6 or later along with the matching release of ActiveMQ Classic).</p>
+<p>If you are using Spring 1.x you use the XBean versions of the Spring ApplicationContext classes. In Spring 2.0 the XBean functionality works perfectly fine inside a regular spring.xml file. The only main difference between using the XBean ApplicationContext files and the Spring ones is that the Spring ones mandate validation, so your XML must include all the XSD information (which is handy for IDE completion anyway) whereas this is not mandatory in the XBean configuraiton files.</p>
+<h3 id="examples">Examples</h3>
+<p>Here&rsquo;s a regular Spring 2 XML file using ActiveMQ Classic&rsquo;s XML inside it to configure a broker &amp; destinations &amp; a connection factory</p>
+<p><a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-core/src/test/resources/spring-embedded-xbean.xml">http://svn.apache.org/repos/asf/activemq/trunk/activemq-core/src/test/resources/spring-embedded-xbean.xml</a></p>
+<p>Here&rsquo;s an example Spring XML for Spring 2 which configures ActiveMQ Classic, ActiveMQ Classic Resource Adapter and Jencks all using Spring 2 with XSD validation (and so completion)</p>
+<p><a href="http://svn.codehaus.org/jencks/trunk/jencks/src/test/resources/org/jencks/xbean/xbean-validating.xml">http://svn.codehaus.org/jencks/trunk/jencks/src/test/resources/org/jencks/xbean/xbean-validating.xml</a></p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

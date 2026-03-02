@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How lightweight is sending a message | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>How lightweight is sending a message</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  How lightweight is sending a message
+</nav>
+<div class="component-body">
+  <h3 id="for-activemq-classic-3x4x">For ActiveMQ Classic 3.x/4.x</h3>
+<p>It depends.</p>
+<p>If you are in a JMS transaction, are using non-durable messaging then its fairly lightweight and fast - typically just blocking until the message has got onto the socket buffer. Though if you are using durable messaging and not using JMS transactions then by default we will perform a blocking request-response with the broker to ensure the message is persisted to disk by the time the call to send() is complete - which is pretty slow.</p>
+<p>However if you really want it to be very lightweight and fast, <a href="configuring-transports">enable async sending</a> on your JMS connection.</p>
+<p>If you really want low latency, such as in a GUI thread or very high performance server, you probably want to enable asynchronous sending. The only downside of asynchronous sending is if the send fails for whatever reason (security exception typically or some transport failure), then you don&rsquo;t get an exception thrown in the sender thread, since all the work is done asynchronously, though your ErrorListener will get notified.</p>
+<p>(If you use the reliable transport, then you can let the JMS client handle transport errors and drop &amp; reconnect to another broker to handle auto-reconnection for you).</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

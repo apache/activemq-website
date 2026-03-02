@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Should I deploy the broker inside my JVM or AppServer | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>Should I deploy the broker inside my JVM or AppServer</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  Should I deploy the broker inside my JVM or AppServer
+</nav>
+<div class="component-body">
+  <p>You can deploy the ActiveMQ Classic Broker inside your JVM or Application Server. Whether you do or not has pros and cons depending on how many JVMs you have and what your backup &amp; recovery policy is.</p>
+<h3 id="advantages-of-embedding-the-broker">Advantages of embedding the broker</h3>
+<ul>
+<li>embedding a broker means you can use the VM transport which avoids the use of sockets and serialization. Instead ActiveMQ Classic can pass around messages by value.
+<ul>
+<li>the slight exception to this is ObjectMessage; the JMS specification says you must serialize the body of the ObjectMessage whenever you send it. However you can <a href="how-should-i-use-the-vm-transport">disable this feature</a> if you want really high performance when using VM transport</li>
+</ul>
+</li>
+<li>its only 1 single deployment unit/JVM rather than 2 coupled processes.</li>
+</ul>
+<h3 id="disadvantages-of-embedding-the-broker">Disadvantages of embedding the broker</h3>
+<p>If you have lots of JVMs (say 100s of them) and have very stringent requirements; you don&rsquo;t ever want to loose a message and so you want to backup and manage the persistent ActiveMQ Classic database (and/or files) very carefully.</p>
+<p>Having an embdded broker inside each JVM could result in large number of sets of files to manage. So it may be simpler to separate the two out, so that your 100s of JVMs talk to a relatively small cluster of brokers (say 2-10 of them) so that you can avoid worrying about persistent state in each JVM and just focus on backing up and managing the files/databases used by the brokers.</p>
+<p>Also its typically easier to run and manage ActiveMQ Classic brokers when they are separate; you can have some ClassLoader issues when trying to embed ActiveMQ Classic inside an application server. e.g. you can sometimes get <a href="javalangnosuchmethoderror">ClassPath Errors</a></p>
+<h3 id="see">See</h3>
+<ul>
+<li><a href="how-do-i-embed-a-broker-inside-a-connection">How do I embed a Broker inside a Connection</a></li>
+<li><a href="run-broker">Run Broker</a></li>
+</ul>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

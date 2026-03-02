@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ActiveMQ Classic Command Line Tools Reference | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>ActiveMQ Classic Command Line Tools Reference</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  ActiveMQ Classic Command Line Tools Reference
+</nav>
+<div class="component-body">
+  <h1 id="command-line-tools">Command Line Tools</h1>
+<p>The current script contains the entire functionality to manage activemq.</p>
+<ul>
+<li><a href="activemq-classic-command-line-tools-reference">activemq</a> - runs an activemq broker  (see <a href="unix-shell-script">Unix Shell Script</a>)</li>
+</ul>
+<p>In versions prior 5.4.1 some management functionalities beyond controlling the service itself where part of the &ldquo;activemq-admin&rdquo; script.<br>
+This script is currently still part of the distribution to provide access to this for Windows users-</p>
+<ul>
+<li><a href="activemq-classic-command-line-tools-reference">activemq-admin</a> - manages a broker instance</li>
+</ul>
+<p>In versions prior to 5.0 the functionality of activemq-admin script was scattered over multiple scripts, such as:</p>
+<ul>
+<li><a href="activemq-classic-command-line-tools-reference">shutdown</a> - shutdowns an activemq broker</li>
+<li><a href="activemq-classic-command-line-tools-reference">list</a> - lists all running brokers in the specified JMX context</li>
+<li><a href="activemq-classic-command-line-tools-reference">query</a> - queries the JMX context for broker statistics and information</li>
+<li><a href="activemq-classic-command-line-tools-reference">bstat</a> - predefined query that displays useful broker statistics</li>
+<li><a href="activemq-classic-command-line-tools-reference">browse</a> - browse the messages of a specific queue</li>
+<li><a href="activemq-classic-command-line-tools-reference">purge</a> - delete selected destination&rsquo;s messages that matches the message selector</li>
+</ul>
+<h2 id="activemq-script">activemq script</h2>
+<blockquote>
+<p><strong>Description of this script is valid for Windows platform.</strong> For Unix platform it is valid for broker versions prior to 5.4.0. With version 5.4.0 and later, ActiveMQ Classic comes with enhanced <a href="unix-shell-script">Unix Shell Script</a></p>
+</blockquote>
+<p>Script Name|activemq.bat, activemq
+Task Usage|<em>activemq [options] [config]</em> or <em>java -jar run.jar start [options] [config]</em>
+Description|Script to run an activemq broker either by specifying a broker configuration file or through a broker URI configuration.</p>
+<p><strong>Options:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Option Name</th>
+          <th>Syntax</th>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>System Define Option</td>
+          <td>-D<key>=<value></td>
+          <td>-Dactivemq.home=c:/ActiveMQ</td>
+          <td>Sets a systems property. i.e Systems.getProperty(&ldquo;activemq.home&rdquo;); will return c:/ActiveMQ</td>
+      </tr>
+      <tr>
+          <td>Help Option</td>
+          <td>-h or -? or &ndash;help</td>
+          <td>activemq &ndash;help</td>
+          <td>Display the help messages for the activemq script.</td>
+      </tr>
+      <tr>
+          <td>Version Option</td>
+          <td>&ndash;version</td>
+          <td>activemq &ndash;version</td>
+          <td>Display the activemq version information.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>activemq</td>
+          <td>Runs a broker using the default &lsquo;xbean:activemq.xml&rsquo; as the broker configuration file.</td>
+      </tr>
+      <tr>
+          <td>activemq xbean:myconfig.xml</td>
+          <td>Runs a broker using the file myconfig.xml as the broker configuration file that is located in the classpath.</td>
+      </tr>
+      <tr>
+          <td>activemq xbean:file:./conf/broker1.xml</td>
+          <td>Runs a broker using the file broker1.xml as the broker configuration file that is located in the relative file path ./conf/broker1.xml</td>
+      </tr>
+      <tr>
+          <td>activemq xbean:file:C:/ActiveMQ/conf/broker2.xml</td>
+          <td>Runs a broker using the file broker2.xml as the broker configuration file that is located in the absolute file path C:/ActiveMQ/conf/broker2.xml</td>
+      </tr>
+      <tr>
+          <td>activemq broker:(tcp://localhost:61616, tcp://localhost:5000)?useJmx=true</td>
+          <td>Runs a broker with two transport connectors and JMX enabled.Â¹</td>
+      </tr>
+      <tr>
+          <td>activemq broker:(tcp://localhost:61616, network:tcp://localhost:5000)?persistent=false</td>
+          <td>Runs a broker with 1 transport connector and 1 network connector with persistence disabled.Â¹</td>
+      </tr>
+  </tbody>
+</table>
+<p>For details on how to configure using broker URI refer to: <a href="broker-configuration-uri">Broker Configuration URI</a></p>
+<h2 id="activemq-admin">activemq-admin</h2>
+<p>As of ActiveMQ Classic 5.x, the above standalone utilities have been incorporated into the activemq-admin command (with the exception of the activemq script), as follows:</p>
+<ul>
+<li><a href="activemq-classic-command-line-tools-reference">activemq-admin stop</a></li>
+<li><a href="activemq-classic-command-line-tools-reference">activemq-admin list</a></li>
+<li><a href="activemq-classic-command-line-tools-reference">activemq-admin query</a></li>
+<li><a href="activemq-classic-command-line-tools-reference">activemq-admin bstat</a></li>
+<li><a href="activemq-classic-command-line-tools-reference">activemq-admin browse</a></li>
+</ul>
+<p>The syntax of each task remains as described below. Note also that the activemq command is still supported.</p>
+<h3 id="stop-task">stop task</h3>
+<p>Task Name|stop
+Task Usage|<em>activemq-admin stop [options] [broker names]</em>
+Description|Script to stop a running activemq broker. This task requires that JMX is enabled.</p>
+<p><strong>Options:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Option Name</th>
+          <th>Syntax</th>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Stop All Option</td>
+          <td>&ndash;all</td>
+          <td>stop &ndash;all</td>
+          <td>Stops all registered brokers in the specified JMX context</td>
+      </tr>
+      <tr>
+          <td>JMX URL Option</td>
+          <td>&ndash;jmxurl <url></td>
+          <td>&ndash;jmxurl service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi</td>
+          <td>Change the JMX service url to connect to. By default it connects to: service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi</td>
+      </tr>
+      <tr>
+          <td>JMX Authentication Option</td>
+          <td>&ndash;jmxuser user &ndash;jmxpassword password</td>
+          <td>&ndash;jmxuser smx &ndash;jmxpassword smx</td>
+          <td>For cases where username/password based authentication of the JMX client is required. Not set by default.</td>
+      </tr>
+      <tr>
+          <td>System Define Option</td>
+          <td>-D<key>=<value></td>
+          <td>-Dactivemq.home=c:/ActiveMQ</td>
+          <td>Sets a systems property. i.e Systems.getProperty(&ldquo;activemq.home&rdquo;); will return c:/ActiveMQ</td>
+      </tr>
+      <tr>
+          <td>Help Option</td>
+          <td>-h or -? or &ndash;help</td>
+          <td>&ndash;help</td>
+          <td>Display the help messages for the stop script.</td>
+      </tr>
+      <tr>
+          <td>Version Option</td>
+          <td>&ndash;version</td>
+          <td>activemq &ndash;version</td>
+          <td>Display the activemq version information.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>activemq-admin stop</td>
+          <td>Stops the only running broker in the default JMX context. It assumes that there is only one running broker.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin stop &ndash;jmxurl service:jmx:rmi:///jndi/rmi://remotehost:1099/jmxrmi &ndash;all</td>
+          <td>Stops all the running broker in the specified JMX context.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin stop localhost</td>
+          <td>Stops the broker named &rsquo;localhost&rsquo; in the default JMX context.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin stop localhost remotehost</td>
+          <td>Stops the brokers &rsquo;localhost&rsquo; and &lsquo;remotehost&rsquo; in the default JMX context.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="list-task">list task</h3>
+<p>Task Name|list
+Task Usage|<em>activemq-admin list [options]</em>
+Description|Script to list the names of all running brokers in the specified JMX context. This task requires that JMX is enabled.</p>
+<p><strong>Options:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Option Name</th>
+          <th>Syntax</th>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>JMX URL Option</td>
+          <td>&ndash;jmxurl <url></td>
+          <td>&ndash;jmxurl service:jmx:rmi:///jndi/rmi://remotehost:1099/jmxrmi</td>
+          <td>Change the JMX service url to connect to. By default it connects to: service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi</td>
+      </tr>
+      <tr>
+          <td>JMX Authentication Option</td>
+          <td>&ndash;jmxuser user &ndash;jmxpassword password</td>
+          <td>&ndash;jmxuser smx &ndash;jmxpassword smx</td>
+          <td>For cases where username/password based authentication of the JMX client is required. Not set by default.</td>
+      </tr>
+      <tr>
+          <td>System Define Option</td>
+          <td>-D<key>=<value></td>
+          <td>-Dactivemq.home=c:/ActiveMQ</td>
+          <td>Sets a systems property. i.e Systems.getProperty(&ldquo;activemq.home&rdquo;); will return c:/ActiveMQ</td>
+      </tr>
+      <tr>
+          <td>Help Option</td>
+          <td>-h or -? or &ndash;help</td>
+          <td>&ndash;help</td>
+          <td>Display the help messages for the list script.</td>
+      </tr>
+      <tr>
+          <td>Version Option</td>
+          <td>&ndash;version</td>
+          <td>activemq &ndash;version</td>
+          <td>Display the activemq version information.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>activemq-admin list</td>
+          <td>Lists the names of all running brokers in the default JMX context.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin list &ndash;jmxurl service:jmx:rmi:///jndi/rmi://remotehost:1099/jmxrmi</td>
+          <td>List the names of all running brokers in the specified JMX context.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="query-task">query task</h3>
+<p>Task Name|query
+Task Usage|<em>activemq-admin query [options]</em>
+Description|Script to query the specified JMX context for mbean attributes and information. This script requires that JMX is enabled.</p>
+<p><strong>Options:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Option Name</th>
+          <th>Syntax</th>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Predefined Query Option</td>
+          <td>-Q&lt;type&gt;=&lt;name&gt;</td>
+          <td>-QTopic=TEST.FOO, -QBroker=*host</td>
+          <td>Predefined object name query option that queries a specific type of mbean object based on its type and selected identifier. Refer to the mbean reference table below for details.</td>
+      </tr>
+      <tr>
+          <td>-xQ&lt;type&gt;=&lt;name&gt;</td>
+          <td>-xQTopic=ActiveMQ.Advisory.<em>, -xQNetworkConnector=</em></td>
+          <td>Predefined object name query option that removes all mbeans that matches the query from the search result. Refer to the mbean reference table below for details.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>Object Name Query Option</td>
+          <td>&ndash;objname &lt;object name query&gt;</td>
+          <td>&ndash;objname Type=<strong>Connect</strong>,BrokerName=local*</td>
+          <td>Query option loosely based on the JMX object name format, which lets you filter mbeans based on their object name information. Refer to the mbean reference table below for details.</td>
+      </tr>
+      <tr>
+          <td>&ndash;xobjname &lt;object name query&gt;</td>
+          <td>&ndash;xobjname Type=Topic,Destination=ActiveMQ.Advisory.*</td>
+          <td>Object name query that removes all mbeans that matches the query from the search result. Refer to the mbean reference table below for details.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>View Option</td>
+          <td>&ndash;view &lt;view list&gt;</td>
+          <td>&ndash;view Type,BrokerName,Destination,EnqueueCount,DequeueCount</td>
+          <td>Lets you specify the attributes and object name information to view. If the view is omitted, all attributes and information will be displayed.</td>
+      </tr>
+      <tr>
+          <td>JMX URL Option</td>
+          <td>&ndash;jmxurl &lt;url&gt;</td>
+          <td>&ndash;jmxurl service:jmx:rmi:///jndi/rmi://remotehost:1099/jmxrmi</td>
+          <td>Change the JMX service url to connect to. By default it connects to: service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi</td>
+      </tr>
+      <tr>
+          <td>JMX Authentication Option</td>
+          <td>&ndash;jmxuser user &ndash;jmxpassword password</td>
+          <td>&ndash;jmxuser smx &ndash;jmxpassword smx</td>
+          <td>For cases where username/password based authentication of the JMX client is required. Not set by default.</td>
+      </tr>
+      <tr>
+          <td>System Define Option</td>
+          <td>-D&lt;key&gt;=&lt;value&gt;</td>
+          <td>-Dactivemq.home=c:/ActiveMQ</td>
+          <td>Sets a systems property. i.e Systems.getProperty(&ldquo;activemq.home&rdquo;); will return c:/ActiveMQ</td>
+      </tr>
+      <tr>
+          <td>Help Option</td>
+          <td>-h or -? or &ndash;help</td>
+          <td>&ndash;help</td>
+          <td>Display the help messages for the query script.</td>
+      </tr>
+      <tr>
+          <td>Version Option</td>
+          <td>&ndash;version</td>
+          <td>activemq &ndash;version</td>
+          <td>Display the activemq version information.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>activemq-admin query</td>
+          <td>Display all attributes and object name information of all registered mbeans in the default JMX context.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin query -QTopic=TEST.FOO</td>
+          <td>Display all the attributes and object name information of the destination topic &lsquo;TEST.FOO&rsquo;</td>
+      </tr>
+      <tr>
+          <td>activemq-admin query -QQueue=*</td>
+          <td>Display all the attributes and object name information of all registered queues.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin query -QTopic=<em>.FOO -xQTopic=ActiveMQ.Advisory.</em></td>
+          <td>Display all the attributes and object name information of all topics that ends with &lsquo;.FOO&rsquo; except those that also begins with &lsquo;ActiveMQ.Advisory.&rsquo;.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin query -QBroker=local???? &ndash;view Type,BrokerName,EnqueueCount,DequeueCount</td>
+          <td>Display the object type, broker name, enqueue count, and dequeue count information for all 9-letter brokers that begins with &rsquo;local&rsquo;.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin query &ndash;objname Type=<strong>Connect</strong>,BrokerName=localhost -xQNetworkConnector=*</td>
+          <td>Display all the attributes and object name information for all connections and connectors for broker &rsquo;localhost&rsquo; except its network connectors.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin query &ndash;objname Type=Connection &ndash;xobjname Type=Connection,BrokerName=localhost</td>
+          <td>Display all the attributes and object name information for all registered connections except those belonging to broker &rsquo;localhost&rsquo;.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin query -QQueue=???? &ndash;objname Type=Connection &ndash;xobjname BrokerName=remote*</td>
+          <td>Display all the attributes and object name information for all 4-letter queues and connections except those belonging to a broker that begins with &lsquo;remote&rsquo;.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>ActiveMQ Classic MBean Reference:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Mbean Type</th>
+          <th>Properties / ObjectName </th>
+          <th>Attributes</th>
+          <th>Operations</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Broker</td>
+          <td><strong>type=Broker</strong>, <strong>brokerName=&lt;broker-identifier&gt;</strong></td>
+          <td>BrokerId, TotalEnqueueCount, TotalDequeueCount, TotalConsumerCount, TotalMessageCount, TotalConnectionsCount, TotalConsumerCount, TotalProducerCount, MemoryLimit, MemoryPercentUsage, StoreLimit, StorePercentUsage</td>
+          <td>start, stop, terminateJVM, resetStatistics, gc</td>
+      </tr>
+      <tr>
+          <td>Destination</td>
+          <td><strong>type=Broker</strong>, <strong>brokerName=&lt;name-of-broker&gt;</strong>, <strong>destinationType=Queue|Topic</strong>, <strong>destinationName=&lt;name&gt;</strong></td>
+          <td>Average, EnqueueTime, ConsumerCount, DequeueCount, EnqueueCount, ExpiredCount, InFlightCount, MemoryLimit, MemoryPercentUsage, Name, QueueSize (queues only)</td>
+          <td>browseMessages, gc, purge, resetStatistics</td>
+      </tr>
+      <tr>
+          <td>NetworkConnector</td>
+          <td><strong>type=Broker</strong>, <strong>brokerName==&lt;name-of-broker&gt;</strong>, <strong>connector=networkConnectors</strong>, <strong>networkConnectorName==&lt;connector-identifier&gt;</strong></td>
+          <td>Name, Duplex, DynamicOnly, BridgeTempDestinations, ConduitSubscriptions, DecreaseNetworkConsumerPriority, DispatchAsync, DynamicOnly, NetworkTTL, Password, PrefetchSize</td>
+          <td>start, stop</td>
+      </tr>
+      <tr>
+          <td>Connector</td>
+          <td><strong>type=Broker</strong>, <strong>brokerName=&lt;name-of-broker&gt;</strong>, <strong>connector=clientConnectors</strong>, <strong>ConnectorName==&lt;connector-identifier&gt;</strong></td>
+          <td>StatisticsEnabled</td>
+          <td>start, stop, resetStatistics, enableStatistics, disableStatistics, connectionCount</td>
+      </tr>
+      <tr>
+          <td>Connection</td>
+          <td><strong>type=Broker</strong>, <strong>brokerName=&lt;name-of-broker&gt;</strong>, <strong>connectionViewType=clientId</strong>, <strong>connectionName==&lt;connection-identifier&gt;</strong></td>
+          <td>DispatchQueueSize, Active, Blocked, Connected, Slow, Consumers, Producers, RemoteAddress, UserName, ClientId</td>
+          <td>start, stop, resetStatistics</td>
+      </tr>
+      <tr>
+          <td>PersistenceAdapter</td>
+          <td><strong>type=Broker</strong>, <strong>brokerName=&lt;name-of-broker&gt;</strong>, <strong>Service=PersistenceAdapter</strong>, <strong>InstanceName==&lt;adapter-identifier&gt;</strong></td>
+          <td>Name, Size, Data, Transactions</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>Health</td>
+          <td><strong>type=Broker</strong>, <strong>brokerName=&lt;name-of-broker&gt;</strong>, <strong>Service=Health</strong></td>
+          <td>CurrentStatus</td>
+          <td>health</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="bstat-task">bstat task</h3>
+<p>Task Name|bstat
+Task Usage|<em>activemq-admin bstat</em> [broker name]
+Description|Predefined query script that displays useful statistics regarding a broker and its components.</p>
+<p><strong>Examples:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>activemq-admin bstat</td>
+          <td>Display useful statistics for all registered brokers in the default JMX context.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin bstat localhost</td>
+          <td>Display useful statistics for the registered broker &rsquo;localhost&rsquo;.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="browse-task">browse task</h3>
+<p>Task Name|browse
+Task Usage|<em>activemq-admin browse &ndash;amqurl &lt;broker url&gt; [options] &lt;destinations&gt;</em> or <em>java -jar run.jar browse &ndash;amqurl &lt;broker url&gt; [options] &lt;destinations&gt;</em>
+Description|Script to browse selected destinations&rsquo; messages.  The browse operation may not return all messages due to limitations of broker configuration and system resources.</p>
+<p><strong>Options:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Option Name</th>
+          <th>Syntax</th>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Broker URL Option</td>
+          <td>&ndash;amqurl &lt;url&gt;</td>
+          <td>&ndash;amqurl tcp://localhost:61616</td>
+          <td>Specify the broker URL to connect to.</td>
+      </tr>
+      <tr>
+          <td>Message Selector Option</td>
+          <td>&ndash;msgsel &ldquo;&lt;msgsel1,msgsel2,&hellip;&gt;&rdquo;</td>
+          <td>&ndash;msgsel &ldquo;JMSMessageID=&rsquo;*:10&rsquo;,JMSPriority&gt;5&rdquo;</td>
+          <td>Allows you to filter the specific messages to view. Place the entire selector criteria in double quotes &quot; &ldquo;. You can use wildcard queries by enclosing the string message property in &rsquo; &lsquo;. Other than using wildcard queries to filter string properties, other queries follows the message selector format.</td>
+      </tr>
+      <tr>
+          <td>Group View Option</td>
+          <td>-V[header | custom | body]</td>
+          <td>-Vheader, -Vcustom, -Vbody</td>
+          <td>Let&rsquo;s you specify a specific group of message attributes to view. The header view shows all the standard JMS message headers. The custom view shows all the custom fields added to each JMS message. The body view shows the message body of the JMS message.</td>
+      </tr>
+      <tr>
+          <td>Specific View Option</td>
+          <td>&ndash;view &lt;attr1&gt;,[header:|custom:]&lt;attr2&gt;,&hellip;</td>
+          <td>&ndash;view JMSMessageID=&rsquo;*:10&rsquo;,custom:MyCustomField</td>
+          <td>Let&rsquo;s you specifically select a specific message attribute. It allows you to select specific attributes from the JMS and custom headers. You could add the tags header: and custom: to explicitly specify where the attribute belongs to. Refer to the message header table below for details.</td>
+      </tr>
+      <tr>
+          <td>System Define Option</td>
+          <td>-D&lt;key&gt;=&lt;value&gt;</td>
+          <td>-Dactivemq.home=c:/ActiveMQ</td>
+          <td>Sets a systems property. i.e Systems.getProperty(&ldquo;activemq.home&rdquo;); will return c:/ActiveMQ</td>
+      </tr>
+      <tr>
+          <td>Help Option</td>
+          <td>-h or -? or &ndash;help</td>
+          <td>&ndash;help</td>
+          <td>Display the help messages for the browse script.</td>
+      </tr>
+      <tr>
+          <td>Version Option</td>
+          <td>&ndash;version</td>
+          <td>activemq &ndash;version</td>
+          <td>Display the activemq version information.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>activemq-admin browse &ndash;amqurl tcp://localhost:61616 TEST.FOO</td>
+          <td>Prints the JMS message header, custom message header, and message body of the messages in the queue &lsquo;TEST.FOO&rsquo;</td>
+      </tr>
+      <tr>
+          <td>activemq-admin browse &ndash;amqurl tcp://localhost:61616 -Vheader,body TEST.FOO</td>
+          <td>Prints the JMS message header and message body of the messages in the queue &lsquo;TEST.FOO&rsquo;</td>
+      </tr>
+      <tr>
+          <td>activemq-admin browse &ndash;amqurl tcp://localhost:61616 -Vheader &ndash;view custom:MyCustomField TEST.FOO TEST.BAR</td>
+          <td>Prints all the JMS message header and the custom field &lsquo;MyCustomField&rsquo; of the messages in the queue &lsquo;TEST.FOO&rsquo; and &lsquo;TEST.BAR&rsquo;.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin browse &ndash;amqurl tcp://localhost:61616 &ndash;msgsel &ldquo;JMSMessageID=&rsquo;*:10&rsquo;,JMSPriority&gt;5&rdquo; TEST.FOO</td>
+          <td>Prints all the attributes of the messages in the queue &lsquo;TEST.FOO&rsquo; that has a JMSMessageID that matches the wildcard query *:10 and has a JMSPriority greater than 5.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>JMS Message Header Reference:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Header Name</th>
+          <th>Header Type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>JMSCorrelation ID</td>
+          <td>String</td>
+      </tr>
+      <tr>
+          <td>JMSDelivery Mode</td>
+          <td>int (1-Non-Persistent, 2-Persistent)</td>
+      </tr>
+      <tr>
+          <td>JMSDestination</td>
+          <td>javax.jms.Destination</td>
+      </tr>
+      <tr>
+          <td>JMSExpiration</td>
+          <td>long</td>
+      </tr>
+      <tr>
+          <td>JMSMessageID</td>
+          <td>String</td>
+      </tr>
+      <tr>
+          <td>JMSPriority</td>
+          <td>int</td>
+      </tr>
+      <tr>
+          <td>JMSRedelivered</td>
+          <td>boolean</td>
+      </tr>
+      <tr>
+          <td>JMSReplyTo</td>
+          <td>javax.jms.Destination</td>
+      </tr>
+      <tr>
+          <td>JMSTimestamp</td>
+          <td>long</td>
+      </tr>
+      <tr>
+          <td>JMSType</td>
+          <td>String</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="purge-task">purge task</h3>
+<p>Task Name|purge
+Task Usage|<em>activemq-admin purge</em> [purge-options] <destinations>
+Description|Delete selected destination&rsquo;s messages that matches the message selector.</p>
+<p><strong>Options:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Option Name</th>
+          <th>Syntax</th>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>JMX URL Option</td>
+          <td>&ndash;jmxurl &lt;url&gt;</td>
+          <td>&ndash;jmxurl service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi</td>
+          <td>Change the JMX service url to connect to. By default it connects to: service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi</td>
+      </tr>
+      <tr>
+          <td>JMX Authentication Option</td>
+          <td>&ndash;jmxuser user &ndash;jmxpassword password</td>
+          <td>&ndash;jmxuser smx &ndash;jmxpassword smx</td>
+          <td>For cases where username/password based authentication of the JMX client is required. Not set by default.</td>
+      </tr>
+      <tr>
+          <td>Message Selector Option</td>
+          <td>&ndash;msgsel &ldquo;&lt;msgsel1,msgsel2,&hellip;&gt;&rdquo;</td>
+          <td>&ndash;msgsel &ldquo;JMSMessageID=&rsquo;*:10&rsquo;,JMSPriority&gt;5&rdquo;</td>
+          <td>Allows you to filter the specific messages to view. Place the entire selector criteria in double quotes &quot; &ldquo;. You can use wildcard queries by enclosing the string message property in &rsquo; &lsquo;. Other than using wildcard queries to filter string properties, other queries follows the message selector format.</td>
+      </tr>
+      <tr>
+          <td>System Define Option</td>
+          <td>-D&lt;key&gt;=&lt;value&gt;</td>
+          <td>-Dactivemq.home=c:/ActiveMQ</td>
+          <td>Sets a systems property. i.e Systems.getProperty(&ldquo;activemq.home&rdquo;); will return c:/ActiveMQ</td>
+      </tr>
+      <tr>
+          <td>Help Option</td>
+          <td>-h or -? or &ndash;help</td>
+          <td>&ndash;help</td>
+          <td>Display the help messages for the browse script.</td>
+      </tr>
+      <tr>
+          <td>Version Option</td>
+          <td>&ndash;version</td>
+          <td>activemq &ndash;version</td>
+          <td>Display the activemq version information.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<p>Example|Description|
+activemq-admin purge FOO.BAR|Delete all the messages in queue FOO.BAR
+activemq-admin purge &ndash;msgsel &ldquo;JMSMessageID=&rsquo;<em>:10&rsquo;,JMSPriority&gt;5&rdquo; FOO.</em>|Delete all the messages in the destinations that matches FOO.* and has a JMSMessageID in&rdquo;, the header field that matches the wildcard *:10, and has a JMSPriority field &gt; 5 in the&rdquo;, queue FOO.BAR. To use wildcard queries, the field must be a string and the query enclosed in '&rsquo;</p>
+<h3 id="dstat-task">dstat task</h3>
+<p>Task Name|dstat
+Task Usage|<em>activemq-admin dstat</em> [destination type]
+Description|Predefined query script that displays useful statistics regarding destinations on a broker.</p>
+<p><strong>Examples:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>activemq-admin dstat</td>
+          <td>Display useful statistics for all destinations on the broker in the default JMX context.</td>
+      </tr>
+      <tr>
+          <td>activemq-admin dstat topics</td>
+          <td>Display useful statistics for the Topics that currently exist on the Broker.</td>
+      </tr>
+  </tbody>
+</table>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

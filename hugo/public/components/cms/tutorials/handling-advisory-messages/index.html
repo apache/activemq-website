@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Handling Advisory Messages | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>Handling Advisory Messages</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/cms/">CMS Client</a> &rsaquo;
+  Handling Advisory Messages
+</nav>
+<div class="component-body">
+  <p>ActiveMQ supports advisory messages that let you watch the system using regular CMS messages:</p>
+<ul>
+<li>See consumers, producers and connections starting and stopping</li>
+<li>See temporary destinations being created and destroyed</li>
+<li>Get notified when messages expire on topics and queues</li>
+<li>Observe brokers sending messages to destinations with no consumers</li>
+</ul>
+<h3 id="subscribing-to-advisory-topics">Subscribing to Advisory Topics</h3>
+<p>Subscribe to an advisory topic the same way as any other destination. Use the correct topic name for the advisory you want:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Advisory Topic</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>ActiveMQ.Advisory.Connection</td>
+          <td>Connection start &amp; stop</td>
+      </tr>
+      <tr>
+          <td>ActiveMQ.Advisory.Producer.Queue</td>
+          <td>Producer start &amp; stop on a Queue</td>
+      </tr>
+      <tr>
+          <td>ActiveMQ.Advisory.Producer.Topic</td>
+          <td>Producer start &amp; stop on a Topic</td>
+      </tr>
+      <tr>
+          <td>ActiveMQ.Advisory.Consumer.Queue</td>
+          <td>Consumer start &amp; stop on a Queue</td>
+      </tr>
+      <tr>
+          <td>ActiveMQ.Advisory.Consumer.Topic</td>
+          <td>Consumer start &amp; stop on a Topic</td>
+      </tr>
+  </tbody>
+</table>
+<p>For example, to watch for producers on <code>TOPIC.FOO</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>auto_ptr<span style="color:#f92672">&lt;</span>cms<span style="color:#f92672">::</span>Topic<span style="color:#f92672">&gt;</span> advisories(
+</span></span><span style="display:flex;"><span>    session<span style="color:#f92672">-&gt;</span>createTopic(<span style="color:#e6db74">&#34;ActiveMQ.Advisory.Producer.Topic.TOPIC.FOO&#34;</span>));
+</span></span><span style="display:flex;"><span>auto_ptr<span style="color:#f92672">&lt;</span>cms<span style="color:#f92672">::</span>MessageConsumer<span style="color:#f92672">&gt;</span> consumer(session<span style="color:#f92672">-&gt;</span>createConsumer(advisories.get()));
+</span></span><span style="display:flex;"><span>consumer<span style="color:#f92672">-&gt;</span>setMessageListener(<span style="color:#66d9ef">this</span>);
+</span></span></code></pre></div><h3 id="processing-advisory-messages">Processing Advisory Messages</h3>
+<p>All advisory messages have CMS type <code>&quot;Advisory&quot;</code>. Check <code>getCMSType()</code> and then inspect message properties:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onMessage</span>(<span style="color:#66d9ef">const</span> cms<span style="color:#f92672">::</span>Message<span style="color:#f92672">*</span> message) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (message<span style="color:#f92672">-&gt;</span>getCMSType() <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Advisory&#34;</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (message<span style="color:#f92672">-&gt;</span>propertyExists(<span style="color:#e6db74">&#34;consumerCount&#34;</span>)) {
+</span></span><span style="display:flex;"><span>            string count <span style="color:#f92672">=</span> message<span style="color:#f92672">-&gt;</span>getStringProperty(<span style="color:#e6db74">&#34;consumerCount&#34;</span>);
+</span></span><span style="display:flex;"><span>            cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Consumers: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> count <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="composite-advisory-subscriptions">Composite Advisory Subscriptions</h3>
+<p>Subscribe to multiple advisory topics in one consumer using a comma-separated name:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>auto_ptr<span style="color:#f92672">&lt;</span>cms<span style="color:#f92672">::</span>Topic<span style="color:#f92672">&gt;</span> advisories(session<span style="color:#f92672">-&gt;</span>createTopic(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ActiveMQ.Advisory.TempTopic,ActiveMQ.Advisory.TempQueue&#34;</span>));
+</span></span><span style="display:flex;"><span>auto_ptr<span style="color:#f92672">&lt;</span>cms<span style="color:#f92672">::</span>MessageConsumer<span style="color:#f92672">&gt;</span> consumer(session<span style="color:#f92672">-&gt;</span>createConsumer(advisories.get()));
+</span></span><span style="display:flex;"><span>consumer<span style="color:#f92672">-&gt;</span>setMessageListener(<span style="color:#66d9ef">this</span>);
+</span></span></code></pre></div><h3 id="accessing-embedded-command-objects">Accessing Embedded Command Objects</h3>
+<p>Some advisories carry an embedded command object accessible via <code>ActiveMQMessage::getDataStructure()</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> ActiveMQMessage<span style="color:#f92672">*</span> amqMsg <span style="color:#f92672">=</span> <span style="color:#66d9ef">dynamic_cast</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">const</span> ActiveMQMessage<span style="color:#f92672">*&gt;</span>(message);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (amqMsg <span style="color:#f92672">&amp;&amp;</span> amqMsg<span style="color:#f92672">-&gt;</span>getDataStructure() <span style="color:#f92672">!=</span> NULL) {
+</span></span><span style="display:flex;"><span>    Pointer<span style="color:#f92672">&lt;</span>DestinationInfo<span style="color:#f92672">&gt;</span> info <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>        amqMsg<span style="color:#f92672">-&gt;</span>getDataStructure().dynamicCast<span style="color:#f92672">&lt;</span>DestinationInfo<span style="color:#f92672">&gt;</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (info<span style="color:#f92672">-&gt;</span>getOperationType() <span style="color:#f92672">==</span> ActiveMQConstants<span style="color:#f92672">::</span>DESTINATION_ADD_OPERATION) {
+</span></span><span style="display:flex;"><span>        cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Created: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> info<span style="color:#f92672">-&gt;</span>getDestination()<span style="color:#f92672">-&gt;</span>getPhysicalName() <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

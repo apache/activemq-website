@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I am not receiving any messages, what is wrong | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>I am not receiving any messages, what is wrong</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  I am not receiving any messages, what is wrong
+</nav>
+<div class="component-body">
+  <h3 id="i-am-not-receiving-any-messages---what-is-wrong">I am not receiving any messages - what is wrong?</h3>
+<p>A <em>very</em> common gotcha when working with JMS is forgetting to start the JMS connection, creating a consumer and not having it receive any messages. I myself have tripped up over this one many many times! <img src="https://cwiki.apache.org/confluence/s/en_GB/5997/6f42626d00e36f53fe51440403446ca61552e2a2.1/_/images/icons/emoticons/smile.png" alt="(smile)"></p>
+<p>Make sure you call the <a href="http://java.sun.com/j2ee/1.4/docs/api/javax/jms/Connection.html#start()">start()</a> method on the JMS connection, otherwise messages will not be dispatched to your consumer.</p>
+<p>This is such a common gotcha that as of 4.2 onwards, ActiveMQ Classic will now <a href="https://issues.apache.org/activemq/browse/AMQ-1253">log a warning if a message</a> is received shortly after the connection was created if the connection was not started (as its so easy to forget to do this part <img src="https://cwiki.apache.org/confluence/s/en_GB/5997/6f42626d00e36f53fe51440403446ca61552e2a2.1/_/images/icons/emoticons/smile.png" alt="(smile)">.</p>
+<p>For more details see the discussion of the <strong>warnAboutUnstartedConnectionTimeout</strong> property on the <a href="connection-configuration-uri">Connection Configuration URI</a></p>
+<h3 id="if-you-are-calling-connectionstart">If you are calling connection.start()</h3>
+<p>Another common gotcha is <a href="i-do-not-receive-messages-in-my-second-consumer">due to another consumer grabbing the messages</a>. If it&rsquo;s not that then please look at <a href="jmx">JMX</a> or the <a href="web-console">Web Console</a> to determine what consumers are available and their status. Then report an <a href="issues">issue</a> to help you resolve your issue.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

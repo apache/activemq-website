@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wildcards | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>Wildcards</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  Wildcards
+</nav>
+<div class="component-body">
+  <p>We support destination wildcards to provide easy support for federated name hierarchies. This concept has been popular in financial market data for some time as a way of organizing events (such as price changes) into hierarchies and to use wildcards for easy subscription of the range of information you&rsquo;re interested in.</p>
+<p>For example imagine you are sending price messages from a stock exchange feed. You might use some kind of destination such as</p>
+<ul>
+<li><code>PRICE.STOCK.NASDAQ.ORCL</code> to publish Oracle Corporation&rsquo;s price on NASDAQ and</li>
+<li><code>PRICE.STOCK.NYSE.IBM</code> to publish IBM&rsquo;s price on the New York Stock Exchange</li>
+</ul>
+<p>A subscriber could then use exact destinations to subscribe to exactly the prices it requires. Or it could use wildcards to define hierarchical pattern matches to the destinations to subscribe from.</p>
+<h3 id="wildcards-supported">Wildcards supported</h3>
+<p>We support the following wildcards which are fairly standard practice; wildcards are not part of the JMS specification so are custom enhancements.</p>
+<ul>
+<li><code>.</code> is used to separate names in a path</li>
+<li><code>*</code> is used to match any name in a path</li>
+<li><code>&gt;</code> is used to recursively match any destination starting from this name</li>
+</ul>
+<p>For example using the example above, these subscriptions are possible</p>
+<p>Subscription</p>
+<p>Meaning</p>
+<pre tabindex="0"><code>`PRICE.&gt;`
+</code></pre><p>Any price for any product on any exchange</p>
+<pre tabindex="0"><code>`PRICE.STOCK.&gt;`
+</code></pre><p>Any price for a stock on any exchange</p>
+<pre tabindex="0"><code>`PRICE.STOCK.NASDAQ.*`
+</code></pre><p>Any stock price on NASDAQ</p>
+<pre tabindex="0"><code>`PRICE.STOCK.*.IBM`
+</code></pre><p>Any IBM stock price on any exchange</p>
+<p><code>Note:** Don't specify any string after '&gt;' on your wildcard expression, it will be ignored. E.g. using a wildcard </code>PRICE.&gt;.IBM<code>will also match</code>PRICE.STOCK.NASDAQ.FB.` Using &lsquo;&gt;&rsquo; really matches everything till the end of the destination name.</p>
+<h3 id="custom-path-separator">Custom path separator</h3>
+<p>As of version 5.5.0 we support <a href="interceptors">plugin</a> that allows clients to use customer path separator. So instead of</p>
+<pre tabindex="0"><code>`FOO.BAR.*`
+</code></pre><p>you can use</p>
+<pre tabindex="0"><code>`FOO/BAR/*`
+</code></pre><p>To</p>
+<pre tabindex="0"><code>    &lt;plugins&gt;
+       .....
+       &lt;destinationPathSeparatorPlugin/&gt;
+    &lt;/plugins&gt;
+</code></pre><p>ActiveMQ Classic 3.2.1 Release</p>
+<p>A default path separator this plugin will use is <code>/</code>. You can customize it further using <code>pathSeparator</code> property.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

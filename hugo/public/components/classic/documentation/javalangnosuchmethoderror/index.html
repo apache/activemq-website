@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>java.lang.NoSuchMethodError | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>java.lang.NoSuchMethodError</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  java.lang.NoSuchMethodError
+</nav>
+<div class="component-body">
+  <p>If you get an error like</p>
+<pre tabindex="0"><code>java.lang.NoSuchMethodError:
+javax.jms.Session.createConsumer(Ljavax/jms/Destination;)Ljavax/jms/MessageConsumer;
+</code></pre><p>or</p>
+<pre tabindex="0"><code>java.lang.AbstractMethodError: 
+javax.jms.ConnectionFactory.createConnection()Ljavax/jms/Connection;
+</code></pre><h3 id="fix">Fix</h3>
+<p>You probably have old JMS 1.0.2b versions of the JMS API on your classpath. This is because various methods were added in JMS 1.1 to work with destinations in a polymorphic way (such as to create a consumer from a Destination like the above stack trace).</p>
+<p>Please add the JMS 1.1 jars to your container/classpath and try again.</p>
+<p>Add to the correct ClassPath</p>
+<p>If the JMS 1.0.2b classes come from your application server you may need to add the JMS 1.1 to your boot classpath to ensure that the JMS 1.1 classes take precedence to the container supplied classes</p>
+<p>Note that to a user of the JMS API, JMS 1.1 is completely backwards compatible. The only issue with upgrading to JMS 1.1 is that any JMS provider which implements only JMS 1.0.2b and does not implement JMS 1.1 will not work; however if you&rsquo;re using ActiveMQ Classic you should be fine.</p>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>

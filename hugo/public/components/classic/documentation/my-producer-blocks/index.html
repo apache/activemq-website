@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My producer blocks | ActiveMQ</title>
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/main.daeec51ea80e2a36d198f14031fe18b4405c44ed1dbbb824e0514929e6bbb2bc.css">
+  
+</head>
+<body>
+  <nav class="site-nav">
+  <div class="inner">
+    <a class="brand" href="/">
+      Home
+    </a>
+    <ul>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+        <a href="/components/classic/">Components ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/components/classic/">ActiveMQ</a></li>
+          <li><a href="/components/nms/">NMS Clients</a></li>
+          <li><a href="/components/cms/">CMS Client</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/support/">Community ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/contributing/">Contribute</a></li>
+          <li><a href="/issues/">Report Issues</a></li>
+          <li><a href="/support/">Get Support</a></li>
+        </ul>
+      </li>
+      <li><a href="/download/">Download</a></li>
+    </ul>
+  </div>
+</nav>
+
+  
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>My producer blocks</h1>
+  </div>
+</div>
+
+  <main>
+    
+<nav class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/components/classic/">Components</a> &rsaquo;
+  <a href="/components/classic/documentation/">Documentation</a> &rsaquo;
+  My producer blocks
+</nav>
+<div class="component-body">
+  <h2 id="what-can-i-do-if-my-producer-blocks-sending-a-message">What can I do if my producer blocks sending a message?</h2>
+<p>This relates to <a href="producer-flow-control">Producer Flow Control</a>.</p>
+<h3 id="active-4x">Active 4.x</h3>
+<p>In ActiveMQ Classic 4.x, all in transit messages are held in memory. If you have a slow consumer, to avoid exausting the JVM memory and getting an out of memory error, ActiveMQ Classic has a configurable limit of how many in transit messages it will hold. Once it is reached, producers will be slowed down / blocked.</p>
+<p>A quick fix is just to bump up the setting in your <strong>usageManager</strong> in your <a href="xml-configuration">Xml Configuration</a>. The default that ships with ActiveMQ Classic is pretty low, only 20Mb of RAM, so try setting it to something large, say 512Mb.</p>
+<p>An alternative approach is to set individual usageManager limits on different destinations and for producers versus consumers.</p>
+<p>You might also want to use the <a href="jmx">JMX</a> support or <a href="web-console">Web Console</a> to look at what destinations are being used and what producers &amp; consumers you have to see whats going on.</p>
+<h3 id="active-5x-and-later">Active 5.x and Later</h3>
+<p>As of 5.x of ActiveMQ Classic there is support for <a href="message-cursors">Message Cursors</a> which by default move messages out of memory and onto disk. So this problem will not be seen unless you fill up the max allocated disk space for message storage which typically is an order of magnitude larger.</p>
+<h3 id="see-also">See Also</h3>
+<ul>
+<li><a href="producer-flow-control">Producer Flow Control</a></li>
+<li><a href="message-cursors">Message Cursors</a></li>
+</ul>
+
+</div>
+
+  </main>
+  <footer class="site-footer">
+  Copyright &copy; 2026 The Apache Software Foundation.
+  Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+</footer>
+
+</body>
+</html>
