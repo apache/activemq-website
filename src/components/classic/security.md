@@ -9,6 +9,10 @@ Details of security problems fixed in released versions of Apache ActiveMQ Class
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2025-66168](../../security-advisories.data/CVE-2025-66168-announcement.txt) - MQTT control packet remaining length field is not properly validated
+*   [CVE-2025-54539](../../security-advisories.data/CVE-2025-54539-announcement.txt) - Deserialization of Untrusted Data
+*   [CVE-2025-29953](../../security-advisories.data/CVE-2025-29953-announcement.txt) - Deserialization allowlist bypass
+*   [CVE-2025-27533](../../security-advisories.data/CVE-2025-27533-announcement.txt) - Unchecked buffer length can cause excessive memory allocation
 *   [CVE-2024-32114](../../security-advisories.data/CVE-2024-32114-announcement.txt) - Jolokia and REST API were not secured with default configuration
 *   [CVE-2023-46604](../../security-advisories.data/CVE-2023-46604-announcement.txt) - Unbounded deserialization causes ActiveMQ Classic to be vulnerable to a remote code execution (RCE) attack
 *   [CVE-2022-41678](../../security-advisories.data/CVE-2022-41678-announcement.txt) - Deserialization vulnerability on Jolokia that allows authenticated users to perform remote code execution (RCE)
