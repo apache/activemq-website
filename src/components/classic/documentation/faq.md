@@ -9,28 +9,28 @@ Here are a list of commonly asked questions and answers. If you have any questio
 
 ### General
 
-General questions about ActiveMQ Classic
+General questions about ActiveMQ
 
 *   [Can I get commercial support](../../../support)
 *   [How can I get the source code from subversion](../../../contributing)
-*   [How does ActiveMQ Classic compare to AMQP](how-does-activemq-classic-compare-to-amqp)
-*   [How does Classic compare to Artemis](how-does-classic-compare-to-artemis)
-*   [How does ActiveMQ Classic compare to Fuse Message Broker](how-does-activemq-classic-compare-to-fuse-message-broker)
-*   [How does ActiveMQ Classic compare to JBossMQ](how-does-activemq-classic-compare-to-jbossmq)
-*   [How does ActiveMQ Classic compare to Mantaray](how-does-activemq-classic-compare-to-mantaray)
-*   [How does ActiveMQ Classic compare to Mule](how-does-activemq-classic-compare-to-mule)
-*   [How does ActiveMQ Classic compare to Spread Toolkit](how-does-activemq-classic-compare-to-spread-toolkit)
+*   [How does ActiveMQ compare to AMQP](how-does-activemq-classic-compare-to-amqp)
+*   [How does ActiveMQ compare to Artemis](how-does-classic-compare-to-artemis)
+*   [How does ActiveMQ compare to Fuse Message Broker](how-does-activemq-classic-compare-to-fuse-message-broker)
+*   [How does ActiveMQ compare to JBossMQ](how-does-activemq-classic-compare-to-jbossmq)
+*   [How does ActiveMQ compare to Mantaray](how-does-activemq-classic-compare-to-mantaray)
+*   [How does ActiveMQ compare to Mule](how-does-activemq-classic-compare-to-mule)
+*   [How does ActiveMQ compare to Spread Toolkit](how-does-activemq-classic-compare-to-spread-toolkit)
 *   [How does OpenWire compare to Stomp](how-does-openwire-compare-to-stomp)
 *   [How do I avoid Maven downloading latest jars](how-do-i-avoid-maven-downloading-latest-jars)
 *   [How do I build but disable the unit tests](how-do-i-build-but-disable-the-unit-tests)
 *   [How do I compile from the source](how-do-i-compile-from-the-source)
-*   [How fast is ActiveMQ Classic](how-fast-is-activemq-classic)
-*   [Should I run ActiveMQ Classic on Windows in a directory with spaces](should-i-run-activemq-classic-on-windows-in-a-directory-with-spaces)
-*   [What is ActiveMQ Classic](what-is-activemq-classic)
+*   [How fast is ActiveMQ](how-fast-is-activemq-classic)
+*   [Should I run ActiveMQ on Windows in a directory with spaces](should-i-run-activemq-classic-on-windows-in-a-directory-with-spaces)
+*   [What is ActiveMQ](what-is-activemq-classic)
 *   [What is the license](what-is-the-license)
 *   [What jars do I need](what-jars-do-i-need)
-*   [What open source integration solution works best with ActiveMQ Classic](what-open-source-integration-solution-works-best-with-activemq-classic)
-*   [What platforms does ActiveMQ Classic support](what-platforms-does-activemq-classic-support)
+*   [What open source integration solution works best with ActiveMQ](what-open-source-integration-solution-works-best-with-activemq-classic)
+*   [What platforms does ActiveMQ support](what-platforms-does-activemq-classic-support)
 *   [What version should I use](what-version-should-i-use)
 
 ### JMS
@@ -56,29 +56,29 @@ Questions on using the JMS API and [MOM](mom) in general
 *   [Should I use XA](should-i-use-xa)
 *   [What are administered objects](what-are-administered-objects)
 
-### Using Apache ActiveMQ Classic
+### Using Apache ActiveMQ
 
-Questions on using Apache ActiveMQ Classic
+Questions on using Apache ActiveMQ
 
-*   [ActiveMQ Classic Command Line Tools Reference](activemq-classic-command-line-tools-reference)
+*   [ActiveMQ Command Line Tools Reference](activemq-classic-command-line-tools-reference)
 *   [Are destinations case sensitive](are-destinations-case-sensitive)
-*   [Can I send really large files over ActiveMQ Classic](can-i-send-really-large-files-over-activemq-classic)
-*   [Can I use ActiveMQ Classic 5.x or later on Java 1.4](can-i-use-activemq-classic-5x-or-later-on-java-14)
+*   [Can I send really large files over ActiveMQ](can-i-send-really-large-files-over-activemq-classic)
+*   [Can I use ActiveMQ 5.x or later on Java 1.4](can-i-use-activemq-classic-5x-or-later-on-java-14)
 *   [Can two brokers share the same database](can-two-brokers-share-the-same-database)
-*   [Does ActiveMQ Classic support clustering](does-activemq-classic-support-clustering)
+*   [Does ActiveMQ support clustering](does-activemq-classic-support-clustering)
 *   [How can I avoid serialization of Objects in ObjectMessage](how-can-i-avoid-serialization-of-objects-in-objectmessage)
 *   [How can I get a list of the topics and queues in a broker](how-can-i-get-a-list-of-the-topics-and-queues-in-a-broker)
-*   [How can I make ActiveMQ Classic faster](how-can-i-make-activemq-classic-faster)
-*   [How can I monitor ActiveMQ Classic](how-can-i-monitor-activemq-classic)
+*   [How can I make ActiveMQ faster](how-can-i-make-activemq-classic-faster)
+*   [How can I monitor ActiveMQ](how-can-i-monitor-activemq-classic)
 *   [How can I monitor the connection with the broker](how-can-i-monitor-the-connection-with-the-broker)
 *   [How can I see what destinations are used](how-can-i-see-what-destinations-are-used)
 *   [How can I support auto reconnection](how-can-i-support-auto-reconnection)
 *   [How can I support priority queues](how-can-i-support-priority-queues)
 *   [How can I use different network protocols](how-can-i-use-different-network-Connectivity/protocols)
 *   [How do distributed queues work](how-do-distributed-queues-work)
-*   [How do I access ActiveMQ Classic from C](how-do-i-access-activemq-classic-from-c)
-*   [How do I access ActiveMQ Classic from CSharp or dotNet](how-do-i-access-activemq-classic-from-csharp-or-dotnet)
-*   [How do I access ActiveMQ Classic from Ruby, Perl, Python, PHP](how-do-i-access-activemq-classic-from-ruby-perl-python-php)
+*   [How do I access ActiveMQ from C](how-do-i-access-activemq-classic-from-c)
+*   [How do I access ActiveMQ from CSharp or dotNet](how-do-i-access-activemq-classic-from-csharp-or-dotnet)
+*   [How do I access ActiveMQ from Ruby, Perl, Python, PHP](how-do-i-access-activemq-classic-from-ruby-perl-python-php)
 *   [How do I bridge different JMS providers](how-do-i-bridge-different-jms-providers)
 *   [How do I change dispatch policy](how-do-i-change-dispatch-policy)
 *   [How do I change the logging](how-do-i-change-the-logging)
@@ -96,18 +96,18 @@ Questions on using Apache ActiveMQ Classic
 *   [How do I restrict connections from creating new queues or topics](how-do-i-restrict-connections-from-creating-new-queues-or-topics)
 *   [How do I run a broker](how-do-i-run-a-broker)
 *   [How do I set the message expiration](how-do-i-set-the-message-expiration)
-*   [How do I turn off creating an embedded ActiveMQ Classic broker when using the VM transport](how-do-i-turn-off-creating-an-embedded-activemq-classic-broker-when-using-the-vm-transport)
+*   [How do I turn off creating an embedded ActiveMQ broker when using the VM transport](how-do-i-turn-off-creating-an-embedded-activemq-classic-broker-when-using-the-vm-transport)
 *   [How do I unack the message with Stomp](how-do-i-unack-the-message-with-stomp)
-*   [How do I use ActiveMQ Classic using in JVM messaging](how-do-i-use-activemq-classic-using-in-jvm-messaging)
+*   [How do I use ActiveMQ using in JVM messaging](how-do-i-use-activemq-classic-using-in-jvm-messaging)
 *   [How do I use durable subscribers in a network of brokers](how-do-i-use-durable-subscribers-in-a-network-of-brokers)
-*   [How do I use Ivy with ActiveMQ Classic](how-do-i-use-ivy-with-activemq-classic-classic)
-*   [How do I use log4j JMS appender with ActiveMQ Classic](how-do-i-use-log4j-jms-appender-with-activemq-classic-classic)
+*   [How do I use Ivy with ActiveMQ](how-do-i-use-ivy-with-activemq-classic-classic)
+*   [How do I use log4j JMS appender with ActiveMQ](how-do-i-use-log4j-jms-appender-with-activemq-classic-classic)
 *   [How do I use SSL](how-do-i-use-ssl)
 *   [How do Message Groups compare to Selectors](how-do-message-groups-compare-to-selectors)
 *   [How do multiple transports work](how-do-multiple-transports-work)
 *   [How Do Transactions Work](how-do-transactions-work)
 *   [How lightweight is sending a message](how-lightweight-is-sending-a-message)
-*   [How should I package applications using Camel and ActiveMQ Classic](how-should-i-package-applications-using-camel-and-activemq-classic)
+*   [How should I package applications using Camel and ActiveMQ](how-should-i-package-applications-using-camel-and-activemq-classic)
 *   [How should I use the VM transport](how-should-i-use-the-vm-transport)
 *   [How to deal with large number of threads in clients](how-to-deal-with-large-number-of-threads-in-clients)
 *   [How to disable auto destination creation](how-to-disable-auto-destination-creation)
@@ -123,19 +123,19 @@ Questions on using Apache ActiveMQ Classic
 
 ### Configuration
 
-Questions on configuring ActiveMQ Classic's JMS client or the Message Broker
+Questions on configuring ActiveMQ's JMS client or the Message Broker
 
 *   [How can I enable detailed logging](how-can-i-enable-detailed-logging)
 *   [How does XBean compare to Spring 2](how-does-xbean-compare-to-spring-2)
 *   [How do I configure 10s of 1000s of Queues in a single broker](how-do-i-configure-10s-of-1000s-of-queues-in-a-single-broker)
-*   [How do I configure ActiveMQ Classic to hold 100s of millions of Queue Messages](how-do-i-configure-activemq-classic-to-hold-100s-of-millions-of-queue-messages)
-*   [How do I configure ActiveMQ Classic to use AIO server transport](how-do-i-configure-activemq-classic-to-use-aio-server-transport)
+*   [How do I configure ActiveMQ to hold 100s of millions of Queue Messages](how-do-i-configure-activemq-classic-to-hold-100s-of-millions-of-queue-messages)
+*   [How do I configure ActiveMQ to use AIO server transport](how-do-i-configure-activemq-classic-to-use-aio-server-transport)
 *   [How do I configure automatic reconnection](how-do-i-configure-automatic-reconnection)
 *   [How do I configure distributed queues or topics](how-do-i-configure-distributed-queues-or-topics)
 *   [How do I configure the queues I want](how-do-i-configure-the-queues-i-want)
 *   [How do I define a local address and local port for TCP or SSL](how-do-i-define-a-local-address-and-local-port-for-tcp-or-ssl)
 *   [How do I disable persistence](how-do-i-disable-persistence)
-*   [How do I run ActiveMQ Classic under the Kaffe JVM](how-do-i-run-activemq-classic-under-the-kaffe-jvm)
+*   [How do I run ActiveMQ under the Kaffe JVM](how-do-i-run-activemq-classic-under-the-kaffe-jvm)
 *   [How to configure a new database](how-to-configure-a-new-database)
 *   [How to deploy activemq-ra-version.rar to weblogic](how-to-deploy-activemq-ra-versionrar-to-weblogic)
 *   [How to disable multicast discovery](how-to-disable-multicast-discovery)
@@ -145,7 +145,7 @@ Questions on configuring ActiveMQ Classic's JMS client or the Message Broker
 Questions relating to long term persistence of messages.
 
 *   [Are messages read directly from the journal](are-messages-read-directly-from-the-journal)
-*   [Does ActiveMQ Classic support my SQL database](does-activemq-classic-support-my-sql-database)
+*   [Does ActiveMQ support my SQL database](does-activemq-classic-support-my-sql-database)
 *   [How does journaling work with multiple brokers](how-does-journaling-work-with-multiple-brokers)
 *   [How does the journal work](how-does-the-journal-work)
 *   [How do I back-up KahaDB](how-do-i-back-up-kahadb)
@@ -175,7 +175,7 @@ Questions on specific kinds of errors. If you have seen a specific exception the
     *   [No suitable driver](no-suitable-driver)
 *   [I am having problems with the Spring JmsTemplate](i-am-having-problems-with-the-spring-jmstemplate)
 *   [I am not receiving any messages, what is wrong](i-am-not-receiving-any-messages-what-is-wrong)
-*   [I cannot connect to ActiveMQ Classic from JConsole](i-cannot-connect-to-activemq-classic-from-jconsole)
+*   [I cannot connect to ActiveMQ from JConsole](i-cannot-connect-to-activemq-classic-from-jconsole)
 *   [I do not receive messages in my second consumer](i-do-not-receive-messages-in-my-second-consumer)
 *   [I get errors building the code whats wrong](i-get-errors-building-the-code-whats-wrong)
 *   [log4j-WARN No appenders could be found for logger](log4j-warn-no-appenders-could-be-found-for-logger)
@@ -190,14 +190,14 @@ Questions on specific kinds of errors. If you have seen a specific exception the
 *   [Why do I not receive messages on my durable topic subscription](why-do-i-not-receive-messages-on-my-durable-topic-subscription)
 *   [Why do KahaDB log files remain after cleanup](why-do-kahadb-log-files-remain-after-cleanup)
 
-### Developing ActiveMQ Classic
+### Developing ActiveMQ
 
-Questions for developers wishing to extend or enhance Apache ActiveMQ Classic
+Questions for developers wishing to extend or enhance Apache ActiveMQ
 
 *   [How can I add a new type of transport](how-can-i-add-a-new-type-of-transport)
 *   [How can I contribute](../../../contributing)
 *   [How do I add my own plugins](how-do-i-add-my-own-plugins)
-*   [How do I debug ActiveMQ Classic from my IDE](how-do-i-debug-activemq-classic-from-my-ide)
+*   [How do I debug ActiveMQ from my IDE](how-do-i-debug-activemq-classic-from-my-ide)
 
 ### Terminology
 
