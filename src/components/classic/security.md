@@ -9,6 +9,8 @@ Details of security problems fixed in released versions of Apache ActiveMQ Class
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2026-34197](../../security-advisories.data/CVE-2026-34197-announcement.txt) - Authenticated users could perform RCE via Jolokia MBeans
+*   [CVE-2026-33227](../../security-advisories.data/CVE-2026-33227-announcement.txt) - Improper Limitation of a Pathname to a Restricted Classpath Directory
 *   [CVE-2025-66168](../../security-advisories.data/CVE-2025-66168-announcement.txt) - MQTT control packet remaining length field is not properly validated
 *   [CVE-2025-54539](../../security-advisories.data/CVE-2025-54539-announcement.txt) - Deserialization of Untrusted Data
 *   [CVE-2025-29953](../../security-advisories.data/CVE-2025-29953-announcement.txt) - Deserialization allowlist bypass
