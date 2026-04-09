@@ -9,6 +9,8 @@ Details of security problems fixed in released versions of Apache ActiveMQ Class
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2026-40046](../../security-advisories.data/CVE-2026-40046-announcement.txt) - Missing fix for CVE-2025-66168: MQTT control packet remaining length field is not properly validated
+*   [CVE-2026-39304](../../security-advisories.data/CVE-2026-39304-announcement.txt) - Incorrect handling of TLSv1.3 KeyUpdate can be exploited to cause DoS via OOM
 *   [CVE-2026-34197](../../security-advisories.data/CVE-2026-34197-announcement.txt) - Authenticated users could perform RCE via Jolokia MBeans
 *   [CVE-2026-33227](../../security-advisories.data/CVE-2026-33227-announcement.txt) - Improper Limitation of a Pathname to a Restricted Classpath Directory
 *   [CVE-2025-66168](../../security-advisories.data/CVE-2025-66168-announcement.txt) - MQTT control packet remaining length field is not properly validated

@@ -25,8 +25,8 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
     <tr style="background-color: #dff0d8;">
       <td>6.2.x</td>
       <td><strong>Stable - Supported</strong></td>
-      <td>6.2.2</td>
-      <td>Mar 24th, 2026</td>
+      <td>6.2.4</td>
+      <td>Apr 8th, 2026</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>6.1.x</td>
@@ -43,8 +43,8 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
     <tr style="background-color: #dff0d8;">
       <td>5.19.x</td>
       <td><strong>Stable - Supported</strong></td>
-      <td>5.19.3</td>
-      <td>Mar 24th, 2026</td>
+      <td>5.19.5</td>
+      <td>Apr 8th, 2026</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>5.18.x</td>
