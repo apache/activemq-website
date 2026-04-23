@@ -9,6 +9,9 @@ Details of security problems fixed in released versions of Apache ActiveMQ Class
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2026-41044](../../security-advisories.data/CVE-2026-41044-announcement.txt) - Authenticated user can perform RCE via DestinationView MBean exposed by Jolokia
+*   [CVE-2026-41043](../../security-advisories.data/CVE-2026-41043-announcement.txt) - ActiveMQ Web Console -  XSS vulnerability when browsing queues
+*   [CVE-2026-40466](../../security-advisories.data/CVE-2026-40466-announcement.txt) - Possible bypass of CVE-2026-34197 via HTTP discovery second-stage URI
 *   [CVE-2026-40046](../../security-advisories.data/CVE-2026-40046-announcement.txt) - Missing fix for CVE-2025-66168: MQTT control packet remaining length field is not properly validated
 *   [CVE-2026-39304](../../security-advisories.data/CVE-2026-39304-announcement.txt) - Incorrect handling of TLSv1.3 KeyUpdate can be exploited to cause DoS via OOM
 *   [CVE-2026-34197](../../security-advisories.data/CVE-2026-34197-announcement.txt) - Authenticated users could perform RCE via Jolokia MBeans
