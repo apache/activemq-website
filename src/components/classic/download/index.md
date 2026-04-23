@@ -44,7 +44,7 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
       <td>5.19.x</td>
       <td><strong>Stable - Supported</strong></td>
       <td>5.19.6</td>
-      <td>Apr 23rdth, 2026</td>
+      <td>Apr 23rd, 2026</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>5.18.x</td>
