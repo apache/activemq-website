@@ -25,8 +25,8 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
     <tr style="background-color: #dff0d8;">
       <td>6.2.x</td>
       <td><strong>Stable - Supported</strong></td>
-      <td>6.2.4</td>
-      <td>Apr 8th, 2026</td>
+      <td>6.2.5</td>
+      <td>Apr 23rd, 2026</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>6.1.x</td>
@@ -43,8 +43,8 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
     <tr style="background-color: #dff0d8;">
       <td>5.19.x</td>
       <td><strong>Stable - Supported</strong></td>
-      <td>5.19.5</td>
-      <td>Apr 8th, 2026</td>
+      <td>5.19.6</td>
+      <td>Apr 23rdth, 2026</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>5.18.x</td>
@@ -117,21 +117,21 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
 
 #### Schedule & Status
 
-| Series | Broker JMS API Support      | Client JMS API Client       | Java Version | Spring Version | Logging Support              | Web Support            | Status       | Last    | Next   | ETA     |
-|--------|-----------------------------|-----------------------------|--------------|----------------|------------------------------|------------------------|--------------|---------|--------|---------|
-| 6.2.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.2.16         | Log4j 2.25.3/Slf4j 2.0.17    | Jetty 11.0.26          | **Stable - Supported**   | 6.2.2   | 6.2.3  | Jun 26 |
+| Series | Broker JMS API Support      | Client JMS API Client       | Java Version | Spring Version | Logging Support              | Web Support            | Status       | Last    | Next | ETA     |
+|--------|-----------------------------|-----------------------------|--------------|----------------|------------------------------|------------------------|--------------|---------|--|---------|
+| 6.2.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.2.16         | Log4j 2.25.3/Slf4j 2.0.17    | Jetty 11.0.26          | **Stable - Supported**   | 6.2.5   |  |  |
 | 6.1.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.1.21         | Log4j 2.25.2/Slf4j 2.0.17    | Jetty 11.0.26          | _Deprecated_ | 6.1.8   |  | |
-| 6.0.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.0.17         | Log4j 2.22.0/Slf4j 2.0.9     | Jetty 11.0.18          | _Deprecated_ | 6.0.1   |        |         |
-| 5.19.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.25.3/Slf4j 2.0.17    | Jetty 9.4.58.v20250814 | **Stable - Supported**   | 5.19.3  | | |
-| 5.18.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.24.1/Slf4j 2.0.13    | Jetty 9.4.57.v20241219 | _Deprecated_ | 5.18.7  |         |        |
-| 5.17.x | Javax JMS 1.1               | Javax JMS 1.1               | [11,23)          | 5.3.33         | Log4j 2.23.1/Slf4j 1.7.36    | Jetty 9.4.54.v20240208 | _Deprecated_ | 5.17.7  |        |         |
-| 5.16.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.8          | 4.3.30.RELEASE | Reload4j 1.2.24/Slf4j 1.7.36 | Jetty 9.4.53.v20231009 | _Deprecated_ | 5.16.8  |        |         |
-| 5.15.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.8          | 4.3.30.RELEASE | Log4j 1.2.17/Slf4j 1.7.32    | Jetty 9.4.39.v20210325 | _Deprecated_ | 5.15.16 |        |         |
-| 5.14.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.7          | 4.1.9.RELEASE  | Log4j 1.2.17/Slf4j 1.7.13    | Jetty 9.2.13.v20150730 | _Deprecated_ | 5.14.5  |        |         |
-| 5.13.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.7          | 4.1.9.RELEASE  | Log4j 1.2.17/Slf4j 1.7.13    | Jetty 9.2.13.v20150730 | _Deprecated_ | 5.13.5  |        |         |
-| 5.12.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.7          | 3.2.16.RELEASE | Log4j 1.2.17/Slf4j 1.7.10    | Jetty 9.2.6.v20141205  | _Deprecated_ | 5.12.3  |        |         |
-| 5.11.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.7          | 3.2.16.RELEASE | Log4j 1.2.17/Slf4j 1.7.10    | Jetty 9.2.6.v20141205  | _Deprecated_ | 5.11.4  |        |         |
-| 5.10.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.6          | 3.2.8.RELEASE  | Log4j 1.2.17/Slf4j 1.7.5     | Jetty 7.6.9.v20130131  | _Deprecated_ | 5.10.2  |        |         |
+| 6.0.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.0.17         | Log4j 2.22.0/Slf4j 2.0.9     | Jetty 11.0.18          | _Deprecated_ | 6.0.1   |  |         |
+| 5.19.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.25.3/Slf4j 2.0.17    | Jetty 9.4.58.v20250814 | **Stable - Supported**   | 5.19.6  | | |
+| 5.18.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.24.1/Slf4j 2.0.13    | Jetty 9.4.57.v20241219 | _Deprecated_ | 5.18.7  |   |        |
+| 5.17.x | Javax JMS 1.1               | Javax JMS 1.1               | [11,23)          | 5.3.33         | Log4j 2.23.1/Slf4j 1.7.36    | Jetty 9.4.54.v20240208 | _Deprecated_ | 5.17.7  |  |         |
+| 5.16.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.8          | 4.3.30.RELEASE | Reload4j 1.2.24/Slf4j 1.7.36 | Jetty 9.4.53.v20231009 | _Deprecated_ | 5.16.8  |  |         |
+| 5.15.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.8          | 4.3.30.RELEASE | Log4j 1.2.17/Slf4j 1.7.32    | Jetty 9.4.39.v20210325 | _Deprecated_ | 5.15.16 |  |         |
+| 5.14.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.7          | 4.1.9.RELEASE  | Log4j 1.2.17/Slf4j 1.7.13    | Jetty 9.2.13.v20150730 | _Deprecated_ | 5.14.5  |  |         |
+| 5.13.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.7          | 4.1.9.RELEASE  | Log4j 1.2.17/Slf4j 1.7.13    | Jetty 9.2.13.v20150730 | _Deprecated_ | 5.13.5  |  |         |
+| 5.12.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.7          | 3.2.16.RELEASE | Log4j 1.2.17/Slf4j 1.7.10    | Jetty 9.2.6.v20141205  | _Deprecated_ | 5.12.3  |  |         |
+| 5.11.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.7          | 3.2.16.RELEASE | Log4j 1.2.17/Slf4j 1.7.10    | Jetty 9.2.6.v20141205  | _Deprecated_ | 5.11.4  |  |         |
+| 5.10.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.6          | 3.2.8.RELEASE  | Log4j 1.2.17/Slf4j 1.7.5     | Jetty 7.6.9.v20130131  | _Deprecated_ | 5.10.2  |  |         |
 
 {% assign reversed_releases = site["classic_releases"] | reverse %}
 
