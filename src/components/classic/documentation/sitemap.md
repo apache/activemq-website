@@ -317,6 +317,7 @@ Features
     *   [Advisory Message](advisory-message)
     *   [Blob Messages](blob-messages)
     *   [Delay and Schedule Message Delivery](delay-and-schedule-message-delivery)
+    *   [Message Expiry](message-expiry)
     *   [JMS Streams](jms-streams)
     *   [Message Transformation](message-transformation)
     *   [ObjectMessage](objectmessage)

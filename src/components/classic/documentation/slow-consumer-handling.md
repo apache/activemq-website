@@ -54,6 +54,16 @@ We have a `MessageEvictionStrategy` which is used to decide which message shoul
 <oldestMessageEvictionStrategy/>
 ```
 
+By default, ActiveMQ will frist remove any expired messages from the slow-consumer pending buffer before evicting non-expired messages.
+
+If your messages do not use TTL or you do not want this behavior you can disable it with `expiryScanEnabled="false"`:
+
+```
+<oldestMessageEvictionStrategy expiryScanEnabled="false"/>
+```
+
+Messages will still be subject to expiry checks on the client. For the full client/broker expiry flow and the clock synchronization caveat, see [Message Expiry](message-expiry). The default is `expiryScanEnabled="true"`.
+
 However, you can write your own to use some application specific way of choosing messages for eviction. For example, if you are sending market data price updates you may wish to find an older price value, which might not be the oldest message.
 
 Example:
@@ -140,4 +150,3 @@ Statistic|Definition
 ---|---
 `discarded`|The count of how many messages have been discarded during the lifetime of the subscription due to it being a slow consumer
 `matched`|The current number of messages matched and to be dispatched to the subscription as soon as some capacity is available in the prefetch buffer. So a non-zero value implies that the prefetch buffer is full for this subscription
-
