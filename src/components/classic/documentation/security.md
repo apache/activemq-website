@@ -96,11 +96,14 @@ If necessary, the use of advisories in this manner can be disabled via the _watc
             <authorizationEntries> 
               <!-- Some destination a user may access -->
               <authorizationEntry queue="TEST.Q" read="users" write="users" admin="users" /> 
+              
               <!-- Grant all users permission to create advisory topics, but only admins to read/write -->
               <authorizationEntry topic="ActiveMQ.Advisory.>" read="admin" write="admin" admin="*"/> 
+              
               <!-- Grant all users permission to read/write advisories for temporary destinations -->
               <authorizationEntry topic="ActiveMQ.Advisory.TempQueue" read="*" write="*" admin="*"/> 
               <authorizationEntry topic="ActiveMQ.Advisory.TempTopic" read="*" write="*" admin="*"/> 
+              
               <!-- Grant users that will be used to create a network of brokers permission for consumer advisories -->
               <authorizationEntry topic="ActiveMQ.Advisory.Consumer.>" read="bridge-user,admin" write="bridge-user,admin" admin="bridge-user,admin"/> 
               <authorizationEntry topic="ActiveMQ.Advisory.VirtualDestination.Consumer.>" read="bridge-user,admin" write="bridge-user" admin="bridge-user,admin"/> 
