@@ -388,6 +388,33 @@ sources are networked, in the event of a failure, inflight messages can be lost.
 
 <p>This is all fine and well in small networks and environments whit small number of destinations and consumers. But as things starts to grow a default model (listen to everything, share everything) won’t scale well. That’s why there are many ways you can use to filter destinations that will be shared between brokers.</p>
 
+<h4 id="authorization-for-advisories">Authorization for advisories</h4>
+
+<p>If using the authorization plugin ensure that the user used for the network connections has permissions to the advisory destinations;</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt; 
+  .. 
+    &lt;plugins&gt; 
+      .. 
+      &lt;authorizationPlugin&gt; 
+        &lt;map&gt; 
+          &lt;authorizationMap&gt; 
+            &lt;authorizationEntries&gt; 
+              ...
+              &lt;!-- Grant users that will be used to create a network of brokers permission for consumer and virtual destination consumer advisories --&gt;
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.Consumer.&gt;" read="bridge-user,admin" write="bridge-user,admin" admin="bridge-user,admin"/&gt; 
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.VirtualDestination.Consumer.&gt;" read="bridge-user,admin" write="bridge-user" admin="bridge-user,admin"/&gt; 
+              ...
+            &lt;/authorizationEntries&gt; 
+          &lt;/authorizationMap&gt; 
+        &lt;/map&gt; 
+      &lt;/authorizationPlugin&gt; 
+      .. 
+    &lt;/plugins&gt; 
+  .. 
+&lt;/broker&gt;
+</code></pre></div></div>
+
 <h4 id="dynamic-networks">Dynamic networks</h4>
 
 <p>Let’s start with dynamically configured networks. This means that we only want to send messages to the remote broker when there’s a consumer there. If we want to limit this behavior only on certain destinations we will use <code class="language-plaintext highlighter-rouge">dynamicallyIncludedDestinations</code>, like</p>

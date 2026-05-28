@@ -178,8 +178,47 @@
 
 <h4 id="authorization-example">Authorization Example</h4>
 
-<p>The following <a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/security/jaas-broker.xml">example</a> shows these 2 plugins in operation. Though note its very easy to write your own plugin. <strong>Note</strong> that full access rights should generally be given to the ActiveMQ.Advisory destinations because by default an ActiveMQConnection uses destination advisories to get early knowledge of temp destination creation and deletion. In addition, dynamic network connectors use advisories to determine consumer demand.<br />
-If necessary, the use of advisories in this manner can be disabled via the <em>watchTopicAdvisories</em> boolean attribute of ActiveMQConnectionFactory and for a networkConnector, via the network connector <em>staticBridge</em>(5.6) boolean attribute.</p>
+<p>The following <a href="https://github.com/apache/activemq/blob/main/activemq-unit-tests/src/test/resources/org/apache/activemq/security/jaas-broker.xml">example</a> shows these 2 plugins in operation. Though note its very easy to write your own plugin.</p>
+
+<p><strong>Note:</strong> All users need permission to create ActiveMQ.Advisory destinations, which is given by the “admin” acl. This is to allow the creation of advisory destinations generated as a side effect of user operations. For example, sending a message for the first time may trigger producer advisory destination creation.
+However, normal users should generally <strong>not</strong> be given access to read/write all Advisories because those are messages meant for admin users.</p>
+
+<p>The following advisory permissions are required for proper operations:</p>
+<ul>
+  <li>All users should be given access to advisories for temporary destinations because ActiveMQConnection uses those advisories to get early knowledge of temp destination creation and deletion.</li>
+  <li>In addition, dynamic network connectors use advisories to determine consumer demand so the users that will be used to create bridges need access to those advisories.</li>
+</ul>
+
+<p>If necessary, the use of advisories in this manner can be disabled via the <em>watchTopicAdvisories</em> boolean attribute of ActiveMQConnectionFactory and for a networkConnector, via the network connector <em>staticBridge</em>(5.6) boolean attribute.</p>
+
+<p><strong>Example configuration:</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt; 
+  .. 
+    &lt;plugins&gt; 
+      .. 
+      &lt;authorizationPlugin&gt; 
+        &lt;map&gt; 
+          &lt;authorizationMap&gt; 
+            &lt;authorizationEntries&gt; 
+              &lt;!-- Some destination a user may access --&gt;
+              &lt;authorizationEntry queue="TEST.Q" read="users" write="users" admin="users" /&gt; 
+              &lt;!-- Grant all users permission to create advisory topics, but only admins to read/write --&gt;
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.&gt;" read="admin" write="admin" admin="*"/&gt; 
+              &lt;!-- Grant all users permission to read/write advisories for temporary destinations --&gt;
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.TempQueue" read="*" write="*" admin="*"/&gt; 
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.TempTopic" read="*" write="*" admin="*"/&gt; 
+              &lt;!-- Grant users that will be used to create a network of brokers permission for consumer advisories --&gt;
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.Consumer.&gt;" read="bridge-user,admin" write="bridge-user,admin" admin="bridge-user,admin"/&gt; 
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.VirtualDestination.Consumer.&gt;" read="bridge-user,admin" write="bridge-user" admin="bridge-user,admin"/&gt; 
+            &lt;/authorizationEntries&gt; 
+          &lt;/authorizationMap&gt; 
+        &lt;/map&gt; 
+      &lt;/authorizationPlugin&gt; 
+      .. 
+    &lt;/plugins&gt; 
+  .. 
+&lt;/broker&gt;
+</code></pre></div></div>
 
 <h3 id="broker-to-broker-authentication-and-authorization">Broker-to-Broker Authentication and Authorization</h3>
 
@@ -216,7 +255,11 @@ If necessary, the use of advisories in this manner can be disabled via the <em>w
           &lt;authorizationMap&gt; 
             &lt;authorizationEntries&gt; 
               &lt;authorizationEntry queue="TEST.Q" read="users" write="users" admin="users" /&gt; 
-              &lt;authorizationEntry topic="ActiveMQ.Advisory.&gt;" read="*" write="*" admin="*"/&gt; 
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.&gt;" read="admin" write="admin" admin="*"/&gt; 
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.TempQueue" read="*" write="*" admin="*"/&gt; 
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.TempTopic" read="*" write="*" admin="*"/&gt; 
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.Consumer.&gt;" read="bridge-user,admin" write="bridge-user,admin" admin="bridge-user,admin"/&gt; 
+              &lt;authorizationEntry topic="ActiveMQ.Advisory.VirtualDestination.Consumer.&gt;" read="bridge-user,admin" write="bridge-user" admin="bridge-user,admin"/&gt; 
             &lt;/authorizationEntries&gt; 
             &lt;tempDestinationAuthorizationEntry&gt; 
               &lt;tempDestinationAuthorizationEntry read="admin" write="admin" admin="admin"/&gt; 
