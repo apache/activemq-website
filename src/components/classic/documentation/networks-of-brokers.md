@@ -198,6 +198,35 @@ Network of brokers relies heavily on advisory messages, as they are used under t
 
 This is all fine and well in small networks and environments whit small number of destinations and consumers. But as things starts to grow a default model (listen to everything, share everything) won't scale well. That's why there are many ways you can use to filter destinations that will be shared between brokers.
 
+#### Authorization for advisories
+
+If using the authorization plugin ensure that the user used for the network connections has permissions to the advisory destinations;
+
+```
+<broker> 
+  .. 
+    <plugins> 
+      .. 
+      <authorizationPlugin> 
+        <map> 
+          <authorizationMap> 
+            <authorizationEntries> 
+              ...
+              <!-- Grant users that will be used to create a network of brokers permission for consumer and virtual destination consumer advisories -->
+              <authorizationEntry topic="ActiveMQ.Advisory.Consumer.>" read="bridge-user,admin" write="bridge-user,admin" admin="bridge-user,admin"/> 
+              <authorizationEntry topic="ActiveMQ.Advisory.VirtualDestination.Consumer.>" read="bridge-user,admin" write="bridge-user" admin="bridge-user,admin"/> 
+              ...
+            </authorizationEntries> 
+          </authorizationMap> 
+        </map> 
+      </authorizationPlugin> 
+      .. 
+    </plugins> 
+  .. 
+</broker>
+```
+
+
 #### Dynamic networks
 
 Let's start with dynamically configured networks. This means that we only want to send messages to the remote broker when there's a consumer there. If we want to limit this behavior only on certain destinations we will use `dynamicallyIncludedDestinations`, like
