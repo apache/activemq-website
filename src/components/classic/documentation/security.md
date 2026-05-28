@@ -73,8 +73,46 @@ Queues/Topics can specified using the ActiveMQ Classic [Wildcards](wildcards) sy
 
 #### Authorization Example
 
-The following [example](http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/org/apache/activemq/security/jaas-broker.xml) shows these 2 plugins in operation. Though note its very easy to write your own plugin. **Note** that full access rights should generally be given to the ActiveMQ.Advisory destinations because by default an ActiveMQConnection uses destination advisories to get early knowledge of temp destination creation and deletion. In addition, dynamic network connectors use advisories to determine consumer demand.  
+The following [example](https://github.com/apache/activemq/blob/main/activemq-unit-tests/src/test/resources/org/apache/activemq/security/jaas-broker.xml) shows these 2 plugins in operation. Though note its very easy to write your own plugin. 
+
+**Note:** All users need permission to create ActiveMQ.Advisory destinations, which is given by the "admin" acl. This is to allow the creation of advisory destinations generated as a side effect of user operations. For example, sending a message for the first time may trigger producer advisory destination creation.
+However, normal users should generally **not** be given access to read/write all Advisories because those are messages meant for admin users.
+
+The following advisory permissions are required for proper operations:
+* All users should be given access to advisories for temporary destinations because ActiveMQConnection uses those advisories to get early knowledge of temp destination creation and deletion. 
+* In addition, dynamic network connectors use advisories to determine consumer demand so the users that will be used to create bridges need access to those advisories.  
+
 If necessary, the use of advisories in this manner can be disabled via the _watchTopicAdvisories_ boolean attribute of ActiveMQConnectionFactory and for a networkConnector, via the network connector _staticBridge_(5.6) boolean attribute.
+
+**Example configuration:**
+```
+<broker> 
+  .. 
+    <plugins> 
+      .. 
+      <authorizationPlugin> 
+        <map> 
+          <authorizationMap> 
+            <authorizationEntries> 
+              <!-- Some destination a user may access -->
+              <authorizationEntry queue="TEST.Q" read="users" write="users" admin="users" /> 
+              <!-- Grant all users permission to create advisory topics, but only admins to read/write -->
+              <authorizationEntry topic="ActiveMQ.Advisory.>" read="admin" write="admin" admin="*"/> 
+              <!-- Grant all users permission to read/write advisories for temporary destinations -->
+              <authorizationEntry topic="ActiveMQ.Advisory.TempQueue" read="*" write="*" admin="*"/> 
+              <authorizationEntry topic="ActiveMQ.Advisory.TempTopic" read="*" write="*" admin="*"/> 
+              <!-- Grant users that will be used to create a network of brokers permission for consumer advisories -->
+              <authorizationEntry topic="ActiveMQ.Advisory.Consumer.>" read="bridge-user,admin" write="bridge-user,admin" admin="bridge-user,admin"/> 
+              <authorizationEntry topic="ActiveMQ.Advisory.VirtualDestination.Consumer.>" read="bridge-user,admin" write="bridge-user" admin="bridge-user,admin"/> 
+            </authorizationEntries> 
+          </authorizationMap> 
+        </map> 
+      </authorizationPlugin> 
+      .. 
+    </plugins> 
+  .. 
+</broker>
+```
 
 ### Broker-to-Broker Authentication and Authorization
 
@@ -111,7 +149,11 @@ To control access to temporary destinations, you will need to add a `<tempDestin
           <authorizationMap> 
             <authorizationEntries> 
               <authorizationEntry queue="TEST.Q" read="users" write="users" admin="users" /> 
-              <authorizationEntry topic="ActiveMQ.Advisory.>" read="*" write="*" admin="*"/> 
+              <authorizationEntry topic="ActiveMQ.Advisory.>" read="admin" write="admin" admin="*"/> 
+              <authorizationEntry topic="ActiveMQ.Advisory.TempQueue" read="*" write="*" admin="*"/> 
+              <authorizationEntry topic="ActiveMQ.Advisory.TempTopic" read="*" write="*" admin="*"/> 
+              <authorizationEntry topic="ActiveMQ.Advisory.Consumer.>" read="bridge-user,admin" write="bridge-user,admin" admin="bridge-user,admin"/> 
+              <authorizationEntry topic="ActiveMQ.Advisory.VirtualDestination.Consumer.>" read="bridge-user,admin" write="bridge-user" admin="bridge-user,admin"/> 
             </authorizationEntries> 
             <tempDestinationAuthorizationEntry> 
               <tempDestinationAuthorizationEntry read="admin" write="admin" admin="admin"/> 
