@@ -9,6 +9,12 @@ Details of security problems fixed in released versions of Apache ActiveMQ Class
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2026-49270](../../security-advisories.data/CVE-2026-49270-announcement.txt) - Durable Subscription Disclosure via Crafted BrokerInfo (OpenWire)
+*   [CVE-2026-49157](../../security-advisories.data/CVE-2026-49157-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
+*   [CVE-2026-46605](../../security-advisories.data/CVE-2026-46605-announcement.txt) - Incomplete authorization during destination removal
+*   [CVE-2026-45505](../../security-advisories.data/CVE-2026-45505-announcement.txt) - Jolokia "addNetworkConnector" Discovery Wrapper Bypass
+*   [CVE-2026-42588](../../security-advisories.data/CVE-2026-42588-announcement.txt) - Remote Code Execution via Jolokia addNetworkConnector
+*   [CVE-2026-42253](../../security-advisories.data/CVE-2026-42253-announcement.txt) - HTTP Response Header Injection via JMS Message Properties
 *   [CVE-2026-41044](../../security-advisories.data/CVE-2026-41044-announcement.txt) - Authenticated user can perform RCE via DestinationView MBean exposed by Jolokia
 *   [CVE-2026-41043](../../security-advisories.data/CVE-2026-41043-announcement.txt) - ActiveMQ Web Console -  XSS vulnerability when browsing queues
 *   [CVE-2026-40466](../../security-advisories.data/CVE-2026-40466-announcement.txt) - Possible bypass of CVE-2026-34197 via HTTP discovery second-stage URI
