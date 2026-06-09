@@ -22,15 +22,17 @@ We can help you much quicker if you try the following:
 
 |Component|Issue Tracker|
 |---|---|
-|ActiveMQ|[https://issues.apache.org/jira/projects/AMQ](https://issues.apache.org/jira/projects/AMQ)|
+|ActiveMQ|[https://github.com/apache/activemq/issues](https://github.com/apache/activemq/issues)|
 |NMS|[https://issues.apache.org/jira/projects/AMQNET](https://issues.apache.org/jira/projects/AMQNET)|
 |CMS|[https://issues.apache.org/jira/projects/AMQCPP](https://issues.apache.org/jira/projects/AMQCPP)|
 
 #### Using the issue tracker
 
-Before you can create an issue in the issue tracker you need to [request an account](https://selfserve.apache.org/jira-account.html). When requesting the account please **be specific** about the reason you need it. Please give a brief synopsis of the bug you're encountering or feature you need. If you're not quite sure you're hitting an actual bug or you're not sure if the feature you need is valid, etc. please [contact us on the users mailing list](contact) to get some clarity. Account requests with vague reasons **will be rejected**.
+If you're not quite sure you're hitting an actual bug or you're not sure if the feature you need is valid, etc. please [contact us on the users mailing list](contact) to get some clarity. 
 
-If you want to be the "assignee" of an issue you need to be in the list of `activemq-developers` on the issue tracker. To join the group please mail the [dev mailing list](mailto:dev@activemq.apache.org) with the email address you used to register with the issue tracker and we'll add you to the group.
+For issues related to the ActiveMQ broker, you can open a GitHub issue using your own GitHub account. 
+
+For issues related to NMS and CMS you need to [request an account](https://selfserve.apache.org/jira-account.html) before you can create an issue in the issue tracker. When requesting the account please **be specific** about the reason you need it. Please give a brief synopsis of the bug you're encountering or feature you need. Account requests with vague reasons **will be rejected**. If you want to be the "assignee" of an issue you need to be in the list of `activemq-developers` on the issue tracker. To join the group please mail the [dev mailing list](mailto:dev@activemq.apache.org) with the email address you used to register with the issue tracker and we'll add you to the group.
 
 #### Contributing Your Own Fixes
 
@@ -40,7 +42,7 @@ If you can create a JUnit test case then your issue is more likely to be resolve
 
 #### ActiveMQ Issues Mailing List
 
-This mailing list is automatically notified when JIRA issues are created and updated.
+This mailing list is automatically notified when JIRA issues are created and updated. You can also watch the [GitHub repository](https://github.com/apache/activemq/) for ActiveMQ updates. 
 
 Subscribe|[issues-subscribe@activemq.apache.org](mailto:issues-subscribe@activemq.apache.org)
 Unsubscribe|[issues-unsubscribe@activemq.apache.org](mailto:issues-unsubscribe@activemq.apache.org)
