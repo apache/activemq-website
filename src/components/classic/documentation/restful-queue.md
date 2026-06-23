@@ -13,9 +13,9 @@ RESTful Queue
 
 This document is intended to document the ideal RESTful interface to message queues in light of
 
-*   [the discussion on rest-discuss](http://tech.groups.yahoo.com/group/rest-discuss/message/8955)
+*   [the discussion on rest-discuss](https://lists.apache.org/thread/nyt363l2z3lmnyd6239wykr0dvxhx739)
 *   [Atom Publishing Protocol](http://bitworking.org/projects/atom/draft-ietf-atompub-protocol-17.html) (APP)
-*   [httplr](http://www.dehora.net/doc/httplr/draft-httplr-01.html)
+*   [httplr](https://blog.sethladd.com/2005/04/http-reliable-messaging.html)
 
 ### Issues with Queues and REST
 
