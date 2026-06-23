@@ -33,7 +33,7 @@ Property|Default|Comments
 `compactAcksIgnoresStoreGrowth`|`false`|From **ActiveMQ Classic 5.14.0**: when the acknowledgement compaction feature is enabled this value controls whether compaction is run when the store is still growing or if it should only occur when the store has stopped growing (either due to idle or store limits reached).  If enabled the compaction runs regardless of the store still having room or being active which can decrease overall performance but reclaim space faster. 
 `concurrentStoreAndDispatchQueues`|`true`|Enable the dispatching of Queue messages to interested clients to happen concurrently with message storage.
 `concurrentStoreAndDispatchTopics`|`false`|Enable the dispatching of Topic messages to interested clients to happen concurrently with message storage. **Enabling this property is not recommended.**
-`directory`|`activemq-data`|The path to the directory to use to store the message store data and log files.
+`directory`|`kahadb`|The path to the directory to use to store the message store data and log files.
 `directoryArchive`|`null`|Define the directory to move data logs to when they all the messages they contain have been consumed.
 `enableAckCompaction`|`true`|From **ActiveMQ Classic 5.14.0**: this setting controls whether the store will perform periodic compaction of older journal log files that contain only Message acknowledgements. By compacting these older acknowledgements into new journal log files the older files can be removed freeing space and allowing the message store to continue to operate without hitting store size limits.
 `enableIndexWriteAsync`|`false`|If `true`, the index is updated asynchronously.
