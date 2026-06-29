@@ -49,6 +49,7 @@ Option Name|Default Value|Description
 `useRetroactiveConsumer`|`false`|Sets whether or not retroactive consumers are enabled. Retroactive consumers allow non-durable topic subscribers to receive old messages that were published before the non-durable subscriber started.
 `warnAboutUnstartedConnectionTimeout`|`500`|The timeout, in milliseconds, from the time of connection creation to when a warning is generated if the connection is not properly started via [Connection.start()](http://java.sun.com/j2ee/1.4/docs/api/javax/jms/Connection.html#start()) and a message is received by a consumer. It is a very common gotcha to forget to [start the connection and then wonder why no messages are delivered](i-am-not-receiving-any-messages-what-is-wrong) so this option makes the default case to create a warning if the user forgets. To disable the warning just set the value to `< 0`.
 `nonBlockingRedelivery`|`false`|Whether or not message redelivery (and any related delays) will block the delivery of other messages. Setting to `true` will allow messages to be delivered out of order.
+`maxInflatedDataSizeRatio`| `10.0`        |Used to compute maxInflatedDataSize if [maxFrameSize](configuring-wire-formats) is configured on the wireformat. This ratio is used to determine the maximum allowed size of an uncompressed message body. maxInflatedDataSize is defined as `maxFrameSize * maxInflatedDataSizeRatio`.  For example, if maxFrameSize is 10MB then by default maxInflatedDataSize would be 100MB. (since v5.19.8 and v6.2.7)
 
 ### Nested Options
 
