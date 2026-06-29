@@ -9,15 +9,15 @@ Details of security problems fixed in released versions of Apache ActiveMQ Class
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
-*   [CVE-2026-54475](../../security-advisories.data/CVE-2026-54475-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
-*   [CVE-2026-53917](../../security-advisories.data/CVE-2026-53917-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
-*   [CVE-2026-53916](../../security-advisories.data/CVE-2026-49157-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
-*   [CVE-2026-50760](../../security-advisories.data/CVE-2026-50760-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
-*   [CVE-2026-50750](../../security-advisories.data/CVE-2026-50750-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
-*   [CVE-2026-50734](../../security-advisories.data/CVE-2026-50734-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
-*   [CVE-2026-49877](../../security-advisories.data/CVE-2026-49877-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
-*   [CVE-2026-49434](../../security-advisories.data/CVE-2026-49434-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
-*   [CVE-2026-49432](../../security-advisories.data/CVE-2026-49432-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
+*   [CVE-2026-54475](../../security-advisories.data/CVE-2026-54475-announcement.txt) - Temporary destination ownership takeover
+*   [CVE-2026-53917](../../security-advisories.data/CVE-2026-53917-announcement.txt) - Unbounded memory allocation in OpenWire property unmarshalling
+*   [CVE-2026-53916](../../security-advisories.data/CVE-2026-49157-announcement.txt) - Unbounded header buffer in STOMP NIO codec
+*   [CVE-2026-50760](../../security-advisories.data/CVE-2026-50760-announcement.txt) - Stored XSS via Unescaped values in ActiveMQ Web Console
+*   [CVE-2026-50750](../../security-advisories.data/CVE-2026-50750-announcement.txt) - Pre-authentication OpenWire DoS following fix for CVE-2026-49270
+*   [CVE-2026-50734](../../security-advisories.data/CVE-2026-50734-announcement.txt) - Pre-authentication OpenWire memory-allocation DoS during wire format negotiation
+*   [CVE-2026-49877](../../security-advisories.data/CVE-2026-49877-announcement.txt) - Authenticated web users retain admin access by default in the Web Console
+*   [CVE-2026-49434](../../security-advisories.data/CVE-2026-49434-announcement.txt) - LdapNetworkConnector instantiates denied transports and a remote-properties broker
+*   [CVE-2026-49432](../../security-advisories.data/CVE-2026-49432-announcement.txt) - STOMP negative content-length enables denial of service
 *   [CVE-2026-49270](../../security-advisories.data/CVE-2026-49270-announcement.txt) - Durable Subscription Disclosure via Crafted BrokerInfo (OpenWire)
 *   [CVE-2026-49157](../../security-advisories.data/CVE-2026-49157-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
 *   [CVE-2026-46605](../../security-advisories.data/CVE-2026-46605-announcement.txt) - Incomplete authorization during destination removal
