@@ -19,7 +19,7 @@ If you need to exchange object messages, you need to add packages your applicati
 
 For example:
 ```
--Dorg.apache.activemq.SERIALIZABLE_PACKAGES=java.lang,javax.security,java.util,org.apache.activemq,org.fusesource.hawtbuf,com.thoughtworks.xstream.mapper,com.mycompany.myapp
+-Dorg.apache.activemq.SERIALIZABLE_PACKAGES=javax.security,java.util,org.apache.activemq,org.fusesource.hawtbuf,com.thoughtworks.xstream.mapper,com.mycompany.myapp
 ```
 will add `com.mycompany.myapp` package to the list of trusted packages. Note that other packages listed here are enabled by default as they are necessary for the regular broker work. In case you want to shortcut this mechanism, you can allow all packages to be trusted by using `*` wildcard, like
 ```

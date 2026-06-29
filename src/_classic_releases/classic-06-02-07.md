@@ -17,7 +17,21 @@ It especially includes:
 - Several security enforcement and validation fixes (https in BrokerView, webconsole, ...)
 - Preserve ${...} placeholders when removing/modifying networkConnectors in RuntimeConfigurationPlugin
 
-TODO: add notes about security enforcements and changes
+#### Notable updates regarding security and breaking changes:
+
+- This release introduces [maxInflatedDataSize](../documentation/xbean-xml-reference-50) and [maxInflatedDataSizeRatio](../documentation/connection-configuration-uri) as possible breaking changes to be aware of.
+maxInflatedDataSize is the maximum allowed size of an uncompressed message body. The default on the broker is 100 MB which is in line with the default maxFrameSize of defined in the XML config of 10 MB on a transport.
+For the client, maxInflatedDataSize is computed as a ratio using maxInflatedDataSizeRatio
+- By default, [allowTempDestinationStealing](../documentation/per-destination-policies) has now been disabled. In previous releases, connections could add consumers on any temporary destination. Now only the connection that created the temporary destination can consume. This may cause problems with failover or network bridging if using temporary destinations in those scenarios. You can re-nable the preivous behavior by setting `allowTempDestinationStealing` to true, but this would only be recommended if you are not concerned with unauthorized connections consuming from those destinations.
+- The WebConsole is now restricted only to admin users by default. The WebConsole uses admin credentials to perform some functions, including when browsing destinations. Therefore, it is recommended to not grant access to non-admin users as the WebConsole is specifically meant for admins.
+
+#### Other notable changes from the recent 6.2.5 and 6.2.6 release:
+
+- The WebConsole configuration has been hardened in including limiting allowed hosts/ips by default. This can be changed in the jetty.xml file.
+- Jolokia has been restricted to administrators only.
+- The XBeanBrokerFactory is blocked by default when using the VM Transport. It can be re-enabled with the `org.apache.activemq.transport.VM_TRANSPORT_FACTORY_SCHEMES_ENABLED` system property.
+- The `java.lang` package is no longer part of the default allowed serializable packages list. This is configured using the `org.apache.activemq.SERIALIZABLE_PACKAGES` system property. See [ObjectMessage](../documentation/objectmessage) for more info.
+- The XBeanBrokerFactory is restricted to to local file system and classpath protocols only. This can be changed using the `org.apache.activemq.xbean.XBEAN_BROKER_FACTORY_PROTOCOLS` system property.
 
 You can find details on the [release notes]({{ page.release_notes }}).
 

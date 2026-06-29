@@ -1207,6 +1207,12 @@ vmConnectorURI
 
 _java.net.URI_
 
+maxInflatedDataSize
+
+_integer_
+
+The maximum allowed size of an uncompressed message body. The default is 100 MB.
+
 ### The _\<bytesJDBCAdapter>_ Element
 
 This JDBCAdapter inserts and extracts BLOB data using the setBytes()/getBytes() operations. The databases/JDBC drivers that use this adapter are:
