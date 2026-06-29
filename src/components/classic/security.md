@@ -9,6 +9,15 @@ Details of security problems fixed in released versions of Apache ActiveMQ Class
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2026-54475](../../security-advisories.data/CVE-2026-54475-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
+*   [CVE-2026-53917](../../security-advisories.data/CVE-2026-53917-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
+*   [CVE-2026-53916](../../security-advisories.data/CVE-2026-49157-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
+*   [CVE-2026-50760](../../security-advisories.data/CVE-2026-50760-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
+*   [CVE-2026-50750](../../security-advisories.data/CVE-2026-50750-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
+*   [CVE-2026-50734](../../security-advisories.data/CVE-2026-50734-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
+*   [CVE-2026-49877](../../security-advisories.data/CVE-2026-49877-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
+*   [CVE-2026-49434](../../security-advisories.data/CVE-2026-49434-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
+*   [CVE-2026-49432](../../security-advisories.data/CVE-2026-49432-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
 *   [CVE-2026-49270](../../security-advisories.data/CVE-2026-49270-announcement.txt) - Durable Subscription Disclosure via Crafted BrokerInfo (OpenWire)
 *   [CVE-2026-49157](../../security-advisories.data/CVE-2026-49157-announcement.txt) - Authenticated low-privilege Web users retain Jolokia broker-management capability by default
 *   [CVE-2026-46605](../../security-advisories.data/CVE-2026-46605-announcement.txt) - Incomplete authorization during destination removal
