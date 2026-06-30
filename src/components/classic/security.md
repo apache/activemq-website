@@ -12,7 +12,7 @@ See the main [Security Advisories](../../security-advisories) page for details f
 *   [CVE-2026-54475](../../security-advisories.data/CVE-2026-54475-announcement.txt) - Temporary destination ownership takeover
 *   [CVE-2026-53917](../../security-advisories.data/CVE-2026-53917-announcement.txt) - Unbounded memory allocation in OpenWire property unmarshalling
 *   [CVE-2026-53916](../../security-advisories.data/CVE-2026-49157-announcement.txt) - Unbounded header buffer in STOMP NIO codec
-*   [CVE-2026-50760](../../security-advisories.data/CVE-2026-50760-announcement.txt) - Stored XSS via Unescaped values in ActiveMQ Web Console
+*   [CVE-2026-52760](../../security-advisories.data/CVE-2026-52760-announcement.txt) - Stored XSS via Unescaped values in ActiveMQ Web Console
 *   [CVE-2026-50750](../../security-advisories.data/CVE-2026-50750-announcement.txt) - Pre-authentication OpenWire DoS following fix for CVE-2026-49270
 *   [CVE-2026-50734](../../security-advisories.data/CVE-2026-50734-announcement.txt) - Pre-authentication OpenWire memory-allocation DoS during wire format negotiation
 *   [CVE-2026-49877](../../security-advisories.data/CVE-2026-49877-announcement.txt) - Authenticated web users retain admin access by default in the Web Console
