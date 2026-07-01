@@ -20,10 +20,11 @@ It especially includes:
 #### Notable updates regarding security and breaking changes:
 
 - This release introduces [maxInflatedDataSize](../documentation/xbean-xml-reference-50) and [maxInflatedDataSizeRatio](../documentation/connection-configuration-uri) as possible breaking changes to be aware of.
-maxInflatedDataSize is the maximum allowed size of an uncompressed message body. The default on the broker is 100 MB which is in line with the default maxFrameSize of defined in the XML config of 10 MB on a transport.
+maxInflatedDataSize is the maximum allowed size of an uncompressed message body. The default on the broker is 100 MB. Note that the default maxFrameSize defined in the XML config is also 100 MB, this will be lowered in a future release to 10 MB to be more inline with maxInflatedDataSizeRatio on the client.
 For the client, maxInflatedDataSize is computed as a ratio using maxInflatedDataSizeRatio
 - By default, [allowTempDestinationStealing](../documentation/per-destination-policies) has now been disabled. In previous releases, connections could add consumers on any temporary destination. Now only the connection that created the temporary destination can consume. This may cause problems with failover or network bridging if using temporary destinations in those scenarios. You can re-nable the preivous behavior by setting `allowTempDestinationStealing` to true, but this would only be recommended if you are not concerned with unauthorized connections consuming from those destinations.
 - The WebConsole is now restricted only to admin users by default. The WebConsole uses admin credentials to perform some functions, including when browsing destinations. Therefore, it is recommended to not grant access to non-admin users as the WebConsole is specifically meant for admins.
+- ActiveMQConnection tracks temp destinations and the map that was used was replaced with a set in [#2113](https://github.com/apache/activemq/pull/2113), and scope reduced to package level. This was never intended to be public API so it should not be a breaking change, but could be an issue if a user was trying to access the previous map.
 
 #### Other notable changes from the recent 6.2.5 and 6.2.6 release:
 
