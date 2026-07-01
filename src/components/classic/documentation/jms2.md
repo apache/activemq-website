@@ -63,18 +63,18 @@ The implementation approach is subject to change. Be sure to verify features in 
 
 User feedback is welcome! Please comment on the JIRAs with questions and comments.
 
-JIRA|Status|Target Version|Completed Version|Feature|Notes
----|:---:|---|---|---|---
-[AMQ-7309](https://issues.apache.org/jira/browse/AMQ-7309) | ✅ | 5.16.0 | 5.18.0 | JMS 2.0 API dependency | ActiveMQ will ship with a JMS 2.0 dependency jar
-[AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | ✅ | 5.17.0 | 5.18.0 | `JMSContext`, `JMSConsumer`, `JMSProducer`, &amp; `JMSRuntimeException` | Simplified JMS API support
-[AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | ✅ | 5.18.0 | 5.18.0 | GetBody/isBodyAssignable | Support for checking body type using a `Class<?>`
-[AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | ✅ | 5.18.3, 6.0.0 | 5.18.3, 6.0.0 | XA Connection methods | Updated methods when using XA transactions
-[AMQ-8494](https://issues.apache.org/jira/browse/AMQ-8494) | ✅ | 5.17.1 | 5.18.0 | Implement `CLIENT_ACKNOWLEDGEMENT` mode | Client ack requires special handling w/ the simplified JMSContext API
-[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | ❌ | 6.4.0 | | JMSConsumer | `.receiveBody(Class<T>)` methods
-[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | ❌ | 6.3.0 | | Delivery Delay | Support for Message DeliveryDelay feature
-[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | ❌ | 6.4.0 | | JMSProducer features | `CompletionListener` async send support
-[AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | ❌ | | | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions
-[AMQ-9451](https://issues.apache.org/jira/browse/AMQ-9451) | ❌ | 6.5.0 | | Pooled `ConnectionFactory` | Support for JMSContext in activemq-jms-pool
+JIRA|Status|Target Version| Completed Version |Feature|Notes
+---|:---:|---|-------------------|---|---
+[AMQ-7309](https://issues.apache.org/jira/browse/AMQ-7309) | ✅ | 5.16.0 | 5.18.0            | JMS 2.0 API dependency | ActiveMQ will ship with a JMS 2.0 dependency jar
+[AMQ-8322](https://issues.apache.org/jira/browse/AMQ-8322) | ✅ | 5.17.0 | 5.18.0            | `JMSContext`, `JMSConsumer`, `JMSProducer`, &amp; `JMSRuntimeException` | Simplified JMS API support
+[AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | ✅ | 5.18.0 | 5.18.0            | GetBody/isBodyAssignable | Support for checking body type using a `Class<?>`
+[AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | ✅ | 5.18.3, 6.0.0 | 5.18.3, 6.0.0     | XA Connection methods | Updated methods when using XA transactions
+[AMQ-8494](https://issues.apache.org/jira/browse/AMQ-8494) | ✅ | 5.17.1 | 5.18.0            | Implement `CLIENT_ACKNOWLEDGEMENT` mode | Client ack requires special handling w/ the simplified JMSContext API
+[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | ❌ | 6.4.0 |                   | JMSConsumer | `.receiveBody(Class<T>)` methods
+[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | ❌ | 6.3.0 |                   | Delivery Delay | Support for Message DeliveryDelay feature
+[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | ✅ | 6.4.0 | 6.3.0             | JMSProducer features | `CompletionListener` async send support. Note: the current implementation performs the send synchronously and invokes the `CompletionListener` on a separate thread, which is permitted by the JMS 2.0 specification (section 7.3).
+[AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | ❌ | |                   | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions
+[AMQ-9451](https://issues.apache.org/jira/browse/AMQ-9451) | ❌ | 6.5.0 |                   | Pooled `ConnectionFactory` | Support for JMSContext in activemq-jms-pool
 
 ### Feature notes
 
