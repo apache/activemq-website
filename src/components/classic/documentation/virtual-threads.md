@@ -5,11 +5,11 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic-5) > [Configure version 6 Virtual Threads](virtual-threads)
+[Using ActiveMQ](using-activemq-classic-5) > [Configure version 6 Virtual Threads](virtual-threads)
 
 ### Virtual Threads support 
 
-ActiveMQ Classic support for Virtual Threads is in Technology Preview stage.
+ActiveMQ support for Virtual Threads is in Technology Preview stage.
 
 ### Virtual Threads benefits
 
@@ -37,7 +37,7 @@ ref:  https://mail.openjdk.org/pipermail/loom-dev/2024-May/006632.html
 
 ### Configuration
 
-To enable Virtual Threads in ActiveMQ Classic 6.x (and higher)
+To enable Virtual Threads in ActiveMQ 6.x (and higher)
 
 1. Checkout activemq source code from git
 2. Build using JDK 21 (Virtual Thread support will be added automatically)
@@ -46,13 +46,13 @@ To enable Virtual Threads in ActiveMQ Classic 6.x (and higher)
 
     <broker ... virtualThreadTaskRunner="true" .. >
 
-4. Run ActiveMQ Classic and confirm with the following log message:
+4. Run ActiveMQ and confirm with the following log message:
 
     INFO | VirtualThreadExecutor initialized name:ActiveMQ BrokerService[localhost] Task
 
 NOTE: The log message may be removed in the future
 
-### ActiveMQ Classic Virtual Thread Implementation Progress 
+### ActiveMQ Virtual Thread Implementation Progress 
 
 The implementation approach is subject to change. Be sure to verify features in Release notes. 
 

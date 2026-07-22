@@ -5,10 +5,10 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I create new destinations](how-do-i-create-new-destinations)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I create new destinations](how-do-i-create-new-destinations)
 
 
-In ActiveMQ Classic you do **not** have to create destinations up front before you can use them. The ActiveMQ Classic broker auto-creates the physical resources associated with a destination on demand (i.e. when messages are sent to a new destination on a broker).
+In ActiveMQ you do **not** have to create destinations up front before you can use them. The ActiveMQ broker auto-creates the physical resources associated with a destination on demand (i.e. when messages are sent to a new destination on a broker).
 
 This means that a client can create a new Queue or Topic dynamically either by
 
@@ -29,7 +29,7 @@ If you need to restrict access or creation of destinations then please use the [
 
 Client side destination objects are not the same as server side resources
 
-Note that the ActiveMQ Classic Broker will only create server side resources for destinations when messages are actually sent to them. So you can create as many instances of ActiveMQTopic and ActiveMQQueue on a client without any real overhead until you actually send messages to them on a broker. So a JMS client creating a new ActiveMQQueue POJO does not mean you are creating server side queue resources.
+Note that the ActiveMQ Broker will only create server side resources for destinations when messages are actually sent to them. So you can create as many instances of ActiveMQTopic and ActiveMQQueue on a client without any real overhead until you actually send messages to them on a broker. So a JMS client creating a new ActiveMQQueue POJO does not mean you are creating server side queue resources.
 
 Think of the ActiveMQQueue and ActiveMQTopic classes as like java.net.URL. They are just names which refer to server side resources which are auto-created when they are used.  
 This means that different clients creating different ActiveMQQueue instances will communicate with the same physical queue on a JMS broker if the name is the same.

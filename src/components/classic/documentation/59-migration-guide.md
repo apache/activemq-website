@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [Overview](overview) > [Download](download) > [ActiveMQ Classic 5.9.0 Release](activemq-590-release) > [5.9 Migration Guide](59-migration-guide)
+ [Overview](overview) > [Download](download) > [ActiveMQ 5.9.0 Release](activemq-590-release) > [5.9 Migration Guide](59-migration-guide)
 
 There are some changes in 5.9 that may require user intervention
 

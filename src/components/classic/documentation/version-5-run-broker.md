@@ -5,18 +5,18 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic 5](using-activemq-classic-5) > [Version 5 Run Broker](version-5-run-broker)
+[Using ActiveMQ 5](using-activemq-classic-5) > [Version 5 Run Broker](version-5-run-broker)
 
 
-Running an ActiveMQ Classic Broker
+Running an ActiveMQ Broker
 ==========================
 
 Note if you want to use an **embedded broker** then see [How do I embed a Broker inside a Connection](how-do-i-embed-a-broker-inside-a-connection)
 
-The [binary distribution](download) of ActiveMQ Classic comes with a script called 'activemq' which allows you to run a broker.  
-For details regarding the activemq init script file review  [Unix Shell Script](unix-shell-script)  and  [ActiveMQ Classic Command Line Tools Reference](activemq-classic-command-line-tools-reference)
+The [binary distribution](download) of ActiveMQ comes with a script called 'activemq' which allows you to run a broker.  
+For details regarding the activemq init script file review  [Unix Shell Script](unix-shell-script)  and  [ActiveMQ Command Line Tools Reference](activemq-classic-command-line-tools-reference)
 
-Typing the following will run an ActiveMQ Classic Broker using the out of the box configuration in the foreground
+Typing the following will run an ActiveMQ Broker using the out of the box configuration in the foreground
 ```
 bin/activemq console
 ```
@@ -35,15 +35,15 @@ bin/activemq console properties:foo.properties
 
 ### Monitoring the broker
 
-You can monitor ActiveMQ Classic using the [Web Console](web-console) by pointing your browser at
+You can monitor ActiveMQ using the [Web Console](web-console) by pointing your browser at
 
 [http://localhost:8161/admin](http://localhost:8161/admin)
 
-From ActiveMQ Classic 5.8 onwards the web apps is secured out of the box.  
+From ActiveMQ 5.8 onwards the web apps is secured out of the box.  
 
 The default username and password is admin/admin. You can configure this in the conf/jetty-real.properties file.
 
-Or you can use the [JMX](jmx) support to view the running state of ActiveMQ Classic.
+Or you can use the [JMX](jmx) support to view the running state of ActiveMQ.
 
 For more information see the file `docs/WebConsole-README.txt` in the distribution.
 
@@ -59,11 +59,11 @@ For more details see [J2EE](j2ee)
 
 ### Running the broker from the source code
 
-From the latest [checkout](source) of the code you can run a broker using the [ActiveMQ Classic Performance Plugin](activemq-classic-performance-module-users-manual)
+From the latest [checkout](source) of the code you can run a broker using the [ActiveMQ Performance Plugin](activemq-classic-performance-module-users-manual)
 
 ### Running the broker from maven
 
-You can download and install the ActiveMQ Classic Startup Maven Plugin via the following command if you are in a directory with a pom.xml. More detailed usage [here](maven2-activemq-broker-plugin)
+You can download and install the ActiveMQ Startup Maven Plugin via the following command if you are in a directory with a pom.xml. More detailed usage [here](maven2-activemq-broker-plugin)
 ```
 mvn org.apache.activemq.tooling:maven-activemq-plugin:5.0-SNAPSHOT:run    
 ```

@@ -8,12 +8,12 @@ type: classic
 [Developers](developers) > [Wire Protocol](wire-protocol)
 
 
-This page describes the logical [OpenWire](openwire) protocol for users developing clients in other languages than Java such as C# or C native clients. Note that OpenWire is designed for maximum performance and features; its the protocol used inside ActiveMQ Classic. If you want a simpler protocol to work with to get started with a cross language client then try [Stomp](stomp) which is designed for ease-of-implementation so its easy to support many clients.
+This page describes the logical [OpenWire](openwire) protocol for users developing clients in other languages than Java such as C# or C native clients. Note that OpenWire is designed for maximum performance and features; its the protocol used inside ActiveMQ. If you want a simpler protocol to work with to get started with a cross language client then try [Stomp](stomp) which is designed for ease-of-implementation so its easy to support many clients.
 
 Protocol overview
 =================
 
-A client of ActiveMQ Classic will exchange Command objects (following the _Command Pattern_). We'll describe how these commands are exchanged...
+A client of ActiveMQ will exchange Command objects (following the _Command Pattern_). We'll describe how these commands are exchanged...
 
 The protocol uses mostly one way messaging (fire and forget) for most kinds of commands - but there are times when RPCs (request, response) messaging is used. We'll indiciate the RPC scenarios clearly.
 

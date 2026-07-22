@@ -8,7 +8,7 @@ type: classic
 [Connectivity](connectivity) > [Containers](containers) > [JNDI Support](jndi-support)
 
 
-ActiveMQ Classic will work with any JNDI provider capable of storing Java objects. However it is common to require a JNDI initial context to be able to run many JMS example programs, like [Sun's JMS tutorial.](http://java.sun.com/products/jms/tutorial/1_3_1-fcs/doc/jms_tutorialTOC.html)
+ActiveMQ will work with any JNDI provider capable of storing Java objects. However it is common to require a JNDI initial context to be able to run many JMS example programs, like [Sun's JMS tutorial.](http://java.sun.com/products/jms/tutorial/1_3_1-fcs/doc/jms_tutorialTOC.html)
 
 So we provide a simple JNDI `InitialContextFactory` which can be used to lookup JMS connection factory objects as well as Destination objects. For example if you place this [jndi.properties](http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/jndi.properties) file on your classpath, you can look inside the `InitialContext` and lookup `ConnectionFactory` objects and `Destinations` etc.
 ```
@@ -32,16 +32,16 @@ topic.MyTopic = example.MyTopic
 ```
 You can edit the `jndi.properties` file to configure the `ActiveMQConnectionFactory`'s properties such as `brokerURL` and whether or not there should be an embedded broker etc. See [how to embed a broker in a connection](how-do-i-embed-a-broker-inside-a-connection) for more details.
 
-### ActiveMQ Classic JNDI Tutorial
+### ActiveMQ JNDI Tutorial
 
-This is a quick one page tutorial on how to setup and use JNDI to create a connection to ActiveMQ Classic. The first thing is ActiveMQ Classic does not provide a full JNDI server. This means JMS clients need to use properties files to create a JNDI `IntialContextFactory`. If you need an example properties file, you can look the source distribution [https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/resources/jndi.properties](https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/resources/jndi.properties). Before we proceed, here are the properties.
+This is a quick one page tutorial on how to setup and use JNDI to create a connection to ActiveMQ. The first thing is ActiveMQ does not provide a full JNDI server. This means JMS clients need to use properties files to create a JNDI `IntialContextFactory`. If you need an example properties file, you can look the source distribution [https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/resources/jndi.properties](https://github.com/apache/activemq/blob/master/activemq-unit-tests/src/test/resources/jndi.properties). Before we proceed, here are the properties.
 
 Name|Value
 `java.naming.factory.initial`|`org.apache.activemq.jndi.ActiveMQInitialContextFactory`
 `java.naming.provider.url`|`tcp://hostname:61616`
 `topic.MyTopic`|`example.MyTopic`
 
-Make sure to add `activemq-_<version>_.jar` and `spring-1.x.jar` to your classpath. If the libraries are not in the classpath, you will get a `ClassNotFoundException` at runtime. If you get `ClassNotFoundException`, try printing out the classpath and check it is present. You can also run ActiveMQ Classic with `-verbose` option to verify the jar was loaded correctly.
+Make sure to add `activemq-_<version>_.jar` and `spring-1.x.jar` to your classpath. If the libraries are not in the classpath, you will get a `ClassNotFoundException` at runtime. If you get `ClassNotFoundException`, try printing out the classpath and check it is present. You can also run ActiveMQ with `-verbose` option to verify the jar was loaded correctly.
 
 **Sample Code**
 
@@ -59,7 +59,7 @@ javax.jms.TopicSession session = conn.createTopicSession(false,TopicSession.AUTO
 // Create a new subscriber to receive messages: 
 javax.jms.TopicSubscriber subscriber = session.createSubscriber(mytopic);
 ```
-Notice the name of the topic in the sample is `MyTopic`. ActiveMQ Classic will read the `jndi.properties` files and creates the topics and queues in a lazy fashion. The prefix topic and queue is stripped, so the JNDI name begins after the prefix.
+Notice the name of the topic in the sample is `MyTopic`. ActiveMQ will read the `jndi.properties` files and creates the topics and queues in a lazy fashion. The prefix topic and queue is stripped, so the JNDI name begins after the prefix.
 
 Once you have the `jndi.properties` edited and ready, it needs to be accessible to your application. The easiest way is to add `jndi.properties` to a jar file. When `new InitialContext()` is called, it will scan the resources and find the file. If you get `javax.naming.NamingException`, it usually means the `jndi.properties` file is not accessible.
 
@@ -72,7 +72,7 @@ props.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.Act
 props.setProperty(Context.PROVIDER_URL, "tcp://hostname:61616"); 
 javax.naming.Context ctx = new InitialContext(props);
 ```
-If ActiveMQ Classic is embedded within an EJB container, you will need to look at the containers documentation for the correct JNDI values.
+If ActiveMQ is embedded within an EJB container, you will need to look at the containers documentation for the correct JNDI values.
 
 ### Dynamically Creating Destinations
 
@@ -105,7 +105,7 @@ More options are available in the [VM Transport Reference](vm-transport-referenc
 
 ### Example Java Code
 
-Once you have configured JNDI on the classpath you can run any normal JMS application such as the following [example](http://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-unit-tests/src/test/java/org/apache/activemq/demo/SimpleProducer.java). Notice that the Java code just uses pure JMS APIs and is not in any way ActiveMQ Classic specific
+Once you have configured JNDI on the classpath you can run any normal JMS application such as the following [example](http://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-unit-tests/src/test/java/org/apache/activemq/demo/SimpleProducer.java). Notice that the Java code just uses pure JMS APIs and is not in any way ActiveMQ specific
 ```
 /**
  * The SimpleQueueSender class consists only of a main method,

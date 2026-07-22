@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I unack the message with Stomp](how-do-i-unack-the-message-with-stomp)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I unack the message with Stomp](how-do-i-unack-the-message-with-stomp)
 
 
 There is no explicit "unack" command in Stomp. Once the client receives the message it cannot be marked as "unconsumed" and sent to another subscriber (or redelivered to the same subscriber again). It's up to your application (or Stomp client) to handle failed processing of received messages and implement "message redelivery".

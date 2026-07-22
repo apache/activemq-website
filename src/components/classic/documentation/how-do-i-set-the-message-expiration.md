@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I set the message expiration](how-do-i-set-the-message-expiration)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I set the message expiration](how-do-i-set-the-message-expiration)
 
 
 JMSExpiration on a message is set by the MessageProducer in JMS - either via

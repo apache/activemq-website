@@ -16,7 +16,7 @@ type: classic
 *   [Community](community)
 *   [Features](features)
 *   [Connectivity](connectivity)
-*   [Using ActiveMQ Classic](using-activemq-classic-5)
+*   [Using ActiveMQ](using-activemq-classic-5)
 *   [Tools](tools)
 *   [Support]({{project.base}}/support)
 *   [Developers](developers)

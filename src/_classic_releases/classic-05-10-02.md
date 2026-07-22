@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.10.2 Release
+title: ActiveMQ 5.10.2 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.10.2 resolves [2 issues](https://issues.apache.org/jira/issues/?jql=project%20%3D%20AMQ%20AND%20fixVersion%20%3D%205.10.2), both bug fixes.
+Apache ActiveMQ 5.10.2 resolves [2 issues](https://issues.apache.org/jira/issues/?jql=project%20%3D%20AMQ%20AND%20fixVersion%20%3D%205.10.2), both bug fixes.
 
 ### Getting the Binary Distributions
 
@@ -82,5 +82,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12329390)
 
-Also see the previous [ActiveMQ Classic 5.10.1 Release](classic-05-10-01)
+Also see the previous [ActiveMQ 5.10.1 Release](classic-05-10-01)
 

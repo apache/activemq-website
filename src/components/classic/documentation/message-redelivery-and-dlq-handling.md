@@ -27,7 +27,7 @@ policy.setMaximumRedeliveries(2);
 ```
 Once a message's redelivery attempts exceeds the `maximumRedeliveries` configured for the [Redelivery Policy](redelivery-policy), a "Poison ACK" is sent back to the broker letting him know that the message was considered a poison pill. The Broker then takes the message and sends it to a Dead Letter Queue so that it can be analyzed later on.
 
-The default Dead Letter Queue in ActiveMQ Classic is called `ActiveMQ.DLQ`; all un-deliverable messages will get sent to this queue and this can be difficult to manage. So, you can set an `individualDeadLetterStrategy` in the destination policy map of the `activemq.xml` configuration file, which allows you to specify a specific dead letter queue prefix for a given queue or topic. You can apply this strategy using wild card if you like so that all queues get their own dead-letter queue, as is shown in the example below.
+The default Dead Letter Queue in ActiveMQ is called `ActiveMQ.DLQ`; all un-deliverable messages will get sent to this queue and this can be difficult to manage. So, you can set an `individualDeadLetterStrategy` in the destination policy map of the `activemq.xml` configuration file, which allows you to specify a specific dead letter queue prefix for a given queue or topic. You can apply this strategy using wild card if you like so that all queues get their own dead-letter queue, as is shown in the example below.
 ```
 <broker>
   
@@ -54,7 +54,7 @@ See the [Redelivery Policy](redelivery-policy) section for some more detail on t
 
 ### Automatically Discard Expired Messages
 
-Some folks simply need expired messages to be discarded instead of sent to the DLQ i.e., skip the DLQ entirely. This simplifies the management of the DLQ so that you're not sifting through loads of expired messages to find messages with real problems. To tell ActiveMQ Classic to just discard expired messages, configure the `processExpired` property to false on a dead letter strategy:
+Some folks simply need expired messages to be discarded instead of sent to the DLQ i.e., skip the DLQ entirely. This simplifies the management of the DLQ so that you're not sifting through loads of expired messages to find messages with real problems. To tell ActiveMQ to just discard expired messages, configure the `processExpired` property to false on a dead letter strategy:
 ```
 <broker>
   
@@ -81,7 +81,7 @@ Some folks simply need expired messages to be discarded instead of sent to the D
 
 ### Place Non-Persistent Messages Onto The Dead-Letter Queue
 
-By default, ActiveMQ Classic will not place undeliverable _non-persistent_ messages on the dead-letter queue. The rationale for this behavior is that if the application doesn't care enough to make the message persistent, then there is little or no value in recording that the message was undeliverable. If you do want to place non-persistent messages on the dead-letter queue, then you should set `processNonPersistent="true"` on the dead-letter strategy.
+By default, ActiveMQ will not place undeliverable _non-persistent_ messages on the dead-letter queue. The rationale for this behavior is that if the application doesn't care enough to make the message persistent, then there is little or no value in recording that the message was undeliverable. If you do want to place non-persistent messages on the dead-letter queue, then you should set `processNonPersistent="true"` on the dead-letter strategy.
 ```
 <broker>
   
@@ -107,7 +107,7 @@ By default, ActiveMQ Classic will not place undeliverable _non-persistent_ messa
 
 ### Setting Expiration on Messages in the DLQ
 
-By default, ActiveMQ Classic will **_never_** expire messages sent to the DLQ. However, from ActiveMQ Classic 5.12 the `deadLetterStrategy` supports an `expiration` attribute whose value is given in milliseconds.
+By default, ActiveMQ will **_never_** expire messages sent to the DLQ. However, from ActiveMQ 5.12 the `deadLetterStrategy` supports an `expiration` attribute whose value is given in milliseconds.
 
 > Be selective in how this is applied. In particular do not apply expiration to your DLQ destinations by setting expiration on a default or inclusive wildcard policy entry.
 > 
@@ -139,7 +139,7 @@ The dead letter strategy has an message audit that is enabled by default. This p
 
 ### The Discarding DLQ Plugin
 
-> From ActiveMQ Classic 5.9 - a destination `policyEntry` supports a `deadLetterStrategy` of discarding:
+> From ActiveMQ 5.9 - a destination `policyEntry` supports a `deadLetterStrategy` of discarding:
 > ```
 > <deadLetterStrategy>
 >   <discarding/>
@@ -222,5 +222,5 @@ The feature is enabled via XML configuration as follows:
 ```
 The familiar [Redelivery Policy](redelivery-policy) has been extended to take a matching destination. `fallbackToDeadLetter`controls the action when there is no matching redeliver policy for a destination. Defaults to `true` so regular DLQ processing ensues. `sendToDlqIfMaxRetriesExceeded` controls the action when the retry limit is exceeded. Defaults to true so regular DLQ processing ensues. When `false`, the message is dropped.
 
-> ActiveMQ Classic's `schedulerSupport` must be enabled for this feature to work.
+> ActiveMQ's `schedulerSupport` must be enabled for this feature to work.
 

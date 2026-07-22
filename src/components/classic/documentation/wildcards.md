@@ -66,7 +66,7 @@ To
        <destinationPathSeparatorPlugin/>
     </plugins>
 ```
-ActiveMQ Classic 3.2.1 Release 
+ActiveMQ 3.2.1 Release 
 
 A default path separator this plugin will use is `/`. You can customize it further using `pathSeparator` property.
 

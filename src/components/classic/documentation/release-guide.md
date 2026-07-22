@@ -8,7 +8,7 @@ type: classic
 [Developers](developers) > [Release Guide](release-guide)
 
 
-How to create and announce an ActiveMQ Classic release. This release is based on [General guide for releasing Maven-based project at Apache](http://maven.apache.org/developers/release/apache-release.html) , so be sure to check it out before continuing and meet all prerequisites.
+How to create and announce an ActiveMQ release. This release is based on [General guide for releasing Maven-based project at Apache](http://maven.apache.org/developers/release/apache-release.html) , so be sure to check it out before continuing and meet all prerequisites.
 
 Maven 2 Setup
 -------------
@@ -71,7 +71,7 @@ To effectively use the release and staging plugins you need some information abo
 </settings>
 ```
 
-Creating the ActiveMQ Classic Release
+Creating the ActiveMQ Release
 -----------------------------
 
 The release plugin will prompt for a release version, tag and next release version. Use a three digit release version of the form: 5.x.x and for the tag use a string of the form: activemq-5.x.x. The next version string should use the two digit from: 5.x-SNAPSHOT as this can be consistent for future SNAPSHOT releases.
@@ -179,7 +179,7 @@ After the vote passes
 5.  Created a in progress wiki page for the next release
 6.  Remove any releases from the dist site that are no longer supported and update the wiki page for that release to point to the archives for downloads.
 
-Announcing the ActiveMQ Classic Release
+Announcing the ActiveMQ Release
 -------------------------------
 
 1.  Perform a release in JIRA and create a new release version in JIRA.
@@ -191,9 +191,9 @@ Announcing the ActiveMQ Classic Release
     version: 5.16.1
     release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12347027
     release_date: Jan 20, 2021
-    title: ActiveMQ Classic 5.16.1 Release 
+    title: ActiveMQ 5.16.1 Release 
     ---
-    Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date }}. It fully supports JDK 9+ at runtime and includes several resolved [issues]({{ page.release_notes }}) and bug fixes.
+    Apache ActiveMQ {{ page.version }} was released on {{ page.release_date }}. It fully supports JDK 9+ at runtime and includes several resolved [issues]({{ page.release_notes }}) and bug fixes.
     ``` 
 3. If necessary, update the current versions by editing the `5x` list in `src/_data/current_releases.yml`. The latest patch release published in `src/_releases/` for the major.minor versions in the list will automatically be included on the [download page](https://activemq.apache.org/components/classic/download/).
 4.  Update the [Xml Reference](xml-reference) page with a link to the HTML and XSD

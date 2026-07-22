@@ -8,13 +8,13 @@ type: classic
 [Connectivity](connectivity) > [Containers](containers) > [JBoss Integration](jboss-integration) > [Outbound Communication](JBoss Integration/outbound-communication)
 
 
-Configuring a Session Bean to send messages to ActiveMQ Classic
+Configuring a Session Bean to send messages to ActiveMQ
 -------------------------------------------------------
 
-In the attached [example application](outbound-communication.data/activemq-jboss-test.zip?version=3&modificationDate=1117021355000&api=v2), the three MDBs use the `SenderEJB` to send JMS messages to an ActiveMQ Classic queue. In this example, I will be explaining how to:
+In the attached [example application](outbound-communication.data/activemq-jboss-test.zip?version=3&modificationDate=1117021355000&api=v2), the three MDBs use the `SenderEJB` to send JMS messages to an ActiveMQ queue. In this example, I will be explaining how to:
 
-1.  Configure and deploy an ActiveMQ Classic `Queue` to JBoss
-2.  Configure and deploy an ActiveMQ Classic `QueueConnectionFactory` to JBoss
+1.  Configure and deploy an ActiveMQ `Queue` to JBoss
+2.  Configure and deploy an ActiveMQ `QueueConnectionFactory` to JBoss
 3.  Configure an EJB, deployed to JBoss, to reference the above two.
 
 ### The Bean
@@ -42,7 +42,7 @@ In the [ejb-jar.xml](outbound-communication.data/ejb-jar.xml?version=3&modificat
    </message-destination-ref>
 </session>
 ```
-The `jms/MyQueueConnectionFactory` is the JNDI name the `SenderEJB` will use to lookup a `javax.jms.QueueConnectionFactory`. We will configure it to point to an ActiveMQ Classic `QueueConnectionFactory`.
+The `jms/MyQueueConnectionFactory` is the JNDI name the `SenderEJB` will use to lookup a `javax.jms.QueueConnectionFactory`. We will configure it to point to an ActiveMQ `QueueConnectionFactory`.
 
 The `jms/LogQueue` is the JNDI name the `SenderEJB` will use to lookup the `javax.jms.Queue` it will send messages to. We use the `message-destination-link` element to refer to the `LoggingQueue` which is declared in the `assembly-descriptor` section of the [ejb-jar.xml](outbound-communication.data/ejb-jar.xml?version=3&modificationDate=1117021488000&api=v2) deployment descriptor as:  
 
@@ -124,7 +124,7 @@ This second snippet configures the `Queue`, [declared above](JBoss Integration/o
    </attribute>
 </mbean>
 ```
-In the [panacya-jms-ds.xml](outbound-communication.data/panacya-jms-ds.xml?version=5&modificationDate=1117021448000&api=v2) file section shown above, the value of the `Properties` element is set to `PhysicalName=queue.outbound`. This value is the physical name of the ActiveMQ Classic destination the `SenderEJB` will be sending messages to and not a JNDI name. In other words, the value of the `PhysicalName` property has no meaning to JBoss. It is purely an ActiveMQ Classic setting.
+In the [panacya-jms-ds.xml](outbound-communication.data/panacya-jms-ds.xml?version=5&modificationDate=1117021448000&api=v2) file section shown above, the value of the `Properties` element is set to `PhysicalName=queue.outbound`. This value is the physical name of the ActiveMQ destination the `SenderEJB` will be sending messages to and not a JNDI name. In other words, the value of the `PhysicalName` property has no meaning to JBoss. It is purely an ActiveMQ setting.
 
 ##### [jboss.xml](outbound-communication.data/jboss.xml?version=3&modificationDate=1117021488000&api=v2) – _The JBoss Deployment Descriptor_
 
@@ -166,6 +166,6 @@ This third snippet links the `LoggingQueue`, which was [declared](JBoss Integrat
    </message-destination>
 </assembly-descriptor>
 ```
-The above example highlights the key configuration settings needed to enable EJBs deployed in JBoss to send JMS messages to an ActiveMQ Classic destination.
+The above example highlights the key configuration settings needed to enable EJBs deployed in JBoss to send JMS messages to an ActiveMQ destination.
 
 You can try the above example, plus a few more, by downloading the [activemq-jboss-test.zip](outbound-communication.data/activemq-jboss-test.zip?version=3&modificationDate=1117021355000&api=v2) file which contains the complete sample project.

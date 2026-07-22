@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I disable logging](how-do-i-disable-logging)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I disable logging](how-do-i-disable-logging)
 
 
 How do I disable logging?

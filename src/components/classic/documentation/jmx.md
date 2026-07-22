@@ -11,9 +11,9 @@ type: classic
 JMX
 ---
 
-Apache ActiveMQ Classic has extensive support for JMX to allow you to monitor and control the behavior of the broker via the [JMX MBeans](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/jmx/package-summary.html).
+Apache ActiveMQ has extensive support for JMX to allow you to monitor and control the behavior of the broker via the [JMX MBeans](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/broker/jmx/package-summary.html).
 
-### Using JMX to monitor Apache ActiveMQ Classic
+### Using JMX to monitor Apache ActiveMQ
 
 You can enable/disable JMX support as follows...
 
@@ -29,18 +29,18 @@ You can enable/disable JMX support as follows...
    ```
    $ jconsole 
    ```
-3. The ActiveMQ Classic broker should appear in the list of local connections, if you are running JConsole on the same host as ActiveMQ Classic.
+3. The ActiveMQ broker should appear in the list of local connections, if you are running JConsole on the same host as ActiveMQ.
 
 **JMX remote access**
 
 Remote connections to JMX are not enabled by default in the activemq.xml for security reasons. Please refer to [Java Management guide](http://docs.oracle.com/javase/6/docs/technotes/guides/management/agent.html) to configure the broker for remote management.
 
-Using the Apache ActiveMQ Classic version on OS X it appears as follows:
+Using the Apache ActiveMQ version on OS X it appears as follows:
 
 ![](assets/img/activemq-jmx.png)  
  
 
-### ActiveMQ Classic MBeans Reference
+### ActiveMQ MBeans Reference
 
 For additional references provided below is a brief hierarchy of the mbeans and a listing of the properties, attributes, and operations of each mbeans.
 
@@ -54,7 +54,7 @@ Connection|**type=Broker**, **brokerName=&lt;name-of-broker>**, **connectionView
 PersistenceAdapter|**type=Broker**, **brokerName=&lt;name-of-broker>**, **Service=PersistenceAdapter**, **InstanceName==&lt;adapter-identifier>**|Name, Size, Data, Transactions|
 Health|**type=Broker**, **brokerName=&lt;name-of-broker>**, **Service=Health**|CurrentStatus|health
 
-Command line utilities are also available to let you monitor ActiveMQ Classic. Refer to [ActiveMQ Classic Command Line Tools Reference](activemq-classic-command-line-tools-reference) for usage information.
+Command line utilities are also available to let you monitor ActiveMQ. Refer to [ActiveMQ Command Line Tools Reference](activemq-classic-command-line-tools-reference) for usage information.
 
 JMX API is also exposed via [REST management API](rest)
 
@@ -62,7 +62,7 @@ JMX API is also exposed via [REST management API](rest)
 
 (For Java 1.5+)
 
-1. Make sure JMX is enabled, but tell ActiveMQ Classic **not** create its own connector so that it will use the default JVM JMX connector.
+1. Make sure JMX is enabled, but tell ActiveMQ **not** create its own connector so that it will use the default JVM JMX connector.
     ````
     <broker xmlns="http://activemq.org/config/1.0" brokerName="localhost"useJmx="true">
     
@@ -98,7 +98,7 @@ JMX API is also exposed via [REST management API](rest)
 
 3. Modify the "activemq" startup script (in bin) to enable the Java 1.5+ JMX connector
 
-    Find the "ACTIVEMQ_SUNJMX_START=" line and change it to the following: (note that in previous versions of ActiveMQ Classic this property was called SUNJMX in some scripts.  As of v5.12.0 all scripts use ACTIVEMQ_SUNJMX_START):
+    Find the "ACTIVEMQ_SUNJMX_START=" line and change it to the following: (note that in previous versions of ActiveMQ this property was called SUNJMX in some scripts.  As of v5.12.0 all scripts use ACTIVEMQ_SUNJMX_START):
     
     1. Windows
       ```   
@@ -131,7 +131,7 @@ JMX API is also exposed via [REST management API](rest)
           -Dcom.sun.management.jmxremote.password.file=${ACTIVEMQ_BASE}/conf/jmx.password \
           -Dcom.sun.management.jmxremote.access.file=${ACTIVEMQ_BASE}/conf/jmx.access"
       ```
-4. Start ActiveMQ Classic
+4. Start ActiveMQ
 
 You should be able to connect to JMX on the JMX URL
 ```

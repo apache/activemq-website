@@ -5,15 +5,15 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [JMS and JDBC operations in one transaction](jms-and-jdbc-operations-in-one-transaction)
+[Using ActiveMQ](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [JMS and JDBC operations in one transaction](jms-and-jdbc-operations-in-one-transaction)
 
 
-### JMS and JDBC operations in one transaction with Spring/Jencks/ActiveMQ Classic
+### JMS and JDBC operations in one transaction with Spring/Jencks/ActiveMQ
 
 Spring beans:
 ```
 <beans>
-    <!-- ActiveMQ Classic Broker -->
+    <!-- ActiveMQ Broker -->
     <bean id="broker" class="org.apache.activemq.broker.BrokerService" init-method="start" destroy-method="stop">
         <property name="persistent" value="false"/>
         <property name="transportConnectorURIs">
@@ -51,7 +51,7 @@ Spring beans:
         </property>
     </bean>
 
-    <!-- ActiveMQ Classic Connection -->
+    <!-- ActiveMQ Connection -->
     <bean id="jmsResourceAdapter" class="org.apache.activemq.ra.ActiveMQResourceAdapter" depends-on="broker">
         <property name="serverUrl">
             <value>tcp://localhost:5000</value>

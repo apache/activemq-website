@@ -1,20 +1,20 @@
 ---
 layout: default_md
-title: Compile ActiveMQ Classic with GCJ 
+title: Compile ActiveMQ with GCJ 
 title-class: page-title-classic
 type: classic
 ---
 
-[Connectivity](connectivity) > [Cross Language Clients](cross-language-clients) > [C Integration](c-integration) > [Compile ActiveMQ Classic with GCJ](compile-activemq-with-gcj)
+[Connectivity](connectivity) > [Cross Language Clients](cross-language-clients) > [C Integration](c-integration) > [Compile ActiveMQ with GCJ](compile-activemq-with-gcj)
 
 
-You can use [GCJ](http://gcc.gnu.org/java/) to build ActiveMQ Classic as a shared library you can reuse from C++.
+You can use [GCJ](http://gcc.gnu.org/java/) to build ActiveMQ as a shared library you can reuse from C++.
 
-### Native compile ActiveMQ Classic HOWTO
+### Native compile ActiveMQ HOWTO
 
 #### Abstract
 
-This document describes how to native compile ActiveMQ Classic for use in a C++ environment. The version of ActiveMQ Classic used is 3.2 in this howto. To compile you'll need GCC 4.0.2, or later, with both Java, and C/C++ support.
+This document describes how to native compile ActiveMQ for use in a C++ environment. The version of ActiveMQ used is 3.2 in this howto. To compile you'll need GCC 4.0.2, or later, with both Java, and C/C++ support.
 
 #### Tools Setup
 
@@ -38,7 +38,7 @@ If you don't already have GCC 4.0.2 installed you need to download and build it.
     make bootstrap
     make install
     ```
-*   Download ActiveMQ Classic and copy the JARs to a new empty directory /opt/app, including
+*   Download ActiveMQ and copy the JARs to a new empty directory /opt/app, including
     ```
     activeio-1.1.jar
     activemq-core-3.2.jar
@@ -53,7 +53,7 @@ If you don't already have GCC 4.0.2 installed you need to download and build it.
 
 #### Write the Glue Code
 
-Either access the ActiveMQ Classic classes directly from C++ or write a facade object in Java that handles all startup and shutdown logic of ActiveMQ Classic. Save the glue files in the same directory as for the ActiveMQ Classic jars.
+Either access the ActiveMQ classes directly from C++ or write a facade object in Java that handles all startup and shutdown logic of ActiveMQ. Save the glue files in the same directory as for the ActiveMQ jars.
 
 An CNI example using a Java object starting the MQ.
 
@@ -81,14 +81,14 @@ int main(int argc, char* argv\[\])
 
         System::out->println(JvNewStringLatin1("Java println")) ;
 
-        // Start ActiveMQ Classic
+        // Start ActiveMQ
         MQAdapter* pAdapter = new MQAdapter() ;
         pAdapter->start() ;
 
         // Send a message
         pAdapter->send(JvNewStringLatin1("Hello World!")) ;
 
-        // Shutdown ActiveMQ Classic
+        // Shutdown ActiveMQ
         pAdapter->stop() ;
      
         JvDetachCurrentThread() ;
@@ -191,7 +191,7 @@ public class MQAdapter
 
 #### Compile the Java and C++ Code
 
-The Java code must be BC compiled to be able to dynamically link required classes as needed, see reference for more information on BC compilation. Use the suggested script to compile all ActiveMQ Classic JARs and create a class map database.
+The Java code must be BC compiled to be able to dynamically link required classes as needed, see reference for more information on BC compilation. Use the suggested script to compile all ActiveMQ JARs and create a class map database.
 
 > **Note**
 > 

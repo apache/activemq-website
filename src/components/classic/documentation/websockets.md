@@ -20,9 +20,9 @@ This solution should bring better messaging capabilities to JavaScript clients t
 Configuration
 =============
 
-ActiveMQ Classic comes with _WebSocket_ transport which implements Stomp over WebSockets functionality.
+ActiveMQ comes with _WebSocket_ transport which implements Stomp over WebSockets functionality.
 
-To configure it, you need to place something like this to your ActiveMQ Classic configuration file
+To configure it, you need to place something like this to your ActiveMQ configuration file
 
 ```xml
 <transportConnectors>
@@ -59,7 +59,7 @@ That's it, your secure websocket transport is ready. Take a look at the next sec
 Demos
 =====
 
-As of version 5.6.0, an adapted demo of [stomp-websocket](http://github.com/jmesnil/stomp-websocket) library is integrated with ActiveMQ Classic web demo application.  
+As of version 5.6.0, an adapted demo of [stomp-websocket](http://github.com/jmesnil/stomp-websocket) library is integrated with ActiveMQ web demo application.  
 As of version 5.9.0, we have a similar demo using MQTT and [Eclipse Paho client](http://git.eclipse.org/c/paho/org.eclipse.paho.mqtt.javascript.git)
 
 To see demos:
@@ -78,7 +78,7 @@ Clients
 More Resources
 ==============
 
-*   [ActiveMQ Classic 5.4: Stomp over Web Sockets](http://www.nighttale.net/activemq/activemq-54-stomp-over-web-sockets.html)
+*   [ActiveMQ 5.4: Stomp over Web Sockets](http://www.nighttale.net/activemq/activemq-54-stomp-over-web-sockets.html)
 *   [Stomple RC1: Combining WebSockets and Reliable Messaging](http://blog.higher-order.net/2010/06/01/stomple-rc1-combining-websockets-and-reliable-messaging/)
 *   [Stomp On Web Sockets](http://jmesnil.net/stomp-websocket/doc/)
 

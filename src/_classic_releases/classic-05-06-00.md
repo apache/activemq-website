@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.6.0 Release
+title: ActiveMQ 5.6.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.6.0 is primarily a maintenance release which resolves over [435 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+12317974+AND+status+in+%28Resolved%2C+Closed%29+ORDER+BY+priority+DESC), mostly bug fixes and improvements
+Apache ActiveMQ 5.6.0 is primarily a maintenance release which resolves over [435 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+12317974+AND+status+in+%28Resolved%2C+Closed%29+ORDER+BY+priority+DESC), mostly bug fixes and improvements
 
 New Features in 5.6.0
 ---------------------
@@ -96,5 +96,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12317974)
 
-Also see the previous [ActiveMQ Classic 5.5.1 Release](classic-05-05-01)
+Also see the previous [ActiveMQ 5.5.1 Release](classic-05-05-01)
 

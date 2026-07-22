@@ -1,11 +1,11 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 4 Connection URIs 
+title: ActiveMQ 4 Connection URIs 
 title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic 4](using-activemq-classic-4) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic 4 Connection URIs](activemq-4-connection-uris)
+[Using ActiveMQ 4](using-activemq-classic-4) > [Configuring Transports](configuring-transports) > [ActiveMQ 4 Connection URIs](activemq-4-connection-uris)
 
 
 Transport configuration options
@@ -19,7 +19,7 @@ All of the following URI configurations are based on the java.net.URI class whic
 
 ### The AUTO Transport
 
-Starting with 5.13.0 ActiveMQ Classic has support for automatic wire protocol detection over TCP, SSL, NIO, and NIO SSL.  OpenWire, STOMP, AMQP, and MQTT are supported.  For details see the [AUTO](auto) Transport Reference.
+Starting with 5.13.0 ActiveMQ has support for automatic wire protocol detection over TCP, SSL, NIO, and NIO SSL.  OpenWire, STOMP, AMQP, and MQTT are supported.  For details see the [AUTO](auto) Transport Reference.
 
 ### The VM Transport
 
@@ -31,15 +31,15 @@ For more information see the [VM Transport Reference](vm-transport-reference)
 
 ### The AMQP Transport
 
-As of 5.8.0 ActiveMQ Classic has support for AMQP. For details see the [AMQP](amqp) Transport Reference.
+As of 5.8.0 ActiveMQ has support for AMQP. For details see the [AMQP](amqp) Transport Reference.
 
 ### The MQTT Transport
 
-Starting with 5.6.0 ActiveMQ Classic also supports [MQTT](http://mqtt.org/). Its a light weight publish/subscribe messaging transport. See the [MQTT](mqtt) Transport Reference for details.
+Starting with 5.6.0 ActiveMQ also supports [MQTT](http://mqtt.org/). Its a light weight publish/subscribe messaging transport. See the [MQTT](mqtt) Transport Reference for details.
 
 ### The TCP Transport
 
-The TCP transport allows clients to connect a remote ActiveMQ Classic using a a TCP socket.
+The TCP transport allows clients to connect a remote ActiveMQ using a a TCP socket.
 
 For more information see the [TCP Transport Reference](tcp-transport-reference)
 
@@ -87,7 +87,7 @@ Trying to use `nio+ssl` transport url on the client side will instantiate the re
 
 ### The Peer Transport
 
-The Peer transport provides a peer-to-peer network with ActiveMQ Classic. What actually happens is the peer transport uses the VM transport to create and connect to a local embedded broker but which configures the embedded broker to establish network connections to other peer embedded brokers.
+The Peer transport provides a peer-to-peer network with ActiveMQ. What actually happens is the peer transport uses the VM transport to create and connect to a local embedded broker but which configures the embedded broker to establish network connections to other peer embedded brokers.
 
 For more information see the [Peer Transport Reference](peer-transport-reference)
 
@@ -105,7 +105,7 @@ For more information see the [Multicast Transport Reference](multicast-transport
 
 ### The HTTP and HTTPS Transport
 
-This allows the ActiveMQ Classic client and broker to tunnel over HTTP. If the client is not JMS you might want to look at [REST](rest) or [Ajax](ajax) support instead.
+This allows the ActiveMQ client and broker to tunnel over HTTP. If the client is not JMS you might want to look at [REST](rest) or [Ajax](ajax) support instead.
 
 For more information see the [HTTP and HTTPs Transports Reference](http-and-https-transports-reference)
 
@@ -124,7 +124,7 @@ You can configure other features via the URI syntax as follows...
 
 ### Connection Configuration URI
 
-Any Apache ActiveMQ Classic JMS connection can be configured using the URL or explicitly setting properties on the [ActiveMQConnection](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/ActiveMQConnection.html) or [ActiveMQConnectionFactory](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) objects themselves.
+Any Apache ActiveMQ JMS connection can be configured using the URL or explicitly setting properties on the [ActiveMQConnection](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/ActiveMQConnection.html) or [ActiveMQConnectionFactory](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) objects themselves.
 
 For more information see [Connection Configuration URI](connection-configuration-uri)
 
@@ -149,7 +149,7 @@ The following higher level protocols can be configured via URI
 
 ### The Failover Transport
 
-The Failover transport layers reconnect logic on top of any of the other transports. This is what used to be the Reliable transport in ActiveMQ Classic 3. Its configuration syntax allows you to specify any number of composite URIs. The Failover transport randomly chooses one of the composite URIs and attempts to establish a connection to it. If it does not succeed or if it subsequently fails, a new connection is established to one of the other URIs in the list.
+The Failover transport layers reconnect logic on top of any of the other transports. This is what used to be the Reliable transport in ActiveMQ 3. Its configuration syntax allows you to specify any number of composite URIs. The Failover transport randomly chooses one of the composite URIs and attempts to establish a connection to it. If it does not succeed or if it subsequently fails, a new connection is established to one of the other URIs in the list.
 
 For more information see the [Failover Transport Reference](failover-transport-reference)
 
@@ -178,7 +178,7 @@ For more information see the [ZeroConf Transport Reference](zeroconf-transport-r
 
 ### Server side options
 
-There are a number of options that can be used for changing behaviour on the server for the TransportConnector in the ActiveMQ Classic broker configuration. These are:
+There are a number of options that can be used for changing behaviour on the server for the TransportConnector in the ActiveMQ broker configuration. These are:
 property name|default|description
 uri|null|the bind address for the transport
 name|null|the name of the TransportConnector instance

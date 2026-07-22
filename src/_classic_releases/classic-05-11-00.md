@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.11.0 Release
+title: ActiveMQ 5.11.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.11.0 resolves [more than 130 issues](https://issues.apache.org/jira/issues/?jql=fixVersion%20%3D%205.11.0%20AND%20project%20%3D%20AMQ), mostly bug fixes and improvements. It is build with and requires jdk 1.7
+Apache ActiveMQ 5.11.0 resolves [more than 130 issues](https://issues.apache.org/jira/issues/?jql=fixVersion%20%3D%205.11.0%20AND%20project%20%3D%20AMQ), mostly bug fixes and improvements. It is build with and requires jdk 1.7
 
 New Features in 5.11.0
 ----------------------
@@ -97,5 +97,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12324951&projectId=12311210)
 
-Also see the previous [ActiveMQ Classic 5.10.0 Release](classic-05-10-00)
+Also see the previous [ActiveMQ 5.10.0 Release](classic-05-10-00)
 

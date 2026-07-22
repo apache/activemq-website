@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 3 Transport Configurations 
+title: ActiveMQ 3 Transport Configurations 
 title-class: page-title-classic
 type: classic
 ---
@@ -34,7 +34,7 @@ noDelay|false|boolean
 
 #### brokerXmlConfig
 
-Sets the [Xml Configuration](xml-configuration) file used to configure the ActiveMQ Classic broker via Spring if using embedded mode. The filename is assumed to be on the classpath unless a URL is specified. So a value of
+Sets the [Xml Configuration](xml-configuration) file used to configure the ActiveMQ broker via Spring if using embedded mode. The filename is assumed to be on the classpath unless a URL is specified. So a value of
 
 
 ```

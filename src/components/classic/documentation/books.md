@@ -10,7 +10,7 @@ type: classic
 Books
 =====
 
-This page lists the known books about Apache ActiveMQ Classic. If you happen to know a book which is not listed then please contact us, for example using the [Mailing Lists](contact#mailing).
+This page lists the known books about Apache ActiveMQ. If you happen to know a book which is not listed then please contact us, for example using the [Mailing Lists](contact#mailing).
 
 *   [ActiveMQ in Action](https://www.manning.com/books/activemq-in-action)
 *   [Instant Apache ActiveMQ Messaging Application Development](https://subscription.packtpub.com/book/application-development/9781782169413)

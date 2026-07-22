@@ -18,7 +18,7 @@ The Replicated LevelDB Store uses the same data files as a LevelDB Store, so you
 
 > **Version Compatibility**
 > 
-> Available as of ActiveMQ Classic 5.9.0.
+> Available as of ActiveMQ 5.9.0.
 
 How it works.
 -------------
@@ -44,7 +44,7 @@ For best results, make sure you explicitly configure the hostname attribute with
 Configuration
 -------------
 
-You can configure ActiveMQ Classic to use LevelDB for its persistence adapter - like below :
+You can configure ActiveMQ to use LevelDB for its persistence adapter - like below :
 ```
 <broker brokerName="broker" ... >
   ...

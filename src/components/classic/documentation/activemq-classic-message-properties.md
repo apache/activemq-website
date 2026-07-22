@@ -1,14 +1,14 @@
 ---
 layout: default_md
-title: ActiveMQ Classic Message Properties 
+title: ActiveMQ Message Properties 
 title-class: page-title-classic
 type: classic
 ---
 
-[Features](features) > [Message Features](message-features) > [ActiveMQ Classic Message Properties](activemq-classic-message-properties)
+[Features](features) > [Message Features](message-features) > [ActiveMQ Message Properties](activemq-classic-message-properties)
 
 
-**ActiveMQ Classic Messages support the following default message properties:**
+**ActiveMQ Messages support the following default message properties:**
 
 Message Attributes Accessed as Properties:
 ------------------------------------------
@@ -36,7 +36,7 @@ Property Name|Type|Default Value|Description
 `JMSXGroupSeq`|`int`|`0`|Sequence number of the message.
 `JMSXProducerTXID`|`String`|`null`|Transaction identifier.
 
-ActiveMQ Classic Defined:
+ActiveMQ Defined:
 -------------------------
 
 Property Name|Type|Default Value|Description

@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [Overview](overview) > [Download](download) > [ActiveMQ Classic Classic 5.8.0 Release](activemq-580-release) > [5.8 Migration Guide](58-migration-guide)
+ [Overview](overview) > [Download](download) > [ActiveMQ 5.8.0 Release](activemq-580-release) > [5.8 Migration Guide](58-migration-guide)
 
 There are some changes in 5.8 that may require some code change
 
@@ -26,4 +26,4 @@ Connection|Type=Connection|type=Broker,connector=*,connectionViewType=remoteAddr
 3.  OSGi integration has changed. The full details are at [OSGi Integration](osgi-integration.html). In summary:
     1.  There is a single uber OSGI bundle
     2.  The broker and webconsole are now configured via config admin pid files through an OSGi managed service factory.
-4.  The ActiveMQ Classic binary file `bin/run.jar` has been renamed to `bin/activemq.jar`.
+4.  The ActiveMQ binary file `bin/run.jar` has been renamed to `bin/activemq.jar`.

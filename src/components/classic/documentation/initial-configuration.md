@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Initial Configuration](initial-configuration)
+[Using ActiveMQ](using-activemq-classic) > [Initial Configuration](initial-configuration)
 
 
 Initial Configuration
@@ -16,7 +16,7 @@ Firstly you need to add the jars to your classpath.
 Required JARs
 -------------
 
-To make ActiveMQ Classic easy to use, the default **activemq-all.jar** comes complete with all the libraries required. If you prefer to have explicit control over all the jars used by ActiveMQ Classic here is the full list of individual jars required
+To make ActiveMQ easy to use, the default **activemq-all.jar** comes complete with all the libraries required. If you prefer to have explicit control over all the jars used by ActiveMQ here is the full list of individual jars required
 
 *   activemq-broker.jar
 *   activemq-client.jar
@@ -52,7 +52,7 @@ One of the first things you might want to do is [start a broker](run-broker). On
 
 If you want to write your own application, you can just instantiate an [ActiveMQConnectionFactory](http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html), configure its properties directly and then you're ready to use the standard JMS API to create Connections, Sessions, MessageProducer and MessageConsumer instances.
 
-You can also take a look at our [unit tests](https://github.com/apache/activemq/tree/main/activemq-core/src/test/java/org/apache/activemq/) for more examples on how to use ActiveMQ Classic.
+You can also take a look at our [unit tests](https://github.com/apache/activemq/tree/main/activemq-core/src/test/java/org/apache/activemq/) for more examples on how to use ActiveMQ.
 
 Additional Resources
 --------------------
@@ -60,10 +60,10 @@ Additional Resources
 ### Related Reading
 
 *   Sun's [JMS Tutorial](http://java.sun.com/products/jms/tutorial/) is a handy place to start looking at how to use the JMS API directly
-*   The ActiveMQ Classic [Website](http://activemq.apache.org/components/classic) for specifics on how to use ActiveMQ Classic
-*   [ActiveMQ Classic Topologies](topologies)
-*   [ActiveMQ Classic Clustering](clustering)
-*   [ActiveMQ Classic Network of Brokers](networks-of-brokers)
+*   The ActiveMQ [Website](http://activemq.apache.org/components/classic) for specifics on how to use ActiveMQ
+*   [ActiveMQ Topologies](topologies)
+*   [ActiveMQ Clustering](clustering)
+*   [ActiveMQ Network of Brokers](networks-of-brokers)
 *   [Staged Event Driven Architecture (SEDA)](http://www.eecs.harvard.edu/~mdw/proj/seda/)
 
 ### Specifications
@@ -76,5 +76,5 @@ Additional Resources
 *   [Apache Camel](http://camel.apache.org)
 *   [Apache Geronimo](http://geronimo.apache.org/)
 *   [Stomp](http://stomp.github.com/) is an open wire protocol (similar to HTTP) for communicating with MOMs from different languages. It has clients for languages like C, C#, Python, Perl, Ruby etc.
-*   [XBean](https://geronimo.apache.org/xbean/) is used as the default XML configuration mechanism for ActiveMQ Classic
+*   [XBean](https://geronimo.apache.org/xbean/) is used as the default XML configuration mechanism for ActiveMQ
 

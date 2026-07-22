@@ -11,7 +11,7 @@ type: classic
 Kaha Persistence
 ----------------
 
-Kaha Peristence is a storage solution written especially for message persistence and is part of the ActiveMQ Classic project. It's tuned to provide optimal performance for typical message usage patterns, which involves writing/reading and discarding messages that are persisted very quickly.
+Kaha Peristence is a storage solution written especially for message persistence and is part of the ActiveMQ project. It's tuned to provide optimal performance for typical message usage patterns, which involves writing/reading and discarding messages that are persisted very quickly.
 
 Data stored in Kaha is appended to data logs - the log files are discarded once there is no longer interest in the data contained in the log.
 
@@ -19,7 +19,7 @@ Data stored in Kaha is appended to data logs - the log files are discarded once 
 
 In the broker XML specify the persistence adaptor to be Kaha e.g.
 
-ActiveMQ Classic 5.0 and above:
+ActiveMQ 5.0 and above:
 ```
 <broker brokerName="broker" persistent="true" useShutdownHook="false">
   <transportConnectors>
@@ -30,7 +30,7 @@ ActiveMQ Classic 5.0 and above:
   </persistenceAdapter>
 </broker>
 ```
-ActiveMQ Classic 4.1 and earlier:
+ActiveMQ 4.1 and earlier:
 ```
 <broker brokerName="broker" persistent="true" useShutdownHook="false">
   <transportConnectors>

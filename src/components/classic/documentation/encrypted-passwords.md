@@ -8,7 +8,7 @@ type: classic
 [Features](features) > [Security](security) > [Encrypted passwords](encrypted-passwords)
 
 
-As of ActiveMQ Classic 5.4.1 you can encrypt your passwords and safely store them in configuration files. To encrypt the password, you can use the newly added `encrypt` command like:
+As of ActiveMQ 5.4.1 you can encrypt your passwords and safely store them in configuration files. To encrypt the password, you can use the newly added `encrypt` command like:
 ```
 $ bin/activemq encrypt --password activemq --input mypassword
 ...
@@ -58,7 +58,7 @@ Finally, you need to instruct your property loader to decrypt variables when it 
   <property name="location" value="file:${activemq.base}/conf/credentials-enc.properties"/> 
 </bean>
 ```
-With this configuration ActiveMQ Classic will try to load your encryptor password from the `ACTIVEMQ_ENCRYPTION_PASSWORD` environment variable and then use it to decrypt passwords from `credential-enc.properties` file.
+With this configuration ActiveMQ will try to load your encryptor password from the `ACTIVEMQ_ENCRYPTION_PASSWORD` environment variable and then use it to decrypt passwords from `credential-enc.properties` file.
 
 Alternative is to use a simple variant and store encryptor password in the xml file, like this
 ```

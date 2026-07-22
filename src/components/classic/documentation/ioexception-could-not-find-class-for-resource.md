@@ -15,19 +15,19 @@ Reason:  java.io.exception : could not find class for resource: META-INF/service
 
 ### Cause
 
-You are probably using the ActiveMQ Classic source code without using the resources
+You are probably using the ActiveMQ source code without using the resources
 
 ### Quick fix
 
 Try one of these
 
-*   use one of the distribution jars for ActiveMQ Classic
+*   use one of the distribution jars for ActiveMQ
 *   use Maven to run your program
 *   try adding activemq/src/conf to your classpath
 
 ### Background
 
-Then it means that the files in META-INF/services could not be found on the classpath. These files are used to support loose coupling on ActiveMQ Classic with the transport protocols (e.g. to avoid a classpath dependency on JXTA) and to allow dynamic protocol enhancement without a change to the core.
+Then it means that the files in META-INF/services could not be found on the classpath. These files are used to support loose coupling on ActiveMQ with the transport protocols (e.g. to avoid a classpath dependency on JXTA) and to allow dynamic protocol enhancement without a change to the core.
 
 So we're using the META-INF/services files as a way of coupling a protocol used in URL connections to a Java class name.
 

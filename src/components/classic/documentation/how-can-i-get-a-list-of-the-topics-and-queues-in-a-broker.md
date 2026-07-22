@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How can I get a list of the topics and queues in a broker](how-can-i-get-a-list-of-the-topics-and-queues-in-a-broker)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How can I get a list of the topics and queues in a broker](how-can-i-get-a-list-of-the-topics-and-queues-in-a-broker)
 
 
 How can I get a list of the topics and queues in a broker?

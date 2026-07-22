@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I change the logging](how-do-i-change-the-logging)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I change the logging](how-do-i-change-the-logging)
 
 
 How do I change the logging
@@ -13,7 +13,7 @@ How do I change the logging
 
 We use slf4j to log information in the broker client and the broker itself so you can fully configure which logging levels are used and whether to log to files or the console etc. For more information see the [log4j manual](http://logging.apache.org/log4j/docs/manual.html).
 
-You can disable the ActiveMQ Classic logging by editing the **conf/log4j.properties** file to disable all INFO level logging for activemq by adding this line
+You can disable the ActiveMQ logging by editing the **conf/log4j.properties** file to disable all INFO level logging for activemq by adding this line
 ```
 log4j.logger.org.apache.activemq=WARN
 ```
@@ -29,7 +29,7 @@ log4j.rootLogger=INFO, out
 How Do I Change the Logging at Runtime?
 ---------------------------------------
 
-The default logging level in ActiveMQ Classic is INFO. This can be seen by starting up the default ActiveMQ Classic binary in a terminal. In doing so, you will see the output shown below:
+The default logging level in ActiveMQ is INFO. This can be seen by starting up the default ActiveMQ binary in a terminal. In doing so, you will see the output shown below:
 ```
 $ ./bin/activemq
 ACTIVEMQ_HOME: /Users/bsnyder/amq/apache-activemq-5.1.0
@@ -62,13 +62,13 @@ INFO  log                            - RESTful file access application at http:/
 INFO  log                            - Started SelectChannelConnector@0.0.0.0:8161
 INFO  FailoverTransport              - Successfully connected to tcp://localhost:61616
 ```
-But stopping ActiveMQ Classic to change the logging level is not always feasible. There are many cases where the logging level and other configuration details may need to be changed at runtime. Using a JMX tool such as jconsole, the logging configuration file can be changed and reloaded without shutting down ActiveMQ Classic.
+But stopping ActiveMQ to change the logging level is not always feasible. There are many cases where the logging level and other configuration details may need to be changed at runtime. Using a JMX tool such as jconsole, the logging configuration file can be changed and reloaded without shutting down ActiveMQ.
 
-To change the ActiveMQ Classic logging level from INFO to DEBUG while ActiveMQ Classic is running, start up jconsole, point to the ActiveMQ Classic instance and navigate to the Broker object's Operations tab as shown below:
+To change the ActiveMQ logging level from INFO to DEBUG while ActiveMQ is running, start up jconsole, point to the ActiveMQ instance and navigate to the Broker object's Operations tab as shown below:
 
 ![](assets/img/reloadLog4jProperties1.png)
 
-To enable debug level logging in ActiveMQ Classic, edit the `conf/log4j.properties` file that is part of the ActiveMQ Classic binary distribution to disable INFO level logging and enable DEBUG level logging from this:
+To enable debug level logging in ActiveMQ, edit the `conf/log4j.properties` file that is part of the ActiveMQ binary distribution to disable INFO level logging and enable DEBUG level logging from this:
 ```
 log4j.rootLogger=INFO, stdout, out
 log4j.logger.org.apache.activemq.spring=WARN
@@ -96,7 +96,7 @@ Notice that the line `log4j.rootLogger=INFO, stdout, out` has been commented out
 
 ![](assets/img/reloadLog4jProperties2.png)
 
-After clicking the **reloadLog4jProperties** button, the dialog pops up stating, 'Method successfully invoked'. This just lets you know that the `reloadLog4jProperties` method was invoked to reload the `conf/log4j.properties` file. Now notice in the terminal where ActiveMQ Classic is running that the logging that is being output is now DEBUG:
+After clicking the **reloadLog4jProperties** button, the dialog pops up stating, 'Method successfully invoked'. This just lets you know that the `reloadLog4jProperties` method was invoked to reload the `conf/log4j.properties` file. Now notice in the terminal where ActiveMQ is running that the logging that is being output is now DEBUG:
 ```
 INFO  WebConsoleStarter              - ActiveMQ WebConsole initialized.
 INFO  /admin                         - Initializing Spring FrameworkServlet 'dispatcher'

@@ -1,19 +1,19 @@
 ---
 layout: default_md
-title: How can I monitor ActiveMQ Classic 
+title: How can I monitor ActiveMQ 
 title-class: page-title-classic
 type: classic
 ---
 
-[FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How can I monitor ActiveMQ Classic](how-can-i-monitor-activemq-classic)
+[FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How can I monitor ActiveMQ](how-can-i-monitor-activemq-classic)
 
 
-How can I monitor ActiveMQ Classic
+How can I monitor ActiveMQ
 ----------------------------------
 
-ActiveMQ Classic comes bundled with [Jolokia](http://www.jolokia.org/) which provides a RESTful interface to ActiveMQ Classic's JMX capabilities. An open source third party tool that connects via Jolokia is [hawt.io](http://hawt.io/), an HTML-5 web console with an ActiveMQ Classic plugin that is at least worth being familiar with as ActiveMQ Classic and hawt.io share developers.
+ActiveMQ comes bundled with [Jolokia](http://www.jolokia.org/) which provides a RESTful interface to ActiveMQ's JMX capabilities. An open source third party tool that connects via Jolokia is [hawt.io](http://hawt.io/), an HTML-5 web console with an ActiveMQ plugin that is at least worth being familiar with as ActiveMQ and hawt.io share developers.
 
-In ActiveMQ Classic you can monitor the broker to see what destinations are being used, their activity along with connections and subscriptions using the following tools
+In ActiveMQ you can monitor the broker to see what destinations are being used, their activity along with connections and subscriptions using the following tools
 
 *   [JMX](jmx) and a JMX console such as [jConsole](http://java.sun.com/developer/technicalArticles/J2SE/jconsole.html)
 *   The [Web Console](web-console)
@@ -30,9 +30,9 @@ In ActiveMQ Classic you can monitor the broker to see what destinations are bein
 *   [Geronimo Administration Console](https://cwiki.apache.org/GMOxDOC11/geronimo-administration-console.html#GeronimoAdministrationConsole-JMSServer) (JMS Resources)
 *   [Hyperic HQ](http://www.hyperic.com/products/open-source-systems-monitoring) and [Hyperic HQ Enterprise](http://www.hyperic.com/products/enterprise-systems-monitoring)
 *   [iTKO LISA Test](http://www.itko.com/products/jms.jsp)
-*   [jmxtrans](https://github.com/jmxtrans/jmxtrans) which can be used to continuously query ActiveMQ Classic via JMX and write to a chosen output. For instance, write to a graphite database file which can then be used to graph trends over time and be queried by Nagios to alarm should your thresholds be exceeded.
-*   [Media Driver Integrated Console](https://mediadriver.com/software/) can manage and monitor ActiveMQ Classic, IBM MQ and Tibco EMS
-*   [New Relic ActiveMQ Classic Integration](https://newrelic.com/instant-observability/activemq) Get real-time Apache ActiveMQ Classic performance metrics with New Relic APM.
+*   [jmxtrans](https://github.com/jmxtrans/jmxtrans) which can be used to continuously query ActiveMQ via JMX and write to a chosen output. For instance, write to a graphite database file which can then be used to graph trends over time and be queried by Nagios to alarm should your thresholds be exceeded.
+*   [Media Driver Integrated Console](https://mediadriver.com/software/) can manage and monitor ActiveMQ, IBM MQ and Tibco EMS
+*   [New Relic ActiveMQ Integration](https://newrelic.com/instant-observability/activemq) Get real-time Apache ActiveMQ performance metrics with New Relic APM.
 
 ### See Also
 

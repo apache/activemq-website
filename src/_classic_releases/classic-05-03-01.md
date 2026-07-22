@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.3.1 Release
+title: ActiveMQ 5.3.1 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.3 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=10520&styleName=Html&version=12183) 98 issues.
+Apache ActiveMQ 5.3 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=10520&styleName=Html&version=12183) 98 issues.
 
 The most improved areas in this release are:
 
@@ -93,5 +93,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=10520&styleName=Html&version=12183)
 
-Also see the previous [ActiveMQ Classic 5.3.0 Release](classic-05-03-00)
+Also see the previous [ActiveMQ 5.3.0 Release](classic-05-03-00)
 

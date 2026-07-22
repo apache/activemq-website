@@ -10,7 +10,7 @@ type: classic
 
 ### JMeter System Tests
 
-You can use JMeter to test your ActiveMQ Classic Server. Please refer to the JMeter site for detailed instructions on using this software.  
+You can use JMeter to test your ActiveMQ Server. Please refer to the JMeter site for detailed instructions on using this software.  
 
 The Test would check for duplicate messages and the order of messages received.
 
@@ -30,7 +30,7 @@ For a Consumer Sampler
 1. JMeter Producer System Test Sampler
 
     *   A JMeter Sampler tells JMeter to send requests to the server. Pluggable Samplers allow unlimited testing capabilities.
-    *   The Producer System Test Sampler will send messages to an ActiveMQ Classic Server.
+    *   The Producer System Test Sampler will send messages to an ActiveMQ Server.
     
     The Producer System Test Sampler has the following parameters:
     

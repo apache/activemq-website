@@ -32,7 +32,7 @@ or you could use [Spring Support.](spring-Community/support)
 
 ### Using JNDI
 
-If your application code is using JNDI to lookup the JMS `ConnectionFactory` and `Destination`'s to use, then you could use the [JNDI Support](jndi-support) in ActiveMQ Classic.
+If your application code is using JNDI to lookup the JMS `ConnectionFactory` and `Destination`'s to use, then you could use the [JNDI Support](jndi-support) in ActiveMQ.
 
 Add the following `jndi.properties` to your classpath, e.g., in `src/test/resources`, if you are using maven:
 ```
@@ -46,7 +46,7 @@ context.lookup("dynamicQueues/FOO.BAR");
 
 ### Using The `EmbeddedActiveMQBroker` JUnit Rule (ActiveMQ 5.13)
 
-If your test code is using JUnit, then you could use the `EmbeddedActiveMQBroker` JUnit Rule provided in the `activemq-junit` library. Add the `activemq-junit` library along with the `activemq-broker` libraries for the version of ActiveMQ Classic you want to test with.  The rule will use whatever version of ActiveMQ Classic it finds in the classpath, so the ActiveMQ Classic libraries need to be specified if they are not already there.
+If your test code is using JUnit, then you could use the `EmbeddedActiveMQBroker` JUnit Rule provided in the `activemq-junit` library. Add the `activemq-junit` library along with the `activemq-broker` libraries for the version of ActiveMQ you want to test with.  The rule will use whatever version of ActiveMQ it finds in the classpath, so the ActiveMQ libraries need to be specified if they are not already there.
 
 If you are using Maven, add the following to your `pom.xml`:
 ```
@@ -66,7 +66,7 @@ If you are using Maven, add the following to your `pom.xml`:
 ```
  Then add the `EmbeddedActiveMQBroker` JUnit Rule to your test, and JUnit will start the embedded broker at the beginning of each test and stop the broker at the end of the test.
 
-**Use The ActiveMQ Classic JUnit Rule**
+**Use The ActiveMQ JUnit Rule**
 ```
 @Rule
 public EmbeddedActiveMQBroker broker = new EmbeddedActiveMQBroker();
@@ -91,7 +91,7 @@ EmbeddedActiveMQBroker customizedBroker = new EmbeddedActiveMQBroker() {
 @Rule
 EmbeddedActiveMQBroker customizedBroker = new EmbeddedActiveMQBroker("bean:customize-activemq.xml");
 ```
-Note that to use the XML configuration, you may need to add additional libraries on the classpath to support the XBean configuration of ActiveMQ Classic.  The versions of the `spring-context` library should correspond with the version used by your selected version of ActiveMQ Classic.
+Note that to use the XML configuration, you may need to add additional libraries on the classpath to support the XBean configuration of ActiveMQ.  The versions of the `spring-context` library should correspond with the version used by your selected version of ActiveMQ.
 
 **Maven Configuration For XBean Configuration**
 ```

@@ -12,7 +12,7 @@ The TimeStampPlugin is a Broker interceptor which updates a JMS Client's time st
 
 Enabling this plugin will break JMS compliance since the time stamp that the producer sees on the messages after as `send()` will be different from the time stamp the consumer will observe when he receives the message.
 
-By default this plugin is _not_ enabled in ActiveMQ Classic.
+By default this plugin is _not_ enabled in ActiveMQ.
 
 #### Options
 
@@ -22,7 +22,7 @@ Attribute|Default Value|Description
 `ttlCeiling`|`0`|When not zero, this value (in ms) limit the expiration time.
 `zeroExpirationOverride`|`0`|When not zero this value (in ms) will override the expiration time for messages that do not have an expiration already set.
 
-To enable the TimeStampPlugin add the following to your ActiveMQ Classic Broker configuration.
+To enable the TimeStampPlugin add the following to your ActiveMQ Broker configuration.
 
 Example:
 ```

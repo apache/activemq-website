@@ -14,7 +14,7 @@ If you have a SAN or shared file system it can be used to provide _high availabi
 
 > Ensure your shared file locks work
 > 
-> Note that the requirements of this failover system are a distributed file system like a SAN for which exclusive file locks work reliably. If you do not have such a thing available then consider using [MasterSlave](masterslave) instead which implements something similar but working on commodity hardware using local file systems which ActiveMQ Classic does the replication.
+> Note that the requirements of this failover system are a distributed file system like a SAN for which exclusive file locks work reliably. If you do not have such a thing available then consider using [MasterSlave](masterslave) instead which implements something similar but working on commodity hardware using local file systems which ActiveMQ does the replication.
 > 
 > > **OCFS2 Warning**
 > > 
@@ -27,7 +27,7 @@ If you have a SAN or shared file system it can be used to provide _high availabi
 > 
 > > **NFSv3 Warning**
 > > 
-> > In the event of an abnormal NFSv3 client termination (i.e., the ActiveMQ Classic master broker), the NFSv3 server will not timeout the lock that is held by that client. This effectively renders the ActiveMQ Classic data directory inaccessible because the ActiveMQ Classic slave broker can't acquire the lock and therefore cannot start up. The only solution to this predicament with NFSv3 is to reboot all ActiveMQ Classic instances to reset everything.
+> > In the event of an abnormal NFSv3 client termination (i.e., the ActiveMQ master broker), the NFSv3 server will not timeout the lock that is held by that client. This effectively renders the ActiveMQ data directory inaccessible because the ActiveMQ slave broker can't acquire the lock and therefore cannot start up. The only solution to this predicament with NFSv3 is to reboot all ActiveMQ instances to reset everything.
 > > 
 > > Use of NFSv4 is another solution because its design includes timeouts for locks. When using NFSv4 and the client holding the lock experiences an abnormal termination, by design, the lock is released after 30 seconds, allowing another client to grab the lock. For more information about this, see [this blog entry](http://blogs.netapp.com/eislers_nfs_blog/2008/07/part-i-since-nf.html).
 
@@ -81,7 +81,7 @@ At any time you can restart other brokers which join the cluster and start as sl
 
 ### Scheduler Support
 
-ActiveMQ Classic maintains information about schedules independent to the settings in the persistence adapter. With a shared file-system it is therefore important to tell ActiveMQ Classic expressly where to store scheduler information. To do this, set the `dataDirectory` attribute on the `broker`, for example:
+ActiveMQ maintains information about schedules independent to the settings in the persistence adapter. With a shared file-system it is therefore important to tell ActiveMQ expressly where to store scheduler information. To do this, set the `dataDirectory` attribute on the `broker`, for example:
 ```
 <broker xmlns="http://activemq.apache.org/schema/core"
 dataDirectory="/some/location"

@@ -11,7 +11,7 @@ type: classic
 Architecture
 ============
 
-The following section walks through the main parts of Apache ActiveMQ Classic and links to the code to help you understand the layout
+The following section walks through the main parts of Apache ActiveMQ and links to the code to help you understand the layout
 
 ![](../../../assets/img/BrokerDiagram.png)
 
@@ -74,22 +74,22 @@ To see an overview of these packages try the [JavaDocs](docs)
 
 * * *
 
-ActiveMQ Classic System Overview
+ActiveMQ System Overview
 ========================
 
 Introduction
 ------------
 
-ActiveMQ Classic is the system responsible for creating and managing network connections used for communication between clients and the broker. This document hopes to outline the inner workings of this system with in order to make it easier to understand for future developers. It will give a high-level overview of the system and outline the major players. We will also cover a few other interesting classes that may be useful to others working on the system. Most of this document is written with the server side code in mind. This is because the client-side communication systems are architecturally simple and understanding the server will make understanding clients trivial by comparison.
+ActiveMQ is the system responsible for creating and managing network connections used for communication between clients and the broker. This document hopes to outline the inner workings of this system with in order to make it easier to understand for future developers. It will give a high-level overview of the system and outline the major players. We will also cover a few other interesting classes that may be useful to others working on the system. Most of this document is written with the server side code in mind. This is because the client-side communication systems are architecturally simple and understanding the server will make understanding clients trivial by comparison.
 
 We assume the reader has basic understanding of JMS. Refer to the official Java docs for more information.
 
 Overview: The Big Players
 -------------------------
 
-The core classes involved in the ActiveMQ Classic communication system are Transports. These include the `Transport`, `TransportServer`, and `TransportFactory` hierarchies. `Transport`s and `TransportServer`s are wrappers around sockets and server sockets respectively. `TransportFactory`s (as you may have guessed) are factories that create `Transport`s and `TransportServers`. `Transport`s are connected to `Broker`s and transmit `Command`s, which represent all major actions to be taken by ActiveMQ Classic (more on this later). The following example illustrates how these pieces fit together.
+The core classes involved in the ActiveMQ communication system are Transports. These include the `Transport`, `TransportServer`, and `TransportFactory` hierarchies. `Transport`s and `TransportServer`s are wrappers around sockets and server sockets respectively. `TransportFactory`s (as you may have guessed) are factories that create `Transport`s and `TransportServers`. `Transport`s are connected to `Broker`s and transmit `Command`s, which represent all major actions to be taken by ActiveMQ (more on this later). The following example illustrates how these pieces fit together.
 
-The primary class needed to create a JMS "provider" application is the `Broker` class. The default ActiveMQ Classic binary will use a `BrokerService` class to wrap around `Broker`s. When the application is started, it instantiates a `BrokerService` and instructs it to bind to a specific (local) address, say "tcp://localhost:61616". The `Broker` will use the scheme in the given address and find the proper `TransportFactory`, `TcpTransportFactory` in this example. This factory will then be used to create a `TcpTransportServer` that will be bound to "localhost:61616". Once the `TransportServer` is started, it will continually pole its socket for incoming connections. Successfully connected incoming sockets will be wrapped in a `TcpTransport` instance and passed back (indirectly) to the `Broker`. The `Broker` will then start polling the new `Transport` for incoming `Command`s to process.
+The primary class needed to create a JMS "provider" application is the `Broker` class. The default ActiveMQ binary will use a `BrokerService` class to wrap around `Broker`s. When the application is started, it instantiates a `BrokerService` and instructs it to bind to a specific (local) address, say "tcp://localhost:61616". The `Broker` will use the scheme in the given address and find the proper `TransportFactory`, `TcpTransportFactory` in this example. This factory will then be used to create a `TcpTransportServer` that will be bound to "localhost:61616". Once the `TransportServer` is started, it will continually pole its socket for incoming connections. Successfully connected incoming sockets will be wrapped in a `TcpTransport` instance and passed back (indirectly) to the `Broker`. The `Broker` will then start polling the new `Transport` for incoming `Command`s to process.
 
 The final pieces missing from the above example are the `TransportConnection` and `TransportConnector` classes. These classes are used to connect `Broker`s to `Transport`s and `TransportServer`s respectively.
 

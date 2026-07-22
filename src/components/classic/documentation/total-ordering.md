@@ -17,7 +17,7 @@ consumer2: P1 Q1 Q2 P2 P3
 
 In this example each producer's messages are in self-relative order. However, the streams of messages across producers can get intermixed.
 
-_Total Ordering_ of a destination in ActiveMQ Classic ensures that each consumer will see the same total order on that topic. This has a performance cost, since greater synchronization is required. This can be useful, particularly when very fast optimistic transactions are required. With total ordering the messages would arrive like this:
+_Total Ordering_ of a destination in ActiveMQ ensures that each consumer will see the same total order on that topic. This has a performance cost, since greater synchronization is required. This can be useful, particularly when very fast optimistic transactions are required. With total ordering the messages would arrive like this:
 
 consumer1: P1 P2 Q1 P3 Q2
 consumer2: P1 P2 Q1 P3 Q2

@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [Failover Transport Reference](failover-transport-reference)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [Failover Transport Reference](failover-transport-reference)
 
 ### The Failover Transport
 
@@ -31,19 +31,19 @@ Option Name|Default Value|Description
 `backup`|`false`|Initialize and hold a second transport connection - to enable fast failover.
 `initialReconnectDelay`|`10`|The delay (in ms) before the _first_ reconnect attempt.
 `maxCacheSize`|`131072`|Size in bytes for the cache of tracked messages. Applicable only if `trackMessages` is `true`.
-`maxReconnectAttempts`|`-1 | 0`|**From ActiveMQ Classic 5.6**: default is `-1`, retry forever. `0` means disables re-connection, e.g: just try to connect once. **Before ActiveMQ Classic 5.6**: default is `0`, retry forever. **All ActiveMQ Classic versions**: a value `>0` denotes the maximum number of reconnect attempts before an error is sent back to the client.
+`maxReconnectAttempts`|`-1 | 0`|**From ActiveMQ 5.6**: default is `-1`, retry forever. `0` means disables re-connection, e.g: just try to connect once. **Before ActiveMQ 5.6**: default is `0`, retry forever. **All ActiveMQ versions**: a value `>0` denotes the maximum number of reconnect attempts before an error is sent back to the client.
 `maxReconnectDelay`|`30000`|The maximum delay (in ms) between the _second and subsequent_ reconnect attempts.
-`nested.*`|`null`|**From ActiveMQ Classic 5.9:** common URI options that will be applied to each URI in the list**.**
+`nested.*`|`null`|**From ActiveMQ 5.9:** common URI options that will be applied to each URI in the list**.**
 `randomize`|`true`|If `true`, choose a URI at random from the list to use for reconnect.
 `reconnectDelayExponent`|`2.0`|The exponent used during exponential back-off attempts.
 `reconnectSupported`|`true`|Determines whether the client should respond to broker `ConnectionControl` events with a reconnect (see: `rebalanceClusterClients`).
 `startupMaxReconnectAttempts`|`-1`|A value of `-1` denotes that the number of connection attempts at startup should be unlimited. A value of  `>=0` denotes the number of reconnect attempts at startup that will be made after which an error is sent back to the client when the client makes a subsequent reconnect attempt. **Note**: once successfully connected the `maxReconnectAttempts` option prevails.
-`timeout`|`-1`|**From ActiveMQ Classic 5.3**: set the timeout on send operations (in ms) without interruption of re-connection process. 
+`timeout`|`-1`|**From ActiveMQ 5.3**: set the timeout on send operations (in ms) without interruption of re-connection process. 
 `trackMessages`|`false`|Keep a cache of in-flight messages that will flushed to a broker on reconnect.
-`updateURIsSupported`|`true`|**From** **ActiveMQ Classic 5.4:** determines whether the client should accept updates from the broker to its list of known URIs.
-`updateURIsURL`|`null`|**From ActiveMQ Classic 5.4:** a URL (or path to a local file) to a text file containing a comma separated list of URIs to use for reconnect in the case of failure.
+`updateURIsSupported`|`true`|**From** **ActiveMQ 5.4:** determines whether the client should accept updates from the broker to its list of known URIs.
+`updateURIsURL`|`null`|**From ActiveMQ 5.4:** a URL (or path to a local file) to a text file containing a comma separated list of URIs to use for reconnect in the case of failure.
 `useExponentialBackOff`|`true`|If `true` an exponential back-off is used between reconnect attempts.
-`warnAfterReconnectAttempts`|`10`|**From ActiveMQ Classic 5.10:** a value `>0` specifies the number of reconnect attempts before a warning is logged. A logged warning indicates that there is no current connection but re-connection is being attempted. A value of `<=0` disables the logging of warnings about reconnect attempts. 
+`warnAfterReconnectAttempts`|`10`|**From ActiveMQ 5.10:** a value `>0` specifies the number of reconnect attempts before a warning is logged. A logged warning indicates that there is no current connection but re-connection is being attempted. A value of `<=0` disables the logging of warnings about reconnect attempts. 
 
 #### Using Randomize
 
@@ -68,11 +68,11 @@ In this example if the connection isn't established the send operation will time
 
 The Failover transport tracks transactions by default. In-flight transactions are replayed upon re-connection. For simple scenarios this works as expected. However, there is an assumption regarding acknowledged (or consumer) transactions in that the previously received messages will automatically be replayed upon re-connection. This, however, is not always true when there are many connections and consumers, as re-delivery order is not guaranteed as stale outstanding acknowledgements can interfere with newly delivered messages. This can lead to unacknowledged messages.
 
-**From ActiveMQ Classic 5.3.1**: re-delivery order **_is_** tracked and a transaction will fail to commit if outstanding messages are not redelivered after failover. A `javax.jms.TransactionRolledBackException` is thrown if the commit fails. In doubt transactions will result in a rollback such that they can be replayed by the application. In doubt transactions occur when failover happens when a commit message is in-flight. It is not possible to know the exact point of failure. Did failure happen because the transaction commit message was not delivered or was the commit reply lost? In either case, it becomes necessary to rollback the transaction so that the application can get an indication of the failure and deal with any potential problem.
+**From ActiveMQ 5.3.1**: re-delivery order **_is_** tracked and a transaction will fail to commit if outstanding messages are not redelivered after failover. A `javax.jms.TransactionRolledBackException` is thrown if the commit fails. In doubt transactions will result in a rollback such that they can be replayed by the application. In doubt transactions occur when failover happens when a commit message is in-flight. It is not possible to know the exact point of failure. Did failure happen because the transaction commit message was not delivered or was the commit reply lost? In either case, it becomes necessary to rollback the transaction so that the application can get an indication of the failure and deal with any potential problem.
 
 ##### Broker-side Options for Failover
 
-**From ActiveMQ Classic 5.4**: the `TransportConnector` has options available so that the broker can update clients automatically with information regarding the presence of new brokers that are available (or are no longer available) for failover.
+**From ActiveMQ 5.4**: the `TransportConnector` has options available so that the broker can update clients automatically with information regarding the presence of new brokers that are available (or are no longer available) for failover.
 
 The options are:
 
@@ -103,11 +103,11 @@ When new brokers join the cluster the client is automatically informed of the ne
 
 > Additional Information
 > 
-> See the following blog entry about using the cluster client updates and re-balancing features titled [New Features in ActiveMQ Classic 5.4: Automatic Cluster Update and Rebalance](http://bsnyderblog.blogspot.com/2010/10/new-features-in-activemq-54-automatic.html).
+> See the following blog entry about using the cluster client updates and re-balancing features titled [New Features in ActiveMQ 5.4: Automatic Cluster Update and Rebalance](http://bsnyderblog.blogspot.com/2010/10/new-features-in-activemq-54-automatic.html).
 
 ##### Priority Backup
 
-**From ActiveMQ Classic 5.6**: if brokers are available in both local and remote networks, it's possible to specify a preference for local brokers over remote brokers using the `priorityBackup` and `priorityURIs` options.
+**From ActiveMQ 5.6**: if brokers are available in both local and remote networks, it's possible to specify a preference for local brokers over remote brokers using the `priorityBackup` and `priorityURIs` options.
 
 Consider the following URL:
 ```
@@ -125,7 +125,7 @@ In this case the client will prioritize either `local1` or `local2` brokers and 
 
 ##### Configuring Nested URI Options.
 
-**From ActiveMQ Classic 5.9**: common URI options can be configured by appending them to the query string of the failover URI where each common URI option has the prefix: `nested.` 
+**From ActiveMQ 5.9**: common URI options can be configured by appending them to the query string of the failover URI where each common URI option has the prefix: `nested.` 
 
 Example - instead of doing this:
 ```

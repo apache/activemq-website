@@ -5,12 +5,12 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [Broker Configuration URI](broker-configuration-uri)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [Broker Configuration URI](broker-configuration-uri)
 
 
 ### Overview
 
-An ActiveMQ Classic broker can be extensivly configured using a single configuration URI. The following URI schemes are supported
+An ActiveMQ broker can be extensivly configured using a single configuration URI. The following URI schemes are supported
 
 Scheme|Link|Description
 ---|---|---

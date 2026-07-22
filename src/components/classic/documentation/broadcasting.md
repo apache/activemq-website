@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Features](features) > [ActiveMQ Classic Real Time](activemq-classic-real-time) > [Broadcasting](broadcasting)
+[Features](features) > [ActiveMQ Real Time](activemq-classic-real-time) > [Broadcasting](broadcasting)
 
 
 ActiveBlaze provides infrastructure for fast, reliable peer to peer messaging to meet the demands of high performance and collaborative applications.  

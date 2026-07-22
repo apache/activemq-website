@@ -5,12 +5,12 @@ title-class: page-title-classic
 type: classic
 ---
 
- [Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [Connection Configuration URI](connection-configuration-uri)
+ [Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [Connection Configuration URI](connection-configuration-uri)
 
 Connection Configuration URI
 ----------------------------
 
-An Apache ActiveMQ Classic connection can be configured by explicitly setting properties on the [ActiveMQConnection](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnection.html) or [ActiveMQConnectionFactory](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) objects themselves via the bean properties or using the following URI syntax.
+An Apache ActiveMQ connection can be configured by explicitly setting properties on the [ActiveMQConnection](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnection.html) or [ActiveMQConnectionFactory](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) objects themselves via the bean properties or using the following URI syntax.
 
 ### Example
 

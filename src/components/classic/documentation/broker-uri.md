@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [Broker Configuration URI](broker-configuration-uri) > [Broker URI](broker-uri)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [Broker Configuration URI](broker-configuration-uri) > [Broker URI](broker-uri)
 
 
 Broker URI

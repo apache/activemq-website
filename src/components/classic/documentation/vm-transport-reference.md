@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [VM Transport Reference](vm-transport-reference)
+ [Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [VM Transport Reference](vm-transport-reference)
 
 ### The VM Transport
 
@@ -29,7 +29,7 @@ marshal|false|If true, forces each command sent over the transport to be marshal
 wireFormat|default|The name of the WireFormat to use
 wireFormat.*||All the properties with this prefix are used to configure the wireFormat|
 create|true|If the broker should be created on demand if it does not already exist.|
-waitForStart|-1|If > 0, indicates the timeout in milliseconds to wait for a broker to start. Values -1 and 0 mean don't wait. Only supported in ActiveMQ Classic 5.2+
+waitForStart|-1|If > 0, indicates the timeout in milliseconds to wait for a broker to start. Values -1 and 0 mean don't wait. Only supported in ActiveMQ 5.2+
 broker.*||All the properties with this prefix are used to configure the broker. See [Configuring Wire Formats](configuring-wire-formats) for more information
 
 ##### Example URI
@@ -38,7 +38,7 @@ vm://broker1?marshal=false&broker.persistent=false
 ```
 Be careful with embedded brokers
 
-If you are using the VM transport and wish to explicitly configure an [Embedded Broker](how-do-i-embed-a-broker-inside-a-connection) there is a chance that you could create the JMS connections first before the broker starts up. Currently ActiveMQ Classic will auto-create a broker if you use the VM transport and there is not one already configured. (In 5.2 it is possible to use the waitForStart and create=false options for the connection uri)
+If you are using the VM transport and wish to explicitly configure an [Embedded Broker](how-do-i-embed-a-broker-inside-a-connection) there is a chance that you could create the JMS connections first before the broker starts up. Currently ActiveMQ will auto-create a broker if you use the VM transport and there is not one already configured. (In 5.2 it is possible to use the waitForStart and create=false options for the connection uri)
 
 So to work around this if you are using Spring you may wish to use the **depends-on** attribute so that your JMS ConnectionFactory depends on the embedded broker to avoid this happening. e.g.
 ```

@@ -14,7 +14,7 @@ java.naming.factory.initial = com.sun.jndi.fscontext.RefFSContextFactory
 
 Here's an example .bindind file:
 
-For ActiveMQ Classic 4.x its
+For ActiveMQ 4.x its
 
 Archive/ClassName=org.apache.activemq.command.ActiveMQQueue
 Archive/FactoryName=org.apache.activemq.jndi.JNDIReferenceFactory
@@ -55,7 +55,7 @@ QueueConnectionFactory/RefAddr/3/Type=userName
 QueueConnectionFactory/RefAddr/3/Content=defaultUser
 QueueConnectionFactory/RefAddr/3/Encoding=String
 
-For ActiveMQ Classic 3.x it is
+For ActiveMQ 3.x it is
 
 Archive/ClassName=org.activemq.message.ActiveMQQueue
 Archive/FactoryName=org.activemq.jndi.JNDIReferenceFactory

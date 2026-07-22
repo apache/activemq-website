@@ -161,7 +161,7 @@ Deltas with APP
 
 Almost all of the above could be just pure APP really. The only real difference is that each consumer has its own feed of messages which are to be consumed.
 
-In ActiveMQ Classic's case, we use a [prefetch value per consumer](what-is-the-prefetch-limit-for) to define how many messages each consumer gets in its buffer, before messages must be acknowledged to get more messages.
+In ActiveMQ's case, we use a [prefetch value per consumer](what-is-the-prefetch-limit-for) to define how many messages each consumer gets in its buffer, before messages must be acknowledged to get more messages.
 
 So the idea is that we have a per-consumer feed which is created; it can then be browsed (by anyone with sufficient karma).
 

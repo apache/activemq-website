@@ -7,43 +7,43 @@ type: classic
 
 [Features](features) > [Persistence](persistence)
 
-ActiveMQ Classic V5.14.2 / V5.17.0
+ActiveMQ V5.14.2 / V5.17.0
 -------------
 
-ActiveMQ Classic 5.14.2 was the first release after the deprecation announcement of LevelDB. The implementation was removed in 5.17.0.
+ActiveMQ 5.14.2 was the first release after the deprecation announcement of LevelDB. The implementation was removed in 5.17.0.
 We once again recommend you use [KahaDB](kahadb).
 
-ActiveMQ Classic V5.9
+ActiveMQ V5.9
 -------------
 
-In ActiveMQ Classic 5.9, the [Replicated LevelDB Store](replicated-leveldb-store) was introduced. It handles using [Apache ZooKeeper](http://zookeeper.apache.org/) to pick a master from a set of broker nodes configured to replicate single LevelDB Store. Then synchronizes all slave LevelDB Stores with the master keeps them up to date by replicating all updates to the master. It may have become the preferred [Master Slave](masterslave) configuration going forward.
+In ActiveMQ 5.9, the [Replicated LevelDB Store](replicated-leveldb-store) was introduced. It handles using [Apache ZooKeeper](http://zookeeper.apache.org/) to pick a master from a set of broker nodes configured to replicate single LevelDB Store. Then synchronizes all slave LevelDB Stores with the master keeps them up to date by replicating all updates to the master. It may have become the preferred [Master Slave](masterslave) configuration going forward.
 
-ActiveMQ Classic V5.8
+ActiveMQ V5.8
 -------------
 
-In ActiveMQ Classic 5.8, the [LevelDB Store](leveldb-store) was introduced. The LevelDB Store is a file based persistence database. It has been optimized to provide even faster persistence than KahaDB. Although not yet the default message store, we expect this store implementation become the default in future releases.
+In ActiveMQ 5.8, the [LevelDB Store](leveldb-store) was introduced. The LevelDB Store is a file based persistence database. It has been optimized to provide even faster persistence than KahaDB. Although not yet the default message store, we expect this store implementation become the default in future releases.
 
-ActiveMQ Classic V5.3
+ActiveMQ V5.3
 -------------
 
 From 5.3 onwards - we recommend you use [KahaDB](kahadb) - which offers improved scalability and recoverability over the [AMQ Message Store](amq-message-store).  
 The [AMQ Message Store](amq-message-store) which although faster than [KahaDB](kahadb) - does not scales as well as [KahaDB](kahadb) and recovery times take longer.
 
-ActiveMQ Classic V4
+ActiveMQ V4
 -----------
 
 For long term persistence we recommend using JDBC coupled with our high performance journal. You can use just JDBC if you wish but its quite slow.
 
 Our out of the box default configuration uses [Apache Derby](http://incubator.apache.org/derby/) as the default database, which is easy to embed - but we support all the [major SQL databases](jdbc-support) \- just reconfigure your JDBC configuration in the [Xml Configuration](xml-configuration).
 
-High performance journal - ActiveMQ Classic 4.x
+High performance journal - ActiveMQ 4.x
 ---------------------------------------
 
-To achieve high performance of durable messaging in ActiveMQ Classic V4.x we strongly recommend you use our high performance journal - which is enabled by default. This works rather like a database; messages (and transcation commits/rollbacks and message acknowledgements) are written to the journal as fast as is humanly possible - then at intervals we checkpoint the journal to the long term persistence storage (in this case JDBC).
+To achieve high performance of durable messaging in ActiveMQ V4.x we strongly recommend you use our high performance journal - which is enabled by default. This works rather like a database; messages (and transcation commits/rollbacks and message acknowledgements) are written to the journal as fast as is humanly possible - then at intervals we checkpoint the journal to the long term persistence storage (in this case JDBC).
 
 Its common when using queues for example that messages are consumed fairly shortly after being published; so you could publish 10,000 messages and only have a few messages outstanding - so when we checkpoint to the JDBC database, we often have only a small amount of messages to actually write to JDBC. Even if we have to write all the messages to the JDBC, we still get performance gains with the journal, since we can use a large transaction batch to insert the messages into the JDBC database to boost performance on the JDBC side.
 
-Our journal is based on lots of the great work in the [Howl](http://howl.objectweb.org/) project; we keep close ties to the Howl community. However since ActiveMQ Classic has to handle arbitarily large message sizes, we've had to make our journal handle any size of message and so we don't use the fixed size record model that Howl uses.
+Our journal is based on lots of the great work in the [Howl](http://howl.objectweb.org/) project; we keep close ties to the Howl community. However since ActiveMQ has to handle arbitarily large message sizes, we've had to make our journal handle any size of message and so we don't use the fixed size record model that Howl uses.
 
 Configuring persistence
 -----------------------

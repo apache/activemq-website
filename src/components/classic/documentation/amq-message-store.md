@@ -25,7 +25,7 @@ The messages are stored in data logs, which are individual files, typically 32mb
 Configuration
 -------------
 
-By default ActiveMQ Classic will use the the AMQ Store - and its default settings. You can configure the properties of the AMQ Store however, by explictly defining its persistence adapter (amqPersistenceAdapter):
+By default ActiveMQ will use the the AMQ Store - and its default settings. You can configure the properties of the AMQ Store however, by explictly defining its persistence adapter (amqPersistenceAdapter):
 ```
  <broker brokerName="broker" persistent="true" useShutdownHook="false">
     <persistenceAdapter>

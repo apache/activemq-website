@@ -15,7 +15,7 @@ Dispatch policies for queues
 
 Plug-able dispatch policies only apply to topics. For Queues, dispatch is more static, you can choose round robin (the default) or strict order. Before discussing dispatch policies its worth first understanding [the purpose of the prefetch value](what-is-the-prefetch-limit-for).
 
-The out of the box configuration of ActiveMQ Classic is designed for high performance and high throughput messaging where there are lots of messages that need to be dispatched to consumers as quickly as possible. So the default prefetch values are fairly large and the default dispatch policy will try and fill the prefetch buffers as quickly as possible.
+The out of the box configuration of ActiveMQ is designed for high performance and high throughput messaging where there are lots of messages that need to be dispatched to consumers as quickly as possible. So the default prefetch values are fairly large and the default dispatch policy will try and fill the prefetch buffers as quickly as possible.
 
 However with messaging there are many use cases and sometimes the default configuration is not ideal to your use case; when you send a small number of messages, they tend to all go to one consumer unless you've lots of messages. If you have a large number of consumers and a relatively high [prefetch value](what-is-the-prefetch-limit-for) and you have a small number of messages that each message takes quite a while to process then the default dispatch policy might result in increasing the amount of time it takes to process all the messages (since the load balancing is not fair for small numbers of messages).
 

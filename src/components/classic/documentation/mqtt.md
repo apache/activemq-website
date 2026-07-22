@@ -8,17 +8,17 @@ type: classic
 [Connectivity](connectivity) > [Protocols](protocols) > [MQTT](mqtt)
 
 
-ActiveMQ Classic supports the [MQTT](http://mqtt.org/) protocol and will automatically map between JMS/NMS and MQTT clients. MQTT is a machine-to-machine (M2M) publish/subscribe messaging transport.
+ActiveMQ supports the [MQTT](http://mqtt.org/) protocol and will automatically map between JMS/NMS and MQTT clients. MQTT is a machine-to-machine (M2M) publish/subscribe messaging transport.
 
 Please see the [MQTT site](http://mqtt.org/) for more details
 
 ### Supported versions
 
-ActiveMQ Classic supports MQTT [v3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html) and [v3.1](https://public.dhe.ibm.com/software/dw/webservices/ws-mqtt/mqtt-v3r1.html).
+ActiveMQ supports MQTT [v3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html) and [v3.1](https://public.dhe.ibm.com/software/dw/webservices/ws-mqtt/mqtt-v3r1.html).
 
-### Enabling the ActiveMQ Classic Broker for MQTT
+### Enabling the ActiveMQ Broker for MQTT
 
-Its very easy to enable ActiveMQ Classic for MQTT. Just add a connector to the broker using the MQTT URL.
+Its very easy to enable ActiveMQ for MQTT. Just add a connector to the broker using the MQTT URL.
 ```
 <transportConnectors>
    <transportConnector name="mqtt" uri="mqtt://localhost:1883"/>
@@ -41,7 +41,7 @@ All options must be prepended with `wireFormat` in order to take effect. Witho
 
 ### Security
 
-The ActiveMQ Classic MQTT Transport implementation fully supports an [ActiveMQ Classic security](security) mechanism. Also, the authorization policies will be applied when you try to access (read/write) certain destinations.
+The ActiveMQ MQTT Transport implementation fully supports an [ActiveMQ security](security) mechanism. Also, the authorization policies will be applied when you try to access (read/write) certain destinations.
 
 ### Enabling MQTT over NIO
 
@@ -59,13 +59,13 @@ The MQTT transport also supports using NIO and SSL. To enable this option, use t
 <transportConnector name="mqtt+nio" uri="mqtt+nio+ssl://localhost:1883"/>
 ```
 
-*   For more details on using SSL with ActiveMQ Classic see the following article ([How do I use SSL](how-do-i-use-ssl)).
+*   For more details on using SSL with ActiveMQ see the following article ([How do I use SSL](how-do-i-use-ssl)).
 
 ### Working with Destinations with MQTT
 
 MQTT supports hierarchies and wildcards, though the delimiters and characters are different: - Here's the mapping:
 
-function|ActiveMQ Classic|MQTT
+function|ActiveMQ|MQTT
 ---|---|---
 separator|`.`|`/`
 element|`*`|`+`
@@ -79,9 +79,9 @@ MQTT messages are transformed into an JMS ByteMessage. Conversely, the body of a
 
 ### Keep Alive
 
-When a client connects, it will send a keep-alive duration, usually defaulting to 10s. ActiveMQ Classic will honor the keep-alive duration by setting up an Inactivity Monitor that allows a grace period of 1.5 * duration. After that grace period duration elapses a connection could be closed if there is no activity. A broker receiving a PINGREQ and sending PINGRESP is considered activity to keep the connection opened.
+When a client connects, it will send a keep-alive duration, usually defaulting to 10s. ActiveMQ will honor the keep-alive duration by setting up an Inactivity Monitor that allows a grace period of 1.5 * duration. After that grace period duration elapses a connection could be closed if there is no activity. A broker receiving a PINGREQ and sending PINGRESP is considered activity to keep the connection opened.
 
-If a client sends a keep-alive value of 0, ActiveMQ Classic will not set up an [Inactivity Monitor](activemq-inactivitymonitor) and connections will not be auto-shutdown due to inactivity. This however can lead to potentially leaky connections, so a default keep alive can be set on the server side (by an admin, for example) to not allow inactive connections to hang. This default keep alive would only be used if specified and if the client requests a keep-alive value of 0. The unit for the keep-alive value is milliseconds.
+If a client sends a keep-alive value of 0, ActiveMQ will not set up an [Inactivity Monitor](activemq-inactivitymonitor) and connections will not be auto-shutdown due to inactivity. This however can lead to potentially leaky connections, so a default keep alive can be set on the server side (by an admin, for example) to not allow inactive connections to hang. This default keep alive would only be used if specified and if the client requests a keep-alive value of 0. The unit for the keep-alive value is milliseconds.
 
 To enable a default, server-side MQTT keep alive:
 ```
@@ -99,7 +99,7 @@ To change default value of the prefetch size, you can use _activeMQSubscription
 
 ### Subscription Strategy
 
-ActiveMQ Classic is a JMS broker in its core, so there needs to be some mapping between MQTT subscriptions and JMS semantics. Subscriptions with QoS=0 (At Most Once) are directly mapped to plain JMS non-persistent topics. For reliable messaging, QoS=1 and QoS=2, by default subscriptions are transformed to JMS durable topic subscribers. This behaviour is desired in most scenarios. For some use cases, it is useful to map these subscriptions to [virtual topics](virtual-destinations). Virtual topics provide a better scalability and are generally better solution if you want to use you MQTT subscribers over network of brokers. To change subscription strategy to use virtual topic, use the following settings:
+ActiveMQ is a JMS broker in its core, so there needs to be some mapping between MQTT subscriptions and JMS semantics. Subscriptions with QoS=0 (At Most Once) are directly mapped to plain JMS non-persistent topics. For reliable messaging, QoS=1 and QoS=2, by default subscriptions are transformed to JMS durable topic subscribers. This behaviour is desired in most scenarios. For some use cases, it is useful to map these subscriptions to [virtual topics](virtual-destinations). Virtual topics provide a better scalability and are generally better solution if you want to use you MQTT subscribers over network of brokers. To change subscription strategy to use virtual topic, use the following settings:
 ```
 <transportConnector name="mqtt" uri="mqtt://localhost:1883?transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/>
 ```

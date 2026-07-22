@@ -5,19 +5,19 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Examples](examples)
+[Using ActiveMQ](using-activemq-classic) > [Examples](examples)
 
 
-Since version **5.12.0**, Apache ActiveMQ Classic comes with the new tool that can be used to produce and consume messages from the broker.
+Since version **5.12.0**, Apache ActiveMQ comes with the new tool that can be used to produce and consume messages from the broker.
 
 Prerequisites
 -------------
 
-Before running the examples you should try [running a JMS broker](run-broker) on your machine. Follow the [Installation](installation) instructions to use a binary distribution of ActiveMQ Classic. To run the broker in a command shell, type:
+Before running the examples you should try [running a JMS broker](run-broker) on your machine. Follow the [Installation](installation) instructions to use a binary distribution of ActiveMQ. To run the broker in a command shell, type:
 ```
 bin/activemq console
 ```
-This starts up ActiveMQ Classic.
+This starts up ActiveMQ.
 
 Running
 -------
@@ -76,7 +76,7 @@ bin/activemq consumer --durable true --clientId example --destination topic://TE
 Old examples
 ------------
 
-In older versions of ActiveMQ Classic, the corresponding examples were located in `examples/` or `examples/openwire/swissarmy/` directories, where you can do the similar tasks with an ant script.
+In older versions of ActiveMQ, the corresponding examples were located in `examples/` or `examples/openwire/swissarmy/` directories, where you can do the similar tasks with an ant script.
 ```
 ant producer
 ant consumer

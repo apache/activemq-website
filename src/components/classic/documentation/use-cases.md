@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Use Cases](use-cases)
+[Using ActiveMQ](using-activemq-classic) > [Use Cases](use-cases)
 
 
 Messaging is a diverse and wide ranging subject - there are many different use cases, requirements and deployment options. This is one of the reasons why its so interesting to work on ![(smile)](https://cwiki.apache.org/confluence/s/en_GB/5997/6f42626d00e36f53fe51440403446ca61552e2a2.1/_/images/icons/emoticons/smile.png)
@@ -42,11 +42,11 @@ This is similar to using a JMS provider as an RMI layer in EJB-style or WS style
 Web Streaming of data
 ---------------------
 
-This use case focusses on [Ajax](ajax) support in ActiveMQ Classic.
+This use case focusses on [Ajax](ajax) support in ActiveMQ.
 
 Increasingly folks want to stream data real time right into web browsers. For example streaming financial stock prices, to show live IM conversations, live auctions or to dynamically update live content and news.
 
-In this use case we integrate ActiveMQ Classic into a web container and provide close web-integration to enable HTTP POSTs to publish messages and slow JavaScript HTTP GET operations to receive messages.
+In this use case we integrate ActiveMQ into a web container and provide close web-integration to enable HTTP POSTs to publish messages and slow JavaScript HTTP GET operations to receive messages.
 
 RESTful API to messaging using HTTP
 -----------------------------------

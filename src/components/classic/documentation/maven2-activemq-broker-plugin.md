@@ -1,20 +1,20 @@
 ---
 layout: default_md
-title: Maven2 ActiveMQ Classic Broker Plugin 
+title: Maven2 ActiveMQ Broker Plugin 
 title-class: page-title-classic
 type: classic
 ---
 
-[Tools](tools) > [Maven2 ActiveMQ Classic Broker Plugin](maven2-activemq-broker-plugin)
+[Tools](tools) > [Maven2 ActiveMQ Broker Plugin](maven2-activemq-broker-plugin)
 
 
-ActiveMQ Classic provides a Maven2 plugin to easily startup a JMS broker. It is useful to quickly boot up a message broker in your Maven2 project for debugging or for doing integration tests.
+ActiveMQ provides a Maven2 plugin to easily startup a JMS broker. It is useful to quickly boot up a message broker in your Maven2 project for debugging or for doing integration tests.
 
 ###  How to Use
 
 > Be Careful
 > 
-> The maven plugins in ActiveMQ Classic have been renamed in version 5.8.0+ to better follow the Maven plugin naming conventions. The ActiveMQ Classic Broker plugin has changed from 'maven-activemq-plugin' to 'activemq-maven-plugin'.
+> The maven plugins in ActiveMQ have been renamed in version 5.8.0+ to better follow the Maven plugin naming conventions. The ActiveMQ Broker plugin has changed from 'maven-activemq-plugin' to 'activemq-maven-plugin'.
 
 > Replace the 5.7.0 version string with the version of your choosing, eg: 5.6.0, 5.8-SNAPSHOT
 
@@ -32,7 +32,7 @@ just type:
 ```
 mvn org.apache.activemq.tooling:maven-activemq-plugin:5.1:run
 ```
-This will download the 5.7.0 version of the plugin, and spin up a broker using a simple configuration url of the form `broker:(tcp://localhost:61616)?useJmx=false&persistent=false`. The necessary ActiveMQ Classic jars will automatically be downloaded by Maven.
+This will download the 5.7.0 version of the plugin, and spin up a broker using a simple configuration url of the form `broker:(tcp://localhost:61616)?useJmx=false&persistent=false`. The necessary ActiveMQ jars will automatically be downloaded by Maven.
 
 To configure log4j, provide the `-Dlog4j.configuration=[file:///](file:///)<full path to log4j.properties>` system property on the mvn command line.
 

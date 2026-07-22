@@ -110,7 +110,7 @@ Where the `forwardOnly` attribute is not defined or is set to `true`, there is n
 
 ### Using filtered destinations
 
-From Apache ActiveMQ Classic **4.2** onwards you can now use selectors to define virtual destinations.
+From Apache ActiveMQ **4.2** onwards you can now use selectors to define virtual destinations.
 
 You may wish to create a virtual destination which forwards messages to multiple destinations but applying a selector first to decide if the message really does have to go to a particular destination.
 

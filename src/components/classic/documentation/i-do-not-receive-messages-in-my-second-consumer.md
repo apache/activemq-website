@@ -20,7 +20,7 @@ type: classic
 
 This is to do with [prefetch buffers](what-is-the-prefetch-limit-for).
 
-ActiveMQ Classic will try and deliver a number of messages to each consumer as soon as possible to achieve maximum throughput. That means that each consumer typically has 100-1000 messages in RAM ready to be processed so that there is no latency waiting for another message to arrive under periods of high throughput of messages.
+ActiveMQ will try and deliver a number of messages to each consumer as soon as possible to achieve maximum throughput. That means that each consumer typically has 100-1000 messages in RAM ready to be processed so that there is no latency waiting for another message to arrive under periods of high throughput of messages.
 
 The problem is, if consumer A is set with a prefetch value of >= 100 then it will receive all of the messages before consumer B starts. Then when B starts there are actually no messages available to be dispatched to B (since they are all dispatched to A) until either
 

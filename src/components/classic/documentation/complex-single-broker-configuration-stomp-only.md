@@ -5,26 +5,26 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [Complex Single Broker Configuration (STOMP only)](complex-single-broker-configuration-stomp-only)
+[Using ActiveMQ](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [Complex Single Broker Configuration (STOMP only)](complex-single-broker-configuration-stomp-only)
 
 
-Example of an ActiveMQ Classic configuration with predefined queues, simple destination security (could easily update it to JAAS), complex Web Console security with Jetty JAAS, and JMX security too.
+Example of an ActiveMQ configuration with predefined queues, simple destination security (could easily update it to JAAS), complex Web Console security with Jetty JAAS, and JMX security too.
 
-While this is a fairly detailed configuration, it locks down every ActiveMQ Classic service. It would be ideal if ActiveMQ Classic shipped with a default closed configuration like this.
+While this is a fairly detailed configuration, it locks down every ActiveMQ service. It would be ideal if ActiveMQ shipped with a default closed configuration like this.
 
-ActiveMQ Classic is assumed to be installed in /usr/local/activemq/ in this example.
+ActiveMQ is assumed to be installed in /usr/local/activemq/ in this example.
 ```
 <!--
-  ActiveMQ Classic activemq.xml configuration file (/usr/local/activemq/conf/activemq.xml)
+  ActiveMQ activemq.xml configuration file (/usr/local/activemq/conf/activemq.xml)
 
-  * ActiveMQ Classic JVM Startup options are in /etc/activemq.conf
+  * ActiveMQ JVM Startup options are in /etc/activemq.conf
 
   * Uses the Sun JMX connector for remote management.  Point jconsole at:
     service:jmx:rmi:///jndi/rmi://myserver.domain.net:61616/jmxrmi
 
   * Uses Kaha persistence storage, stored in the "activemq-data" directory.
     "activemq-data" and "logs" sub-directories must be writable by the
-    ActiveMQ Classic user.
+    ActiveMQ user.
 
   * Also see conf/log4j.properties for logging configuration
 -->
@@ -54,7 +54,7 @@ ActiveMQ Classic is assumed to be installed in /usr/local/activemq/ in this exam
     </networkConnectors>
 
     <!-- Do not create an ActiveMQ JMX connector.  Use the Sun JMX connector
-         instead, and hook ActiveMQ Classic to it. -->
+         instead, and hook ActiveMQ to it. -->
     <managementContext>
         <managementContext createConnector="false" />
     </managementContext>
@@ -85,7 +85,7 @@ ActiveMQ Classic is assumed to be installed in /usr/local/activemq/ in this exam
     <!-- <commandAgent xmlns="http://activemq.org/config/1.0"/> -->
 
     <!-- Web Console.  Auth is via JAAS.  Beware: jetty-plus-6.1.4.jar contains the
-         JAAS classes, and is not included with ActiveMQ Classic.  You need to download
+         JAAS classes, and is not included with ActiveMQ.  You need to download
          separately.  Web Console queue browser will fail, as it tries to use JMS
          to browse the queue, and that requires a password.
     -->

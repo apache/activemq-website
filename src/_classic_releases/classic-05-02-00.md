@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.2.0 Release
+title: ActiveMQ 5.2.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.2 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=10520&styleName=Html&version=11841)
+Apache ActiveMQ 5.2 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=10520&styleName=Html&version=11841)
 
 New Features in 5.2
 -------------------
@@ -106,5 +106,5 @@ For a more detailed view of new features and bug fixes, see the [release notes](
 
 JIRA Issues Macro: Data cannot be retrieved due to an unexpected error
 
-Also see the previous [ActiveMQ Classic 5.1.0 Release](classic-05-01-00)
+Also see the previous [ActiveMQ 5.1.0 Release](classic-05-01-00)
 

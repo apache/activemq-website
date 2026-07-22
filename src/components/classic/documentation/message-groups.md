@@ -87,7 +87,7 @@ In summary; if ordering or per-message caching and synchronization are in any wa
 
 ### Getting Notified of Ownership Changes of Message Groups
 
-ActiveMQ Classic support a boolean header called `JMSXGroupFirstForConsumer`. This header is set on the first message sent to a consumer for a particular message group.
+ActiveMQ support a boolean header called `JMSXGroupFirstForConsumer`. This header is set on the first message sent to a consumer for a particular message group.
 
 If the JMS connection is using `failover:` and a temporary network error occurs so that the connection disconnects from the broker and reconnects some time later, a new consumer instance will be created under the covers of the JMS client leading to the possibility of another message with this header being set for the same message group.
 

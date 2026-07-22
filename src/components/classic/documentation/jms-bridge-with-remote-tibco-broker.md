@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [JMS Bridge With Remote TIBCO Broker](jms-bridge-with-remote-tibco-broker)
+[Using ActiveMQ](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [JMS Bridge With Remote TIBCO Broker](jms-bridge-with-remote-tibco-broker)
 
 
 ### Example of a configuration that shows how to use a BridgeConnector to make a connection to a remote TIBCO EMS broker.

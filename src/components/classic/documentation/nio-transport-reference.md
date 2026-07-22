@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [NIO Transport Reference](nio-transport-reference)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [NIO Transport Reference](nio-transport-reference)
 
 
 NIO Transport is very similar to the regular [TCP transport](tcp-transport-reference). The difference is that it is implemented using NIO API which can help with performance and scalability. NIO is a server side transport option only. Trying to use it on the client side will instantiate the regular TCP transport.

@@ -34,7 +34,7 @@ ZooKeeper is used to implement the master election algorithm. ZooKeeper is a ver
 Configuring a Broker:
 ---------------------
 
-The ActiveMQ Classic binary distribution includes a KahaDB HA broker configuration at **$ACTIVEMQ_HOME/conf/ha.xml**.
+The ActiveMQ binary distribution includes a KahaDB HA broker configuration at **$ACTIVEMQ_HOME/conf/ha.xml**.
 
 It it setup to look for a ZooKeeper 3.0.0 server on localhost at port 2181. Edit the configuration if this is not where you are running your ZooKeeper server.
 

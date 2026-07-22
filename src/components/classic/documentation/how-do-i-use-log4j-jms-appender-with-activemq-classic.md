@@ -1,18 +1,18 @@
 ---
 layout: default_md
-title: How do I use log4j JMS appender with ActiveMQ Classic 
+title: How do I use log4j JMS appender with ActiveMQ 
 title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I use log4j JMS appender with ActiveMQ Classic](how-do-i-use-log4j-jms-appender-with-activemq-classic)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I use log4j JMS appender with ActiveMQ](how-do-i-use-log4j-jms-appender-with-activemq-classic)
 
 
-[Log4j JMS appender](http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/net/JMSAppender.html) can be used to send your log messages to JMS broker. To use ActiveMQ Classic as a destination of your messages, you need to configure JMS appender properly. The code sample below shows example configuration:
+[Log4j JMS appender](http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/net/JMSAppender.html) can be used to send your log messages to JMS broker. To use ActiveMQ as a destination of your messages, you need to configure JMS appender properly. The code sample below shows example configuration:
 ```
 log4j.rootLogger=INFO, stdout, jms
 
-## Be sure that ActiveMQ Classic messages are not logged to 'jms' appender
+## Be sure that ActiveMQ messages are not logged to 'jms' appender
 log4j.logger.org.apache.activemq=INFO, stdout
 
 log4j.appender.stdout=org.apache.log4j.ConsoleAppender
@@ -26,7 +26,7 @@ log4j.appender.jms.ProviderURL=tcp://localhost:61616
 log4j.appender.jms.TopicBindingName=logTopic
 log4j.appender.jms.TopicConnectionFactoryBindingName=ConnectionFactory
 ```
-The important thing is not to send ActiveMQ Classic logs to JMS appender, as it can cause errors since the broker will want to log before the connection is established. You will also need a JNDI configuration, so that appender can find appropriate topic to send log messages to. The example `jndi.properties` file can look like this:
+The important thing is not to send ActiveMQ logs to JMS appender, as it can cause errors since the broker will want to log before the connection is established. You will also need a JNDI configuration, so that appender can find appropriate topic to send log messages to. The example `jndi.properties` file can look like this:
 ```
 topic.logTopic=logTopic
 ```
@@ -70,7 +70,7 @@ public class Log4jJMSAppenderExample implements MessageListener {
 ```
 Note that appender send logging event wrapped in an object message, so you can extract information such as logger name, level and of course the message.
 
-Starting with ActiveMQ Classic 5.3, this example is included in the standard distribution. You can run it by executing
+Starting with ActiveMQ 5.3, this example is included in the standard distribution. You can run it by executing
 ```
 ant log4j-jms
 ```

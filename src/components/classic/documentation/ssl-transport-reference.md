@@ -5,12 +5,12 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [SSL Transport Reference](ssl-transport-reference)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [SSL Transport Reference](ssl-transport-reference)
 
 
 ### The SSL Transport
 
-The SSL transport allows clients to connect to a remote ActiveMQ Classic broker using SSL over a TCP socket.
+The SSL transport allows clients to connect to a remote ActiveMQ broker using SSL over a TCP socket.
 
 #### Configuration Syntax
 
@@ -54,7 +54,7 @@ ssl://localhost:61616?socket.enabledCipherSuites=SSL_RSA_WITH_RC4_128_SHA,SSL_DH
 ```
 #### Hostname Validation (Starting with version 5.15.6)
 
-From version 5.15.6 ActiveMQ Classic now supports TLS Hostname validation. This has been enabled by default for the ActiveMQ Classic client and is off by default on the broker. To configure:
+From version 5.15.6 ActiveMQ now supports TLS Hostname validation. This has been enabled by default for the ActiveMQ client and is off by default on the broker. To configure:
 
 #### Server side configuration of hostname validation
 
@@ -64,7 +64,7 @@ ssl://localhost:61616?transport.verifyHostName=true
 ```
 #### Client side configuration of hostname validation
 
-The default for the ActiveMQ Classic client is to enable Hostname validation and this can be configured with `?socket.verifyHostName` or simply `?verifyHostName` with no prefix. This will cause the CN of the server certificate to be compared to the server hostname to verify they match, e.g.:
+The default for the ActiveMQ client is to enable Hostname validation and this can be configured with `?socket.verifyHostName` or simply `?verifyHostName` with no prefix. This will cause the CN of the server certificate to be compared to the server hostname to verify they match, e.g.:
 ```
 ssl://localhost:61616?socket.verifyHostName=false
 ```
@@ -88,4 +88,4 @@ If your XML configuration file contains the following and you wish to use SSL
 ```xml
 <networkConnector uri="multicast://default"/>
 ```
-Then you will currently need to comment that out. The reason is to prevent ActiveMQ Classic atempting to connect to itself - if you do this with a self-signed certificate, you will get a constant spam of certificate_unknown stacktraces to the console, as the broker is not configured with the truststore.
+Then you will currently need to comment that out. The reason is to prevent ActiveMQ atempting to connect to itself - if you do this with a self-signed certificate, you will get a constant spam of certificate_unknown stacktraces to the console, as the broker is not configured with the truststore.

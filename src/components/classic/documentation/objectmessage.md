@@ -8,12 +8,12 @@ type: classic
 [Features](features) > [Message Features](message-features) > [ObjectMessage](objectmessage)
 
 
-Although ObjectMessage usage is generally discouraged, as it introduces coupling of class paths between producers and consumers, ActiveMQ Classic supports them as part of the JMS specification.
+Although ObjectMessage usage is generally discouraged, as it introduces coupling of class paths between producers and consumers, ActiveMQ supports them as part of the JMS specification.
 
 Security
 --------
 
-ObjectMessage objects depend on Java serialization of marshal/unmarshal object payload. This process is generally considered unsafe as malicious payload can exploit the host system. That's why starting with versions **5.12.2** and **5.13.0**, ActiveMQ Classic enforces users to explicitly whitelist packages that can be exchanged using ObjectMessages.
+ObjectMessage objects depend on Java serialization of marshal/unmarshal object payload. This process is generally considered unsafe as malicious payload can exploit the host system. That's why starting with versions **5.12.2** and **5.13.0**, ActiveMQ enforces users to explicitly whitelist packages that can be exchanged using ObjectMessages.
 
 If you need to exchange object messages, you need to add packages your applications are using. You can do that with by using `org.apache.activemq.SERIALIZABLE_PACKAGES` system property, interpreted by the broker and the activemq client library. You can add this system property to `ACTIVEMQ_OPTS` variable in `${ACTIVEMQ_HOME}/bin/env` script.
 

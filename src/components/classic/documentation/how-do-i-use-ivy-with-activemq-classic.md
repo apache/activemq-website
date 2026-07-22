@@ -1,11 +1,11 @@
 ---
 layout: default_md
-title: How do I use Ivy with ActiveMQ Classic 
+title: How do I use Ivy with ActiveMQ 
 title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I use Ivy with ActiveMQ Classic](how-do-i-use-ivy-with-activemq-classic)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I use Ivy with ActiveMQ](how-do-i-use-ivy-with-activemq-classic)
 
 ```
 <ivyconf>

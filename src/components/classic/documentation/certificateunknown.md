@@ -26,7 +26,7 @@ Caused by: javax.net.ssl.SSLHandshakeException: Received fatal alert: certificat
        at com.sun.net.ssl.internal.ssl.AppInputStream.read(Unknown Source)
        at java.io.BufferedInputStream.fill(Unknown Source) 
 ```
-when you are trying to use SSL to connect to ActiveMQ Classic then the "certificate_unknown" error shows on the broker when the client doesn't trust the broker's certificate. On the client, I would see an error as well: "No trusted certificate found".
+when you are trying to use SSL to connect to ActiveMQ then the "certificate_unknown" error shows on the broker when the client doesn't trust the broker's certificate. On the client, I would see an error as well: "No trusted certificate found".
 
 ### Fix
 

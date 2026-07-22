@@ -1,10 +1,10 @@
 ---
 layout: default_md
-title: Using ActiveMQ Classic 5 
+title: Using ActiveMQ 5 
 title-class: page-title-classic
 type: classic
 ---
-To help you get started using Apache ActiveMQ Classic 5 you may wish to start off with the [Version 5 Getting Started](version-5-getting-started) guide or the [Configuring version 5 Transports](configuring-version-5-transports). Otherwise here is a complete list of the guides.
+To help you get started using Apache ActiveMQ 5 you may wish to start off with the [Version 5 Getting Started](version-5-getting-started) guide or the [Configuring version 5 Transports](configuring-version-5-transports). Otherwise here is a complete list of the guides.
 
 *   [Configure version 5 Brokers](configure-version-5-brokers)
 *   [Configuring Version 5 Transports](configuring-version-5-transports)
@@ -22,5 +22,5 @@ To help you get started using Apache ActiveMQ Classic 5 you may wish to start of
 
 ### Commercial Documentation
 
-The commercial providers listed on the [support](../../../support) page may also have additional documentation, examples, tutorials, etc... that can help you get started using ActiveMQ Classic.
+The commercial providers listed on the [support](../../../support) page may also have additional documentation, examples, tutorials, etc... that can help you get started using ActiveMQ.
 

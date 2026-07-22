@@ -5,10 +5,10 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do distributed queues work](how-do-distributed-queues-work)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do distributed queues work](how-do-distributed-queues-work)
 
 
-There are various [Topologies](topologies) that you can employ with ActiveMQ Classic, where clients are connected to message brokers in various ways like
+There are various [Topologies](topologies) that you can employ with ActiveMQ, where clients are connected to message brokers in various ways like
 
 *   peer based
 *   client server
@@ -32,7 +32,7 @@ In Master/Slave, queues and topics are all replicated between each broker in the
 Store and forward networks of brokers
 -------------------------------------
 
-A [Store and Forward Network of Brokers](networks-of-brokers) means the messages travel from broker to broker until they reach a consumer; with each message being owned by a single broker at any point in time. When a JMS producer sends a message to a JMS consumer, it may travel through several brokers to reach its final destination. ActiveMQ Classic uses [Consumer Priority](consumer-priority) so that local JMS consumers are always higher priority than remote brokers in a store and forward network.
+A [Store and Forward Network of Brokers](networks-of-brokers) means the messages travel from broker to broker until they reach a consumer; with each message being owned by a single broker at any point in time. When a JMS producer sends a message to a JMS consumer, it may travel through several brokers to reach its final destination. ActiveMQ uses [Consumer Priority](consumer-priority) so that local JMS consumers are always higher priority than remote brokers in a store and forward network.
 
 Note though that a store and forward network is not a solution for message [HA](ha); if a broker fails in a Store and Forward network, the messages owned by that broker remain inside the broker's persistent store until the broker comes back online. If you need [HA](ha) of messages then you need to use Master/Slave described above.
 
@@ -49,7 +49,7 @@ e.g. if we had broker A, B, C and a publisher on a queue on A. If we have consum
 Distributed Topics in Store/Forward
 -----------------------------------
 
-For topics the above algorithm is followed except, every interested client receives a copy of the message - plus ActiveMQ Classic will check for loops (to avoid a message flowing infinitely around a ring of brokers).
+For topics the above algorithm is followed except, every interested client receives a copy of the message - plus ActiveMQ will check for loops (to avoid a message flowing infinitely around a ring of brokers).
 
 ### See Also
 

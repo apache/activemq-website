@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Features](features) > [ActiveMQ Classic Real Time](activemq-classic-real-time) > [The ActiveBlaze Message type](the-activeblaze-message-type)
+[Features](features) > [ActiveMQ Real Time](activemq-classic-real-time) > [The ActiveBlaze Message type](the-activeblaze-message-type)
 
 
 The foundation of message and event parsing in ActiveBlaze is the BlazeMessage.  

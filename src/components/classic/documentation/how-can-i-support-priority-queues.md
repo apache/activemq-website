@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How can I support priority queues](how-can-i-support-priority-queues)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How can I support priority queues](how-can-i-support-priority-queues)
 
 
 How can I support priority queues?
@@ -46,7 +46,7 @@ then have 50 consumers doing average or above
 ```
 JMSPriority >= 4
 ```
-Then say 10 consumers consuming all messages (so all priorities). Then this way you'll have a pool of threads always processing high priority messages - giving you very efficient priority based dispatching of messages without ActiveMQ Classic having to batch up messages and reorder them before dispatching them.
+Then say 10 consumers consuming all messages (so all priorities). Then this way you'll have a pool of threads always processing high priority messages - giving you very efficient priority based dispatching of messages without ActiveMQ having to batch up messages and reorder them before dispatching them.
 
 #### Use Resequencer
 

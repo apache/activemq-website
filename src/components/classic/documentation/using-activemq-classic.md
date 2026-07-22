@@ -1,14 +1,14 @@
 ---
 layout: default_md
-title: Using ActiveMQ Classic 
+title: Using ActiveMQ 
 title-class: page-title-classic
 type: classic
 ---
-To help you get started using Apache ActiveMQ Classic you may wish to start off with the [Getting Started](getting-started) guide or the [Configuring Transports](configuring-transports). Otherwise here is a complete list of the guides.
+To help you get started using Apache ActiveMQ you may wish to start off with the [Getting Started](getting-started) guide or the [Configuring Transports](configuring-transports). Otherwise here is a complete list of the guides.
 
 *   [Configuring Brokers](configuring-brokers)
 *   [Configuring Transports](configuring-transports)
-    *   [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris)
+    *   [ActiveMQ Connection URIs](activemq-classic-connection-uris)
         *   [Broker Configuration URI](broker-configuration-uri)
             *   [Broker Properties URI](broker-properties-uri)
             *   [Broker URI](broker-uri)
@@ -27,12 +27,12 @@ To help you get started using Apache ActiveMQ Classic you may wish to start off 
         *   [TCP Transport Reference](tcp-transport-reference)
         *   [UDP Transport Reference](udp-transport-reference)
         *   [VM Transport Reference](vm-transport-reference)
-    *   [ActiveMQ Classic InactivityMonitor](activemq-inactivitymonitor)
+    *   [ActiveMQ InactivityMonitor](activemq-inactivitymonitor)
     *   [ZeroConf Transport Reference](zeroconf-transport-reference)
         *   [ZeroConf](zeroconf)
 *   [Examples](examples)
 *   [Getting Started](getting-started)
-    *   [Monitoring ActiveMQ Classic](monitoring-activemq-classic)
+    *   [Monitoring ActiveMQ](monitoring-activemq-classic)
 *   [Hello World](hello-world)
 *   [Initial Configuration](initial-configuration)
 *   [Installation](installation)

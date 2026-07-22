@@ -20,7 +20,7 @@ Performance differs greatly depending on many different factors
 *   number of producers, number of consumers
 *   distribution of messages across destinations along with message size
 
-To give you an idea of the kinds of performance you can expect from ActiveMQ Classic we have a bunch of [JMeter Performance Tests](jmeter-performance-tests) that you can run on your hardware with the protocols of your choice.
+To give you an idea of the kinds of performance you can expect from ActiveMQ we have a bunch of [JMeter Performance Tests](jmeter-performance-tests) that you can run on your hardware with the protocols of your choice.
 
 The last test run we ran was on a small network of 2 dual CPU opteron linux boxes (64 bit) running SuSe and with Java 5 from Sun.
 
@@ -30,13 +30,13 @@ When running the server on one box and a single producer and consumer thread in 
 
 We have a few tools to help you evaluate performance.
 
-*   [ActiveMQ Classic Performance Module Users Manual](activemq-classic-performance-module-users-manual)
+*   [ActiveMQ Performance Module Users Manual](activemq-classic-performance-module-users-manual)
 *   [Load Testing with Camel](load-testing-with-camel)
 *   [JMeter Performance Tests](jmeter-performance-tests)
 
 Performance guides
 ------------------
 
-If you're not convinced by performance reports then please do try running performance tests yourself. You might wanna check out our overview of [Performance](performance) or try using out the [ActiveMQ Classic Performance Module Users Manual](activemq-classic-performance-module-users-manual)
+If you're not convinced by performance reports then please do try running performance tests yourself. You might wanna check out our overview of [Performance](performance) or try using out the [ActiveMQ Performance Module Users Manual](activemq-classic-performance-module-users-manual)
 
 [Commercial providers](support#commercial-support) may also be able to help diagnose performance issues, suggest changes, etc...

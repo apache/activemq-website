@@ -80,7 +80,7 @@ shutdownOnSlaveFailure|false|version 5.2+, if true, a master will shutdown if th
 
 ### Configuring the authentication of the Slave
 
-In ActiveMQ Classic 4.1 or later you can use a `<masterConnector/>` element as an alternative XML configuration mechanism as shown in the following [example](http://svn.apache.org/repos/asf/activemq/trunk/activemq-core/src/test/resources/org/apache/activemq/broker/ft/slave2.xml) to configure the user and password that the slave will use to connect to the master
+In ActiveMQ 4.1 or later you can use a `<masterConnector/>` element as an alternative XML configuration mechanism as shown in the following [example](http://svn.apache.org/repos/asf/activemq/trunk/activemq-core/src/test/resources/org/apache/activemq/broker/ft/slave2.xml) to configure the user and password that the slave will use to connect to the master
 ```
 <broker brokerName="slave" useJmx="false"  deleteAllMessagesOnStartup="true"  xmlns="http://activemq.apache.org/schema/core">
   <services>

@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.12.0 Release
+title: ActiveMQ 5.12.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.12.0 resolves several [issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12329258), and provides significant improves to the [AMQP](amqp) and [MQTT](ProtocolsConnectivity/Protocols/Connectivity/Protocols/mqtt) support in the broker as well as fixing issues with [STOMP](stomp) and [MQTT](ProtocolsConnectivity/Protocols/Connectivity/Protocols/mqtt) over WebSockets plus much much more.
+Apache ActiveMQ 5.12.0 resolves several [issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12329258), and provides significant improves to the [AMQP](amqp) and [MQTT](ProtocolsConnectivity/Protocols/Connectivity/Protocols/mqtt) support in the broker as well as fixing issues with [STOMP](stomp) and [MQTT](ProtocolsConnectivity/Protocols/Connectivity/Protocols/mqtt) over WebSockets plus much much more.
 
 ### Getting the Binary Distributions
 
@@ -82,5 +82,5 @@ Change Log
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12329258)
 
-Also see the previous [ActiveMQ Classic 5.11.2 Release](classic-05-11-02)
+Also see the previous [ActiveMQ 5.11.2 Release](classic-05-11-02)
 

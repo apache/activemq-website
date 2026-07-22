@@ -73,7 +73,7 @@ Another option could be to use the oldest message with the lowest priority messa
 Example
 -------
 
-The following example shows an ActiveMQ Classic broker configuration file. Notice that for topics in the `PRICES.>` wildcard range the `pendingMessageLimitStrategy` property is set to only keep around `10` messages for each consumer above their prefetch buffer size.
+The following example shows an ActiveMQ broker configuration file. Notice that for topics in the `PRICES.>` wildcard range the `pendingMessageLimitStrategy` property is set to only keep around `10` messages for each consumer above their prefetch buffer size.
 
 ```
 <beans xmlns="http://www.springframework.org/schema/beans" 

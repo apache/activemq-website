@@ -8,7 +8,7 @@ type: classic
 [Features](features) > [New Features](new-features) > [New Features in 4.1](new-features-in-41)
 
 
-New Features in Apache ActiveMQ Classic 4.1
+New Features in Apache ActiveMQ 4.1
 -----------------------------------
 
 *   [Shared File System Master Slave](shared-file-system-master-slave)

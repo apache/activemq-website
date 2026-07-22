@@ -8,10 +8,10 @@ type: classic
 [Developers](developers) > [Building](building)
 
 
-Building ActiveMQ Classic from Source
+Building ActiveMQ from Source
 -----------------------------
 
-ActiveMQ Classic uses [Maven](http://maven.apache.org/) as its build and management tool. If you don't fancy using Maven you can use your IDE directly or [Download](download) a distribution or JAR.
+ActiveMQ uses [Maven](http://maven.apache.org/) as its build and management tool. If you don't fancy using Maven you can use your IDE directly or [Download](download) a distribution or JAR.
 
 ### Prequisites
 
@@ -24,9 +24,9 @@ ActiveMQ Classic uses [Maven](http://maven.apache.org/) as its build and managem
 Using Maven 3
 -------------------------------------
 
-ActiveMQ Classic uses Maven 3 to Build. We recommend you download and install [Maven](http://maven.apache.org/download).
+ActiveMQ uses Maven 3 to Build. We recommend you download and install [Maven](http://maven.apache.org/download).
 
-> You should set the MAVEN_OPTS environment variable to at least -Xmx800m. There are portions of the ActiveMQ Classic build that are very memory intensive. Increase the maven memory limit so that the build does not fail for you.
+> You should set the MAVEN_OPTS environment variable to at least -Xmx800m. There are portions of the ActiveMQ build that are very memory intensive. Increase the maven memory limit so that the build does not fail for you.
 
 ### Doing a Quick Build
 ```
@@ -52,10 +52,10 @@ mvn idea:idea
 For more details try the [Examples](examples) or [Benchmark Tests](benchmark-tests)  
 Please refer to the [plugin reference](http://maven.apache.org/plugins/index.html) for more details on using them.
 
-Using Maven 1 (ActiveMQ Classic 4.0.x and Down)
+Using Maven 1 (ActiveMQ 4.0.x and Down)
 ---------------------------------------
 
-ActiveMQ Classic 4.0.x and down use Maven 1 to Build. We recommend you download and install [Maven 1.0.2](http://maven.apache.org/maven-1.x/startOverviewOverview/Overview/download).
+ActiveMQ 4.0.x and down use Maven 1 to Build. We recommend you download and install [Maven 1.0.2](http://maven.apache.org/maven-1.x/startOverviewOverview/Overview/download).
 
 ### Doing a Quick Build
 ```

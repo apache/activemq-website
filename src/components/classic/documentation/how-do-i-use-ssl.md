@@ -5,15 +5,15 @@ title-class: page-title-classic
 type: classic
 ---
 
- [Community](community) > [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I use SSL](how-do-i-use-ssl)
+ [Community](community) > [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I use SSL](how-do-i-use-ssl)
 
 ### Setting up the Key and Trust Stores
 
 Also see [Tomcat's SSL instructions](http://jakarta.apache.org/tomcat/tomcat-5.5-doc/ssl-howto.html) for more info. The following was provided by Colin Kilburn. Thanks Colin!
 
-> ActiveMQ Classic uses dummy credentials by default
+> ActiveMQ uses dummy credentials by default
 > 
-> ActiveMQ Classic includes key and trust stores that reference a dummy self signed cert. When you create a broker certificate and stores for your installation, either overwrite the values in the conf directory or delete the existing dummy key and trust stores so they cannot interfere) 
+> ActiveMQ includes key and trust stores that reference a dummy self signed cert. When you create a broker certificate and stores for your installation, either overwrite the values in the conf directory or delete the existing dummy key and trust stores so they cannot interfere) 
 
 1.  Using keytool, create a certificate for the broker:
     ```
@@ -37,7 +37,7 @@ Also see [Tomcat's SSL instructions](http://jakarta.apache.org/tomcat/tomcat-5.5
 
 #### Using the javax.net.ssl.* System Properties
 
-Before starting the broker's VM set the ACTIVEMQ_SSL_OPTS environment variable so that it knows to use the broker keystore. (note that in previous versions of ActiveMQ Classic this property was called SSL_OPTS in some scripts. As of v5.12.0 all scripts use ACTIVEMQ_SSL_OPTS)
+Before starting the broker's VM set the ACTIVEMQ_SSL_OPTS environment variable so that it knows to use the broker keystore. (note that in previous versions of ActiveMQ this property was called SSL_OPTS in some scripts. As of v5.12.0 all scripts use ACTIVEMQ_SSL_OPTS)
 
 ```
 export ACTIVEMQ_SSL_OPTS = -Djavax.net.ssl.keyStore=/path/to/broker.ks -Djavax.net.ssl.keyStorePassword=password
@@ -45,7 +45,7 @@ export ACTIVEMQ_SSL_OPTS = -Djavax.net.ssl.keyStore=/path/to/broker.ks -Djavax.n
 
 #### Using Spring to configure SSL for a Broker instance
 
-Sometimes the use of javax.net.ssl.* system properties is not appropriate as they effect all SSL users in a JVM. ActiveMQ Classic 5.2.x adds an element to the that allows a broker specific set of SSL properties to be configured.
+Sometimes the use of javax.net.ssl.* system properties is not appropriate as they effect all SSL users in a JVM. ActiveMQ 5.2.x adds an element to the that allows a broker specific set of SSL properties to be configured.
 
 The SslContext [test case](https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/java/org/apache/activemq/transport/tcp/SslContextBrokerServiceTest.java) validates starting an SSL transport listener using the configuration specified in the broker Xbean. The SslContext element is added to the broker as follows:
 
@@ -60,7 +60,7 @@ javax.net.ssl.keyStorePassword=password
 javax.net.ssl.trustStore=/path/to/client.ts
 ```
 
-In Linux, do not use absolute path to keystore. By default, keytool uses `~/.keystore`, but in some setups passing `-Djavax.net.ssl.keyStore=/home/account/.keystore` to Java VM does not work. This is not specific to ActiveMQ Classic but good to keep in mind anyway.
+In Linux, do not use absolute path to keystore. By default, keytool uses `~/.keystore`, but in some setups passing `-Djavax.net.ssl.keyStore=/home/account/.keystore` to Java VM does not work. This is not specific to ActiveMQ but good to keep in mind anyway.
 
 ### Client certificates
 
@@ -81,7 +81,7 @@ steps:
     ```
     to `ACTIVEMQ_SSL_OPTS`
 
-4.  Instruct ActiveMQ Classic to require client authentication by setting the following in activemq.xml:
+4.  Instruct ActiveMQ to require client authentication by setting the following in activemq.xml:
 
 ### Certificate revocation
 
@@ -114,7 +114,7 @@ A demo of the broker configuration working with OCSP responder can be found at <
 
 ### Working Around Java 7 SSL Bugs
 
-As noted by issue AMQ-5970, it seems some versions of Java 7 have problems with SSL sessions that need to use the Diffie-Hellman cypher suite. If you run into this issue, just copy the Bouncy Castle bcprov-jdk15on-148.jar to ActiveMQ Classic's lib directory and restart your broker.
+As noted by issue AMQ-5970, it seems some versions of Java 7 have problems with SSL sessions that need to use the Diffie-Hellman cypher suite. If you run into this issue, just copy the Bouncy Castle bcprov-jdk15on-148.jar to ActiveMQ's lib directory and restart your broker.
 
 ### Useful links
 

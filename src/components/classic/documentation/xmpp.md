@@ -15,7 +15,7 @@ XMPP Protocol Support (Jabber!)
 > 
 > This transport was deprecated in 5.8.0 and has been removed in a 5.9.0!
 
-We have support for [XMPP](http://www.xmpp.org/) (Jabber) as a transport in ActiveMQ Classic.
+We have support for [XMPP](http://www.xmpp.org/) (Jabber) as a transport in ActiveMQ.
 
 To use just add a connector as follows
 ```
@@ -29,11 +29,11 @@ To use just add a connector as follows
 ```
 And you can now use XMPP to connect to the broker & send and receive messages.
 
-> Some versions of the broker (5.0-5.2) does not include [WoodStox](http://woodstox.codehaus.org/) library by default, which could impact ActiveMQ Classic XMPP funcionality. You should have a library named like `wstx-asl-x.x.x.jar` in the `lib/optional` directory of your broker. If that's not the case, download it from [here](http://woodstox.codehaus.org/) and put it in the classpath
+> Some versions of the broker (5.0-5.2) does not include [WoodStox](http://woodstox.codehaus.org/) library by default, which could impact ActiveMQ XMPP funcionality. You should have a library named like `wstx-asl-x.x.x.jar` in the `lib/optional` directory of your broker. If that's not the case, download it from [here](http://woodstox.codehaus.org/) and put it in the classpath
 
-### XMPP Support in Apache ActiveMQ Classic
+### XMPP Support in Apache ActiveMQ
 
-ActiveMQ Classic provides a bidirectional bridge between ActiveMQ Classic messages and XMPP.
+ActiveMQ provides a bidirectional bridge between ActiveMQ messages and XMPP.
 
 *   if a client joins a chatroom / conference room, the name of the conference room is mapped to a JMS topic of the same name
 *   typing into a chatroom sends a message to the topic
@@ -43,7 +43,7 @@ ActiveMQ Classic provides a bidirectional bridge between ActiveMQ Classic messag
 
 Basically, you should be able to connect from any Jabber-compatible client to the broker. The below example is using [Spark](http://jivesoftware.com/products/spark/) 2.0.0 version. For more details on connecting with different clients take a look at [#Jabber clients compatibility](xmpp).
 
-To connect to Apache ActiveMQ Classic try the following...
+To connect to Apache ActiveMQ try the following...
 
 1. Run the [Web Console](web-console)  
 2. Start [Spark](http://jivesoftware.com/products/spark/) or whatever Jabber Client you wish  
@@ -92,7 +92,7 @@ Here you can find specfic issues and workarounds for various Jabber clients. If 
 #### Spark
 
 Url: [http://www.igniterealtime.org/projects/spark/index.jsp](http://www.igniterealtime.org/projects/spark/index.jsp)  
-Spark 2.0.0 works fine with ActiveMQ Classic; Click [here](http://www.igniterealtime.org/downloads/download-landing.jsp?file=spark/spark_2_ 0_0.exe) to download: [Spark 2.0.0 for Windows](http://www.igniterealtime.org/downloads/download-landing.jsp?file=spark/spark_2_0_0.exe).  
+Spark 2.0.0 works fine with ActiveMQ; Click [here](http://www.igniterealtime.org/downloads/download-landing.jsp?file=spark/spark_2_ 0_0.exe) to download: [Spark 2.0.0 for Windows](http://www.igniterealtime.org/downloads/download-landing.jsp?file=spark/spark_2_0_0.exe).  
 Spark 2.5.x connects fine, but it won't open the **Join Conference Room** dialog.
 
 #### iChat
