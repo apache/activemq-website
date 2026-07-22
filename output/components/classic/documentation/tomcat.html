@@ -98,9 +98,9 @@
 
 <p>Tomcat needs to be configured to ignore Jetty SCI annotations so that the Jetty WebSocket ServerContainerInitializer class is not inadvertently picked up by Tomcat. For more information on this problem see <a href="https://issues.apache.org/jira/browse/AMQ-6154">AMQ-6154</a> and <a href="https://wiki.apache.org/tomcat/HowTo/FasterStartUp">https://wiki.apache.org/tomcat/HowTo/FasterStartUp</a> and consult the Tomcat documentation for the version you are using to properly exclude the Jetty jar files from being scanned by Tomcat.</p>
 
-<h2 id="pre-integrated-tomcat-with-activemq-classic">Pre-integrated Tomcat with ActiveMQ Classic</h2>
+<h2 id="pre-integrated-tomcat-with-activemq">Pre-integrated Tomcat with ActiveMQ</h2>
 
-<p>Apache TomEE is a distribution of <a href="http://tomee.apache.org/tomcat-/FAQ/jms">Tomcat with fully integrated ActiveMQ Classic</a>. All integration steps detailed here have already been done. The stack supports injection of Topic, Queue and ConnectionFactory references as well as transactional sending and delivery.</p>
+<p>Apache TomEE is a distribution of <a href="http://tomee.apache.org/tomcat-/FAQ/jms">Tomcat with fully integrated ActiveMQ</a>. All integration steps detailed here have already been done. The stack supports injection of Topic, Queue and ConnectionFactory references as well as transactional sending and delivery.</p>
 
 <p>Something like the following works out of the box with no configuration:</p>
 
@@ -122,13 +122,13 @@ private Queue barQueue;
 private ConnectionFactory connectionFactory;
 </code></pre></div></div>
 
-<h2 id="manually-integrating-tomcat-and-activemq-classic">Manually integrating Tomcat and ActiveMQ Classic</h2>
+<h2 id="manually-integrating-tomcat-and-activemq">Manually integrating Tomcat and ActiveMQ</h2>
 
-<p>Note, manually integrating ActiveMQ Classic with Tomcat does allow for Topic, Queue, and ConnectionFactory injection but does not support transactional sending and delivery.</p>
+<p>Note, manually integrating ActiveMQ with Tomcat does allow for Topic, Queue, and ConnectionFactory injection but does not support transactional sending and delivery.</p>
 
 <p>You should go to Tomcat documentation and read JNDI Resources HOW-TO, especially part: Configure Tomcat’s Resource Factory.</p>
 
-<p>ActiveMQ Classic has ready JNDI resource factory for all its administered objects: ConnectionFactory and destinations.</p>
+<p>ActiveMQ has ready JNDI resource factory for all its administered objects: ConnectionFactory and destinations.</p>
 
 <p>You must provide it as a parameter factory for your resources:</p>
 
@@ -165,7 +165,7 @@ private ConnectionFactory connectionFactory;
     ....
 </Context>
 
-<p>Also, don’t forget to put ActiveMQ Classic and dependent jars to tomcat shared lib directory.</p>
+<p>Also, don’t forget to put ActiveMQ and dependent jars to tomcat shared lib directory.</p>
 
 <h3 id="creating-destinations-in-tomcat-55-or-later">Creating destinations in Tomcat 5.5 or later</h3>
 

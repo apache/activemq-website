@@ -92,7 +92,7 @@
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p><a href="using-activemq-classic-5">Using ActiveMQ Classic 5</a> &gt; <a href="version-5-performance-tuning">Version 5 Performance Tuning</a></p>
+        <p><a href="using-activemq-classic-5">Using ActiveMQ 5</a> &gt; <a href="version-5-performance-tuning">Version 5 Performance Tuning</a></p>
 
 <p>For a more complete overview see <a href="performance">Performance</a>.</p>
 
@@ -103,13 +103,13 @@ By default, activemq strikes a balance between the two, so there are some things
 
 <p>First some background:</p>
 
-<p>When an ActiveMQ Classic message producer sends a non-persistent message, its dispatched asynchronously (fire and forget) - but for persistent messages, the publisher will block until it gets a notification that the message has been processed (saved to the store - queued to be dispatched to any active consumers etc) by the broker. messages are dispatched with delivery mode set to be persistent by default (which is required by the JMS spec). So if you are sending messages on a Topic, the publisher will block by default (even if there are no durable subscribers on the topic) until the broker has returned a notification.</p>
+<p>When an ActiveMQ message producer sends a non-persistent message, its dispatched asynchronously (fire and forget) - but for persistent messages, the publisher will block until it gets a notification that the message has been processed (saved to the store - queued to be dispatched to any active consumers etc) by the broker. messages are dispatched with delivery mode set to be persistent by default (which is required by the JMS spec). So if you are sending messages on a Topic, the publisher will block by default (even if there are no durable subscribers on the topic) until the broker has returned a notification.</p>
 
-<p>So if you looking for good performance with topic messages, either set the delivery mode on the publisher to be non-persistent, or set the <strong>useAsyncSend</strong> property on the ActiveMQ Classic ConnectionFactory to be <strong>true</strong>.</p>
+<p>So if you looking for good performance with topic messages, either set the delivery mode on the publisher to be non-persistent, or set the <strong>useAsyncSend</strong> property on the ActiveMQ ConnectionFactory to be <strong>true</strong>.</p>
 
 <h2 id="pre-fetch-sizes-for-consumers">Pre-fetch sizes for Consumers</h2>
 
-<p>ActiveMQ Classic will push as many messages to the consumer as fast as possible, where they will be queued for processing by an ActiveMQ Classic Session. The maximum number of messages that ActiveMQ Classic will push to a Consumer without the Consumer processing a message is set by the pre-fetch size. You can improve throughput by running ActiveMQ Classic with larger pre-fetch sizes. Pre-fetch sizes are determined by the ActiveMQPrefetchPolicy bean, which is set on the ActiveMQ Classic ConnectionFactory.</p>
+<p>ActiveMQ will push as many messages to the consumer as fast as possible, where they will be queued for processing by an ActiveMQ Session. The maximum number of messages that ActiveMQ will push to a Consumer without the Consumer processing a message is set by the pre-fetch size. You can improve throughput by running ActiveMQ with larger pre-fetch sizes. Pre-fetch sizes are determined by the ActiveMQPrefetchPolicy bean, which is set on the ActiveMQ ConnectionFactory.</p>
 
 <p>Default values:</p>
 
@@ -142,11 +142,11 @@ By default, activemq strikes a balance between the two, so there are some things
 
 <h2 id="optimized-acknowledge">Optimized Acknowledge</h2>
 
-<p>When consuming messages in auto acknowledge mode (set when creating the consumers’ session), ActiveMQ Classic will acknowledge receipt of messages back to the broker in batches (to improve performance). The batch size is 50% of the prefetch limit for the Consumer. You switch batch acknowledgment off by setting the <strong>optimizeAcknowledge</strong> property on the ActiveMQ Classic ConnectionFactory to be <strong>false</strong></p>
+<p>When consuming messages in auto acknowledge mode (set when creating the consumers’ session), ActiveMQ will acknowledge receipt of messages back to the broker in batches (to improve performance). The batch size is 50% of the prefetch limit for the Consumer. You switch batch acknowledgment off by setting the <strong>optimizeAcknowledge</strong> property on the ActiveMQ ConnectionFactory to be <strong>false</strong></p>
 
 <h2 id="straight-through-session-consumption">Straight through Session Consumption</h2>
 
-<p>By default, a Consumer’s session will dispatch messages to the consumer in a separate thread. If you are using Consumers with auto acknowledge, you can increase throughput by passing messages straight through the Session to the Consumer by setting the <strong>alwaysSessionAsync</strong> property on the ActiveMQ Classic ConnectionFactory to be <strong>false</strong></p>
+<p>By default, a Consumer’s session will dispatch messages to the consumer in a separate thread. If you are using Consumers with auto acknowledge, you can increase throughput by passing messages straight through the Session to the Consumer by setting the <strong>alwaysSessionAsync</strong> property on the ActiveMQ ConnectionFactory to be <strong>false</strong></p>
 
 <h2 id="file-based-persistence">File based Persistence</h2>
 

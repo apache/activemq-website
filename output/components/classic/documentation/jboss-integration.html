@@ -86,28 +86,28 @@
 <div class="content">
   <div class="page-title-classic">
     <div class="container">
-      <h1>Integrating Apache ActiveMQ Classic with JBoss</h1>
+      <h1>Integrating Apache ActiveMQ with JBoss</h1>
     </div>
   </div>
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p><a href="connectivity">Connectivity</a> &gt; <a href="containers">Containers</a> &gt; <a href="integrating-apache-activemq-classic-with-jboss">Integrating Apache ActiveMQ Classic with JBoss</a></p>
+        <p><a href="connectivity">Connectivity</a> &gt; <a href="containers">Containers</a> &gt; <a href="integrating-apache-activemq-classic-with-jboss">Integrating Apache ActiveMQ with JBoss</a></p>
 
-<h1 id="integrating-apache-activemq-classic-with-jboss">Integrating Apache ActiveMQ Classic with JBoss</h1>
+<h1 id="integrating-apache-activemq-with-jboss">Integrating Apache ActiveMQ with JBoss</h1>
 
-<p>Integration with application servers is a common scenario in the enterprise Java world, especially when it comes to messaging. ActiveMQ Classic is a JMS 1.1 compliant, open source, Apache Licensed, message oriented middleware (MOM) with <a href="changes-in-40">many</a>, <a href="new-features-in-41">many</a> features far beyond the JMS specification. ActiveMQ Classic offers many different <a href="connectivity">points of connectivity</a>, many <a href="cross-language-clients">cross language clients</a> and many <a href="protocols">pluggable transport protocols</a> including integration with any J2EE 1.4 application server.</p>
+<p>Integration with application servers is a common scenario in the enterprise Java world, especially when it comes to messaging. ActiveMQ is a JMS 1.1 compliant, open source, Apache Licensed, message oriented middleware (MOM) with <a href="changes-in-40">many</a>, <a href="new-features-in-41">many</a> features far beyond the JMS specification. ActiveMQ offers many different <a href="connectivity">points of connectivity</a>, many <a href="cross-language-clients">cross language clients</a> and many <a href="protocols">pluggable transport protocols</a> including integration with any J2EE 1.4 application server.</p>
 
-<p>One of the application servers in the open source world is JBoss. A very common requirement is to configure ActiveMQ Classic as the messaging infrastructure within JBoss. Although there is <a href="jboss-integration">a bit of documentation</a> on this integration, this article seeks to provide much more detail and explanation. So if you have a need to integrate ActiveMQ Classic with JBoss, this article is for you.</p>
+<p>One of the application servers in the open source world is JBoss. A very common requirement is to configure ActiveMQ as the messaging infrastructure within JBoss. Although there is <a href="jboss-integration">a bit of documentation</a> on this integration, this article seeks to provide much more detail and explanation. So if you have a need to integrate ActiveMQ with JBoss, this article is for you.</p>
 
-<p>This article explains how to configure JBoss to start up ActiveMQ Classic as part of its lifecycle and how to configure the ActiveMQ Classic resource adapter to handle the messaging and transactionality between ActiveMQ Classic and JBoss.</p>
+<p>This article explains how to configure JBoss to start up ActiveMQ as part of its lifecycle and how to configure the ActiveMQ resource adapter to handle the messaging and transactionality between ActiveMQ and JBoss.</p>
 
 <h2 id="requirements">Requirements</h2>
 
 <p>Below are the software requirements for this article with links to download each:</p>
 
 <ul>
-  <li><a href="download">Apache ActiveMQ Classic 4.0.1+</a></li>
+  <li><a href="download">Apache ActiveMQ 4.0.1+</a></li>
   <li><a href="http://sourceforge.net/project/showfiles.php?group_id=22866&amp;package_id=16942&amp;release_id=416591">JBoss 4.0.4+</a></li>
   <li><a href="http://www.java.com/en/download/index.jsp">Sun Java 1.5+</a></li>
   <li><a href="http://ant.apache.org/bindownload.cgi">Apache Ant 1.6+</a></li>
@@ -135,7 +135,7 @@ Apache Ant version 1.6.2 compiled on July 16 2004
 
 <h2 id="install-the-jboss-application-server">Install the JBoss Application Server</h2>
 
-<p>The third step in this process is to install JBoss and make sure it runs correctly before installing and configuring ActiveMQ Classic. Upon downloading JBoss-4.0.4, expand it in a place where it can create a directory. Next, run the server using the following commands:</p>
+<p>The third step in this process is to install JBoss and make sure it runs correctly before installing and configuring ActiveMQ. Upon downloading JBoss-4.0.4, expand it in a place where it can create a directory. Next, run the server using the following commands:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd jboss-4.0.4.GA
 $ ./bin/run.sh -c default
 =========================================================================
@@ -170,13 +170,13 @@ Started in 22s:238ms
 </code></pre></div></div>
 <p>The first few lines of output from the JBoss startup indicates the configuration being used but the last line is the most important one. It tells you that JBoss has been started successfully on your system. For an extra measure of assurance, visit <a href="http://localhost:8080/web-console/">http://localhost:8080/web-console/</a> in a web browser to make sure you are able to see the JBoss web console. If you can see this console, everything should be ready to go.</p>
 
-<p>As a side note, the left-hand side of the web-console requires that the <a href="http://java.sun.com/products/plugin/">Java plugin</a> be properly installed. This is supposed to take place when installing the J2SE, so if it did not work correctly for you, I suggest that you consult some documentation about any errors you may be seeing. The Java plugin is not required for JBoss or ActiveMQ Classic to function properly, it is simply for the JBoss web-console.</p>
+<p>As a side note, the left-hand side of the web-console requires that the <a href="http://java.sun.com/products/plugin/">Java plugin</a> be properly installed. This is supposed to take place when installing the J2SE, so if it did not work correctly for you, I suggest that you consult some documentation about any errors you may be seeing. The Java plugin is not required for JBoss or ActiveMQ to function properly, it is simply for the JBoss web-console.</p>
 
 <p>Once JBoss is installed properly, shut it down using either the shutdown script or by simply typing ctrl-c to activate the shutdown hook. Once it is shut down, proceed to the next step.</p>
 
-<h2 id="prepare-for-integrating-apache-activemq-classic-with-the-jboss-application-server">Prepare for Integrating Apache ActiveMQ Classic with the JBoss Application Server</h2>
+<h2 id="prepare-for-integrating-apache-activemq-with-the-jboss-application-server">Prepare for Integrating Apache ActiveMQ with the JBoss Application Server</h2>
 
-<p>The fourth step is to prepare your environment for integrating ActiveMQ Classic with JBoss. If you haven’t done so already, download Apache ActiveMQ Classic using the link above. As of the writing of this article, the latest released version is 4.0.2-RC4. Upon downloading this archive, expand it in a place where it can create a directory, preferably in the same location where JBoss was expanded. Verify that the ActiveMQ Classic RAR file is included using the following commands:</p>
+<p>The fourth step is to prepare your environment for integrating ActiveMQ with JBoss. If you haven’t done so already, download Apache ActiveMQ using the link above. As of the writing of this article, the latest released version is 4.0.2-RC4. Upon downloading this archive, expand it in a place where it can create a directory, preferably in the same location where JBoss was expanded. Verify that the ActiveMQ RAR file is included using the following commands:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ./incubator-activemq-4.0.2.tar.gz
 $ jar tvf /opt/incubator-activemq-4.0.2/lib/optional/activemq-ra-4.0.2.rar
      0 Mon Sep 25 19:00:50 MDT 2006 META-INF/
@@ -198,15 +198,15 @@ $ jar tvf /opt/incubator-activemq-4.0.2/lib/optional/activemq-ra-4.0.2.rar
    523 Mon Sep 25 19:00:50 MDT 2006 META-INF/DISCLAIMER.txt
  11359 Mon Sep 25 19:00:50 MDT 2006 META-INF/LICENSE.txt
 </code></pre></div></div>
-<p>This is simply a table of contents of the RAR file. There should only be one reason that this will fail - an incomplete download of the ActiveMQ Classic tarball or zip file. Beyond that, depending on the version you download, some of the library versions may be slightly different.</p>
+<p>This is simply a table of contents of the RAR file. There should only be one reason that this will fail - an incomplete download of the ActiveMQ tarball or zip file. Beyond that, depending on the version you download, some of the library versions may be slightly different.</p>
 
-<p>Now go back to the JBoss installation and create a directory for ActiveMQ Classic in the JBoss deploy directory for the default JBoss context. Below are the commands to achieve this task:</p>
+<p>Now go back to the JBoss installation and create a directory for ActiveMQ in the JBoss deploy directory for the default JBoss context. Below are the commands to achieve this task:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir /opt/jboss-4.0.4.GA/server/default/deploy/activemq-ra.rar
 $ cd /opt/jboss-4.0.4.GA/server/default/deploy/activemq-ra.rar
 $ pwd
 /opt/jboss-4.0.4.GA/server/default/deploy/activemq-ra.rar
 </code></pre></div></div>
-<p>`<em>NOTE:</em>** The creation of a directory is not required but is the easiest way to set up the ActiveMQ Classic RAR when you’re just getting started. This is due to the flexibility it affords during the development phase for the configuration to be changed very easily. The alternative is to JAR up the directory as a RAR file once the configuration is solid enough that it no longer needs to be changed. But leaving everything in a directory during development is the easiest path.</p>
+<p>`<em>NOTE:</em>** The creation of a directory is not required but is the easiest way to set up the ActiveMQ RAR when you’re just getting started. This is due to the flexibility it affords during the development phase for the configuration to be changed very easily. The alternative is to JAR up the directory as a RAR file once the configuration is solid enough that it no longer needs to be changed. But leaving everything in a directory during development is the easiest path.</p>
 
 <p>Now expand the activemq-ra-4.0.2.rar into the current working directory:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jar xvf /opt/incubator-activemq-4.0.2/lib/optional/activemq-ra-4.0.2.rar
@@ -245,14 +245,14 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 -rw-r--r--   1 bsnyder  bsnyder  1901653 Oct 16 16:27 spring-1.2.6.jar
 -rw-r--r--   1 bsnyder  bsnyder    94713 Oct 16 16:27 xbean-spring-2.2.jar
 </code></pre></div></div>
-<p>Now it’s time to configure ActiveMQ Classic.</p>
+<p>Now it’s time to configure ActiveMQ.</p>
 
-<h2 id="configuring-apache-activemq-classic">Configuring Apache ActiveMQ Classic</h2>
+<h2 id="configuring-apache-activemq">Configuring Apache ActiveMQ</h2>
 
-<p>The fifth step is to actually configure ActiveMQ Classic for integration with JBoss. Remember that you should be sitting in the following directory:</p>
+<p>The fifth step is to actually configure ActiveMQ for integration with JBoss. Remember that you should be sitting in the following directory:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/jboss-4.0.4.GA/server/default/deploy/activemq-ra.rar
 </code></pre></div></div>
-<p>You may or may not have installed JBoss in <code class="language-plaintext highlighter-rouge">/opt</code>, that doesn’t particularly matter. What does matter is that you’re sitting in the directory that was created above to hold the contents of the expanded ActiveMQ Classic RAR file.</p>
+<p>You may or may not have installed JBoss in <code class="language-plaintext highlighter-rouge">/opt</code>, that doesn’t particularly matter. What does matter is that you’re sitting in the directory that was created above to hold the contents of the expanded ActiveMQ RAR file.</p>
 
 <p>`<em>NOTE:</em>** A RAR file is a Resource adapter ARchive (RAR). Resource adapters are a concept from the <a href="http://java.sun.com/j2ee/connector/">J2EE Connector Architecture (JCA)</a> and are used to interface with Enterprise Information Systems (EIS), i.e., systems external to the application server (e.g., relational databases, mainframes, MOMs, accounting systems, etc.). Resource adapters are often referred to as J2EE connectors and are very similar to the concept of a device driver for, say, a printer in that they contain information specific to connecting to a particular system. The difference with JCA is that that connection has been formalized in specification for Java. So the overall concepts of JCA is for connection to any EIS, but what does that mean? JCA 1.5 provides connectivity and more via the following contracts:</p>
 
@@ -286,7 +286,7 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 <p>`META-INF/ra.xml**</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
     <span class="nt">&lt;description&gt;</span>
-      The URL to the ActiveMQ Classic server that you want this connection to connect to.  If using
+      The URL to the ActiveMQ server that you want this connection to connect to.  If using
       an embedded broker, this value should be 'vm://localhost'.
     <span class="nt">&lt;/description&gt;</span>
     <span class="nt">&lt;config-property-name&gt;</span>ServerUrl<span class="nt">&lt;/config-property-name&gt;</span>
@@ -295,12 +295,12 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 <span class="c">&lt;!-- &lt;config-property-value&gt;vm://localhost&lt;/config-property-value&gt; --&gt;</span>
   <span class="nt">&lt;/config-property&gt;</span>
 </code></pre></div></div>
-<p>The section above is used to tell the ActiveMQ Classic RAR where ActiveMQ Classic is located. By default, the in-VM protocol is commented out in favor of the tcp protocol. This will find ActiveMQ Classic running on any interface on the localhost on port 61616. It’s ok to just leave this alone if you don’t mind the inefficiency of communicating within the JVM via TCP. However, it is recommended that <code class="language-plaintext highlighter-rouge">vm://</code> transport be used for an embedded broker, so comment out the <code class="language-plaintext highlighter-rouge">tcp://</code> transport and uncomment the <code class="language-plaintext highlighter-rouge">vm://</code> transport. Below is an example of this:</p>
+<p>The section above is used to tell the ActiveMQ RAR where ActiveMQ is located. By default, the in-VM protocol is commented out in favor of the tcp protocol. This will find ActiveMQ running on any interface on the localhost on port 61616. It’s ok to just leave this alone if you don’t mind the inefficiency of communicating within the JVM via TCP. However, it is recommended that <code class="language-plaintext highlighter-rouge">vm://</code> transport be used for an embedded broker, so comment out the <code class="language-plaintext highlighter-rouge">tcp://</code> transport and uncomment the <code class="language-plaintext highlighter-rouge">vm://</code> transport. Below is an example of this:</p>
 
 <p>`META-INF/ra.xml**</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
     <span class="nt">&lt;description&gt;</span>
-      The URL to the ActiveMQ Classic server that you want this connection to connect to.  If using
+      The URL to the ActiveMQ server that you want this connection to connect to.  If using
       an embedded broker, this value should be 'vm://localhost'.
     <span class="nt">&lt;/description&gt;</span>
     <span class="nt">&lt;config-property-name&gt;</span>ServerUrl<span class="nt">&lt;/config-property-name&gt;</span>
@@ -309,14 +309,14 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
     <span class="nt">&lt;config-property-value&gt;</span>vm://localhost<span class="nt">&lt;/config-property-value&gt;</span>
   <span class="nt">&lt;/config-property&gt;</span>
 </code></pre></div></div>
-<p>Because we’re embedding ActiveMQ Classic inside of JBoss, it is more efficient to use the <code class="language-plaintext highlighter-rouge">vm://</code> transport, rather than to perform messaging over the <code class="language-plaintext highlighter-rouge">tcp://</code> transport.</p>
+<p>Because we’re embedding ActiveMQ inside of JBoss, it is more efficient to use the <code class="language-plaintext highlighter-rouge">vm://</code> transport, rather than to perform messaging over the <code class="language-plaintext highlighter-rouge">tcp://</code> transport.</p>
 
 <p>Now look further down the <code class="language-plaintext highlighter-rouge">META-INF/ra.xml</code> file and locate the following section:</p>
 
 <p>`META-INF/ra.xml**</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
     <span class="nt">&lt;description&gt;</span>
-      Sets the XML configuration file used to configure the embedded ActiveMQ Classic broker via
+      Sets the XML configuration file used to configure the embedded ActiveMQ broker via
       Spring if using embedded mode.
 
       BrokerXmlConfig is the filename which is assumed to be on the classpath unless
@@ -337,7 +337,7 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 <p>`META-INF/ra.xml**</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;config-property&gt;</span>
     <span class="nt">&lt;description&gt;</span>
-      Sets the XML configuration file used to configure the embedded ActiveMQ Classic broker via
+      Sets the XML configuration file used to configure the embedded ActiveMQ broker via
       Spring if using embedded mode.
 
       BrokerXmlConfig is the filename which is assumed to be on the classpath unless
@@ -350,9 +350,9 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
     <span class="nt">&lt;config-property-value&gt;</span>xbean:broker-config.xml<span class="nt">&lt;/config-property-value&gt;</span>
   <span class="nt">&lt;/config-property&gt;</span>
 </code></pre></div></div>
-<p>This change tells the ActiveMQ Classic RAR to read a configuration file named <code class="language-plaintext highlighter-rouge">broker-config.xml</code> (the <code class="language-plaintext highlighter-rouge">xbean:</code> that proceeds the filename is simply a hint to class doing the reading of the configuration file) which is located on the CLASSPATH. In this case, the <code class="language-plaintext highlighter-rouge">broker-config.xml</code> file is located in the <code class="language-plaintext highlighter-rouge">activemq-ra.rar</code> directory. Save the changes to that file and then open the <code class="language-plaintext highlighter-rouge">broker-config.xml</code> file.</p>
+<p>This change tells the ActiveMQ RAR to read a configuration file named <code class="language-plaintext highlighter-rouge">broker-config.xml</code> (the <code class="language-plaintext highlighter-rouge">xbean:</code> that proceeds the filename is simply a hint to class doing the reading of the configuration file) which is located on the CLASSPATH. In this case, the <code class="language-plaintext highlighter-rouge">broker-config.xml</code> file is located in the <code class="language-plaintext highlighter-rouge">activemq-ra.rar</code> directory. Save the changes to that file and then open the <code class="language-plaintext highlighter-rouge">broker-config.xml</code> file.</p>
 
-<p>The <code class="language-plaintext highlighter-rouge">broker-config.xml</code> file <em>is</em> the ActiveMQ Classic configuration file. This is the file used to configure ActiveMQ Classic. The default contents of this file are usable, but should be customized to suit your environment. There are several items of note about this configuration. The most prominent sections to note in this file are the <code class="language-plaintext highlighter-rouge">&lt;persistenceAdapter&gt;</code> element and the <code class="language-plaintext highlighter-rouge">&lt;transportConnectors&gt;</code> and <code class="language-plaintext highlighter-rouge">&lt;networkConnectors&gt;</code> elements as seen below:</p>
+<p>The <code class="language-plaintext highlighter-rouge">broker-config.xml</code> file <em>is</em> the ActiveMQ configuration file. This is the file used to configure ActiveMQ. The default contents of this file are usable, but should be customized to suit your environment. There are several items of note about this configuration. The most prominent sections to note in this file are the <code class="language-plaintext highlighter-rouge">&lt;persistenceAdapter&gt;</code> element and the <code class="language-plaintext highlighter-rouge">&lt;transportConnectors&gt;</code> and <code class="language-plaintext highlighter-rouge">&lt;networkConnectors&gt;</code> elements as seen below:</p>
 
 <p>`broker-config.xml**</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://activemq.org/config/1.0"</span><span class="nt">&gt;</span>
@@ -390,7 +390,7 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 <p>In addition, this same name is used further down the configuration to provide a name for the <code class="language-plaintext highlighter-rouge">&lt;transportConnector&gt;</code> element:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;transportConnector</span> <span class="na">name=</span><span class="s">"bruce.broker1"</span> <span class="na">uri=</span><span class="s">"tcp://localhost:61616"</span> <span class="na">discoveryUri=</span><span class="s">"multicast://default"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
-<p>Now we’ll tell ActiveMQ Classic not to initialize JMX because we’ll use the existing one that JBoss has:</p>
+<p>Now we’ll tell ActiveMQ not to initialize JMX because we’ll use the existing one that JBoss has:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- put the following as the first child of the broker tag --&gt;</span>
 <span class="nt">&lt;managementContext&gt;</span><span class="c">&lt;!-- we'll use an existing one (JBoss) instead of creating one --&gt;</span>
   <span class="nt">&lt;managementContext</span> <span class="na">createConnector=</span><span class="s">"false"</span><span class="nt">/&gt;</span>
@@ -402,9 +402,9 @@ drwxr-xr-x   6 bsnyder  bsnyder      204 Oct 16 16:27 META-INF
 </code></pre></div></div>
 <p>Now, modify the <code class="language-plaintext highlighter-rouge">dataDirectory</code> attribute of the <code class="language-plaintext highlighter-rouge">journaledJDBC</code> element to be the following: <code class="language-plaintext highlighter-rouge">${jboss.server.data.dir}/activemq</code>.</p>
 
-<p>The <code class="language-plaintext highlighter-rouge">&lt;transportConnectors&gt;</code> element is used to advertise the ActiveMQ Classic broker for client-to-broker communications and the <code class="language-plaintext highlighter-rouge">&lt;networkConnectors&gt;</code> element advertises the ActiveMQ Classic broker for broker-to-broker communications. The default configuration is to use the ActiveMQ Classic <a href="multicast-transport-reference">multicast transport</a> for both. This is simply an easy configuration under which to get ActiveMQ Classic up and running, so we’ll just leave it at that for the time being.</p>
+<p>The <code class="language-plaintext highlighter-rouge">&lt;transportConnectors&gt;</code> element is used to advertise the ActiveMQ broker for client-to-broker communications and the <code class="language-plaintext highlighter-rouge">&lt;networkConnectors&gt;</code> element advertises the ActiveMQ broker for broker-to-broker communications. The default configuration is to use the ActiveMQ <a href="multicast-transport-reference">multicast transport</a> for both. This is simply an easy configuration under which to get ActiveMQ up and running, so we’ll just leave it at that for the time being.</p>
 
-<p>`<em>NOTE:</em>** There are far more configuration options available for ActiveMQ Classic than are noted here. The configuration above is only enough to just get ActiveMQ Classic up and running, nothing more. For more information on the ActiveMQ Classic configuration, see the <a href="xbean-xml-reference-41">ActiveMQ Classic 4.1 XML Reference</a>.</p>
+<p>`<em>NOTE:</em>** There are far more configuration options available for ActiveMQ than are noted here. The configuration above is only enough to just get ActiveMQ up and running, nothing more. For more information on the ActiveMQ configuration, see the <a href="xbean-xml-reference-41">ActiveMQ 4.1 XML Reference</a>.</p>
 
 <p>Now we just need to start up JBoss to assure that it comes up correctly without error using the same commands we used previously to start JBoss:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd jboss-4.0.4.GA
@@ -443,7 +443,7 @@ Started in 28s:576ms
 
 <h2 id="configuring-jboss">Configuring JBoss</h2>
 
-<p>The sixth step is to configure JBoss to initialize and start ActiveMQ Classic whenever JBoss starts up. This is accomplished using an XML file that abides by the <a href="http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd">JBoss JCA DTD</a> for data sources. Like most other Java application servers on the market, the JBoss architecture uses the J2EE Connector Architecture to manage connections of any kind including JDBC, JMS, etc. and the JBoss JCA DTD denotes the allowed contents for creating an XML data source instance to configure JBoss JCA. Below is an example XML data source instance for use with JBoss:</p>
+<p>The sixth step is to configure JBoss to initialize and start ActiveMQ whenever JBoss starts up. This is accomplished using an XML file that abides by the <a href="http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd">JBoss JCA DTD</a> for data sources. Like most other Java application servers on the market, the JBoss architecture uses the J2EE Connector Architecture to manage connections of any kind including JDBC, JMS, etc. and the JBoss JCA DTD denotes the allowed contents for creating an XML data source instance to configure JBoss JCA. Below is an example XML data source instance for use with JBoss:</p>
 
 <p>`activemq-jms-ds.xml**</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
@@ -642,15 +642,15 @@ at 'activemq/topic/inbound'
 Started in 26s:398ms
 </code></pre></div></div>
 
-<p>Note the startup messages from both ActiveMQ Classic and from the <code class="language-plaintext highlighter-rouge">AdminObjects</code> creating an <code class="language-plaintext highlighter-rouge">ActiveMQQueue</code> and an <code class="language-plaintext highlighter-rouge">ActiveMQTopic</code>. These are good indications that the configuration is correct, but needs to be verified a bit further. This is covered in the next section.</p>
+<p>Note the startup messages from both ActiveMQ and from the <code class="language-plaintext highlighter-rouge">AdminObjects</code> creating an <code class="language-plaintext highlighter-rouge">ActiveMQQueue</code> and an <code class="language-plaintext highlighter-rouge">ActiveMQTopic</code>. These are good indications that the configuration is correct, but needs to be verified a bit further. This is covered in the next section.</p>
 
 <h2 id="testing-the-integration">Testing the Integration</h2>
 
-<p>The seventh and final step is to perform a slightly more comprehensive smoke test of the integration. This can be accomplished using Apache Ant via the examples that come with the ActiveMQ Classic binary distribution. An Ant build.xml file is included which provides easy access to a simple consumer and a simple producer. The producer will be used to send messages that are received by the consumer. To proceed with this testing, just follow the steps below:</p>
+<p>The seventh and final step is to perform a slightly more comprehensive smoke test of the integration. This can be accomplished using Apache Ant via the examples that come with the ActiveMQ binary distribution. An Ant build.xml file is included which provides easy access to a simple consumer and a simple producer. The producer will be used to send messages that are received by the consumer. To proceed with this testing, just follow the steps below:</p>
 
 <ol>
   <li>In the first terminal, start up JBoss. The same startup script can be used here as was used above.</li>
-  <li>In the second terminal, use the commands below to run the ActiveMQ Classic consumer:
+  <li>In the second terminal, use the commands below to run the ActiveMQ consumer:
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd /opt/incubator-activemq-4.0.2/examples    #note in activemq v5 the directory is just "example" not "examples"
 $ ant consumer
 Buildfile: build.xml
@@ -670,7 +670,7 @@ consumer:
      [java] We are about to wait until we consume: 10 message(s) then we will shutdown
 </code></pre></div>    </div>
   </li>
-  <li>In the third terminal, use the commands below to run the ActiveMQ Classic producer:
+  <li>In the third terminal, use the commands below to run the ActiveMQ producer:
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd /opt/incubator-activemq-4.0.2/examples
 $ ant producer
 Buildfile: build.xml
@@ -748,15 +748,15 @@ description: Time spent by a message before being delivered }
   </li>
 </ol>
 
-<p>Step 1 above just starts up JBoss. Step 2 above starts up a simple message consumer that comes with ActiveMQ Classic. Step 3 above starts up a simple message producer that comes with ActiveMQ Classic. Though the message consumer and message producer are simple utilities, the each one accepts many parameters making them extremely useful for testing ActiveMQ Classic configurations.</p>
+<p>Step 1 above just starts up JBoss. Step 2 above starts up a simple message consumer that comes with ActiveMQ. Step 3 above starts up a simple message producer that comes with ActiveMQ. Though the message consumer and message producer are simple utilities, the each one accepts many parameters making them extremely useful for testing ActiveMQ configurations.</p>
 
-<p>To paraphrase, what just happened was that the message producer sent 10 messages to the TEST.FOO destination and the message consumer received 10 messages from the TEST.FOO destination. Despite being a simple test, it does utilize the ActiveMQ Classic broker, albeit only on a single machine. The next logical step is to set up a full network of ActiveMQ Classic brokers.</p>
+<p>To paraphrase, what just happened was that the message producer sent 10 messages to the TEST.FOO destination and the message consumer received 10 messages from the TEST.FOO destination. Despite being a simple test, it does utilize the ActiveMQ broker, albeit only on a single machine. The next logical step is to set up a full network of ActiveMQ brokers.</p>
 
 <p>After setting up one broker within one instance of JBoss, setting up another is made much easier, but requires another machine or operating system instance. But that’s a whole separate article and something to address another day.</p>
 
 <h2 id="conclusion">Conclusion</h2>
 
-<p>What has been demonstrated here is the integration of ActiveMQ Classic with the JBoss application server. This integration is quite common and performed by many enterprises. I hope that this was helpful to people interested in the integration of ActiveMQ Classic with JBoss application server.</p>
+<p>What has been demonstrated here is the integration of ActiveMQ with the JBoss application server. This integration is quite common and performed by many enterprises. I hope that this was helpful to people interested in the integration of ActiveMQ with JBoss application server.</p>
 
 <h3 id="resources">Resources</h3>
 

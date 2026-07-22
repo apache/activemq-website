@@ -92,9 +92,9 @@
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p> <a href="faq">FAQ</a> &gt; <a href="using-apache-activemq-classic">Using Apache ActiveMQ Classic</a> &gt; <a href="how-do-transactions-work">How Do Transactions Work</a></p>
+        <p> <a href="faq">FAQ</a> &gt; <a href="using-apache-activemq-classic">Using Apache ActiveMQ</a> &gt; <a href="how-do-transactions-work">How Do Transactions Work</a></p>
 
-<p>There are two levels of transaction support in ActiveMQ Classic:</p>
+<p>There are two levels of transaction support in ActiveMQ:</p>
 
 <ul>
   <li>JMS Transactions - the <code class="language-plaintext highlighter-rouge">commit()</code>/<code class="language-plaintext highlighter-rouge">rollback()</code> methods on a Session (which is like doing <code class="language-plaintext highlighter-rouge">commit()</code>/<code class="language-plaintext highlighter-rouge">rollback()</code> on a JDBC connection)</li>
@@ -105,7 +105,7 @@
 
 <p>Now the operations carried out on a transacted session inside a transaction, like a send message or acknowledge message, do not really perform a real send or acknowledge until the commit occurs. So the Broker explicitly handles these cases separately - essentially buffering up the commands until the commit occurs when the messages are really sent or acknowledged.</p>
 
-<p>ActiveMQ Classic uses <a href="http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/store/TransactionStore.html">TransactionStore</a> (implemented by all persistence adapters) to handle transactions. <code class="language-plaintext highlighter-rouge">TransactionStore</code> will cache all messages and ACKs until commit or rollback occurs. Besides storing messages, the broker will withhold dispatching any of the messages until the session commit. If you wanna see the code, take a look at <a href="http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/store/memory/MemoryTransactionStore.html">MemoryTransactionStore</a> which proxies transactions for Memory and JDBC persistence adapters.  The only real difference with XA transactions is that at the PREPARE stage we MUST write every command we have received (the send message or acknowledge message commands) to a persistent store so that we can recover properly.</p>
+<p>ActiveMQ uses <a href="http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/store/TransactionStore.html">TransactionStore</a> (implemented by all persistence adapters) to handle transactions. <code class="language-plaintext highlighter-rouge">TransactionStore</code> will cache all messages and ACKs until commit or rollback occurs. Besides storing messages, the broker will withhold dispatching any of the messages until the session commit. If you wanna see the code, take a look at <a href="http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/store/memory/MemoryTransactionStore.html">MemoryTransactionStore</a> which proxies transactions for Memory and JDBC persistence adapters.  The only real difference with XA transactions is that at the PREPARE stage we MUST write every command we have received (the send message or acknowledge message commands) to a persistent store so that we can recover properly.</p>
 
 
       </div>

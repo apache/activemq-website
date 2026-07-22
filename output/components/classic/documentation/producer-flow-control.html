@@ -96,9 +96,9 @@
 
 <h2 id="producer-flow-control">Producer Flow Control</h2>
 
-<p>In ActiveMQ Classic 4.x flow control was implemented using TCP flow control. The underlying network connection of throttled consumers was suspended to enforce flow control limits. This strategy is very efficient but can lead to deadlocks if there are multiple producers and consumers sharing the same connection.</p>
+<p>In ActiveMQ 4.x flow control was implemented using TCP flow control. The underlying network connection of throttled consumers was suspended to enforce flow control limits. This strategy is very efficient but can lead to deadlocks if there are multiple producers and consumers sharing the same connection.</p>
 
-<p>As of ActiveMQ Classic 5.0, we can now individually flow control each producer on a shared connection without having to suspend the entire connection. By ‘flow control’ we mean that if the broker detects that the memory limit for the destination, or the temp- or file-store limits for the broker, have been exceeded, then the flow of messages can be slowed down. The producer will be either blocked until resources are available <em>or</em> will receive a JMSException: this behaviour is configurable and described in the section below on <code class="language-plaintext highlighter-rouge">&lt;systemUsage&gt;</code>.</p>
+<p>As of ActiveMQ 5.0, we can now individually flow control each producer on a shared connection without having to suspend the entire connection. By ‘flow control’ we mean that if the broker detects that the memory limit for the destination, or the temp- or file-store limits for the broker, have been exceeded, then the flow of messages can be slowed down. The producer will be either blocked until resources are available <em>or</em> will receive a JMSException: this behaviour is configurable and described in the section below on <code class="language-plaintext highlighter-rouge">&lt;systemUsage&gt;</code>.</p>
 
 <p>It’s worth noting that the default <code class="language-plaintext highlighter-rouge">&lt;systemUsage&gt;</code> settings will cause the producer to <em>block</em> when the <code class="language-plaintext highlighter-rouge">memoryLimit</code> or <code class="language-plaintext highlighter-rouge">&lt;systemUsage&gt;</code> limits are reached: this blocking behaviour is sometimes misinterpreted as a ‘hung producer’, when in fact the producer is simply diligently waiting until space is available.</p>
 
@@ -127,7 +127,7 @@
 </code></pre></div></div>
 <p>see <a href="xml-configuration">Broker Configuration</a>.</p>
 
-<p>Note that, since the introduction of the new file cursor in ActiveMQ Classic 5.x, non-persisted messages are shunted into the temporary file store to reduce the amount of memory used for non-persistent messaging. As a result, you may find that a queue’s memoryLimit is never reached, as the cursor doesn’t use very much memory. If you really do want to keep all your non-persistent messages in memory, and stop producers when the limit is reached, you should configure the <code class="language-plaintext highlighter-rouge">&lt;vmQueueCursor&gt;</code>.</p>
+<p>Note that, since the introduction of the new file cursor in ActiveMQ 5.x, non-persisted messages are shunted into the temporary file store to reduce the amount of memory used for non-persistent messaging. As a result, you may find that a queue’s memoryLimit is never reached, as the cursor doesn’t use very much memory. If you really do want to keep all your non-persistent messages in memory, and stop producers when the limit is reached, you should configure the <code class="language-plaintext highlighter-rouge">&lt;vmQueueCursor&gt;</code>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;policyEntry queue="&gt;" producerFlowControl="true" memoryLimit="1mb"&gt;    
   &lt;pendingQueuePolicy&gt;
     &lt;vmQueueCursor/&gt;

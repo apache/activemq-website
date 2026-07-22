@@ -94,7 +94,7 @@
       <div class="col-12 classic">
         <p><a href="features">Features</a> &gt; <a href="security">Security</a></p>
 
-<p>ActiveMQ Classic 4.x and greater provides pluggable security through various different providers.</p>
+<p>ActiveMQ 4.x and greater provides pluggable security through various different providers.</p>
 
 <p>The most common providers are</p>
 
@@ -107,7 +107,7 @@
 
 <p>The default <a href="http://java.sun.com/products/jaas/">JAAS</a> plugin relies on the standard JAAS mechanism for authentication. Refer to the <a href="http://java.sun.com/products/jaas/reference/docs/index.html">documentation</a> for more detail.</p>
 
-<p>Typically you configure JAAS using a config file like <a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/login.config">this one</a> and set the <strong>java.security.auth.login.config</strong> system property to point to it. If no system property is specified then by default the ActiveMQ Classic JAAS plugin will look for <strong>login.config</strong> on the classpath and use that.</p>
+<p>Typically you configure JAAS using a config file like <a href="http://svn.apache.org/repos/asf/activemq/trunk/activemq-unit-tests/src/test/resources/login.config">this one</a> and set the <strong>java.security.auth.login.config</strong> system property to point to it. If no system property is specified then by default the ActiveMQ JAAS plugin will look for <strong>login.config</strong> on the classpath and use that.</p>
 
 <h4 id="authentication-example">Authentication Example</h4>
 
@@ -149,7 +149,7 @@
 
 <h3 id="authorization">Authorization</h3>
 
-<p>In ActiveMQ Classic we use a number of operations which you can associate with user roles and either individual queues or topics or you can use wildcards to attach to hierarchies of topics and queues.</p>
+<p>In ActiveMQ we use a number of operations which you can associate with user roles and either individual queues or topics or you can use wildcards to attach to hierarchies of topics and queues.</p>
 
 <table>
   <thead>
@@ -174,7 +174,7 @@
   </tbody>
 </table>
 
-<p>Queues/Topics can specified using the ActiveMQ Classic <a href="wildcards">Wildcards</a> syntax.</p>
+<p>Queues/Topics can specified using the ActiveMQ <a href="wildcards">Wildcards</a> syntax.</p>
 
 <h4 id="authorization-example">Authorization Example</h4>
 
@@ -347,7 +347,7 @@ However, normal users should generally <strong>not</strong> be given access to r
  # Sets up: 
  # 1. Bind user 
  # 2. A sample queue with admin,read,write permission assignments 
- # 3. ActiveMQ Classic advisory topics 
+ # 3. ActiveMQ advisory topics 
  # 4. Two groups - admin and webapp 
  # 5. Two users - admin and webapp 
  # 6. Role assignments - admin-&gt;admin, webapp-&gt;webapp 
@@ -492,12 +492,12 @@ However, normal users should generally <strong>not</strong> be given access to r
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>Start up ActiveMQ Classic</p>
+    <p>Start up ActiveMQ</p>
   </li>
   <li>Test it out</li>
 </ol>
 
-<h3 id="security-and-activemq-classic-components">Security and ActiveMQ Classic Components</h3>
+<h3 id="security-and-activemq-components">Security and ActiveMQ Components</h3>
 
 <p>Along with the message broker, you can optionally execute several additional “components”, such as Camel and/or the Web console. These components establish connections with the broker; therefore, if you have secured your broker (i.e., enabled authentication), you will have to configure these components in order to have them provide the required security credentials (username, password) when they connect to the broker.</p>
 
@@ -505,7 +505,7 @@ However, normal users should generally <strong>not</strong> be given access to r
 
 <p>You may have the following Camel context defined in your broker’s XML configuration file.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- ** Lets deploy some Enterprise Integration Patterns inside the ActiveMQ Classic Message Broker ** For more details see ** ** http://activemq.apache.orgFeatures/enterprise-integration-patterns.md --&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- ** Lets deploy some Enterprise Integration Patterns inside the ActiveMQ Message Broker ** For more details see ** ** http://activemq.apache.orgFeatures/enterprise-integration-patterns.md --&gt;
 &lt;camelContext id="camel" xmlns="http://activemq.apache.org/camel/schema/spring"&gt;
   &lt;package&gt;org.foo.bar&lt;/package&gt;
   &lt;route&gt; 
@@ -524,7 +524,7 @@ However, normal users should generally <strong>not</strong> be given access to r
 
 <p>This allows any pre-configured instance of the ActiveMQComponent deployed in the container to take precedence on the default ActiveMQComponent.</p>
 
-<p>That is, with the above configuration, Camel will establish a connection with ActiveMQ Classic, but will not provide a username and password. Therefore, when ActiveMQ Classic security is enabled, the above configuration results in a security exception. The exception will be thrown multiple times, because Camel will continue to retry the connection. If you’re not using Camel, comment out the above XML code. If you are using Camel, add the following bean definition to your broker’s XML configuration:</p>
+<p>That is, with the above configuration, Camel will establish a connection with ActiveMQ, but will not provide a username and password. Therefore, when ActiveMQ security is enabled, the above configuration results in a security exception. The exception will be thrown multiple times, because Camel will continue to retry the connection. If you’re not using Camel, comment out the above XML code. If you are using Camel, add the following bean definition to your broker’s XML configuration:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!-- configure the camel activemq component to use the current broker --&gt;
 &lt;bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent" &gt;
@@ -558,7 +558,7 @@ However, normal users should generally <strong>not</strong> be given access to r
 
 <h4 id="default-credentials">Default Credentials</h4>
 
-<p>Starting with version 5.3, all of the above configuration details are included in the default ActiveMQ Classic configuration. Also, there is a central place where you can set credentials that these components will use to connect to the broker. Just set your desired username and password in the <code class="language-plaintext highlighter-rouge">conf/credentials.properties</code> file, which by default looks like this:</p>
+<p>Starting with version 5.3, all of the above configuration details are included in the default ActiveMQ configuration. Also, there is a central place where you can set credentials that these components will use to connect to the broker. Just set your desired username and password in the <code class="language-plaintext highlighter-rouge">conf/credentials.properties</code> file, which by default looks like this:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>activemq.username=system activemq.password=manager
 </code></pre></div></div>
 
@@ -572,7 +572,7 @@ However, normal users should generally <strong>not</strong> be given access to r
 In the next step you have to create a new Java class and let it implement the org.apache.activemq.security.MessageAuthorizationPolicy interface. After that, simply add a method with signature:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public boolean isAllowedToConsume(ConnectionContext context, Message message){...}
 </code></pre></div></div>
-<p>to the new Java class. For usage of your own Message level Authorization policy, the Java class has to be packaged as jar and added to the /lib folder of ActiveMQ Classic to make it available. In the last step, it has to be configured on the broker directly by using the * messageAuthorizationPolicy* property or add it to the XML as follows</p>
+<p>to the new Java class. For usage of your own Message level Authorization policy, the Java class has to be packaged as jar and added to the /lib folder of ActiveMQ to make it available. In the last step, it has to be configured on the broker directly by using the * messageAuthorizationPolicy* property or add it to the XML as follows</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;broker&gt;
   ..

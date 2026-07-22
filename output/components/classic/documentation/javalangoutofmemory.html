@@ -94,9 +94,9 @@
       <div class="col-12 classic">
         <p> <a href="faq">FAQ</a> &gt; <a href="errors">Errors</a> &gt; <a href="exceptions">Exceptions</a> &gt; <a href="javalangoutofmemory">java.lang.OutOfMemory</a></p>
 
-<p>Ok, this is manageable. It is possible to configure just about all of the memory utilisation of ActiveMQ Classic. The first thing to determine is what part of the system is running out of memory. Is it the JVM, the broker, the consumers or the producers?</p>
+<p>Ok, this is manageable. It is possible to configure just about all of the memory utilisation of ActiveMQ. The first thing to determine is what part of the system is running out of memory. Is it the JVM, the broker, the consumers or the producers?</p>
 
-<p>This entry refers to ActiveMQ Classic versions 5.1.x and greater.</p>
+<p>This entry refers to ActiveMQ versions 5.1.x and greater.</p>
 
 <h4 id="memory">Memory</h4>
 
@@ -115,7 +115,7 @@
 
 <p>The memory that the broker is allowed to use is not determined by the amount of memory allocated to the JVM. Although the broker is constrained by the amount of memory given to the JVM, the broker manages its memory independently. That is, the broker does not just simply use up all of the memory in the JVM and then die with an OutOfMemory exception. This is where you need to understand the <a href="producer-flow-control">systemUsage</a> memory limit and the per destination memory limit.</p>
 
-<p>The memory in ActiveMQ Classic works in a tiered fashion that flows from the JVM -&gt; Broker -&gt; broker features. E.g., the total amount of destination memory limits placed cannot exceed the memory limit of the broker.</p>
+<p>The memory in ActiveMQ works in a tiered fashion that flows from the JVM -&gt; Broker -&gt; broker features. E.g., the total amount of destination memory limits placed cannot exceed the memory limit of the broker.</p>
 
 <h4 id="consumer">Consumer</h4>
 
@@ -136,7 +136,7 @@ The Broker (using <a href="message-cursors">Message Cursors</a>) will spool non-
 
 <h5 id="number-of-threads">Number of Threads</h5>
 
-<p>By default, ActiveMQ Classic uses a dedicated thread per destination. If there are large numbers of Destinations there will be a large number of threads and their associated memory resource usage. ActiveMQ Classic can be configured to use a thread pool through the use of the system property: -Dorg.apache.activemq.UseDedicatedTaskRunner=false. This is currently specified in the activemq start script via ACTIVEMQ_OPTS. Using a thread pool can restrict the number of threads required by ActiveMQ Classic and hence reduce memory usage.</p>
+<p>By default, ActiveMQ uses a dedicated thread per destination. If there are large numbers of Destinations there will be a large number of threads and their associated memory resource usage. ActiveMQ can be configured to use a thread pool through the use of the system property: -Dorg.apache.activemq.UseDedicatedTaskRunner=false. This is currently specified in the activemq start script via ACTIVEMQ_OPTS. Using a thread pool can restrict the number of threads required by ActiveMQ and hence reduce memory usage.</p>
 
 <h5 id="really-large-messages">Really Large Messages</h5>
 
@@ -154,7 +154,7 @@ try
     releaseJmsResource(); 
 } 
 </code></pre></div></div>
-<p>If you are using ActiveMQ Classic via <a href="spring-Community/support">Spring Support</a> or with JMSTemplates, be sure to check you are not falling for any of the <a href="jmstemplate-gotchas">JmsTemplate Gotchas</a>. It may also be worth recapping on <a href="how-do-i-use-jms-efficiently">How do I use JMS efficiently</a>.</p>
+<p>If you are using ActiveMQ via <a href="spring-Community/support">Spring Support</a> or with JMSTemplates, be sure to check you are not falling for any of the <a href="jmstemplate-gotchas">JmsTemplate Gotchas</a>. It may also be worth recapping on <a href="how-do-i-use-jms-efficiently">How do I use JMS efficiently</a>.</p>
 
 
       </div>

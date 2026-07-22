@@ -94,9 +94,9 @@
       <div class="col-12 classic">
         <p><a href="features">Features</a> &gt; <a href="security">Security</a> &gt; <a href="shiro">Shiro</a></p>
 
-<p>ActiveMQ Classic 5.10 and later provides a fully customizable security experience using <a href="http://shiro.apache.org">Apache Shiro</a>.</p>
+<p>ActiveMQ 5.10 and later provides a fully customizable security experience using <a href="http://shiro.apache.org">Apache Shiro</a>.</p>
 
-<p>The ActiveMQ Classic Shiro plugin can secure the ActiveMQ Classic broker, from authenticating transport connections to authorizing behavior with topics and queues and everything in between.</p>
+<p>The ActiveMQ Shiro plugin can secure the ActiveMQ broker, from authenticating transport connections to authorizing behavior with topics and queues and everything in between.</p>
 
 <h2 id="quickstart">Quickstart</h2>
 
@@ -129,7 +129,7 @@
                 # below. By transitive association, any user assigned a role is granted the
                 # role's permissions.
                 
-                # ActiveMQ Classic System User
+                # ActiveMQ System User
                 # needed for in-VM/local connections when authentication is enabled:
                 system = manager, system
                 
@@ -168,7 +168,7 @@
     &lt;/broker&gt;
 &lt;/beans&gt;
 </code></pre></div></div>
-<p>This config assumes you have a simple/small set of static users that access your ActiveMQ Classic broker. We’ll cover enabling more advanced user repositories later.</p>
+<p>This config assumes you have a simple/small set of static users that access your ActiveMQ broker. We’ll cover enabling more advanced user repositories later.</p>
 
 <h4 id="encrypted-passwords">Encrypted Passwords</h4>
 
@@ -218,7 +218,7 @@ system = $shiro1$SHA-256$500000$eUyGwMGr9GYzB/gg/MoNgw==$WGc0yWFWv8+hLqjzVLgW7Ha
 
 <h2 id="configuration">Configuration</h2>
 
-<p>The ActiveMQ Classic Shiro plugin can be configured in a number of ways. For example, with Java:</p>
+<p>The ActiveMQ Shiro plugin can be configured in a number of ways. For example, with Java:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BrokerService brokerService = new BrokerService();
 
 ShiroPlugin shiroPlugin = new ShiroPlugin();
@@ -227,7 +227,7 @@ ShiroPlugin shiroPlugin = new ShiroPlugin();
 broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 //continue configuring the brokerService as necessary ...
 </code></pre></div></div>
-<p>Or, if using traditional ActiveMQ Classic xml, as a Spring bean in the <code class="language-plaintext highlighter-rouge">broker</code> <code class="language-plaintext highlighter-rouge">plugins</code> section. For example:</p>
+<p>Or, if using traditional ActiveMQ xml, as a Spring bean in the <code class="language-plaintext highlighter-rouge">broker</code> <code class="language-plaintext highlighter-rouge">plugins</code> section. For example:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:amq="http://activemq.apache.org/schema/core"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -354,7 +354,7 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
     &lt;/broker&gt;
 &lt;/beans&gt;
 </code></pre></div></div>
-<p>This allows you to keep your Shiro config separate from your ActiveMQ Classic broker configuration if you prefer.</p>
+<p>This allows you to keep your Shiro config separate from your ActiveMQ broker configuration if you prefer.</p>
 
 <h4 id="shiroini-embedded">shiro.ini Embedded</h4>
 
@@ -411,10 +411,10 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 
 <ul>
   <li>the ability to customize exactly how broker clients’ <code class="language-plaintext highlighter-rouge">Subject</code> instances are created via a <code class="language-plaintext highlighter-rouge">ConnectionSubjectFactory</code> and</li>
-  <li>the ability to customize how the ActiveMQ Classic ConnectionContext’s <a href="http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/security/SecurityContext.html">SecurityContext</a> is constructed.</li>
+  <li>the ability to customize how the ActiveMQ ConnectionContext’s <a href="http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/security/SecurityContext.html">SecurityContext</a> is constructed.</li>
 </ul>
 
-<p>Unless you’re deeply familiar with ActiveMQ Classic’s security model, you can safely skip to <strong>Authentication</strong> below.</p>
+<p>Unless you’re deeply familiar with ActiveMQ’s security model, you can safely skip to <strong>Authentication</strong> below.</p>
 
 <h3 id="connectionsubjectfactory">ConnectionSubjectFactory</h3>
 
@@ -432,7 +432,7 @@ broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 
 <h3 id="securitycontextfactory">SecurityContextFactory</h3>
 
-<p>The ActiveMQ Classic <code class="language-plaintext highlighter-rouge">ConnectionContext</code> associated with broker client connections utilizes a <code class="language-plaintext highlighter-rouge">SecurityContext</code> object. When the <code class="language-plaintext highlighter-rouge">SubjectFilter</code> executes, it needs to create a Shiro-specific <code class="language-plaintext highlighter-rouge">SecurityContext</code> and associate it with the <code class="language-plaintext highlighter-rouge">ConnectionContext</code> so the Subject may be accessed downstream for all subsequent security operations.</p>
+<p>The ActiveMQ <code class="language-plaintext highlighter-rouge">ConnectionContext</code> associated with broker client connections utilizes a <code class="language-plaintext highlighter-rouge">SecurityContext</code> object. When the <code class="language-plaintext highlighter-rouge">SubjectFilter</code> executes, it needs to create a Shiro-specific <code class="language-plaintext highlighter-rouge">SecurityContext</code> and associate it with the <code class="language-plaintext highlighter-rouge">ConnectionContext</code> so the Subject may be accessed downstream for all subsequent security operations.</p>
 
 <p>The <code class="language-plaintext highlighter-rouge">SubjectFilter</code> delegates <code class="language-plaintext highlighter-rouge">SecurityContext</code> creation to a <code class="language-plaintext highlighter-rouge">SecurityContextFactory</code> instance. The <code class="language-plaintext highlighter-rouge">DefaultSecurityContextFactory</code> implementation returns <code class="language-plaintext highlighter-rouge">SubjectSecurityContext</code> instances based on the connection’s associated <code class="language-plaintext highlighter-rouge">Subject</code>. It should be an extremely rare thing to change, but if you must configure a custom <code class="language-plaintext highlighter-rouge">SecurityContextFactory</code>, you can do as follows:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;bean id="shiroPlugin" class="org.apache.activemq.shiro.ShiroPlugin" xmlns="http://www.springframework.org/schema/beans"&gt;

@@ -94,17 +94,17 @@
       <div class="col-12 classic">
         <p><a href="connectivity">Connectivity</a> &gt; <a href="protocols">Protocols</a> &gt; <a href="mqtt">MQTT</a></p>
 
-<p>ActiveMQ Classic supports the <a href="http://mqtt.org/">MQTT</a> protocol and will automatically map between JMS/NMS and MQTT clients. MQTT is a machine-to-machine (M2M) publish/subscribe messaging transport.</p>
+<p>ActiveMQ supports the <a href="http://mqtt.org/">MQTT</a> protocol and will automatically map between JMS/NMS and MQTT clients. MQTT is a machine-to-machine (M2M) publish/subscribe messaging transport.</p>
 
 <p>Please see the <a href="http://mqtt.org/">MQTT site</a> for more details</p>
 
 <h3 id="supported-versions">Supported versions</h3>
 
-<p>ActiveMQ Classic supports MQTT <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">v3.1.1</a> and <a href="https://public.dhe.ibm.com/software/dw/webservices/ws-mqtt/mqtt-v3r1.html">v3.1</a>.</p>
+<p>ActiveMQ supports MQTT <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">v3.1.1</a> and <a href="https://public.dhe.ibm.com/software/dw/webservices/ws-mqtt/mqtt-v3r1.html">v3.1</a>.</p>
 
-<h3 id="enabling-the-activemq-classic-broker-for-mqtt">Enabling the ActiveMQ Classic Broker for MQTT</h3>
+<h3 id="enabling-the-activemq-broker-for-mqtt">Enabling the ActiveMQ Broker for MQTT</h3>
 
-<p>Its very easy to enable ActiveMQ Classic for MQTT. Just add a connector to the broker using the MQTT URL.</p>
+<p>Its very easy to enable ActiveMQ for MQTT. Just add a connector to the broker using the MQTT URL.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnectors&gt;
    &lt;transportConnector name="mqtt" uri="mqtt://localhost:1883"/&gt;
 &lt;/transportConnectors&gt;
@@ -138,7 +138,7 @@
 
 <h3 id="security">Security</h3>
 
-<p>The ActiveMQ Classic MQTT Transport implementation fully supports an <a href="security">ActiveMQ Classic security</a> mechanism. Also, the authorization policies will be applied when you try to access (read/write) certain destinations.</p>
+<p>The ActiveMQ MQTT Transport implementation fully supports an <a href="security">ActiveMQ security</a> mechanism. Also, the authorization policies will be applied when you try to access (read/write) certain destinations.</p>
 
 <h3 id="enabling-mqtt-over-nio">Enabling MQTT over NIO</h3>
 
@@ -155,7 +155,7 @@
 </code></pre></div></div>
 
 <ul>
-  <li>For more details on using SSL with ActiveMQ Classic see the following article (<a href="how-do-i-use-ssl">How do I use SSL</a>).</li>
+  <li>For more details on using SSL with ActiveMQ see the following article (<a href="how-do-i-use-ssl">How do I use SSL</a>).</li>
 </ul>
 
 <h3 id="working-with-destinations-with-mqtt">Working with Destinations with MQTT</h3>
@@ -166,7 +166,7 @@
   <thead>
     <tr>
       <th>function</th>
-      <th>ActiveMQ Classic</th>
+      <th>ActiveMQ</th>
       <th>MQTT</th>
     </tr>
   </thead>
@@ -197,9 +197,9 @@
 
 <h3 id="keep-alive">Keep Alive</h3>
 
-<p>When a client connects, it will send a keep-alive duration, usually defaulting to 10s. ActiveMQ Classic will honor the keep-alive duration by setting up an Inactivity Monitor that allows a grace period of 1.5 * duration. After that grace period duration elapses a connection could be closed if there is no activity. A broker receiving a PINGREQ and sending PINGRESP is considered activity to keep the connection opened.</p>
+<p>When a client connects, it will send a keep-alive duration, usually defaulting to 10s. ActiveMQ will honor the keep-alive duration by setting up an Inactivity Monitor that allows a grace period of 1.5 * duration. After that grace period duration elapses a connection could be closed if there is no activity. A broker receiving a PINGREQ and sending PINGRESP is considered activity to keep the connection opened.</p>
 
-<p>If a client sends a keep-alive value of 0, ActiveMQ Classic will not set up an <a href="activemq-inactivitymonitor">Inactivity Monitor</a> and connections will not be auto-shutdown due to inactivity. This however can lead to potentially leaky connections, so a default keep alive can be set on the server side (by an admin, for example) to not allow inactive connections to hang. This default keep alive would only be used if specified and if the client requests a keep-alive value of 0. The unit for the keep-alive value is milliseconds.</p>
+<p>If a client sends a keep-alive value of 0, ActiveMQ will not set up an <a href="activemq-inactivitymonitor">Inactivity Monitor</a> and connections will not be auto-shutdown due to inactivity. This however can lead to potentially leaky connections, so a default keep alive can be set on the server side (by an admin, for example) to not allow inactive connections to hang. This default keep alive would only be used if specified and if the client requests a keep-alive value of 0. The unit for the keep-alive value is milliseconds.</p>
 
 <p>To enable a default, server-side MQTT keep alive:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="mqtt" uri="mqtt://localhost:1883?transport.defaultKeepAlive=60000"/&gt;
@@ -215,7 +215,7 @@
 
 <h3 id="subscription-strategy">Subscription Strategy</h3>
 
-<p>ActiveMQ Classic is a JMS broker in its core, so there needs to be some mapping between MQTT subscriptions and JMS semantics. Subscriptions with QoS=0 (At Most Once) are directly mapped to plain JMS non-persistent topics. For reliable messaging, QoS=1 and QoS=2, by default subscriptions are transformed to JMS durable topic subscribers. This behaviour is desired in most scenarios. For some use cases, it is useful to map these subscriptions to <a href="virtual-destinations">virtual topics</a>. Virtual topics provide a better scalability and are generally better solution if you want to use you MQTT subscribers over network of brokers. To change subscription strategy to use virtual topic, use the following settings:</p>
+<p>ActiveMQ is a JMS broker in its core, so there needs to be some mapping between MQTT subscriptions and JMS semantics. Subscriptions with QoS=0 (At Most Once) are directly mapped to plain JMS non-persistent topics. For reliable messaging, QoS=1 and QoS=2, by default subscriptions are transformed to JMS durable topic subscribers. This behaviour is desired in most scenarios. For some use cases, it is useful to map these subscriptions to <a href="virtual-destinations">virtual topics</a>. Virtual topics provide a better scalability and are generally better solution if you want to use you MQTT subscribers over network of brokers. To change subscription strategy to use virtual topic, use the following settings:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;transportConnector name="mqtt" uri="mqtt://localhost:1883?transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/&gt;
 </code></pre></div></div>
 

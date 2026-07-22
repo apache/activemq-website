@@ -94,7 +94,7 @@
       <div class="col-12 classic">
         <p><a href="connectivity">Connectivity</a> &gt; <a href="protocols">Protocols</a> &gt; <a href="rest">REST</a></p>
 
-<p>ActiveMQ Classic implements a RESTful API to messaging which allows any web capable device to publish or consume messages using a regular HTTP POST or GET.</p>
+<p>ActiveMQ implements a RESTful API to messaging which allows any web capable device to publish or consume messages using a regular HTTP POST or GET.</p>
 
 <p>If you are interested in messaging directly from web browsers you might wanna check out our <a href="ajax">Ajax</a> or <a href="websockets">WebSockets</a> support or try <a href="web-samples">running the REST examples</a></p>
 
@@ -102,7 +102,7 @@
 
 <p>To publish a message use a HTTP POST. To consume a message use HTTP DELETE or GET.</p>
 
-<p>ActiveMQ Classic has a Servlet that takes care of the integration between HTTP and the ActiveMQ Classic dispatcher.</p>
+<p>ActiveMQ has a Servlet that takes care of the integration between HTTP and the ActiveMQ dispatcher.</p>
 
 <p>NOTE: The example below requires servlet mapping on the URL. For posting without the servlet mapping, see examples further down.</p>
 
@@ -111,7 +111,7 @@
 </code></pre></div></div>
 <p>which would publish the contents of the HTTP POST to the orders.input queue on JMS. </p>
 
-<p>Similarly you could perform a HTTP DELETE GET on the above URL to read from the same queue. In this case we will map the MessageServlet from ActiveMQ Classic to the URI</p>
+<p>Similarly you could perform a HTTP DELETE GET on the above URL to read from the same queue. In this case we will map the MessageServlet from ActiveMQ to the URI</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://www.acme.com/queue
 </code></pre></div></div>
 <p>and configure it to accept the URI as a queue destination. We can do similar things to support topic destinations too.</p>
@@ -179,7 +179,7 @@ curl -XPOST -d "body=message" http://admin:admin@localhost:8161/api/message?dest
 
 <p>Couple this with HTTP 1.1 keep-alive sockets and pipeline processing we can have efficient access to JMS over HTTP.</p>
 
-<p>Obviously if your client is Java then using ActiveMQ Classic’s JMS API is the fastest and most efficient way to work with the message broker; however, if you are not using Java or prefer the simplicity of HTTP then it should be fairly efficient, especially if your HTTP client supports keep-alive sockets and pipeline processing.</p>
+<p>Obviously if your client is Java then using ActiveMQ’s JMS API is the fastest and most efficient way to work with the message broker; however, if you are not using Java or prefer the simplicity of HTTP then it should be fairly efficient, especially if your HTTP client supports keep-alive sockets and pipeline processing.</p>
 
 <h4 id="consuming">Consuming</h4>
 
@@ -224,7 +224,7 @@ curl -XGET http://admin:admin@localhost:8161/api/message?destination=topic://ord
 
 <h3 id="consuming-with-selectors">Consuming with selectors</h3>
 
-<p>As of ActiveMQ Classic 5.4.0, you can use selectors when consuming using REST protocol. To do that, just specify the appropriate header with selector. To define a selector for the consumer, you have to provide it in an appropriate HTTP header. By default selector header name is <code class="language-plaintext highlighter-rouge">selector</code>, so the following example</p>
+<p>As of ActiveMQ 5.4.0, you can use selectors when consuming using REST protocol. To do that, just specify the appropriate header with selector. To define a selector for the consumer, you have to provide it in an appropriate HTTP header. By default selector header name is <code class="language-plaintext highlighter-rouge">selector</code>, so the following example</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget  --user admin --password admin --save-cookies cookies.txt --load-cookies cookies.txt --keep-session-cookies  --header="selector: test=2" http://localhost:8161/api/message/test?type=queue
 </code></pre></div></div>
 <p>should consume only messages that have <code class="language-plaintext highlighter-rouge">test</code> property set to <code class="language-plaintext highlighter-rouge">2</code>.</p>
@@ -288,7 +288,7 @@ curl -XGET http://admin:admin@localhost:8161/api/message?destination=topic://ord
 <p>or to be more specific, total consumer count with</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget --user admin --password admin --header "Origin: http://localhost" --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost/TotalConsumerCount
 </code></pre></div></div>
-<p>By default, ActiveMQ Classic uses the <a href="https://github.com/apache/activemq/blob/master/assembly/src/release/webapps/api/WEB-INF/classes/jolokia-access.xml">following</a> Jolokia security policy:</p>
+<p>By default, ActiveMQ uses the <a href="https://github.com/apache/activemq/blob/master/assembly/src/release/webapps/api/WEB-INF/classes/jolokia-access.xml">following</a> Jolokia security policy:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;restrict&gt;
 
   &lt;!-- Enforce that an Origin/Referer header is present to prevent CSRF --&gt;
@@ -314,7 +314,7 @@ curl -XGET http://admin:admin@localhost:8161/api/message?destination=topic://ord
 </code></pre></div></div>
 <p>A custom Jolokia security policy can be configured by editing ‘webapps/api/WEB-INF/web.xml’ and specifying the ‘policyLocation’ parameter under the ‘jolokia-agent’ servlet.</p>
 
-<p>For more information on Jolokia security, please refer to the <a href="https://jolokia.org/reference/html/security.html">security section</a> of its reference manual. An API like this makes it easy to script monitoring and management operations against the broker, see also <a href="how-can-i-monitor-activemq-classic">How can I monitor ActiveMQ Classic</a>?</p>
+<p>For more information on Jolokia security, please refer to the <a href="https://jolokia.org/reference/html/security.html">security section</a> of its reference manual. An API like this makes it easy to script monitoring and management operations against the broker, see also <a href="how-can-i-monitor-activemq-classic">How can I monitor ActiveMQ</a>?</p>
 
 <h2 id="gotchas-and-other-trivia">Gotcha’s and other trivia</h2>
 

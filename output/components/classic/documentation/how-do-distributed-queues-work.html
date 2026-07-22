@@ -92,9 +92,9 @@
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p> <a href="faq">FAQ</a> &gt; <a href="using-apache-activemq-classic">Using Apache ActiveMQ Classic</a> &gt; <a href="how-do-distributed-queues-work">How do distributed queues work</a></p>
+        <p> <a href="faq">FAQ</a> &gt; <a href="using-apache-activemq-classic">Using Apache ActiveMQ</a> &gt; <a href="how-do-distributed-queues-work">How do distributed queues work</a></p>
 
-<p>There are various <a href="topologies">Topologies</a> that you can employ with ActiveMQ Classic, where clients are connected to message brokers in various ways like</p>
+<p>There are various <a href="topologies">Topologies</a> that you can employ with ActiveMQ, where clients are connected to message brokers in various ways like</p>
 
 <ul>
   <li>peer based</li>
@@ -118,7 +118,7 @@
 
 <h2 id="store-and-forward-networks-of-brokers">Store and forward networks of brokers</h2>
 
-<p>A <a href="networks-of-brokers">Store and Forward Network of Brokers</a> means the messages travel from broker to broker until they reach a consumer; with each message being owned by a single broker at any point in time. When a JMS producer sends a message to a JMS consumer, it may travel through several brokers to reach its final destination. ActiveMQ Classic uses <a href="consumer-priority">Consumer Priority</a> so that local JMS consumers are always higher priority than remote brokers in a store and forward network.</p>
+<p>A <a href="networks-of-brokers">Store and Forward Network of Brokers</a> means the messages travel from broker to broker until they reach a consumer; with each message being owned by a single broker at any point in time. When a JMS producer sends a message to a JMS consumer, it may travel through several brokers to reach its final destination. ActiveMQ uses <a href="consumer-priority">Consumer Priority</a> so that local JMS consumers are always higher priority than remote brokers in a store and forward network.</p>
 
 <p>Note though that a store and forward network is not a solution for message <a href="ha">HA</a>; if a broker fails in a Store and Forward network, the messages owned by that broker remain inside the broker’s persistent store until the broker comes back online. If you need <a href="ha">HA</a> of messages then you need to use Master/Slave described above.</p>
 
@@ -134,7 +134,7 @@
 
 <h2 id="distributed-topics-in-storeforward">Distributed Topics in Store/Forward</h2>
 
-<p>For topics the above algorithm is followed except, every interested client receives a copy of the message - plus ActiveMQ Classic will check for loops (to avoid a message flowing infinitely around a ring of brokers).</p>
+<p>For topics the above algorithm is followed except, every interested client receives a copy of the message - plus ActiveMQ will check for loops (to avoid a message flowing infinitely around a ring of brokers).</p>
 
 <h3 id="see-also">See Also</h3>
 

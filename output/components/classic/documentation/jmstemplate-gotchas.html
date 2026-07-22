@@ -99,7 +99,7 @@
 <blockquote>
   <p>User Story</p>
 
-  <p>We had a bug once in ActiveMQ Classic where if you created 65535 MessageProducer instances within the space of a few seconds, we’d get an exception thrown in the broker. Its a kinda silly thing to do, to create that many producers in a small space of time (one for each message to be sent) - JMS is designed for resources like producers and consumers to be created up front and reused across many message exchanges. The bug was highlighted by a user using JmsTemplate without a JMS pool underneath. Well at least it helped find our bug which I’m glad to say is now fixed, but it didn’t help their performance too much.</p>
+  <p>We had a bug once in ActiveMQ where if you created 65535 MessageProducer instances within the space of a few seconds, we’d get an exception thrown in the broker. Its a kinda silly thing to do, to create that many producers in a small space of time (one for each message to be sent) - JMS is designed for resources like producers and consumers to be created up front and reused across many message exchanges. The bug was highlighted by a user using JmsTemplate without a JMS pool underneath. Well at least it helped find our bug which I’m glad to say is now fixed, but it didn’t help their performance too much.</p>
 </blockquote>
 
 <p>You should only use JmsTemplate with a pooled JMS provider. In J2EE 1.4 or later that typically means a JCA based JMS ConnectionFactory. If you are in an EJB then make sure you use your J2EE containers ConnectionFactory, never a plain-old-connection factory. If you are not inside an EJB Then you should use our <a href="http://activemq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/pool/PooledConnectionFactory.html">PooledConnectionFactory</a>, then things will be nicely pooled. If you need to take part in XA transactions then look into our spring based <a href="jca-container">JCA Container</a>.</p>
@@ -111,7 +111,7 @@
 <blockquote>
   <p>New in 4.x</p>
 
-  <p>In ActiveMQ Classic <a href="changes-in-40">4.x</a> we have a new feature called <a href="subscription-recovery-policy">Subscription Recovery Policy</a> which even in non-durable delivery mode allows a new consumer to go back in time and receive messages delivered within a window (a fixed amount of RAM or time window). e.g. if your broker dies you have 2 minutes to reconnect to another broker and not miss any messages - even without durable delivery.</p>
+  <p>In ActiveMQ <a href="changes-in-40">4.x</a> we have a new feature called <a href="subscription-recovery-policy">Subscription Recovery Policy</a> which even in non-durable delivery mode allows a new consumer to go back in time and receive messages delivered within a window (a fixed amount of RAM or time window). e.g. if your broker dies you have 2 minutes to reconnect to another broker and not miss any messages - even without durable delivery.</p>
 </blockquote>
 
 <h3 id="recommendations-for-using-jmstemplate">Recommendations for using JmsTemplate</h3>
@@ -119,7 +119,7 @@
 <ul>
   <li>Never use a regular ConnectionFactory unless you are totally sure it does all the pooling you need</li>
   <li>If using in an EJB ensure you use the EJB containers ConnectionFactory</li>
-  <li>If you are only publishing messages and you are not in an EJB container and you are using ActiveMQ Classic, then you can use either the <a href="http://activemq.codehaus.org/maven/apidocs/org/activemq/pool/PooledConnectionFactory.html">PooledConnectionFactory</a> or the <a href="http://static.springsource.org/spring/docs/2.5.x/api/org/springframework/jms/connection/CachingConnectionFactory.html">Spring CachingConnectionFactory</a></li>
+  <li>If you are only publishing messages and you are not in an EJB container and you are using ActiveMQ, then you can use either the <a href="http://activemq.codehaus.org/maven/apidocs/org/activemq/pool/PooledConnectionFactory.html">PooledConnectionFactory</a> or the <a href="http://static.springsource.org/spring/docs/2.5.x/api/org/springframework/jms/connection/CachingConnectionFactory.html">Spring CachingConnectionFactory</a></li>
   <li>If you are consuming messages its probably simpler &amp; more efficient &amp; less likely to lose messages to avoid using the receive() method and use Spring’s <a href="http://static.springsource.org/spring/docs/2.5.x/reference/FAQ/jms.md#Community/FAQ/jms.mdp">MessageListenerContainer</a> instead</li>
   <li>See also <a href="http://bsnyderblog.blogspot.com/2010/02/using-spring-jmstemplate-to-send-/FAQ/jms">Using Spring to Send JMS Messages</a> and <a href="http://bsnyderblog.blogspot.com/2010/02/using-spring-to-receive-jms-messages.html">Using Spring to Receive JMS Messages</a></li>
 </ul>

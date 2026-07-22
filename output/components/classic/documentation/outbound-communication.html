@@ -94,13 +94,13 @@
       <div class="col-12 classic">
         <p><a href="connectivity">Connectivity</a> &gt; <a href="containers">Containers</a> &gt; <a href="jboss-integration">JBoss Integration</a> &gt; <a href="JBoss Integration/outbound-communication">Outbound Communication</a></p>
 
-<h2 id="configuring-a-session-bean-to-send-messages-to-activemq-classic">Configuring a Session Bean to send messages to ActiveMQ Classic</h2>
+<h2 id="configuring-a-session-bean-to-send-messages-to-activemq">Configuring a Session Bean to send messages to ActiveMQ</h2>
 
-<p>In the attached <a href="outbound-communication.data/activemq-jboss-test.zip?version=3&amp;modificationDate=1117021355000&amp;api=v2">example application</a>, the three MDBs use the <code class="language-plaintext highlighter-rouge">SenderEJB</code> to send JMS messages to an ActiveMQ Classic queue. In this example, I will be explaining how to:</p>
+<p>In the attached <a href="outbound-communication.data/activemq-jboss-test.zip?version=3&amp;modificationDate=1117021355000&amp;api=v2">example application</a>, the three MDBs use the <code class="language-plaintext highlighter-rouge">SenderEJB</code> to send JMS messages to an ActiveMQ queue. In this example, I will be explaining how to:</p>
 
 <ol>
-  <li>Configure and deploy an ActiveMQ Classic <code class="language-plaintext highlighter-rouge">Queue</code> to JBoss</li>
-  <li>Configure and deploy an ActiveMQ Classic <code class="language-plaintext highlighter-rouge">QueueConnectionFactory</code> to JBoss</li>
+  <li>Configure and deploy an ActiveMQ <code class="language-plaintext highlighter-rouge">Queue</code> to JBoss</li>
+  <li>Configure and deploy an ActiveMQ <code class="language-plaintext highlighter-rouge">QueueConnectionFactory</code> to JBoss</li>
   <li>Configure an EJB, deployed to JBoss, to reference the above two.</li>
 </ol>
 
@@ -128,7 +128,7 @@
    &lt;/message-destination-ref&gt;
 &lt;/session&gt;
 </code></pre></div></div>
-<p>The <code class="language-plaintext highlighter-rouge">jms/MyQueueConnectionFactory</code> is the JNDI name the <code class="language-plaintext highlighter-rouge">SenderEJB</code> will use to lookup a <code class="language-plaintext highlighter-rouge">javax.jms.QueueConnectionFactory</code>. We will configure it to point to an ActiveMQ Classic <code class="language-plaintext highlighter-rouge">QueueConnectionFactory</code>.</p>
+<p>The <code class="language-plaintext highlighter-rouge">jms/MyQueueConnectionFactory</code> is the JNDI name the <code class="language-plaintext highlighter-rouge">SenderEJB</code> will use to lookup a <code class="language-plaintext highlighter-rouge">javax.jms.QueueConnectionFactory</code>. We will configure it to point to an ActiveMQ <code class="language-plaintext highlighter-rouge">QueueConnectionFactory</code>.</p>
 
 <p>The <code class="language-plaintext highlighter-rouge">jms/LogQueue</code> is the JNDI name the <code class="language-plaintext highlighter-rouge">SenderEJB</code> will use to lookup the <code class="language-plaintext highlighter-rouge">javax.jms.Queue</code> it will send messages to. We use the <code class="language-plaintext highlighter-rouge">message-destination-link</code> element to refer to the <code class="language-plaintext highlighter-rouge">LoggingQueue</code> which is declared in the <code class="language-plaintext highlighter-rouge">assembly-descriptor</code> section of the <a href="outbound-communication.data/ejb-jar.xml?version=3&amp;modificationDate=1117021488000&amp;api=v2">ejb-jar.xml</a> deployment descriptor as:</p>
 
@@ -207,7 +207,7 @@
    &lt;/attribute&gt;
 &lt;/mbean&gt;
 </code></pre></div></div>
-<p>In the <a href="outbound-communication.data/panacya-jms-ds.xml?version=5&amp;modificationDate=1117021448000&amp;api=v2">panacya-jms-ds.xml</a> file section shown above, the value of the <code class="language-plaintext highlighter-rouge">Properties</code> element is set to <code class="language-plaintext highlighter-rouge">PhysicalName=queue.outbound</code>. This value is the physical name of the ActiveMQ Classic destination the <code class="language-plaintext highlighter-rouge">SenderEJB</code> will be sending messages to and not a JNDI name. In other words, the value of the <code class="language-plaintext highlighter-rouge">PhysicalName</code> property has no meaning to JBoss. It is purely an ActiveMQ Classic setting.</p>
+<p>In the <a href="outbound-communication.data/panacya-jms-ds.xml?version=5&amp;modificationDate=1117021448000&amp;api=v2">panacya-jms-ds.xml</a> file section shown above, the value of the <code class="language-plaintext highlighter-rouge">Properties</code> element is set to <code class="language-plaintext highlighter-rouge">PhysicalName=queue.outbound</code>. This value is the physical name of the ActiveMQ destination the <code class="language-plaintext highlighter-rouge">SenderEJB</code> will be sending messages to and not a JNDI name. In other words, the value of the <code class="language-plaintext highlighter-rouge">PhysicalName</code> property has no meaning to JBoss. It is purely an ActiveMQ setting.</p>
 
 <h5 id="jbossxml--the-jboss-deployment-descriptor"><a href="outbound-communication.data/jboss.xml?version=3&amp;modificationDate=1117021488000&amp;api=v2">jboss.xml</a> – <em>The JBoss Deployment Descriptor</em></h5>
 
@@ -246,7 +246,7 @@
    &lt;/message-destination&gt;
 &lt;/assembly-descriptor&gt;
 </code></pre></div></div>
-<p>The above example highlights the key configuration settings needed to enable EJBs deployed in JBoss to send JMS messages to an ActiveMQ Classic destination.</p>
+<p>The above example highlights the key configuration settings needed to enable EJBs deployed in JBoss to send JMS messages to an ActiveMQ destination.</p>
 
 <p>You can try the above example, plus a few more, by downloading the <a href="outbound-communication.data/activemq-jboss-test.zip?version=3&amp;modificationDate=1117021355000&amp;api=v2">activemq-jboss-test.zip</a> file which contains the complete sample project.</p>
 

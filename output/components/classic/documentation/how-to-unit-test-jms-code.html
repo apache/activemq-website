@@ -118,7 +118,7 @@ broker.start();
 
 <h3 id="using-jndi">Using JNDI</h3>
 
-<p>If your application code is using JNDI to lookup the JMS <code class="language-plaintext highlighter-rouge">ConnectionFactory</code> and <code class="language-plaintext highlighter-rouge">Destination</code>’s to use, then you could use the <a href="jndi-support">JNDI Support</a> in ActiveMQ Classic.</p>
+<p>If your application code is using JNDI to lookup the JMS <code class="language-plaintext highlighter-rouge">ConnectionFactory</code> and <code class="language-plaintext highlighter-rouge">Destination</code>’s to use, then you could use the <a href="jndi-support">JNDI Support</a> in ActiveMQ.</p>
 
 <p>Add the following <code class="language-plaintext highlighter-rouge">jndi.properties</code> to your classpath, e.g., in <code class="language-plaintext highlighter-rouge">src/test/resources</code>, if you are using maven:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java.naming.factory.initial = org.apache.activemq.jndi.ActiveMQInitialContextFactory
@@ -130,7 +130,7 @@ java.naming.provider.url = vm://localhost?broker.persistent=false
 
 <h3 id="using-theembeddedactivemqbroker-junit-rule-activemq-513">Using The <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code> JUnit Rule (ActiveMQ 5.13)</h3>
 
-<p>If your test code is using JUnit, then you could use the <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code> JUnit Rule provided in the <code class="language-plaintext highlighter-rouge">activemq-junit</code> library. Add the <code class="language-plaintext highlighter-rouge">activemq-junit</code> library along with the <code class="language-plaintext highlighter-rouge">activemq-broker</code> libraries for the version of ActiveMQ Classic you want to test with.  The rule will use whatever version of ActiveMQ Classic it finds in the classpath, so the ActiveMQ Classic libraries need to be specified if they are not already there.</p>
+<p>If your test code is using JUnit, then you could use the <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code> JUnit Rule provided in the <code class="language-plaintext highlighter-rouge">activemq-junit</code> library. Add the <code class="language-plaintext highlighter-rouge">activemq-junit</code> library along with the <code class="language-plaintext highlighter-rouge">activemq-broker</code> libraries for the version of ActiveMQ you want to test with.  The rule will use whatever version of ActiveMQ it finds in the classpath, so the ActiveMQ libraries need to be specified if they are not already there.</p>
 
 <p>If you are using Maven, add the following to your <code class="language-plaintext highlighter-rouge">pom.xml</code>:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
@@ -149,7 +149,7 @@ java.naming.provider.url = vm://localhost?broker.persistent=false
 </code></pre></div></div>
 <p> Then add the <code class="language-plaintext highlighter-rouge">EmbeddedActiveMQBroker</code> JUnit Rule to your test, and JUnit will start the embedded broker at the beginning of each test and stop the broker at the end of the test.</p>
 
-<p><strong>Use The ActiveMQ Classic JUnit Rule</strong></p>
+<p><strong>Use The ActiveMQ JUnit Rule</strong></p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@Rule
 public EmbeddedActiveMQBroker broker = new EmbeddedActiveMQBroker();
 </code></pre></div></div>
@@ -171,7 +171,7 @@ EmbeddedActiveMQBroker customizedBroker = new EmbeddedActiveMQBroker() {
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@Rule
 EmbeddedActiveMQBroker customizedBroker = new EmbeddedActiveMQBroker("bean:customize-activemq.xml");
 </code></pre></div></div>
-<p>Note that to use the XML configuration, you may need to add additional libraries on the classpath to support the XBean configuration of ActiveMQ Classic.  The versions of the <code class="language-plaintext highlighter-rouge">spring-context</code> library should correspond with the version used by your selected version of ActiveMQ Classic.</p>
+<p>Note that to use the XML configuration, you may need to add additional libraries on the classpath to support the XBean configuration of ActiveMQ.  The versions of the <code class="language-plaintext highlighter-rouge">spring-context</code> library should correspond with the version used by your selected version of ActiveMQ.</p>
 
 <p><strong>Maven Configuration For XBean Configuration</strong></p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;

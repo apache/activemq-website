@@ -86,22 +86,22 @@
 <div class="content">
   <div class="page-title-classic">
     <div class="container">
-      <h1>Using ActiveMQ Classic with EJB3 (JBoss Example)</h1>
+      <h1>Using ActiveMQ with EJB3 (JBoss Example)</h1>
     </div>
   </div>
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p><a href="index">Index</a> &gt; <a href="using-activemq-with-ejb3-jboss-example">Using ActiveMQ Classic with EJB3 (JBoss Example)</a></p>
+        <p><a href="index">Index</a> &gt; <a href="using-activemq-with-ejb3-jboss-example">Using ActiveMQ with EJB3 (JBoss Example)</a></p>
 
-<p>I’ve seen numerous postings regarding ActiveMQ Classic with EJB3, and variations of a datasource XML file for use with JBoss integration.</p>
+<p>I’ve seen numerous postings regarding ActiveMQ with EJB3, and variations of a datasource XML file for use with JBoss integration.</p>
 
 <p>However, they don’t quite work. Here is what worked for me, it is actually quite simple:</p>
 
 <ol>
-  <li>Don’t use any datasource file - only the RA file is required. Put it in the `deploy’ directory. The file is called activemq-rar-4.1.1.rar and it is in the ActiveMQ Classic distribution (lib/optional/)</li>
+  <li>Don’t use any datasource file - only the RA file is required. Put it in the `deploy’ directory. The file is called activemq-rar-4.1.1.rar and it is in the ActiveMQ distribution (lib/optional/)</li>
   <li>In JBoss, the @ResourceAdapter annotation must be placed on the Message Driven Bean (MDB). This may vary for other application servers.</li>
-  <li>Examples I’ve seen elsewhere show an activationConfig with destination=<a jndi="" name="" for="" the="" queue="">. This doesn’t work. Put the ActiveMQ Classic destination name in the activationConfig. There is no need to put the queue in the JNDI.</a></li>
+  <li>Examples I’ve seen elsewhere show an activationConfig with destination=<a jndi="" name="" for="" the="" queue="">. This doesn’t work. Put the ActiveMQ destination name in the activationConfig. There is no need to put the queue in the JNDI.</a></li>
 </ol>
 
 <p>Here is a working example - for EJB3 on JBoss, no XML descriptors are needed, just the RA file and the MDB.</p>

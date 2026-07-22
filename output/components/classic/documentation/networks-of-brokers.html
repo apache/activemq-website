@@ -98,11 +98,11 @@
 
 <p>If you are using <a href="topologies">client/server or hub/spoke style topology</a> then the broker you connect to becomes a single point of failure which is another reason for wanting a network (or cluster) of brokers so that you can survive failure of any particular broker, machine or subnet.</p>
 
-<p>From 1.1 onwards of ActiveMQ Classic supports <em>networks of brokers</em> which allows us to support <a href="how-do-distributed-queues-work">distributed queues and topics</a> across a network of brokers.</p>
+<p>From 1.1 onwards of ActiveMQ supports <em>networks of brokers</em> which allows us to support <a href="how-do-distributed-queues-work">distributed queues and topics</a> across a network of brokers.</p>
 
 <p>This allows a client to connect to any broker in the network - and fail over to another broker if there is a failure - providing from the clients perspective a <a href="ha">HA</a> cluster of brokers.</p>
 
-<p><strong>N.B.</strong> By default a network connection is one way only - the broker that establishes the connection <em>passes messages to</em> the broker(s) its connected to. From version 5.x of ActiveMQ Classic, a network connection can be optionally enabled to be duplex, which can be useful for hub and spoke architectures, where the hub is behind a firewall etc.</p>
+<p><strong>N.B.</strong> By default a network connection is one way only - the broker that establishes the connection <em>passes messages to</em> the broker(s) its connected to. From version 5.x of ActiveMQ, a network connection can be optionally enabled to be duplex, which can be useful for hub and spoke architectures, where the hub is behind a firewall etc.</p>
 
 <h2 id="configuring-a-network-of-brokers">Configuring a network of brokers</h2>
 
@@ -140,7 +140,7 @@
 
 &lt;/beans&gt;
 </code></pre></div></div>
-<p>ActiveMQ Classic also supports other transports than tcp to be used for the network connector such as http.</p>
+<p>ActiveMQ also supports other transports than tcp to be used for the network connector such as http.</p>
 
 <h3 id="example-using-multicast-discovery">Example using multicast discovery</h3>
 
@@ -217,7 +217,7 @@
 
 <h2 id="masterslave-discovery">MasterSlave Discovery</h2>
 
-<p>A common configuration option for a network of brokers is to establish a network bridge between a broker and an n+1 broker pair (master/slave). Typical configurations involve using the <code class="language-plaintext highlighter-rouge">failover:</code> transport, but there are a some other non-intuitive options that must be configured for it to work as desired. For this reason, ActiveMQ Classic v5.6+ has a convenience discovery agent that can be specified with the <code class="language-plaintext highlighter-rouge">masterslave:</code> transport prefix:</p>
+<p>A common configuration option for a network of brokers is to establish a network bridge between a broker and an n+1 broker pair (master/slave). Typical configurations involve using the <code class="language-plaintext highlighter-rouge">failover:</code> transport, but there are a some other non-intuitive options that must be configured for it to work as desired. For this reason, ActiveMQ v5.6+ has a convenience discovery agent that can be specified with the <code class="language-plaintext highlighter-rouge">masterslave:</code> transport prefix:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnectors&gt;
   &lt;networkConnector uri="masterslave:(tcp://host1:61616,tcp://host2:61616,tcp://..)"/&gt;
 &lt;/networkConnectors&gt;
@@ -347,7 +347,7 @@ sources are networked, in the event of a failure, inflight messages can be lost.
 
 <h4 id="when-to-use-and-not-use-conduit-subscriptions">When to use and not use Conduit subscriptions</h4>
 
-<p>ActiveMQ Classic relies on information about active consumers (subscriptions) to pass messages around the network. A broker interprets a subscription from a remote (networked) broker in the same way as it would a subscription from a local client connection and routes a copy of any relevant message to each subscription. With Topic subscriptions and with more than one remote subscription, a remote broker would interpret each message copy as valid, so when it in turns routes the messages to its own local connections, duplicates would occur. Hence default conduit behavior consolidates all matching subscription information to prevent duplicates flowing around the network. With this default behaviour, N subscriptions on a remote broker look like a single subscription to the networked broker.</p>
+<p>ActiveMQ relies on information about active consumers (subscriptions) to pass messages around the network. A broker interprets a subscription from a remote (networked) broker in the same way as it would a subscription from a local client connection and routes a copy of any relevant message to each subscription. With Topic subscriptions and with more than one remote subscription, a remote broker would interpret each message copy as valid, so when it in turns routes the messages to its own local connections, duplicates would occur. Hence default conduit behavior consolidates all matching subscription information to prevent duplicates flowing around the network. With this default behaviour, N subscriptions on a remote broker look like a single subscription to the networked broker.</p>
 
 <p>However - duplicate subscriptions is a useful feature to exploit if you are only using Queues. As the load balancing algorithm will attempt to share message load evenly, consumers across a network will equally share the message load only if the flag <code class="language-plaintext highlighter-rouge">conduitSubscriptions=false</code>. Here’s an example. Suppose you have two brokers, A and B, that are connected to one another via a forwarding bridge. Connected to broker A, you have a consumer that subscribes to a queue called <code class="language-plaintext highlighter-rouge">Q.TEST</code>. Connected to broker B, you have two consumers that also subscribe to <code class="language-plaintext highlighter-rouge">Q.TEST</code>. All consumers have equal priority. Then you start a producer on broker A that writes 30 messages to <code class="language-plaintext highlighter-rouge">Q.TEST</code>. By default, (<code class="language-plaintext highlighter-rouge">conduitSubscriptions=true</code>), 15 messages will be sent to the consumer on broker A and the resulting 15 messages will be sent to the two consumers on broker B. The message load has not been equally spread across all three consumers because, by default, broker A views the two subscriptions on broker B as one. If you had set <code class="language-plaintext highlighter-rouge">conduitSubscriptions</code> to <code class="language-plaintext highlighter-rouge">false</code>, then each of the three consumers would have been given 10 messages.</p>
 
@@ -425,7 +425,7 @@ sources are networked, in the event of a failure, inflight messages can be lost.
   &lt;/dynamicallyIncludedDestinations&gt;
 &lt;/networkConnector&gt;
 </code></pre></div></div>
-<p>In versions of ActiveMQ Classic prior to 5.6, the broker would still use the same advisory filter and express interest in all consumers on the remote broker. The actual filtering will be done during message dispatch. This is suboptimal solution in huge networks as it creates a lot of “advisory” traffic and load on the brokers. Starting with version 5.6, the broker will automatically create an appropriate advisory filter and express interest only in dynamically included destinations. For our example it will be “<code class="language-plaintext highlighter-rouge">ActiveMQ.Advisory.Consumer.Queue.include.test.foo,ActiveMQ.Advisory.Consumer.Topic.include.test.bar</code>”. This can dramatically improve behavior of the network in complex and high-load environments.</p>
+<p>In versions of ActiveMQ prior to 5.6, the broker would still use the same advisory filter and express interest in all consumers on the remote broker. The actual filtering will be done during message dispatch. This is suboptimal solution in huge networks as it creates a lot of “advisory” traffic and load on the brokers. Starting with version 5.6, the broker will automatically create an appropriate advisory filter and express interest only in dynamically included destinations. For our example it will be “<code class="language-plaintext highlighter-rouge">ActiveMQ.Advisory.Consumer.Queue.include.test.foo,ActiveMQ.Advisory.Consumer.Topic.include.test.bar</code>”. This can dramatically improve behavior of the network in complex and high-load environments.</p>
 
 <p>In older broker versions we can achieve the same thing with a slightly more complicated configuration. The actual advisory filter that controls in which consumers we are interested is defined with the <code class="language-plaintext highlighter-rouge">destinationFilter</code> connector property. Its default value is “&gt;”, which is concatenated to the <code class="language-plaintext highlighter-rouge">"ActiveMQ.Advisory.Consumer."</code> prefix. So to achieve the same thing, we would need to do the following:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnector uri="static:(tcp://host)" destinationFilter="Queue.include.test.foo,ActiveMQ.Advisory.Consumer.Topic.include.test.bar"&gt;
@@ -448,7 +448,7 @@ sources are networked, in the event of a failure, inflight messages can be lost.
         &lt;/staticallyIncludedDestinations&gt;
 &lt;/networkConnector&gt;
 </code></pre></div></div>
-<p>The <code class="language-plaintext highlighter-rouge">staticBridge</code> parameter is available since version 5.6 and it means that the local broker will not subscribe to any advisory topics on the remote broker, meaning it is not interested in whether there are any consumers there. Additionally, you need to add a list of destinations to <code class="language-plaintext highlighter-rouge">staticallyIncludedDestinations</code>. This will have the same effect as having an additional consumer on the destinations so messages will be forwarded to the remote broker as well. As there is no <code class="language-plaintext highlighter-rouge">staticBridge</code> parameter in the earlier versions of ActiveMQ Classic, you can trick the broker by setting <code class="language-plaintext highlighter-rouge">destinationFilter</code> to listen to an unused advisory topic, like</p>
+<p>The <code class="language-plaintext highlighter-rouge">staticBridge</code> parameter is available since version 5.6 and it means that the local broker will not subscribe to any advisory topics on the remote broker, meaning it is not interested in whether there are any consumers there. Additionally, you need to add a list of destinations to <code class="language-plaintext highlighter-rouge">staticallyIncludedDestinations</code>. This will have the same effect as having an additional consumer on the destinations so messages will be forwarded to the remote broker as well. As there is no <code class="language-plaintext highlighter-rouge">staticBridge</code> parameter in the earlier versions of ActiveMQ, you can trick the broker by setting <code class="language-plaintext highlighter-rouge">destinationFilter</code> to listen to an unused advisory topic, like</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;networkConnector uri="static:(tcp://host)" destinationFilter="NO_DESTINATION"&gt;
         &lt;staticallyIncludedDestinations&gt;
       		&lt;queue physicalName="always.include.queue"/&gt;
@@ -609,7 +609,7 @@ sources are networked, in the event of a failure, inflight messages can be lost.
 </code></pre></div></div>
 
 <p><strong>N.B.</strong> You can only use <a href="wildcards">wildcards</a> in the <code class="language-plaintext highlighter-rouge">excludedDestinations</code> and <code class="language-plaintext highlighter-rouge">dynamicallyIncludedDestinations</code> properties.<br />
-<strong>N.B.</strong> <strong>Do not</strong> change the name of the bridge or the name of the Broker if you are using durable topic subscribers across the network. Internally ActiveMQ Classic uses the network name and broker name to build a unique but repeatable durable subscriber name for the network.</p>
+<strong>N.B.</strong> <strong>Do not</strong> change the name of the bridge or the name of the Broker if you are using durable topic subscribers across the network. Internally ActiveMQ uses the network name and broker name to build a unique but repeatable durable subscriber name for the network.</p>
 
 <h3 id="stuck-messages">Stuck Messages</h3>
 

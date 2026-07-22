@@ -94,22 +94,22 @@
       <div class="col-12 classic">
         <p><a href="connectivity">Connectivity</a> &gt; <a href="containers">Containers</a> &gt; <a href="zos">zOS</a></p>
 
-<h1 id="running-activemq-classic-on-zos">Running ActiveMQ Classic on z/OS</h1>
+<h1 id="running-activemq-on-zos">Running ActiveMQ on z/OS</h1>
 
-<p>It is relatively straightforward to run the ActiveMQ Classic broker on z/OS.</p>
+<p>It is relatively straightforward to run the ActiveMQ broker on z/OS.</p>
 
 <p>There are a couple of steps:</p>
 
-<p>1. Copy ActiveMQ Classic to z/OS<br />
+<p>1. Copy ActiveMQ to z/OS<br />
 2. Modify the configuration<br />
 3. Run using JZOS<br />
 4. Test</p>
 
-<h3 id="copy-activemq-classic-to-zos">Copy ActiveMQ Classic to z/OS</h3>
+<h3 id="copy-activemq-to-zos">Copy ActiveMQ to z/OS</h3>
 
 <ul>
   <li>Ensure that the 1.5 JVM is available on z/OS, together with the <a href="http://www.dovetail.com/docs/jzos/index.html">JZOS</a> component.</li>
-  <li>Download the .zip version of ActiveMQ Classic from Apache.</li>
+  <li>Download the .zip version of ActiveMQ from Apache.</li>
   <li>FTP the broker to a suitable directory in USS.</li>
   <li>Log into USS using rlogin or whatever has been configured at your site to do a login into USS.</li>
   <li>Extract the zip file using the command: jar -xvf apache-activemq-5.0.0.zip</li>
@@ -122,7 +122,7 @@
 <p>Currently, the Jetty plugin does not work on z/OS, so need to be disabled in the activemq.xml file.</p>
 
 <ul>
-  <li>FTP the activemq.xml file from the conf directory in the ActiveMQ Classic installation to your PC in binary mode.</li>
+  <li>FTP the activemq.xml file from the conf directory in the ActiveMQ installation to your PC in binary mode.</li>
   <li>Edit the XML file using your XML editor or a text editor like Wordpad.</li>
   <li>Search for “jetty” in the XML.</li>
   <li>Change the comment block so that jetty is completely commented out.</li>
@@ -132,7 +132,7 @@
 
 <h3 id="run-using-jzos">Run using JZOS</h3>
 
-<p>I have renamed the lib/optional directory in USS and shortened some of the lib/optional jar names to make the JCL easier to handle. The JCL to run the ActiveMQ Classic broker is then:</p>
+<p>I have renamed the lib/optional directory in USS and shortened some of the lib/optional jar names to make the JCL easier to handle. The JCL to run the ActiveMQ broker is then:</p>
 
 <p>`ACTIVEMQ.JCL**</p>
 
@@ -233,7 +233,7 @@ export CLASSPATH=”$CLASSPATH”:</p>
 #export JZOS_MAIN_ARGS=””</p>
 
 <p># Configure JVM options
-# Note that ActiveMQ Classic requires default ASCII file.encoding
+# Note that ActiveMQ requires default ASCII file.encoding
 IJO=”-Xms64m -Xmx512m”
 IJO=”$IJO -Dfile.encoding=ISO8859-1”
 IJO=”$IJO -Dcom.sun.management.jmxremote”

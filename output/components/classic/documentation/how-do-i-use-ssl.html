@@ -92,16 +92,16 @@
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p><a href="community">Community</a> &gt; <a href="faq">FAQ</a> &gt; <a href="using-apache-activemq-classic">Using Apache ActiveMQ Classic</a> &gt; <a href="how-do-i-use-ssl">How do I use SSL</a></p>
+        <p><a href="community">Community</a> &gt; <a href="faq">FAQ</a> &gt; <a href="using-apache-activemq-classic">Using Apache ActiveMQ</a> &gt; <a href="how-do-i-use-ssl">How do I use SSL</a></p>
 
 <h3 id="setting-up-the-key-and-trust-stores">Setting up the Key and Trust Stores</h3>
 
 <p>Also see <a href="http://jakarta.apache.org/tomcat/tomcat-5.5-doc/ssl-howto.html">Tomcat’s SSL instructions</a> for more info. The following was provided by Colin Kilburn. Thanks Colin!</p>
 
 <blockquote>
-  <p>ActiveMQ Classic uses dummy credentials by default</p>
+  <p>ActiveMQ uses dummy credentials by default</p>
 
-  <p>ActiveMQ Classic includes key and trust stores that reference a dummy self signed cert. When you create a broker certificate and stores for your installation, either overwrite the values in the conf directory or delete the existing dummy key and trust stores so they cannot interfere)</p>
+  <p>ActiveMQ includes key and trust stores that reference a dummy self signed cert. When you create a broker certificate and stores for your installation, either overwrite the values in the conf directory or delete the existing dummy key and trust stores so they cannot interfere)</p>
 </blockquote>
 
 <ol>
@@ -128,14 +128,14 @@ certificate. This establishes that the client “trusts” the broker:
 
 <h4 id="using-the-javaxnetssl-system-properties">Using the javax.net.ssl.* System Properties</h4>
 
-<p>Before starting the broker’s VM set the ACTIVEMQ_SSL_OPTS environment variable so that it knows to use the broker keystore. (note that in previous versions of ActiveMQ Classic this property was called SSL_OPTS in some scripts. As of v5.12.0 all scripts use ACTIVEMQ_SSL_OPTS)</p>
+<p>Before starting the broker’s VM set the ACTIVEMQ_SSL_OPTS environment variable so that it knows to use the broker keystore. (note that in previous versions of ActiveMQ this property was called SSL_OPTS in some scripts. As of v5.12.0 all scripts use ACTIVEMQ_SSL_OPTS)</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export ACTIVEMQ_SSL_OPTS = -Djavax.net.ssl.keyStore=/path/to/broker.ks -Djavax.net.ssl.keyStorePassword=password
 </code></pre></div></div>
 
 <h4 id="using-spring-to-configure-ssl-for-a-broker-instance">Using Spring to configure SSL for a Broker instance</h4>
 
-<p>Sometimes the use of javax.net.ssl.* system properties is not appropriate as they effect all SSL users in a JVM. ActiveMQ Classic 5.2.x adds an element to the that allows a broker specific set of SSL properties to be configured.</p>
+<p>Sometimes the use of javax.net.ssl.* system properties is not appropriate as they effect all SSL users in a JVM. ActiveMQ 5.2.x adds an element to the that allows a broker specific set of SSL properties to be configured.</p>
 
 <p>The SslContext <a href="https://github.com/apache/activemq/tree/main/activemq-unit-tests/src/test/java/org/apache/activemq/transport/tcp/SslContextBrokerServiceTest.java">test case</a> validates starting an SSL transport listener using the configuration specified in the broker Xbean. The SslContext element is added to the broker as follows:</p>
 
@@ -149,7 +149,7 @@ javax.net.ssl.keyStorePassword=password
 javax.net.ssl.trustStore=/path/to/client.ts
 </code></pre></div></div>
 
-<p>In Linux, do not use absolute path to keystore. By default, keytool uses <code class="language-plaintext highlighter-rouge">~/.keystore</code>, but in some setups passing <code class="language-plaintext highlighter-rouge">-Djavax.net.ssl.keyStore=/home/account/.keystore</code> to Java VM does not work. This is not specific to ActiveMQ Classic but good to keep in mind anyway.</p>
+<p>In Linux, do not use absolute path to keystore. By default, keytool uses <code class="language-plaintext highlighter-rouge">~/.keystore</code>, but in some setups passing <code class="language-plaintext highlighter-rouge">-Djavax.net.ssl.keyStore=/home/account/.keystore</code> to Java VM does not work. This is not specific to ActiveMQ but good to keep in mind anyway.</p>
 
 <h3 id="client-certificates">Client certificates</h3>
 
@@ -170,7 +170,7 @@ steps:</p>
 </code></pre></div>    </div>
     <p>to <code class="language-plaintext highlighter-rouge">ACTIVEMQ_SSL_OPTS</code></p>
   </li>
-  <li>Instruct ActiveMQ Classic to require client authentication by setting the following in activemq.xml:</li>
+  <li>Instruct ActiveMQ to require client authentication by setting the following in activemq.xml:</li>
 </ol>
 
 <h3 id="certificate-revocation">Certificate revocation</h3>
@@ -201,7 +201,7 @@ steps:</p>
 
 <h3 id="working-around-java-7-ssl-bugs">Working Around Java 7 SSL Bugs</h3>
 
-<p>As noted by issue AMQ-5970, it seems some versions of Java 7 have problems with SSL sessions that need to use the Diffie-Hellman cypher suite. If you run into this issue, just copy the Bouncy Castle bcprov-jdk15on-148.jar to ActiveMQ Classic’s lib directory and restart your broker.</p>
+<p>As noted by issue AMQ-5970, it seems some versions of Java 7 have problems with SSL sessions that need to use the Diffie-Hellman cypher suite. If you run into this issue, just copy the Bouncy Castle bcprov-jdk15on-148.jar to ActiveMQ’s lib directory and restart your broker.</p>
 
 <h3 id="useful-links">Useful links</h3>
 

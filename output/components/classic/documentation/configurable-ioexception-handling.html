@@ -94,11 +94,11 @@
       <div class="col-12 classic">
         <p><a href="features">Features</a> &gt; <a href="persistence">Persistence</a> &gt; <a href="configurable-ioexception-handling">Configurable IOException Handling</a></p>
 
-<p>Starting with 5.3.1, ActiveMQ Classic provides configurable IOException handling for its file-based message stores. From version 5.5 the handler is also invoked when the JDBC persistence adapter gets a failure on <code class="language-plaintext highlighter-rouge">getConnection()</code>.</p>
+<p>Starting with 5.3.1, ActiveMQ provides configurable IOException handling for its file-based message stores. From version 5.5 the handler is also invoked when the JDBC persistence adapter gets a failure on <code class="language-plaintext highlighter-rouge">getConnection()</code>.</p>
 
 <h2 id="default-ioexception-handler">Default IOException handler</h2>
 
-<p>ActiveMQ Classic comes with a default IOException handler, which does the following. When some of the file-based message stores encounter IOException it can be one of the two things: either the disk is unavailable of there’s no more space on the disk.</p>
+<p>ActiveMQ comes with a default IOException handler, which does the following. When some of the file-based message stores encounter IOException it can be one of the two things: either the disk is unavailable of there’s no more space on the disk.</p>
 
 <p>The first case is usually encountered when disk fails or network disk is disconnected. These errors are not “recoverable” and we usually want to shutdown the broker until problems with the disk are solved.</p>
 
@@ -182,7 +182,7 @@
 
 <p>The default configuration will try to find a specified string in the exception message to determine whether it is a ‘no disk space’ error. On most platforms (at least those we have tested), you’ll find the word ‘space’ in it. Of course, you can customize this to your platform by using <code class="language-plaintext highlighter-rouge">noSpaceMessage</code> property.</p>
 
-<p>Note: as of ActiveMQ Classic 5.11 the <code class="language-plaintext highlighter-rouge">JDBCIOExceptionHandler</code> has been deprecated. It has been replaced by the <code class="language-plaintext highlighter-rouge">org.apache.activemq.util.LeaseLockerIOExceptionHandler</code> that will work with any persistence adapter that supports pluggable storage lockers whether or not a locker is in use.</p>
+<p>Note: as of ActiveMQ 5.11 the <code class="language-plaintext highlighter-rouge">JDBCIOExceptionHandler</code> has been deprecated. It has been replaced by the <code class="language-plaintext highlighter-rouge">org.apache.activemq.util.LeaseLockerIOExceptionHandler</code> that will work with any persistence adapter that supports pluggable storage lockers whether or not a locker is in use.</p>
 
 <p>Writing your own handler</p>
 

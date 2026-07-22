@@ -96,13 +96,13 @@
 
 <p>Note</p>
 
-<p>This article only applies to older versions of ActiveMQ Classic, i.e. 5.3 and 5.4.0. From 5.4.2 onwards this issue has been adressed in the bugs <a href="https://issues.apache.org/jira/browse/AMQ-2511">AMQ-2511</a> and <a href="https://issues.apache.org/jira/browse/AMQ-2088">AMQ-2088</a>.</p>
+<p>This article only applies to older versions of ActiveMQ, i.e. 5.3 and 5.4.0. From 5.4.2 onwards this issue has been adressed in the bugs <a href="https://issues.apache.org/jira/browse/AMQ-2511">AMQ-2511</a> and <a href="https://issues.apache.org/jira/browse/AMQ-2088">AMQ-2088</a>.</p>
 
 <p>You may experience problems sending large messages using networks across slow links.</p>
 
 <p>The symptoms are usually that the network connection will be dropped and continuously re-established.</p>
 
-<p>This problem arises because the ActiveMQ Classic message broker continuously checks for activity on a socket, and whilst building a large message in the TCP socket buffer, the <a href="activemq-inactivitymonitor">inactivity</a> monitor will time out - see <a href="configuring-wire-formats">Configuring Wire Formats</a> and the <a href="tcp-transport-reference">TCP Transport Reference</a>.<br />
+<p>This problem arises because the ActiveMQ message broker continuously checks for activity on a socket, and whilst building a large message in the TCP socket buffer, the <a href="activemq-inactivitymonitor">inactivity</a> monitor will time out - see <a href="configuring-wire-formats">Configuring Wire Formats</a> and the <a href="tcp-transport-reference">TCP Transport Reference</a>.<br />
 The <a href="activemq-inactivitymonitor">inactivity monitor</a> uses an activity flag that is only updated after a message is received (in case the connection is not idle).<br />
 The monitor then clears the activity flag, waits the timeout amount and peeks at the activity flag. If it’s still cleared, then we assume the connection was inactive. When the connection is NOT in use, a keep alive message is sent. But in case the connection is in use because of a larger message being sent/received, no keep alive will be sent and the activity flag will not be updated. That can lead to inactivity timeouts.<br />
 Ideally the activity flag would get cleared every time a few bytes arrive from the network… but right now it is only cleared when an entire message is assembled.</p>
@@ -133,7 +133,7 @@ Ideally the activity flag would get cleared every time a few bytes arrive from t
 
 <h3 id="see-also">See also</h3>
 
-<p><a href="activemq-inactivitymonitor">ActiveMQ Classic InactivityMonitor</a></p>
+<p><a href="activemq-inactivitymonitor">ActiveMQ InactivityMonitor</a></p>
 
 
       </div>

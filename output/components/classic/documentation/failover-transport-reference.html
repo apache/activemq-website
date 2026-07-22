@@ -92,7 +92,7 @@
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p><a href="using-activemq-classic">Using ActiveMQ Classic</a> &gt; <a href="configuring-transports">Configuring Transports</a> &gt; <a href="activemq-classic-connection-uris">ActiveMQ Classic Connection URIs</a> &gt; <a href="failover-transport-reference">Failover Transport Reference</a></p>
+        <p><a href="using-activemq-classic">Using ActiveMQ</a> &gt; <a href="configuring-transports">Configuring Transports</a> &gt; <a href="activemq-classic-connection-uris">ActiveMQ Connection URIs</a> &gt; <a href="failover-transport-reference">Failover Transport Reference</a></p>
 
 <h3 id="the-failover-transport">The Failover Transport</h3>
 
@@ -139,7 +139,7 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">maxReconnectAttempts</code></td>
       <td><code class="language-plaintext highlighter-rouge">-1 | 0</code></td>
-      <td><strong>From ActiveMQ Classic 5.6</strong>: default is <code class="language-plaintext highlighter-rouge">-1</code>, retry forever. <code class="language-plaintext highlighter-rouge">0</code> means disables re-connection, e.g: just try to connect once. <strong>Before ActiveMQ Classic 5.6</strong>: default is <code class="language-plaintext highlighter-rouge">0</code>, retry forever. <strong>All ActiveMQ Classic versions</strong>: a value <code class="language-plaintext highlighter-rouge">&gt;0</code> denotes the maximum number of reconnect attempts before an error is sent back to the client.</td>
+      <td><strong>From ActiveMQ 5.6</strong>: default is <code class="language-plaintext highlighter-rouge">-1</code>, retry forever. <code class="language-plaintext highlighter-rouge">0</code> means disables re-connection, e.g: just try to connect once. <strong>Before ActiveMQ 5.6</strong>: default is <code class="language-plaintext highlighter-rouge">0</code>, retry forever. <strong>All ActiveMQ versions</strong>: a value <code class="language-plaintext highlighter-rouge">&gt;0</code> denotes the maximum number of reconnect attempts before an error is sent back to the client.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">maxReconnectDelay</code></td>
@@ -149,7 +149,7 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">nested.*</code></td>
       <td><code class="language-plaintext highlighter-rouge">null</code></td>
-      <td><strong>From ActiveMQ Classic 5.9:</strong> common URI options that will be applied to each URI in the list<strong>.</strong></td>
+      <td><strong>From ActiveMQ 5.9:</strong> common URI options that will be applied to each URI in the list<strong>.</strong></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">randomize</code></td>
@@ -174,7 +174,7 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">timeout</code></td>
       <td><code class="language-plaintext highlighter-rouge">-1</code></td>
-      <td><strong>From ActiveMQ Classic 5.3</strong>: set the timeout on send operations (in ms) without interruption of re-connection process. </td>
+      <td><strong>From ActiveMQ 5.3</strong>: set the timeout on send operations (in ms) without interruption of re-connection process. </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">trackMessages</code></td>
@@ -184,12 +184,12 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">updateURIsSupported</code></td>
       <td><code class="language-plaintext highlighter-rouge">true</code></td>
-      <td><strong>From</strong> <strong>ActiveMQ Classic 5.4:</strong> determines whether the client should accept updates from the broker to its list of known URIs.</td>
+      <td><strong>From</strong> <strong>ActiveMQ 5.4:</strong> determines whether the client should accept updates from the broker to its list of known URIs.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">updateURIsURL</code></td>
       <td><code class="language-plaintext highlighter-rouge">null</code></td>
-      <td><strong>From ActiveMQ Classic 5.4:</strong> a URL (or path to a local file) to a text file containing a comma separated list of URIs to use for reconnect in the case of failure.</td>
+      <td><strong>From ActiveMQ 5.4:</strong> a URL (or path to a local file) to a text file containing a comma separated list of URIs to use for reconnect in the case of failure.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">useExponentialBackOff</code></td>
@@ -199,7 +199,7 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">warnAfterReconnectAttempts</code></td>
       <td><code class="language-plaintext highlighter-rouge">10</code></td>
-      <td><strong>From ActiveMQ Classic 5.10:</strong> a value <code class="language-plaintext highlighter-rouge">&gt;0</code> specifies the number of reconnect attempts before a warning is logged. A logged warning indicates that there is no current connection but re-connection is being attempted. A value of <code class="language-plaintext highlighter-rouge">&lt;=0</code> disables the logging of warnings about reconnect attempts. </td>
+      <td><strong>From ActiveMQ 5.10:</strong> a value <code class="language-plaintext highlighter-rouge">&gt;0</code> specifies the number of reconnect attempts before a warning is logged. A logged warning indicates that there is no current connection but re-connection is being attempted. A value of <code class="language-plaintext highlighter-rouge">&lt;=0</code> disables the logging of warnings about reconnect attempts. </td>
     </tr>
   </tbody>
 </table>
@@ -225,11 +225,11 @@
 
 <p>The Failover transport tracks transactions by default. In-flight transactions are replayed upon re-connection. For simple scenarios this works as expected. However, there is an assumption regarding acknowledged (or consumer) transactions in that the previously received messages will automatically be replayed upon re-connection. This, however, is not always true when there are many connections and consumers, as re-delivery order is not guaranteed as stale outstanding acknowledgements can interfere with newly delivered messages. This can lead to unacknowledged messages.</p>
 
-<p><strong>From ActiveMQ Classic 5.3.1</strong>: re-delivery order <strong><em>is</em></strong> tracked and a transaction will fail to commit if outstanding messages are not redelivered after failover. A <code class="language-plaintext highlighter-rouge">javax.jms.TransactionRolledBackException</code> is thrown if the commit fails. In doubt transactions will result in a rollback such that they can be replayed by the application. In doubt transactions occur when failover happens when a commit message is in-flight. It is not possible to know the exact point of failure. Did failure happen because the transaction commit message was not delivered or was the commit reply lost? In either case, it becomes necessary to rollback the transaction so that the application can get an indication of the failure and deal with any potential problem.</p>
+<p><strong>From ActiveMQ 5.3.1</strong>: re-delivery order <strong><em>is</em></strong> tracked and a transaction will fail to commit if outstanding messages are not redelivered after failover. A <code class="language-plaintext highlighter-rouge">javax.jms.TransactionRolledBackException</code> is thrown if the commit fails. In doubt transactions will result in a rollback such that they can be replayed by the application. In doubt transactions occur when failover happens when a commit message is in-flight. It is not possible to know the exact point of failure. Did failure happen because the transaction commit message was not delivered or was the commit reply lost? In either case, it becomes necessary to rollback the transaction so that the application can get an indication of the failure and deal with any potential problem.</p>
 
 <h5 id="broker-side-options-for-failover">Broker-side Options for Failover</h5>
 
-<p><strong>From ActiveMQ Classic 5.4</strong>: the <code class="language-plaintext highlighter-rouge">TransportConnector</code> has options available so that the broker can update clients automatically with information regarding the presence of new brokers that are available (or are no longer available) for failover.</p>
+<p><strong>From ActiveMQ 5.4</strong>: the <code class="language-plaintext highlighter-rouge">TransportConnector</code> has options available so that the broker can update clients automatically with information regarding the presence of new brokers that are available (or are no longer available) for failover.</p>
 
 <p>The options are:</p>
 
@@ -284,12 +284,12 @@
 <blockquote>
   <p>Additional Information</p>
 
-  <p>See the following blog entry about using the cluster client updates and re-balancing features titled <a href="http://bsnyderblog.blogspot.com/2010/10/new-features-in-activemq-54-automatic.html">New Features in ActiveMQ Classic 5.4: Automatic Cluster Update and Rebalance</a>.</p>
+  <p>See the following blog entry about using the cluster client updates and re-balancing features titled <a href="http://bsnyderblog.blogspot.com/2010/10/new-features-in-activemq-54-automatic.html">New Features in ActiveMQ 5.4: Automatic Cluster Update and Rebalance</a>.</p>
 </blockquote>
 
 <h5 id="priority-backup">Priority Backup</h5>
 
-<p><strong>From ActiveMQ Classic 5.6</strong>: if brokers are available in both local and remote networks, it’s possible to specify a preference for local brokers over remote brokers using the <code class="language-plaintext highlighter-rouge">priorityBackup</code> and <code class="language-plaintext highlighter-rouge">priorityURIs</code> options.</p>
+<p><strong>From ActiveMQ 5.6</strong>: if brokers are available in both local and remote networks, it’s possible to specify a preference for local brokers over remote brokers using the <code class="language-plaintext highlighter-rouge">priorityBackup</code> and <code class="language-plaintext highlighter-rouge">priorityURIs</code> options.</p>
 
 <p>Consider the following URL:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failover:(tcp://local:61616,tcp://remote:61616)?randomize=false&amp;priorityBackup=true
@@ -305,7 +305,7 @@
 
 <h5 id="configuring-nested-uri-options">Configuring Nested URI Options.</h5>
 
-<p><strong>From ActiveMQ Classic 5.9</strong>: common URI options can be configured by appending them to the query string of the failover URI where each common URI option has the prefix: <code class="language-plaintext highlighter-rouge">nested.</code> </p>
+<p><strong>From ActiveMQ 5.9</strong>: common URI options can be configured by appending them to the query string of the failover URI where each common URI option has the prefix: <code class="language-plaintext highlighter-rouge">nested.</code> </p>
 
 <p>Example - instead of doing this:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failover:(tcp://broker1:61616?wireFormat.maxInactivityDuration=1000,tcp://broker2:61616?wireFormat.maxInactivityDuration=1000,tcp://broker3:61616?wireFormat.maxInactivityDuration=1000) 

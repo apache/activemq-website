@@ -94,16 +94,16 @@
       <div class="col-12 classic">
         <p><a href="connectivity">Connectivity</a> &gt; <a href="containers">Containers</a> &gt; <a href="geronimo">Geronimo</a></p>
 
-<p>ActiveMQ Classic is the default JMS provider in <a href="http://geronimo.apache.org">Apache Geronimo</a>.</p>
+<p>ActiveMQ is the default JMS provider in <a href="http://geronimo.apache.org">Apache Geronimo</a>.</p>
 
-<p>ActiveMQ Classic can be used both as JMS Client and a JMS Broker. This short<br />
+<p>ActiveMQ can be used both as JMS Client and a JMS Broker. This short<br />
 article explains how to use it on a standalone client to access the<br />
-topics/queues setup on a remote Geronimo/ActiveMQ Classic broker.</p>
+topics/queues setup on a remote Geronimo/ActiveMQ broker.</p>
 
-<p>1) Setup the queues and topics on the ActiveMQ Classic Broker<br />
-If you’re using a standalone ActiveMQ Classic broker, then following the instructions on<br />
-ActiveMQ Classic’s website should be enough to setup everything.<br />
-However, if your ActiveMQ Classic’s instance is embedded inside the J2EE Geronimo<br />
+<p>1) Setup the queues and topics on the ActiveMQ Broker<br />
+If you’re using a standalone ActiveMQ broker, then following the instructions on<br />
+ActiveMQ’s website should be enough to setup everything.<br />
+However, if your ActiveMQ’s instance is embedded inside the J2EE Geronimo<br />
 Application Server, creating Queues and Topics is about deploying Resource<br />
 Adapters to your Geronimo server.<br />
 The following deployment descriptor can be used to deploy two topics and a<br />
@@ -116,7 +116,7 @@ ConnectionFactory: weatherTopic and weatherRequestsTopic</p>
     parentId="org/apache/geronimo/SystemJMS"&gt;
     &lt;resourceadapter&gt;
         &lt;resourceadapter-instance&gt;
-            &lt;resourceadapter-name&gt;ActiveMQ Classic RA&lt;/resourceadapter-name&gt;
+            &lt;resourceadapter-name&gt;ActiveMQ RA&lt;/resourceadapter-name&gt;
             &lt;config-property-setting name="ServerUrl"&gt;tcp://localhost:61616&lt;/config-property-setting&gt;
             &lt;config-property-setting name="UserName"&gt;geronimo&lt;/config-property-setting&gt;
             &lt;config-property-setting name="Password"&gt;geronimo&lt;/config-property-setting&gt;
@@ -201,14 +201,14 @@ ConnectionFactory and the Topics</li>
   <li>Once you have your Topics, you just use them..</li>
 </ul>
 
-<p>However, ActiveMQ Classic’s JNDI Implementation does NOT talk to the naming server. It’s<br />
+<p>However, ActiveMQ’s JNDI Implementation does NOT talk to the naming server. It’s<br />
 a stripped down version of a JNDI client that just allows to get Topics and<br />
 Queues directly from a JMS instance.<br />
 So, instead of supplying the naming server address, you have to supply the JMS<br />
 server address.<br />
 Most JNDI implementations use the java.naming.provider.url property to specify<br />
-the naming server’s address. ActiveMQ Classic uses the brokerURL one. Using the<br />
-java.naming.provider.url one instead will result in ActiveMQ Classic trying to load the<br />
+the naming server’s address. ActiveMQ uses the brokerURL one. Using the<br />
+java.naming.provider.url one instead will result in ActiveMQ trying to load the<br />
 whole Broker.</p>
 
 <p>3) So, now we have explained the process, let’s detail the Spring way of doing<br />
@@ -240,9 +240,9 @@ jms.weatherRequestsTopic=weatherRequestsTopic
             <props>
                 <prop key="java.naming.factory.initial">${jms.jndiContextFactory}</prop>
     
-				&lt;!\-\- Specific to ActiveMQ Classic --&gt;
+				&lt;!\-\- Specific to ActiveMQ --&gt;
     
-				&lt;!\-\- the address of the ActiveMQ Classic broker --&gt;
+				&lt;!\-\- the address of the ActiveMQ broker --&gt;
                 <prop key="brokerURL">${jms.jndiProviderUrl}</prop>
 				&lt;!\-\- Some Topics Registration, since we are using a fake JNDI implementation --&gt;
                 <prop key="topic.${jms.weatherTopic}">${jms.weatherTopic}</prop>

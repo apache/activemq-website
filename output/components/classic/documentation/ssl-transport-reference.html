@@ -92,11 +92,11 @@
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p><a href="using-activemq-classic">Using ActiveMQ Classic</a> &gt; <a href="configuring-transports">Configuring Transports</a> &gt; <a href="activemq-classic-connection-uris">ActiveMQ Classic Connection URIs</a> &gt; <a href="ssl-transport-reference">SSL Transport Reference</a></p>
+        <p><a href="using-activemq-classic">Using ActiveMQ</a> &gt; <a href="configuring-transports">Configuring Transports</a> &gt; <a href="activemq-classic-connection-uris">ActiveMQ Connection URIs</a> &gt; <a href="ssl-transport-reference">SSL Transport Reference</a></p>
 
 <h3 id="the-ssl-transport">The SSL Transport</h3>
 
-<p>The SSL transport allows clients to connect to a remote ActiveMQ Classic broker using SSL over a TCP socket.</p>
+<p>The SSL transport allows clients to connect to a remote ActiveMQ broker using SSL over a TCP socket.</p>
 
 <h4 id="configuration-syntax">Configuration Syntax</h4>
 
@@ -136,7 +136,7 @@ ssl://localhost:61616?transport.needClientAuth=true
 </code></pre></div></div>
 <h4 id="hostname-validation-starting-with-version-5156">Hostname Validation (Starting with version 5.15.6)</h4>
 
-<p>From version 5.15.6 ActiveMQ Classic now supports TLS Hostname validation. This has been enabled by default for the ActiveMQ Classic client and is off by default on the broker. To configure:</p>
+<p>From version 5.15.6 ActiveMQ now supports TLS Hostname validation. This has been enabled by default for the ActiveMQ client and is off by default on the broker. To configure:</p>
 
 <h4 id="server-side-configuration-of-hostname-validation">Server side configuration of hostname validation</h4>
 
@@ -145,7 +145,7 @@ ssl://localhost:61616?transport.needClientAuth=true
 </code></pre></div></div>
 <h4 id="client-side-configuration-of-hostname-validation">Client side configuration of hostname validation</h4>
 
-<p>The default for the ActiveMQ Classic client is to enable Hostname validation and this can be configured with <code class="language-plaintext highlighter-rouge">?socket.verifyHostName</code> or simply <code class="language-plaintext highlighter-rouge">?verifyHostName</code> with no prefix. This will cause the CN of the server certificate to be compared to the server hostname to verify they match, e.g.:</p>
+<p>The default for the ActiveMQ client is to enable Hostname validation and this can be configured with <code class="language-plaintext highlighter-rouge">?socket.verifyHostName</code> or simply <code class="language-plaintext highlighter-rouge">?verifyHostName</code> with no prefix. This will cause the CN of the server certificate to be compared to the server hostname to verify they match, e.g.:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssl://localhost:61616?socket.verifyHostName=false
 </code></pre></div></div>
 <p>or:</p>
@@ -167,7 +167,7 @@ ssl://localhost:61616?transport.needClientAuth=true
 <p>If your XML configuration file contains the following and you wish to use SSL</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;networkConnector</span> <span class="na">uri=</span><span class="s">"multicast://default"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
-<p>Then you will currently need to comment that out. The reason is to prevent ActiveMQ Classic atempting to connect to itself - if you do this with a self-signed certificate, you will get a constant spam of certificate_unknown stacktraces to the console, as the broker is not configured with the truststore.</p>
+<p>Then you will currently need to comment that out. The reason is to prevent ActiveMQ atempting to connect to itself - if you do this with a self-signed certificate, you will get a constant spam of certificate_unknown stacktraces to the console, as the broker is not configured with the truststore.</p>
 
       </div>
     </div>

@@ -86,17 +86,17 @@
 <div class="content">
   <div class="page-title-classic">
     <div class="container">
-      <h1>ActiveMQ Classic InactivityMonitor</h1>
+      <h1>ActiveMQ InactivityMonitor</h1>
     </div>
   </div>
   <div class="container" >
     <div class="row" style="margin-top: 30px">
       <div class="col-12 classic">
-        <p><a href="using-activemq-classic">Using ActiveMQ Classic</a> &gt; <a href="configuring-transports">Configuring Transports</a> &gt; <a href="activemq-inactivitymonitor">ActiveMQ Classic InactivityMonitor</a></p>
+        <p><a href="using-activemq-classic">Using ActiveMQ</a> &gt; <a href="configuring-transports">Configuring Transports</a> &gt; <a href="activemq-inactivitymonitor">ActiveMQ InactivityMonitor</a></p>
 
-<h1 id="activemq-classic-inactivitymonitor">ActiveMQ Classic InactivityMonitor</h1>
+<h1 id="activemq-inactivitymonitor">ActiveMQ InactivityMonitor</h1>
 
-<p>The ActiveMQ Classic InactivityMonitor is an active thread that checks the connection is still active and if it suspects the connection is not functioning correctly, it closes the connection.</p>
+<p>The ActiveMQ InactivityMonitor is an active thread that checks the connection is still active and if it suspects the connection is not functioning correctly, it closes the connection.</p>
 
 <p>Connections are monitored by:</p>
 
@@ -105,7 +105,7 @@
   <li>Writing a <code class="language-plaintext highlighter-rouge">KeepAliveInfo</code> message to the connection if no <strong>normal</strong> activemq traffic is sent across the connection during the specified time period.</li>
 </ul>
 
-<p>Each connection has two InactivityMonitors associated, one on each end of the connection. The InactivityMonitor expects to receive data on the connection during a specified time period. If <strong>normal</strong> ActiveMQ Classic traffic has not been sent across the connection during that period, it expects to receive a <code class="language-plaintext highlighter-rouge">KeepAliveInfo</code> message sent by the InactivityMonitor on the other end of the connection.</p>
+<p>Each connection has two InactivityMonitors associated, one on each end of the connection. The InactivityMonitor expects to receive data on the connection during a specified time period. If <strong>normal</strong> ActiveMQ traffic has not been sent across the connection during that period, it expects to receive a <code class="language-plaintext highlighter-rouge">KeepAliveInfo</code> message sent by the InactivityMonitor on the other end of the connection.</p>
 
 <p>Using the default values; if no data has been written or read from the connection for 30 seconds, the InactivityMonitor kicks in. The InactivityMonitor throws an <code class="language-plaintext highlighter-rouge">InactivityIOException</code> and shuts down the transport associated with the connection. This results in the following <code class="language-plaintext highlighter-rouge">DEBUG</code> logging:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2012-06-26 17:13:55,712 | DEBUG | 30000 ms elapsed since last read check. | org.apache.activemq.transport.AbstractInactivityMonitor | InactivityMonitor ReadCheck

@@ -130,7 +130,7 @@
 
 <h2 id="using-the-openwire-protocol">Using the OpenWire Protocol</h2>
 
-<p>Clients can connect to Apollo using the <a href="http://activemq.apache.orgConnectivity/Protocols/openwire">OpenWire</a> protocol. OpenWire is a binary, on-the-wire protocol used natively by <a href="http://activemq.apache.org/">ActiveMQ Classic</a>. It was designed to be a fast, full-featured, and JMS-compliant protocol for message brokers. Currently there are native client libraries for Java, C, C#, and C++. Further OpenWire support can be built by implementing language-specific code generators, however, for most cross-langauge needs, the <a href="http://stomp.github.com">STOMP</a> protocol is best.</p>
+<p>Clients can connect to Apollo using the <a href="http://activemq.apache.orgConnectivity/Protocols/openwire">OpenWire</a> protocol. OpenWire is a binary, on-the-wire protocol used natively by <a href="http://activemq.apache.org/">ActiveMQ</a>. It was designed to be a fast, full-featured, and JMS-compliant protocol for message brokers. Currently there are native client libraries for Java, C, C#, and C++. Further OpenWire support can be built by implementing language-specific code generators, however, for most cross-langauge needs, the <a href="http://stomp.github.com">STOMP</a> protocol is best.</p>
 
 <p>OpenWire was designed to be extended but yet backward compatible with older versions. When a client connects to the broker, the protocol version that’s used is negotiated based on what each can support.</p>
 
@@ -185,7 +185,7 @@
 
 <h3 id="client-libraries">Client Libraries</h3>
 
-<p>To connect to Apollo using the OpenWire protocol, we recommend you use the latest <a href="http://activemq.apache.org/components/classic/download">ActiveMQ Classic</a> 5.x client libraries.</p>
+<p>To connect to Apollo using the OpenWire protocol, we recommend you use the latest <a href="http://activemq.apache.org/components/classic/download">ActiveMQ</a> 5.x client libraries.</p>
 
 <ul>
   <li><a href="http://activemq.apache.orgConnectivity/Cross Language ClientsConnectivity/Cross Language Clients/Connectivity/Cross Language Clients/c-integration">C</a></li>
@@ -193,7 +193,7 @@
   <li><a href="http://activemq.apache.org/nms/">C# and .NET</a></li>
 </ul>
 
-<p>To configure specific behaviors for your connection, see the <a href="http://activemq.apache.org/components/classic/documentation/connection-configuration-uri">Connection reference</a> for ActiveMQ Classic 5.x</p>
+<p>To configure specific behaviors for your connection, see the <a href="http://activemq.apache.org/components/classic/documentation/connection-configuration-uri">Connection reference</a> for ActiveMQ 5.x</p>
 
 <h3 id="broker-features-available-using-the-openwire-protocol">Broker features available using the OpenWire protocol</h3>
 
@@ -329,7 +329,7 @@ while (enumeration.hasMoreElements()) {
 
 <p>This section explains a little more about what’s happening on the wire. The STOMP protocol, as it was designed, is easy to understand and monitor since it’s a text-based protocol. OpenWire, however, is binary, and understanding the interactions that happen isn’t as easy. Some clues might be helpful.</p>
 
-<p>All OpenWire commands are implemented as “command” objects following the Gang of Four <a href="http://en.wikipedia.org/wiki/Command_pattern">Command Pattern</a>. The structure of the objects are described <a href="http://activemq.apache.org/components/classic/documentation/openwire-version-2-specification">at the ActiveMQ Classic website</a>, but what about the interactions?</p>
+<p>All OpenWire commands are implemented as “command” objects following the Gang of Four <a href="http://en.wikipedia.org/wiki/Command_pattern">Command Pattern</a>. The structure of the objects are described <a href="http://activemq.apache.org/components/classic/documentation/openwire-version-2-specification">at the ActiveMQ website</a>, but what about the interactions?</p>
 
 <p>Establishing a connection to the broker: A connection is established between the client and the broker with the client creating a new ActiveMQConnection (most likely using a connection factory of some sort). When a new “connection” is created, the underlying transport mechanisms send a WireFormatInfo command to the broker. This command describes what version and configurations of the OpenWire protocol the client wishes to use. For example, some of the configuration options are the ones listed above that can also be configured on the broker.</p>
 
