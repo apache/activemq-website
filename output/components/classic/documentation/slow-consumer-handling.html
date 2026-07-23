@@ -138,6 +138,15 @@
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;oldestMessageEvictionStrategy/&gt;
 </code></pre></div></div>
 
+<p>By default, ActiveMQ will frist remove any expired messages from the slow-consumer pending buffer before evicting non-expired messages.</p>
+
+<p>If your messages do not use TTL or you do not want this behavior you can disable it with <code class="language-plaintext highlighter-rouge">expiryCheckEnabled="false"</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;oldestMessageEvictionStrategy expiryCheckEnabled="false"/&gt;
+</code></pre></div></div>
+
+<p>Messages will still be subject to expiry checks on the client. For the full client/broker expiry flow and the clock synchronization caveat, see <a href="message-expiry">Message Expiry</a>. The default is <code class="language-plaintext highlighter-rouge">expiryCheckEnabled="true"</code>.</p>
+
 <p>However, you can write your own to use some application specific way of choosing messages for eviction. For example, if you are sending market data price updates you may wish to find an older price value, which might not be the oldest message.</p>
 
 <p>Example:</p>
@@ -233,7 +242,6 @@
     </tr>
   </tbody>
 </table>
-
 
       </div>
     </div>
