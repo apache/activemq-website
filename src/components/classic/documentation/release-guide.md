@@ -68,8 +68,8 @@ git push origin activemq-a.b.x
 1. As ActiveMQ protects branches, you have to create a release branch based on the branch you want to release:
 
 ```
-git branch activemq-a.b.c-rcN activemq-a.b.x
-git push origin activemq-a.b.c-rcN
+git branch release/a.b.c activemq-a.b.x
+git push origin release/a.b.c
 ```
 
 2. [Optional] You can do a verification build on the `activemq-a.b.c` branch:
@@ -83,7 +83,7 @@ Especially, it should not complain about missing license header (rat) and the bu
 3. You can now go on the release branch and prepare the release:
 
 ```
-git checkout activemq-a.b.c-rcN
+git checkout release/a.b.c
 mvn release:prepare -Papache-release,deploy
 ```
 
