@@ -19,7 +19,7 @@ OASIS Standard
 
 Broker                    | Suppoted
 :---------------------- | :-------------
-ActiveMQ Classic  | [x]
+ActiveMQ  | [x]
 ActiveMQ Artemis  | [x]
 
 

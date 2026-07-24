@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I delete a destination](how-do-i-delete-a-destination)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I delete a destination](how-do-i-delete-a-destination)
 
 
 How do I delete a destination
@@ -19,7 +19,7 @@ via Java code or [JMX](jmx) you can grab the [BrokerViewMBean](http://activemq.a
 ### See also
 
 *   [How do I create new destinations](how-do-i-create-new-destinations)
-*   [How can I monitor ActiveMQ Classic](how-can-i-monitor-activemq-classic)
+*   [How can I monitor ActiveMQ](how-can-i-monitor-activemq-classic)
 *   [JMX](jmx)
 *   [Web Console](web-console)
 

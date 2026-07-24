@@ -5,13 +5,13 @@ title-class: page-title-classic
 type: classic
 ---
 
-ActiveMQ Classic supports the [AMQP 1.0](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=amqp) protocol which is an OASIS standard.
+ActiveMQ supports the [AMQP 1.0](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=amqp) protocol which is an OASIS standard.
 
 > **Availability**
 > 
-> Available from ActiveMQ Classic version [5.8](activemq-580-release) onward.
+> Available from ActiveMQ version [5.8](activemq-580-release) onward.
 
-### Enabling the ActiveMQ Classic Broker for AMQP
+### Enabling the ActiveMQ Broker for AMQP
 
 To enable AMQP protocol support on the broker add the following transport connector configuration referencing the `amqp` scheme in its URI:
 ```
@@ -19,11 +19,11 @@ To enable AMQP protocol support on the broker add the following transport connec
    <transportConnector name="amqp" uri="amqp://0.0.0.0:5672"/>
 </transportConnectors>
 ```
-It is enabled in the default ActiveMQ Classic server configuration. For more help see [Run Broker](run-broker).
+It is enabled in the default ActiveMQ server configuration. For more help see [Run Broker](run-broker).
 
 ### Security
 
-The AMQP implementation fully supports an [ActiveMQ Classic security](security) mechanism. This allows the broker to accept plain SASL authentication. Authorization policies are applied to a destination when it's accessed (read/write).
+The AMQP implementation fully supports an [ActiveMQ security](security) mechanism. This allows the broker to accept plain SASL authentication. Authorization policies are applied to a destination when it's accessed (read/write).
 
 > **SSL**
 > 
@@ -41,13 +41,13 @@ This transport uses the [NIO transport](configuring-transports#TheNIOTransport) 
 
 ### Enabling AMQP over SSL
 
-It's easy to configure ActiveMQ Classic to use AMQP over a SSL connection. To use SSL use the transport scheme `amqp+ssl` instead of `amqp`.
+It's easy to configure ActiveMQ to use AMQP over a SSL connection. To use SSL use the transport scheme `amqp+ssl` instead of `amqp`.
 
 Example:
 ```
 <transportConnector name="amqp+ssl" uri="amqp+ssl://localhost:5671"/>
 ```
-For more details on using SSL with ActiveMQ Classic, see the following article ([How do I use SSL](how-do-i-use-ssl)).
+For more details on using SSL with ActiveMQ, see the following article ([How do I use SSL](how-do-i-use-ssl)).
 
 ### Working with Destinations with AMQP
 

@@ -11,9 +11,9 @@ type: classic
 Introduction
 ============
 
-ActiveMQ Classic supports [Ajax](http://en.wikipedia.org/wiki/Ajax_%28programming%29) which is an Asychronous Javascript And Xml mechanism for real time web applications. This means you can create highly real time web applications taking full advantage of the publish/subscribe nature of ActiveMQ Classic
+ActiveMQ supports [Ajax](http://en.wikipedia.org/wiki/Ajax_%28programming%29) which is an Asychronous Javascript And Xml mechanism for real time web applications. This means you can create highly real time web applications taking full advantage of the publish/subscribe nature of ActiveMQ
 
-Ajax allows a regular DHTML client (with JavaScript and a modern version 5 or later web browser) to send and receive messages over the web. Ajax support in ActiveMQ Classic builds on the same basis as the [REST](rest) connector for ActiveMQ Classic which allows any web capable device to send or receive messages over JMS.
+Ajax allows a regular DHTML client (with JavaScript and a modern version 5 or later web browser) to send and receive messages over the web. Ajax support in ActiveMQ builds on the same basis as the [REST](rest) connector for ActiveMQ which allows any web capable device to send or receive messages over JMS.
 
 To see Ajax in action, try [running the examples](web-samples)
 
@@ -38,7 +38,7 @@ The servlet both serves the required js files and handles the JMS requests and r
 Javascript API
 ==============
 
-The ajax featues of amq are provided on the client side by the [amq.js](https://github.com/apache/activemq/blob/main/activemq-web-demo/src/main/webapp/js/amq.js) script. Beginning with ActiveMQ Classic 5.4, this script utilizes one of three different adapters to support ajax communication with the server. Current [jQuery](http://jquery.org), [Prototype](http://prototypejs.org), and [Dojo](http://www.dojotoolkit.org) are supported, and recent versions of all three libraries are shipped with ActiveMQ Classic.
+The ajax featues of amq are provided on the client side by the [amq.js](https://github.com/apache/activemq/blob/main/activemq-web-demo/src/main/webapp/js/amq.js) script. Beginning with ActiveMQ 5.4, this script utilizes one of three different adapters to support ajax communication with the server. Current [jQuery](http://jquery.org), [Prototype](http://prototypejs.org), and [Dojo](http://www.dojotoolkit.org) are supported, and recent versions of all three libraries are shipped with ActiveMQ.
 ```
 <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="js/amq\_jquery\_adapter.js"></script>
@@ -81,11 +81,11 @@ amq.addListener(myId,myDestination,myHandler.rcvMessage);
 where `myId` is a string identifier that can be used for a later call to `amq.removeHandler(myId)` and `myDestination` is a URL string address of the destination (e.g. `topic://MY.NAME` or `channel://MY.NAME`). When a message is received, a call back to the `myHandler.rcvMessage` function passes the message to your handling code.  
 The "message" is actually a text of the Text message or a String representation (`toString()`) in case of Object messages.
 
-Be aware that, by default, messages published via [Stomp](stomp) which include a `content-length` header will be converted by ActiveMQ Classic to binary messages, and will not be visible to your web clients. Beginning with ActiveMQ Classic 5.4.0, you can resolve this problem by always setting the [`amq-msg-type` header](https://issues.apache.org/jira/browse/AMQ-2833) to `text` in messages which will may be consumed by web clients.
+Be aware that, by default, messages published via [Stomp](stomp) which include a `content-length` header will be converted by ActiveMQ to binary messages, and will not be visible to your web clients. Beginning with ActiveMQ 5.4.0, you can resolve this problem by always setting the [`amq-msg-type` header](https://issues.apache.org/jira/browse/AMQ-2833) to `text` in messages which will may be consumed by web clients.
 
 ### Selector support
 
-By default, an ajax client will receive all messages on a topic or queue it is subscribed to. In [ActiveMQ Classic 5.4.1](http://activemq.apache.orgOverview/Download/activemq-541-release) amq.js supports [JMS selectors](http://activemq.apache.orgFeatures/Consumer Features/selectors) since it is frequently useful to receive only a subset of these messages. Selectors are supplied to an `amq.addListener` call by way of an optional 4th parameter.
+By default, an ajax client will receive all messages on a topic or queue it is subscribed to. In [ActiveMQ 5.4.1](http://activemq.apache.orgOverview/Download/activemq-541-release) amq.js supports [JMS selectors](http://activemq.apache.orgFeatures/Consumer Features/selectors) since it is frequently useful to receive only a subset of these messages. Selectors are supplied to an `amq.addListener` call by way of an optional 4th parameter.
 ```
 amq.addListener( myId, myDestination, myHandler.rcvMessage, { selector:"identifier='TEST'" } );
 ```
@@ -94,9 +94,9 @@ When used in this way, the Javascript client will receive only messages containi
 Using AMQ Ajax in Multiple Browser Windows
 ------------------------------------------
 
-All windows or tabs in a single browser share the same `JSESSIONID` on the ActiveMQ Classic server. Unless the server can distinguish listeners from multiple windows, messages which were intended for 1 window will be delivered to another one instead. Effectively, this means that amq.js could be active in only a single browser window at any given time. Beginning in [ActiveMQ Classic 5.4.2](http://activemq.apache.orgOverview/DownloadOverview/Download/Overview/Download/activemq-542-release), this is resolved by allowing each call to `amq.init` to specify a unique `clientId`. When this is done, multiple windows in the same browser can happily co-exist. Each can have a separate set of message subscriptions on the broker with no interactions between them.
+All windows or tabs in a single browser share the same `JSESSIONID` on the ActiveMQ server. Unless the server can distinguish listeners from multiple windows, messages which were intended for 1 window will be delivered to another one instead. Effectively, this means that amq.js could be active in only a single browser window at any given time. Beginning in [ActiveMQ 5.4.2](http://activemq.apache.orgOverview/DownloadOverview/Download/Overview/Download/activemq-542-release), this is resolved by allowing each call to `amq.init` to specify a unique `clientId`. When this is done, multiple windows in the same browser can happily co-exist. Each can have a separate set of message subscriptions on the broker with no interactions between them.
 
-In this example, we use the current time (at the time the web page is loaded) as a unique identifier. This is effective as long as two browser windows are not opened within the same millisecond, and is the approach used by the example [chat.md](https://github.com/apache/activemq/tree/main/activemq-web-demo/src/main/webappchat) included with ActiveMQ Classic. Other schemes to ensure the uniqueness of `clientId` can easily be devised. Note that this `clientId` need only be unique within a single session. (Browser windows opened in the same millisecond in separate browsers will not interact, since they are in different sessions.)
+In this example, we use the current time (at the time the web page is loaded) as a unique identifier. This is effective as long as two browser windows are not opened within the same millisecond, and is the approach used by the example [chat.md](https://github.com/apache/activemq/tree/main/activemq-web-demo/src/main/webappchat) included with ActiveMQ. Other schemes to ensure the uniqueness of `clientId` can easily be devised. Note that this `clientId` need only be unique within a single session. (Browser windows opened in the same millisecond in separate browsers will not interact, since they are in different sessions.)
 ```
 org.activemq.Amq.init({
   uri: 'amq', 
@@ -157,7 +157,7 @@ The waiting poll described above is implemented using the [Jetty 6 Continuations
 Comparison to Pushlets
 ======================
 
-Firstly we could easily add support for pushlets to ActiveMQ Classic. However we prefer the Ajax approach for various reasons
+Firstly we could easily add support for pushlets to ActiveMQ. However we prefer the Ajax approach for various reasons
 
 *   using Ajax means that we use a distinct HTTP request for each send/receive which is much more friendly to web infrastructure (firewalls, proxies, caches and so forth) rather than having an infinitely-long GET.
 *   we can still take advantage of HTTP 1.1 keep-alive sockets and pipeline processing to gain the efficiency of a single socket used for communication between the client and server side; though in a way that works with any HTTP-capable infrastructure

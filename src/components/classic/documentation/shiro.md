@@ -8,9 +8,9 @@ type: classic
 [Features](features) > [Security](security) > [Shiro](shiro)
 
 
-ActiveMQ Classic 5.10 and later provides a fully customizable security experience using [Apache Shiro](http://shiro.apache.org).
+ActiveMQ 5.10 and later provides a fully customizable security experience using [Apache Shiro](http://shiro.apache.org).
 
-The ActiveMQ Classic Shiro plugin can secure the ActiveMQ Classic broker, from authenticating transport connections to authorizing behavior with topics and queues and everything in between.
+The ActiveMQ Shiro plugin can secure the ActiveMQ broker, from authenticating transport connections to authorizing behavior with topics and queues and everything in between.
 
 Quickstart
 ----------
@@ -45,7 +45,7 @@ The fastest/simplest way to enable the ShiroPlugin is to define it as a Spring b
                 # below. By transitive association, any user assigned a role is granted the
                 # role's permissions.
                 
-                # ActiveMQ Classic System User
+                # ActiveMQ System User
                 # needed for in-VM/local connections when authentication is enabled:
                 system = manager, system
                 
@@ -84,7 +84,7 @@ The fastest/simplest way to enable the ShiroPlugin is to define it as a Spring b
     </broker>
 </beans>
 ```
-This config assumes you have a simple/small set of static users that access your ActiveMQ Classic broker. We'll cover enabling more advanced user repositories later.
+This config assumes you have a simple/small set of static users that access your ActiveMQ broker. We'll cover enabling more advanced user repositories later.
 
 #### Encrypted Passwords
 
@@ -137,7 +137,7 @@ system = $shiro1$SHA-256$500000$eUyGwMGr9GYzB/gg/MoNgw==$WGc0yWFWv8+hLqjzVLgW7Ha
 Configuration
 -------------
 
-The ActiveMQ Classic Shiro plugin can be configured in a number of ways. For example, with Java:
+The ActiveMQ Shiro plugin can be configured in a number of ways. For example, with Java:
 ```
 BrokerService brokerService = new BrokerService();
 
@@ -147,7 +147,7 @@ ShiroPlugin shiroPlugin = new ShiroPlugin();
 broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 //continue configuring the brokerService as necessary ...
 ```
-Or, if using traditional ActiveMQ Classic xml, as a Spring bean in the `broker` `plugins` section. For example:
+Or, if using traditional ActiveMQ xml, as a Spring bean in the `broker` `plugins` section. For example:
 ```
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:amq="http://activemq.apache.org/schema/core"
@@ -278,7 +278,7 @@ If you don't want to construct a `SecurityManager` or `Environment` in code or x
     </broker>
 </beans>
 ```
-This allows you to keep your Shiro config separate from your ActiveMQ Classic broker configuration if you prefer.
+This allows you to keep your Shiro config separate from your ActiveMQ broker configuration if you prefer.
 
 #### shiro.ini Embedded
 
@@ -337,9 +337,9 @@ The ShiroPlugin installs and executes the `SubjectFilter` before all other Shiro
 The `SubjectFilter` is mostly a 'behind the scenes' component of the SubjectFilter, but it does offer some customization for advanced use cases:
 
 *   the ability to customize exactly how broker clients' `Subject` instances are created via a `ConnectionSubjectFactory` and
-*   the ability to customize how the ActiveMQ Classic ConnectionContext's [SecurityContext](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/security/SecurityContext.html) is constructed.
+*   the ability to customize how the ActiveMQ ConnectionContext's [SecurityContext](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/security/SecurityContext.html) is constructed.
 
-Unless you're deeply familiar with ActiveMQ Classic's security model, you can safely skip to **Authentication** below.
+Unless you're deeply familiar with ActiveMQ's security model, you can safely skip to **Authentication** below.
 
 ### ConnectionSubjectFactory
 
@@ -358,7 +358,7 @@ However, if there is some other data associated with the connection that can be 
 
 ### SecurityContextFactory
 
-The ActiveMQ Classic `ConnectionContext` associated with broker client connections utilizes a `SecurityContext` object. When the `SubjectFilter` executes, it needs to create a Shiro-specific `SecurityContext` and associate it with the `ConnectionContext` so the Subject may be accessed downstream for all subsequent security operations.
+The ActiveMQ `ConnectionContext` associated with broker client connections utilizes a `SecurityContext` object. When the `SubjectFilter` executes, it needs to create a Shiro-specific `SecurityContext` and associate it with the `ConnectionContext` so the Subject may be accessed downstream for all subsequent security operations.
 
 The `SubjectFilter` delegates `SecurityContext` creation to a `SecurityContextFactory` instance. The `DefaultSecurityContextFactory` implementation returns `SubjectSecurityContext` instances based on the connection's associated `Subject`. It should be an extremely rare thing to change, but if you must configure a custom `SecurityContextFactory`, you can do as follows:
 ```

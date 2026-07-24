@@ -11,15 +11,15 @@ type: classic
 Message Cursors
 ---------------
 
-A common problem in previous versions of ActiveMQ Classic was [running out of RAM buffer](my-producer-blocks) when using non-persistent messaging.
+A common problem in previous versions of ActiveMQ was [running out of RAM buffer](my-producer-blocks) when using non-persistent messaging.
 
-Beginning with ActiveMQ Classic 5.0.0, there is a new memory model that allows messages to be paged in from storage when space is available (using Store cursors for persistent messages).
+Beginning with ActiveMQ 5.0.0, there is a new memory model that allows messages to be paged in from storage when space is available (using Store cursors for persistent messages).
 
 Releases prior to 5.0 kept references in memory for all the messages that could be dispatched to an active Durable Topic Consumer or a Queue. While a reference itself is not large, it does impose a limit on the maximum number of messages that can be pending delivery.
 
 A typical approach for messaging systems dispatching persistent messages is to pull them in batches from long term storage when a client is ready to consume them, using a cursor to maintain the next to dispatch position. This is a robust and very scalable approach, but not the most performant for cases when the consumer(s) can keep up with the producer(s) of messages.
 
-ActiveMQ Classic 5.0 takes a hybrid approach, allowing messages to pass from producer to consumer directly (after the messages have been persisted), but switches back to using cursors if the consumer(s) fall behind.
+ActiveMQ 5.0 takes a hybrid approach, allowing messages to pass from producer to consumer directly (after the messages have been persisted), but switches back to using cursors if the consumer(s) fall behind.
 
 When Message Consumers are both active and fast - keeping up with the Message Producer
 
@@ -31,11 +31,11 @@ If a Consumer becomes active after messages are pending from the store for it, o
 
 ### Types of Cursor
 
-The default message cursor type in ActiveMQ Classic 5.0 is Store based.  It behaves as above. There are two additional types of cursor that could be used: **VM Cursor** and **File based Cursor**, described below.
+The default message cursor type in ActiveMQ 5.0 is Store based.  It behaves as above. There are two additional types of cursor that could be used: **VM Cursor** and **File based Cursor**, described below.
 
 #### VM Cursor
 
-The VM Cursor is how ActiveMQ Classic 4.x works: references to a message are held in memory, and passed to the dispatch queue when needed. This can be very fast, but also has the downside of not being able to handle very slow consumers or consumers that have been inactive for a long time: ![](/images/VMCursor.png)
+The VM Cursor is how ActiveMQ 4.x works: references to a message are held in memory, and passed to the dispatch queue when needed. This can be very fast, but also has the downside of not being able to handle very slow consumers or consumers that have been inactive for a long time: ![](/images/VMCursor.png)
 
 #### File based Cursor
 

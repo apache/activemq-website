@@ -8,7 +8,7 @@ type: classic
 [Features](features) > [Visualisation](visualisation)
 
 
-Inspired greatly by [Gregor and Erik's great talk at TSSJS 2006](http://www.enterpriseintegrationpatterns.com/talks.html) we've started to add some visualisation plugins into Apache ActiveMQ Classic.
+Inspired greatly by [Gregor and Erik's great talk at TSSJS 2006](http://www.enterpriseintegrationpatterns.com/talks.html) we've started to add some visualisation plugins into Apache ActiveMQ.
 
 ### Connection visualisation
 
@@ -37,6 +37,6 @@ There are so many different things we could visualise; our only limitation is ou
 External Open Source Tools
 ==========================
 
-*   [hawtio](http://hawt.io/) is an open source HTML5 web application for working with Apache ActiveMQ Classic and Apache Camel. It lets you create topics/queues, browse queues or send messages to destinations as well as visualising Camel routes and working with Camel endpoints along with viewing logs and metric charting etc.
-*   [Fuse IDE](https://github.com/fusesource/fuseide) is an open source set of eclipse plugins for working with Apache ActiveMQ Classic and Apache Camel. Its got tooling for runtime browsing of queues, creating topics/queues. You can drag and drop messages to/from ActiveMQ Classic destinations and Camel endpoints
+*   [hawtio](http://hawt.io/) is an open source HTML5 web application for working with Apache ActiveMQ and Apache Camel. It lets you create topics/queues, browse queues or send messages to destinations as well as visualising Camel routes and working with Camel endpoints along with viewing logs and metric charting etc.
+*   [Fuse IDE](https://github.com/fusesource/fuseide) is an open source set of eclipse plugins for working with Apache ActiveMQ and Apache Camel. Its got tooling for runtime browsing of queues, creating topics/queues. You can drag and drop messages to/from ActiveMQ destinations and Camel endpoints
 

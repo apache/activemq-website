@@ -7,15 +7,15 @@ type: classic
 
 [Connectivity](connectivity) > [Protocols](protocols) > [Stomp](stomp)
 
-ActiveMQ Classic supports the [Stomp](http://stomp.github.com/) protocol and the Stomp - JMS mapping. This makes it easy to write a client in pure [Ruby](#), [Perl](#), [Python](#) or [PHP](#) for working with ActiveMQ Classic.
+ActiveMQ supports the [Stomp](http://stomp.github.com/) protocol and the Stomp - JMS mapping. This makes it easy to write a client in pure [Ruby](#), [Perl](#), [Python](#) or [PHP](#) for working with ActiveMQ.
 
 Please see the [Stomp site](http://stomp.github.io/) for more details
 
 Spec Compliance
 
-ActiveMQ Classic v5.6 implements the Stomp v1.1 spec except for allowing spaces at the beginning or end of message header keys, they are preserved in the header values however. In future releases this will not be the case, clients should be updated and user code checked to ensure that spaces in the headers are there intentionally and not as a accident or a client "feature".
+ActiveMQ v5.6 implements the Stomp v1.1 spec except for allowing spaces at the beginning or end of message header keys, they are preserved in the header values however. In future releases this will not be the case, clients should be updated and user code checked to ensure that spaces in the headers are there intentionally and not as a accident or a client "feature".
 
-### Enabling the ActiveMQ Classic Broker for Stomp
+### Enabling the ActiveMQ Broker for Stomp
 
 To enable STOMP protocol support in the broker add a transport connector definition whose URI scheme is `stomp`.
 
@@ -38,7 +38,7 @@ Stomp uses a text based wire format that can be configured with the following op
 Parameter Name|Default Value|Description
 ---|---|
 `maxDataLength`|`104857600`|Maximum size of the message body (content) that can be sent.
-`maxFrameSize`|`MAX_LONG`|**From ActiveMQ Classic 5.12.0**: maximum frame size that can be sent. A Stomp frame includes a command, optional headers, and an optional body. Can help help prevent OOM DOS attacks
+`maxFrameSize`|`MAX_LONG`|**From ActiveMQ 5.12.0**: maximum frame size that can be sent. A Stomp frame includes a command, optional headers, and an optional body. Can help help prevent OOM DOS attacks
 
 Example:
 ```
@@ -51,7 +51,7 @@ Example:
 
 ### Security
 
-**From ActiveMQ Classic 5.1**: Stomp fully supports [ActiveMQ Classic's security](security) mechanism. This means that the `CONNECT` command will return an `ERROR` STOMP frame on unsuccessful authentication. Also, the authorization policies will be applied when you try to access (read/write) certain destinations. If you use synchronous operations (by using [receipts](http://stomp.github.com/stomp-specification-1.1.html#RECEIPT)), you can expect an `ERROR` frame in case of unauthorized access attempt. In other case, operations will be discarded but the client will not be informed of errors. This applies to all errors that can occur broker-side.
+**From ActiveMQ 5.1**: Stomp fully supports [ActiveMQ's security](security) mechanism. This means that the `CONNECT` command will return an `ERROR` STOMP frame on unsuccessful authentication. Also, the authorization policies will be applied when you try to access (read/write) certain destinations. If you use synchronous operations (by using [receipts](http://stomp.github.com/stomp-specification-1.1.html#RECEIPT)), you can expect an `ERROR` frame in case of unauthorized access attempt. In other case, operations will be discarded but the client will not be informed of errors. This applies to all errors that can occur broker-side.
 
 > **SSL**
 > 
@@ -59,7 +59,7 @@ Example:
 
 ### Enabling Stomp over NIO
 
-**From ActiveMQ Classic 5.3**: for better scalability and performance the Stomp protocol can be configured to be run over the NIO transport. The [NIO transport](configuring-transports.md) will use far fewer threads than the corresponding TCP connector. This can help when support for a [large number of queues](how-do-i-configure-10s-of-1000s-of-queues-in-a-single-broker) is required. To use NIO change the URI scheme of the transport connector to `stomp+nio`.
+**From ActiveMQ 5.3**: for better scalability and performance the Stomp protocol can be configured to be run over the NIO transport. The [NIO transport](configuring-transports.md) will use far fewer threads than the corresponding TCP connector. This can help when support for a [large number of queues](how-do-i-configure-10s-of-1000s-of-queues-in-a-single-broker) is required. To use NIO change the URI scheme of the transport connector to `stomp+nio`.
 
 Example:
 ```
@@ -68,21 +68,21 @@ Example:
 
 ### Enabling Stomp over SSL
 
-To configure ActiveMQ Classic to use Stomp over an SSL connection change the URI scheme to `stomp+ssl`.
+To configure ActiveMQ to use Stomp over an SSL connection change the URI scheme to `stomp+ssl`.
 
 Example:
 ```
 <transportConnector name="stomp+ssl" uri="stomp+ssl://localhost:61612"/>
 ```
-For more details on using SSL with ActiveMQ Classic see the following article ([How do I use SSL](http://activemq.apache.org/how-do-i-use-ssl)). An example of using Stomp over SSL on the client side can be found in the [PHP Stomp client example](http://stomp.fusesource.org/documentation/php/book.html#SSL).
+For more details on using SSL with ActiveMQ see the following article ([How do I use SSL](http://activemq.apache.org/how-do-i-use-ssl)). An example of using Stomp over SSL on the client side can be found in the [PHP Stomp client example](http://stomp.fusesource.org/documentation/php/book.html#SSL).
 
 ### Heart-Beat Grace Period
 
-The STOMP protocol (version 1.1 or greater) [defines the concept of heart beats](http://stomp.github.io/stomp-specification-1.2.html#Heart-beating) as a method by which a client and broker can determine the health of the underlying TCP connection between them. ActiveMQ Classic supports STOMP heart beating provided the client is using version 1.1 (or greater) of the protocol.
+The STOMP protocol (version 1.1 or greater) [defines the concept of heart beats](http://stomp.github.io/stomp-specification-1.2.html#Heart-beating) as a method by which a client and broker can determine the health of the underlying TCP connection between them. ActiveMQ supports STOMP heart beating provided the client is using version 1.1 (or greater) of the protocol.
 
-**Before ActiveMQ Classic 5.9.0**: enforcement of the 'read' heart-beat timeout (that is, a heart-beat sent from the client to the broker) was strict. In other words, the broker was intolerant of late arriving read heart-beats from the client. This resulted in the broker concluding that the client was no longer present causing it to close its side of the client's connection when the client failed to honor it's configured heart-beat settings.
+**Before ActiveMQ 5.9.0**: enforcement of the 'read' heart-beat timeout (that is, a heart-beat sent from the client to the broker) was strict. In other words, the broker was intolerant of late arriving read heart-beats from the client. This resulted in the broker concluding that the client was no longer present causing it to close its side of the client's connection when the client failed to honor it's configured heart-beat settings.
 
-**From ActiveMQ Classic 5.9.0**: the timeout enforcement for read heart-beats is now configurable via a new transport option `transport.hbGracePeriodMultiplier`:
+**From ActiveMQ 5.9.0**: the timeout enforcement for read heart-beats is now configurable via a new transport option `transport.hbGracePeriodMultiplier`:
 ```
 <transportConnectors>
    <transportConnector name="stomp" uri="stomp://localhost:61613?transport.hbGracePeriodMultiplier=1.5"/>
@@ -98,12 +98,12 @@ STOMP clients that wish to be tolerant of late arriving heart-beats from the bro
 
 *   Please check the [STOMP specification](http://stomp.github.io/stomp-specification-1.2.html#Heart-beating) for the details on heart-beating
     
-*   The JIRA that implemented this: [ActiveMQ Classic 5.x does not support the notion of a grace-period for heart beats as supported by the STOMP protocol](https://issues.apache.org/jira/browse/AMQ-4674)
+*   The JIRA that implemented this: [ActiveMQ 5.x does not support the notion of a grace-period for heart beats as supported by the STOMP protocol](https://issues.apache.org/jira/browse/AMQ-4674)
     
 
 ### Working with Destinations with Stomp
 
-Note that the prefix in stomp `/queue/` or `/topic/` is removed from the string before passing it to ActiveMQ Classic as a JMS destination. Also note that the default separator in MOM systems is `.` (dot). Whilst `FOO.BAR` is the normal syntax to identify a queue type destination the Stomp equivalent is `/queue/FOO.BAR`
+Note that the prefix in stomp `/queue/` or `/topic/` is removed from the string before passing it to ActiveMQ as a JMS destination. Also note that the default separator in MOM systems is `.` (dot). Whilst `FOO.BAR` is the normal syntax to identify a queue type destination the Stomp equivalent is `/queue/FOO.BAR`
 
 > **Be careful about starting destinations with `/`**
 > 
@@ -115,7 +115,7 @@ Note that the prefix in stomp `/queue/` or `/topic/` is removed from the string
 
 ### Working with JMS Text/Bytes Messages and Stomp
 
-Stomp is a very simple protocol - that's part of the beauty of it! As such, it does not have knowledge of JMS messages such as `TextMessage`'s or `BytesMessage`'s. The protocol does however support a `content-length` header. To provide more robust interaction between STOMP and JMS clients, ActiveMQ Classic keys off of the inclusion of this header to determine what message type to create when sending from Stomp to JMS. The logic is simple:
+Stomp is a very simple protocol - that's part of the beauty of it! As such, it does not have knowledge of JMS messages such as `TextMessage`'s or `BytesMessage`'s. The protocol does however support a `content-length` header. To provide more robust interaction between STOMP and JMS clients, ActiveMQ keys off of the inclusion of this header to determine what message type to create when sending from Stomp to JMS. The logic is simple:
 
 Inclusion of content-length header|Resulting Message
 ---|---
@@ -126,7 +126,7 @@ This same logic can be followed when going from JMS to Stomp, as well. A Stomp c
 
 ### Message Transformations
 
-The `transformation` message header on `SEND` and `SUBSCRIBE` messages could be used to instruct ActiveMQ Classic to transform messages from text to the format of your desire. Currently, ActiveMQ Classic comes with a transformer that can transform XML/JSON text to Java objects, but you can add your own transformers as well.
+The `transformation` message header on `SEND` and `SUBSCRIBE` messages could be used to instruct ActiveMQ to transform messages from text to the format of your desire. Currently, ActiveMQ comes with a transformer that can transform XML/JSON text to Java objects, but you can add your own transformers as well.
 
 Here's a quick example of how to use built-in transformer (taken from test cases)
 ```
@@ -161,7 +161,7 @@ public void testTransformationReceiveXMLObject() throws Exception {
 
 > **Dependencies**
 > 
-> ActiveMQ Classic uses [XStream](http://xstream.codehaus.org) for its transformation needs. Since it's the optional dependency you have to add it to broker's classpath by putting the appropriate JAR into the `lib/` folder. Additionally, if you plan to use JSON transformations you have to add [Jettison](http://jettison.codehaus.org/) JSON parser to the classpath.
+> ActiveMQ uses [XStream](http://xstream.codehaus.org) for its transformation needs. Since it's the optional dependency you have to add it to broker's classpath by putting the appropriate JAR into the `lib/` folder. Additionally, if you plan to use JSON transformations you have to add [Jettison](http://jettison.codehaus.org/) JSON parser to the classpath.
 
 In order to create your own transformer, you have to do the following:
 
@@ -211,7 +211,7 @@ After this, all your Stomp packets will be logged to the `data/stomp.log`
 
 ### Java API
 
-**From ActiveMQ Classic 5.2**: there is a simple Java Stomp API distributed with ActiveMQ Classic. Note that this API is provided purely for testing purposes and you should always consider using standard JMS API from Java instead of this one. The following code snippet provides a simple example of using this API:
+**From ActiveMQ 5.2**: there is a simple Java Stomp API distributed with ActiveMQ. Note that this API is provided purely for testing purposes and you should always consider using standard JMS API from Java instead of this one. The following code snippet provides a simple example of using this API:
 ```
 StompConnection connection = new StompConnection();
 connection.open("localhost", 61613);
@@ -244,14 +244,14 @@ connection.commit("tx2");
 		
 connection.disconnect();
 ```
-This example is part of the standard ActiveMQ Classic distribution. You can run it from the `./example` folder with:
+This example is part of the standard ActiveMQ distribution. You can run it from the `./example` folder with:
 ```
 ant stomp
 ```
 
 ### Stomp Extensions for JMS Message Semantics
 
-Note that STOMP is designed to be as simple as possible - so any scripting language/platform can message any other with minimal effort. STOMP allows pluggable headers on each request such as sending & receiving messages. ActiveMQ Classic has several extensions to the Stomp protocol, so that JMS semantics can be supported by Stomp clients. An OpenWire JMS producer can send messages to a Stomp consumer, and a Stomp producer can send messages to an OpenWire JMS consumer. And Stomp to Stomp configurations, can use the richer JMS message control.
+Note that STOMP is designed to be as simple as possible - so any scripting language/platform can message any other with minimal effort. STOMP allows pluggable headers on each request such as sending & receiving messages. ActiveMQ has several extensions to the Stomp protocol, so that JMS semantics can be supported by Stomp clients. An OpenWire JMS producer can send messages to a Stomp consumer, and a Stomp producer can send messages to an OpenWire JMS consumer. And Stomp to Stomp configurations, can use the richer JMS message control.
 
 STOMP supports the following standard JMS properties on `SENT` messages:
 
@@ -266,9 +266,9 @@ STOMP Header|JMS Header|Description
 `reply-to`|`JMSReplyTo`|Destination you should send replies to.
 `type`|`JMSType`|Type of the message.
 
-### ActiveMQ Classic Extensions to STOMP
+### ActiveMQ Extensions to STOMP
 
-You can add custom headers to STOMP commands to configure the ActiveMQ Classic protocol. Here are some examples:
+You can add custom headers to STOMP commands to configure the ActiveMQ protocol. Here are some examples:
 
 Verb|Header|Type|Description
 ---|---|---
@@ -280,6 +280,6 @@ Verb|Header|Type|Description
 `SUBSCRIBE`|`activemq.prefetchSize`|`int`|Specifies the maximum number of pending messages that will be dispatched to the client. Once this maximum is reached no more messages are dispatched until the client acknowledges a message. Set to a low value > **1** for fair distribution of messages across consumers when processing messages can be slow. **Note**: if your STOMP client is implemented using a dynamic scripting language like Ruby, say, then this parameter **_must_** be set to `1` as there is no notion of a client-side message size to be sized. STOMP does not support a value of `0`.
 `SUBSCRIBE`|`activemq.priority`|`byte`|Sets the priority of the consumer so that dispatching can be weighted in priority order.
 `SUBSCRIBE`|`activemq.retroactive`|`boolean`|For non-durable topics make this subscription [retroactive](retroactive-consumer).
-`SUBSCRIBE`|`activemq.subscriptionName`|`string`|For durable topic subscriptions you must specify the same `activemq.client-id` on the connection and `activemq.subcriptionName` on the subscribe prior to v5.7.0. **Note**: the spelling `subcriptionName` NOT `subscriptionName`. This is not intuitive, but it is how it is implemented in ActiveMQ Classic 4.x. For the 5.0 release of ActiveMQ Classic, both `subcriptionName` and `subscriptionName` will be supported (`subcriptionName` was removed as of v5.6.0).
+`SUBSCRIBE`|`activemq.subscriptionName`|`string`|For durable topic subscriptions you must specify the same `activemq.client-id` on the connection and `activemq.subcriptionName` on the subscribe prior to v5.7.0. **Note**: the spelling `subcriptionName` NOT `subscriptionName`. This is not intuitive, but it is how it is implemented in ActiveMQ 4.x. For the 5.0 release of ActiveMQ, both `subcriptionName` and `subscriptionName` will be supported (`subcriptionName` was removed as of v5.6.0).
 `SUBSCRIBE`|`selector`|`string`|Specifies a JMS Selector using SQL 92 syntax as specified in the JMS 1.1 specification. This allows a filter to be applied to each message as part of the subscription.
 

@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [What is the difference between discovery, multicast and zeroconf](what-is-the-difference-between-discovery-multicast-and-zeroconf)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [What is the difference between discovery, multicast and zeroconf](what-is-the-difference-between-discovery-multicast-and-zeroconf)
 
 
 Discovery refers to either a client (producer or consumer) establishing a 'transport connector' to the broker or a broker establishing 'network connector' to another broker without explicit static configuration of broker (IP or hostname).

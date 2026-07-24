@@ -8,7 +8,7 @@ type: classic
 [Features](features) > [URI Protocols](uri-protocols)
 
 
-ActiveMQ Classic is designed to support mutliple different [topologies](topologies) and protocols. Which one you use depends on your messaging requirements, quality of service and network topology.
+ActiveMQ is designed to support mutliple different [topologies](topologies) and protocols. Which one you use depends on your messaging requirements, quality of service and network topology.
 
 The following table describes the different network protocols available for JMS clients along with showing the connection URL string you use to enable this communication protocol. On the broker side there are additional [transports](configuring-transports) supported. You can specify the connection URL on an [ActiveMQConnectionFactory](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html) (in a constructor or via the brokerURL property).
 
@@ -33,11 +33,11 @@ HTTP|http://host:port|Client connects to the broker using HTTP tunnelling, with 
 UDP|udp://host:port|Client connects to the broker at the given URL
 multicast|multicast://host:port|No server, though only works for pub/sub. A pure peer based network where all traffic is multicasted around and filtering is performed on the client.
 
-The _Server_ column above indicates whether a protocol can be used in an ActiveMQ Classic broker transport connector. All of the above protocols can be used in a JMS client to connect to the messaging fabric; only those protocols indicated can be used in a broker-side transport connector.
+The _Server_ column above indicates whether a protocol can be used in an ActiveMQ broker transport connector. All of the above protocols can be used in a JMS client to connect to the messaging fabric; only those protocols indicated can be used in a broker-side transport connector.
 
-When connecting to an ActiveMQ Classic broker, this could reside locally inside your JVM or be remote on another machine somewhere. If you want to enable the deployment of the ActiveMQ Classic inside your JVM you can enable the useEmbeddedBroker property on the [ActiveMQConnectionFactory](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html).
+When connecting to an ActiveMQ broker, this could reside locally inside your JVM or be remote on another machine somewhere. If you want to enable the deployment of the ActiveMQ inside your JVM you can enable the useEmbeddedBroker property on the [ActiveMQConnectionFactory](http://activemq.apache.org/components/classic/documentation/maven/apidocs/org/apache/activemq/ActiveMQConnectionFactory.html).
 
-Please refer to the [topologies overview](topologies) to see how we can use ActiveMQ Classic in many different topologies to suit your messaging needs.
+Please refer to the [topologies overview](topologies) to see how we can use ActiveMQ in many different topologies to suit your messaging needs.
 
 ### Specifying multiple URLs to connect to
 

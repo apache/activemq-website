@@ -5,10 +5,10 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [JMS Bridge With Remote Broker](jms-bridge-with-remote-broker)
+[Using ActiveMQ](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [JMS Bridge With Remote Broker](jms-bridge-with-remote-broker)
 
 
-### Example of a configuration that shows how to use a BridgeConnector to make a connection to a remote ActiveMQ Classic broker.
+### Example of a configuration that shows how to use a BridgeConnector to make a connection to a remote ActiveMQ broker.
 ```
 <beans>
     <!-- Allows us to use system properties as variables in this configuration file -->

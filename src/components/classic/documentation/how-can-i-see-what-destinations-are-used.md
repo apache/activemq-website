@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using ActiveMQ Classic](using-apache-activemq-classic) > [How can I see what destinations are used?](how-can-i-see-what-destinations-are-used)
+ [FAQ](faq) > [Using ActiveMQ](using-apache-activemq-classic) > [How can I see what destinations are used?](how-can-i-see-what-destinations-are-used)
 
 
 The easiest way is to use [JMX](jmx) by pointing your JMX console or JConsole at the broker JVM.

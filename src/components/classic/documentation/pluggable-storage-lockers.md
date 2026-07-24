@@ -7,7 +7,7 @@ type: classic
 
  [Features](features) > [Persistence](persistence) > [Pluggable storage lockers](pluggable-storage-lockers)
 
-As of the 5.7.0 release of ActiveMQ Classic the choice of storage locking mechanism, as used by a persistence adapter, has been made pluggable. This feature is only meaningful to brokers configured in a shared storage master/slave topology. Prior to release 5.7.0 the storage locking mechanism (and thus master election) was dictated by the choice of persistence adapter. With the KahaDB persistence adapter, for example, the storage locking mechanism was based on a shared file lock. Similarly, the JDBC persistence adapter used a database backed storage lock.
+As of the 5.7.0 release of ActiveMQ the choice of storage locking mechanism, as used by a persistence adapter, has been made pluggable. This feature is only meaningful to brokers configured in a shared storage master/slave topology. Prior to release 5.7.0 the storage locking mechanism (and thus master election) was dictated by the choice of persistence adapter. With the KahaDB persistence adapter, for example, the storage locking mechanism was based on a shared file lock. Similarly, the JDBC persistence adapter used a database backed storage lock.
 
 Now that the choice of storage locker is divorced from that of the persistence adapter one can mix and match combinations of the two. Storage locker pluggability is made possible by the [Locker](https://fisheye6.atlassian.com/browse/activemq/trunk/activemq-broker/src/main/java/org/apache/activemq/broker/Locker.java?hb=true) interface that all pluggable lockers must implement. This interface makes it easy to implement a custom storage locker that meets local requirements.
 
@@ -52,7 +52,7 @@ The Shared File Locker is the default locker for the KahaDB persistence adapter.
 </persistenceAdapter>
 ```
 
-The `lockKeepAlivePeriod` attribute is not applicable to versions of ActiveMQ Classic older than 5.9.0.
+The `lockKeepAlivePeriod` attribute is not applicable to versions of ActiveMQ older than 5.9.0.
 
 > Consequences of lockKeepAlivePeriod = 0
 > 
@@ -62,7 +62,7 @@ The `lockKeepAlivePeriod` attribute is not applicable to versions of ActiveMQ C
 > 
 > When `lockKeepAlivePeriod` is greater than `0`, the master broker will make a lock keep alive call every `lockKeepAlivePeriod` milliseconds. Therefore the master broker will detect any lock file changes when it makes its next keep alive call. Upon detecting said change the master broker will demote itself to a slave broker.
 
-> Note that as of ActiveMQ Classic 5.9.0 the KahaDB persistence adapter can also use the Lease Database Locker (see below).
+> Note that as of ActiveMQ 5.9.0 the KahaDB persistence adapter can also use the Lease Database Locker (see below).
 
 ### Database Locker
 
@@ -102,13 +102,13 @@ The Lease Database Locker was created to solve the shortcomings of the Database 
 
 In order for this mechanism to work correctly, each broker in a master/slave(s) cluster must have a unique value for the `brokerName` attribute as defined on the `<broker/>` tag. Alternatively, use unique values for the `leaseHolderId` attribute on the `<lease-database-locker/>` tag as this value is used to create a lease lock definition.
 
-The lease based lock is acquired by blocking at startup. It is then retained for a period whose duration (in ms) is given by the `lockKeepAlivePeriod` attribute. To retain the lock the master broker periodically extends its lease by `lockAcquireSleepInterval` milliseconds each time. In theory, therefore, the master broker is always (`lockAcquireSleepInterval - lockKeepAlivePeriod`) ahead of the slave broker with regard to the lease. It is imperative that `lockAcquireSleepInterval > lockKeepAlivePeriod`, to ensure the lease is always current. As of ActiveMQ Classic 5.9.0 a warning message is logged if this condition is not met.
+The lease based lock is acquired by blocking at startup. It is then retained for a period whose duration (in ms) is given by the `lockKeepAlivePeriod` attribute. To retain the lock the master broker periodically extends its lease by `lockAcquireSleepInterval` milliseconds each time. In theory, therefore, the master broker is always (`lockAcquireSleepInterval - lockKeepAlivePeriod`) ahead of the slave broker with regard to the lease. It is imperative that `lockAcquireSleepInterval > lockKeepAlivePeriod`, to ensure the lease is always current. As of ActiveMQ 5.9.0 a warning message is logged if this condition is not met.
 
 In the simplest case, the clocks between master and slave must be in sync for this solution to work properly. If the clocks cannot be in sync, the locker can use the system time from the database CURRENT TIME and adjust the timeouts in accordance with their local variance from the DB system time. If `maxAllowableDiffFromDBTime` is greater than zero the local periods will be adjusted by any delta that exceeds `maxAllowableDiffFromDBTime`.
 
 > It is important to know if the default rules your JDBC driver uses for converting `TIME` values are JDBC compliant. If you're using MySQL, for example, the driver's JDBC URL should contain `useJDBCCompliantTimezoneShift=true` to ensure that `TIME` value conversion is JDBC compliant. If not the locker could report a large time difference when it compares the retrieved lease expiration time against the current system time. Consult your JDBC driver's documentation for more details.
 
-As of ActiveMQ Classic 5.9.0 the lease database locker can be used in conjunction with the KahaDB persistence adapter. However, this particular combination requires that the lease database locker element contains a `<statements/>` child element. In the example below the `lockTableName` is also configured, although doing so is not mandatory.
+As of ActiveMQ 5.9.0 the lease database locker can be used in conjunction with the KahaDB persistence adapter. However, this particular combination requires that the lease database locker element contains a `<statements/>` child element. In the example below the `lockTableName` is also configured, although doing so is not mandatory.
 ```
 <persistenceAdapter>
 	<kahaDB directory="target/activemq-data" lockKeepAlivePeriod="5000">
@@ -129,5 +129,5 @@ As of ActiveMQ Classic 5.9.0 the lease database locker can be used in conjunctio
 
 When the KahaDB persistence adapter is configured to use the `lease-database-locker` you must configure the broker to use your own IO exception handler as neither the `DefaultIOExceptionHandler` nor the `JDBCIOExceptionHandler` will work correctly with this combination. See [Configurable IOException Handlers](configurable-ioexception-handling) for details on how to write a handler.
 
-> As of ActiveMQ Classic 5.11, however, the `JDBCIOExceptionHandler` has been deprecated. It has been replaced by the `org.apache.activemq.util.LeaseLockerIOExceptionHandler` that will work with any persistence adapter that supports pluggable storage lockers, regardless if one is configured.
+> As of ActiveMQ 5.11, however, the `JDBCIOExceptionHandler` has been deprecated. It has been replaced by the `org.apache.activemq.util.LeaseLockerIOExceptionHandler` that will work with any persistence adapter that supports pluggable storage lockers, regardless if one is configured.
 

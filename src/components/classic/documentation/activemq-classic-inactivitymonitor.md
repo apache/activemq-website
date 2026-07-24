@@ -1,24 +1,24 @@
 ---
 layout: default_md
-title: ActiveMQ Classic InactivityMonitor 
+title: ActiveMQ InactivityMonitor 
 title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic InactivityMonitor](activemq-inactivitymonitor)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ InactivityMonitor](activemq-inactivitymonitor)
 
 
-ActiveMQ Classic InactivityMonitor
+ActiveMQ InactivityMonitor
 ==================================
 
-The ActiveMQ Classic InactivityMonitor is an active thread that checks the connection is still active and if it suspects the connection is not functioning correctly, it closes the connection.
+The ActiveMQ InactivityMonitor is an active thread that checks the connection is still active and if it suspects the connection is not functioning correctly, it closes the connection.
 
 Connections are monitored by:
 
 *   Ensuring data is read from the connection during the specified time period (Max Inactivity Duration).
 *   Writing a `KeepAliveInfo` message to the connection if no **normal** activemq traffic is sent across the connection during the specified time period.
 
-Each connection has two InactivityMonitors associated, one on each end of the connection. The InactivityMonitor expects to receive data on the connection during a specified time period. If **normal** ActiveMQ Classic traffic has not been sent across the connection during that period, it expects to receive a `KeepAliveInfo` message sent by the InactivityMonitor on the other end of the connection.
+Each connection has two InactivityMonitors associated, one on each end of the connection. The InactivityMonitor expects to receive data on the connection during a specified time period. If **normal** ActiveMQ traffic has not been sent across the connection during that period, it expects to receive a `KeepAliveInfo` message sent by the InactivityMonitor on the other end of the connection.
 
 Using the default values; if no data has been written or read from the connection for 30 seconds, the InactivityMonitor kicks in. The InactivityMonitor throws an `InactivityIOException` and shuts down the transport associated with the connection. This results in the following `DEBUG` logging:
 ```

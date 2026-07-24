@@ -8,20 +8,20 @@ type: classic
 [Developers](developers) > [Integration Tests](integration-tests)
 
 
-The Integration Tests validate that ActiveMQ Classic Resource Adapter operate correctly when deployed with a J2EE application running in an Application Server such as Apache Geronimo.
+The Integration Tests validate that ActiveMQ Resource Adapter operate correctly when deployed with a J2EE application running in an Application Server such as Apache Geronimo.
 
 Getting Ready
 -------------
 
 The instructions on this page reference a few directories that you will need to substitute appropriate values for:
 
-*   _activemq-core_ is where your ActiveMQ Classic source code is located.
+*   _activemq-core_ is where your ActiveMQ source code is located.
 *   _geronimo-home_ is where your Geronimo home directory is located.
 
-Building the ActiveMQ Classic Resource Adapter
+Building the ActiveMQ Resource Adapter
 --------------------------------------
 
-The ActiveMQ Classic Resource Adapter allows a J2EE Application Server to provide transaction management, connection pooling and security to ActiveMQ Classic connection when used by EJBs. The Resource Adapter is deployed in the client EAR that will be using the ActiveMQ Classic.
+The ActiveMQ Resource Adapter allows a J2EE Application Server to provide transaction management, connection pooling and security to ActiveMQ connection when used by EJBs. The Resource Adapter is deployed in the client EAR that will be using the ActiveMQ.
 ```
 cd activemq-ra
 maven rar:install-snapshot

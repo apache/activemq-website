@@ -7,7 +7,7 @@ type: classic
 
 [Features](features) > [Destination Features](destination-features) > [Composite Destinations](composite-destinations)
 
-As of version 1.1, ActiveMQ Classic supports a technology we call _composite destinations_. This allows a single virtual JMS Destination to be used to represent a collection of JMS Destinations.
+As of version 1.1, ActiveMQ supports a technology we call _composite destinations_. This allows a single virtual JMS Destination to be used to represent a collection of JMS Destinations.
 
 For example you can use composite destinations to send a message to 12 physical queues in one operation. Or send a message to one topic and one queue in one operation.
 

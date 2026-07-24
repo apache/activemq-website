@@ -7,17 +7,17 @@ type: classic
 
 [Features](features) > [New Features](new-features) > [New Features in 6.0](new-features-in-60)
 
-ActiveMQ Classic 6 modernizes the ActiveMQ Classic 5 broker engine to support new JDK releases and provide support for Jakarta EE. This includes _partial_ support for JMS 2.0 APIs that are available in Jakarta Messaging 3.1.
+ActiveMQ 6 modernizes the ActiveMQ 5 broker engine to support new JDK releases and provide support for Jakarta EE. This includes _partial_ support for JMS 2.0 APIs that are available in Jakarta Messaging 3.1.
 
 This release includes performance improvements, enhancements for observability, and reduction in 3rd-party dependencies.
 
 ### Jakarta 3.1 and JMS 2.0 Support
 
-ActiveMQ Classic 6 supports Jakarta EE namespaces for both client and server. For details on the transition and the status of support for Jakarta Messaging 3.1 and JMS 2.0 API features, see the [Jakarta/JMS 2 transition page](jms2).
+ActiveMQ 6 supports Jakarta EE namespaces for both client and server. For details on the transition and the status of support for Jakarta Messaging 3.1 and JMS 2.0 API features, see the [Jakarta/JMS 2 transition page](jms2).
 
 ### Requirements
 
-ActiveMQ Classic 6 requires JDK 17 and uses Spring 6 on the broker-side for configuration.
+ActiveMQ 6 requires JDK 17 and uses Spring 6 on the broker-side for configuration.
 
 ### New Features
  

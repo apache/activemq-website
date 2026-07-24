@@ -8,25 +8,25 @@ type: classic
 [Connectivity](connectivity) > [Containers](containers) > [Old OSGi Integration](old-osgi-integration)
 
 
-> **This article applies to versions of ActiveMQ Classic prior to 5.4.0. If you use version 5.4.0 or newer proceed to the [following article](osgi-integration).**
+> **This article applies to versions of ActiveMQ prior to 5.4.0. If you use version 5.4.0 or newer proceed to the [following article](osgi-integration).**
 
 Introduction
 ============
 
-All ActiveMQ Classic modules are packaged as OSGi bundles and can be used in any OSGi container. This article will provide more details on how to use ActiveMQ Classic in [Apache Karaf](http://felix.apache.org/site/apache-felix-karaf.html), small OSGi based runtime. Apache Karaf was previously know as _ServiceMix kernel_, so informations found here are applicable to [Apache ServiceMix Enterprise Service Bus](http://servicemix.apache.org/home.html) as well.
+All ActiveMQ modules are packaged as OSGi bundles and can be used in any OSGi container. This article will provide more details on how to use ActiveMQ in [Apache Karaf](http://felix.apache.org/site/apache-felix-karaf.html), small OSGi based runtime. Apache Karaf was previously know as _ServiceMix kernel_, so informations found here are applicable to [Apache ServiceMix Enterprise Service Bus](http://servicemix.apache.org/home.html) as well.
 
-ActiveMQ Classic
+ActiveMQ
 ========
 
-ActiveMQ Classic comes as a feature in ServiceMix (Karaf). So instead of installing all necessary bundles one by one, you can simply install it using a single command. But first of all, you need to setup ServiceMix features url.
+ActiveMQ comes as a feature in ServiceMix (Karaf). So instead of installing all necessary bundles one by one, you can simply install it using a single command. But first of all, you need to setup ServiceMix features url.
 ```
 smx@root:/> features/addUrl mvn:org.apache.servicemix/apache-servicemix/4.0.0/xml/features
 ```
-Now you can install ActiveMQ Classic like this
+Now you can install ActiveMQ like this
 ```
 smx@root:/> features/install activemq
 ```
-This command will install all necessary ActiveMQ Classic bundles and if you type
+This command will install all necessary ActiveMQ bundles and if you type
 ```
 smx@root:/> osgi/list
 ```
@@ -66,12 +66,12 @@ smx@root:/> activemq/destroy-broker
 ```
 Default ActiveMQ Broker (localhost) configuration file created at: /Users/dejanb/workspace/apache-servicemix-kernel-1.1.0/deploy/localhost-broker.xml removed.
 
-For more information on ActiveMQ Classic feature take a look at the [ServiceMix ActiveMQ Classic integration guide](http://servicemix.apache.org/SMX4/activemq-integration.html)
+For more information on ActiveMQ feature take a look at the [ServiceMix ActiveMQ integration guide](http://servicemix.apache.org/SMX4/activemq-integration.html)
 
 Web console
 ===========
 
-[Web console](web-console) is included in ActiveMQ Classic distribution and you'll probably want to have it to monitor your broker. First of all you'll have to install the `web` feature, so that you have a web container ready to deploy our web application. To do that you should first add the ServiceMix features url, like we did above (if you didn't already). Now, you can just run
+[Web console](web-console) is included in ActiveMQ distribution and you'll probably want to have it to monitor your broker. First of all you'll have to install the `web` feature, so that you have a web container ready to deploy our web application. To do that you should first add the ServiceMix features url, like we did above (if you didn't already). Now, you can just run
 ```
 smx@root:/> features/install web
 ```

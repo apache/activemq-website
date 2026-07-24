@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I connect to one of a number of message brokers](how-do-i-connect-to-one-of-a-number-of-message-brokers)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I connect to one of a number of message brokers](how-do-i-connect-to-one-of-a-number-of-message-brokers)
 
 
 You can specify a list of URLs to connect to (for example if you have message brokers running on a number of machines). To specify a list of URLs, use a comma separated list of URLs with a prefix of list:. e.g.

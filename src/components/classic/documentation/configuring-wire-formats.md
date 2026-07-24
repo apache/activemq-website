@@ -5,11 +5,11 @@ title-class: page-title-classic
 type: classic
 ---
 
- [Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [Configuring Wire Format](configuring-wire-formats)
+ [Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [Configuring Wire Format](configuring-wire-formats)
 
 ### The OpenWire Wire Format
 
-OpenWire is the default wire format used by ActiveMQ Classic.  It provides a highly efficient binary format for high speed messaging.  OpenWire options can be configured on a JMS client's connection URI or on a broker's transport bind URI.
+OpenWire is the default wire format used by ActiveMQ.  It provides a highly efficient binary format for high speed messaging.  OpenWire options can be configured on a JMS client's connection URI or on a broker's transport bind URI.
 
 Option|Default|Description
 ---|---|---

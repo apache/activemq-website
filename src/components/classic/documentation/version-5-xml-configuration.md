@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic 5](using-activemq-classic-5) > [Version 5 XML Configuration](version-5-xml-configuration)
+[Using ActiveMQ 5](using-activemq-classic-5) > [Version 5 XML Configuration](version-5-xml-configuration)
 
 
 *   transport connectors which consist of transport channels and wire formats TODO: add a link to a page explaining what transport connectors are how to configure and use them.
@@ -25,7 +25,7 @@ Make sure you do not use any strange characters in the names of brokers as they 
 Examples
 --------
 
-The default ActiveMQ Classic configuration: [current default config](http://svn.apache.org/repos/asf/activemq/trunk/assembly/src/release/conf/activemq.xml).
+The default ActiveMQ configuration: [current default config](http://svn.apache.org/repos/asf/activemq/trunk/assembly/src/release/conf/activemq.xml).
 
 ```
 <beans
@@ -43,7 +43,7 @@ The default ActiveMQ Classic configuration: [current default config](http://svn.
     </bean>
 
     <!--
-        The <broker> element is used to configure the ActiveMQ Classic broker.
+        The <broker> element is used to configure the ActiveMQ broker.
     -->
     <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" dataDirectory="${activemq.data}">
 
@@ -91,8 +91,8 @@ The default ActiveMQ Classic configuration: [current default config](http://svn.
 
 
         <!--
-            The managementContext is used to configure how ActiveMQ Classic is exposed in
-            JMX. By default, ActiveMQ Classic uses the MBean server that is started by
+            The managementContext is used to configure how ActiveMQ is exposed in
+            JMX. By default, ActiveMQ uses the MBean server that is started by
             the JVM. For more information, see:
 
             http://activemq.apache.org/jmx.html
@@ -117,7 +117,7 @@ The default ActiveMQ Classic configuration: [current default config](http://svn.
             The systemUsage controls the maximum amount of space the broker will
             use before slowing down producers. For more information, see:
             http://activemq.apache.org/producer-flow-control.html
-            If using ActiveMQ Classic embedded - the following limits could safely be used:
+            If using ActiveMQ embedded - the following limits could safely be used:
 
         <systemUsage>
             <systemUsage>
@@ -148,7 +148,7 @@ The default ActiveMQ Classic configuration: [current default config](http://svn.
         </systemUsage>
 
         <!--
-            The transport connectors expose ActiveMQ Classic over a given protocol to
+            The transport connectors expose ActiveMQ over a given protocol to
             clients and other brokers. For more information, see:
 
             http://activemq.apache.org/configuring-transports.html
@@ -195,9 +195,9 @@ We have a page which allows users to submit details of their configurations.
 Background
 ----------
 
-Since ActiveMQ Classic has so many strategy pattern plugins for transports, wire formats, persistence and many other things, we wanted to leave the configuration format open so that you the developer can configure and extend ActiveMQ Classic in any direction you wish.
+Since ActiveMQ has so many strategy pattern plugins for transports, wire formats, persistence and many other things, we wanted to leave the configuration format open so that you the developer can configure and extend ActiveMQ in any direction you wish.
 
-So we use the [Spring XML](http://static.springframework.org/spring/docs/2.5.x/reference/beans.html#beans-basics) configuration file format, which allows any beans / POJOs to be wired together and configured. However often Spring's XML can be kinda verbose at times, so we have implemented an ActiveMQ Classic extension to the Spring XML which knows about the common, standard ActiveMQ Classic things you're likely to do (e.g. tags like connector, wireFormat, serverTransport, persistence) - but at any time you can fall back to the normal Spring way of doing things (with tags like bean, property etc).
+So we use the [Spring XML](http://static.springframework.org/spring/docs/2.5.x/reference/beans.html#beans-basics) configuration file format, which allows any beans / POJOs to be wired together and configured. However often Spring's XML can be kinda verbose at times, so we have implemented an ActiveMQ extension to the Spring XML which knows about the common, standard ActiveMQ things you're likely to do (e.g. tags like connector, wireFormat, serverTransport, persistence) - but at any time you can fall back to the normal Spring way of doing things (with tags like bean, property etc).
 
 To see documentation of the XML file we use or to get access to the XSD/DTD see the [Xml Reference](xml-reference)
 

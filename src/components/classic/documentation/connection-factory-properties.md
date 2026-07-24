@@ -22,19 +22,19 @@ UseInboundSession|no|set in resource adapter
 
 #### ServerUrl
 
-The URL to the ActiveMQ Classic server that you want this connection to connect to. If using an embedded broker, this value should be 'vm://localhost'.
+The URL to the ActiveMQ server that you want this connection to connect to. If using an embedded broker, this value should be 'vm://localhost'.
 
 #### UserName
 
-The default user name that will be used to establish connections to the ActiveMQ Classic server.
+The default user name that will be used to establish connections to the ActiveMQ server.
 
 #### Password
 
-The default password that will be used to log the default user into the ActiveMQ Classic server.
+The default password that will be used to log the default user into the ActiveMQ server.
 
 #### Clientid
 
-The client id that will be set on the connection that is established to the ActiveMQ Classic server.
+The client id that will be set on the connection that is established to the ActiveMQ server.
 
 #### UseInboundSession
 

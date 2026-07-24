@@ -24,5 +24,5 @@ If you get an error like this
 
 ### Fix
 
-You are using 3.0 of ActiveMQ Classic. This bug is fixed in 3.1.x so use 3.1-M6 or later.
+You are using 3.0 of ActiveMQ. This bug is fixed in 3.1.x so use 3.1-M6 or later.
 

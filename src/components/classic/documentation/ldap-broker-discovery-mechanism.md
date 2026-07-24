@@ -5,14 +5,14 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic 5](using-activemq-classic-5) > [LDAP Broker Discovery Mechanism](ldap-broker-discovery-mechanism)
+[Using ActiveMQ 5](using-activemq-classic-5) > [LDAP Broker Discovery Mechanism](ldap-broker-discovery-mechanism)
 
 
 Configuring network topologies can be quite tedious when the number of brokers in the system is large. To help ease the configuration overhead for these types of situations, a broker can be configured to look up its broker connections using a LDAP v3 directory server.
 
 > **Note**
 > 
-> The basic feature was added to satisfy [AMQ-358](https://issues.apache.org/activemq/browse/AMQ-358). There are known problems and limitations with this implementation. These deficiencies have been addressed in [AMQ-1587](https://issues.apache.org/activemq/browse/AMQ-1587). The features discussed on this page require the patch attached to JIRA issue [AMQ-1587](https://issues.apache.org/activemq/browse/AMQ-1587). This patch should apply cleanly to the ActiveMQ Classic 5.0.0 release or the current development trunk.
+> The basic feature was added to satisfy [AMQ-358](https://issues.apache.org/activemq/browse/AMQ-358). There are known problems and limitations with this implementation. These deficiencies have been addressed in [AMQ-1587](https://issues.apache.org/activemq/browse/AMQ-1587). The features discussed on this page require the patch attached to JIRA issue [AMQ-1587](https://issues.apache.org/activemq/browse/AMQ-1587). This patch should apply cleanly to the ActiveMQ 5.0.0 release or the current development trunk.
 
 LDAP v3 Directory Server Compliance
 -----------------------------------
@@ -57,7 +57,7 @@ Topology|LDAP v3 Directory Structure|Entry
 ---|---|---
 ![](assets/img/Example1-Topology.jpg)|![](assets/img/Example1-DirectoryStructure.jpg)|![](assets/img/Example1-Entry.jpg)
 
-### ActiveMQ Classic Configuration (activemq.xml)
+### ActiveMQ Configuration (activemq.xml)
 
 **srv-a.mydomain.com**
 ```
@@ -99,7 +99,7 @@ Topology|LDAP v3 Directory Structure
 ---|---
 ![](assets/img/Example2-Topology.jpg)|![](assets/img/Example2-DirectoryStructure.jpg)
 
-### ActiveMQ Classic Configuration (activemq.xml)
+### ActiveMQ Configuration (activemq.xml)
 
 **srv-a.mydomain.com**
 ```

@@ -18,15 +18,15 @@ javax.jms.JMSException: Wire format negociation timeout: peer did not send his w
 ```
 it can mean one of three things:
 
-1. You're connecting to the port not used by ActiveMQ Classic TCP transport
+1. You're connecting to the port not used by ActiveMQ TCP transport
 ====================================================================
 
 Make sure to check that you're connecting to the appropriate `host:port`
 
-2. You're using log4j JMS appender and doesn't filter out ActiveMQ Classic log messages
+2. You're using log4j JMS appender and doesn't filter out ActiveMQ log messages
 ================================================================================
 
-Be sure to read [How do I use log4j JMS appender with ActiveMQ Classic](how-do-i-use-log4j-jms-appender-with-activemq-classic) and more importantly to never send ActiveMQ Classic log messages to JMS appender
+Be sure to read [How do I use log4j JMS appender with ActiveMQ](how-do-i-use-log4j-jms-appender-with-activemq-classic) and more importantly to never send ActiveMQ log messages to JMS appender
 
 3. Your broker is probably under heavy load (or network connection is unreliable), so connection setup cannot be completed in a reasonable time
 ================================================================================================================================================

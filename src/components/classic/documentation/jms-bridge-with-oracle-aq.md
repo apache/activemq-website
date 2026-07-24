@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [JMS Bridge With Oracle AQ](jms-bridge-with-oracle-aq)
+[Using ActiveMQ](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [JMS Bridge With Oracle AQ](jms-bridge-with-oracle-aq)
 
 
 ### Example of a configuration that shows how to connect to Oracle AQ queues and topics.
@@ -27,7 +27,7 @@ type: classic
             <to   uri="activemq:queue:queue.inboundOracleAQqueue" >
         </route>
         <route>
-            <!-- NOTE: I have had success with a topic using ActiveMQ Classic 5.3, but not 5.1 -->
+            <!-- NOTE: I have had success with a topic using ActiveMQ 5.3, but not 5.1 -->
             <from uri="oracleTopic:topic:ORACLE_TOPIC">
             <to   uri="activemq:queue:queue.inboundOracleAQtopic" >
         </route>

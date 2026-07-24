@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.5.1 Release
+title: ActiveMQ 5.5.1 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.5.1 is a maintenance release which resolves [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491), a critical bug which caused the 5.5.0 release to be retracted.
+Apache ActiveMQ 5.5.1 is a maintenance release which resolves [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491), a critical bug which caused the 5.5.0 release to be retracted.
 
 Getting the Binary Distributions
 --------------------------------
@@ -79,5 +79,5 @@ Source Release|[activemq-parent-5.5.1-source-release.zip](http://archive.apache.
 svn co http://svn.apache.org/repos/asf/activemq/tags/activemq-5.5.1
 ```
 
-Also see the previous [ActiveMQ Classic 5.5.0 Release](classic-05-05-00)
+Also see the previous [ActiveMQ 5.5.0 Release](classic-05-05-00)
 

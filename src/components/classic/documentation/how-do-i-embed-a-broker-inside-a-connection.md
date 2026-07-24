@@ -5,12 +5,12 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I embed a Broker inside a Connection](how-do-i-embed-a-broker-inside-a-connection)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I embed a Broker inside a Connection](how-do-i-embed-a-broker-inside-a-connection)
 
 
 In many messaging topologies there are JMS Brokers (server side) and a JMS client side. Often it makes sense to deploy a broker within your JVM. This allows you to optimise away a network hop; making the networking of JMS as efficient as pure RMI, but with all the usual JMS features of location independence, reliability, load balancing etc.
 
-There are various ways to embed a broker in ActiveMQ Classic depending on if you are using Java, Spring, XBean or using the ActiveMQConnectionFactory .
+There are various ways to embed a broker in ActiveMQ depending on if you are using Java, Spring, XBean or using the ActiveMQConnectionFactory .
 
 ### Using explicit Java code
 
@@ -76,7 +76,7 @@ broker:|broker:tcp://localhost:61616|Uses the [Broker Configuration URI](broker-
 
 ### Using Spring
 
-There is a factory bean that can refer to an external ActiveMQ Classic XML configuration file
+There is a factory bean that can refer to an external ActiveMQ XML configuration file
 ```
 <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
   <property name="config" value="classpath:org/apache/activemq/xbean/activemq.xml" />
@@ -89,7 +89,7 @@ If you wish you can use a URL instead using the **file:* or *http:** prefixes. F
 
 ### Using XBean
 
-If you are already using [XBean](http://geronimo.apache.org/xbean/) then you can just mix and match your Spring/XBean [XML configuration](https://github.com/apache/activemq/tree/main/activemq-core/src/test/resources/org/apache/activemq/xbean/activemq.xml) with ActiveMQ Classic's configuration.
+If you are already using [XBean](http://geronimo.apache.org/xbean/) then you can just mix and match your Spring/XBean [XML configuration](https://github.com/apache/activemq/tree/main/activemq-core/src/test/resources/org/apache/activemq/xbean/activemq.xml) with ActiveMQ's configuration.
 ```
 <beans 
   xmlns="http://www.springframework.org/schema/beans" 
@@ -116,7 +116,7 @@ If you are already using [XBean](http://geronimo.apache.org/xbean/) then you can
 
 ### Using Spring 2.0
 
-If you are using Spring 2.0 and ActiveMQ Classic 4.1 or later (and xbean-spring 2.5 or later) you can embed the ActiveMQ Classic broker XML inside any regular Spring.xml file without requiring the above factory bean. e.g. here is an [example](http://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-core/src/test/resources/spring-embedded-xbean.xml) of a regular Spring XML file in Spring 2.0 which also configures a broker.
+If you are using Spring 2.0 and ActiveMQ 4.1 or later (and xbean-spring 2.5 or later) you can embed the ActiveMQ broker XML inside any regular Spring.xml file without requiring the above factory bean. e.g. here is an [example](http://svn.apache.org/repos/asf/incubator/activemq/trunk/activemq-core/src/test/resources/spring-embedded-xbean.xml) of a regular Spring XML file in Spring 2.0 which also configures a broker.
 ```
 <beans 
   xmlns="http://www.springframework.org/schema/beans" 
@@ -125,14 +125,14 @@ If you are using Spring 2.0 and ActiveMQ Classic 4.1 or later (and xbean-spring 
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
   http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
   
-  <!--  lets create an embedded ActiveMQ Classic Broker -->
+  <!--  lets create an embedded ActiveMQ Broker -->
   <amq:broker useJmx="false" persistent="false">
     <amq:transportConnectors>
       <amq:transportConnector uri="tcp://localhost:0" />
     </amq:transportConnectors>
   </amq:broker>
 
-   <!--  ActiveMQ Classic destinations to use  -->
+   <!--  ActiveMQ destinations to use  -->
   <amq:queue id="destination"  physicalName="org.apache.activemq.spring.Test.spring.embedded"/>
 
   <!-- JMS ConnectionFactory to use, configuring the embedded broker using XML -->

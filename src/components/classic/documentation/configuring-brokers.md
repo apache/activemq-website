@@ -5,12 +5,12 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Brokers](configuring-brokers)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Brokers](configuring-brokers)
 
 
 ### Overview
 
-In ActiveMQ Classic 4, we are using a new xml format to configure the broker.
+In ActiveMQ 4, we are using a new xml format to configure the broker.
 
 ### Syntax
 

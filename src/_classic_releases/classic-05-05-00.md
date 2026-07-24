@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.5.0 Release
+title: ActiveMQ 5.5.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -14,9 +14,9 @@ redirect_from:
 
 Warning
 
-This release has been retracted due to bug [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491). It is no longer downloadable from ASF servers. Please use the [ActiveMQ Classic 5.5.1 Release](classic-05-05-01) instead.
+This release has been retracted due to bug [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491). It is no longer downloadable from ASF servers. Please use the [ActiveMQ 5.5.1 Release](classic-05-05-01) instead.
 
-Apache ActiveMQ Classic 5.5.0 is primarily a maintenance release which resolves over [130 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+12315626+AND+status+in+%28Resolved%2C+Closed%29+ORDER+BY+priority+DESC), mostly bug fixes and improvements
+Apache ActiveMQ 5.5.0 is primarily a maintenance release which resolves over [130 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+12315626+AND+status+in+%28Resolved%2C+Closed%29+ORDER+BY+priority+DESC), mostly bug fixes and improvements
 
 New Features in 5.5.0
 ---------------------
@@ -106,5 +106,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&styleName=Html&version=12315626)
 
-Also see the previous [ActiveMQ Classic 5.4.2 Release](classic-05-04-02)
+Also see the previous [ActiveMQ 5.4.2 Release](classic-05-04-02)
 

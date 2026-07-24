@@ -25,8 +25,8 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
     <tr style="background-color: #dff0d8;">
       <td>6.2.x</td>
       <td><strong>Stable - Supported</strong></td>
-      <td>6.2.6</td>
-      <td>May 31st, 2026</td>
+      <td>6.2.7</td>
+      <td>June 29th, 2026</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>6.1.x</td>
@@ -43,8 +43,8 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
     <tr style="background-color: #dff0d8;">
       <td>5.19.x</td>
       <td><strong>Stable - Supported</strong></td>
-      <td>5.19.7</td>
-      <td>May 31st, 2026</td>
+      <td>5.19.8</td>
+      <td>June 29th, 2026</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>5.18.x</td>
@@ -138,7 +138,7 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
 {% for current_release_prefix in site.data.current_releases["classic"] %}
     {% for release in reversed_releases %}
         {% if release.version contains current_release_prefix %}
-#### ActiveMQ Classic {{release.version}} ({{release.release_date | date_to_string: "ordinal", "US"}})
+#### ActiveMQ {{release.version}} ({{release.release_date | date_to_string: "ordinal", "US"}})
 [Release Notes]({{ release.release_notes }}) | [Release Page]({{release.url}}) | [Documentation](../documentation) | Java compatibility: **{{release.java_version}}**
 
 Windows|[apache-activemq-{{release.version}}-bin.zip](https://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip&action=download)|[SHA512](https://downloads.apache.org/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.sha512)|[ASC Signature](https://downloads.apache.org/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.zip.asc)

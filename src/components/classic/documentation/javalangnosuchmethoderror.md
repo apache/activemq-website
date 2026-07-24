@@ -29,5 +29,5 @@ Add to the correct ClassPath
 
 If the JMS 1.0.2b classes come from your application server you may need to add the JMS 1.1 to your boot classpath to ensure that the JMS 1.1 classes take precedence to the container supplied classes
 
-Note that to a user of the JMS API, JMS 1.1 is completely backwards compatible. The only issue with upgrading to JMS 1.1 is that any JMS provider which implements only JMS 1.0.2b and does not implement JMS 1.1 will not work; however if you're using ActiveMQ Classic you should be fine.
+Note that to a user of the JMS API, JMS 1.1 is completely backwards compatible. The only issue with upgrading to JMS 1.1 is that any JMS provider which implements only JMS 1.0.2b and does not implement JMS 1.1 will not work; however if you're using ActiveMQ you should be fine.
 

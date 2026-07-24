@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Features](features) > [ActiveMQ Classic Real Time](activemq-classic-real-time) > [Life Cycle](life-cycle)
+[Features](features) > [ActiveMQ Real Time](activemq-classic-real-time) > [Life Cycle](life-cycle)
 
 
 Life cycle of Channels

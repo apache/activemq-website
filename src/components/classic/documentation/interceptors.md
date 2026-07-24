@@ -7,7 +7,7 @@ type: classic
 
 [Features](features) > [Interceptors](interceptors)
 
-ActiveMQ Classic has a sophisticated _interceptor stack_ so that you can attach whatever functionality you require into the broker in an easy way without complicating all of the other broker code. This has really helped us keep the code clean and modular while offering powerful extension points.
+ActiveMQ has a sophisticated _interceptor stack_ so that you can attach whatever functionality you require into the broker in an easy way without complicating all of the other broker code. This has really helped us keep the code clean and modular while offering powerful extension points.
 
 For an example of the kinds of things you can do with interceptors see the following pages
 
@@ -33,7 +33,7 @@ http://activemq.apache.org/schema/activemq-core.xsd http://activemq.apache.org/c
 
   <broker xmlns="http://activemq.org/config/1.0" brokerName="localhost" dataDirectory="${activemq.base}/data" plugins="#myPlugin">
 
-    <!-- The transport connectors ActiveMQ Classic will listen to -->
+    <!-- The transport connectors ActiveMQ will listen to -->
     <transportConnectors>
       <transportConnector name="openwire" uri="tcp://localhost:61616" />
     </transportConnectors>
@@ -69,7 +69,7 @@ http://activemq.apache.org/camel/schema/spring/camel-spring.xsd">
 
  <broker xmlns="http://activemq.org/config/1.0" brokerName="localhost" dataDirectory="${activemq.base}/data">
 
-  <!-- The transport connectors ActiveMQ Classic will listen to -->
+  <!-- The transport connectors ActiveMQ will listen to -->
   <transportConnectors>
      <transportConnector name="openwire" uri="tcp://localhost:61616" />
   </transportConnectors>

@@ -5,10 +5,10 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How lightweight is sending a message](how-lightweight-is-sending-a-message)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How lightweight is sending a message](how-lightweight-is-sending-a-message)
 
 
-### For ActiveMQ Classic 3.x/4.x
+### For ActiveMQ 3.x/4.x
 
 It depends.
 

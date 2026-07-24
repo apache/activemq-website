@@ -7,12 +7,12 @@ type: classic
 
  [Features](features) > [Persistence](persistence) > [Configurable IOException Handling](configurable-ioexception-handling)
 
-Starting with 5.3.1, ActiveMQ Classic provides configurable IOException handling for its file-based message stores. From version 5.5 the handler is also invoked when the JDBC persistence adapter gets a failure on `getConnection()`.
+Starting with 5.3.1, ActiveMQ provides configurable IOException handling for its file-based message stores. From version 5.5 the handler is also invoked when the JDBC persistence adapter gets a failure on `getConnection()`.
 
 Default IOException handler
 ---------------------------
 
-ActiveMQ Classic comes with a default IOException handler, which does the following. When some of the file-based message stores encounter IOException it can be one of the two things: either the disk is unavailable of there's no more space on the disk.
+ActiveMQ comes with a default IOException handler, which does the following. When some of the file-based message stores encounter IOException it can be one of the two things: either the disk is unavailable of there's no more space on the disk.
 
 The first case is usually encountered when disk fails or network disk is disconnected. These errors are not "recoverable" and we usually want to shutdown the broker until problems with the disk are solved.
 
@@ -47,7 +47,7 @@ Property|Since|Default Value|Description
 
 The default configuration will try to find a specified string in the exception message to determine whether it is a 'no disk space' error. On most platforms (at least those we have tested), you'll find the word 'space' in it. Of course, you can customize this to your platform by using `noSpaceMessage` property.
 
-Note: as of ActiveMQ Classic 5.11 the `JDBCIOExceptionHandler` has been deprecated. It has been replaced by the `org.apache.activemq.util.LeaseLockerIOExceptionHandler` that will work with any persistence adapter that supports pluggable storage lockers whether or not a locker is in use.
+Note: as of ActiveMQ 5.11 the `JDBCIOExceptionHandler` has been deprecated. It has been replaced by the `org.apache.activemq.util.LeaseLockerIOExceptionHandler` that will work with any persistence adapter that supports pluggable storage lockers whether or not a locker is in use.
 
 Writing your own handler
 

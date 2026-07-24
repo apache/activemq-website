@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.9.1 Release
+title: ActiveMQ 5.9.1 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,11 +12,11 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.9.1 resolves [more than 120 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+%225.9.1%22+AND+status+%3D+Resolved+ORDER+BY+priority+DESC&mode=hide), mostly bug fixes and improvements. It has the following new features:
+Apache ActiveMQ 5.9.1 resolves [more than 120 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+%225.9.1%22+AND+status+%3D+Resolved+ORDER+BY+priority+DESC&mode=hide), mostly bug fixes and improvements. It has the following new features:
 
 *   [Replicated LevelDB Store](replicated-Features/PersistenceFeatures/Persistence/Features/Persistence/leveldb-store) for shared nothing Master/Slave.
 *   [Runtime Configuration](New Features/New Features in 5.9/runtime-Community/FAQ/configuration)
-*   Generic JMS XA connection pool in activemq-jms-pool module (has no ActiveMQ Classic dependency)
+*   Generic JMS XA connection pool in activemq-jms-pool module (has no ActiveMQ dependency)
 *   MQTT over WebSockets support
 *   [**broker**](FeaturesFeatures/Features/broker-camel-component) Apache Camel component
 *   Broker auto-restart upon losing master status
@@ -99,5 +99,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12323932)
 
-Also see the previous [ActiveMQ Classic 5.8.0 Release](classic-05-08-00)
+Also see the previous [ActiveMQ 5.8.0 Release](classic-05-08-00)
 

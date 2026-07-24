@@ -8,7 +8,7 @@ type: classic
 [Features](features) > [New Features](new-features) > [New Features in 5.3](new-features-in-53)
 
 
-Apache ActiveMQ Classic 5.3 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?version=11914&styleName=Html&projectId=10520) 334 issues.
+Apache ActiveMQ 5.3 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?version=11914&styleName=Html&projectId=10520) 334 issues.
 
 New Features in 5.3
 -------------------

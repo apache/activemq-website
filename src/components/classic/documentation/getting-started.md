@@ -8,12 +8,12 @@ type: classic
 Introduction
 ------------
 
-This document describes how to install and configure ActiveMQ Classic 5.x for both Unix and Windows' platforms.
+This document describes how to install and configure ActiveMQ 5.x for both Unix and Windows' platforms.
 
 Document Organization
 ---------------------
 
-The Getting Started Guide for ActiveMQ Classic 5.x document contains the following sections:
+The Getting Started Guide for ActiveMQ 5.x document contains the following sections:
 
 *   [Introduction](#Introduction)
 *   [Document Organization](#DocumentOrganization)
@@ -27,7 +27,7 @@ The Getting Started Guide for ActiveMQ Classic 5.x document contains the followi
     *   [Using Homebrew installer on OSX](#UsingHomebrewinstalleronOSX)
     *   [Unix Source Installation](#UnixSourceInstallation)
     *   [Unix Developer's Release](#UnixDeveloper'sRelease)
-*   [Starting ActiveMQ Classic](#StartingActiveMQClassic)    
+*   [Starting ActiveMQ](#StartingActiveMQClassic)    
     *   [On Windows:](#OnWindows:)
     *   [On Unix:](#OnUnix:)    
     *   [More help](#Morehelp)
@@ -35,9 +35,9 @@ The Getting Started Guide for ActiveMQ Classic 5.x document contains the followi
     *   [Using the administrative interface](#Usingtheadministrativeinterface)
     *   [Logfile and console output](#Logfileandconsoleoutput)
     *   [Listen port](#Listenport)
-*   [Monitoring ActiveMQ Classic](#MonitoringActiveMQClassic)
-*   [Stopping ActiveMQ Classic](#StoppingActiveMQClassic)
-*   [Configuring ActiveMQ Classic](#ConfiguringActiveMQClassic)
+*   [Monitoring ActiveMQ](#MonitoringActiveMQClassic)
+*   [Stopping ActiveMQ](#StoppingActiveMQClassic)
+*   [Configuring ActiveMQ](#ConfiguringActiveMQClassic)
 *   [Additional Resources](#AdditionalResources)
 *   [Docker Image](docker-image)
 
@@ -46,9 +46,9 @@ Pre-Installation Requirements
 
 **Hardware:**
 
-*   ~ 60 MB of free disk space for the ActiveMQ Classic 5.x binary distribution.  
+*   ~ 60 MB of free disk space for the ActiveMQ 5.x binary distribution.  
     (you need additional disk space for storing persistent messages to disk)
-*   ~ 300 MB of free disk space for the ActiveMQ Classic 5.x source or developer's distributions.
+*   ~ 300 MB of free disk space for the ActiveMQ 5.x source or developer's distributions.
 
 `Operating Systems:**
 
@@ -69,7 +69,7 @@ Pre-Installation Requirements
 Installation Procedure for Windows
 ----------------------------------
 
-This section of the Getting Started Guide explains how to install binary and source distributions of ActiveMQ Classic on a Windows system.
+This section of the Getting Started Guide explains how to install binary and source distributions of ActiveMQ on a Windows system.
 
 #### Windows Binary Installation
 
@@ -78,7 +78,7 @@ This procedure explains how to download and install the binary distribution on a
 1.  Download the latest release  
     (see [Download](download) -\> "The latest stable release" -> "apache-activemq-x.x.x-bin.zip")
 2.  Extract the files from the ZIP file into a directory of your choice.
-3.  Proceed to the [#Starting ActiveMQ Classic](getting-started) section of this document.
+3.  Proceed to the [#Starting ActiveMQ](getting-started) section of this document.
 4.  Following start-up, go to the [#Testing the Installation](getting-started) section of this document.
 
 #### Windows Source Installation
@@ -87,14 +87,14 @@ This procedure explains how to download and install the source distribution on a
 
 1.  Download the latest release  
     (see [Download](download) -\> "The latest stable release" -> "apache-activemq-x.x.x-source-release.zip")
-2.  Extract ActiveMQ Classic from the ZIP file into a directory of your choice.
+2.  Extract ActiveMQ from the ZIP file into a directory of your choice.
 3.    
-    The recommended method of building ActiveMQ Classic is the following:
+    The recommended method of building ActiveMQ is the following:
     ```
     REM add "-Dmaven.test.skip=true" if tests are failing on your system (should not happen)
     mvn clean install 
     ```
-    where `[activemq_install_dir]` is the directory in which ActiveMQ Classic was installed.
+    where `[activemq_install_dir]` is the directory in which ActiveMQ was installed.
     
 4.  If you prefer to use an IDE, then you can auto-generate the IDE's project file using maven plugins:
     ```
@@ -107,7 +107,7 @@ This procedure explains how to download and install the source distribution on a
     Feel free to use any other applicable IDE. Please refer to the [plugin reference](http://maven.apache.org/reference/plugins/plugins.html) for more details.
     
 
-1.  Start ActiveMQ Classic from the target directory, for example:
+1.  Start ActiveMQ from the target directory, for example:
     ```
     cd [activemq_install_dir]\assembly\target
     unzip activemq-x.x-SNAPSHOT.zip
@@ -115,13 +115,13 @@ This procedure explains how to download and install the source distribution on a
     bin\activemq
     ```
 
-    > **NOTE:** Working directories get created relative to the current directory. To create the working directories in the proper place, ActiveMQ Classic must be launched from its home/installation directory.
+    > **NOTE:** Working directories get created relative to the current directory. To create the working directories in the proper place, ActiveMQ must be launched from its home/installation directory.
     
 2.  Proceed to the [#Testing the Installation](getting-started) section.
     
     > **Warning**
     > 
-    > If you are building ActiveMQ Classic 4.x under Windows using Cygwin there is a path name length limitation. If the path name length is exceeded, you may see build errors. To correct this, move the ActiveMQ Classic source directory higher in the file system tree, e.g., /cygdrive/c/d/sm.
+    > If you are building ActiveMQ 4.x under Windows using Cygwin there is a path name length limitation. If the path name length is exceeded, you may see build errors. To correct this, move the ActiveMQ source directory higher in the file system tree, e.g., /cygdrive/c/d/sm.
     
 
 #### Windows Developer's Release
@@ -130,9 +130,9 @@ This procedure explains how to download and install the latest developer's snaps
 
 1.  Open the release archive: [https://repository.apache.org/content/repositories/snapshots/org/apache/activemq/apache-activemq/](https://repository.apache.org/content/repositories/snapshots/org/apache/activemq/apache-activemq/)  
     (open one of the SNAPSHOT directories)
-2.  Select the version of ActiveMQ Classic to download (if necessary, scroll down to see the ActiveMQ Classic snapshots).
+2.  Select the version of ActiveMQ to download (if necessary, scroll down to see the ActiveMQ snapshots).
 3.  Extract the files from the ZIP file into a directory of your choice.
-4.  If a binary snapshot was downloaded, proceed to the [#Starting ActiveMQ Classic](getting-started) section of this document.  
+4.  If a binary snapshot was downloaded, proceed to the [#Starting ActiveMQ](getting-started) section of this document.  
     If a source snapshot was downloaded, perform step 6 and step 7 of the [#Windows Source Installation](getting-started) procedure.
 5.  Following start-up, proceed to the [#Testing the Installation](getting-started) section.
 
@@ -154,13 +154,13 @@ This procedure explains how to download and install the binary distribution on a
     cd [activemq_install_dir]
     tar zxvf activemq-x.x.x-bin.tar.gz
     ```
-3.  Proceed to the [#Starting ActiveMQ Classic](getting-started) section of this document.
+3.  Proceed to the [#Starting ActiveMQ](getting-started) section of this document.
     
 4.  Following start-up, go to the [#Testing the Installation](getting-started) section.
 
 #### Using Homebrew installer on OSX
 
-If you use OSX as your platform, you can use [Homebrew](http://mxcl.github.com/homebrew/) package manager to easily install Apache ActiveMQ Classic.
+If you use OSX as your platform, you can use [Homebrew](http://mxcl.github.com/homebrew/) package manager to easily install Apache ActiveMQ.
 
 1.  After installing Homebrew package manager successfully, just run
     ```
@@ -177,13 +177,13 @@ If you use OSX as your platform, you can use [Homebrew](http://mxcl.github.com/h
     /usr/local/Cellar/apache-activemq/x.x.x: 406 files, 35M, built in 2 seconds
     ```
 
-ActiveMQ Classic will be installed in `/usr/local/Cellar/apache-activemq/x.x.x/` directory (where `x.x.x` denotes the actual version being installed).
+ActiveMQ will be installed in `/usr/local/Cellar/apache-activemq/x.x.x/` directory (where `x.x.x` denotes the actual version being installed).
 
-Now you can proceed to [#Starting ActiveMQ Classic](getting-started) and [#Testing the Installation](getting-started) sections.
+Now you can proceed to [#Starting ActiveMQ](getting-started) and [#Testing the Installation](getting-started) sections.
 
 #### Unix Source Installation
 
-This procedure explains how to download and install the source distribution on a Unix system. This procedure assumes the Unix machine has a browser. Please see the previous [#Unix Binary Installation](getting-started) section for details on how to install ActiveMQ Classic without a browser.
+This procedure explains how to download and install the source distribution on a Unix system. This procedure assumes the Unix machine has a browser. Please see the previous [#Unix Binary Installation](getting-started) section for details on how to install ActiveMQ without a browser.
 
 1.  Download the latest source release  
     (see [Download](download) -\> "The latest stable release" -> "activemq-parent-x.x.x-source-release.zip")
@@ -191,8 +191,8 @@ This procedure explains how to download and install the source distribution on a
     ```
     tar zxvf activemq.x.x-src.tar.gz
     ```
-3.  Build ActiveMQ Classic using Maven:  
-    The preferred method of building ActiveMQ Classic is the following:
+3.  Build ActiveMQ using Maven:  
+    The preferred method of building ActiveMQ is the following:
     ```
     cd [activemq_install_dir]
     mvn clean install # add "-Dmaven.test.skip=true" if tests are failing on your system (should not happen)
@@ -210,9 +210,9 @@ This procedure explains how to download and install the source distribution on a
     mvn idea:idea
     ```
     Feel free to use any other applicable IDE. Please refer to the [plugin reference](http://maven.apache.org/reference/plugins/plugins.html) for more details.  
-    **NOTE:** Working directories get created relative to the current directory. To create working directories in the proper place, ActiveMQ Classic must be launched from its home/installation directory.
+    **NOTE:** Working directories get created relative to the current directory. To create working directories in the proper place, ActiveMQ must be launched from its home/installation directory.
     
-4.  Proceed to the [#Starting ActiveMQ Classic](getting-started) section of this document.
+4.  Proceed to the [#Starting ActiveMQ](getting-started) section of this document.
 5.  Proceed to [#Testing the Installation](getting-started) section.
 
 #### Unix Developer's Release
@@ -221,7 +221,7 @@ This procedure explains how to download and install the latest developer's snaps
 
 1.  Open the release archive: [https://repository.apache.org/content/repositories/snapshots/org/apache/activemq/apache-activemq/](https://repository.apache.org/content/repositories/snapshots/org/apache/activemq/apache-activemq/)  
     (open one of the SNAPSHOT directories)
-2.  Select the version of ActiveMQ Classic to download (you may have to scroll down to see the ActiveMQ Classic snapshots).  
+2.  Select the version of ActiveMQ to download (you may have to scroll down to see the ActiveMQ snapshots).  
     The filename will be similar to: `activemq-x.x.x-tar.gz`.
 3.  Extract the files from the gzip file into a directory of your choice. For example:  
     For a binary developer's snapshot:
@@ -237,14 +237,14 @@ This procedure explains how to download and install the latest developer's snaps
     cd [activemq_install_dir]/bin
     chmod 755 activemq
     ```
-5.  For a binary snapshot, proceed to the [#Starting ActiveMQ Classic](getting-started) section of this document.
+5.  For a binary snapshot, proceed to the [#Starting ActiveMQ](getting-started) section of this document.
 6.  If a source snapshot was downloaded perform steps 6 - 8 of the [#Unix Source Installation](getting-started) procedure.
 7.  Proceed to the [#Testing the Installation](getting-started) section.
 
-Starting ActiveMQ Classic
+Starting ActiveMQ
 -------------------------
 
-There now follows instructions on how to [run the ActiveMQ Classic Message Broker](run-broker).
+There now follows instructions on how to [run the ActiveMQ Message Broker](run-broker).
 
 #### On Windows:
 
@@ -253,13 +253,13 @@ From a console window, change to the installation directory and run `activemq`:
 cd [activemq_install_dir]
 ```
 
-where `[activemq_install_dir]` is the directory in which ActiveMQ Classic was installed, e.g., `c:\Program Files\ActiveMQ-5.x`.  
+where `[activemq_install_dir]` is the directory in which ActiveMQ was installed, e.g., `c:\Program Files\ActiveMQ-5.x`.  
 Then type:
 ```
 bin\activemq start
 ```
 
-`NOTE:** Working directories get created relative to the current directory. To create working directories in the proper place, ActiveMQ Classic must be launched from its home/installation directory.
+`NOTE:** Working directories get created relative to the current directory. To create working directories in the proper place, ActiveMQ must be launched from its home/installation directory.
 
 #### On Unix:
 
@@ -293,13 +293,13 @@ Testing the Installation
 
 ### Logfile and console output
 
-If ActiveMQ Classic is up and running without problems, the Window's console window or the Unix command shell will display information similar to the following log line (see stdout output or "[activemq_install_dir]/data/activemq.log"):
+If ActiveMQ is up and running without problems, the Window's console window or the Unix command shell will display information similar to the following log line (see stdout output or "[activemq_install_dir]/data/activemq.log"):
 ```
 Apache ctiveMQ 5.11.1 (localhost, ID:ntbk11111-50816-1428933306116-0:1) started | org.apache.activemq.broker.BrokerService | main
 ```
 ### Listen port
 
-ActiveMQ Classic's default port is 61616. From another window run netstat and search for port 61616.
+ActiveMQ's default port is 61616. From another window run netstat and search for port 61616.
 
 From a Windows console, type:
 ```
@@ -312,46 +312,46 @@ From a Unix command shell, type:
 netstat -nl|grep 61616
 ```
 
-Monitoring ActiveMQ Classic
+Monitoring ActiveMQ
 ---------------------------
 
-You can monitor ActiveMQ Classic using the [Web Console](web-console) by pointing your browser at `http://localhost:8161/admin`.
+You can monitor ActiveMQ using the [Web Console](web-console) by pointing your browser at `http://localhost:8161/admin`.
 
-From ActiveMQ Classic 5.8 onwards the web apps is secured out of the box.  
+From ActiveMQ 5.8 onwards the web apps is secured out of the box.  
 The default username and password is admin/admin. You can configure this in the conf/jetty-real.properties file.
 
-Or you can use the [JMX](jmx) support to view the running state of ActiveMQ Classic.
+Or you can use the [JMX](jmx) support to view the running state of ActiveMQ.
 
 For more information see the file `docs/WebConsole-README.txt` in the distribution.
 
-Stopping ActiveMQ Classic
+Stopping ActiveMQ
 -------------------------
 
-For both Windows and Unix installations, terminate ActiveMQ Classic by typing "CTRL-C" in the console or command shell in which it is running.
+For both Windows and Unix installations, terminate ActiveMQ by typing "CTRL-C" in the console or command shell in which it is running.
 
-If ActiveMQ Classic was started in the background on Unix, the process can be killed, with the following:
+If ActiveMQ was started in the background on Unix, the process can be killed, with the following:
 ```
 cd [activemq_install_dir]/bin
 ./activemq stop
 ```
 
-Configuring ActiveMQ Classic
+Configuring ActiveMQ
 ----------------------------
 
-The ActiveMQ Classic broker should now run. You can configure the broker by specifying an [Xml Configuration](xml-configuration) file as a parameter to the _activemq_ command. An alternative is to use the [Broker Configuration URI](broker-configuration-uri) to configure things on the command line in a concise format (though the configuration options are not as extensive as if you use Java or XML code). You can also
+The ActiveMQ broker should now run. You can configure the broker by specifying an [Xml Configuration](xml-configuration) file as a parameter to the _activemq_ command. An alternative is to use the [Broker Configuration URI](broker-configuration-uri) to configure things on the command line in a concise format (though the configuration options are not as extensive as if you use Java or XML code). You can also
 
 Also see [Configuring Transports](configuring-transports) to see how you can configure the various connection, transport and broker options using the connection URL in the ActiveMQConnectionFactory.
 
-See the [Initial Configuration](configuration) for details of which jars you need to add to your classpath to start using ActiveMQ Classic in your Java code
+See the [Initial Configuration](configuration) for details of which jars you need to add to your classpath to start using ActiveMQ in your Java code
 
 If you want to use JNDI to connect to your JMS provider then please view the [JNDI Support](jndi-support). If you are a Spring user you should read about [Spring Support](spring-support)
 
-After the installation, ActiveMQ Classic is running with a basic configuration. For details on configuring options, please see refer to the [Configuration](configuration) section.
+After the installation, ActiveMQ is running with a basic configuration. For details on configuring options, please see refer to the [Configuration](configuration) section.
 
 Additional Resources
 --------------------
 
-If you are new to using ActiveMQ Classic, running the [Web Samples](web-samples) or the [Examples](examples) is a good next step to learn more about ActiveMQ Classic.
+If you are new to using ActiveMQ, running the [Web Samples](web-samples) or the [Examples](examples) is a good next step to learn more about ActiveMQ.
 
 The commercial providers listed on the [issues](issues) page may also have additional documentation, examples, tutorials, etc... that can help you get started.
 

@@ -8,7 +8,7 @@ type: classic
  [FAQ](faq) > [Configuration](configuration) > [How to configure a new database](how-to-configure-a-new-database)
 
 
-ActiveMQ Classic explicity supports Derby, Axion, HSQL, Oracle, and SQLServer. Below are the steps on how to configure a new database.
+ActiveMQ explicity supports Derby, Axion, HSQL, Oracle, and SQLServer. Below are the steps on how to configure a new database.
 
 1. Modify activemq.xml found in the directory "activemq_home/conf" by editing or adding a JDBC DataSource Configuration, e.g.:
 

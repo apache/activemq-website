@@ -2,13 +2,13 @@
 version: 6.0.0
 release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12352570
 release_date: 2023-11-17
-title: ActiveMQ Classic 6.0.0 Release
+title: ActiveMQ 6.0.0 Release
 java_version: 17+
-shortDescription: Classic 6.0.0 is a major release for ActiveMQ Classic, starting the 6.x series.
+shortDescription: Classic 6.0.0 is a major release for ActiveMQ, starting the 6.x series.
 redirect_from:
 - /../../../activemq-6000000-release
 ---
-Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
+Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
 
 It's a major release for the project, especially bringing:
 - [Partial Jakarta Messaging 3.1 & JMS 2.0 support]({{site.baseurl}}/components/classic/documentation/jms2) (new features will come in the 6.x series)

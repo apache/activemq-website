@@ -8,9 +8,9 @@ type: classic
 [Tools](tools) > [Web Console](web-console)
 
 
-The ActiveMQ Classic Web Console is a web based administration tool for working with ActiveMQ Classic. When used with the [JMX](jmx) support it can be an invaluable tool for working with ActiveMQ Classic
+The ActiveMQ Web Console is a web based administration tool for working with ActiveMQ. When used with the [JMX](jmx) support it can be an invaluable tool for working with ActiveMQ
 
-### Running the Web Console on ActiveMQ Classic 5.0 or later
+### Running the Web Console on ActiveMQ 5.0 or later
 
 We have integrated the Web Console into the binary distribution. So [Download](download) a binary distribution then follow the instructions for [Version 5 Run Broker](run-broker). Then you can point your web browser at the URL
 
@@ -18,7 +18,7 @@ We have integrated the Web Console into the binary distribution. So [Download](d
 
 And hey presto, you should now have the Web Console running.
 
-In the event that you are running a standalone broker and the Web Console is not reachable, check that the following lines are included in your ActiveMQ Classic config xml:
+In the event that you are running a standalone broker and the Web Console is not reachable, check that the following lines are included in your ActiveMQ config xml:
 ```
 <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 <property name="locations">
@@ -30,7 +30,7 @@ In the event that you are running a standalone broker and the Web Console is not
 
 <import resource="${activemq.base}/conf/jetty.xml" />
 ```
-The import will start up an embedded Jetty container. To verify that the config is working, the following should appear in your ActiveMQ Classic console/logs on next startup:
+The import will start up an embedded Jetty container. To verify that the config is working, the following should appear in your ActiveMQ console/logs on next startup:
 ```
 INFO | jetty-7.1.6.v20100715
 INFO | ActiveMQ WebConsole initialized.
@@ -42,7 +42,7 @@ If you want to change the port number of the web console, see the configuration 
 
 ### Securing Web Console
 
-Starting with ActiveMQ Classic 5.4.0, Web Console comes pre-configured with basic access authentication setup. It's turned off by default, so you need to turn it on explicitly, but it's really simple. Go to the `${ACTIVEMQ_HOME}/conf/jetty.xml` and find the following line
+Starting with ActiveMQ 5.4.0, Web Console comes pre-configured with basic access authentication setup. It's turned off by default, so you need to turn it on explicitly, but it's really simple. Go to the `${ACTIVEMQ_HOME}/conf/jetty.xml` and find the following line
 ```
 <property name="authenticate" value="false" />
 ```
@@ -98,9 +98,9 @@ Send|[Delay and Schedule Message Delivery](delay-and-schedule-message-delivery)
 External Web Consoles
 =====================
 
-There are a number of external web consoles for Apache ActiveMQ Classic in separate open source projects:
+There are a number of external web consoles for Apache ActiveMQ in separate open source projects:
 
 External Project|Description
 ---|---
-[hawtio](http://hawt.io/)|hawtio is an open source HTML5 web application for visualising, managing, tracing and debugging Camel routes & endpoints, ActiveMQ Classic brokers, JMX, OSGi and logging. Here is a [blog entry](http://www.bennet-schulz.com/2016/07/apache-activemq-and-hawtio.html) how to install hawtio as web console for ActiveMQ Classic.
-[RHQ](http://www.jboss.org/rhq)|RHQ is an open source operational monitoring tool which has support for Apache Camel (along with other Apache projects like Tomcat, httpd, ActiveMQ Classic etc)
+[hawtio](http://hawt.io/)|hawtio is an open source HTML5 web application for visualising, managing, tracing and debugging Camel routes & endpoints, ActiveMQ brokers, JMX, OSGi and logging. Here is a [blog entry](http://www.bennet-schulz.com/2016/07/apache-activemq-and-hawtio.html) how to install hawtio as web console for ActiveMQ.
+[RHQ](http://www.jboss.org/rhq)|RHQ is an open source operational monitoring tool which has support for Apache Camel (along with other Apache projects like Tomcat, httpd, ActiveMQ etc)

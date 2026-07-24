@@ -2,13 +2,13 @@
 version: 5.19.1
 release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12355592
 release_date: 2025-10-11
-title: ActiveMQ Classic 5.19.1 Release
+title: ActiveMQ 5.19.1 Release
 java_version: 11+
 shortDescription: Maintenance release on the 5.19.x series.
 redirect_from:
 - /../../../activemq-5019001-release
 ---
-Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
+Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
 
 This is a maintenance release on the 5.19.x series, including:
 - fix on the network of broker TTL management

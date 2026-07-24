@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.8.0 Release
+title: ActiveMQ 5.8.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.8.0 resolves [160 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+%225.8.0%22+AND+status+%3D+Resolved+ORDER+BY+priority+DESC&mode=hide), mostly bug fixes and improvements. It has the following new features:
+Apache ActiveMQ 5.8.0 resolves [160 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+%225.8.0%22+AND+status+%3D+Resolved+ORDER+BY+priority+DESC&mode=hide), mostly bug fixes and improvements. It has the following new features:
 
 *   [AMQP](amqp)
 *   new feature modules and activemq-client module allowing smaller foorprint
@@ -37,7 +37,7 @@ There are some changes in 5.8 that may require some code change
 3.  OSGi integration has changed. The full details are at [OSGi Integration](osgi-integration). In summary:
     1.  There is a single uber OSGI bundle
     2.  The broker and webconsole are now configured via config admin pid files through an OSGi managed service factory.
-4.  The ActiveMQ Classic binary file `bin/run.jar` has been renamed to `bin/activemq.jar`.
+4.  The ActiveMQ binary file `bin/run.jar` has been renamed to `bin/activemq.jar`.
 
 Getting the Binary Distributions
 --------------------------------
@@ -109,5 +109,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12323282)
 
-Also see the previous [ActiveMQ Classic 5.7.0 Release](classic-05-07-00)
+Also see the previous [ActiveMQ 5.7.0 Release](classic-05-07-00)
 

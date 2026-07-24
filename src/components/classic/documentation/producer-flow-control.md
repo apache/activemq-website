@@ -11,9 +11,9 @@ type: classic
 Producer Flow Control
 ---------------------
 
-In ActiveMQ Classic 4.x flow control was implemented using TCP flow control. The underlying network connection of throttled consumers was suspended to enforce flow control limits. This strategy is very efficient but can lead to deadlocks if there are multiple producers and consumers sharing the same connection.
+In ActiveMQ 4.x flow control was implemented using TCP flow control. The underlying network connection of throttled consumers was suspended to enforce flow control limits. This strategy is very efficient but can lead to deadlocks if there are multiple producers and consumers sharing the same connection.
 
-As of ActiveMQ Classic 5.0, we can now individually flow control each producer on a shared connection without having to suspend the entire connection. By 'flow control' we mean that if the broker detects that the memory limit for the destination, or the temp- or file-store limits for the broker, have been exceeded, then the flow of messages can be slowed down. The producer will be either blocked until resources are available _or_ will receive a JMSException: this behaviour is configurable and described in the section below on `<systemUsage>`.
+As of ActiveMQ 5.0, we can now individually flow control each producer on a shared connection without having to suspend the entire connection. By 'flow control' we mean that if the broker detects that the memory limit for the destination, or the temp- or file-store limits for the broker, have been exceeded, then the flow of messages can be slowed down. The producer will be either blocked until resources are available _or_ will receive a JMSException: this behaviour is configurable and described in the section below on `<systemUsage>`.
 
 It's worth noting that the default `<systemUsage>` settings will cause the producer to _block_ when the `memoryLimit` or `<systemUsage>` limits are reached: this blocking behaviour is sometimes misinterpreted as a 'hung producer', when in fact the producer is simply diligently waiting until space is available.
 
@@ -39,7 +39,7 @@ If you like, you can disable flow control for specific JMS queues and topics on 
 ```
 see [Broker Configuration](xml-configuration).
 
-Note that, since the introduction of the new file cursor in ActiveMQ Classic 5.x, non-persisted messages are shunted into the temporary file store to reduce the amount of memory used for non-persistent messaging. As a result, you may find that a queue's memoryLimit is never reached, as the cursor doesn't use very much memory. If you really do want to keep all your non-persistent messages in memory, and stop producers when the limit is reached, you should configure the `<vmQueueCursor>`.
+Note that, since the introduction of the new file cursor in ActiveMQ 5.x, non-persisted messages are shunted into the temporary file store to reduce the amount of memory used for non-persistent messaging. As a result, you may find that a queue's memoryLimit is never reached, as the cursor doesn't use very much memory. If you really do want to keep all your non-persistent messages in memory, and stop producers when the limit is reached, you should configure the `<vmQueueCursor>`.
 ```
 <policyEntry queue=">" producerFlowControl="true" memoryLimit="1mb">    
   <pendingQueuePolicy>

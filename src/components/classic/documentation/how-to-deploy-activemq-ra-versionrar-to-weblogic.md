@@ -8,7 +8,7 @@ type: classic
  [FAQ](faq) > [Configuration](configuration) > [How to deploy activemq-ra-version.rar to weblogic](how-to-deploy-activemq-ra-versionrar-to-weblogic)
 
 
-### This is a guide on how to deploy ActiveMQ Classic's resouce adapter to weblogic 9.1.
+### This is a guide on how to deploy ActiveMQ's resouce adapter to weblogic 9.1.
 
 1.  Create a new domain in weblogic using the configuration wizard (Start menu BEA Products -> Tools -> configuration Wizard ).
 2.  Add the jar dependencies (these are the jars inside the rar file..for some reason weblogic is not loading these from the rar file)  in the classpath . One way to do this is by dropping the jars in the lib directory of the domain (`<%BEA\_HOME%>`\user_projects\domains\\`<%DOMAIN_NAME%>`\lib). 
@@ -16,7 +16,7 @@ type: classic
     ```
     <config-property>
       <description>
-        Sets the XML configuration file used to configure the ActiveMQ Classic broker via
+        Sets the XML configuration file used to configure the ActiveMQ broker via
         Spring if using embedded mode.
     
         BrokerXmlConfig is the filename which is assumed to be on the classpath unless

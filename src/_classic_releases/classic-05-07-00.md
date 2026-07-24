@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.7.0 Release
+title: ActiveMQ 5.7.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.7.0 is primarily a maintenance release which resolves nearly [200 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+%225.7.0%22+AND+status+%3D+Resolved+ORDER+BY+priority+DESC&mode=hide), mostly bug fixes and improvements
+Apache ActiveMQ 5.7.0 is primarily a maintenance release which resolves nearly [200 issues](https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+AMQ+AND+fixVersion+%3D+%225.7.0%22+AND+status+%3D+Resolved+ORDER+BY+priority+DESC&mode=hide), mostly bug fixes and improvements
 
 *   Java 7 support (compiled with jdk6 and validated with jdk7)
 *   [Secure WebSockets (wss) transport](http://activemq.apache.orgConnectivityConnectivity/Connectivity/websockets.md#WebSockets-SecureWebSockets)
@@ -92,5 +92,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12321258)
 
-Also see the previous [ActiveMQ Classic 5.6.0 Release](classic-05-06-00)
+Also see the previous [ActiveMQ 5.6.0 Release](classic-05-06-00)
 

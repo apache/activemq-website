@@ -5,10 +5,10 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How to deal with large number of threads in clients](how-to-deal-with-large-number-of-threads-in-clients)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How to deal with large number of threads in clients](how-to-deal-with-large-number-of-threads-in-clients)
 
 
-If you study thread allocation in ActiveMQ Classic clients, you'll notice that by default there is one thread allocated by every session. This basically means that session will use its [ThreadPoolExecutor](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ThreadPoolExecutor.html) to execute its tasks. Up until version 5.7 this executor was unbound which could lead to OOM problems in rare case where are a large number of busy sessions in the same JVM could cause uncontrollable spikes in thread creation.
+If you study thread allocation in ActiveMQ clients, you'll notice that by default there is one thread allocated by every session. This basically means that session will use its [ThreadPoolExecutor](http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ThreadPoolExecutor.html) to execute its tasks. Up until version 5.7 this executor was unbound which could lead to OOM problems in rare case where are a large number of busy sessions in the same JVM could cause uncontrollable spikes in thread creation.
 
 In 5.7 we bounded this executor to a maximum of 1000 threads by default, which we believe should be enough for most use cases. In case of large number of busy sessions, each of them could end up using large number of threads and eventually OOM your application. There are couple of things you can do. The first obvious thing is to decrease the max thread limit a session can use, like this:
 ```

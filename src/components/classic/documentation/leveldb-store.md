@@ -13,7 +13,7 @@ type: classic
 
 > **Version Compatibility**
 > 
-> Available in ActiveMQ Classic 5.8.0 but became unsupported as of 5.14.2, and was removed in 5.17.0
+> Available in ActiveMQ 5.8.0 but became unsupported as of 5.14.2, and was removed in 5.17.0
 
 The LevelDB Store is a file based persistence database that is local to the message broker that is using it. It has been optimized to provide even faster persistence than KahaDB. It's similar to KahahDB but instead of using a custom B-Tree implementation to index the write ahead logs, it uses [LevelDB](https://code.google.com/p/leveldb/) based indexes which have several nice properties due to the 'append only' files access patterns :
 
@@ -26,7 +26,7 @@ Both KahaDB and the LevelDB store have to do periodic garbage collection cycles 
 Configuration
 -------------
 
-You can configure ActiveMQ Classic to use LevelDB for its persistence adapter - like below :
+You can configure ActiveMQ to use LevelDB for its persistence adapter - like below :
 ```
   <broker brokerName="broker" ... >
     ...

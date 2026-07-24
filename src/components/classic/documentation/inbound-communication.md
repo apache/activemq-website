@@ -8,10 +8,10 @@ type: classic
 [Connectivity](connectivity) > [Containers](containers) > [JBoss Integration](jboss-integration) > [Inbound Communication](inbound-communication)
 
 
-Configuring an MDB to receive messages from ActiveMQ Classic
+Configuring an MDB to receive messages from ActiveMQ
 ----------------------------------------------------
 
-There are three MDBs declared in the [ejb-jar.xml](inbound-communication.data/ejb-jar.xml?version=3&modificationDate=1117021488000&api=v2) deployment descriptor. For this example, I will be explaining how to configure the `TopicDurableMDB` to be invoked by JBoss when a message is received on an ActiveMQ Classic Topic.
+There are three MDBs declared in the [ejb-jar.xml](inbound-communication.data/ejb-jar.xml?version=3&modificationDate=1117021488000&api=v2) deployment descriptor. For this example, I will be explaining how to configure the `TopicDurableMDB` to be invoked by JBoss when a message is received on an ActiveMQ Topic.
 
 ### The Bean
 
@@ -61,11 +61,11 @@ The two `activation-config-properties` shown above link to the following element
   ...
 </inbound-resourceadapter>
 ```
-In the [ejb-jar.xml](inbound-communication.data/ejb-jar.xml?version=3&modificationDate=1117021488000&api=v2) file section shown above, the value of the `Destination` property is set to `topic.testTopic`. This value is the physical name of the ActiveMQ Classic destination the `TopicDurableMDB` will be receiving messages from and not a JNDI name. In other words, the value of the `Destination` property has no meaning to JBoss. It is purely an ActiveMQ Classic setting.
+In the [ejb-jar.xml](inbound-communication.data/ejb-jar.xml?version=3&modificationDate=1117021488000&api=v2) file section shown above, the value of the `Destination` property is set to `topic.testTopic`. This value is the physical name of the ActiveMQ destination the `TopicDurableMDB` will be receiving messages from and not a JNDI name. In other words, the value of the `Destination` property has no meaning to JBoss. It is purely an ActiveMQ setting.
 
 ### The Glue
 
-In JBoss, the thing which connects an inbound JMS destination to an MDB is a JBoss container. To use ActiveMQ Classic as the inbound message source for the `TopicDurableMDB` we must configure a new JBoss container. We do this in the [jboss.xml](inbound-communication.data/jboss.xml?version=3&modificationDate=1117021488000&api=v2) file.
+In JBoss, the thing which connects an inbound JMS destination to an MDB is a JBoss container. To use ActiveMQ as the inbound message source for the `TopicDurableMDB` we must configure a new JBoss container. We do this in the [jboss.xml](inbound-communication.data/jboss.xml?version=3&modificationDate=1117021488000&api=v2) file.
 
 Three things are needed in the [jboss.xml](inbound-communication.data/jboss.xml?version=3&modificationDate=1117021488000&api=v2) file in order to tie an MDB to a connector. They are:
 
@@ -89,7 +89,7 @@ This second snippet configures a new MDB container which uses the `invoker-proxy
 **jboss.xml – container-configuration**
 ```
 <container-configuration>
-   <container-name>ActiveMQ Classic Message Driven Bean</container-name>
+   <container-name>ActiveMQ Message Driven Bean</container-name>
    <call-logging>false</call-logging>
    <invoker-proxy-binding-name>activemq-message-driven-bean</invoker-proxy-binding-name>
    ...
@@ -102,10 +102,10 @@ This third snippet links the `TopicDurableMDB` to the [activemq-ra-1.2.rar](jbos
 <message-driven>
    <ejb-name>TopicDurableMDB</ejb-name>
    <resource-adapter-name>activemq-ra-1.2-SNAPSHOT.rar</resource-adapter-name>
-   <configuration-name>ActiveMQ Classic Message Driven Bean</configuration-name>
+   <configuration-name>ActiveMQ Message Driven Bean</configuration-name>
 </message-driven>
 ```
-The above examples highlight the key configuration settings needed to enable MDBs deployed in JBoss to process messages from an ActiveMQ Classic destination.
+The above examples highlight the key configuration settings needed to enable MDBs deployed in JBoss to process messages from an ActiveMQ destination.
 
 You can try the above example, plus a few more, by downloading the [activemq-jboss-test.zip](inbound-communication.data/activemq-jboss-test.zip?version=3&modificationDate=1117021355000&api=v2) file which contains the complete sample project.
 

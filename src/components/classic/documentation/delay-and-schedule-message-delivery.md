@@ -5,8 +5,8 @@ title-class: page-title-classic
 type: classic
 ---
 
-ActiveMQ Classic from version **5.4** has an optional persistent scheduler built into the ActiveMQ Classic message broker. It is enabled by setting the broker **schedulerSupport** attribute to true in the [Xml Configuration](xml-configuration).
-An ActiveMQ Classic client can take advantage of a delayed delivery by using the following message properties:
+ActiveMQ from version **5.4** has an optional persistent scheduler built into the ActiveMQ message broker. It is enabled by setting the broker **schedulerSupport** attribute to true in the [Xml Configuration](xml-configuration).
+An ActiveMQ client can take advantage of a delayed delivery by using the following message properties:
 
 > **Check your Message Properties**
 > 
@@ -48,7 +48,7 @@ TextMessage message = session.createTextMessage("test msg");
 message.setStringProperty(ScheduledMessage.AMQ_SCHEDULED_CRON, "0 * * * *");
 producer.send(message);
 ```
-CRON scheduling takes priority over using message delay - however, if a repeat and period is set with a CRON entry, the ActiveMQ Classic scheduler will schedule delivery of the message for every time the CRON entry fires. Easier to explain with an example. Supposing that you want a message to be delivered 10 times, with a one second delay between each message - and you wanted this to happen every hour - you'd do this:
+CRON scheduling takes priority over using message delay - however, if a repeat and period is set with a CRON entry, the ActiveMQ scheduler will schedule delivery of the message for every time the CRON entry fires. Easier to explain with an example. Supposing that you want a message to be delivered 10 times, with a one second delay between each message - and you wanted this to happen every hour - you'd do this:
 ```java
 MessageProducer producer = session.createProducer(destination);
 TextMessage message = session.createTextMessage("test msg");

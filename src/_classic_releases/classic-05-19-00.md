@@ -2,13 +2,13 @@
 version: 5.19.0
 release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12355096
 release_date: 2025-03-11
-title: ActiveMQ Classic 5.19.0 Release
+title: ActiveMQ 5.19.0 Release
 java_version: 11+
 shortDescription: First release on the 5.19.x series.
 redirect_from:
 - /../../../activemq-5019000-release
 ---
-Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
+Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
 
 This is the first release on the 5.19.x series. It's based on 5.18.x with additional features.
 

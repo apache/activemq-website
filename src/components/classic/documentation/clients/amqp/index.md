@@ -23,7 +23,7 @@ OASIS Standard.
 
 Broker                    | Supported
 :---------------------- | :-------------
-ActiveMQ Classic  | [x]
+ActiveMQ  | [x]
 ActiveMQ Artemis  | [x]
 
 

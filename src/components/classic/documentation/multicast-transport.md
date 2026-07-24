@@ -8,7 +8,7 @@ type: classic
 [Developers](developers) > [Developer Guide](developer-guide) > [Design Documents](design-documents) > [Multicast Transport](multicast-transport)
 
 
-We could support a reliable multicast protocol and use that to distribute messages across. This page braindumps how that could fit in with ActiveMQ Classic 4.x's architecture.
+We could support a reliable multicast protocol and use that to distribute messages across. This page braindumps how that could fit in with ActiveMQ 4.x's architecture.
 
 *   each VM would have its own embedded broker; JMS connections would talk VM protocol to the embedded broker (or TCP to some remote broker)
 *   the brokers communicate with each other via multicast

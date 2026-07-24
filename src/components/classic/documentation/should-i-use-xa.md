@@ -19,7 +19,7 @@ The problem with XA is it can be a bit slow; as the XA protocol requires multipl
 
 Be Careful
 
-ActiveMQ Classic does not currently support XA Transaction suspend / resume semantics.
+ActiveMQ does not currently support XA Transaction suspend / resume semantics.
 
 ### An alternative to XA
 

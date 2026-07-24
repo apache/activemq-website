@@ -11,7 +11,7 @@ type: classic
 TCP based transport protocols (including SSL) allow you to define the local address and local port for Socket to use when it's created.  
 This can be useful for clients that reside on multi-homed machines or for clients operating in a DMZ, where only pre-defined ports can be used.
 
-To specify the local address and local port, ActiveMQ Classic supports the use of the path on the URI, e.g.
+To specify the local address and local port, ActiveMQ supports the use of the path on the URI, e.g.
 ```
 ssl://localhost:5666/localhost:60606
 ```

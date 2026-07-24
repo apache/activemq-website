@@ -11,7 +11,7 @@ type: classic
 Discovery Agents
 ----------------
 
-ActiveMQ Classic uses an abstraction called a [Discovery Agent](http://actievmq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/transport/discovery/DiscoveryAgent.html) to detect remote services such as remote brokers. We can use discovery for JMS clients to auto-detect a Message Broker to connect to, or to provide [Networks of Brokers](networks-of-brokers)
+ActiveMQ uses an abstraction called a [Discovery Agent](http://actievmq.apache.org/maven/activemq-core/apidocs/org/apache/activemq/transport/discovery/DiscoveryAgent.html) to detect remote services such as remote brokers. We can use discovery for JMS clients to auto-detect a Message Broker to connect to, or to provide [Networks of Brokers](networks-of-brokers)
 
 There are currently two kinds of discovery agent.
 
@@ -37,7 +37,7 @@ This will use Zeroconf to find an available broker and one will be randomly chos
 
 ### LDAP Discovery
 
-ActiveMQ Classic supports the use of LDAP for discovery of brokers.
+ActiveMQ supports the use of LDAP for discovery of brokers.
 
 Please see [LDAP Broker Discovery Mechanism](ldap-broker-discovery-mechanism) for more details.
 

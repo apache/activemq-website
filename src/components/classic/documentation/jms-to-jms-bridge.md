@@ -10,7 +10,7 @@ type: classic
 
 > **Warning**, try Camel first!
 > 
-> Note that we recommend you look at using [Apache Camel](http://camel.apache.org/) for bridging ActiveMQ Classic to or from any message broker (or indeed [any other technology, protocol or middleware](http://camel.apache.org/components.html)) as its much easier to:
+> Note that we recommend you look at using [Apache Camel](http://camel.apache.org/) for bridging ActiveMQ to or from any message broker (or indeed [any other technology, protocol or middleware](http://camel.apache.org/components.html)) as its much easier to:
 > 
 > *   keep things flexible; its very easy to map different queue/topic to one or more queues or topics on the other provider
 > *   perform content based routing, filtering and other [Enterprise Integration Patterns](http://camel.apache.orgFeatures/enterprise-integration-patterns)
@@ -28,9 +28,9 @@ type: classic
 
 ### Introduction
 
-ActiveMQ Classic provides bridging functionality to other JMS providers that implement the JMS 1.0.2 and above specification. A JMS bridge can be co-located with an ActiveMQ Classic broker or run remotely. In order to support JMS 1.0.2 there is seperation between Queues and Topics.
+ActiveMQ provides bridging functionality to other JMS providers that implement the JMS 1.0.2 and above specification. A JMS bridge can be co-located with an ActiveMQ broker or run remotely. In order to support JMS 1.0.2 there is seperation between Queues and Topics.
 
-temporary destinations and replyTo destinations in the inbound message exchanges are automatically handled, enabling an ActiveMQ Classic service to handle a foreign JMS TopicRequestor or QueueResquestor exchanges.
+temporary destinations and replyTo destinations in the inbound message exchanges are automatically handled, enabling an ActiveMQ service to handle a foreign JMS TopicRequestor or QueueResquestor exchanges.
 
 ### Properties
 
@@ -38,20 +38,20 @@ temporary destinations and replyTo destinations in the inbound message exchanges
 
 property name|default value|description
 ---|---|---
-localTopicConnection|null|if set will be used to connect to ActiveMQ Classic
-localTopicConnectionFactory|null|used to initialize the ActiveMQ Classic JMS Connection if localTopicConnection is not set
+localTopicConnection|null|if set will be used to connect to ActiveMQ
+localTopicConnectionFactory|null|used to initialize the ActiveMQ JMS Connection if localTopicConnection is not set
 localClientId|null|set the id of the local connection
 outboundClientId|null|set the id of the outbound connection
-jndiLocalTemplate|Spring default template|used for locating the Connection Factory for the ActiveMQ Classic Connection if the localTopicConnection or localTopicConnectionFactory is not set
+jndiLocalTemplate|Spring default template|used for locating the Connection Factory for the ActiveMQ Connection if the localTopicConnection or localTopicConnectionFactory is not set
 outboundTopicConnection|null|if set will be used to connect to the foreign JMS provider
 outboundTopicConnectionFactory|null|used to initialize the foreign JMS Connection if outboundTopicConnection is not set
-jndiOutboundTemplate|Spring default template|used for locating the Connection Factory for the ActiveMQ Classic Connection if the localTopicConnection or localTopicConnectionFactory is not set
-localUsername|null|if set will be used for authentication to the ActiveMQ Classic JMS provider
-localPassword|null|if set will be used for authentication to the ActiveMQ Classic JMS provider
+jndiOutboundTemplate|Spring default template|used for locating the Connection Factory for the ActiveMQ Connection if the localTopicConnection or localTopicConnectionFactory is not set
+localUsername|null|if set will be used for authentication to the ActiveMQ JMS provider
+localPassword|null|if set will be used for authentication to the ActiveMQ JMS provider
 outboundUsername|null|if set will be used for authentication to the foreign JMS provider
 outboundPassword|null|if set will be used for authentication to the foreign JMS provider
-inboundMessageConvertor|null|if set will be used for converting foreign JMS Messages to a format for ActiveMQ Classic
-outboundMessageConvertor|null|if set will be used for converting ActiveMQ Classic messages to a format for the foriegn JMS provider
+inboundMessageConvertor|null|if set will be used for converting foreign JMS Messages to a format for ActiveMQ
+outboundMessageConvertor|null|if set will be used for converting ActiveMQ messages to a format for the foriegn JMS provider
 inboundTopicBridges|null|an array of InboundTopicBridge instances - used for defining inbound (subscribe to) traffic from the foreign JMS provider
 outboundTopicBridges|null|an array of OutboundTopicBridge instances - used for defining destinations that will be published to the foreign JMS provider
 
@@ -59,20 +59,20 @@ outboundTopicBridges|null|an array of OutboundTopicBridge instances - used for d
 
 property name|default value|description
 ---|---|---
-localQueueConnection|null|if set will be used to connect to ActiveMQ Classic
-localQueueConnectionFactory|null|used to initialize the ActiveMQ Classic JMS Connection if localQueueConnection is not set
+localQueueConnection|null|if set will be used to connect to ActiveMQ
+localQueueConnectionFactory|null|used to initialize the ActiveMQ JMS Connection if localQueueConnection is not set
 localClientId|null|set the id of the local connection
 outboundClientId|null|set the id of the outbound connection
-jndiLocalTemplate|Spring default template|used for locating the Connection Factory for the ActiveMQ Classic Connection if the localQueueConnection or localQueueConnectionFactory is not set
+jndiLocalTemplate|Spring default template|used for locating the Connection Factory for the ActiveMQ Connection if the localQueueConnection or localQueueConnectionFactory is not set
 outboundQueueConnection|null|if set will be used to connect to the foreign JMS provider
 outboundQueueConnectionFactory|null|used to initialize the foreign JMS Connection if localQueueConnection is not set
-jndiOutboundTemplate|Spring default template|used for locating the Connection Factory for the ActiveMQ Classic Connection if the localQueueConnection or localQueueConnectionFactory is not set
-localUsername|null|if set will be used for authentication to the ActiveMQ Classic JMS provider
-localPassword|null|if set will be used for authentication to the ActiveMQ Classic JMS provider
+jndiOutboundTemplate|Spring default template|used for locating the Connection Factory for the ActiveMQ Connection if the localQueueConnection or localQueueConnectionFactory is not set
+localUsername|null|if set will be used for authentication to the ActiveMQ JMS provider
+localPassword|null|if set will be used for authentication to the ActiveMQ JMS provider
 outboundUsername|null|if set will be used for authentication to the foreign JMS provider
 outboundPassword|null|if set will be used for authentication to the foreign JMS provider
-inboundMessageConvertor|null|if set will be used for converting foreign JMS Messages to a format for ActiveMQ Classic
-outboundMessageConvertor|null|if set will be used for converting ActiveMQ Classic messages to a format for the foriegn JMS provider
+inboundMessageConvertor|null|if set will be used for converting foreign JMS Messages to a format for ActiveMQ
+outboundMessageConvertor|null|if set will be used for converting ActiveMQ messages to a format for the foriegn JMS provider
 inboundQueueBridges|null|an array of InboundQueueBridge instances - used for defining inbound (subscribe to) traffic from the foreign JMS provider
 outboundQueueBridges|null|an array of OutboundQueueBridge instances - used for defining destinations that will be forwarded to the foreign JMS provider
 
@@ -82,7 +82,7 @@ outboundQueueBridges|null|an array of OutboundQueueBridge instances - used for d
 
 property name|default value|description
 ---|---|---
-localTopicName|null|the name of the local ActiveMQ Classic Queue
+localTopicName|null|the name of the local ActiveMQ Queue
 inboundTopicName|null|the foreign topic name to subscribe to
 selector|null|selector to use - if any
 consumerName|null|if set will create a durable consumer
@@ -91,7 +91,7 @@ consumerName|null|if set will create a durable consumer
 
 property name|default value|description
 ---|---|---
-localTopicName|null|the name of the local ActiveMQ Classic Queue
+localTopicName|null|the name of the local ActiveMQ Queue
 outboundTopicName|null|the foreign topic name to publish to
 
 #### Queue Bridges
@@ -100,7 +100,7 @@ outboundTopicName|null|the foreign topic name to publish to
 
 property name|default value|description
 ---|---|---
-localQueueName|null|the name of the local ActiveMQ Classic Queue
+localQueueName|null|the name of the local ActiveMQ Queue
 inboundQueueName|null|the foreign queue name to receive from
 selector|null|selector to use - if any
 
@@ -109,7 +109,7 @@ selector|null|selector to use - if any
 
 property name|default value|description
 ---|---|---
-localQueueName|null|the name of the local ActiveMQ Classic Queue
+localQueueName|null|the name of the local ActiveMQ Queue
 outboundQueueName|null|the foreign queue name to send to
 
 ### Example XBean Configuration
@@ -183,7 +183,7 @@ The following example shows how to use raw Spring XML to wire together a broker 
 </bean>
 ```
 
-### Example XBean Configuration to Bridge ActiveMQ Classic to Provider With No URL Setter
+### Example XBean Configuration to Bridge ActiveMQ to Provider With No URL Setter
 
 Some JMS providers, WebLogic for instance, do not expose a setter for connection properties like host and port (setBrokerUrl) on their ConnectionFactory object. In this case you need to set outboundQueueConnectionFactoryName and jndiOutboundTemplate in your activemq.xml config file.
 ```xml
@@ -243,7 +243,7 @@ Some JMS providers, WebLogic for instance, do not expose a setter for connection
 <!-- END SNIPPET: xbean -->
 ```
 
-### Example pure Spring Configuration for sending messages to external ActiveMQ Classic destination through bridge
+### Example pure Spring Configuration for sending messages to external ActiveMQ destination through bridge
 
 Spring beans:
 ```xml

@@ -1,11 +1,11 @@
 ---
 layout: default_md
-title: ActiveMQ Classic Command Line Tools Reference 
+title: ActiveMQ Command Line Tools Reference 
 title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [ActiveMQ Classic Command Line Tools Reference](activemq-classic-command-line-tools-reference)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [ActiveMQ Command Line Tools Reference](activemq-classic-command-line-tools-reference)
 
 
 Command Line Tools
@@ -32,7 +32,7 @@ In versions prior to 5.0 the functionality of activemq-admin script was scattere
 activemq script
 ---------------------
 
-> **Description of this script is valid for Windows platform.** For Unix platform it is valid for broker versions prior to 5.4.0. With version 5.4.0 and later, ActiveMQ Classic comes with enhanced [Unix Shell Script](unix-shell-script)
+> **Description of this script is valid for Windows platform.** For Unix platform it is valid for broker versions prior to 5.4.0. With version 5.4.0 and later, ActiveMQ comes with enhanced [Unix Shell Script](unix-shell-script)
 
 Script Name|activemq.bat, activemq
 Task Usage|_activemq [options] [config]_ or _java -jar run.jar start [options] [config]_
@@ -62,7 +62,7 @@ For details on how to configure using broker URI refer to: [Broker Configuratio
 activemq-admin
 --------------
 
-As of ActiveMQ Classic 5.x, the above standalone utilities have been incorporated into the activemq-admin command (with the exception of the activemq script), as follows:
+As of ActiveMQ 5.x, the above standalone utilities have been incorporated into the activemq-admin command (with the exception of the activemq script), as follows:
 
 *   [activemq-admin stop](activemq-classic-command-line-tools-reference)
 *   [activemq-admin list](activemq-classic-command-line-tools-reference)
@@ -155,7 +155,7 @@ activemq-admin query --objname Type=**Connect**,BrokerName=localhost -xQNetworkC
 activemq-admin query --objname Type=Connection --xobjname Type=Connection,BrokerName=localhost|Display all the attributes and object name information for all registered connections except those belonging to broker 'localhost'.
 activemq-admin query -QQueue=???? --objname Type=Connection --xobjname BrokerName=remote*|Display all the attributes and object name information for all 4-letter queues and connections except those belonging to a broker that begins with 'remote'.
 
-**ActiveMQ Classic MBean Reference:**
+**ActiveMQ MBean Reference:**
 
 Mbean Type|Properties / ObjectName |Attributes|Operations
 ---|---|---|---

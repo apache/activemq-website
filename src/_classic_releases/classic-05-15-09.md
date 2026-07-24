@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.15.9 Release
+title: ActiveMQ 5.15.9 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,9 +12,9 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-> This release enables ActiveMQ Classic client TLS hostname validation by default which can cause a client connection failure for server certificates that do not match the server hostname. Please refer to SSL Transport Reference for configuration and [AMQ-7047](https://issues.apache.org/jira/browse/AMQ-7047?src=confmacro) for more information.
+> This release enables ActiveMQ client TLS hostname validation by default which can cause a client connection failure for server certificates that do not match the server hostname. Please refer to SSL Transport Reference for configuration and [AMQ-7047](https://issues.apache.org/jira/browse/AMQ-7047?src=confmacro) for more information.
 
-Apache ActiveMQ Classic 5.15.9 includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12344450) and bug fixes.
+Apache ActiveMQ 5.15.9 includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12344450) and bug fixes.
 
 ### Getting the Binary Distributions
 
@@ -91,4 +91,4 @@ For a more detailed view of new features and bug fixes, see the [release notes]
 
 > This release affects applications using ObjectMessages. Please refer to [objectmessage](objectmessage) and jira-issue [AMQ-6013](https://issues.apache.org/jira/browse/AMQ-6013) for more information.
 
-Also see the previous [ActiveMQ Classic 5.15.8 Release](classic-05-15-08)
+Also see the previous [ActiveMQ 5.15.8 Release](classic-05-15-08)

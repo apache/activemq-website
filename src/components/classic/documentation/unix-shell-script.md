@@ -10,7 +10,7 @@ type: classic
 Functional overview
 ===================
 
-From version 5.4.0 onwards, ActiveMQ Classic comes with a enhanced shell script for starting, stopping and managing the broker in Unix environment. For basic [activemq](activemq-classic-command-line-tools-reference) and [activemq-admin](activemq-classic-command-line-tools-reference) scripts functionality take a look at [ActiveMQ Classic Command Line Tools Reference](activemq-classic-command-line-tools-reference).
+From version 5.4.0 onwards, ActiveMQ comes with a enhanced shell script for starting, stopping and managing the broker in Unix environment. For basic [activemq](activemq-classic-command-line-tools-reference) and [activemq-admin](activemq-classic-command-line-tools-reference) scripts functionality take a look at [ActiveMQ Command Line Tools Reference](activemq-classic-command-line-tools-reference).
 
 This `activemq` script incorporate these two scripts into one and adds some new functionalities. On top of regular `activemq` and `activemq-admin` scripts, it adds the following features:
 
@@ -28,7 +28,7 @@ This `activemq` script incorporate these two scripts into one and adds some new 
 
 *   **status** - checks if activemq process is running (exitcode: 1 = broker is down, 0 = broker is up)
 
-*   **create** - create an ACTIVEMQ_BASE directory that separates a broker instance from its binaries, i.e., it creates copies of the ActiveMQ Classic configuration files into the command-line specified directory and points to the binaries. You can start the broker with the `/bin` scripts in the newly created instance.
+*   **create** - create an ACTIVEMQ_BASE directory that separates a broker instance from its binaries, i.e., it creates copies of the ActiveMQ configuration files into the command-line specified directory and points to the binaries. You can start the broker with the `/bin` scripts in the newly created instance.
     ```
     bin/activemq create /path/to/brokers/mybroker 
     ```
@@ -69,7 +69,7 @@ This `activemq` script incorporate these two scripts into one and adds some new 
 Configuring the init-script
 ===========================
 
-For ActiveMQ Classic server to run properly some basic system variables must be set. These variables define how much memory broker will have, SSL, logging, JAAS options and similar.
+For ActiveMQ server to run properly some basic system variables must be set. These variables define how much memory broker will have, SSL, logging, JAAS options and similar.
 
 Version 5.11.0 and higher
 -------------------------
@@ -97,7 +97,7 @@ You could use `setup` command to create additional system wide defaults file to 
 ```
 ./activemq setup /etc/default/activemq
 ```
-The configuration of the script can be placed at `/etc/default/activemq` or `$HOME/.activemqrc`. Note, this is the configuration for the _script_ not for configuring ActiveMQ Classic.
+The configuration of the script can be placed at `/etc/default/activemq` or `$HOME/.activemqrc`. Note, this is the configuration for the _script_ not for configuring ActiveMQ.
 
 To use addtional configurations for running multiple instances on the same operating system rename or symlink script to a name matching to `activemq-instance-<INSTANCENAME>`. This changes the configuration location to `/etc/default/activemq-instance-<INSTANCENAME>` and `$HOME/.activemqrc-instance-<INSTANCENAME>`. Configuration files in /etc have higher precedence.
 
@@ -179,7 +179,7 @@ The activemq repo provides a testsuite to validate the proper operation of the u
     ```
 *   Execute the testsuite
     ```
-    cd <Installation Dir of the ActiveMQ Classic Script>
+    cd <Installation Dir of the ActiveMQ Script>
     ./activemq stop
     /tmp/init-script-testsuite 2>&1| tee /tmp/test-suite.log
     ```

@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.3.2 Release
+title: ActiveMQ 5.3.2 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.3.2 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/IssueNavigator.jspa?reset=true&&pid=10520&fixfor=12310&sorter/field=priority&sorter/order=DESC) 3 issues.
+Apache ActiveMQ 5.3.2 is primarily a maintenance release which [resolves](https://issues.apache.org/activemq/secure/IssueNavigator.jspa?reset=true&&pid=10520&fixfor=12310&sorter/field=priority&sorter/order=DESC) 3 issues.
 
 Getting the Binary Distributions
 --------------------------------
@@ -85,5 +85,5 @@ Changelog
 
 For a more detailed view of new features and bug fixes, see the [release notes](https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=10520&styleName=Html&version=12310)
 
-Also see the previous [ActiveMQ Classic 5.3.1 Release](classic-05-03-01)
+Also see the previous [ActiveMQ 5.3.1 Release](classic-05-03-01)
 

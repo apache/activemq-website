@@ -5,13 +5,13 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [Broker Configuration URI](broker-configuration-uri) > [Broker Properties URI](broker-properties-uri)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [Broker Configuration URI](broker-configuration-uri) > [Broker Properties URI](broker-properties-uri)
 
 
 Broker Properties URI
 ---------------------
 
-From version 4.2 of ActiveMQ Classic onwards the Broker Properties URI allows you to [run a configured broker](run-broker) by referencing a properties file which could be on the classpath, a local file or a remote URL.
+From version 4.2 of ActiveMQ onwards the Broker Properties URI allows you to [run a configured broker](run-broker) by referencing a properties file which could be on the classpath, a local file or a remote URL.
 
 #### Syntax
 ```

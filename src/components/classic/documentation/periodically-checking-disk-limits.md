@@ -8,7 +8,7 @@ type: classic
 [Features](features) > [Persistence](persistence) > [Periodically checking disk limits](periodically-checking-disk-limits)
 
 
-Store and temporary disk limits are set for the Broker on startup based on configuration and available space. Sometimes other processes (such as logs) can grow and reduce the available disk space enough that the limits detected at start up no longer have any effect. Since ActiveMQ Classic version **5.12.0**, it's possible to configure the Broker to periodically check disk space and reconfigure the limits accordingly using the broker attribute schedulePeriodForDiskUsageCheck > 0.
+Store and temporary disk limits are set for the Broker on startup based on configuration and available space. Sometimes other processes (such as logs) can grow and reduce the available disk space enough that the limits detected at start up no longer have any effect. Since ActiveMQ version **5.12.0**, it's possible to configure the Broker to periodically check disk space and reconfigure the limits accordingly using the broker attribute schedulePeriodForDiskUsageCheck > 0.
 
 For example a configuration like
 ```

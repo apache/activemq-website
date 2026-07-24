@@ -31,7 +31,7 @@ Property|Default Value|Description
 RedeliveryPolicy per Destination
 --------------------------------
 
-As of ActiveMQ Classic v5.7.0 you can now configure a [RedeliveryPolicy](http://svn.apache.org/viewvc/activemq/trunk/activemq-client/src/main/java/org/apache/activemq/RedeliveryPolicy.java?view=markup) on a per-destination bases. The `ActiveMQConnection` factory class now exposes a [RedeliveryPolicyMap](http://svn.apache.org/viewvc/activemq/trunk/activemq-client/src/main/java/org/apache/activemq/broker/region/policy/RedeliveryPolicyMap.java?view=markup) property that allows to assign a RedeliveryPolicy using named destinations or using destination wildcards. The code snipped below shows how to configure a different [RedeliveryPolicy](http://svn.apache.org/viewvc/activemq/trunk/activemq-client/src/main/java/org/apache/activemq/RedeliveryPolicy.java?view=markup) for Topics and Queues.
+As of ActiveMQ v5.7.0 you can now configure a [RedeliveryPolicy](http://svn.apache.org/viewvc/activemq/trunk/activemq-client/src/main/java/org/apache/activemq/RedeliveryPolicy.java?view=markup) on a per-destination bases. The `ActiveMQConnection` factory class now exposes a [RedeliveryPolicyMap](http://svn.apache.org/viewvc/activemq/trunk/activemq-client/src/main/java/org/apache/activemq/broker/region/policy/RedeliveryPolicyMap.java?view=markup) property that allows to assign a RedeliveryPolicy using named destinations or using destination wildcards. The code snipped below shows how to configure a different [RedeliveryPolicy](http://svn.apache.org/viewvc/activemq/trunk/activemq-client/src/main/java/org/apache/activemq/RedeliveryPolicy.java?view=markup) for Topics and Queues.
 ```
 ActiveMQConnection connection ...  // Create a connection
 

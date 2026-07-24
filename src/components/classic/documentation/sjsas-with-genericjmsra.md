@@ -8,10 +8,10 @@ type: classic
 [Connectivity](connectivity) > [Containers](containers) > [SJSAS with GenericJMSRA](sjsas-with-genericjmsra)
 
 
-Using ActiveMQ Classic, Generic JMS RA and SJSAS (Glassfish)
+Using ActiveMQ, Generic JMS RA and SJSAS (Glassfish)
 ====================================================
 
-This document is my notes on making ActiveMQ Classic and SJSAS work together using GenericJMSRA. The objectives is to make ActiveMQ Classic as the JMS provider and MDB can be deployed in SJSAS, listening messages from ActiveMQ Classic. Please note that, the SJSAS version I use is 9.0 Update 1. I don't have time to test it with SJSAS 9.1 or Glassfish v2.
+This document is my notes on making ActiveMQ and SJSAS work together using GenericJMSRA. The objectives is to make ActiveMQ as the JMS provider and MDB can be deployed in SJSAS, listening messages from ActiveMQ. Please note that, the SJSAS version I use is 9.0 Update 1. I don't have time to test it with SJSAS 9.1 or Glassfish v2.
 
 The procedures
 --------------
@@ -137,11 +137,11 @@ asadmin create-connector-resource
 Classloader / commons-logging+log4j issue
 -----------------------------------------
 
-In the procedure shown above, you should notice one thing, ie, the RA, ActiveMQ Classic and my MDB is deployed as one single EAR. You can deploy the genericra standalone without putting it into the ear, provided that you are not using commons-logging and log4j (directly or indirectly).
+In the procedure shown above, you should notice one thing, ie, the RA, ActiveMQ and my MDB is deployed as one single EAR. You can deploy the genericra standalone without putting it into the ear, provided that you are not using commons-logging and log4j (directly or indirectly).
 
-In the application I'm working on, commons-logging is used, and ActiveMQ Classic also use commons-logging. In SJSAS, connector classloader is parent of the application classloader, as a result, if you deploy genericra independently, and then you deploy your application, log4j.xml will never get loaded except you put your application log4j.xml along with the ActiveMQ Classic jars.
+In the application I'm working on, commons-logging is used, and ActiveMQ also use commons-logging. In SJSAS, connector classloader is parent of the application classloader, as a result, if you deploy genericra independently, and then you deploy your application, log4j.xml will never get loaded except you put your application log4j.xml along with the ActiveMQ jars.
 
-With Java standard classloading procedure, classloader will first delegate the loading to parent. When application classloader lookup the LogFactory class, it will first delegate to its parent classloader (ie the connector classloader). As the connector classloader have loaded ActiveMQ Classic and its dependencies (which include commons-logging), LogFactory will finally loaded by the connector classloader. When commons-logging try to initialize the LogFactoryImpl, and hence trigger the standard procedure of log4j initialization, log4j configuration (log4j.xml or log4j.properties) in your application will not get loaded (as log4j logger is loaded by connector classloader).
+With Java standard classloading procedure, classloader will first delegate the loading to parent. When application classloader lookup the LogFactory class, it will first delegate to its parent classloader (ie the connector classloader). As the connector classloader have loaded ActiveMQ and its dependencies (which include commons-logging), LogFactory will finally loaded by the connector classloader. When commons-logging try to initialize the LogFactoryImpl, and hence trigger the standard procedure of log4j initialization, log4j configuration (log4j.xml or log4j.properties) in your application will not get loaded (as log4j logger is loaded by connector classloader).
 
 As a result, deploy genericra independently is not the perfect solution in this case.
 

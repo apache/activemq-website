@@ -10,7 +10,7 @@ type: classic
 
 Absolutely!
 
-Strictly speaking each producer being used concurrently should be using a separate session (though in ActiveMQ Classic it'll probably work fine if you just use one session for all publishers).
+Strictly speaking each producer being used concurrently should be using a separate session (though in ActiveMQ it'll probably work fine if you just use one session for all publishers).
 
 For concurrent consumption create a session per consumer - as all messages are dispatched to a session in a single thread - but you can have as many sessions as you like per connection.
 

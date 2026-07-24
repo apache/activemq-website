@@ -5,12 +5,12 @@ title-class: page-title-classic
 type: classic
 ---
 
- [Using ActiveMQ Classic](using-activemq-classic) > [Xml Reference](xml-reference)
+ [Using ActiveMQ](using-activemq-classic) > [Xml Reference](xml-reference)
 
-ActiveMQ Classic Xml Reference
+ActiveMQ Xml Reference
 -----------------------
 
-This page contains a link to the XML reference guides and XML schema documents for [Xml Configuration](xml-configuration) with ActiveMQ Classic releases
+This page contains a link to the XML reference guides and XML schema documents for [Xml Configuration](xml-configuration) with ActiveMQ releases
 
 ### Released Schemas
 
@@ -46,13 +46,13 @@ or if you prefer you can use a generic XSD without the version number
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
         http://activemq.org/config/1.0 http://activemq.apache.org/schema/activemq-core.xsd">
 ```
-Your IDE won't be able to fetch this XSD, you'll have to manually associate a specific release; however it does mean that you won't have to upgrade your XML config file with each ActiveMQ Classic release; as it will resolve this XSD using the bundled XSD inside the activemq-core.jar.
+Your IDE won't be able to fetch this XSD, you'll have to manually associate a specific release; however it does mean that you won't have to upgrade your XML config file with each ActiveMQ release; as it will resolve this XSD using the bundled XSD inside the activemq-core.jar.
 
 ### Pay attention to the namespace
 
-If you use ActiveMQ Classic 5.0 or earlier you XML namespace definition should point to [http://activemq.org/config/1.0](http://activemq.org/config/1.0). If you use ActiveMQ Classic 5.1 or later the namespace should point to [http://activemq.apache.org/schema/core](http://activemq.apache.org/schema/core).
+If you use ActiveMQ 5.0 or earlier you XML namespace definition should point to [http://activemq.org/config/1.0](http://activemq.org/config/1.0). If you use ActiveMQ 5.1 or later the namespace should point to [http://activemq.apache.org/schema/core](http://activemq.apache.org/schema/core).
 
-`ActiveMQ Classic 5.2 example**
+`ActiveMQ 5.2 example**
 ```
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:amq="http://activemq.apache.org/schema/core"
@@ -66,7 +66,7 @@ If you use ActiveMQ Classic 5.0 or earlier you XML namespace definition should p
 </beans>
 ```
 
-`ActiveMQ Classic 5.0 example**
+`ActiveMQ 5.0 example**
 ```
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:amq="http://activemq.org/config/1.0"
@@ -80,7 +80,7 @@ If you use ActiveMQ Classic 5.0 or earlier you XML namespace definition should p
 </beans>
 ```
 
-Both examples above are almost the same. Only one difference is xml namespace. You can find more information about the namespace change on [activemq-dev topic: ActiveMQ Classic namespace change](http://old.nabble.com/ActiveMQ-namespace-change-td16769650.html).
+Both examples above are almost the same. Only one difference is xml namespace. You can find more information about the namespace change on [activemq-dev topic: ActiveMQ namespace change](http://old.nabble.com/ActiveMQ-namespace-change-td16769650.html).
 
 ### Schema Validation
 
@@ -94,9 +94,9 @@ Note: from version 5.4.2, you can disable validation from the command line by ap
 ```
 bin/activemq console xbean:conf/activemq.xml?validate=false
 ```
-Beginning in ActiveMQ Classic 5.4, the XML elements inside the `<broker>` element must be ordered alphabetically. If you look at the XSD, this has always been the case with ActiveMQ Classic. The difference in 5.4 is that the XML configuration is actually being validated against the XML schema.
+Beginning in ActiveMQ 5.4, the XML elements inside the `<broker>` element must be ordered alphabetically. If you look at the XSD, this has always been the case with ActiveMQ. The difference in 5.4 is that the XML configuration is actually being validated against the XML schema.
 
-For example, the following XML configuration did not present a problem in ActiveMQ Classic 5.3.x:
+For example, the following XML configuration did not present a problem in ActiveMQ 5.3.x:
 
 ``` 
 <?xml version="1.0"?>
@@ -154,11 +154,11 @@ http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/came
 </beans>
 ```
 
-However, in ActiveMQ Classic 5.4, the XML configuration above would cause an exception similar to the following:
+However, in ActiveMQ 5.4, the XML configuration above would cause an exception similar to the following:
 ```
 Caused by: org.xml.sax.SAXParseException: cvc-complex-type.2.4.a: Invalid content was found starting with element 'persistenceAdapter'. One of '{"http://activemq.apache.org/schema/core":producerSystemUsage, "http://activemq.apache.org/schema/core":proxyConnectors, "http://activemq.apache.org/schema/core":regionBroker, "http://activemq.apache.org/schema/core":services, "http://activemq.apache.org/schema/core":shutdownHooks, "http://activemq.apache.org/schema/core":sslContext, "http://activemq.apache.org/schema/core":systemUsage, "http://activemq.apache.org/schema/core":taskRunnerFactory, "http://activemq.apache.org/schema/core":tempDataStore, "http://activemq.apache.org/schema/core":transportConnectorURIs, "http://activemq.apache.org/schema/core":transportConnectors, WC["http://activemq.apache.org/schema/core"](#)}' is expected.
 ```
-To avoid this XML validation error in ActiveMQ Classic 5.4, simply change the ordering of the XML elements so that they are in alphabetical order. Below is an example of the same XML configuration but in alphabetical order:
+To avoid this XML validation error in ActiveMQ 5.4, simply change the ordering of the XML elements so that they are in alphabetical order. Below is an example of the same XML configuration but in alphabetical order:
 
 ``` 
 <?xml version="1.0"?>
@@ -216,7 +216,7 @@ http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/came
 </beans>
 ```
 
-Configurations can be easily tested against ActiveMQ Classic 5.4 using the ActiveMQ Classic startup script. Below is an example:
+Configurations can be easily tested against ActiveMQ 5.4 using the ActiveMQ startup script. Below is an example:
 ```
 $ cd $ACTIVEMQ_HOME  
 $ ./bin/activemq console xbean:file:/Users/bsnyder/SpringSource/clients/Finra/activemq-example-unordered.xml  

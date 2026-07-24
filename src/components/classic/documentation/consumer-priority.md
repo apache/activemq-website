@@ -10,7 +10,7 @@ type: classic
 
 ### Background
 
-As well as having a pluggable dispatch policy e.g. round robin, ActiveMQ Classic also supports consumer priorities. This allows us to weight consumers to optimize network hops. For example, you typically want a broker to send messages to regular JMS consumers rather than to other brokers; there's no need to make unnecessary broker-to-broker hops if there are available consumers.
+As well as having a pluggable dispatch policy e.g. round robin, ActiveMQ also supports consumer priorities. This allows us to weight consumers to optimize network hops. For example, you typically want a broker to send messages to regular JMS consumers rather than to other brokers; there's no need to make unnecessary broker-to-broker hops if there are available consumers.
 
 ### Example
 

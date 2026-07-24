@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.4.3 Release
+title: ActiveMQ 5.4.3 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.4.3 is a maintenance release which resolves [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491), a critical bug which caused the 5.4.0, 5.4.1, and 5.4.2 releases to be retracted.
+Apache ActiveMQ 5.4.3 is a maintenance release which resolves [AMQ-3491](https://issues.apache.org/jira/browse/AMQ-3491), a critical bug which caused the 5.4.0, 5.4.1, and 5.4.2 releases to be retracted.
 
 Getting the Binary Distributions
 --------------------------------
@@ -80,5 +80,5 @@ Source for Unix/Linux/Cygwin|[activemq-parent-5.4.3-source-release.tar.gz](http:
 svn co http://svn.apache.org/repos/asf/activemq/tags/activemq-5.4.3
 ```
 
-Also see the previous [ActiveMQ Classic 5.4.2 Release](classic-05-04-02)
+Also see the previous [ActiveMQ 5.4.2 Release](classic-05-04-02)
 

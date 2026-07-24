@@ -10,11 +10,11 @@ type: classic
 
 The JCA Container is moving
 
-We will continune to support the ActiveMQ Classic JCA Container up until ActiveMQ Classic 3.1.
+We will continune to support the ActiveMQ JCA Container up until ActiveMQ 3.1.
 
-After that point we will be moving to [Jencks](http://jencks.codehaus.org/) which is a migration of the ActiveMQ Classic codebase together with code [Geronimo](http://geronimo.apache.org) and from some other contributors.
+After that point we will be moving to [Jencks](http://jencks.codehaus.org/) which is a migration of the ActiveMQ codebase together with code [Geronimo](http://geronimo.apache.org) and from some other contributors.
 
-Jencks is completely logically equivalent to the ActiveMQ Classic JCA Container and migrating to it is pretty simple (mostly just a class name change for the JCA container) - though the benefits of Jencks are that it supports full XA recovery and works well with Geronimo's TransactionManager and WorkManager.
+Jencks is completely logically equivalent to the ActiveMQ JCA Container and migrating to it is pretty simple (mostly just a class name change for the JCA container) - though the benefits of Jencks are that it supports full XA recovery and works well with Geronimo's TransactionManager and WorkManager.
 
 So we do recommend you migrate to [Jencks](http://jencks.codehaus.org/) whenever its easy for you to do so; projects such as [Lingo](http://lingo.codehaus.org/) and [ServiceMix](http://servicemix.org/) already have and it was an easy migration.
 
@@ -42,7 +42,7 @@ Requirements
 
 To be able to use the JCA container, you just need the following jars on your classpath
 
-*   [required ActiveMQ Classic jars](initial-configuration) if you are using ActiveMQ Classic as your JMS provider - or your provider's jars if not
+*   [required ActiveMQ jars](initial-configuration) if you are using ActiveMQ as your JMS provider - or your provider's jars if not
 *   activemq-container.jar
 *   spring.jar
 *   J2EE.jar (for the JCA APIs). If you are inside Tomcat, it doesn't like j2ee.jar on the classpath, so use the individual jars from Geronimo - e.g. geronimo-spec-j2ee-connector-*.jar for the JCA APIs
@@ -57,7 +57,7 @@ To use the JCA Container please use the 2.x code release. Several problems were 
 Things to watch
 ---------------
 
-By default the ActiveMQ Classic [Resource Adapter](resource-adapter) will try to connect to a remote broker (ie. tcp://localhost:61616). Also if you want to set how the broker is configured via XML then try the _brokerXmlConfig_ property.
+By default the ActiveMQ [Resource Adapter](resource-adapter) will try to connect to a remote broker (ie. tcp://localhost:61616). Also if you want to set how the broker is configured via XML then try the _brokerXmlConfig_ property.
 
-_Note:_ In AMQ 3.x the default behavior is the ActiveMQ Classic resource adapter will create an embedded broker
+_Note:_ In AMQ 3.x the default behavior is the ActiveMQ resource adapter will create an embedded broker
 

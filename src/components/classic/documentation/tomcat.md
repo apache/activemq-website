@@ -12,10 +12,10 @@ type: classic
 
 Tomcat needs to be configured to ignore Jetty SCI annotations so that the Jetty WebSocket ServerContainerInitializer class is not inadvertently picked up by Tomcat. For more information on this problem see [AMQ-6154](https://issues.apache.org/jira/browse/AMQ-6154) and [https://wiki.apache.org/tomcat/HowTo/FasterStartUp](https://wiki.apache.org/tomcat/HowTo/FasterStartUp) and consult the Tomcat documentation for the version you are using to properly exclude the Jetty jar files from being scanned by Tomcat.
 
-Pre-integrated Tomcat with ActiveMQ Classic
+Pre-integrated Tomcat with ActiveMQ
 -----------------------------------
 
-Apache TomEE is a distribution of [Tomcat with fully integrated ActiveMQ Classic](http://tomee.apache.org/tomcat-/FAQ/jms). All integration steps detailed here have already been done. The stack supports injection of Topic, Queue and ConnectionFactory references as well as transactional sending and delivery.
+Apache TomEE is a distribution of [Tomcat with fully integrated ActiveMQ](http://tomee.apache.org/tomcat-/FAQ/jms). All integration steps detailed here have already been done. The stack supports injection of Topic, Queue and ConnectionFactory references as well as transactional sending and delivery.
 
 Something like the following works out of the box with no configuration:
 
@@ -36,14 +36,14 @@ public class MyServet extends HttpServlet {
     @Resource
     private ConnectionFactory connectionFactory;
 
-Manually integrating Tomcat and ActiveMQ Classic
+Manually integrating Tomcat and ActiveMQ
 ----------------------------------------
 
-Note, manually integrating ActiveMQ Classic with Tomcat does allow for Topic, Queue, and ConnectionFactory injection but does not support transactional sending and delivery.
+Note, manually integrating ActiveMQ with Tomcat does allow for Topic, Queue, and ConnectionFactory injection but does not support transactional sending and delivery.
 
 You should go to Tomcat documentation and read JNDI Resources HOW-TO, especially part: Configure Tomcat's Resource Factory.
 
-ActiveMQ Classic has ready JNDI resource factory for all its administered objects: ConnectionFactory and destinations.
+ActiveMQ has ready JNDI resource factory for all its administered objects: ConnectionFactory and destinations.
 
 You must provide it as a parameter factory for your resources:
 
@@ -81,7 +81,7 @@ If you are using Tomcat 5.5 or later then try this instead...
     ....
 </Context>
 
-Also, don't forget to put ActiveMQ Classic and dependent jars to tomcat shared lib directory.
+Also, don't forget to put ActiveMQ and dependent jars to tomcat shared lib directory.
 
 ### Creating destinations in Tomcat 5.5 or later
 

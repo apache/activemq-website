@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.15.5 Release
+title: ActiveMQ 5.15.5 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -12,7 +12,7 @@ redirect_from:
   This is an older release. To get the current release, please see the <a href="{{site.baseurl}}/components/classic/download" class="alert-link">download page</a>.
 </div>
 
-Apache ActiveMQ Classic 5.15.5 includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12343307) and bug fixes.
+Apache ActiveMQ 5.15.5 includes several resolved[ issues](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12343307) and bug fixes.
 
 ### Getting the Binary Distributions
 
@@ -89,4 +89,4 @@ For a more detailed view of new features and bug fixes, see the [release notes]
 
 > This release affects applications using ObjectMessages. Please refer to [objectmessage](objectmessage) and jira-issue [AMQ-6013](https://issues.apache.org/jira/browse/AMQ-6013) for more information.
 
-Also see the previous [ActiveMQ Classic 5.15.4 Release](classic-05-15-04)
+Also see the previous [ActiveMQ 5.15.4 Release](classic-05-15-04)

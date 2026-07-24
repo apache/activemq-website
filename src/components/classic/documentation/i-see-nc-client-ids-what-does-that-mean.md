@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [I see NC_ client-ids, what does that mean](i-see-nc-client-ids-what-does-that-mean)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [I see NC_ client-ids, what does that mean](i-see-nc-client-ids-what-does-that-mean)
 
 
 Durable subscription ClientIds and SubscriptionNames using the **NC** prefix are the result of durable subscriptions in a [Networks of Brokers](networks-of-brokers).  

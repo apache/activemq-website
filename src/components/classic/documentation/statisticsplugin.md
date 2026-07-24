@@ -7,11 +7,11 @@ type: classic
 
 [Features](features) > [Interceptors](interceptors) > [StatisticsPlugin](statisticsplugin)
 
-Beginning in ActiveMQ Classic 5.3, a statistics plugin is included that can be used to retrieve statistics from the broker or its destinations. Note that the message must contain a `replyTo` header (the `jmsReplyTo` header if you're using JMS) else the message will be ignored. The `replyTo` header must contain the name of the destination from which you want to retrieve the stats message(s). The statistics message is a `MapMessage` populated with statistics for the target (i.e., a broker or a destination).
+Beginning in ActiveMQ 5.3, a statistics plugin is included that can be used to retrieve statistics from the broker or its destinations. Note that the message must contain a `replyTo` header (the `jmsReplyTo` header if you're using JMS) else the message will be ignored. The `replyTo` header must contain the name of the destination from which you want to retrieve the stats message(s). The statistics message is a `MapMessage` populated with statistics for the target (i.e., a broker or a destination).
 
 To retrieve stats for the broker, just send an empty message to the destination named `ActiveMQ.Statistics.Broker` along with a `replyTo` header. To retrieve stats for a destination, just send an empty message to the destination named `ActiveMQ.Statistics.Destination.<destination-name>` or `ActiveMQ.Statistics.Destination.<wildcard-expression>` along with a `replyTo` header. If many destinations match a given wildcard expression, one stats message for each destination will be sent to the `replyTo` destination.
 
-To configure ActiveMQ Classic to use the statistics plugin, just add the following to the ActiveMQ Classic XML configuration:
+To configure ActiveMQ to use the statistics plugin, just add the following to the ActiveMQ XML configuration:
 ```
 <broker ...>
   <plugins>

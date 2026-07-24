@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ZeroConf Transport Reference](zeroconf-transport-reference)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ZeroConf Transport Reference](zeroconf-transport-reference)
 
 ### The ZeroConf Transport
 

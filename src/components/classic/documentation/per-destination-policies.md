@@ -18,6 +18,7 @@ Common Property|Default|Description
 `advisoryForFastProducers`|`false`|Send an advisory message if a producer is deemed fast.
 `advisoryForSlowConsumers`|`false`|Send an advisory message if a consumer is deemed slow.
 `advisoryWhenFull`|`false`|Send an advisory message when a limit (memory, store, temp disk) is full.
+`allowTempDestinationStealing`|`false`|Allow other connections besides the connection that created the temporary destination to create consumers on that temporary destination. This is recommended to be `false` and should only be enabled when it's not a concern if other connections can consume from any temporary destination. This may need to be enabled to make certain failover scenaiors or networking bridging use cases work that involve temporary destinations. (Since v6.2.7 and v5.19.8)
 `enableAudit`|`true`|When `true` the broker will track duplicate messages. Duplicates can happen for non-persistent messages during failover.
 `gcInactiveDestinations`|`false`|Garbage collect inactive destinations.
 `inactiveTimoutBeforeGC`|`5000`|The timeout (in ms) after which a destination is considered inactive.

@@ -13,7 +13,7 @@ Message Transformation
 
 It is sometimes useful to transform a message inside the JMS provider. For example you may have an application that has been live for some time that uses ObjectMessage messages, but that you wish to convert to use XML payloads (to protect yourself from serialization issues).
 
-So ActiveMQ Classic in 4.2 onwards comes with a pluggable strategy called the [MessageTransformer](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/MessageTransformer.html) interface. This allows you to
+So ActiveMQ in 4.2 onwards comes with a pluggable strategy called the [MessageTransformer](http://incubator.apache.org/activemq/maven/activemq-core/apidocs/org/apache/activemq/MessageTransformer.html) interface. This allows you to
 
 *   enrich or transform a message before it is sent to the message bus within the JMS provider
 *   enrich or transform a message as it is received from the message bus but before it is dispatched to the consumer

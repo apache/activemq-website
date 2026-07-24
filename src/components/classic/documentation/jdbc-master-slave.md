@@ -10,7 +10,7 @@ type: classic
 JDBC Master Slave
 -----------------
 
-First supported in ActiveMQ Classic version 4.1
+First supported in ActiveMQ version 4.1
 
 If you are using pure JDBC and not using the high performance journal then you are generally relying on your database as your single point of failure and persistence engine. If you do not have really high performance requirements this approach can make a lot of sense as you have a single persistence engine to backup and manage etc.
 
@@ -46,7 +46,7 @@ At any time you can restart other brokers which join the cluster and start as sl
 
 By default if you use the **<jdbcPersistenceAdapter/>** to avoid the high performance journal you will be using JDBC Master Slave by default. You just need to run more than one broker and point the client side URIs to them to get master/slave. This works because they both try an acquire an exclusive lock on a shared table in the database and only one will succeed.
 
-The following example shows how to configure the ActiveMQ Classic broker in JDBC Master Slave mode
+The following example shows how to configure the ActiveMQ broker in JDBC Master Slave mode
 ```
 <beans>
 

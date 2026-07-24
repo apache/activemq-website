@@ -11,7 +11,7 @@ type: classic
 The Proxy Connector
 -------------------
 
-Many of the more advanced ActiveMQ Classic features are implemented in the transports. Sometimes it's desirable to accept one kind of ActiveMQ Classic connection and establish a different kind of connection to another broker. The Proxy Connector allows you to do that by accepting connection on one transport and establishing new connections using a different transport and then just proxying all the commands sent between the two transports.
+Many of the more advanced ActiveMQ features are implemented in the transports. Sometimes it's desirable to accept one kind of ActiveMQ connection and establish a different kind of connection to another broker. The Proxy Connector allows you to do that by accepting connection on one transport and establishing new connections using a different transport and then just proxying all the commands sent between the two transports.
 
 ### Example Configuration
 

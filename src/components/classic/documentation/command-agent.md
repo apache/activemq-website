@@ -15,7 +15,7 @@ Removed in 5.9
 Command Agent
 -------------
 
-From 4.2 onwards Apache ActiveMQ Classic allows you to communicate with a broker Command Agent to be able to perform administration queries and commands. This allows you to use the message bus itself to communicate with the message broker to list available queues, topics, subscriptions, to view metadata, browse queues and so forth.
+From 4.2 onwards Apache ActiveMQ allows you to communicate with a broker Command Agent to be able to perform administration queries and commands. This allows you to use the message bus itself to communicate with the message broker to list available queues, topics, subscriptions, to view metadata, browse queues and so forth.
 
 ### Enabling the Command Agent
 

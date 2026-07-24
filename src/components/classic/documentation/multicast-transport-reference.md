@@ -5,12 +5,12 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [Multicast Transport Reference](multicast-transport-reference)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [Multicast Transport Reference](multicast-transport-reference)
 
 
 ### The Multicast Transport
 
-The Multicast transport allows clients to connect to a remote ActiveMQ Classic broker using multicast
+The Multicast transport allows clients to connect to a remote ActiveMQ broker using multicast
 
 Note that by default Multicast is not reliable; datagrams can be lost so you should add a reliability layer to ensure the JMS contract can be implemented on a non-reliable transport.
 

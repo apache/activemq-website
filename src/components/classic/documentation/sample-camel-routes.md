@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [Sample Camel Routes](sample-camel-routes)
+[Using ActiveMQ](using-activemq-classic) > [User Submitted Configurations](user-submitted-configurations) > [Sample Camel Routes](sample-camel-routes)
 
 
 ### Example of a configuration that show how to use Camel routes with Juel and Xpath.

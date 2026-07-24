@@ -7,31 +7,31 @@ type: classic
 
 [Connectivity](connectivity) > [Protocols](protocols) > [AUTO](auto)
 
-Starting with version 5.13.0, ActiveMQ Classic supports wire format protocol detection.   OpenWire, STOMP, AMQP, and MQTT can be automatically detected.  This allows one transport to be shared for all 4 types of clients.
+Starting with version 5.13.0, ActiveMQ supports wire format protocol detection.   OpenWire, STOMP, AMQP, and MQTT can be automatically detected.  This allows one transport to be shared for all 4 types of clients.
 
 ### Enabling AUTO over TCP
 
-To configure ActiveMQ Classic auto wire format detection over a TCP connection use the `auto` transport prefix. For example, add the following transport configuration in your XML file:
+To configure ActiveMQ auto wire format detection over a TCP connection use the `auto` transport prefix. For example, add the following transport configuration in your XML file:
 ```
 <transportConnector name="auto" uri="auto://localhost:5671"/>
 ```
 ### Enabling AUTO over SSL
 
-To configure ActiveMQ Classic auto wire format detection over an SSL connection use the `auto+ssl` transport prefix. For example, add the following transport configuration in your XML file:
+To configure ActiveMQ auto wire format detection over an SSL connection use the `auto+ssl` transport prefix. For example, add the following transport configuration in your XML file:
 ```
 <transportConnector name="auto+ssl" uri="auto+ssl://localhost:5671"/>
 ```
-*   For more details on using SSL with ActiveMQ Classic, see the following article ([How do I use SSL](how-do-i-use-ssl)).
+*   For more details on using SSL with ActiveMQ, see the following article ([How do I use SSL](how-do-i-use-ssl)).
 
 ### Enabling AUTO over NIO
 
-To configure ActiveMQ Classic auto wire format detection over an NIO TCP connection use the `auto+nio` transport prefix. For example, add the following transport configuration in your XML file:
+To configure ActiveMQ auto wire format detection over an NIO TCP connection use the `auto+nio` transport prefix. For example, add the following transport configuration in your XML file:
 ```
 <transportConnector name="auto+nio" uri="auto+nio://localhost:5671"/>
 ```
 ### Enabling AUTO over NIO SSL
 
-To configure ActiveMQ Classic auto wire format detection over an NIO SSL connection use the `auto+nio+ssl` transport prefix. For example, add the following transport configuration in your XML file:
+To configure ActiveMQ auto wire format detection over an NIO SSL connection use the `auto+nio+ssl` transport prefix. For example, add the following transport configuration in your XML file:
 ```
 <transportConnector name="auto+nio+ssl" uri="auto+nio+ssl://localhost:5671"/>
 ```
@@ -52,7 +52,7 @@ An example that configures the transport with a maximum protocol detection time 
 
 ### Configuring Wire Formats
 
-OpenWire is the default Wire Format that ActiveMQ Classic uses.  It provides a highly efficent binary format for high speed messaging.  OpenWire options can be configured on a JMS client's connection URI string or on a Brokers transport bind URI.
+OpenWire is the default Wire Format that ActiveMQ uses.  It provides a highly efficent binary format for high speed messaging.  OpenWire options can be configured on a JMS client's connection URI string or on a Brokers transport bind URI.
 
 Parameter Prefix|Description
 ---|---

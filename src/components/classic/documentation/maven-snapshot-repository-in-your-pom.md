@@ -8,7 +8,7 @@ type: classic
 [Developers](developers) > [Developer Guide](developer-guide) > [Maven SNAPSHOT Repository in your POM](maven-snapshot-repository-in-your-pom)
 
 
-ActiveMQ Classic
+ActiveMQ
 
 In your pom.xml file you can add the Maven 2 snapshot repository if you want to try out the SNAPSHOT versions:
 ```
@@ -24,7 +24,7 @@ In your pom.xml file you can add the Maven 2 snapshot repository if you want to 
   </snapshots>
 </repository>
 ```
-Then you can use the SNAPSHOT version of ActiveMQ Classic in your `pom.xml`:
+Then you can use the SNAPSHOT version of ActiveMQ in your `pom.xml`:
 ```
 <dependency>
   <groupId>org.apache.activemq</groupId>
@@ -32,7 +32,7 @@ Then you can use the SNAPSHOT version of ActiveMQ Classic in your `pom.xml`:
   <version>5.14.0-SNAPSHOT</version>
 </dependency>
 ```
-Apache ActiveMQ Classic SNAPSHOTS
+Apache ActiveMQ SNAPSHOTS
 
 [https://repository.apache.org/content/repositories/snapshots/](https://repository.apache.org/content/repositories/snapshots/)
 

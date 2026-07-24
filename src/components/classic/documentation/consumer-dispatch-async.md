@@ -10,7 +10,7 @@ type: classic
 Overview
 --------
 
-From ActiveMQ Classic v4: the choice of a broker performing synchronous or asynchronous dispatch to a consumer has become more configurable. It is now configured as a default value on the [connection URI, Connection and ConnectionFactory](connection-configuration-uri) as well as with being customizable on a per consumer basis via the [Destination Options](destination-options) instead previously just being a transport server setting.
+From ActiveMQ v4: the choice of a broker performing synchronous or asynchronous dispatch to a consumer has become more configurable. It is now configured as a default value on the [connection URI, Connection and ConnectionFactory](connection-configuration-uri) as well as with being customizable on a per consumer basis via the [Destination Options](destination-options) instead previously just being a transport server setting.
 
 This makes more sense since you want to do asynchronous message delivery to slower consumers, but synchronous message delivery for faster consumers (to avoid the synchronization and context switching costs of adding another SEDA queue). The downside to using synchronous message delivery is that the producer is more likely to block if there is a slow consumer that he is dispatching messages to.
 

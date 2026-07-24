@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic 5](using-activemq-classic-5) > [Configure version 5 Brokers](configure-version-5-brokers)
+[Using ActiveMQ 5](using-activemq-classic-5) > [Configure version 5 Brokers](configure-version-5-brokers)
 
 
 ### Overview
@@ -23,7 +23,7 @@ Make sure you do not use any strange characters in the names of brokers as they 
 Examples
 --------
 
-The default ActiveMQ Classic configuration: [current default config](https://github.com/apache/activemq/blob/main/assembly/src/release/conf/activemq.xml).
+The default ActiveMQ configuration: [current default config](https://github.com/apache/activemq/blob/main/assembly/src/release/conf/activemq.xml).
 ```
 <beans
   xmlns="http://www.springframework.org/schema/beans"
@@ -42,7 +42,7 @@ The default ActiveMQ Classic configuration: [current default config](https://git
           init-method="start" destroy-method="stop">
     </bean>
     <!--
-        The <broker> element is used to configure the ActiveMQ Classic broker.
+        The <broker> element is used to configure the ActiveMQ broker.
     -->
     <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" dataDirectory="${activemq.data}">
         <destinationPolicy>
@@ -64,8 +64,8 @@ The default ActiveMQ Classic configuration: [current default config](https://git
         </destinationPolicy>
 
         <!--
-            The managementContext is used to configure how ActiveMQ Classic is exposed in
-            JMX. By default, ActiveMQ Classic uses the MBean server that is started by
+            The managementContext is used to configure how ActiveMQ is exposed in
+            JMX. By default, ActiveMQ uses the MBean server that is started by
             the JVM. For more information, see:
             http://activemq.apache.org/components/classic/documentation/jmx
         -->
@@ -101,7 +101,7 @@ The default ActiveMQ Classic configuration: [current default config](https://git
             </systemUsage>
         </systemUsage>
         <!--
-            The transport connectors expose ActiveMQ Classic over a given protocol to
+            The transport connectors expose ActiveMQ over a given protocol to
             clients and other brokers. For more information, see:
             http://activemq.apache.org/components/classic/documentation/configuring-transports
         -->

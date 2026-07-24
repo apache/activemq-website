@@ -11,7 +11,7 @@ type: classic
 Introduction
 ------------
 
-ActiveMQ Classic includes a Java Connector Architecture (JCA) 1.5 Resource Adapter. JCA 1.5 defines the contract between an J2EE application server and external resources such as databases and messaging middleware. It allows the application server to efficiently pool connections, control transactions and manage security. The Resource Adapter allows ActiveMQ Classic to be used from any J2EE 1.4 application server. We have tested that the Resource Adapter works in the following J2EE 1.4 containers
+ActiveMQ includes a Java Connector Architecture (JCA) 1.5 Resource Adapter. JCA 1.5 defines the contract between an J2EE application server and external resources such as databases and messaging middleware. It allows the application server to efficiently pool connections, control transactions and manage security. The Resource Adapter allows ActiveMQ to be used from any J2EE 1.4 application server. We have tested that the Resource Adapter works in the following J2EE 1.4 containers
 
 *   [TomEE](http://tomee.apache.org/tomcat-jms) 1
 *   Geronimo 1
@@ -29,7 +29,7 @@ Features
 *   XA transaction recovery via XAResource.recover() supported.
 *   When used outside a JTA transaction, session transaction settings retain normal JMS semantics so that it be used by your web-app tier.
 *   Can configure and start up embedded broker.
-*   Can connect to external ActiveMQ Classic broker or embedded broker.
+*   Can connect to external ActiveMQ broker or embedded broker.
 *   Inbound message delivery supports fine grain control of concurrency and prefetching.
 *   Batching so that multiple messages can be delivered within the same transaction for optimal performances.
 
@@ -42,13 +42,13 @@ Deployment Guides
 
 *   [TomEE](tomee)
 *   [Geronimo](geronimo)
-*   [Integrating Apache ActiveMQ Classic with Glassfish](integrating-apache-activemq-classic-with-glassfish)
+*   [Integrating Apache ActiveMQ with Glassfish](integrating-apache-activemq-classic-with-glassfish)
 *   [JBoss Integration](jboss-integration)
 
 The use of an Embedded Broker
 -----------------------------
 
-The ActiveMQ Classic Resource Adapter can connect to a remote broker using any of the available transports, or it can start up an embedded broker. As described in the [Resource Adapter Properties](resource-adapter-properties), you can enable an embedded broker using the **BrokerXmlConfig** property.
+The ActiveMQ Resource Adapter can connect to a remote broker using any of the available transports, or it can start up an embedded broker. As described in the [Resource Adapter Properties](resource-adapter-properties), you can enable an embedded broker using the **BrokerXmlConfig** property.
 
 Configuration Reference
 -----------------------

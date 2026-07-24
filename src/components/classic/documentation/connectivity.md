@@ -8,15 +8,15 @@ type: classic
 [Connectivity](connectivity)
 
 
-Apache ActiveMQ Classic is designed to support a large number if [Cross Language Clients](cross-language-clients), speak a wide range of [Protocols](protocols) and be usable in a wide variety of [Containers](containers) in addition to being usable in a stand alone Java SE platform.
+Apache ActiveMQ is designed to support a large number if [Cross Language Clients](cross-language-clients), speak a wide range of [Protocols](protocols) and be usable in a wide variety of [Containers](containers) in addition to being usable in a stand alone Java SE platform.
 
 *   [Ajax](ajax)
 *   [Containers](containers)
     *   [Axis and CXF Support](axis-and-cxf-support)
     *   [BlazeDS](blazeds)
     *   [Geronimo](geronimo)
-    *   [Integrating Apache ActiveMQ Classic with Glassfish](integrating-apache-activemq-classic-with-glassfish)
-    *   [Integrating Apache ActiveMQ Classic with JBoss](integrating-apache-activemq-classic-with-jboss)
+    *   [Integrating Apache ActiveMQ with Glassfish](integrating-apache-activemq-classic-with-glassfish)
+    *   [Integrating Apache ActiveMQ with JBoss](integrating-apache-activemq-classic-with-jboss)
     *   [J2EE](j2ee)
     *   [JBoss Integration](jboss-integration)
     *   [JCA Container](jca-container)
@@ -31,7 +31,7 @@ Apache ActiveMQ Classic is designed to support a large number if [Cross Language
     *   [WebLogic Integration](weblogic-integration)
     *   [zOS](zos)
 *   [Cross Language Clients](cross-language-clients)
-    *   [ActiveMQ Classic C++ Clients](activemq-c-clients)
+    *   [ActiveMQ C++ Clients](activemq-c-clients)
     *   [C Integration](c-integration)
     *   [Delphi and FreePascal](delphi-and-freepascal)
 *   [JMS to JMS Bridge](jms-to-jms-bridge)

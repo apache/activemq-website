@@ -1,6 +1,6 @@
 ---
 layout: default_md
-title: ActiveMQ Classic 5.0.0 Release
+title: ActiveMQ 5.0.0 Release
 title-class: page-title-classic
 type: classic
 redirect_from:
@@ -15,7 +15,7 @@ redirect_from:
 New Features in 5.0
 -------------------
 
-In the 5.0 release of Apache ActiveMQ Classic there are the following new features:
+In the 5.0 release of Apache ActiveMQ there are the following new features:
 
 *   [AMQ Message Store](Persistence/amq-message-store) (Faster Persistence!)
 *   [Message Cursors](Message Dispatching FeaturesFeatures/Message Dispatching Features/Features/Message Dispatching Features/message-cursors) (To handle very large number of stored messages)

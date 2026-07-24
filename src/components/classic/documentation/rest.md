@@ -7,7 +7,7 @@ type: classic
 
 [Connectivity](connectivity) > [Protocols](protocols) > [REST](rest)
 
-ActiveMQ Classic implements a RESTful API to messaging which allows any web capable device to publish or consume messages using a regular HTTP POST or GET.
+ActiveMQ implements a RESTful API to messaging which allows any web capable device to publish or consume messages using a regular HTTP POST or GET.
 
 If you are interested in messaging directly from web browsers you might wanna check out our [Ajax](ajax) or [WebSockets](websockets) support or try [running the REST examples](web-samples)
 
@@ -16,7 +16,7 @@ Mapping of REST to JMS
 
 To publish a message use a HTTP POST. To consume a message use HTTP DELETE or GET.
 
-ActiveMQ Classic has a Servlet that takes care of the integration between HTTP and the ActiveMQ Classic dispatcher.
+ActiveMQ has a Servlet that takes care of the integration between HTTP and the ActiveMQ dispatcher.
 
 NOTE: The example below requires servlet mapping on the URL. For posting without the servlet mapping, see examples further down.
 
@@ -26,7 +26,7 @@ http://www.acme.com/orders/input
 ```
 which would publish the contents of the HTTP POST to the orders.input queue on JMS. 
 
-Similarly you could perform a HTTP DELETE GET on the above URL to read from the same queue. In this case we will map the MessageServlet from ActiveMQ Classic to the URI
+Similarly you could perform a HTTP DELETE GET on the above URL to read from the same queue. In this case we will map the MessageServlet from ActiveMQ to the URI
 ```
 http://www.acme.com/queue
 ```
@@ -100,7 +100,7 @@ When reading from a queue we might not have any messages. We can use a timeout q
 
 Couple this with HTTP 1.1 keep-alive sockets and pipeline processing we can have efficient access to JMS over HTTP.
 
-Obviously if your client is Java then using ActiveMQ Classic's JMS API is the fastest and most efficient way to work with the message broker; however, if you are not using Java or prefer the simplicity of HTTP then it should be fairly efficient, especially if your HTTP client supports keep-alive sockets and pipeline processing.
+Obviously if your client is Java then using ActiveMQ's JMS API is the fastest and most efficient way to work with the message broker; however, if you are not using Java or prefer the simplicity of HTTP then it should be fairly efficient, especially if your HTTP client supports keep-alive sockets and pipeline processing.
 
 #### Consuming
 
@@ -150,7 +150,7 @@ http://localhost:8161/demo/message/test?clientId=consumerA&action=unsubscribe
 
 ### Consuming with selectors
 
-As of ActiveMQ Classic 5.4.0, you can use selectors when consuming using REST protocol. To do that, just specify the appropriate header with selector. To define a selector for the consumer, you have to provide it in an appropriate HTTP header. By default selector header name is `selector`, so the following example
+As of ActiveMQ 5.4.0, you can use selectors when consuming using REST protocol. To do that, just specify the appropriate header with selector. To define a selector for the consumer, you have to provide it in an appropriate HTTP header. By default selector header name is `selector`, so the following example
 ```
 wget  --user admin --password admin --save-cookies cookies.txt --load-cookies cookies.txt --keep-session-cookies  --header="selector: test=2" http://localhost:8161/api/message/test?type=queue
 ```
@@ -224,7 +224,7 @@ or to be more specific, total consumer count with
 ```
 wget --user admin --password admin --header "Origin: http://localhost" --auth-no-challenge http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost/TotalConsumerCount
 ```
-By default, ActiveMQ Classic uses the [following](https://github.com/apache/activemq/blob/master/assembly/src/release/webapps/api/WEB-INF/classes/jolokia-access.xml) Jolokia security policy:
+By default, ActiveMQ uses the [following](https://github.com/apache/activemq/blob/master/assembly/src/release/webapps/api/WEB-INF/classes/jolokia-access.xml) Jolokia security policy:
 ```
 <restrict>
 
@@ -251,7 +251,7 @@ By default, ActiveMQ Classic uses the [following](https://github.com/apache/acti
 ```
 A custom Jolokia security policy can be configured by editing 'webapps/api/WEB-INF/web.xml' and specifying the 'policyLocation' parameter under the 'jolokia-agent' servlet.
 
-For more information on Jolokia security, please refer to the [security section](https://jolokia.org/reference/html/security.html) of its reference manual. An API like this makes it easy to script monitoring and management operations against the broker, see also [How can I monitor ActiveMQ Classic](how-can-i-monitor-activemq-classic)?
+For more information on Jolokia security, please refer to the [security section](https://jolokia.org/reference/html/security.html) of its reference manual. An API like this makes it easy to script monitoring and management operations against the broker, see also [How can I monitor ActiveMQ](how-can-i-monitor-activemq-classic)?
 
 Gotcha's and other trivia
 -------------------------

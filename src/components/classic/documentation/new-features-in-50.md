@@ -11,7 +11,7 @@ type: classic
 New Features in 5.0
 -------------------
 
-In the 5.0 release of Apache ActiveMQ Classic there are the following new features:
+In the 5.0 release of Apache ActiveMQ there are the following new features:
 
 *   [AMQ Message Store](amq-message-store) (Faster Persistence!)
 *   [Message Cursors](message-cursors) (To handle very large number of stored messages)

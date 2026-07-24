@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ Classic](using-apache-activemq-classic) > [How do I purge a queue](how-do-i-purge-a-queue)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I purge a queue](how-do-i-purge-a-queue)
 
 
 A frequent requirement is to purge a queue (i.e. delete all the messages on it).

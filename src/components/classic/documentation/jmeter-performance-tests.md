@@ -10,21 +10,21 @@ type: classic
 
 ### JMeter performance test
 
-You can use JMeter to test the performance of your ActiveMQ Classic Server. Please refer to the [JMeter site](http://jakarta.apache.org/jmeter/) for detailed instructions on using this software.
+You can use JMeter to test the performance of your ActiveMQ Server. Please refer to the [JMeter site](http://jakarta.apache.org/jmeter/) for detailed instructions on using this software.
 
 ### Downloading the JMeter Performance Test Binary
 
 You can download the latest activemq-jmeter-*.zip distribution from the following
 
-*   [Apache ActiveMQ Classic versions](http://people.apache.org/repository/incubator-activemq/distributions/)
-*   [3.x versions of ActiveMQ Classic](http://dist.codehaus.org/activemq/distributions/).
+*   [Apache ActiveMQ versions](http://people.apache.org/repository/incubator-activemq/distributions/)
+*   [3.x versions of ActiveMQ](http://dist.codehaus.org/activemq/distributions/).
 
 ### Building the JMeter Performance Test from source
 
-1. Check out the latest head version of ActiveMQ Classic from [Source](source). Build from source.
+1. Check out the latest head version of ActiveMQ from [Source](source). Build from source.
 2. Run maven from the JMeter directory. This will build JMeter into the target directory.
 3. Run JMeter.bat from the \\bin directory to start JMeter.
-4. There are sample Test Plans located at \\bin\\testfiles directory that you could open to test ActiveMQ Classic.
+4. There are sample Test Plans located at \\bin\\testfiles directory that you could open to test ActiveMQ.
 
 ### Building a Test Plan
 
@@ -45,7 +45,7 @@ For a Consumer Sampler
 1. JMeter Producer Sampler
 
     *   A JMeter Sampler tells JMeter to send requests to the server. Pluggable Samplers allow unlimited testing capabilities.
-    *   The Producer Sampler will send messages to an ActiveMQ Classic Server.
+    *   The Producer Sampler will send messages to an ActiveMQ Server.
     
     The Producer Sampler has the following parameters:
     

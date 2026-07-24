@@ -11,7 +11,7 @@ type: classic
 If you get an error like this
 ```
 Jun 19, 2006 10:35:27 PM org.apache.activemq.broker.BrokerService getBroker
-INFO: ActiveMQ Classic 4.0 JMS Message Broker (localhost) is starting
+INFO: ActiveMQ 4.0 JMS Message Broker (localhost) is starting
 Jun 19, 2006 10:35:27 PM org.apache.activemq.broker.BrokerService getBroker
 INFO: For help or more information please see: http://incubator.apache.org/activemq/
 java.io.IOException: Failed to create database 'derbydb', see the next exception for details.

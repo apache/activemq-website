@@ -5,12 +5,12 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ Classic](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Classic Connection URIs](activemq-classic-connection-uris) > [UDP Transport Reference](udp-transport-reference)
+[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris) > [UDP Transport Reference](udp-transport-reference)
 
 
 ### The UDP Transport
 
-The UDP transport allows clients to connect to a remote ActiveMQ Classic broker using raw UDP
+The UDP transport allows clients to connect to a remote ActiveMQ broker using raw UDP
 
 Note that by default UDP is not reliable; datagrams can be lost so you should add a reliability layer to ensure the JMS contract can be implemented on a non-reliable transport.
 

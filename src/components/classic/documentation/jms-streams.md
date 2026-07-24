@@ -10,17 +10,17 @@ type: classic
 
 > **DEPRECATED**
 
-This feature is deprecated, and end users is encouraged to **not** use it. This feature will be removed in a later ActiveMQ Classic release.
+This feature is deprecated, and end users is encouraged to **not** use it. This feature will be removed in a later ActiveMQ release.
 
 Sometimes you need to send truly massive files (many Gb) around the network in a reliable manner. The JMS API expects JMS clients to be able to keep a message in memory at one time, so sending > 1Gb messages around ends up using way too much RAM on the client side.
 
-To solve this problem ActiveMQ Classic supports regular [InputStream](http://java.sun.com/j2se/1.4.2/docs/api/java/io/InputStream.html) and [OutputStream](http://java.sun.com/j2se/1.4.2/docs/api/java/io/OutputStream.html) abstractions which work with regular JMS producers and consumers.
+To solve this problem ActiveMQ supports regular [InputStream](http://java.sun.com/j2se/1.4.2/docs/api/java/io/InputStream.html) and [OutputStream](http://java.sun.com/j2se/1.4.2/docs/api/java/io/OutputStream.html) abstractions which work with regular JMS producers and consumers.
 
 This allows you to use the familar streams from Java to send or receive messages of any size at all (providing your file system can handle them while keeping a low memory overhead.
 
 For Users of 4.2
 
-If you are using 4.2 onwards of ActiveMQ Classic we highly recommend you try out [Blob Messages](blob-messages) which offers a more flexible mechanism for dealing wtih massive files and fully supports out-of-band transfer using HTTP/FTP as well as allowing external resources to be sent around the JMS network.
+If you are using 4.2 onwards of ActiveMQ we highly recommend you try out [Blob Messages](blob-messages) which offers a more flexible mechanism for dealing wtih massive files and fully supports out-of-band transfer using HTTP/FTP as well as allowing external resources to be sent around the JMS network.
 
 ### Using JMS Streams
 

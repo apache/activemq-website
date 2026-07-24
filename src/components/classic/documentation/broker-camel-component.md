@@ -10,11 +10,11 @@ type: classic
 Broker Camel Component
 ----------------------
 
-**Available as of ActiveMQ Classic 5.9**
+**Available as of ActiveMQ 5.9**
 
-Embedding Apache Camel inside the ActiveMQ Classic broker provides great flexibility for extending the message broker with the integration power of Camel. Apache Camel routes also benefit in that you can avoid the serialization and network costs of connecting to ActiveMQ Classic remotely - if you use the [activemq component](http://camel.apache.org/activemq.html).
+Embedding Apache Camel inside the ActiveMQ broker provides great flexibility for extending the message broker with the integration power of Camel. Apache Camel routes also benefit in that you can avoid the serialization and network costs of connecting to ActiveMQ remotely - if you use the [activemq component](http://camel.apache.org/activemq.html).
 
-If however, you want to change the behavior of messages flowing through the ActiveMQ Classic message broker itself you will be limited to the shipped set of ActiveMQ Classic broker [Interceptors](interceptors) - or develop your own [Broker plugin](developing-plugins) and then introduce that as a jar on to the class path for the ActiveMQ Classic broker. The `broker` Camel component makes this even easier. It intercepts messages as they move through the broker itself, allowing them to be modified and manipulated before they are persisted to the message store or delivered to end consumers.
+If however, you want to change the behavior of messages flowing through the ActiveMQ message broker itself you will be limited to the shipped set of ActiveMQ broker [Interceptors](interceptors) - or develop your own [Broker plugin](developing-plugins) and then introduce that as a jar on to the class path for the ActiveMQ broker. The `broker` Camel component makes this even easier. It intercepts messages as they move through the broker itself, allowing them to be modified and manipulated before they are persisted to the message store or delivered to end consumers.
 
 For example [by defining a CamelContext to run inside the broker's JVM](how-should-i-package-applications-using-camel-and-activemq-classic) the `broker` component can intercept all messages published to a Topic, say, and publish them to a Queue instead, changing their priority along the way:
 ```
@@ -30,7 +30,7 @@ Notes:
 
 *   A broker component only adds an intercept into the broker if its started - so the broker component will not add any overhead to the running broker until its used - and then the overhead will be trivial.
 *   Messages are intercepted by the broker component when they have been received by the broker - but before they are processed (persisted or routed to a destination).
-*   The `IN` message on the Exchange is a `CamelMessage`, but also a JMS Message (messages routed through ActiveMQ Classic from STOMP/MQTT/AMQP etc. are always translated into JMS messages).
+*   The `IN` message on the Exchange is a `CamelMessage`, but also a JMS Message (messages routed through ActiveMQ from STOMP/MQTT/AMQP etc. are always translated into JMS messages).
 *   [Wildcards](wildcards) can be used on a destination to intercept messages from destinations matching the wildcard.
 *   After the intercept, you have to explicitly send the message back to the broker component - this allows you to either drop select messages (by not sending) - or, like in the above case - re-route the message to a different destination.  
 

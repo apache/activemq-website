@@ -8,11 +8,11 @@ type: classic
 [Features](features) > [Destination Features](destination-features) > [Configure Startup Destinations](configure-startup-destinations)
 
 
-Typically in Apache ActiveMQ Classic we [create destinations on demand](how-do-i-create-new-destinations) as clients start to use them. However sometimes users want to be able to configure which destinations are available on startup explicitly in the [Xml Configuration](xml-configuration).
+Typically in Apache ActiveMQ we [create destinations on demand](how-do-i-create-new-destinations) as clients start to use them. However sometimes users want to be able to configure which destinations are available on startup explicitly in the [Xml Configuration](xml-configuration).
 
 > **4.1 Feature**
 > 
-> Note this feature is available from 4.1 onwards. If you try this XML on older versions of ActiveMQ Classic you will get an exception about the 'destinations' property not being writable.
+> Note this feature is available from 4.1 onwards. If you try this XML on older versions of ActiveMQ you will get an exception about the 'destinations' property not being writable.
 
 ### Example
 

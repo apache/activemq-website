@@ -8,7 +8,7 @@ type: classic
 [Connectivity](connectivity) > [Containers](containers) > [Resource Adapter](resource-adapter) > [TomEE](Resource Adapter/tomee)
 
 
-Apache TomEE is a distribution of Tomcat with fully integrated ActiveMQ Classic offering full JMS support to plain war files, Servlets and more. No setup is required and code like the following will work out of the box.
+Apache TomEE is a distribution of Tomcat with fully integrated ActiveMQ offering full JMS support to plain war files, Servlets and more. No setup is required and code like the following will work out of the box.
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServlet;
@@ -78,12 +78,12 @@ If no broker is configured and JMS is used in the webapp, TomEE will create a br
     </Resource>
 </tomee>
 
-This creates an ActiveMQ Classic Broker that runs inside TomEE and is bound to the address `someHostName:61616`. This broker will start when TomEE starts and shutdown when TomEE shuts down. All JMS communication happening inside TomEE itself will happen using the embedded ActiveMQ Classic Broker over the ActiveMQ Classic "vm" transport which is optimized for sending and receiving messages when in the same JVM as the Broker.
+This creates an ActiveMQ Broker that runs inside TomEE and is bound to the address `someHostName:61616`. This broker will start when TomEE starts and shutdown when TomEE shuts down. All JMS communication happening inside TomEE itself will happen using the embedded ActiveMQ Broker over the ActiveMQ "vm" transport which is optimized for sending and receiving messages when in the same JVM as the Broker.
 
 Connecting to an External Broker
 --------------------------------
 
-It is possible to connect to an ActiveMQ Classic Broker running externally. The setup is similar to the above with only two changes.
+It is possible to connect to an ActiveMQ Broker running externally. The setup is similar to the above with only two changes.
 
 <tomee>
     <Resource id="MyJmsResourceAdapter" type="ActiveMQResourceAdapter">
@@ -96,5 +96,5 @@ It is possible to connect to an ActiveMQ Classic Broker running externally. The 
     </Resource>
 </tomee>
 
-Here the `BrokerXmlConfig` property is empty as we are not configuring an embedded broker to be run inside TomEE. The `ServerUrl` now points to an explicit remote host and port `someHostName:61616` where an ActiveMQ Classic Broker must be running. This Broker can be a plain ActiveMQ Classic install or an ActiveMQ Classic Broker embedded in a TomEE install.
+Here the `BrokerXmlConfig` property is empty as we are not configuring an embedded broker to be run inside TomEE. The `ServerUrl` now points to an explicit remote host and port `someHostName:61616` where an ActiveMQ Broker must be running. This Broker can be a plain ActiveMQ install or an ActiveMQ Broker embedded in a TomEE install.
 

@@ -30,7 +30,7 @@ log4j.appender.kahadb.layout=org.apache.log4j.PatternLayout
 log4j.appender.kahadb.layout.ConversionPattern=%d \[%-15.15t\] %-5p %-30.30c{1} - %m%n 
 log4j.logger.org.apache.activemq.store.kahadb.MessageDatabase=TRACE, kahadb
 
-Either restart ActiveMQ Classic and let the cleanup process run (give it a minute or two for example) or alternatively apply this logging configuration to a running broker via JMX. The **`Broker`** MBean exposes an operation called **`reloadLog4jProperties`** in JMX that can be used to tell the broker to reload its **`log4j.properties`**. Often its enough to apply this logging configuration for 2-5 minutes and then analyze the broker's log file.
+Either restart ActiveMQ and let the cleanup process run (give it a minute or two for example) or alternatively apply this logging configuration to a running broker via JMX. The **`Broker`** MBean exposes an operation called **`reloadLog4jProperties`** in JMX that can be used to tell the broker to reload its **`log4j.properties`**. Often its enough to apply this logging configuration for 2-5 minutes and then analyze the broker's log file.
 
 Examine the log file and look for cleanup of the data files. The process starts with the complete set of known data files and queries the index on a per destination basis to prune this list. Anything that remains is a candidate for cleanup. The trace logging gives the destination and the log file numbers that remain candidates for removal as it iterates through the index.
 

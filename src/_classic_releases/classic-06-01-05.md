@@ -2,13 +2,13 @@
 version: 6.1.5
 release_notes: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12311210&version=12355276
 release_date: 2025-01-13
-title: ActiveMQ Classic 6.1.5 Release
+title: ActiveMQ 6.1.5 Release
 java_version: 17+
-shortDescription: Classic 6.1.5 is a maintanance release for ActiveMQ Classic, on the 6.1.x series.
+shortDescription: Classic 6.1.5 is a maintanance release for ActiveMQ, on the 6.1.x series.
 redirect_from:
 - /../../../activemq-6000105-release
 ---
-Apache ActiveMQ Classic {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
+Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
 
 It's a maintenance release especially bringing:
 - messages (in specific circumstances) can become stuck in queues
