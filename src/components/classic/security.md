@@ -9,6 +9,8 @@ Details of security problems fixed in released versions of Apache ActiveMQ 6.x a
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2026-61487](../../security-advisories.data/CVE-2026-61487-announcement.txt) - Authorization bypass via temporary composite destinations
+*   [CVE-2026-59878](../../security-advisories.data/CVE-2026-59878-announcement.txt) - AMQP NIO negative frame size validation bypass leading to DoS
 *   [CVE-2026-54475](../../security-advisories.data/CVE-2026-54475-announcement.txt) - Temporary destination ownership takeover
 *   [CVE-2026-53917](../../security-advisories.data/CVE-2026-53917-announcement.txt) - Unbounded memory allocation in OpenWire property unmarshalling
 *   [CVE-2026-53916](../../security-advisories.data/CVE-2026-49157-announcement.txt) - Unbounded header buffer in STOMP NIO codec
