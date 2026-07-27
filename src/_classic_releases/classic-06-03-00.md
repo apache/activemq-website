@@ -6,7 +6,7 @@ title: ActiveMQ 6.3.0 Release
 java_version: 25+
 shortDescription: ActiveMQ 6.3.0 is the first release, starting the 6.3.x series.
 redirect_from:
-- /../../../activemq-6000300-release
+- /../../../activemq-6003000-release
 ---
 Apache ActiveMQ {{ page.version }} was released on {{ page.release_date | date_to_string: "ordinal", "US" }}.
 
