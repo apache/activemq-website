@@ -125,7 +125,7 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
 
 | Series | Broker JMS API Support      | Client JMS API Client       | Java Version | Spring Version | Logging Support              | Web Support            | Status       | Last    | Next | ETA     |
 |--------|-----------------------------|-----------------------------|--------------|----------------|------------------------------|------------------------|--------------|---------|--|---------|
-| 6.3.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [25,)            | 7.0.8          | Log4j 2.26.1/Slf4j 2.0.18    | Jetty 12.1.11          | **Stable - Supported**   | 6.3.0   |  |  |
+| 6.3.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,26)            | 7.0.8          | Log4j 2.26.1/Slf4j 2.0.18    | Jetty 12.1.11          | **Stable - Supported**   | 6.3.0   |  |  |
 | 6.2.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.2.19         | Log4j 2.25.4/Slf4j 2.0.17    | Jetty 11.0.26          | **Stable - Supported**   | 6.2.8   |  |  |
 | 6.1.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.1.21         | Log4j 2.25.2/Slf4j 2.0.17    | Jetty 11.0.26          | _Deprecated_ | 6.1.8   |  | |
 | 6.0.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.0.17         | Log4j 2.22.0/Slf4j 2.0.9     | Jetty 11.0.18          | _Deprecated_ | 6.0.1   |  |         |
