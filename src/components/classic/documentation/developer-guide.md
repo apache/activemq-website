@@ -11,6 +11,7 @@ type: classic
 The following documents might be interesting
 
 *   [Building](building)
+*   [Testing changes locally](testing-changes-locally)
 *   [Release Plans](release-plans)
 *   [Release Guide](release-guide)
 *   [Design Documents](design-documents)
