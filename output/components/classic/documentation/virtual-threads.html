@@ -96,44 +96,27 @@
 
 <h3 id="virtual-threads-support">Virtual Threads support</h3>
 
-<p>ActiveMQ support for Virtual Threads is in Technology Preview stage.</p>
+<p>ActiveMQ support for Virtual Threads is in Technology Preview stage. Virtual Thread support is implemented using multi-release jar, so no special changes to the distribution are required.</p>
 
 <h3 id="virtual-threads-benefits">Virtual Threads benefits</h3>
 
 <ul>
-  <li>Performance on-par with reactive coding approaches</li>
+  <li>Performance on-par (or better) than reactive coding approaches</li>
   <li>JDK-based option for peak concurrency performance</li>
   <li>Automatically scales based on need and detected CPU cores</li>
   <li>Less configuration tuning required for administrators</li>
   <li>Easier to code extensions</li>
+  <li>Scales connection count</li>
+  <li>Scales destination count</li>
 </ul>
-
-<h3 id="virtual-threads-warning">Virtual Threads warning</h3>
-
-<p>JDK 21 support for Virtual Threads can lead to thread pinning in <em>synchronized</em> code blocks, which negates the performance benefit from using virtual threads and may lead to other issues.</p>
-
-<p>Technical factors:</p>
-
-<ul>
-  <li>ActiveMQ currently (6.1.x) uses virtual thread-friendly locking for key data structures in the Queue class</li>
-  <li>ActiveMQ currently (6.1.x) uses virtual thread-unfriendly <em>synchronized</em> code blocks in many areas in the client and broker code</li>
-  <li>JDK 23 is slated to address the thread pinning in <em>synchronized</em> code blocks</li>
-  <li>JDK 25 is the next planned LTS release after JDK 21</li>
-  <li>Areas of ActiveMQ source code will need to be modernized to be more virtual thread friendly</li>
-  <li>New virtual-thread first implementations may be added using extension points in the broker, vs refactoring the existing stable components</li>
-</ul>
-
-<p>JDK thread pinning improvement:
-ref:  https://mail.openjdk.org/pipermail/loom-dev/2024-May/006632.html</p>
 
 <h3 id="configuration">Configuration</h3>
 
-<p>To enable Virtual Threads in ActiveMQ 6.x (and higher)</p>
+<p>To enable Virtual Threads in ActiveMQ 6.3.x (and higher)</p>
 
 <ol>
-  <li>Checkout activemq source code from git</li>
-  <li>Build using JDK 21 (Virtual Thread support will be added automatically)</li>
-  <li>Replace the lib/activemq-client_version_.jar with the lib/jdk21/activemq-client-jdk21-_version.jar</li>
+  <li>Run Apache ActiveMQ 6.3.0 (or higher)</li>
+  <li>Run with Java JDK 25 (or newer)</li>
   <li>
     <p>Edit conf/activemq.xml</p>
 
@@ -157,9 +140,7 @@ ref:  https://mail.openjdk.org/pipermail/loom-dev/2024-May/006632.html</p>
 
 <h3 id="activemq-virtual-thread-implementation-progress">ActiveMQ Virtual Thread Implementation Progress</h3>
 
-<p>The implementation approach is subject to change. Be sure to verify features in Release notes.</p>
-
-<p>User feedback is welcome! Please comment on the JIRAs with questions and comments.</p>
+<p>Virtual Thread support was released with ActiveMQ v6.3.0. User feedback is welcome! Please open a GitHub issue with questions and comments.</p>
 
 <table>
   <thead>
@@ -177,13 +158,30 @@ ref:  https://mail.openjdk.org/pipermail/loom-dev/2024-May/006632.html</p>
       <td><a href="https://issues.apache.org/jira/browse/AMQ-9394">AMQ-9394</a></td>
       <td>PR <a href="https://github.com/apache/activemq/pull/1172">#1172</a></td>
       <td>6.2.0</td>
-      <td> </td>
+      <td>6.3.0</td>
       <td>Task Runner Factory</td>
       <td>Tech Preview support to allow Virtual Thread Executor Service</td>
     </tr>
   </tbody>
 </table>
 
+<h3 id="reference-running-with-virtual-threads">Reference: Running with Virtual Threads</h3>
+
+<p>JDK 25 (or newer) should always be used when running Virtual Threads to avoid thread pinning.</p>
+
+<p>Technical factors:</p>
+
+<ul>
+  <li>ActiveMQ currently (6.1.x) uses virtual thread-friendly locking for key data structures in the Queue class</li>
+  <li>ActiveMQ currently (6.1.x) uses virtual thread-unfriendly <em>synchronized</em> code blocks in many areas in the client and broker code</li>
+  <li>JDK 23 is slated to address the thread pinning in <em>synchronized</em> code blocks</li>
+  <li>JDK 25 is the next planned LTS release after JDK 21</li>
+  <li>Areas of ActiveMQ source code will need to be modernized to be more virtual thread friendly</li>
+  <li>New virtual-thread first implementations may be added using extension points in the broker, vs refactoring the existing stable components</li>
+</ul>
+
+<p>JDK thread pinning improvement:
+ref:  https://mail.openjdk.org/pipermail/loom-dev/2024-May/006632.html</p>
 
       </div>
     </div>
