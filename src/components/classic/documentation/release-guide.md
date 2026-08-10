@@ -194,3 +194,10 @@ Regards
 --
 The Apache ActiveMQ team
 ```
+
+6. Create a PR to merge the release branch to bump to the next snapshot version
+
+```
+For example, create a PR to merge release/a.b.c into activemq-a.b.x
+```
+7. After merging the release branch and bumping the version, the release branch can be deleted
