@@ -20,6 +20,7 @@ This page captures resources and articles outside the ActiveMQ project which may
 
 #### General Articles
 
+* [Virtual Thread performance v6.3.0](https://medium.com/javarevisited/how-activemq-v6-3-0-boosts-topic-throughput-up-to-93-6b00006f3b82?sharedUserId=mattrpav) by Matt Pavlovich (August, 2026)
 * [Connecting to ActiveMQ with Payara Server](http://blog.payara.fish/connecting-to-activemq-with-payara-server) by Steve Millidge (December, 2015)
 * [Messaging for Web and Mobile with Apache ActiveMQ](http://de.slideshare.net/dejanb/messaging-for-web-and-mobile-with-apache-activemq) by [Dejan Bosanac](http://Dejan Bosanac) (June, 2013)
 * [ActiveMQ in Action: Common Problems and Solutions](http://de.slideshare.net/bruce.snyder/activemq-in-action) by Bruce Snyder (July, 2011)
