@@ -4,7 +4,7 @@ release_notes: https://github.com/apache/activemq/releases/tag/activemq-6.2.8
 release_date: 2026-07-27
 title: ActiveMQ 6.2.8 Release
 java_version: 17+
-shortDescription: ActiveMQ 6.2.7 is a maintenance release on the 6.2.x series.
+shortDescription: ActiveMQ 6.2.8 is a maintenance release on the 6.2.x series.
 redirect_from:
 - /../../../activemq-6000208-release
 ---
