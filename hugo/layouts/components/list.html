@@ -1,0 +1,26 @@
+{{ define "above-main" }}
+<div class="component-hero">
+  <div class="inner">
+    <div class="component-hero-text">
+      <h1>{{ .Title }}</h1>
+      {{ with .Params.subtitle }}<p class="component-hero-sub">{{ . }}</p>{{ end }}
+      <div class="component-hero-actions">
+        <a class="btn btn-hero" href="{{ "/download/" | relURL }}">Download</a>
+        <a class="btn btn-hero-outline" href="{{ "/components/classic/documentation/" | relURL }}">Read the Docs</a>
+      </div>
+    </div>
+    <div class="hero-logo">
+      <img src="/assets/img/activemq_logo_white_vertical.png" alt="Apache ActiveMQ">
+    </div>
+  </div>
+</div>
+{{ end }}
+
+{{ define "main" }}
+<nav class="breadcrumb">
+  <a href="{{ "/" | relURL }}">Home</a> &rsaquo; Components &rsaquo; {{ .Title }}
+</nav>
+<div class="component-body">
+  {{ .Content }}
+</div>
+{{ end }}
