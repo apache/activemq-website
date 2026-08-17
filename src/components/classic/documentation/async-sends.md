@@ -42,9 +42,37 @@ You can enable this feature on the [ActiveMQConnection](http://incubator.apache.
 ((ActiveMQConnection)connection).setUseAsyncSend(true);
 ```
 
+### JMS 2.0 CompletionListener (since 6.2.0)
+
+JMS 2.0 introduced a standard API for asynchronous sending via `CompletionListener`. 
+When you call `send(message, completionListener)`, the provider notifies your `CompletionListener` once the send completes (or fails).
+
+```java
+producer.send(message, new CompletionListener() {
+    @Override
+    public void onCompletion(Message message) {
+        // message was sent successfully
+    }
+
+    @Override
+    public void onException(Message message, Exception exception) {
+        // send failed
+    }
+});
+```
+
+**Implementation note:** the current ActiveMQ Classic implementation performs the send synchronously and then invokes the `CompletionListener` callback on a separate thread. 
+This is explicitly permitted by the JMS 2.0 specification (section 7.3). 
+Application code that follows the specification will remain compatible if a future version implements fully asynchronous sending.
+
+For high-throughput asynchronous sending outside the JMS specification, the ActiveMQ-specific `useAsyncSend` flag described above remains available and provides true non-blocking behaviour.
+
+See also the [JMS 2.0 implementation status](jms2) page for the full list of supported features.
+
 ### Also see
 
 *   [Connection Configuration URI](connection-configuration-uri)
 *   [Should I use transactions](should-i-use-transactions)
 *   [Consumer Dispatch Async](consumer-dispatch-async)
+*   [JMS 2.0 Support](jms2)
 
