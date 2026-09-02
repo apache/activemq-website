@@ -3,7 +3,7 @@ version: 6.3.0
 release_notes: https://github.com/apache/activemq/releases/tag/activemq-6.3.0
 release_date: 2026-07-27
 title: ActiveMQ 6.3.0 Release
-java_version: 17, 21, 25
+java_version: 17, 21, 25 (25+ recommended for Virtual Threads)
 shortDescription: ActiveMQ 6.3.0 is the first release, starting the 6.3.x series.
 redirect_from:
 - /../../../activemq-6003000-release
