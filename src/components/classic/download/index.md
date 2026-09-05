@@ -14,6 +14,7 @@ type: classic
       <th>Status</th>
       <th>Latest Patch Version</th>
       <th>Date of Release</th>
+      <th>Links</th>
     </tr>
   </thead>
   <tbody>
@@ -22,24 +23,28 @@ type: classic
       <td><strong>Active</strong></td>
       <td>6.3.2</td>
       <td>Sep 2nd, 2026</td>
+      <td><i class="fa-download" title="Download"></i>(https://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz&action=download)</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>6.2.x</td>
       <td><em>Inactive</em></td>
       <td>6.2.9</td>
       <td>Aug 10th, 2026</td>
+      <td/>
     </tr>
     <tr style="background-color: #dff0d8;">
       <td>5.19.x</td>
       <td><strong>Active</strong></td>
       <td>5.19.11</td>
       <td>Sep 05th, 2026</td>
+      <td/>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>5.18.x</td>
       <td><em>Inactive</em></td>
       <td>5.18.7</td>
       <td>Mar 19nd, 2025</td>
+      <td/>
     </tr>
   </tbody>
 </table>
