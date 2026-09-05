@@ -23,7 +23,7 @@ type: classic
       <td><strong>Active</strong></td>
       <td>6.3.2</td>
       <td>Sep 2nd, 2026</td>
-      <td><i class="fa-download" title="Download"></i>(https://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz&action=download)</td>
+      <td>[<i class="fa-download" aria-hidden="true" title="Download"></i>](https://www.apache.org/dyn/closer.cgi?filename=/activemq/{{release.version}}/apache-activemq-{{release.version}}-bin.tar.gz&action=download)</td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>6.2.x</td>
