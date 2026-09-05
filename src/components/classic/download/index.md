@@ -48,7 +48,8 @@ type: classic
       <td><em>Inactive</em></td>
       <td>5.18.7</td>
       <td>Mar 19nd, 2025</td>
-      <td/>
+      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/5.18.7/apache-activemq-5.19.11-bin.tar.gz&amp;action=download" title="Download UNIX"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/5.18.7/apache-activemq-5.19.11-bin.zip&amp;action=download" title="Download Win64"><i class="fa fa-download" aria-hidden="true"></i></a></td>
     </tr>
   </tbody>
 </table>
