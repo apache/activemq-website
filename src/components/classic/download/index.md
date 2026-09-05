@@ -5,12 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-These are the current ActiveMQ releases. For prior releases, please see the [past releases](../documentation/download-archives) page.
-
-It is important to [verify the integrity](#verify-the-integrity-of-downloads) of the files you download.
-
 #### Summary Table of ActiveMQ Series Status
-
 
 <table>
   <thead>
@@ -34,18 +29,6 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
       <td>6.2.9</td>
       <td>Aug 10th, 2026</td>
     </tr>
-    <tr style="background-color: #f0f0f0;">
-      <td>6.1.x</td>
-      <td><em>Inactive</em></td>
-      <td>6.1.8</td>
-      <td>Oct 22nd, 2025</td>
-    </tr>
-    <tr style="background-color: #f0f0f0;">
-      <td>6.0.x</td>
-      <td><em>Inactive</em></td>
-      <td>6.0.1</td>
-      <td>Dec 3rd, 2023</td>
-    </tr>
     <tr style="background-color: #dff0d8;">
       <td>5.19.x</td>
       <td><strong>Active</strong></td>
@@ -58,50 +41,12 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
       <td>5.18.7</td>
       <td>Mar 19nd, 2025</td>
     </tr>
-    <tr style="background-color: #f0f0f0;">
-      <td>5.17.x</td>
-      <td><em>Inactive</em></td>
-      <td>5.17.7</td>
-      <td>Mar 20th, 2025</td>
-    </tr>
-    <tr style="background-color: #f0f0f0;">
-      <td>5.16.x</td>
-      <td><em>Inactive</em></td>
-      <td>5.16.8</td>
-      <td>Mar 22nd, 2025</td>
-    </tr>
-    <tr style="background-color: #f0f0f0;">
-      <td>5.15.x</td>
-      <td><em>Inactive</em></td>
-      <td>5.15.16</td>
-      <td>Oct 26th, 2023</td>
-    </tr>
-    <tr style="background-color: #f0f0f0;">
-      <td>5.14.x</td>
-      <td><em>Inactive</em></td>
-      <td>5.14.5</td>
-      <td>Apr 25th, 2017</td>
-    </tr>
-    <tr style="background-color: #f0f0f0;">
-      <td>5.13.x</td>
-      <td><em>Inactive</em></td>
-      <td>5.13.5</td>
-      <td>Dec 16th, 2016</td>
-    </tr>
-    <tr style="background-color: #f0f0f0;">
-      <td>5.12.x</td>
-      <td><em>Inactive</em></td>
-      <td>5.12.3</td>
-      <td>Feb 3rd, 2016</td>
-    </tr>
-    <tr style="background-color: #f0f0f0;">
-      <td>5.11.x</td>
-      <td><em>Inactive</em></td>
-      <td>5.11.4</td>
-      <td>Feb 3rd, 2016</td>
-    </tr>
   </tbody>
 </table>
+
+These are the current ActiveMQ releases. For prior releases, please see the [past releases](../documentation/download-archives) page.
+
+It is important to [verify the integrity](#verify-the-integrity-of-downloads) of the files you download.
 
 ##### Status Descriptions
 
