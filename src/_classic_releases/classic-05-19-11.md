@@ -3,7 +3,7 @@ version: 5.19.11
 release_notes: https://github.com/apache/activemq/releases/tag/activemq-5.19.11
 release_date: 2026-09-05
 title: ActiveMQ 5.19.11 Release
-java_version: 11+
+java_version: 11, 17, 21
 shortDescription: Maintenance release on the 5.19.x series.
 redirect_from:
 - /../../../activemq-5019011-release
