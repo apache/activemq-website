@@ -139,6 +139,54 @@ service:jmx:rmi:///jndi/rmi://<your hostname>:1616/jmxrmi
 ```
 And you will be forced to login.
 
+### SSL/TLS for the JMX Connector
+
+Starting with ActiveMQ Classic 6.2.0, the JMX RMI connector can be secured with SSL/TLS by referencing the broker's existing `sslContext` configuration. This encrypts all JMX traffic between monitoring tools and the broker.
+
+1. Define an `sslContext` in the broker configuration (if not already present):
+    ```xml
+    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" useJmx="true">
+
+      <sslContext>
+        <sslContext keyStore="file:${activemq.conf}/broker.ks"
+          keyStorePassword="password"
+          trustStore="file:${activemq.conf}/broker.ts"
+          trustStorePassword="password"/>
+      </sslContext>
+
+      ...
+
+    </broker>
+    ```
+
+2. Reference the SSL context from the `managementContext` and enable the connector:
+    ```xml
+    <managementContext>
+      <managementContext createConnector="true"
+        connectorPort="1099"
+        connectorHost="localhost"
+        sslContext="#sslContext"/>
+    </managementContext>
+    ```
+    The `sslContext` attribute uses a Spring bean reference (`#sslContext`) pointing to the broker's SSL context defined above. Both the RMI registry and JMX connector will use SSL.
+
+3. Connect with JConsole or other JMX clients using SSL:
+    ```
+    jconsole -J-Djavax.net.ssl.trustStore=/path/to/broker.ts -J-Djavax.net.ssl.trustStorePassword=password \
+      service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi
+    ```
+
+    For programmatic access, use `SslRMIClientSocketFactory`:
+    ```java
+    JMXServiceURL url = new JMXServiceURL(
+        "service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi");
+    Map<String, Object> env = new HashMap<>();
+    env.put("com.sun.jndi.rmi.factory.socket", new SslRMIClientSocketFactory());
+    JMXConnector connector = JMXConnectorFactory.connect(url, env);
+    ```
+
+> **Note:** When SSL is enabled, the `connectorHost` value is temporarily set as `java.rmi.server.hostname` during connector startup so that RMI stubs embed the correct hostname for SSL certificate verification. If you already set this system property externally, your value is preserved.
+
 ### Selective MBean registration
 
 In situations where you need to scale your broker to large number of connections, destinations and consumers it can become very expensive to keep JMX MBeans for all those objects. Instead of turning off JMX completely, starting with 5.12.0, you can selectively suppress registration of some types of MBeans and thus help your broker scale, while still having a basic view of the broker state.
@@ -161,6 +209,7 @@ connectorPort|1099|The port that the JMX connector will use
 connectorHost|localhost|The host that the JMX connector and RMI server (if rmiServerPort>0) will use
 rmiServerPort|0|The RMI server port, handy if port usage needs to be restricted behind a firewall
 connectorPath|/jmxrmi|The path that JMX connector will be registered under
+sslContext||Reference to a broker `<sslContext>` bean. When set, the JMX RMI connector and registry use SSL/TLS with the keyStore and trustStore from the referenced context.
 findTigerMBeanServer|true|Enables/disables the searching for the Java 5 platform MBeanServer
 suppressMBean||List of MBean name patters to ignore
 
