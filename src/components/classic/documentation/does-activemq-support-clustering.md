@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [Does ActiveMQ support clustering](does-activemq-classic-support-clustering)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-activemq) > [Does ActiveMQ support clustering](does-activemq-support-clustering)
 
 
 Yes, though there are various kinds of clustering. See [this page on details](clustering)

@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [General](general) > [How fast is ActiveMQ](how-fast-is-activemq-classic)
+ [FAQ](faq) > [General](general) > [How fast is ActiveMQ](how-fast-is-activemq)
 
 
 How fast is ActiveMQ?
@@ -16,6 +16,6 @@ It all depends on the configuration, the operating system, hardware, JVM, JVM co
 Performance guides
 ------------------
 
-If you're not convinced by performance reports then please do try running performance tests yourself. You might wanna check out our overview of [Performance](performance) or try using out the [ActiveMQ Performance Module Users Manual](activemq-classic-performance-module-users-manual)
+If you're not convinced by performance reports then please do try running performance tests yourself. You might wanna check out our overview of [Performance](performance) or try using out the [ActiveMQ Performance Module Users Manual](activemq-performance-module-users-manual)
 
 [Commercial providers](support#commercial-support) may also be able to help diagnose performance issues, suggest changes, etc...

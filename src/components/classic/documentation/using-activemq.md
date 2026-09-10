@@ -8,7 +8,7 @@ To help you get started using Apache ActiveMQ you may wish to start off with the
 
 *   [Configuring Brokers](configuring-brokers)
 *   [Configuring Transports](configuring-transports)
-    *   [ActiveMQ Connection URIs](activemq-classic-connection-uris)
+    *   [ActiveMQ Connection URIs](activemq-connection-uris)
         *   [Broker Configuration URI](broker-configuration-uri)
             *   [Broker Properties URI](broker-properties-uri)
             *   [Broker URI](broker-uri)
@@ -32,7 +32,7 @@ To help you get started using Apache ActiveMQ you may wish to start off with the
         *   [ZeroConf](zeroconf)
 *   [Examples](examples)
 *   [Getting Started](getting-started)
-    *   [Monitoring ActiveMQ](monitoring-activemq-classic)
+    *   [Monitoring ActiveMQ](monitoring-activemq)
 *   [Hello World](hello-world)
 *   [Initial Configuration](initial-configuration)
 *   [Installation](installation)

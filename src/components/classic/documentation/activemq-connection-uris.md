@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ](using-activemq-classic) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-classic-connection-uris)
+[Using ActiveMQ](using-activemq) > [Configuring Transports](configuring-transports) > [ActiveMQ Connection URIs](activemq-connection-uris)
 
 
 Transport configuration options

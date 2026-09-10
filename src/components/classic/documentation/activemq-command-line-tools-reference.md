@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [ActiveMQ Command Line Tools Reference](activemq-classic-command-line-tools-reference)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-activemq) > [ActiveMQ Command Line Tools Reference](activemq-command-line-tools-reference)
 
 
 Command Line Tools
@@ -13,21 +13,21 @@ Command Line Tools
 
 The current script contains the entire functionality to manage activemq.
 
-*   [activemq](activemq-classic-command-line-tools-reference) - runs an activemq broker  (see [Unix Shell Script](unix-shell-script))
+*   [activemq](activemq-command-line-tools-reference) - runs an activemq broker  (see [Unix Shell Script](unix-shell-script))
 
 In versions prior 5.4.1 some management functionalities beyond controlling the service itself where part of the "activemq-admin" script.  
 This script is currently still part of the distribution to provide access to this for Windows users-
 
-*   [activemq-admin](activemq-classic-command-line-tools-reference) - manages a broker instance
+*   [activemq-admin](activemq-command-line-tools-reference) - manages a broker instance
 
 In versions prior to 5.0 the functionality of activemq-admin script was scattered over multiple scripts, such as:
 
-*   [shutdown](activemq-classic-command-line-tools-reference) - shutdowns an activemq broker
-*   [list](activemq-classic-command-line-tools-reference) - lists all running brokers in the specified JMX context
-*   [query](activemq-classic-command-line-tools-reference) - queries the JMX context for broker statistics and information
-*   [bstat](activemq-classic-command-line-tools-reference) - predefined query that displays useful broker statistics
-*   [browse](activemq-classic-command-line-tools-reference) - browse the messages of a specific queue
-*   [purge](activemq-classic-command-line-tools-reference) - delete selected destination's messages that matches the message selector
+*   [shutdown](activemq-command-line-tools-reference) - shutdowns an activemq broker
+*   [list](activemq-command-line-tools-reference) - lists all running brokers in the specified JMX context
+*   [query](activemq-command-line-tools-reference) - queries the JMX context for broker statistics and information
+*   [bstat](activemq-command-line-tools-reference) - predefined query that displays useful broker statistics
+*   [browse](activemq-command-line-tools-reference) - browse the messages of a specific queue
+*   [purge](activemq-command-line-tools-reference) - delete selected destination's messages that matches the message selector
 
 activemq script
 ---------------------
@@ -64,11 +64,11 @@ activemq-admin
 
 As of ActiveMQ 5.x, the above standalone utilities have been incorporated into the activemq-admin command (with the exception of the activemq script), as follows:
 
-*   [activemq-admin stop](activemq-classic-command-line-tools-reference)
-*   [activemq-admin list](activemq-classic-command-line-tools-reference)
-*   [activemq-admin query](activemq-classic-command-line-tools-reference)
-*   [activemq-admin bstat](activemq-classic-command-line-tools-reference)
-*   [activemq-admin browse](activemq-classic-command-line-tools-reference)
+*   [activemq-admin stop](activemq-command-line-tools-reference)
+*   [activemq-admin list](activemq-command-line-tools-reference)
+*   [activemq-admin query](activemq-command-line-tools-reference)
+*   [activemq-admin bstat](activemq-command-line-tools-reference)
+*   [activemq-admin browse](activemq-command-line-tools-reference)
 
 The syntax of each task remains as described below. Note also that the activemq command is still supported.
 

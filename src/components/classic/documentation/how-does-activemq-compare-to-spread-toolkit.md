@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [General](general) > [How does ActiveMQ compare to Spread Toolkit](how-does-activemq-classic-compare-to-spread-toolkit)
+ [FAQ](faq) > [General](general) > [How does ActiveMQ compare to Spread Toolkit](how-does-activemq-compare-to-spread-toolkit)
 
 
 Spread Toolkit is a C++ library for messaging and only has [partial support for JMS](http://www.spread.org/JMS4Spread/docs/). It doesn't support durable messaging, transactions, XA or full JMS 1.1. It is also dependent on a native code Spread daemon running on the machine.
@@ -15,6 +15,6 @@ Apache ActiveMQ on the other hand is the JMS provider used in [Apache Geronimo](
 Performance guides
 ------------------
 
-If you're not convinced by performance reports then please do try running performance tests yourself. You might wanna check out our overview of [Performance](performance) or try using out the [ActiveMQ Performance Module Users Manual](activemq-classic-performance-module-users-manual)
+If you're not convinced by performance reports then please do try running performance tests yourself. You might wanna check out our overview of [Performance](performance) or try using out the [ActiveMQ Performance Module Users Manual](activemq-performance-module-users-manual)
 
 [Commercial providers](support#commercial-support) may also be able to help diagnose performance issues, suggest changes, etc...
