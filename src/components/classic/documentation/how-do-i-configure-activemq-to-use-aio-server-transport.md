@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Configuration](configuration) > [How do I configure ActiveMQ to use AIO server transport](how-do-i-configure-activemq-classic-to-use-aio-server-transport)
+ [FAQ](faq) > [Configuration](configuration) > [How do I configure ActiveMQ to use AIO server transport](how-do-i-configure-activemq-to-use-aio-server-transport)
 
 
 For Windows XP:

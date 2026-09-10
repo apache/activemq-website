@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Configuration](configuration) > [How do I run ActiveMQ under the Kaffe JVM](how-do-i-run-activemq-classic-under-the-kaffe-jvm)
+ [FAQ](faq) > [Configuration](configuration) > [How do I run ActiveMQ under the Kaffe JVM](how-do-i-run-activemq-under-the-kaffe-jvm)
 
 
 ActiveMQ will run under Kaffe with a few adjustments to the default configuration.

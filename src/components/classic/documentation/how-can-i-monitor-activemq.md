@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How can I monitor ActiveMQ](how-can-i-monitor-activemq-classic)
+[FAQ](faq) > [Using Apache ActiveMQ](using-activemq) > [How can I monitor ActiveMQ](how-can-i-monitor-activemq)
 
 
 How can I monitor ActiveMQ

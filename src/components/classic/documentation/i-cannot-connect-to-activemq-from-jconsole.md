@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Errors](errors) > [I cannot connect to ActiveMQ from JConsole](i-cannot-connect-to-activemq-classic-from-jconsole)
+ [FAQ](faq) > [Errors](errors) > [I cannot connect to ActiveMQ from JConsole](i-cannot-connect-to-activemq-from-jconsole)
 
 
 Make sure that the machine you are talking to has a valid **java.rmi.server.hostname-property** value
