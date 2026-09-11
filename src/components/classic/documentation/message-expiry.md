@@ -8,12 +8,12 @@ type: classic
 [Features](features) > [Message Features](message-features) > [Message Expiry](message-expiry)
 
 
-Apache ActiveMQ Classic handles message expiry in two parts:
+Apache ActiveMQ handles message expiry in two parts:
 
 1.  **The client sets the expiration time when it sends the message.**
 2.  **The broker checks that expiration time and discards expired messages.**
 
-When a JMS producer sets a time-to-live (TTL), ActiveMQ Classic converts that TTL into an absolute `JMSExpiration` value when the message is sent. A TTL of `0` means the message never expires.
+When a JMS producer sets a time-to-live (TTL), ActiveMQ converts that TTL into an absolute `JMSExpiration` value when the message is sent. A TTL of `0` means the message never expires.
 
 At the broker, expired messages can be removed in several places, including when a message arrives, while messages are being held for dispatch, and during periodic destination scans. Consumers may also filter expired messages before delivery.
 
@@ -24,7 +24,7 @@ In JMS, message expiration is controlled by the producer:
 *   [`MessageProducer.setTimeToLive(long)`](how-do-i-set-the-message-expiration)
 *   [`MessageProducer.send(...)`](how-do-i-set-the-message-expiration)
 
-ActiveMQ Classic stores the TTL as an absolute expiration timestamp on the message. That timestamp is based on the sending machine's clock.
+ActiveMQ stores the TTL as an absolute expiration timestamp on the message. That timestamp is based on the sending machine's clock.
 
 ## Broker-side expiry
 
@@ -34,7 +34,7 @@ For that reason, the clocks on all machines involved — producers, brokers, and
 
 ## Consumer expiry checks
 
-The ActiveMQ Classic client also performs expiry checks before delivering messages to application code. This helps prevent expired messages from being consumed accidentally.
+The ActiveMQ client also performs expiry checks before delivering messages to application code. This helps prevent expired messages from being consumed accidentally.
 
 ## Related documentation
 
