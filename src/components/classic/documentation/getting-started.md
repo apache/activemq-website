@@ -27,7 +27,7 @@ The Getting Started Guide for ActiveMQ 5.x document contains the following secti
     *   [Using Homebrew installer on OSX](#UsingHomebrewinstalleronOSX)
     *   [Unix Source Installation](#UnixSourceInstallation)
     *   [Unix Developer's Release](#UnixDeveloper'sRelease)
-*   [Starting ActiveMQ](#StartingActiveMQClassic)    
+*   [Starting ActiveMQ](#StartingActiveMQ)    
     *   [On Windows:](#OnWindows:)
     *   [On Unix:](#OnUnix:)    
     *   [More help](#Morehelp)
@@ -35,9 +35,9 @@ The Getting Started Guide for ActiveMQ 5.x document contains the following secti
     *   [Using the administrative interface](#Usingtheadministrativeinterface)
     *   [Logfile and console output](#Logfileandconsoleoutput)
     *   [Listen port](#Listenport)
-*   [Monitoring ActiveMQ](#MonitoringActiveMQClassic)
-*   [Stopping ActiveMQ](#StoppingActiveMQClassic)
-*   [Configuring ActiveMQ](#ConfiguringActiveMQClassic)
+*   [Monitoring ActiveMQ](#MonitoringActiveMQ)
+*   [Stopping ActiveMQ](#StoppingActiveMQ)
+*   [Configuring ActiveMQ](#ConfiguringActiveMQ)
 *   [Additional Resources](#AdditionalResources)
 *   [Docker Image](docker-image)
 
@@ -50,7 +50,7 @@ Pre-Installation Requirements
     (you need additional disk space for storing persistent messages to disk)
 *   ~ 300 MB of free disk space for the ActiveMQ 5.x source or developer's distributions.
 
-`Operating Systems:**
+**Operating Systems:**
 
 *   Windows: Windows XP SP2, Windows 2000, Windows Vista, Windows 7.
 *   Unix: Ubuntu Linux, Powerdog Linux, MacOS, AIX, HP-UX, Solaris, or any Unix platform that supports Java.

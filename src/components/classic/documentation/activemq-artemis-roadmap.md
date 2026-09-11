@@ -5,11 +5,11 @@ title-class: page-title-main
 type: main
 ---
 
-The goal of this page is to identify the outstanding issues that must be addressed by Artemis in order to achieve feature parity with ActiveMQ. This page does **not** list the features which Artemis has *beyond* what currently exists in Classic.
+The goal of this page is to identify the outstanding issues that must be addressed by Artemis in order to achieve feature parity with ActiveMQ. This page does **not** list the features which Artemis has *beyond* what currently exists in ActiveMQ.
 
 ## Features/Scenarios
 
-This section should be used to compare what features from ActiveMQ have been implemented in Artemis. Feature items can be listed, with links to JIRA tickets for longer conversation and hashing out specific feature details. This will help us to more clearly track everything that Artemis needs. This list of features was taken from the Classic [features page](features).
+This section should be used to compare what features from ActiveMQ have been implemented in Artemis. Feature items can be listed, with links to JIRA tickets for longer conversation and hashing out specific feature details. This will help us to more clearly track everything that Artemis needs. This list of features was taken from the ActiveMQ [features page](features).
 
 Keep in mind that not every feature must have a &#9989;. Artemis is not meant to be a 100% complete reimplementation of ActiveMQ. Features should only be reimplemented where it makes good sense.
 
@@ -134,8 +134,8 @@ Keep in mind that not every feature must have a &#9989;. Artemis is not meant to
 Migration
 =========
 
-This section should help to answer the end user question, _'How do I migrate from Classic to Artemis?'_. This should include the identification of any tools that can help make this easier, as well as documenting information and procedures specific to migrating.
+This section should help to answer the end user question, _'How do I migrate from ActiveMQ to Artemis?'_. This should include the identification of any tools that can help make this easier, as well as documenting information and procedures specific to migrating.
 
 * [Migration Guide](components/artemis/migration)
 * Export messages from KahaDB using [this tool](https://github.com/apache/activemq-cli-tools/tree/master/activemq-kahadb-exporter). The exported XML can be imported via the `./artemis data imp` command.
-* For non-standard backends (where direct export isn't an option) follow [this example](https://github.com/apache/activemq-artemis/tree/master/examples/features/sub-modules/inter-broker-bridge/artemis-jms-bridge) to migrate messages from Classic to Artemis over the wire.
+* For non-standard backends (where direct export isn't an option) follow [this example](https://github.com/apache/activemq-artemis/tree/master/examples/features/sub-modules/inter-broker-bridge/artemis-jms-bridge) to migrate messages from ActiveMQ to Artemis over the wire.
