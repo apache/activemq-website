@@ -9,6 +9,7 @@ Details of security problems fixed in released versions of Apache ActiveMQ 6.x a
 
 See the main [Security Advisories](../../security-advisories) page for details for other components and general information such as reporting new security issues.
 
+*   [CVE-2026-74761](../../security-advisories.data/CVE-2026-74761-announcement.txt) - An authenticated client can spoof clientId when removing a durable topic subscription
 *   [CVE-2026-61487](../../security-advisories.data/CVE-2026-61487-announcement.txt) - Authorization bypass via temporary composite destinations
 *   [CVE-2026-59878](../../security-advisories.data/CVE-2026-59878-announcement.txt) - AMQP NIO negative frame size validation bypass leading to DoS
 *   [CVE-2026-54475](../../security-advisories.data/CVE-2026-54475-announcement.txt) - Temporary destination ownership takeover
