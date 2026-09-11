@@ -14,7 +14,7 @@ General questions about ActiveMQ
 *   [Can I get commercial support](../../../support)
 *   [How can I get the source code from subversion](../../../contributing)
 *   [How does ActiveMQ compare to AMQP](how-does-activemq-classic-compare-to-amqp)
-*   [How does Classic compare to Artemis](how-does-classic-compare-to-artemis)
+*   [How does ActiveMQ compare to Artemis](how-does-classic-compare-to-artemis)
 *   [How does ActiveMQ compare to Fuse Message Broker](how-does-activemq-classic-compare-to-fuse-message-broker)
 *   [How does ActiveMQ compare to JBossMQ](how-does-activemq-classic-compare-to-jbossmq)
 *   [How does ActiveMQ compare to Mantaray](how-does-activemq-classic-compare-to-mantaray)
