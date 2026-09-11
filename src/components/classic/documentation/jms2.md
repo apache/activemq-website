@@ -72,11 +72,11 @@ JIRA|Status|Target Version|Completed Version|Feature|Notes
 [AMQ-8321](https://issues.apache.org/jira/browse/AMQ-8321) | ✅ | 5.18.0 | 5.18.0 | GetBody/isBodyAssignable | Support for checking body type using a `Class<?>`
 [AMQ-8325](https://issues.apache.org/jira/browse/AMQ-8325) | ✅ | 5.18.3, 6.0.0 | 5.18.3, 6.0.0 | XA Connection methods | Updated methods when using XA transactions
 [AMQ-8494](https://issues.apache.org/jira/browse/AMQ-8494) | ✅ | 5.17.1 | 5.18.0 | Implement `CLIENT_ACKNOWLEDGEMENT` mode | Client ack requires special handling w/ the simplified JMSContext API
-[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | <a href="https://github.com/apache/activemq/pull/1543" title="PR #1543"><i class="fa fa-code-pull-request" aria-hidden="true"></i></a> | 6.4.0 | | JMSConsumer | `.receiveBody(Class<T>)` methods
-[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | PR(https://github.com/apache/activemq/pull/982) |  | | Delivery Delay | Support for Message DeliveryDelay feature
-[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | PR(https://github.com/apache/activemq/pull/1728) | 6.5.0 | | JMSProducer features | `CompletionListener` async send support
-[AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | PR(https://github.com/apache/activemq/pull/2229) | 6.5.0 | | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions
-[AMQ-9451](https://issues.apache.org/jira/browse/AMQ-9451) | PR(https://github.com/apache/activemq/pull/2274) | 6.4.0 | | Pooled `ConnectionFactory` | Support for JMSContext in activemq-jms-pool
+[AMQ-8464](https://issues.apache.org/jira/browse/AMQ-8464) | <a href="https://github.com/apache/activemq/pull/1543" title="PR #1543"><i class="fa fa-code-branch" aria-hidden="true"></i>PR-1543</a> | 6.4.0 | | JMSConsumer | `.receiveBody(Class<T>)` methods
+[AMQ-8320](https://issues.apache.org/jira/browse/AMQ-8320) | <a href="https://github.com/apache/activemq/pull/982" title="PR #1543"><i class="fa fa-code-branch" aria-hidden="true"></i>PR-982</a> |  | | Delivery Delay | Support for Message DeliveryDelay feature
+[AMQ-8324](https://issues.apache.org/jira/browse/AMQ-8324) | <a href="https://github.com/apache/activemq/pull/1728" title="PR #1543"><i class="fa fa-code-branch" aria-hidden="true"></i>PR-1728</a>| 6.5.0 | | JMSProducer features | `CompletionListener` async send support
+[AMQ-8323](https://issues.apache.org/jira/browse/AMQ-8323) | <a href="https://github.com/apache/activemq/pull/2229" title="PR #1543"><i class="fa fa-code-branch" aria-hidden="true"></i>PR-2229</a> | 6.5.0 | | Shared Topic Consumer | Multi-consumer (queue-like) consuming from topic subscriptions
+[AMQ-9451](https://issues.apache.org/jira/browse/AMQ-9451) | <a href="https://github.com/apache/activemq/pull/2274" title="PR #1543"><i class="fa fa-code-branch" aria-hidden="true"></i>PR-2274</a>| 6.4.0 | | Pooled `ConnectionFactory` | Support for JMSContext in activemq-jms-pool
 
 ### Feature notes
 
