@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Features](features) > [Message Features](message-features) > [ActiveMQ Message Properties](activemq-classic-message-properties)
+[Features](features) > [Message Features](message-features) > [ActiveMQ Message Properties](activemq-message-properties)
 
 
 **ActiveMQ Messages support the following default message properties:**
