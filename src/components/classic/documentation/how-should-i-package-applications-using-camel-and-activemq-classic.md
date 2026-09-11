@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ](using-activemq) > [How should I package applications using Camel and ActiveMQ](how-should-i-package-applications-using-camel-and-activemq)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How should I package applications using Camel and ActiveMQ](how-should-i-package-applications-using-camel-and-activemq-classic)
 
 How should I package applications using Camel and ActiveMQ
 ----------------------------------------------------------

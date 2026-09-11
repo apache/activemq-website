@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ](using-activemq) > [How do I use ActiveMQ using in JVM messaging](how-do-i-use-activemq-using-in-jvm-messaging)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [How do I use ActiveMQ using in JVM messaging](how-do-i-use-activemq-classic-using-in-jvm-messaging)
 
 
 ### For ActiveMQ 3.x/4.x

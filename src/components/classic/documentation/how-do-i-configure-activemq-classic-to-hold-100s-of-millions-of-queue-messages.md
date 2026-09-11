@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Configuration](configuration) > [How do I configure ActiveMQ to hold 100s of millions of Queue Messages](how-do-i-configure-activemq-to-hold-100s-of-millions-of-queue-messages)
+ [FAQ](faq) > [Configuration](configuration) > [How do I configure ActiveMQ to hold 100s of millions of Queue Messages](how-do-i-configure-activemq-classic-to-hold-100s-of-millions-of-queue-messages)
 
 
 Nearly all messaging systems (certainly open source ones) hold either a copy of a persistent message or a reference to a persisted message in memory. This is primarily to try and improve performance, but it also can significantly decrease the complexity of implementation. In fact ActiveMQ version 4 and below worked this - way - by holding references to persisted messages in memory.
