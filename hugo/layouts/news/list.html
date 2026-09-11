@@ -1,0 +1,22 @@
+{{ define "above-main" }}
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h1>{{ .Title }}</h1>
+  </div>
+</div>
+{{ end }}
+
+{{ define "main" }}
+<nav class="breadcrumb">
+  <a href="{{ "/" | relURL }}">Home</a> &rsaquo; News
+</nav>
+
+{{ range sort .Pages "Date" "desc" }}
+<article class="news-item">
+  <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+  <time class="news-date">{{ .Date.Format "Jan 2nd, 2006" }}</time>
+  {{ with .Params.description }}<p>{{ . }}</p>{{ end }}
+  <a class="news-read-more" href="{{ .RelPermalink }}">Read More</a>
+</article>
+{{ end }}
+{{ end }}
