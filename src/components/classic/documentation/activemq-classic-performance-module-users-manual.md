@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Features](features) > [Performance](performance) > [ActiveMQ Performance Module Users Manual](activemq-performance-module-users-manual)
+[Features](features) > [Performance](performance) > [ActiveMQ Performance Module Users Manual](activemq-classic-performance-module-users-manual)
 
 
 Running Maven 2 Performance Test

@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
-[Using ActiveMQ](using-activemq) > [Getting Started](getting-started) > [Monitoring ActiveMQ](monitoring-activemq)
+[Using ActiveMQ](using-activemq-classic) > [Getting Started](getting-started) > [Monitoring ActiveMQ](monitoring-activemq-classic)
 
 
 You can monitor ActiveMQ using the [Web Console](web-console) by pointing your browser at

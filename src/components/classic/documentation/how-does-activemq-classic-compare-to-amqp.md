@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [General](general) > [How does ActiveMQ compare to AMQP](how-does-activemq-compare-to-amqp)
+ [FAQ](faq) > [General](general) > [How does ActiveMQ compare to AMQP](how-does-activemq-classic-compare-to-amqp)
 
 
 [AMQP](amqp) stands for the _Advanced Message Queue Protocol_ and is a specification for how messaging clients and brokers can interoperate. AMQP is a specification of a wire-level protocol for client to message broker communication. It is not a messaging system like ActiveMQ, but just a messaging protocol.

@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [General](general) > [What open source integration solution works best with ActiveMQ](what-open-source-integration-solution-works-best-with-activemq)
+ [FAQ](faq) > [General](general) > [What open source integration solution works best with ActiveMQ](what-open-source-integration-solution-works-best-with-activemq-classic)
 
 
 The [Apache Camel](http://camel.apache.org) project has been designed to work easily with ActiveMQ - and comes [embedded](http://activemq.apache.org/camel/how-does-camel-work-with-activemq.html) in both the clients and the broker from ActiveMQ 5.0 onwards.

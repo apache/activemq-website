@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ](using-activemq) > [Can I send really large files over ActiveMQ?](can-i-send-really-large-files-over-activemq)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [Can I send really large files over ActiveMQ?](can-i-send-really-large-files-over-activemq-classic)
 
 
 Can I send really large files over ActiveMQ?

@@ -5,7 +5,7 @@ title-class: page-title-classic
 type: classic
 ---
 
- [FAQ](faq) > [Using Apache ActiveMQ](using-activemq) > [Can I use ActiveMQ 5.x or later on Java 1.4](can-i-use-activemq-5x-or-later-on-java-14)
+ [FAQ](faq) > [Using Apache ActiveMQ](using-apache-activemq-classic) > [Can I use ActiveMQ 5.x or later on Java 1.4](can-i-use-activemq-classic-5x-or-later-on-java-14)
 
 
 Can I use ActiveMQ 5.0 or later on Java 1.4?
@@ -20,5 +20,5 @@ Until then you can just [install the retrotranslator JIT in your JVM](http://ret
 See Also
 --------
 
-*   [What platforms does ActiveMQ support](what-platforms-does-activemq-support)
+*   [What platforms does ActiveMQ support](what-platforms-does-activemq-classic-support)
 
