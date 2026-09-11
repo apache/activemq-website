@@ -100,7 +100,7 @@ Keep in mind that not every feature must have a &#9989;. Artemis is not meant to
 
 | Feature                                                                                        |Artemis Support|JIRA|Notes|
 |------------------------------------------------------------------------------------------------|:---:|---|---|
-| [ActiveMQ Message Properties](activemq-message-properties)                     |&#9989;|||
+| [ActiveMQ Message Properties](activemq-classic-message-properties)                     |&#9989;|||
 | [Advisory Message](advisory-message)                                                           |&#9989;||equivalent support via [management notifications](components/artemis/documentation/latest/management.html#management-notifications)|
 | [Blob Messages](blob-messages)                                                                 |&#9989;||arbitrarily [large messages](components/artemis/documentation/latest/large-messages) supported|
 | [Delay and Schedule Message Delivery](delay-and-schedule-message-delivery)                     |&#9989;||[documentation](components/artemis/documentation/latest/scheduled-messages)|
@@ -134,8 +134,8 @@ Keep in mind that not every feature must have a &#9989;. Artemis is not meant to
 Migration
 =========
 
-This section should help to answer the end user question, _'How do I migrate from ActiveMQ to Artemis?'_. This should include the identification of any tools that can help make this easier, as well as documenting information and procedures specific to migrating.
+This section should help to answer the end user question, _'How do I migrate from Classic to Artemis?'_. This should include the identification of any tools that can help make this easier, as well as documenting information and procedures specific to migrating.
 
 * [Migration Guide](components/artemis/migration)
 * Export messages from KahaDB using [this tool](https://github.com/apache/activemq-cli-tools/tree/master/activemq-kahadb-exporter). The exported XML can be imported via the `./artemis data imp` command.
-* For non-standard backends (where direct export isn't an option) follow [this example](https://github.com/apache/activemq-artemis/tree/master/examples/features/sub-modules/inter-broker-bridge/artemis-jms-bridge) to migrate messages from ActiveMQ to Artemis over the wire.
+* For non-standard backends (where direct export isn't an option) follow [this example](https://github.com/apache/activemq-artemis/tree/master/examples/features/sub-modules/inter-broker-bridge/artemis-jms-bridge) to migrate messages from Classic to Artemis over the wire.
