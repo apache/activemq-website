@@ -15,30 +15,30 @@ Document Organization
 
 The Getting Started Guide for ActiveMQ 5.x document contains the following sections:
 
-*   [Introduction](#Introduction)
-*   [Document Organization](#DocumentOrganization)
-*   [Pre-Installation Requirements](#Pre-InstallationRequirements)
-*   [Installation Procedure for Windows](#InstallationProcedureforWindows)
-    *   [Windows Binary Installation](#WindowsBinaryInstallation)
-    *   [Windows Source Installation](#WindowsSourceInstallation)
-    *   [Windows Developer's Release](#WindowsDeveloper'sRelease)
-*   [Installation Procedure for Unix](#InstallationProcedureforUnix)
-    *   [Unix Binary Installation](#UnixBinaryInstallationUnixBinaryInstallation)
-    *   [Using Homebrew installer on OSX](#UsingHomebrewinstalleronOSX)
-    *   [Unix Source Installation](#UnixSourceInstallation)
-    *   [Unix Developer's Release](#UnixDeveloper'sRelease)
-*   [Starting ActiveMQ](#StartingActiveMQ)    
-    *   [On Windows:](#OnWindows:)
-    *   [On Unix:](#OnUnix:)    
-    *   [More help](#Morehelp)
-*   [Testing the Installation](#TestingtheInstallationTestingtheInstallation)
-    *   [Using the administrative interface](#Usingtheadministrativeinterface)
-    *   [Logfile and console output](#Logfileandconsoleoutput)
-    *   [Listen port](#Listenport)
-*   [Monitoring ActiveMQ](#MonitoringActiveMQ)
-*   [Stopping ActiveMQ](#StoppingActiveMQ)
-*   [Configuring ActiveMQ](#ConfiguringActiveMQ)
-*   [Additional Resources](#AdditionalResources)
+*   [Introduction](#introduction)
+*   [Document Organization](#document-organization)
+*   [Pre-Installation Requirements](#pre-installation-requirements)
+*   [Installation Procedure for Windows](#installation-procedure-for-windows)
+    *   [Windows Binary Installation](#windows-binary-installation)
+    *   [Windows Source Installation](#windows-source-installation)
+    *   [Windows Developer's Release](#windows-developers-release)
+*   [Installation Procedure for Unix](#installation-procedure-for-unix)
+    *   [Unix Binary Installation](#unix-binary-installation)
+    *   [Using Homebrew installer on OSX](#using-homebrew-installer-on-osx)
+    *   [Unix Source Installation](#unix-source-installation)
+    *   [Unix Developer's Release](#unix-developers-release)
+*   [Starting ActiveMQ](#starting-activemq)    
+    *   [On Windows:](#on-windows)
+    *   [On Unix:](#on-unix)    
+    *   [More help](#more-help)
+*   [Testing the Installation](#testing-the-installation)
+    *   [Using the administrative interface](#using-the-administrative-interface)
+    *   [Logfile and console output](#logfile-and-console-output)
+    *   [Listen port](#listen-port)
+*   [Monitoring ActiveMQ](#monitoring-activemq)
+*   [Stopping ActiveMQ](#stopping-activemq)
+*   [Configuring ActiveMQ](#configuring-activemq)
+*   [Additional Resources](#additional-resources)
 *   [Docker Image](docker-image)
 
 Pre-Installation Requirements
@@ -242,7 +242,7 @@ This procedure explains how to download and install the latest developer's snaps
 7.  Proceed to the [#Testing the Installation](getting-started) section.
 
 Starting ActiveMQ
--------------------------
+-----------------
 
 There now follows instructions on how to [run the ActiveMQ Message Broker](run-broker).
 
@@ -313,7 +313,7 @@ netstat -nl|grep 61616
 ```
 
 Monitoring ActiveMQ
----------------------------
+-------------------
 
 You can monitor ActiveMQ using the [Web Console](web-console) by pointing your browser at `http://localhost:8161/admin`.
 
@@ -325,7 +325,7 @@ Or you can use the [JMX](jmx) support to view the running state of ActiveMQ.
 For more information see the file `docs/WebConsole-README.txt` in the distribution.
 
 Stopping ActiveMQ
--------------------------
+-----------------
 
 For both Windows and Unix installations, terminate ActiveMQ by typing "CTRL-C" in the console or command shell in which it is running.
 
@@ -336,7 +336,7 @@ cd [activemq_install_dir]/bin
 ```
 
 Configuring ActiveMQ
-----------------------------
+--------------------
 
 The ActiveMQ broker should now run. You can configure the broker by specifying an [Xml Configuration](xml-configuration) file as a parameter to the _activemq_ command. An alternative is to use the [Broker Configuration URI](broker-configuration-uri) to configure things on the command line in a concise format (though the configuration options are not as extensive as if you use Java or XML code). You can also
 
