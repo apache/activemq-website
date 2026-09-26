@@ -30,10 +30,10 @@ type: classic
     <tr style="background-color: #f0f0f0;">
       <td>6.2.x</td>
       <td><em>Inactive</em></td>
-      <td>6.2.9</td>
-      <td>Aug 10th, 2026</td>
-      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/6.2.9/apache-activemq-6.2.9-bin.tar.gz&amp;action=download" title="Download UNIX"><i class="fa fa-download" aria-hidden="true"></i></a></td>
-      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/6.2.9/apache-activemq-6.2.9-bin.zip&amp;action=download" title="Download Win64"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+      <td>6.2.10</td>
+      <td>Sep 26th, 2026</td>
+      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/6.2.10/apache-activemq-6.2.10-bin.tar.gz&amp;action=download" title="Download UNIX"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/6.2.10/apache-activemq-6.2.10-bin.zip&amp;action=download" title="Download Win64"><i class="fa fa-download" aria-hidden="true"></i></a></td>
     </tr>
     <tr style="background-color: #dff0d8;">
       <td>5.19.x</td>
@@ -77,7 +77,7 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
 | Series | Broker JMS API Support      | Client JMS API Client       | Java Version | Spring Version | Logging Support              | Web Support            | Status       | Last    | Next | ETA     |
 |--------|-----------------------------|-----------------------------|--------------|----------------|------------------------------|------------------------|--------------|---------|--|---------|
 | 6.3.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,26)            | 7.0.8          | Log4j 2.26.1/Slf4j 2.0.18    | Jetty 12.1.12          | **Active**   | 6.3.2   | 6.3.3 |  |
-| 6.2.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.2.19         | Log4j 2.25.4/Slf4j 2.0.17    | Jetty 11.0.26          | _Inactive_   | 6.2.8   |  |  |
+| 6.2.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.2.19         | Log4j 2.25.4/Slf4j 2.0.17    | Jetty 11.0.26          | _Inactive_   | 6.2.10   |  |  |
 | 6.1.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.1.21         | Log4j 2.25.2/Slf4j 2.0.17    | Jetty 11.0.26          | _Inactive_ | 6.1.8   |  | |
 | 6.0.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.0.17         | Log4j 2.22.0/Slf4j 2.0.9     | Jetty 11.0.18          | _Inactive_ | 6.0.1   |  |         |
 | 5.19.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.25.3/Slf4j 2.0.17    | Jetty 9.4.58.v20250814 | **Active**   | 5.19.11  | 5.19.12 | |
