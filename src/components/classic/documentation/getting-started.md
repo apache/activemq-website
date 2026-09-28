@@ -15,30 +15,30 @@ Document Organization
 
 The Getting Started Guide for ActiveMQ 5.x document contains the following sections:
 
-*   [Introduction](#Introduction)
-*   [Document Organization](#DocumentOrganization)
-*   [Pre-Installation Requirements](#Pre-InstallationRequirements)
-*   [Installation Procedure for Windows](#InstallationProcedureforWindows)
-    *   [Windows Binary Installation](#WindowsBinaryInstallation)
-    *   [Windows Source Installation](#WindowsSourceInstallation)
-    *   [Windows Developer's Release](#WindowsDeveloper'sRelease)
-*   [Installation Procedure for Unix](#InstallationProcedureforUnix)
-    *   [Unix Binary Installation](#UnixBinaryInstallationUnixBinaryInstallation)
-    *   [Using Homebrew installer on OSX](#UsingHomebrewinstalleronOSX)
-    *   [Unix Source Installation](#UnixSourceInstallation)
-    *   [Unix Developer's Release](#UnixDeveloper'sRelease)
-*   [Starting ActiveMQ](#StartingActiveMQ)    
-    *   [On Windows:](#OnWindows:)
-    *   [On Unix:](#OnUnix:)    
-    *   [More help](#Morehelp)
-*   [Testing the Installation](#TestingtheInstallationTestingtheInstallation)
-    *   [Using the administrative interface](#Usingtheadministrativeinterface)
-    *   [Logfile and console output](#Logfileandconsoleoutput)
-    *   [Listen port](#Listenport)
-*   [Monitoring ActiveMQ](#MonitoringActiveMQ)
-*   [Stopping ActiveMQ](#StoppingActiveMQ)
-*   [Configuring ActiveMQ](#ConfiguringActiveMQ)
-*   [Additional Resources](#AdditionalResources)
+*   [Introduction](#introduction)
+*   [Document Organization](#document-organization)
+*   [Pre-Installation Requirements](#pre-installation-requirements)
+*   [Installation Procedure for Windows](#installation-procedure-for-windows)
+    *   [Windows Binary Installation](#windows-binary-installation)
+    *   [Windows Source Installation](#windows-source-installation)
+    *   [Windows Developer's Release](#windows-developers-release)
+*   [Installation Procedure for Unix](#installation-procedure-for-unix)
+    *   [Unix Binary Installation](#unix-binary-installation)
+    *   [Using Homebrew installer on OSX](#using-homebrew-installer-on-osx)
+    *   [Unix Source Installation](#unix-source-installation)
+    *   [Unix Developer's Release](#unix-developers-release)
+*   [Starting ActiveMQ](#starting-activemq)    
+    *   [On Windows:](#on-windows)
+    *   [On Unix:](#on-unix)    
+    *   [More help](#more-help)
+*   [Testing the Installation](#testing-the-installation)
+    *   [Using the administrative interface](#using-the-administrative-interface)
+    *   [Logfile and console output](#logfile-and-console-output)
+    *   [Listen port](#listen-port)
+*   [Monitoring ActiveMQ](#monitoring-activemq)
+*   [Stopping ActiveMQ](#stopping-activemq)
+*   [Configuring ActiveMQ](#configuring-activemq)
+*   [Additional Resources](#additional-resources)
 *   [Docker Image](docker-image)
 
 Pre-Installation Requirements
@@ -78,8 +78,8 @@ This procedure explains how to download and install the binary distribution on a
 1.  Download the latest release  
     (see [Download](download) -\> "The latest stable release" -> "apache-activemq-x.x.x-bin.zip")
 2.  Extract the files from the ZIP file into a directory of your choice.
-3.  Proceed to the [#Starting ActiveMQ](getting-started) section of this document.
-4.  Following start-up, go to the [#Testing the Installation](getting-started) section of this document.
+3.  Proceed to the [Starting ActiveMQ](#starting-activemq) section of this document.
+4.  Following start-up, go to the [Testing the Installation](#testing-the-installation) section of this document.
 
 #### Windows Source Installation
 
@@ -117,7 +117,7 @@ This procedure explains how to download and install the source distribution on a
 
     > **NOTE:** Working directories get created relative to the current directory. To create the working directories in the proper place, ActiveMQ must be launched from its home/installation directory.
     
-2.  Proceed to the [#Testing the Installation](getting-started) section.
+2.  Proceed to the [Testing the Installation](#testing-the-installation) section.
     
     > **Warning**
     > 
@@ -132,9 +132,9 @@ This procedure explains how to download and install the latest developer's snaps
     (open one of the SNAPSHOT directories)
 2.  Select the version of ActiveMQ to download (if necessary, scroll down to see the ActiveMQ snapshots).
 3.  Extract the files from the ZIP file into a directory of your choice.
-4.  If a binary snapshot was downloaded, proceed to the [#Starting ActiveMQ](getting-started) section of this document.  
-    If a source snapshot was downloaded, perform step 6 and step 7 of the [#Windows Source Installation](getting-started) procedure.
-5.  Following start-up, proceed to the [#Testing the Installation](getting-started) section.
+4.  If a binary snapshot was downloaded, proceed to the [Starting ActiveMQ](#starting-activemq) section of this document.  
+    If a source snapshot was downloaded, perform step 6 and step 7 of the [Windows Source Installation](#windows-source-installation) procedure.
+5.  Following start-up, proceed to the [Testing the Installation](#testing-the-installation) section.
 
 Installation Procedure for Unix
 -------------------------------
@@ -154,9 +154,9 @@ This procedure explains how to download and install the binary distribution on a
     cd [activemq_install_dir]
     tar zxvf activemq-x.x.x-bin.tar.gz
     ```
-3.  Proceed to the [#Starting ActiveMQ](getting-started) section of this document.
+3.  Proceed to the [Starting ActiveMQ](#starting-activemq) section of this document.
     
-4.  Following start-up, go to the [#Testing the Installation](getting-started) section.
+4.  Following start-up, go to the [Testing the Installation](#testing-the-installation) section.
 
 #### Using Homebrew installer on OSX
 
@@ -179,11 +179,11 @@ If you use OSX as your platform, you can use [Homebrew](http://mxcl.github.com/h
 
 ActiveMQ will be installed in `/usr/local/Cellar/apache-activemq/x.x.x/` directory (where `x.x.x` denotes the actual version being installed).
 
-Now you can proceed to [#Starting ActiveMQ](getting-started) and [#Testing the Installation](getting-started) sections.
+Now you can proceed to [Starting ActiveMQ](#starting-activemq) and [Testing the Installation](#testing-the-installation) sections.
 
 #### Unix Source Installation
 
-This procedure explains how to download and install the source distribution on a Unix system. This procedure assumes the Unix machine has a browser. Please see the previous [#Unix Binary Installation](getting-started) section for details on how to install ActiveMQ without a browser.
+This procedure explains how to download and install the source distribution on a Unix system. This procedure assumes the Unix machine has a browser. Please see the previous [Unix Binary Installation](#unix-binary-installation) section for details on how to install ActiveMQ without a browser.
 
 1.  Download the latest source release  
     (see [Download](download) -\> "The latest stable release" -> "activemq-parent-x.x.x-source-release.zip")
@@ -212,8 +212,8 @@ This procedure explains how to download and install the source distribution on a
     Feel free to use any other applicable IDE. Please refer to the [plugin reference](http://maven.apache.org/reference/plugins/plugins.html) for more details.  
     **NOTE:** Working directories get created relative to the current directory. To create working directories in the proper place, ActiveMQ must be launched from its home/installation directory.
     
-4.  Proceed to the [#Starting ActiveMQ](getting-started) section of this document.
-5.  Proceed to [#Testing the Installation](getting-started) section.
+4.  Proceed to the [Starting ActiveMQ](#starting-activemq) section of this document.
+5.  Proceed to [Testing the Installation](#testing-the-installation) section.
 
 #### Unix Developer's Release
 
@@ -237,12 +237,12 @@ This procedure explains how to download and install the latest developer's snaps
     cd [activemq_install_dir]/bin
     chmod 755 activemq
     ```
-5.  For a binary snapshot, proceed to the [#Starting ActiveMQ](getting-started) section of this document.
-6.  If a source snapshot was downloaded perform steps 6 - 8 of the [#Unix Source Installation](getting-started) procedure.
-7.  Proceed to the [#Testing the Installation](getting-started) section.
+5.  For a binary snapshot, proceed to the [Starting ActiveMQ](#starting-activemq) section of this document.
+6.  If a source snapshot was downloaded perform steps 6 - 8 of the [Unix Source Installation](#unix-source-installation) procedure.
+7.  Proceed to the [Testing the Installation](#testing-the-installation) section.
 
 Starting ActiveMQ
--------------------------
+-----------------
 
 There now follows instructions on how to [run the ActiveMQ Message Broker](run-broker).
 
@@ -313,7 +313,7 @@ netstat -nl|grep 61616
 ```
 
 Monitoring ActiveMQ
----------------------------
+-------------------
 
 You can monitor ActiveMQ using the [Web Console](web-console) by pointing your browser at `http://localhost:8161/admin`.
 
@@ -325,7 +325,7 @@ Or you can use the [JMX](jmx) support to view the running state of ActiveMQ.
 For more information see the file `docs/WebConsole-README.txt` in the distribution.
 
 Stopping ActiveMQ
--------------------------
+-----------------
 
 For both Windows and Unix installations, terminate ActiveMQ by typing "CTRL-C" in the console or command shell in which it is running.
 
@@ -336,17 +336,17 @@ cd [activemq_install_dir]/bin
 ```
 
 Configuring ActiveMQ
-----------------------------
+--------------------
 
 The ActiveMQ broker should now run. You can configure the broker by specifying an [Xml Configuration](xml-configuration) file as a parameter to the _activemq_ command. An alternative is to use the [Broker Configuration URI](broker-configuration-uri) to configure things on the command line in a concise format (though the configuration options are not as extensive as if you use Java or XML code). You can also
 
 Also see [Configuring Transports](configuring-transports) to see how you can configure the various connection, transport and broker options using the connection URL in the ActiveMQConnectionFactory.
 
-See the [Initial Configuration](configuration) for details of which jars you need to add to your classpath to start using ActiveMQ in your Java code
+See the [Initial Configuration](initial-configuration) for details of which jars you need to add to your classpath to start using ActiveMQ in your Java code
 
 If you want to use JNDI to connect to your JMS provider then please view the [JNDI Support](jndi-support). If you are a Spring user you should read about [Spring Support](spring-support)
 
-After the installation, ActiveMQ is running with a basic configuration. For details on configuring options, please see refer to the [Configuration](configuration) section.
+After the installation, ActiveMQ is running with a basic configuration. For details on configuring options, please see refer to the [Configuration](configure-version-5-brokers) section.
 
 Additional Resources
 --------------------
