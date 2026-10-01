@@ -10,7 +10,7 @@ Apache ActiveMQ&reg; is a popular and powerful open source messaging and [Integr
 
 It supports many [Cross Language Clients and Protocols](documentation/cross-language-clients), comes with easy to use [Enterprise Integration Patterns](documentation/enterprise-integration-patterns) and many [advanced features](documentation/features) while [partially supporting Jakarta Messaging 3.1 & JMS 2.0](documentation/jms2) and fully supporting JMS 1.1 and J2EE 1.4+\. Apache ActiveMQ is released under the [Apache](http://www.apache.org/) [2.0 License](http://www.apache.org/licenses/LICENSE-2.0)
 
-Grab yourself a [download](download), review our [Getting Started Guide](documentation/getting-started), surf our [FAQ](documentation/faq), or start [contributing](../../contributing).
+Grab yourself a [download](download), review our [Getting Started Guide](documentation/getting-started), surf our [FAQ](documentation/faq), know our [Roadmap](documentation/roadmap), or start [contributing](../../contributing).
 
 ---
 
