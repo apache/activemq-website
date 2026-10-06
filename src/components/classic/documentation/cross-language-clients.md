@@ -16,6 +16,7 @@ Libraries
 *   [.NET](http://activemq.apache.org/nms/)
 *   [C](http://docs.codehaus.org/display/STOMP/C) (defunct)
 *   [C++](http://activemq.apache.org/cms/)
+*   [Ballerina](https://github.com/ballerina-platform/module-ballerinax-java.jms)
 *   [Erlang](https://github.com/igb/Erlang-STOMP-Client)
 *   [Go](https://github.com/go-stomp/stomp)
 *   [Haskell](https://github.com/toschoo/mom)
