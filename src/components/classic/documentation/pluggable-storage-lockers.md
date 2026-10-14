@@ -102,7 +102,7 @@ The Lease Database Locker was created to solve the shortcomings of the Database 
 
 In order for this mechanism to work correctly, each broker in a master/slave(s) cluster must have a unique value for the `brokerName` attribute as defined on the `<broker/>` tag. Alternatively, use unique values for the `leaseHolderId` attribute on the `<lease-database-locker/>` tag as this value is used to create a lease lock definition.
 
-The lease based lock is acquired by blocking at startup. A lease lasts `lockAcquireSleepInterval` milliseconds. To retain the lock the master broker renews its lease every `lockKeepAlivePeriod` milliseconds, each time extending it to `lockAcquireSleepInterval` milliseconds from the renewal. A broker that does not hold the lease tries to acquire it every `lockAcquireSleepInterval` milliseconds. In theory, therefore, the master broker is always (`lockAcquireSleepInterval - lockKeepAlivePeriod`) ahead of the slave broker with regard to the lease. It is imperative that `lockAcquireSleepInterval > lockKeepAlivePeriod`, to ensure the lease is always current. As of ActiveMQ 5.9.0 a warning message is logged if this condition is not met.
+The lease based lock is acquired by blocking at startup. A lease lasts `lockAcquireSleepInterval` milliseconds. To retain the lock the master broker renews its lease every `lockKeepAlivePeriod` milliseconds, each time extending it to `lockAcquireSleepInterval` milliseconds from the renewal. A broker that does not hold the lease tries to acquire it every `lockAcquireSleepInterval` milliseconds, or every `lockAcquireRetryInterval` milliseconds if that is set (see below). In theory, therefore, the master broker is always (`lockAcquireSleepInterval - lockKeepAlivePeriod`) ahead of the slave broker with regard to the lease. It is imperative that `lockAcquireSleepInterval > lockKeepAlivePeriod`, to ensure the lease is always current. As of ActiveMQ 5.9.0 a warning message is logged if this condition is not met.
 
 In the simplest case, the clocks between master and slave must be in sync for this solution to work properly. If the clocks cannot be in sync, the locker can use the system time from the database CURRENT TIME and adjust the timeouts in accordance with their local variance from the DB system time. If `maxAllowableDiffFromDBTime` is greater than zero the local periods will be adjusted by any delta that exceeds `maxAllowableDiffFromDBTime`.
 
@@ -113,6 +113,18 @@ In the simplest case, the clocks between master and slave must be in sync for th
 A lease renewal is a database round trip, and it is slow when the database or the network is slow. If a renewal takes longer than the time left on the lease, another broker can acquire the lease while the master is still running. Size the lease so that it outlives the slowest renewal:
 
 `lockAcquireSleepInterval` > `lockKeepAlivePeriod` + connect timeout + statement timeout
+
+A long enough lease also makes a waiting broker slow to take over, because by default it polls for the lease only every `lockAcquireSleepInterval` milliseconds: up to `lockAcquireSleepInterval` after the master stops cleanly and releases the lease, and up to twice that after the master crashes. As of ActiveMQ X.Y.Z you can set `lockAcquireRetryInterval` to poll more often without shortening the lease. When it is not set, a waiting broker polls every `lockAcquireSleepInterval` milliseconds as before.
+
+```
+<persistenceAdapter>
+    <jdbcPersistenceAdapter dataDirectory="${activemq.data}" dataSource="#postgres-ds" lockKeepAlivePeriod="5000">
+        <locker>
+            <lease-database-locker lockAcquireSleepInterval="20000" lockAcquireRetryInterval="2000"/>
+        </locker>
+    </jdbcPersistenceAdapter>
+</persistenceAdapter>
+```
 
 Bound the time a renewal can take with your JDBC driver's or connection pool's own timeouts: a connect or login timeout, and a socket or read timeout. When one of these expires the lease statement fails with an exception, and the locker treats that as a failure.
 
