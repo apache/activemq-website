@@ -45,7 +45,7 @@ keepAlive|false|If **`true`,** enables [TCP KeepAlive](http://tldp.org/HOWTO/TCP
 logWriterName|default|Sets the name of the **`org.apache.activemq.transport.LogWriter`** implementation to use. Names are mapped to classes in the **`resources/META-INF/services/org/apache/activemq/transport/logwriters`** directory.
 maximumConnections|Integer.MAX_VALUE|The maximum number of sockets allowed for this broker.
 minmumWireFormatVersion|0|The minimum remote **`wireFormat`** version that will be accepted (note the misspelling). Note: when the remote **`wireFormat`** version is lower than the configured minimum acceptable version an exception will be thrown and the connection attempt will be refused. A value of **`0`** denotes no checking of the remote **`wireFormat`** version.
-socketBufferSize|64 * 1024|Sets the size, in bytes, for the accepted socket's read and write buffers.
+socketBufferSize|64 * 1024|Sets the size, in bytes, for the socket's read and write buffers. A value of **`0`** leaves both buffers unset so the OS defaults apply. Negative values are invalid, ignored, and logged as an error.
 soLinger|Integer.MIN_VALUE|Sets the socket's option **`soLinger`** when the value is **`> -1`**. When set to **`-1`** the **`soLinger`** socket option is disabled.
 soTimeout|0|Sets the socket's read timeout in milliseconds. A value of **`0`** denotes no timeout.
 soWriteTimeout|0|Sets the socket's write timeout in milliseconds. If the socket write operation does not complete before the specified timeout, the socket will be closed. A value of **0** denotes no timeout.
