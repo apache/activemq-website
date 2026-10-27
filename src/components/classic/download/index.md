@@ -20,12 +20,20 @@ type: classic
   </thead>
   <tbody>
     <tr style="background-color: #dff0d8;">
+      <td>6.4.x</td>
+      <td><strong>Active</strong></td>
+      <td>6.4.0</td>
+      <td>Oct 27th, 2026</td>
+      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/6.4.0/apache-activemq-6.4.0-bin.tar.gz&amp;action=download" title="Download UNIX"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/6.4.0/apache-activemq-6.4.0-bin.zip&amp;action=download" title="Download Win64"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+    </tr>
+    <tr style="background-color: #dff0d8;">
       <td>6.3.x</td>
       <td><strong>Active</strong></td>
-      <td>6.3.2</td>
-      <td>Sep 2nd, 2026</td>
-      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/6.3.2/apache-activemq-6.3.2-bin.tar.gz&amp;action=download" title="Download UNIX"><i class="fa fa-download" aria-hidden="true"></i></a></td>
-      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/6.3.2/apache-activemq-6.3.2-bin.zip&amp;action=download" title="Download Win64"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+      <td>6.3.3</td>
+      <td>Oct 27th, 2026</td>
+      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/6.3.3/apache-activemq-6.3.3-bin.tar.gz&amp;action=download" title="Download UNIX"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/6.3.3/apache-activemq-6.3.3-bin.zip&amp;action=download" title="Download Win64"><i class="fa fa-download" aria-hidden="true"></i></a></td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>6.2.x</td>
@@ -38,10 +46,10 @@ type: classic
     <tr style="background-color: #dff0d8;">
       <td>5.19.x</td>
       <td><strong>Active</strong></td>
-      <td>5.19.11</td>
-      <td>Sep 05th, 2026</td>
-      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/5.19.11/apache-activemq-5.19.11-bin.tar.gz&amp;action=download" title="Download UNIX"><i class="fa fa-download" aria-hidden="true"></i></a></td>
-      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/5.19.11/apache-activemq-5.19.11-bin.zip&amp;action=download" title="Download Win64"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+      <td>5.19.12</td>
+      <td>Oct 27th, 2026</td>
+      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/5.19.12/apache-activemq-5.19.12-bin.tar.gz&amp;action=download" title="Download UNIX"><i class="fa fa-download" aria-hidden="true"></i></a></td>
+      <td><a href="https://www.apache.org/dyn/closer.cgi?filename=/activemq/5.19.12/apache-activemq-5.19.12-bin.zip&amp;action=download" title="Download Win64"><i class="fa fa-download" aria-hidden="true"></i></a></td>
     </tr>
     <tr style="background-color: #f0f0f0;">
       <td>5.18.x</td>
@@ -76,11 +84,12 @@ It is important to [verify the integrity](#verify-the-integrity-of-downloads) of
 
 | Series | Broker JMS API Support      | Client JMS API Client       | Java Version | Spring Version | Logging Support              | Web Support            | Status       | Last    | Next | ETA     |
 |--------|-----------------------------|-----------------------------|--------------|----------------|------------------------------|------------------------|--------------|---------|--|---------|
-| 6.3.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,26)            | 7.0.8          | Log4j 2.26.1/Slf4j 2.0.18    | Jetty 12.1.12          | **Active**   | 6.3.2   | 6.3.3 |  |
+| 6.4.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,26)            | 7.0.9          | Log4j 2.26.1/Slf4j 2.0.20    | Jetty 12.1.12          | **Active**   | 6.4.0   | 6.4.1 | Dec 26 |
+| 6.3.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,26)            | 7.0.9          | Log4j 2.26.1/Slf4j 2.0.20    | Jetty 12.1.12          | **Active**   | 6.3.3   | 6.3.4 | Dec 26 |
 | 6.2.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.2.19         | Log4j 2.25.4/Slf4j 2.0.17    | Jetty 11.0.26          | _Inactive_   | 6.2.10   |  |  |
 | 6.1.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.1.21         | Log4j 2.25.2/Slf4j 2.0.17    | Jetty 11.0.26          | _Inactive_ | 6.1.8   |  | |
 | 6.0.x  | Jakarta JMS 2/3.1 (partial) | Jakarta JMS 2/3.1           | [17,23)          | 6.0.17         | Log4j 2.22.0/Slf4j 2.0.9     | Jetty 11.0.18          | _Inactive_ | 6.0.1   |  |         |
-| 5.19.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.25.3/Slf4j 2.0.17    | Jetty 9.4.58.v20250814 | **Active**   | 5.19.11  | 5.19.12 | |
+| 5.19.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.26.1/Slf4j 2.0.20    | Jetty 9.4.58.v20250814 | **Active**   | 5.19.12  | 5.19.13 | |
 | 5.18.x | Javax JMS 1.1               | Javax JMS 1.1/Jakarta JMS 2 | [11,23)          | 5.3.39         | Log4j 2.24.1/Slf4j 2.0.13    | Jetty 9.4.57.v20241219 | _Inactive_ | 5.18.7  |   |        |
 | 5.17.x | Javax JMS 1.1               | Javax JMS 1.1               | [11,23)          | 5.3.33         | Log4j 2.23.1/Slf4j 1.7.36    | Jetty 9.4.54.v20240208 | _Inactive_ | 5.17.7  |  |         |
 | 5.16.x | Javax JMS 1.1               | Javax JMS 1.1               | 1.8          | 4.3.30.RELEASE | Reload4j 1.2.24/Slf4j 1.7.36 | Jetty 9.4.53.v20231009 | _Inactive_ | 5.16.8  |  |         |
