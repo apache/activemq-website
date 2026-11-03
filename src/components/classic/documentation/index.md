@@ -14,6 +14,7 @@ type: classic
     *   [License](http://www.apache.org/licenses/)
     *   [Latest Javadoc](maven/apidocs/)
 *   [Community](community)
+*   [Roadmap](roadmap)
 *   [Features](features)
 *   [Connectivity](connectivity)
 *   [Using ActiveMQ](using-activemq-classic-5)
